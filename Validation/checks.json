@@ -725,10 +725,14 @@
     "user_hears_in_both_halves": true,
     "added_mechanism_layer_excluded_as_shared_cause": true,
     "fix_applied": false,
-    "status": "Frozen six-TRAIN radiation-startup diagnostic published: four cases pass, both C6 cases fail early band guards; no click fix adopted.",
+    "status": "Proposed radiation observer/crossover rejected by full TRAIN34 confirmation:26 pass,8 early-attack failures. No click fix adopted; current default unchanged.",
     "diagnostic_report": {
       "path": "Validation/full-causal-radiation-pilot.json",
       "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+    },
+    "latest_confirmation": {
+      "path": "tools/experiments/radiation_crossover_train34/index.json",
+      "sha256": "08ae312e625d41f28b87aa0db5ab85dd78f47f28c28397feb367346fefc9cd98"
     }
   },
   "full_causal_radiation_pilot": {
@@ -875,5 +879,56 @@
     "fix_applied": false,
     "sound_validation_passed": false,
     "limits": "Relative five-band guards can pass despite individual LF regressions and large inherited deficits. Six post-hoc TRAIN passes and exact presentation reproduction do not establish perceived click removal, acoustic realism, realtime or Reason host readiness."
+  },
+  "radiation_crossover_train34_confirmation": {
+    "scope": "One frozen confirmation on34 already observed TRAIN recordings;6 previous outcomes reused verbatim and28 new one-trajectory pressure pairs. Frozen legacy OriginalControl physics, not current connected/default or optional confidence-profile qualification.",
+    "package": {
+      "path": "tools/experiments/radiation_crossover_train34/index.json",
+      "sha256": "08ae312e625d41f28b87aa0db5ab85dd78f47f28c28397feb367346fefc9cd98"
+    },
+    "result": {
+      "path": "tools/experiments/radiation_crossover_train34/evidence/result.json.gz",
+      "sha256": "cb7137fac3f60ea0e368d4f16789170991daf60727fef54b0fd9ac7ae2ead26d",
+      "uncompressed_sha256": "5895dc53be8bf77398327c4b1f0c3057abadbb5cfe5904f957a9bde97cab49fe"
+    },
+    "summary": {
+      "path": "tools/experiments/radiation_crossover_train34/evidence/summary.json",
+      "sha256": "af2136bbd8b2fbbe8aae5fa908b18c36487b7df2271e18f311a1a457a5706b49"
+    },
+    "findings": {
+      "path": "docs/RADIATION_STARTUP.md",
+      "sha256": "52b81a3229e734deec60c536f6698586c297d837a3a237321569f055638e6a66"
+    },
+    "review_command": "python3 tools/experiments/radiation_crossover_train34/check.py",
+    "training_cases": 34,
+    "reused_cases": 6,
+    "new_rendered_cases": 28,
+    "fresh_holdouts": 0,
+    "cases_passing_all_preservation_gates": 26,
+    "passes_all_preservation_gates": false,
+    "failed_cases": [
+      "A0v4",
+      "A0v12",
+      "D#5v4",
+      "D#5v12",
+      "C7v4",
+      "C7v12",
+      "C8v4",
+      "C8v12"
+    ],
+    "failed_guard": "each_early_window_band_MAE",
+    "all_late_harmonic_envelope_RMS_sustain_stereo_and_mono_guards_pass": true,
+    "cached_baseline_payloads_exact": true,
+    "sampled_state_checkpoints": 19992,
+    "all_frame_force_checks": 5107200,
+    "physical_and_observer_faults": 0,
+    "actual_filter_partition_output_and_final_state_bytes_match": true,
+    "cutoff_variants": 1,
+    "gain_onset_or_gate_changes": false,
+    "retries_or_rescores": 0,
+    "default_changed": false,
+    "fix_applied": false,
+    "sound_validation_passed": false,
+    "limits": "Relative guard failures reject this observer/crossover; original source, calibration and defaults remain unchanged. Reference C8 LF dominance and weak/unassigned tonal families limit interpretation of its large fixed RMS-matching gains. Stored-evidence verification does not open the external waveform/proof bundle or establish realism, real-time performance or Reason host qualification."
   }
 }

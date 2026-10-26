@@ -1,0 +1,2070 @@
+{
+  "schema_version": 1,
+  "scope": "Exact compressed research receipts +newchanged source only. Earlier public pilot/crossover sources reused by hash. No audio decode/render/filter/scoring during packaging.",
+  "frozen_source_bindings": [
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/CausalRadiation.h",
+      "sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/observer/CausalRadiation.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/producer.cpp",
+      "sha256": "7a26cad53bd735d68fa71f771d96caf015e2adcc2a0a1566a3f12af80da6031d",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/frozen_driver/producer.cpp",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/prepare.py",
+      "sha256": "238b6770b53c40bb2c16023964121426ffe8a5e53ce0879e17c749ffbca6070f",
+      "package_path": "tools/experiments/radiation_crossover_train34/source/prepare.py",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/compat400.py",
+      "sha256": "a0059de214d0553b324e251d23d2050522d72a37c5b21df361e27e1bb7cf6fee",
+      "package_path": "tools/experiments/radiation_crossover_train34/source/compat400.py",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/CMakeLists.txt",
+      "sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/CMakeLists.txt",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/include/keyra/FullInstrument.h",
+      "sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/FullInstrument.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/include/keyra/physics/MechanismExciter.h",
+      "sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/MechanismExciter.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/include/keyra/physics/StrikeController.h",
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/StrikeController.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/Capture.h",
+      "sha256": "9836de40959b4e48185db560267c3a0b03dcc8f412204a059109065cf910ed28",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/Capture.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/FullInstrument.cpp",
+      "sha256": "2fcad020f18a93980a2ef393a1fcedfc5c5721e73bfef2d5180d289b6a46fa90",
+      "package_path": "tools/experiments/radiation_crossover_train34/source/FullInstrument.cpp",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/PreparedCalibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedCalibration.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/PreparedModel.h",
+      "sha256": "000c337ade12501e0b43a1e3487c9d9e28df1f77936a5691fa8a0b2218a6c99a",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/PreparedModel.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/Trace.h",
+      "sha256": "76a5f7869ba2e8d12f59780563b0c39f83833e09acaf523da3fd050fb1f3f367",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/Trace.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/tools/render_full.cpp",
+      "sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/tools/render_full.cpp",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/run_batch.py",
+      "sha256": "beac7e1effa6cbe50bfab3fb6485eb3c9d8bdd5c0f89a38922a815cdfc3640f6",
+      "package_path": "tools/experiments/radiation_crossover_train34/source/run_batch.py",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/inventory.json",
+      "sha256": "ed2a4a854e3cd68f949527c93f5c136e112a93c044ca5239371eb5a7575d5fb1",
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/inventory.json.gz",
+      "encoding": "gzip"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/build-manifest.json",
+      "sha256": "c1d9e25ba9a8a8a02770943de4b6aa9db4525f944e4de0404a073fdd61ddb7da",
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/build-manifest.json",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/postprocessor-synthetic-checks.json",
+      "sha256": "e4493850645b0beae7447568fdf04c65de3937e09886229d370aee3f1a57a75b",
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/postprocessor-synthetic-checks.json",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/postprocess.py",
+      "sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e",
+      "package_path": "tools/experiments/radiation_crossover/evidence/postprocess.py",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/CMakeLists.txt",
+      "sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/CMakeLists.txt",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/FullInstrument.h",
+      "sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/FullInstrument.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/MechanismExciter.h",
+      "sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/MechanismExciter.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/StrikeController.h",
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/StrikeController.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/FullInstrument.cpp",
+      "sha256": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/FullInstrument.cpp",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedCalibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedCalibration.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedModel.h",
+      "sha256": "5c8c92f8a761b46a66f3823765f6348ab0c08b74457d7efc062f0941ab07faf8",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedModel.h",
+      "encoding": "identity"
+    },
+    {
+      "original_path": "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/tools/render_full.cpp",
+      "sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/tools/render_full.cpp",
+      "encoding": "identity"
+    }
+  ],
+  "artifacts": [
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/source-index.json",
+      "sha256": "758117591289e8ea2814cc8120f4c8ac67e89b86e8d9de3f7460be87154abfcb",
+      "stored_sha256": "758117591289e8ea2814cc8120f4c8ac67e89b86e8d9de3f7460be87154abfcb",
+      "encoding": "identity",
+      "bytes": 22741,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/source-index.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/CMakeLists.txt",
+      "sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "stored_sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "encoding": "identity",
+      "bytes": 14792,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/CMakeLists.txt",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/CMakeLists.txt",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/CMakeLists.txt"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/tools/render_full.cpp",
+      "sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "stored_sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "encoding": "identity",
+      "bytes": 10605,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/tools/render_full.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/tools/render_full.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/tools/render_full.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/FullInstrument.h",
+      "sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "stored_sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "encoding": "identity",
+      "bytes": 2633,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/FullInstrument.h",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/include/keyra/FullInstrument.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/include/keyra/FullInstrument.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/StrikeController.h",
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "stored_sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "encoding": "identity",
+      "bytes": 10100,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/StrikeController.h",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/include/keyra/physics/StrikeController.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/include/keyra/physics/StrikeController.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/MechanismExciter.h",
+      "sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "stored_sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "encoding": "identity",
+      "bytes": 7981,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/include/keyra/physics/MechanismExciter.h",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/include/keyra/physics/MechanismExciter.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/include/keyra/physics/MechanismExciter.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedModel.h",
+      "sha256": "5c8c92f8a761b46a66f3823765f6348ab0c08b74457d7efc062f0941ab07faf8",
+      "stored_sha256": "5c8c92f8a761b46a66f3823765f6348ab0c08b74457d7efc062f0941ab07faf8",
+      "encoding": "identity",
+      "bytes": 30602,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedModel.h",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/src/full_instrument/PreparedModel.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedCalibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "stored_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "encoding": "identity",
+      "bytes": 18586,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/PreparedCalibration.h",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/src/full_instrument/PreparedCalibration.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/PreparedCalibration.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/FullInstrument.cpp",
+      "sha256": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+      "stored_sha256": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+      "encoding": "identity",
+      "bytes": 13539,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/original_core/src/full_instrument/FullInstrument.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/sources/src/full_instrument/FullInstrument.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/CMakeLists.txt",
+      "sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "stored_sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "encoding": "identity",
+      "bytes": 14792,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/CMakeLists.txt",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/CMakeLists.txt"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/include/keyra/FullInstrument.h",
+      "sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "stored_sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "encoding": "identity",
+      "bytes": 2633,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/include/keyra/FullInstrument.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/include/keyra/FullInstrument.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/include/keyra/physics/MechanismExciter.h",
+      "sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "stored_sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "encoding": "identity",
+      "bytes": 7981,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/include/keyra/physics/MechanismExciter.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/include/keyra/physics/MechanismExciter.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/include/keyra/physics/StrikeController.h",
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "stored_sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "encoding": "identity",
+      "bytes": 10100,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/include/keyra/physics/StrikeController.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/include/keyra/physics/StrikeController.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/Capture.h",
+      "sha256": "9836de40959b4e48185db560267c3a0b03dcc8f412204a059109065cf910ed28",
+      "stored_sha256": "9836de40959b4e48185db560267c3a0b03dcc8f412204a059109065cf910ed28",
+      "encoding": "identity",
+      "bytes": 2560,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/Capture.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/src/full_instrument/Capture.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/Capture.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/FullInstrument.cpp",
+      "sha256": "31cf539e7758daa64c5f62b0277f7a8f42be40ea3b127e3e0581d01e8927d4f1",
+      "stored_sha256": "31cf539e7758daa64c5f62b0277f7a8f42be40ea3b127e3e0581d01e8927d4f1",
+      "encoding": "identity",
+      "bytes": 17151,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/FullInstrument.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/src/full_instrument/FullInstrument.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/PreparedCalibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "stored_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "encoding": "identity",
+      "bytes": 18586,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/PreparedCalibration.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/src/full_instrument/PreparedCalibration.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/PreparedModel.h",
+      "sha256": "000c337ade12501e0b43a1e3487c9d9e28df1f77936a5691fa8a0b2218a6c99a",
+      "stored_sha256": "000c337ade12501e0b43a1e3487c9d9e28df1f77936a5691fa8a0b2218a6c99a",
+      "encoding": "identity",
+      "bytes": 30765,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/PreparedModel.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/src/full_instrument/PreparedModel.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/PreparedModel.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/Trace.h",
+      "sha256": "76a5f7869ba2e8d12f59780563b0c39f83833e09acaf523da3fd050fb1f3f367",
+      "stored_sha256": "76a5f7869ba2e8d12f59780563b0c39f83833e09acaf523da3fd050fb1f3f367",
+      "encoding": "identity",
+      "bytes": 131,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/src/full_instrument/Trace.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/src/full_instrument/Trace.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/Trace.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/instrumented_core/tools/render_full.cpp",
+      "sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "stored_sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "encoding": "identity",
+      "bytes": 10605,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/instrumented_core/tools/render_full.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-sources/tools/render_full.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/observer/CausalRadiation.h",
+      "sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169",
+      "stored_sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169",
+      "encoding": "identity",
+      "bytes": 4922,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/observer/CausalRadiation.h",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/CausalRadiation.h",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/CausalRadiation.h"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/frozen_driver/producer.cpp",
+      "sha256": "7a26cad53bd735d68fa71f771d96caf015e2adcc2a0a1566a3f12af80da6031d",
+      "stored_sha256": "7a26cad53bd735d68fa71f771d96caf015e2adcc2a0a1566a3f12af80da6031d",
+      "encoding": "identity",
+      "bytes": 1875,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/frozen_driver/producer.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/producer.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/frozen_driver/make_producer.py",
+      "sha256": "6e64c5b25697a12cb14e402bb932018790703acd824b82a7d45c9b6a3c79acc2",
+      "stored_sha256": "6e64c5b25697a12cb14e402bb932018790703acd824b82a7d45c9b6a3c79acc2",
+      "encoding": "identity",
+      "bytes": 12993,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/frozen_driver/make_producer.py",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/make_producer.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/frozen_driver/render_pilot.py",
+      "sha256": "3c5b83b952effb8a5328dd2933ac58000e2752175de7f225aa1adc3701d925aa",
+      "stored_sha256": "3c5b83b952effb8a5328dd2933ac58000e2752175de7f225aa1adc3701d925aa",
+      "encoding": "identity",
+      "bytes": 6418,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/frozen_driver/render_pilot.py",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/render_pilot.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/math_source/math_probe.cpp",
+      "sha256": "d163e41ead8277021f50794e6885237ac8c5729beffaecae2e924c902e71bd4c",
+      "stored_sha256": "d163e41ead8277021f50794e6885237ac8c5729beffaecae2e924c902e71bd4c",
+      "encoding": "identity",
+      "bytes": 4154,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/math_source/math_probe.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/math_probe.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/math_source/export_static.cpp",
+      "sha256": "93eaf0ae942fac91fcbfd61343447aeb65a2e173500334b13f07a956fb560816",
+      "stored_sha256": "93eaf0ae942fac91fcbfd61343447aeb65a2e173500334b13f07a956fb560816",
+      "encoding": "identity",
+      "bytes": 2244,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/math_source/export_static.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/export_static.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/math_source/frequency_analysis.py",
+      "sha256": "7eea1e89dde406649437771959f27cd8eb8feedd19df08888e77e4268bc7e6dc",
+      "stored_sha256": "7eea1e89dde406649437771959f27cd8eb8feedd19df08888e77e4268bc7e6dc",
+      "encoding": "identity",
+      "bytes": 5799,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/math_source/frequency_analysis.py",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/frequency_analysis.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/math_source/validate_math.py",
+      "sha256": "32ae3ed6d941b1224a6ea7664ad2020a02d551f5170aa4adb1299bee3e050719",
+      "stored_sha256": "32ae3ed6d941b1224a6ea7664ad2020a02d551f5170aa4adb1299bee3e050719",
+      "encoding": "identity",
+      "bytes": 3139,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/math_source/validate_math.py",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/validate_math.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/candidate-freeze.json",
+      "sha256": "e69b90e55119da36668feba4048eace7230f92c362fdfce93c38c9c69adea8ea",
+      "stored_sha256": "e69b90e55119da36668feba4048eace7230f92c362fdfce93c38c9c69adea8ea",
+      "encoding": "identity",
+      "bytes": 9151,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/candidate-freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/candidate-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/math-validation.json",
+      "sha256": "cf14761683575e8c5de625c7bacedac43be5d9674782efcae99240c915f7587e",
+      "stored_sha256": "cf14761683575e8c5de625c7bacedac43be5d9674782efcae99240c915f7587e",
+      "encoding": "identity",
+      "bytes": 10244,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/math-validation.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/math-validation.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/math-probe.json",
+      "sha256": "914ab476703f62ee8bf90fa937d588dbbc2629c35bb89ec6896f9e0d3f7717fd",
+      "stored_sha256": "914ab476703f62ee8bf90fa937d588dbbc2629c35bb89ec6896f9e0d3f7717fd",
+      "encoding": "identity",
+      "bytes": 1435,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/math-probe.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/math-probe.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/frequency-analysis.json",
+      "sha256": "60033e3b129803a06d8b03a1e6e4a8e8c174233cb0a9bf8a5a9801037a2419f7",
+      "stored_sha256": "60033e3b129803a06d8b03a1e6e4a8e8c174233cb0a9bf8a5a9801037a2419f7",
+      "encoding": "identity",
+      "bytes": 1541349,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/frequency-analysis.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/frequency-analysis.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/static-metadata.json",
+      "sha256": "4db0b228f63b00e24fc908efe8722f3e38a89f806276d52fe20121574cb1948a",
+      "stored_sha256": "4db0b228f63b00e24fc908efe8722f3e38a89f806276d52fe20121574cb1948a",
+      "encoding": "identity",
+      "bytes": 186,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/static-metadata.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/static-metadata.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/static.json",
+      "sha256": "43acbb2b24639732f2f056e016753a2ac8fbbc21817b1f488c5800c75fe1ec88",
+      "stored_sha256": "43acbb2b24639732f2f056e016753a2ac8fbbc21817b1f488c5800c75fe1ec88",
+      "encoding": "identity",
+      "bytes": 558102,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/static.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/static.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/producer-receipt.json",
+      "sha256": "c18f0a3fbcec5fb85a21e1b33b95863aacb4a64b064bddd5e93056f8ae8d60ae",
+      "stored_sha256": "c18f0a3fbcec5fb85a21e1b33b95863aacb4a64b064bddd5e93056f8ae8d60ae",
+      "encoding": "identity",
+      "bytes": 26401,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/producer-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/capture-original.json",
+      "sha256": "ade69db0219029b19c15cc727c1a72194fd1c59a0eb72bde6ed445518ff78166",
+      "stored_sha256": "ade69db0219029b19c15cc727c1a72194fd1c59a0eb72bde6ed445518ff78166",
+      "encoding": "identity",
+      "bytes": 18963,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/capture-original.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/capture.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/original-demo-renderer-validation.json",
+      "sha256": "d1d37764f8b667490ba3c5680a90601d6f810d62d49b2b8f0c56ec7d38b759c7",
+      "stored_sha256": "d1d37764f8b667490ba3c5680a90601d6f810d62d49b2b8f0c56ec7d38b759c7",
+      "encoding": "identity",
+      "bytes": 10369,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/original-demo-renderer-validation.json",
+        "/workspace/virtual-instrument-keyra/out/full-performance/renderer-validation.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/music-producer-receipt.json",
+      "sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61",
+      "stored_sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61",
+      "encoding": "identity",
+      "bytes": 2821,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/music-producer-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/producer-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/music-freeze.json",
+      "sha256": "467b7031894e2853e10f4cba858987f07ff13e8b2b11acd41e9d880cb69183f2",
+      "stored_sha256": "467b7031894e2853e10f4cba858987f07ff13e8b2b11acd41e9d880cb69183f2",
+      "encoding": "identity",
+      "bytes": 6230,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/music-freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/music-listening-manifest.json",
+      "sha256": "9b63d84aef1bc3c110fbf2ecc14277a1a6954a8095ffe38024acdfc299d5b4a3",
+      "stored_sha256": "9b63d84aef1bc3c110fbf2ecc14277a1a6954a8095ffe38024acdfc299d5b4a3",
+      "encoding": "identity",
+      "bytes": 19913,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/music-listening-manifest.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/manifest.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/C6-path-attribution.json",
+      "sha256": "58fc1be9e1f299e0292b9fd243b8f6e2cfb288523e2fe117f5dd876f7bb925d4",
+      "stored_sha256": "58fc1be9e1f299e0292b9fd243b8f6e2cfb288523e2fe117f5dd876f7bb925d4",
+      "encoding": "identity",
+      "bytes": 65661,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/C6-path-attribution.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/C6-path-attribution.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/analyze_C6_paths.py",
+      "sha256": "19fbbc15f482047d427330bebd3e19f3dc22bc1caca1a61b1b599717cdd62020",
+      "stored_sha256": "19fbbc15f482047d427330bebd3e19f3dc22bc1caca1a61b1b599717cdd62020",
+      "encoding": "identity",
+      "bytes": 4375,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/analyze_C6_paths.py",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/analyze_C6_paths.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v4/case-receipt.json",
+      "sha256": "73f2863d95d59bbf769c9f4fc30a0291e7bda16b1af41de7cca78b20af2e0d0e",
+      "stored_sha256": "73f2863d95d59bbf769c9f4fc30a0291e7bda16b1af41de7cca78b20af2e0d0e",
+      "encoding": "identity",
+      "bytes": 2837,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v4/case-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/case-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v4/render.json",
+      "sha256": "c8ab9f510c85a0cba68540142131c6ccb3516507d0b43031aa0ebe158b1c2c2f",
+      "stored_sha256": "c8ab9f510c85a0cba68540142131c6ccb3516507d0b43031aa0ebe158b1c2c2f",
+      "encoding": "identity",
+      "bytes": 167,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v4/render.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/render.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v12/case-receipt.json",
+      "sha256": "25e385cc6e52c1d82800c01b1b4786787559026a6934af92019eac81e6a0a128",
+      "stored_sha256": "25e385cc6e52c1d82800c01b1b4786787559026a6934af92019eac81e6a0a128",
+      "encoding": "identity",
+      "bytes": 2847,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v12/case-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/case-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v12/render.json",
+      "sha256": "555642f5fd127a40e54bc0a35a0968998dcab968d72ec8237e74668c496e6841",
+      "stored_sha256": "555642f5fd127a40e54bc0a35a0968998dcab968d72ec8237e74668c496e6841",
+      "encoding": "identity",
+      "bytes": 167,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C3v12/render.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/render.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v4/case-receipt.json",
+      "sha256": "0023c9c2fa0e7a13b5282723763a4f134c6fe470d41b31a0b4b2c0827853e629",
+      "stored_sha256": "0023c9c2fa0e7a13b5282723763a4f134c6fe470d41b31a0b4b2c0827853e629",
+      "encoding": "identity",
+      "bytes": 2837,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v4/case-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/case-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v4/render.json",
+      "sha256": "ef5a79849fee76ff36688603132d69075382b085e3f883a46eec1d5f69bda9cf",
+      "stored_sha256": "ef5a79849fee76ff36688603132d69075382b085e3f883a46eec1d5f69bda9cf",
+      "encoding": "identity",
+      "bytes": 167,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v4/render.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/render.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v12/case-receipt.json",
+      "sha256": "f8be2417300da56119f8fa934680330f2a8027158354989d5116f6f902fa8c40",
+      "stored_sha256": "f8be2417300da56119f8fa934680330f2a8027158354989d5116f6f902fa8c40",
+      "encoding": "identity",
+      "bytes": 2847,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v12/case-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/case-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v12/render.json",
+      "sha256": "bcc61cedf6aa1aec0a40b42996e505d557118cf8e46d4c33d9439d8b139c853c",
+      "stored_sha256": "bcc61cedf6aa1aec0a40b42996e505d557118cf8e46d4c33d9439d8b139c853c",
+      "encoding": "identity",
+      "bytes": 167,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C4v12/render.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/render.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v4/case-receipt.json",
+      "sha256": "696c4946430396c603aba59b1c15fc92a9b11d4e3bd73ecb18424c6adc9ca62c",
+      "stored_sha256": "696c4946430396c603aba59b1c15fc92a9b11d4e3bd73ecb18424c6adc9ca62c",
+      "encoding": "identity",
+      "bytes": 2837,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v4/case-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/case-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v4/render.json",
+      "sha256": "8f764373f5cfaed46d2ba48a87754c56b751d6c2e3993ae4dc9f5da054702b8c",
+      "stored_sha256": "8f764373f5cfaed46d2ba48a87754c56b751d6c2e3993ae4dc9f5da054702b8c",
+      "encoding": "identity",
+      "bytes": 167,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v4/render.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/render.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v12/case-receipt.json",
+      "sha256": "dcafc013f344cb1e15a9c808fb390d565eca14ab14fe9a30d519c7356f4ab782",
+      "stored_sha256": "dcafc013f344cb1e15a9c808fb390d565eca14ab14fe9a30d519c7356f4ab782",
+      "encoding": "identity",
+      "bytes": 2847,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v12/case-receipt.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/case-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v12/render.json",
+      "sha256": "58db17c011c60daead7418962fbd6c32b48f1f36edd7525e6992d5c0478222b6",
+      "stored_sha256": "58db17c011c60daead7418962fbd6c32b48f1f36edd7525e6992d5c0478222b6",
+      "encoding": "identity",
+      "bytes": 167,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/cases/C6v12/render.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/render.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/review-index.json",
+      "sha256": "3f520eeef1d07389486efc93972e8eaa59e7760b68e7298a9260690a0de90f8d",
+      "stored_sha256": "3f520eeef1d07389486efc93972e8eaa59e7760b68e7298a9260690a0de90f8d",
+      "encoding": "identity",
+      "bytes": 42499,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/review-index.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-pilot-protocol.json",
+      "sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa",
+      "stored_sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa",
+      "encoding": "identity",
+      "bytes": 25154,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-pilot-protocol.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/protocol.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-pilot.json",
+      "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+      "stored_sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+      "encoding": "identity",
+      "bytes": 967592,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-pilot.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-result.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-metric-checks.json",
+      "sha256": "851b1ff2153eaf6fe23f55102dfaece59d124fc4326796b4a565428192d5b1e3",
+      "stored_sha256": "851b1ff2153eaf6fe23f55102dfaece59d124fc4326796b4a565428192d5b1e3",
+      "encoding": "identity",
+      "bytes": 2183,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-metric-checks.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-metric-replay.json",
+      "sha256": "d70fd3bbef05d63e0041c4fb3367c79d125e9058aa2701201bf0038f589d50dd",
+      "stored_sha256": "d70fd3bbef05d63e0041c4fb3367c79d125e9058aa2701201bf0038f589d50dd",
+      "encoding": "identity",
+      "bytes": 26184,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-metric-replay.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-metric-review.json",
+      "sha256": "3172f389a66f6c4d2bfee9cc9ef1b5b3138ddc1741c91fd0c4b6b25fa45861af",
+      "stored_sha256": "3172f389a66f6c4d2bfee9cc9ef1b5b3138ddc1741c91fd0c4b6b25fa45861af",
+      "encoding": "identity",
+      "bytes": 2145,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-metric-review.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metric-source-ready.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-C6-diagnostic.json",
+      "sha256": "2f7966b9fddda5678024cacb22d701e9a7715b0b4b28858c079f0812187169a6",
+      "stored_sha256": "2f7966b9fddda5678024cacb22d701e9a7715b0b4b28858c079f0812187169a6",
+      "encoding": "identity",
+      "bytes": 64605,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-C6-diagnostic.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/posthoc-C6/report.json"
+      ]
+    },
+    {
+      "package_path": "tools/probe_full_causal_radiation_metrics.py",
+      "sha256": "14fc804b80f3742ee6c95cc3908c498459a77e61c90a1bdfe4b6c23c8580c1cd",
+      "stored_sha256": "14fc804b80f3742ee6c95cc3908c498459a77e61c90a1bdfe4b6c23c8580c1cd",
+      "encoding": "identity",
+      "bytes": 23148,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/probe_full_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/check_causal_radiation_metrics.py",
+      "sha256": "e5b941d6e4af318b35140946863d2276495b02fbced36747da755b659869cb13",
+      "stored_sha256": "e5b941d6e4af318b35140946863d2276495b02fbced36747da755b659869cb13",
+      "encoding": "identity",
+      "bytes": 11611,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/prepare_causal_metrics_capture.py",
+      "sha256": "79c7cca06013c110f603b21db80f017bf5ddcc69101c94ddbb3f06293d7b0fab",
+      "stored_sha256": "79c7cca06013c110f603b21db80f017bf5ddcc69101c94ddbb3f06293d7b0fab",
+      "encoding": "identity",
+      "bytes": 2498,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/prepare_causal_metrics_capture.py"
+      ]
+    },
+    {
+      "package_path": "tools/diagnose_causal_radiation_pilot.py",
+      "sha256": "78300d5d997aabbc09ec6a824de1a47616274d00e8295fb71605e607e94b19a8",
+      "stored_sha256": "78300d5d997aabbc09ec6a824de1a47616274d00e8295fb71605e607e94b19a8",
+      "encoding": "identity",
+      "bytes": 11748,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/diagnose_causal_radiation_pilot.py"
+      ]
+    },
+    {
+      "package_path": "tools/check_causal_radiation_review.py",
+      "sha256": "1128da6966bf9e899ab35856f2d0a24b8d4485d03864e8f597e1f30566c1f8e5",
+      "stored_sha256": "1128da6966bf9e899ab35856f2d0a24b8d4485d03864e8f597e1f30566c1f8e5",
+      "encoding": "identity",
+      "bytes": 16830,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_review.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/reference-control.json",
+      "sha256": "4675d46574d65063d63ce9266ef4caa3d30c4880e4fac6fbabd11e6ff9747faf",
+      "stored_sha256": "4675d46574d65063d63ce9266ef4caa3d30c4880e4fac6fbabd11e6ff9747faf",
+      "encoding": "identity",
+      "bytes": 727531,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/reference-control.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/reference-control.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/analysis-code-freeze.json",
+      "sha256": "bda29f579eb96c2ad9f3ae0e1f1eff3727aa6b789c3d38dcd27a024b6322856d",
+      "stored_sha256": "bda29f579eb96c2ad9f3ae0e1f1eff3727aa6b789c3d38dcd27a024b6322856d",
+      "encoding": "identity",
+      "bytes": 854,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/analysis-code-freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/analysis-code-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/candidate-opening-started.json",
+      "sha256": "87c635bd40c37c38599be9f87829b8cdd0cdaa4e330781c99c784645424c84fd",
+      "stored_sha256": "87c635bd40c37c38599be9f87829b8cdd0cdaa4e330781c99c784645424c84fd",
+      "encoding": "identity",
+      "bytes": 278,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/candidate-opening-started.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/capture-adapted.json",
+      "sha256": "95eefc5ba3d49c6cd432e84c751c5903ddd02c2bb484fa68590e665712a9b886",
+      "stored_sha256": "95eefc5ba3d49c6cd432e84c751c5903ddd02c2bb484fa68590e665712a9b886",
+      "encoding": "identity",
+      "bytes": 20150,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/capture-adapted.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/capture-adapted.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/producer-registration.json",
+      "sha256": "8296fae4a432e7472f500b994f2cb55f60ffb642ffede45e883353ff3146a61d",
+      "stored_sha256": "8296fae4a432e7472f500b994f2cb55f60ffb642ffede45e883353ff3146a61d",
+      "encoding": "identity",
+      "bytes": 1367,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/producer-registration.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/producer-registration.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/fixture-identity-roundoff.json",
+      "sha256": "fc50c7c609ba4c21ad8d3db333d82e29b43e1606cad913b2e2b022b098c7f025",
+      "stored_sha256": "fc50c7c609ba4c21ad8d3db333d82e29b43e1606cad913b2e2b022b098c7f025",
+      "encoding": "identity",
+      "bytes": 16156,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/fixture-identity-roundoff.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/fixture-identity-roundoff.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/C6-diagnostic-protocol.json",
+      "sha256": "bb1ee4c9348c0c9dbc8f686106578e302b2c3c18ba53f70be2a618c87dc2fcbb",
+      "stored_sha256": "bb1ee4c9348c0c9dbc8f686106578e302b2c3c18ba53f70be2a618c87dc2fcbb",
+      "encoding": "identity",
+      "bytes": 1655,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/C6-diagnostic-protocol.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/posthoc-C6/protocol.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/analysis-code-freeze.json",
+      "sha256": "199916cb1790494d197daf5fc0f4b20aeefa420eab15b2c391f41691fcab0ca8",
+      "stored_sha256": "199916cb1790494d197daf5fc0f4b20aeefa420eab15b2c391f41691fcab0ca8",
+      "encoding": "identity",
+      "bytes": 838,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/analysis-code-freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metadata-preflight-1/analysis-code-freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/analysis-code-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/candidate-opening-started.json",
+      "sha256": "13c25562a26432ed198894c154489b155a513a7d48623a1e70c01621fae68737",
+      "stored_sha256": "13c25562a26432ed198894c154489b155a513a7d48623a1e70c01621fae68737",
+      "encoding": "identity",
+      "bytes": 278,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/candidate-opening-started.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metadata-preflight-1/candidate-opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/failure.json",
+      "sha256": "f844d7fabd970cb6082e87badc231a86ce9ccad8258adaf724d6c09779509d30",
+      "stored_sha256": "f844d7fabd970cb6082e87badc231a86ce9ccad8258adaf724d6c09779509d30",
+      "encoding": "identity",
+      "bytes": 1333,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/failure.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metadata-preflight-1/failure.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/check_causal_radiation_metrics-pre-audio.py",
+      "sha256": "eb57821510364ff744c161cd8770f1f5d6c0b3bc6ac89dd04874dc76f563f6f8",
+      "stored_sha256": "eb57821510364ff744c161cd8770f1f5d6c0b3bc6ac89dd04874dc76f563f6f8",
+      "encoding": "identity",
+      "bytes": 7337,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/check_causal_radiation_metrics-pre-audio.py",
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/check_causal_radiation_metrics-replay-v1.py",
+      "sha256": "361d2067df12fe466250e93ae43e2bd689c1cc3d7aa794f8f1ab16563fc288b2",
+      "stored_sha256": "361d2067df12fe466250e93ae43e2bd689c1cc3d7aa794f8f1ab16563fc288b2",
+      "encoding": "identity",
+      "bytes": 11369,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/check_causal_radiation_metrics-replay-v1.py",
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metric-replay-v1.json",
+      "sha256": "1a8192797ec7a3c9c4ff57106cff16a34a191e4d01eba2e61aeb163bde5641f3",
+      "stored_sha256": "1a8192797ec7a3c9c4ff57106cff16a34a191e4d01eba2e61aeb163bde5641f3",
+      "encoding": "identity",
+      "bytes": 26184,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/evidence/metric-replay-v1.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/README.md",
+      "sha256": "460f8bf2c0a1257c06a697c6144fca44b7a3d49380becc398a71557714dd6716",
+      "stored_sha256": "460f8bf2c0a1257c06a697c6144fca44b7a3d49380becc398a71557714dd6716",
+      "encoding": "identity",
+      "bytes": 9780,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/README.md"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/REGRESSION_CHECKLIST.md",
+      "sha256": "4858a5b216a51ddb88fa78785ad969c994e80f4f99d09d8ca5fe3652d788fc35",
+      "stored_sha256": "4858a5b216a51ddb88fa78785ad969c994e80f4f99d09d8ca5fe3652d788fc35",
+      "encoding": "identity",
+      "bytes": 2962,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/REGRESSION_CHECKLIST.md"
+      ]
+    },
+    {
+      "package_path": "tools/fit_full_calibration.py",
+      "sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550",
+      "stored_sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550",
+      "encoding": "identity",
+      "bytes": 58033,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/fit_full_calibration.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/benchmark.py",
+      "sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda",
+      "stored_sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda",
+      "encoding": "identity",
+      "bytes": 24274,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/benchmark.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/radiation_fit.py",
+      "sha256": "d222d5f00257358d48c398dc4d84f1ba4bbbf4ddaa94b46c2a46f81b723414d7",
+      "stored_sha256": "d222d5f00257358d48c398dc4d84f1ba4bbbf4ddaa94b46c2a46f81b723414d7",
+      "encoding": "identity",
+      "bytes": 19470,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/radiation_fit.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/fit_calibration.py",
+      "sha256": "906605c9a03bafff4a265a8508dab6c6e51198db881fddc27db69477804d7576",
+      "stored_sha256": "906605c9a03bafff4a265a8508dab6c6e51198db881fddc27db69477804d7576",
+      "encoding": "identity",
+      "bytes": 5847,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/fit_calibration.py"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/combined_train_features.json",
+      "sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+      "stored_sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+      "encoding": "identity",
+      "bytes": 2126544,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/combined_train_features.json"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/split.json",
+      "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428",
+      "stored_sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428",
+      "encoding": "identity",
+      "bytes": 8338,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/split.json"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/manifest.json",
+      "sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647",
+      "stored_sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647",
+      "encoding": "identity",
+      "bytes": 38297,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/manifest.json"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/upstream/LICENSE-CC-BY-3.0.txt",
+      "sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "stored_sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "encoding": "identity",
+      "bytes": 19467,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/upstream/LICENSE-CC-BY-3.0.txt"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/README.md",
+      "sha256": "2722232ef3592471c57ad65862bf5e7cead9c2174f8a03b814ca8dace6c9819c",
+      "stored_sha256": "2722232ef3592471c57ad65862bf5e7cead9c2174f8a03b814ca8dace6c9819c",
+      "encoding": "identity",
+      "bytes": 3462,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/README.md"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/replay.py",
+      "sha256": "26d1bf2a696b23e6b87b065f239d03fe17f37366de9a4217c424e1835cb57c9a",
+      "stored_sha256": "26d1bf2a696b23e6b87b065f239d03fe17f37366de9a4217c424e1835cb57c9a",
+      "encoding": "identity",
+      "bytes": 8805,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/replay.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/cases.json",
+      "sha256": "9c2ad31818dd63c3aa4cbcf870ce76d70e4c1c9b21551514ec88c606b6576c3f",
+      "stored_sha256": "9c2ad31818dd63c3aa4cbcf870ce76d70e4c1c9b21551514ec88c606b6576c3f",
+      "encoding": "identity",
+      "bytes": 2231,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/cases.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/manifest.json",
+      "sha256": "62cbc6e46b95330b4e0b5b92abc19e1c23c5b21bfbd4ab6e7f282b42486a03c4",
+      "stored_sha256": "62cbc6e46b95330b4e0b5b92abc19e1c23c5b21bfbd4ab6e7f282b42486a03c4",
+      "encoding": "identity",
+      "bytes": 15354,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-pilot/manifest.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/README.md",
+      "sha256": "4a11ad8c6409a2dccdad69742f9347b79ee6191843c0474885faa55d141d3424",
+      "stored_sha256": "4a11ad8c6409a2dccdad69742f9347b79ee6191843c0474885faa55d141d3424",
+      "encoding": "identity",
+      "bytes": 3160,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-pilot/README.md"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/export.py",
+      "sha256": "a4739d3826fbf9a5dea08a6d68624f8edbd12981ee7d8e36b0cad3392aafbccd",
+      "stored_sha256": "a4739d3826fbf9a5dea08a6d68624f8edbd12981ee7d8e36b0cad3392aafbccd",
+      "encoding": "identity",
+      "bytes": 5948,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-pilot/export.py"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/LICENSE-CC-BY-3.0.txt",
+      "sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "stored_sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "encoding": "identity",
+      "bytes": 19467,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-pilot/LICENSE-CC-BY-3.0.txt"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/C6-source-notes.json",
+      "sha256": "f0c0cb354d7eec18cf87e7b412af7501b89f3e49c175334592696c0881ca20fe",
+      "stored_sha256": "f0c0cb354d7eec18cf87e7b412af7501b89f3e49c175334592696c0881ca20fe",
+      "encoding": "identity",
+      "bytes": 2358,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/C6-source-notes.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/music-window-diagnostic.json",
+      "sha256": "7e2c26aaac8b7b8c09f332680d34796af206424104000873cc1694b31e30ad23",
+      "stored_sha256": "7e2c26aaac8b7b8c09f332680d34796af206424104000873cc1694b31e30ad23",
+      "encoding": "identity",
+      "bytes": 2848,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/music-window-diagnostic.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/portable-checks.json",
+      "sha256": "a94522b52533d81ce02464301ef7af9ad46be633d4272c5b3eee33712adc7e42",
+      "stored_sha256": "a94522b52533d81ce02464301ef7af9ad46be633d4272c5b3eee33712adc7e42",
+      "encoding": "identity",
+      "bytes": 909,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/evidence/portable-checks.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/verify_c6.py",
+      "sha256": "2ff4d60e1389a2b04b9636771efa5b5a5beb2eef7ad192fc5826fc7757b2ba2a",
+      "stored_sha256": "2ff4d60e1389a2b04b9636771efa5b5a5beb2eef7ad192fc5826fc7757b2ba2a",
+      "encoding": "identity",
+      "bytes": 2374,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/causal_radiation_pilot/producer/verify_c6.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/index.json",
+      "sha256": "77bedfdd9ff38b42944bd51c2ee14c927f5bdd4c0d77d947509d7dd1989e5c7f",
+      "stored_sha256": "77bedfdd9ff38b42944bd51c2ee14c927f5bdd4c0d77d947509d7dd1989e5c7f",
+      "encoding": "identity",
+      "bytes": 19646,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/index.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/postprocess.py",
+      "sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e",
+      "stored_sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e",
+      "encoding": "identity",
+      "bytes": 11905,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/postprocess.py",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/postprocess.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/freeze.json",
+      "sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782",
+      "stored_sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782",
+      "encoding": "identity",
+      "bytes": 804,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/opening-started.json",
+      "sha256": "fde4ed15fa0051787d8be8547ce96e8e576c98d7650f7b496c0e3f01278dad4e",
+      "stored_sha256": "fde4ed15fa0051787d8be8547ce96e8e576c98d7650f7b496c0e3f01278dad4e",
+      "encoding": "identity",
+      "bytes": 439,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/opening-started.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/postprocessor-checks.json",
+      "sha256": "b3bce644855d05dd2192da814186b48f08fcf2e9326f8e6ce819ab04a4fcb124",
+      "stored_sha256": "b3bce644855d05dd2192da814186b48f08fcf2e9326f8e6ce819ab04a4fcb124",
+      "encoding": "identity",
+      "bytes": 512,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/postprocessor-checks.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/postprocessor-checks.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/algebra-and-synthetic.json",
+      "sha256": "a2455d02830c68150bb351911fc08ccad7441648b93f5a5a8cc47f025ebc6ee8",
+      "stored_sha256": "a2455d02830c68150bb351911fc08ccad7441648b93f5a5a8cc47f025ebc6ee8",
+      "encoding": "identity",
+      "bytes": 7714,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/algebra-and-synthetic.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/algebra-and-synthetic.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/independent-review.json",
+      "sha256": "2708da8960308aaf5a18e0a4661a50555f0eacd458fc57489418baec43469b08",
+      "stored_sha256": "2708da8960308aaf5a18e0a4661a50555f0eacd458fc57489418baec43469b08",
+      "encoding": "identity",
+      "bytes": 1706,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/independent-review.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/independent-review.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/independent-result-review.json",
+      "sha256": "85517c9037a1e56ba32a17fa3dcd0b29794097f618d1f279000a423c98b69bdc",
+      "stored_sha256": "85517c9037a1e56ba32a17fa3dcd0b29794097f618d1f279000a423c98b69bdc",
+      "encoding": "identity",
+      "bytes": 868,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/independent-result-review.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/independent-result-review.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/evidence/summary.json",
+      "sha256": "6d6846cf744f654ea0243600e57e5c117ab56d608b1efe0dd041aaf530f9c1e8",
+      "stored_sha256": "6d6846cf744f654ea0243600e57e5c117ab56d608b1efe0dd041aaf530f9c1e8",
+      "encoding": "identity",
+      "bytes": 13032,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/evidence/summary.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/summary.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-radiation-crossover-protocol.json",
+      "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815",
+      "stored_sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815",
+      "encoding": "identity",
+      "bytes": 14613,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-radiation-crossover-protocol.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/protocol.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-radiation-crossover.json",
+      "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec",
+      "stored_sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec",
+      "encoding": "identity",
+      "bytes": 480209,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-radiation-crossover.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/result.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-radiation-crossover-margins.json",
+      "sha256": "de6e106aaed99afde93cb29596a5aa9d03dc194f431e85e2417b1b19a1eaa660",
+      "stored_sha256": "de6e106aaed99afde93cb29596a5aa9d03dc194f431e85e2417b1b19a1eaa660",
+      "encoding": "identity",
+      "bytes": 18849,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-radiation-crossover-margins.json",
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/margins-and-C6-LF.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/check.py",
+      "sha256": "4979d70e5965c5e28ac7f1eb034bba887e57b4c48eb2c378d92587531dff416e",
+      "stored_sha256": "4979d70e5965c5e28ac7f1eb034bba887e57b4c48eb2c378d92587531dff416e",
+      "encoding": "identity",
+      "bytes": 19174,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/check.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover/README.md",
+      "sha256": "ebe4cb6bb79efa908bcfc8576705a3e301bdb488db96648878f6d062a537d695",
+      "stored_sha256": "ebe4cb6bb79efa908bcfc8576705a3e301bdb488db96648878f6d062a537d695",
+      "encoding": "identity",
+      "bytes": 7049,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/experiments/radiation_crossover/README.md"
+      ]
+    },
+    {
+      "package_path": "docs/REPLAY_ENVIRONMENT.md",
+      "sha256": "b5cfc8e264d08f40a7ca8858206104c80737337df502a47993f77b268edec40b",
+      "stored_sha256": "b5cfc8e264d08f40a7ca8858206104c80737337df502a47993f77b268edec40b",
+      "encoding": "identity",
+      "bytes": 3945,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/docs/REPLAY_ENVIRONMENT.md"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-review.json",
+      "sha256": "eabc126ba12e52f598d0c5aba3f56c33a6c088e6af7cadd7c9ca27c1fad0289d",
+      "stored_sha256": "eabc126ba12e52f598d0c5aba3f56c33a6c088e6af7cadd7c9ca27c1fad0289d",
+      "encoding": "identity",
+      "bytes": 147905,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-review.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/README.md",
+      "sha256": "7ce2d36ecf2ad28986ccc2175d82453efc315d5998b42abafef99ff5f0218b8e",
+      "stored_sha256": "7ce2d36ecf2ad28986ccc2175d82453efc315d5998b42abafef99ff5f0218b8e",
+      "encoding": "identity",
+      "bytes": 3549,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/README.md"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/environment-receipt.json",
+      "sha256": "59d426fefc70496d0c27f1075f7a814cfb6f4183f96fbf5fda0ce11f71d3ec05",
+      "stored_sha256": "59d426fefc70496d0c27f1075f7a814cfb6f4183f96fbf5fda0ce11f71d3ec05",
+      "encoding": "identity",
+      "bytes": 1685,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/environment-receipt.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/final-export-checks.json",
+      "sha256": "6a6d15490689179fa98d79af3c705c7e8d98d90144a88ba3c441d5a47eca0ca0",
+      "stored_sha256": "6a6d15490689179fa98d79af3c705c7e8d98d90144a88ba3c441d5a47eca0ca0",
+      "encoding": "identity",
+      "bytes": 853,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/final-export-checks.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/final-export-freeze.json",
+      "sha256": "0d4670c533e4d44cb10ea1b28794bd1be543f1fb0f243cedb8d2b996bb6eab06",
+      "stored_sha256": "0d4670c533e4d44cb10ea1b28794bd1be543f1fb0f243cedb8d2b996bb6eab06",
+      "encoding": "identity",
+      "bytes": 8518,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/final-export-freeze.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/first-attempt-failure.json",
+      "sha256": "16d77eeed643fc8aab27fae92b22dad2d5c5b01b32bc9994946232f0f7e036d1",
+      "stored_sha256": "16d77eeed643fc8aab27fae92b22dad2d5c5b01b32bc9994946232f0f7e036d1",
+      "encoding": "identity",
+      "bytes": 155,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/first-attempt-failure.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/first-attempt-freeze.json",
+      "sha256": "29c4294a5de73644e54766a8cb44232c4e9bf6247e373062c08aab5b880a54e8",
+      "stored_sha256": "29c4294a5de73644e54766a8cb44232c4e9bf6247e373062c08aab5b880a54e8",
+      "encoding": "identity",
+      "bytes": 6778,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/first-attempt-freeze.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/first-attempt-receipt.json",
+      "sha256": "5f10d6e563a6f4f5d371984456e3116c35b3b5c3a44ec7017eaa28f64dc18252",
+      "stored_sha256": "5f10d6e563a6f4f5d371984456e3116c35b3b5c3a44ec7017eaa28f64dc18252",
+      "encoding": "identity",
+      "bytes": 3104,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/first-attempt-receipt.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/first-attempt-recipe.json",
+      "sha256": "699043bffa69fe8493bfafa6598d91e49dc4d83bd479697a282536482a2915ca",
+      "stored_sha256": "699043bffa69fe8493bfafa6598d91e49dc4d83bd479697a282536482a2915ca",
+      "encoding": "identity",
+      "bytes": 10085,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/first-attempt-recipe.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/evidence/presentation-reproduction.json",
+      "sha256": "a93c4044f64605ef55bc2773d142dc3b2c2f0debc6ca34a9583ea7be3e7f6dc1",
+      "stored_sha256": "a93c4044f64605ef55bc2773d142dc3b2c2f0debc6ca34a9583ea7be3e7f6dc1",
+      "encoding": "identity",
+      "bytes": 576,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/evidence/presentation-reproduction.json"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/export.py",
+      "sha256": "66d8771a05170e60982da3bb144202295562a1c9250eda4c88938752ad611bea",
+      "stored_sha256": "66d8771a05170e60982da3bb144202295562a1c9250eda4c88938752ad611bea",
+      "encoding": "identity",
+      "bytes": 6729,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/export.py"
+      ]
+    },
+    {
+      "package_path": "Audio/full-radiation-crossover/manifest.json",
+      "sha256": "56b18dde3d3ca147ff6c42f8170b430909447a175b6f185b631b3cbf4c700685",
+      "stored_sha256": "56b18dde3d3ca147ff6c42f8170b430909447a175b6f185b631b3cbf4c700685",
+      "encoding": "identity",
+      "bytes": 12507,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-radiation-crossover/manifest.json"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/render.py",
+      "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4",
+      "stored_sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4",
+      "encoding": "identity",
+      "bytes": 19199,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/render.py"
+      ]
+    },
+    {
+      "package_path": "Audio/full-performance/manifest.json",
+      "sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd",
+      "stored_sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd",
+      "encoding": "identity",
+      "bytes": 15540,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Audio/full-performance/manifest.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/protocol.json.gz",
+      "sha256": "4d88205cd74ff1e05aa5082619d187435983e0c233b135100ff5bc906cb87cb6",
+      "stored_sha256": "28875de03e6c903215e130c4601e273e1a5d809f186c7019eb90dbf04fc03293",
+      "encoding": "gzip",
+      "bytes": 805089,
+      "stored_bytes": 123008,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/protocol.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/protocol-freeze.json",
+      "sha256": "f1af614a7ddaed18659c57c679ff313e454528f9d6a88210bcb7ab5deb330a08",
+      "stored_sha256": "f1af614a7ddaed18659c57c679ff313e454528f9d6a88210bcb7ab5deb330a08",
+      "encoding": "identity",
+      "bytes": 1390,
+      "stored_bytes": 1390,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/protocol-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/measure_references.py",
+      "sha256": "45b38bc157afdff800c1c2f9c6090d4c51225acb058f5057f214808d0a74e3b6",
+      "stored_sha256": "45b38bc157afdff800c1c2f9c6090d4c51225acb058f5057f214808d0a74e3b6",
+      "encoding": "identity",
+      "bytes": 18895,
+      "stored_bytes": 18895,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/measure_references.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/consume.py",
+      "sha256": "508d9445b5eedf98dcc6c610141e41476b20f68dc1013e3d6dd45f1b9d02150e",
+      "stored_sha256": "508d9445b5eedf98dcc6c610141e41476b20f68dc1013e3d6dd45f1b9d02150e",
+      "encoding": "identity",
+      "bytes": 15975,
+      "stored_bytes": 15975,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/consume.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/reference-control.json.gz",
+      "sha256": "e3ad140a8052c2e81acdc0a281a4e658a2df7f796029572d562634c8adf375fe",
+      "stored_sha256": "ac1edd2f71f33fbb165f33837e06de1b6cb30084ee14d808315646facb536696",
+      "encoding": "gzip",
+      "bytes": 4232745,
+      "stored_bytes": 678392,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/reference-control.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/result.json.gz",
+      "sha256": "5895dc53be8bf77398327c4b1f0c3057abadbb5cfe5904f957a9bde97cab49fe",
+      "stored_sha256": "cb7137fac3f60ea0e368d4f16789170991daf60727fef54b0fd9ac7ae2ead26d",
+      "encoding": "gzip",
+      "bytes": 2787620,
+      "stored_bytes": 527026,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/result.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/summary.json",
+      "sha256": "af2136bbd8b2fbbe8aae5fa908b18c36487b7df2271e18f311a1a457a5706b49",
+      "stored_sha256": "af2136bbd8b2fbbe8aae5fa908b18c36487b7df2271e18f311a1a457a5706b49",
+      "encoding": "identity",
+      "bytes": 47426,
+      "stored_bytes": 47426,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/summary.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/measurement-code-freeze.json",
+      "sha256": "e7d5edc3565c635b7521298f1edb2943a77e7cc50acfc48a14a4d276483a17b6",
+      "stored_sha256": "e7d5edc3565c635b7521298f1edb2943a77e7cc50acfc48a14a4d276483a17b6",
+      "encoding": "identity",
+      "bytes": 3184,
+      "stored_bytes": 3184,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/measurement-code-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/reference-opening-started.json",
+      "sha256": "2dd1249091beeb45b09b938d32bb5e44423676969dc5d435caf4a7555cc0eb2d",
+      "stored_sha256": "2dd1249091beeb45b09b938d32bb5e44423676969dc5d435caf4a7555cc0eb2d",
+      "encoding": "identity",
+      "bytes": 281,
+      "stored_bytes": 281,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/reference-opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/candidate-opening-started.json",
+      "sha256": "0c6daa00e364761ff4da28b50f74900016e22423a9d43d90ee629a99ba18928f",
+      "stored_sha256": "0c6daa00e364761ff4da28b50f74900016e22423a9d43d90ee629a99ba18928f",
+      "encoding": "identity",
+      "bytes": 430,
+      "stored_bytes": 430,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/candidate-opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/consumer-source-check-final.json",
+      "sha256": "017e4f662d82769c93f2f9dda08466127ee22b721cb31831ef22fdf64f6fae7f",
+      "stored_sha256": "017e4f662d82769c93f2f9dda08466127ee22b721cb31831ef22fdf64f6fae7f",
+      "encoding": "identity",
+      "bytes": 650,
+      "stored_bytes": 650,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/consumer-source-check-final.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/synthetic-checks.json",
+      "sha256": "673a8e70e99cbbea5bd23bad405157daef1e79f8c4bc95675afabf2e0b19d29e",
+      "stored_sha256": "673a8e70e99cbbea5bd23bad405157daef1e79f8c4bc95675afabf2e0b19d29e",
+      "encoding": "identity",
+      "bytes": 4700,
+      "stored_bytes": 4700,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/synthetic-checks.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/control-lineage-audit.json",
+      "sha256": "a55464bb6622bfaba8af57c63f5f7682ec6d10f935f0e1b170a9b836e7943e6b",
+      "stored_sha256": "a55464bb6622bfaba8af57c63f5f7682ec6d10f935f0e1b170a9b836e7943e6b",
+      "encoding": "identity",
+      "bytes": 26289,
+      "stored_bytes": 26289,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/control-lineage-audit.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer-freeze-match.json",
+      "sha256": "c3cde9b833ddd45660eccc8295070b93e66fd3cbee5b1e625232171261b875a5",
+      "stored_sha256": "c3cde9b833ddd45660eccc8295070b93e66fd3cbee5b1e625232171261b875a5",
+      "encoding": "identity",
+      "bytes": 1566,
+      "stored_bytes": 1566,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer-freeze-match.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/independent-review-message.json",
+      "sha256": "33b4766e77a6b72081392552c745227e746934734bd8f20afe80f55a8b11c14b",
+      "stored_sha256": "33b4766e77a6b72081392552c745227e746934734bd8f20afe80f55a8b11c14b",
+      "encoding": "identity",
+      "bytes": 3248,
+      "stored_bytes": 3248,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/independent-review-message.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/manifest.json.gz",
+      "sha256": "211c20edc218f742b5d3a01a8aca9c429b53e4a8bfe27093688638fa6d9b1c50",
+      "stored_sha256": "62df6a6fc8dc703863636250a434e32a1137c85663bfa7373cc207645b0089ee",
+      "encoding": "gzip",
+      "bytes": 102205,
+      "stored_bytes": 19006,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/manifest.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/consumer.log",
+      "sha256": "ba96e317cb706a11f2a5220cf5ce80352c9980dc83d0581751e913bf65997bd6",
+      "stored_sha256": "ba96e317cb706a11f2a5220cf5ce80352c9980dc83d0581751e913bf65997bd6",
+      "encoding": "identity",
+      "bytes": 519,
+      "stored_bytes": 519,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/consumer.log"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/producer-plan.json.gz",
+      "sha256": "c703d4062f276d68f1cbc61ad06a1cbebb7face8e1f68b37002909b5918d31c2",
+      "stored_sha256": "2098f168d8f4718fd6aef9031ddfe586031175437a9a132a75763a3070e24bf0",
+      "encoding": "gzip",
+      "bytes": 578179,
+      "stored_bytes": 97877,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/producer-plan.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/candidate-freeze.json",
+      "sha256": "ab3352f721dc3041e9a8bf4a3731eca25e827e251d5045528976ec4a808d9486",
+      "stored_sha256": "ab3352f721dc3041e9a8bf4a3731eca25e827e251d5045528976ec4a808d9486",
+      "encoding": "identity",
+      "bytes": 7635,
+      "stored_bytes": 7635,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/candidate-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/producer-receipt.json.gz",
+      "sha256": "22c02d6344bf0676f4901a2ba838bb5a2ed8956c50bdb372ae5aaa025d3b0774",
+      "stored_sha256": "fb4a5ea775c8a96721efe2acec6ecb5b7fedba4fea3c54e4c5578d5bb4fff3d1",
+      "encoding": "gzip",
+      "bytes": 119078,
+      "stored_bytes": 16553,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/producer-receipt.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/capture.json.gz",
+      "sha256": "8dc0a5b68923c3e246ab691bbc6f536a57cb864d26a0f616ff2f29b8598c25a7",
+      "stored_sha256": "0dd0b95ee6d8267cdbe240f48212cbeae2f03e8cea5158e6b9fa03b42d089ae5",
+      "encoding": "gzip",
+      "bytes": 111463,
+      "stored_bytes": 14942,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/capture.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/inventory.json.gz",
+      "sha256": "ed2a4a854e3cd68f949527c93f5c136e112a93c044ca5239371eb5a7575d5fb1",
+      "stored_sha256": "84d23916bda415b2770442b9ed57fa6378f2e1ebbebd1deceeed6290d3bd47eb",
+      "encoding": "gzip",
+      "bytes": 629356,
+      "stored_bytes": 104121,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/inventory.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/build-manifest.json",
+      "sha256": "c1d9e25ba9a8a8a02770943de4b6aa9db4525f944e4de0404a073fdd61ddb7da",
+      "stored_sha256": "c1d9e25ba9a8a8a02770943de4b6aa9db4525f944e4de0404a073fdd61ddb7da",
+      "encoding": "identity",
+      "bytes": 7306,
+      "stored_bytes": 7306,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/build-manifest.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/postprocessor-synthetic-checks.json",
+      "sha256": "e4493850645b0beae7447568fdf04c65de3937e09886229d370aee3f1a57a75b",
+      "stored_sha256": "e4493850645b0beae7447568fdf04c65de3937e09886229d370aee3f1a57a75b",
+      "encoding": "identity",
+      "bytes": 1098,
+      "stored_bytes": 1098,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/postprocessor-synthetic-checks.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/evidence/producer/render-started.json",
+      "sha256": "02026d51a3a46c69f3fc72c714105869232a56d860f5b32bf61f616e4d052b39",
+      "stored_sha256": "02026d51a3a46c69f3fc72c714105869232a56d860f5b32bf61f616e4d052b39",
+      "encoding": "identity",
+      "bytes": 396,
+      "stored_bytes": 396,
+      "role": "new_frozen_confirmation_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/render-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/source/prepare.py",
+      "sha256": "238b6770b53c40bb2c16023964121426ffe8a5e53ce0879e17c749ffbca6070f",
+      "stored_sha256": "238b6770b53c40bb2c16023964121426ffe8a5e53ce0879e17c749ffbca6070f",
+      "encoding": "identity",
+      "bytes": 5780,
+      "stored_bytes": 5780,
+      "role": "new_changed_producer_or_runner_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/prepare.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/source/compat400.py",
+      "sha256": "a0059de214d0553b324e251d23d2050522d72a37c5b21df361e27e1bb7cf6fee",
+      "stored_sha256": "a0059de214d0553b324e251d23d2050522d72a37c5b21df361e27e1bb7cf6fee",
+      "encoding": "identity",
+      "bytes": 2947,
+      "stored_bytes": 2947,
+      "role": "new_changed_producer_or_runner_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/compat400.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/source/FullInstrument.cpp",
+      "sha256": "2fcad020f18a93980a2ef393a1fcedfc5c5721e73bfef2d5180d289b6a46fa90",
+      "stored_sha256": "2fcad020f18a93980a2ef393a1fcedfc5c5721e73bfef2d5180d289b6a46fa90",
+      "encoding": "identity",
+      "bytes": 16653,
+      "stored_bytes": 16653,
+      "role": "new_changed_producer_or_runner_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/sources/src/full_instrument/FullInstrument.cpp"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/source/run_batch.py",
+      "sha256": "beac7e1effa6cbe50bfab3fb6485eb3c9d8bdd5c0f89a38922a815cdfc3640f6",
+      "stored_sha256": "beac7e1effa6cbe50bfab3fb6485eb3c9d8bdd5c0f89a38922a815cdfc3640f6",
+      "encoding": "identity",
+      "bytes": 11878,
+      "stored_bytes": 11878,
+      "role": "new_changed_producer_or_runner_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/run_batch.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/reference/manifest.json",
+      "sha256": "7f2d494760bba221bcb8a83d3d4c6619fbd988b42b307e39fcf433b53e4b38f7",
+      "stored_sha256": "7f2d494760bba221bcb8a83d3d4c6619fbd988b42b307e39fcf433b53e4b38f7",
+      "encoding": "identity",
+      "bytes": 39514,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/reference/manifest.json"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/reference/fetch_reference.py",
+      "sha256": "719a012dfac146eebd3d79e8e40104057752dfba3b31b8940563fc15877a9aa3",
+      "stored_sha256": "719a012dfac146eebd3d79e8e40104057752dfba3b31b8940563fc15877a9aa3",
+      "encoding": "identity",
+      "bytes": 4427,
+      "role": "reuse_existing_public_archive",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/reference/fetch_reference.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/check.py",
+      "sha256": "9203bb44042423483d6b2078e6b7bac43c90fc53668feae46c3a7e4dbe2af8fd",
+      "stored_sha256": "9203bb44042423483d6b2078e6b7bac43c90fc53668feae46c3a7e4dbe2af8fd",
+      "encoding": "identity",
+      "bytes": 11165,
+      "role": "new_publication_reader_or_documentation",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/radiation_crossover_train34/README.md",
+      "sha256": "4a61e56e4578a26d21a673714b24a9cf7ad89719dbd84cecd1111c4056398213",
+      "stored_sha256": "4a61e56e4578a26d21a673714b24a9cf7ad89719dbd84cecd1111c4056398213",
+      "encoding": "identity",
+      "bytes": 7253,
+      "role": "new_publication_reader_or_documentation",
+      "archived_paths": []
+    }
+  ],
+  "external_capture_manifest": {
+    "package_path": "tools/experiments/radiation_crossover_train34/evidence/manifest.json.gz",
+    "sha256": "211c20edc218f742b5d3a01a8aca9c429b53e4a8bfe27093688638fa6d9b1c50",
+    "scope": "Original413-file/1.075GB private inventory. Published subset is mapped here; omitted PCM/rawproofs/binaries remain external. A stored receipt is not a replacement for verifying omitted bytes."
+  },
+  "required_external_for_waveform_replay": [
+    "Authenticated34 reference recordings and cached old modelcontrol WAV/events/metadata bound by protocol.inputs.",
+    "28new baseline/causal/compatibility WAVs,714state rows+182400force rows per case and binary identified in producer receipts.",
+    "Six unchanged old/causal/compatibility WAVs and prior proofs from previous publicpilot/crossover archives."
+  ],
+  "unchanged_default": true,
+  "adopted": false,
+  "new_package_files_added_after_collection": true
+}

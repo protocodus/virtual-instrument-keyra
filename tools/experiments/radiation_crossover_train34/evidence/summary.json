@@ -1,0 +1,1469 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-26T22:23:36.579409+00:00",
+  "status": "FAILED fullTRAIN34 fixed400Hz preservation confirmation:26pass,8fail. No adoption/integration.",
+  "result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/result.json",
+    "sha256": "5895dc53be8bf77398327c4b1f0c3057abadbb5cfe5904f957a9bde97cab49fe"
+  },
+  "protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/protocol.json",
+    "sha256": "4d88205cd74ff1e05aa5082619d187435983e0c233b135100ff5bc906cb87cb6"
+  },
+  "protocol_freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/protocol-freeze.json",
+    "sha256": "f1af614a7ddaed18659c57c679ff313e454528f9d6a88210bcb7ab5deb330a08"
+  },
+  "reference_control": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/reference-control.json",
+    "sha256": "e3ad140a8052c2e81acdc0a281a4e658a2df7f796029572d562634c8adf375fe"
+  },
+  "producer_receipt": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/producer-receipt.json",
+    "sha256": "22c02d6344bf0676f4901a2ba838bb5a2ed8956c50bdb372ae5aaa025d3b0774"
+  },
+  "producer_capture": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/capture.json",
+    "sha256": "8dc0a5b68923c3e246ab691bbc6f536a57cb864d26a0f616ff2f29b8598c25a7"
+  },
+  "consumer_source": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/consume.py",
+    "sha256": "508d9445b5eedf98dcc6c610141e41476b20f68dc1013e3d6dd45f1b9d02150e"
+  },
+  "pass_count": 26,
+  "fail_count": 8,
+  "all_failures": [
+    {
+      "id": "A0v4",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.0,
+        0.005
+      ],
+      "five_band_MAE_old_db": 21.719765275303022,
+      "five_band_MAE_candidate_db": 24.813026853521936,
+      "five_band_MAE_worsening_db": 3.0932615782189146,
+      "threshold_db": 1,
+      "margin_db": -2.0932615782189146,
+      "all_early_window_MAE_worsenings_db": [
+        3.0932615782189146,
+        -0.24417851821452885,
+        -0.015929332745248104,
+        0.0027086383060233032
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          38.71120108128658,
+          25.213571313012416,
+          18.051177419115888,
+          11.29426382510253,
+          15.32861273799769
+        ],
+        "candidate": [
+          38.150131934056546,
+          26.07079477760463,
+          26.337728124862444,
+          18.142490114709787,
+          15.363989316376259
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        -0.561069147230036,
+        0.857223464592213,
+        8.286550705746556,
+        6.848226289607258,
+        0.035376578378569334
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          1000,
+          4000
+        ],
+        "absolute_error_worsening_db": 8.286550705746556,
+        "old_signed_error_db": 18.051177419115888,
+        "candidate_signed_error_db": 26.337728124862444
+      }
+    },
+    {
+      "id": "A0v12",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.0,
+        0.005
+      ],
+      "five_band_MAE_old_db": 25.125652606894207,
+      "five_band_MAE_candidate_db": 28.311939366273016,
+      "five_band_MAE_worsening_db": 3.1862867593788096,
+      "threshold_db": 1,
+      "margin_db": -2.1862867593788096,
+      "all_early_window_MAE_worsenings_db": [
+        3.1862867593788096,
+        -0.19285431531806907,
+        0.0030350501217188963,
+        -0.007264682588086657
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          30.01627824502153,
+          33.05835916187518,
+          23.299550041810868,
+          13.911542687773043,
+          25.342532897990413
+        ],
+        "candidate": [
+          29.699545196323484,
+          34.17036909696164,
+          31.449097320477634,
+          20.865317566046958,
+          25.37536765155536
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        -0.3167330486980475,
+        1.112009935086462,
+        8.149547278666766,
+        6.953774878273915,
+        0.03283475356494847
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          1000,
+          4000
+        ],
+        "absolute_error_worsening_db": 8.149547278666766,
+        "old_signed_error_db": 23.299550041810868,
+        "candidate_signed_error_db": 31.449097320477634
+      }
+    },
+    {
+      "id": "D#5v4",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.0,
+        0.005
+      ],
+      "five_band_MAE_old_db": 38.340732569084985,
+      "five_band_MAE_candidate_db": 40.68222470843757,
+      "five_band_MAE_worsening_db": 2.3414921393525887,
+      "threshold_db": 1,
+      "margin_db": -1.3414921393525887,
+      "all_early_window_MAE_worsenings_db": [
+        2.3414921393525887,
+        0.9923512024696208,
+        -2.280384096260729,
+        -2.424427996774181
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          31.884695308170077,
+          52.350348893264744,
+          53.30612734887247,
+          39.39683392934845,
+          14.765657365769194
+        ],
+        "candidate": [
+          33.5184863455709,
+          56.11671022508824,
+          57.85044640155819,
+          40.89050195331154,
+          15.034978616659034
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        1.6337910374008224,
+        3.7663613318234965,
+        4.544319052685715,
+        1.4936680239630888,
+        0.26932125088984016
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          1000,
+          4000
+        ],
+        "absolute_error_worsening_db": 4.544319052685715,
+        "old_signed_error_db": 53.30612734887247,
+        "candidate_signed_error_db": 57.85044640155819
+      }
+    },
+    {
+      "id": "D#5v12",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.0,
+        0.005
+      ],
+      "five_band_MAE_old_db": 34.88146953767981,
+      "five_band_MAE_candidate_db": 37.349472533569006,
+      "five_band_MAE_worsening_db": 2.4680029958891936,
+      "threshold_db": 1,
+      "margin_db": -1.4680029958891936,
+      "all_early_window_MAE_worsenings_db": [
+        2.4680029958891936,
+        -0.2614377948737321,
+        -2.278757002263106,
+        -2.430703488288767
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          28.53772214733022,
+          50.613003864111754,
+          42.310956766994636,
+          38.963749478472295,
+          13.981915431490178
+        ],
+        "candidate": [
+          30.349714960184677,
+          54.511533072622484,
+          46.32227993539301,
+          41.36888806588673,
+          14.194946633758157
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        1.8119928128544558,
+        3.8985292085107304,
+        4.011323168398377,
+        2.4051385874144344,
+        0.21303120226797922
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          1000,
+          4000
+        ],
+        "absolute_error_worsening_db": 4.011323168398377,
+        "old_signed_error_db": 42.310956766994636,
+        "candidate_signed_error_db": 46.32227993539301
+      }
+    },
+    {
+      "id": "C7v4",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.005,
+        0.02
+      ],
+      "five_band_MAE_old_db": 8.1307784673897,
+      "five_band_MAE_candidate_db": 9.516590740177719,
+      "five_band_MAE_worsening_db": 1.3858122727880193,
+      "threshold_db": 1,
+      "margin_db": -0.38581227278801933,
+      "all_early_window_MAE_worsenings_db": [
+        -1.1470538285365706,
+        1.3858122727880193,
+        1.3144033824020163,
+        0.8766110277253425
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          9.12641083031106,
+          -5.761003931596002,
+          -9.27236140884772,
+          -4.487372316908608,
+          12.006743849285108
+        ],
+        "candidate": [
+          9.661952217900746,
+          -12.200727024096572,
+          -9.14700669648494,
+          -4.458226779315698,
+          12.115040983090635
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        0.5355413875896851,
+        6.439723092500571,
+        -0.12535471236278006,
+        -0.029145537592910387,
+        0.10829713380552697
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          250,
+          1000
+        ],
+        "absolute_error_worsening_db": 6.439723092500571,
+        "old_signed_error_db": -5.761003931596002,
+        "candidate_signed_error_db": -12.200727024096572
+      }
+    },
+    {
+      "id": "C7v12",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.02,
+        0.05
+      ],
+      "five_band_MAE_old_db": 20.09773734039536,
+      "five_band_MAE_candidate_db": 21.487712228531638,
+      "five_band_MAE_worsening_db": 1.3899748881362797,
+      "threshold_db": 1,
+      "margin_db": -0.3899748881362797,
+      "all_early_window_MAE_worsenings_db": [
+        0.391405707784763,
+        1.1524776075181524,
+        1.3899748881362797,
+        0.9217214137923833
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          -39.251298613261575,
+          -22.782189841682236,
+          -12.028222569502416,
+          -25.211731918630033,
+          1.2152437589005214
+        ],
+        "candidate": [
+          -39.47501892638636,
+          -29.227015814976575,
+          -12.191174177406472,
+          -25.213183619062704,
+          1.332168604826087
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        0.22372031312478668,
+        6.444825973294339,
+        0.1629516079040556,
+        0.001451700432671288,
+        0.11692484592556562
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          250,
+          1000
+        ],
+        "absolute_error_worsening_db": 6.444825973294339,
+        "old_signed_error_db": -22.782189841682236,
+        "candidate_signed_error_db": -29.227015814976575
+      }
+    },
+    {
+      "id": "C8v4",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.005,
+        0.02
+      ],
+      "five_band_MAE_old_db": 16.569230180043093,
+      "five_band_MAE_candidate_db": 18.544159878827365,
+      "five_band_MAE_worsening_db": 1.9749296987842726,
+      "threshold_db": 1,
+      "margin_db": -0.9749296987842726,
+      "all_early_window_MAE_worsenings_db": [
+        1.8424961338159989,
+        1.9749296987842726,
+        1.8302606880791163,
+        -0.5033531200542338
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          15.041948950115616,
+          25.578262063559976,
+          17.652671940054784,
+          6.294947270004135,
+          18.278320676480966
+        ],
+        "candidate": [
+          16.020829504266526,
+          29.85990783941514,
+          22.17120315026594,
+          6.314248626086848,
+          18.354610274102388
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        0.9788805541509102,
+        4.281645775855164,
+        4.518531210211155,
+        0.019301356082713106,
+        0.07628959762142173
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          1000,
+          4000
+        ],
+        "absolute_error_worsening_db": 4.518531210211155,
+        "old_signed_error_db": 17.652671940054784,
+        "candidate_signed_error_db": 22.17120315026594
+      }
+    },
+    {
+      "id": "C8v12",
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ],
+      "worst_window_seconds": [
+        0.0,
+        0.005
+      ],
+      "five_band_MAE_old_db": 41.96158030251338,
+      "five_band_MAE_candidate_db": 43.46258447263807,
+      "five_band_MAE_worsening_db": 1.5010041701246877,
+      "threshold_db": 1,
+      "margin_db": -0.5010041701246877,
+      "all_early_window_MAE_worsenings_db": [
+        1.5010041701246877,
+        -0.9407425246151551,
+        -2.064254551830242,
+        -1.9170669271549166
+      ],
+      "worst_window_signed_band_errors_db": {
+        "old": [
+          29.30283446656587,
+          39.38823554438302,
+          47.68903415685131,
+          51.62616343050892,
+          41.80163391425779
+        ],
+        "candidate": [
+          30.483611491191223,
+          41.827724567448634,
+          50.98777986226699,
+          51.46655620281179,
+          42.547250239471744
+        ]
+      },
+      "worst_window_individual_absolute_band_error_worsenings_db": [
+        1.1807770246253533,
+        2.4394890230656117,
+        3.2987457054156835,
+        -0.15960722769712987,
+        0.7456163252139518
+      ],
+      "largest_individual_band_regression": {
+        "band_hz": [
+          1000,
+          4000
+        ],
+        "absolute_error_worsening_db": 3.2987457054156835,
+        "old_signed_error_db": 47.68903415685131,
+        "candidate_signed_error_db": 50.98777986226699
+      }
+    }
+  ],
+  "gate_margins_all34": [
+    {
+      "id": "A0v4",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.750757305179345,
+        "late_envelope_MAE_db": 0.7241498724002406,
+        "late_RMS_drift_db": 0.4329624988988055,
+        "stereo_LR_shift_db": 0.46210795770842084,
+        "mono_energy_shift_db": 0.6950271738384126,
+        "each_early_window_band_MAE_db": -2.0932615782189146
+      },
+      "minimum_margin_db": -2.0932615782189146,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "A0v12",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7470080317003251,
+        "late_envelope_MAE_db": 0.7272281125156796,
+        "late_RMS_drift_db": 0.44159480763910713,
+        "stereo_LR_shift_db": 0.4630539071135382,
+        "mono_energy_shift_db": 0.6956067555559219,
+        "each_early_window_band_MAE_db": -2.1862867593788096
+      },
+      "minimum_margin_db": -2.1862867593788096,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C1v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7251661929922246,
+        "late_envelope_MAE_db": 0.7081336748617684,
+        "late_RMS_drift_db": 0.41556382108222767,
+        "stereo_LR_shift_db": 0.46676407541100606,
+        "mono_energy_shift_db": 0.6913992042946879,
+        "each_early_window_band_MAE_db": 0.39035969118260283
+      },
+      "minimum_margin_db": 0.39035969118260283,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C1v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7308906957436321,
+        "late_envelope_MAE_db": 0.7025365267789061,
+        "late_RMS_drift_db": 0.42674091294479644,
+        "stereo_LR_shift_db": 0.4771030946582425,
+        "mono_energy_shift_db": 0.6935003592718244,
+        "each_early_window_band_MAE_db": 0.37501994272044925
+      },
+      "minimum_margin_db": 0.37501994272044925,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "A1v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7844587878985969,
+        "late_envelope_MAE_db": 0.7451642121452506,
+        "late_RMS_drift_db": 0.3814099573530111,
+        "stereo_LR_shift_db": 0.4150336479648927,
+        "mono_energy_shift_db": 0.5478074115866137,
+        "each_early_window_band_MAE_db": 0.9021741433558148
+      },
+      "minimum_margin_db": 0.3814099573530111,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "A1v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7688509779742994,
+        "late_envelope_MAE_db": 0.7404518311660615,
+        "late_RMS_drift_db": 0.3829002256654078,
+        "stereo_LR_shift_db": 0.435967376644953,
+        "mono_energy_shift_db": 0.5596527086495923,
+        "each_early_window_band_MAE_db": 0.9227910741209575
+      },
+      "minimum_margin_db": 0.3829002256654078,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "C2v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7651765107269828,
+        "late_envelope_MAE_db": 0.7489523357565191,
+        "late_RMS_drift_db": 0.299998673735969,
+        "stereo_LR_shift_db": 0.37773121602257964,
+        "mono_energy_shift_db": 0.5838750104895002,
+        "each_early_window_band_MAE_db": 0.24685780333010143
+      },
+      "minimum_margin_db": 0.24685780333010143,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C2v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7724118958251074,
+        "late_envelope_MAE_db": 0.7443333435012938,
+        "late_RMS_drift_db": 0.2970662077420734,
+        "stereo_LR_shift_db": 0.39067956319613417,
+        "mono_energy_shift_db": 0.5708984723670661,
+        "each_early_window_band_MAE_db": 0.3415023217505677
+      },
+      "minimum_margin_db": 0.2970662077420734,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#2v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.8021706449849733,
+        "late_envelope_MAE_db": 0.751917289390998,
+        "late_RMS_drift_db": 0.3672805383097172,
+        "stereo_LR_shift_db": 0.4628589362236454,
+        "mono_energy_shift_db": 0.6896699438618471,
+        "each_early_window_band_MAE_db": 1.1642198563389305
+      },
+      "minimum_margin_db": 0.3672805383097172,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#2v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.78948265300071,
+        "late_envelope_MAE_db": 0.7408989211073953,
+        "late_RMS_drift_db": 0.3511004262816806,
+        "stereo_LR_shift_db": 0.46505262166871,
+        "mono_energy_shift_db": 0.6729837358108413,
+        "each_early_window_band_MAE_db": 1.159144255794244
+      },
+      "minimum_margin_db": 0.3511004262816806,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "A2v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.6989457016916694,
+        "late_envelope_MAE_db": 0.7119532905976289,
+        "late_RMS_drift_db": 0.265789856183287,
+        "stereo_LR_shift_db": 0.44913120170615084,
+        "mono_energy_shift_db": 0.513282302347848,
+        "each_early_window_band_MAE_db": 1.0691150603848563
+      },
+      "minimum_margin_db": 0.265789856183287,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "A2v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.6932520254527317,
+        "late_envelope_MAE_db": 0.6983014879318841,
+        "late_RMS_drift_db": 0.25106439051216695,
+        "stereo_LR_shift_db": 0.45066811635475457,
+        "mono_energy_shift_db": 0.4977823329655621,
+        "each_early_window_band_MAE_db": 1.0656538542968734
+      },
+      "minimum_margin_db": 0.25106439051216695,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "C3v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7087250026830656,
+        "late_envelope_MAE_db": 0.7290037096474453,
+        "late_RMS_drift_db": 0.33795238635034996,
+        "stereo_LR_shift_db": 0.37443920212165077,
+        "mono_energy_shift_db": 0.5930776390669611,
+        "C3_first5_excess_reduction_db": 0.8062142777342061,
+        "C3_ring5_20_excess_reduction_db": 1.353108245355962
+      },
+      "minimum_margin_db": 0.33795238635034996,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "C3v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7630827597900502,
+        "late_envelope_MAE_db": 0.7213337091422911,
+        "late_RMS_drift_db": 0.3233326023578904,
+        "stereo_LR_shift_db": 0.38019376459877874,
+        "mono_energy_shift_db": 0.577428036008273,
+        "C3_first5_excess_reduction_db": 1.2660414694952102,
+        "C3_ring5_20_excess_reduction_db": 1.3303297008896244
+      },
+      "minimum_margin_db": 0.3233326023578904,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#3v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7333067021795605,
+        "late_envelope_MAE_db": 0.7408780748036419,
+        "late_RMS_drift_db": 0.47089882025568836,
+        "stereo_LR_shift_db": 0.4825491399456885,
+        "mono_energy_shift_db": 0.7273419535173903,
+        "each_early_window_band_MAE_db": 0.9703649752503933
+      },
+      "minimum_margin_db": 0.47089882025568836,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#3v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7533193718264588,
+        "late_envelope_MAE_db": 0.740809491550626,
+        "late_RMS_drift_db": 0.46706924078679274,
+        "stereo_LR_shift_db": 0.4836285757101569,
+        "mono_energy_shift_db": 0.7229110925832375,
+        "each_early_window_band_MAE_db": 0.9648051925654757
+      },
+      "minimum_margin_db": 0.46706924078679274,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "C4v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7468233758486864,
+        "late_envelope_MAE_db": 0.7492312721838879,
+        "late_RMS_drift_db": 0.4926484351430456,
+        "stereo_LR_shift_db": 0.49522326299745634,
+        "mono_energy_shift_db": 0.7429248216069488,
+        "each_early_window_band_MAE_db": 0.8920497843492186
+      },
+      "minimum_margin_db": 0.4926484351430456,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "C4v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7495229496324329,
+        "late_envelope_MAE_db": 0.7488008295547814,
+        "late_RMS_drift_db": 0.4940497525253046,
+        "stereo_LR_shift_db": 0.494458327936958,
+        "mono_energy_shift_db": 0.7445354902860816,
+        "each_early_window_band_MAE_db": 0.8915017269472978
+      },
+      "minimum_margin_db": 0.4940497525253046,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#4v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7382188977244137,
+        "late_envelope_MAE_db": 0.7319030561122659,
+        "late_RMS_drift_db": 0.486436774446983,
+        "stereo_LR_shift_db": 0.49278303725675004,
+        "mono_energy_shift_db": 0.7363185543548684,
+        "each_early_window_band_MAE_db": 1.1003223152400206
+      },
+      "minimum_margin_db": 0.486436774446983,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#4v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7355051470809553,
+        "late_envelope_MAE_db": 0.7355085197302795,
+        "late_RMS_drift_db": 0.4861120435054,
+        "stereo_LR_shift_db": 0.4920801362345866,
+        "mono_energy_shift_db": 0.7356871344430409,
+        "each_early_window_band_MAE_db": 1.236776172229514
+      },
+      "minimum_margin_db": 0.4861120435054,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "A4v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.8103047324939086,
+        "late_envelope_MAE_db": 0.7025086851511428,
+        "late_RMS_drift_db": 0.4595490400400947,
+        "stereo_LR_shift_db": 0.45158157220851436,
+        "mono_energy_shift_db": 0.7085584659046411,
+        "each_early_window_band_MAE_db": 1.562127616893469
+      },
+      "minimum_margin_db": 0.45158157220851436,
+      "limiting_gate": "stereo_LR_shift_db"
+    },
+    {
+      "id": "A4v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.821236930484412,
+        "late_envelope_MAE_db": 0.8082017274475364,
+        "late_RMS_drift_db": 0.4909210783539827,
+        "stereo_LR_shift_db": 0.4156519054361951,
+        "mono_energy_shift_db": 0.7419209971816075,
+        "each_early_window_band_MAE_db": 1.4717079874607526
+      },
+      "minimum_margin_db": 0.4156519054361951,
+      "limiting_gate": "stereo_LR_shift_db"
+    },
+    {
+      "id": "C5v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7582102913848399,
+        "late_envelope_MAE_db": 0.7625267794281254,
+        "late_RMS_drift_db": 0.4731901241113953,
+        "stereo_LR_shift_db": 0.4821520412578373,
+        "mono_energy_shift_db": 0.731686372215626,
+        "each_early_window_band_MAE_db": 0.9601633723804941
+      },
+      "minimum_margin_db": 0.4731901241113953,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "C5v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7613698433711296,
+        "late_envelope_MAE_db": 0.7548802592662538,
+        "late_RMS_drift_db": 0.475136233720257,
+        "stereo_LR_shift_db": 0.4935238387436591,
+        "mono_energy_shift_db": 0.730117272213868,
+        "each_early_window_band_MAE_db": 0.9392537745995071
+      },
+      "minimum_margin_db": 0.475136233720257,
+      "limiting_gate": "late_RMS_drift_db"
+    },
+    {
+      "id": "D#5v4",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7372390175593626,
+        "late_envelope_MAE_db": 0.7648657564056327,
+        "late_RMS_drift_db": 0.37396575603669624,
+        "stereo_LR_shift_db": 0.07613355487628493,
+        "mono_energy_shift_db": 0.6152315198989227,
+        "each_early_window_band_MAE_db": -1.3414921393525887
+      },
+      "minimum_margin_db": -1.3414921393525887,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "D#5v12",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7373567185293748,
+        "late_envelope_MAE_db": 0.7983157855254541,
+        "late_RMS_drift_db": 0.3819960631000113,
+        "stereo_LR_shift_db": 0.1239790454420664,
+        "mono_energy_shift_db": 0.6293613505374912,
+        "each_early_window_band_MAE_db": -1.4680029958891936
+      },
+      "minimum_margin_db": -1.4680029958891936,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "A5v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7315956996367863,
+        "late_envelope_MAE_db": 0.7809781288359483,
+        "late_RMS_drift_db": 0.37109605628873643,
+        "stereo_LR_shift_db": 0.29477393219213344,
+        "mono_energy_shift_db": 0.6596250014701878,
+        "each_early_window_band_MAE_db": 0.9797039541597332
+      },
+      "minimum_margin_db": 0.29477393219213344,
+      "limiting_gate": "stereo_LR_shift_db"
+    },
+    {
+      "id": "A5v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7359653409418954,
+        "late_envelope_MAE_db": 0.7660211425375416,
+        "late_RMS_drift_db": 0.38887125414610146,
+        "stereo_LR_shift_db": 0.3273183081831914,
+        "mono_energy_shift_db": 0.6622181006960908,
+        "each_early_window_band_MAE_db": 0.9446040233466224
+      },
+      "minimum_margin_db": 0.3273183081831914,
+      "limiting_gate": "stereo_LR_shift_db"
+    },
+    {
+      "id": "C6v4",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7597467302702086,
+        "late_envelope_MAE_db": 0.7301767134180164,
+        "late_RMS_drift_db": 0.49811005441993594,
+        "stereo_LR_shift_db": 0.4905818883885722,
+        "mono_energy_shift_db": 0.6983029281221674,
+        "each_early_window_band_MAE_db": 0.22332144746906835
+      },
+      "minimum_margin_db": 0.22332144746906835,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C6v12",
+      "all_gates_pass": true,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7577700694163525,
+        "late_envelope_MAE_db": 0.7590567802842338,
+        "late_RMS_drift_db": 0.492765477747595,
+        "stereo_LR_shift_db": 0.4771577917048979,
+        "mono_energy_shift_db": 0.7081556264232777,
+        "each_early_window_band_MAE_db": 0.5536110421647074
+      },
+      "minimum_margin_db": 0.4771577917048979,
+      "limiting_gate": "stereo_LR_shift_db"
+    },
+    {
+      "id": "C7v4",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.6908618686974393,
+        "late_envelope_MAE_db": 0.7086346218797281,
+        "late_RMS_drift_db": 0.3105721571748848,
+        "stereo_LR_shift_db": 0.49794622143376976,
+        "mono_energy_shift_db": 0.5652630367556508,
+        "each_early_window_band_MAE_db": -0.38581227278801933
+      },
+      "minimum_margin_db": -0.38581227278801933,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C7v12",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.6933772423968492,
+        "late_envelope_MAE_db": 0.7203818158967028,
+        "late_RMS_drift_db": 0.31031859456752686,
+        "stereo_LR_shift_db": 0.49739090906951766,
+        "mono_energy_shift_db": 0.562915419330635,
+        "each_early_window_band_MAE_db": -0.3899748881362797
+      },
+      "minimum_margin_db": -0.3899748881362797,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C8v4",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7756749549144928,
+        "late_envelope_MAE_db": 0.7463399375925448,
+        "late_RMS_drift_db": 0.48865867637185395,
+        "stereo_LR_shift_db": 0.4889850601908221,
+        "mono_energy_shift_db": 0.730207407884118,
+        "each_early_window_band_MAE_db": -0.9749296987842726
+      },
+      "minimum_margin_db": -0.9749296987842726,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    },
+    {
+      "id": "C8v12",
+      "all_gates_pass": false,
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7750284002492691,
+        "late_envelope_MAE_db": 0.7447931932121357,
+        "late_RMS_drift_db": 0.4892600209535263,
+        "stereo_LR_shift_db": 0.4876990501477896,
+        "mono_energy_shift_db": 0.7301945727075732,
+        "each_early_window_band_MAE_db": -0.5010041701246877
+      },
+      "minimum_margin_db": -0.5010041701246877,
+      "limiting_gate": "each_early_window_band_MAE_db"
+    }
+  ],
+  "worst_late_changes_db": {
+    "harmonic": {
+      "id": "C7v4",
+      "change_db": 0.05913813130256074
+    },
+    "envelope": {
+      "id": "A2v12",
+      "change_db": 0.05169851206811593
+    },
+    "absolute_RMS_drift": {
+      "id": "A2v12",
+      "change_db": -0.24893560948783305
+    }
+  },
+  "C8_weak_H1_and_unassigned_component_diagnostics": [
+    {
+      "id": "C8v4",
+      "fixed_old_gain": 451.7466016699404,
+      "fixed_old_onset_frame": 4758,
+      "support": {
+        "reference_frames_after_onset": 134788,
+        "late_windows_seconds": [
+          [
+            0.25,
+            0.75
+          ],
+          [
+            0.75,
+            1.5
+          ],
+          [
+            1.5,
+            2.5
+          ]
+        ],
+        "omitted_incomplete_late_windows_seconds": [
+          [
+            2.5,
+            3.5
+          ]
+        ],
+        "late_envelope_times_seconds": [
+          0.26,
+          0.28,
+          0.30000000000000004,
+          0.32000000000000006,
+          0.3400000000000001,
+          0.3600000000000001,
+          0.3800000000000001,
+          0.40000000000000013,
+          0.42000000000000015,
+          0.44000000000000017,
+          0.4600000000000002,
+          0.4800000000000002,
+          0.5000000000000002,
+          0.5200000000000002,
+          0.5400000000000003,
+          0.5600000000000003,
+          0.5800000000000003,
+          0.6000000000000003,
+          0.6200000000000003,
+          0.6400000000000003,
+          0.6600000000000004,
+          0.6800000000000004,
+          0.7000000000000004,
+          0.7200000000000004,
+          0.7400000000000004,
+          0.7600000000000005,
+          0.7800000000000005,
+          0.8000000000000005,
+          0.8200000000000005,
+          0.8400000000000005,
+          0.8600000000000005,
+          0.8800000000000006,
+          0.9000000000000006,
+          0.9200000000000006,
+          0.9400000000000006,
+          0.9600000000000006,
+          0.9800000000000006,
+          1.0000000000000007,
+          1.0200000000000007,
+          1.0400000000000007,
+          1.0600000000000007,
+          1.0800000000000007,
+          1.1000000000000008,
+          1.1200000000000008,
+          1.1400000000000008,
+          1.1600000000000008,
+          1.1800000000000008,
+          1.2000000000000008,
+          1.2200000000000009,
+          1.2400000000000009,
+          1.260000000000001,
+          1.280000000000001,
+          1.300000000000001,
+          1.320000000000001,
+          1.340000000000001,
+          1.360000000000001,
+          1.380000000000001,
+          1.400000000000001,
+          1.420000000000001,
+          1.440000000000001,
+          1.460000000000001,
+          1.480000000000001,
+          1.500000000000001,
+          1.5200000000000011,
+          1.5400000000000011,
+          1.5600000000000012,
+          1.5800000000000012,
+          1.6000000000000012,
+          1.6200000000000012,
+          1.6400000000000012,
+          1.6600000000000013,
+          1.6800000000000013,
+          1.7000000000000013,
+          1.7200000000000013,
+          1.7400000000000013,
+          1.7600000000000013,
+          1.7800000000000014,
+          1.8000000000000014,
+          1.8200000000000014,
+          1.8400000000000014,
+          1.8600000000000014,
+          1.8800000000000014,
+          1.9000000000000015,
+          1.9200000000000015,
+          1.9400000000000015,
+          1.9600000000000015,
+          1.9800000000000015,
+          2.0000000000000018,
+          2.0200000000000014,
+          2.040000000000002,
+          2.0600000000000014,
+          2.080000000000002,
+          2.1000000000000014,
+          2.120000000000002,
+          2.1400000000000015,
+          2.160000000000002,
+          2.1800000000000015,
+          2.200000000000002,
+          2.2200000000000015,
+          2.240000000000002,
+          2.2600000000000016,
+          2.280000000000002,
+          2.3000000000000016,
+          2.320000000000002,
+          2.3400000000000016,
+          2.360000000000002,
+          2.3800000000000017,
+          2.400000000000002,
+          2.4200000000000017,
+          2.440000000000002,
+          2.4600000000000017,
+          2.480000000000002,
+          2.5000000000000018,
+          2.5200000000000022,
+          2.540000000000002,
+          2.5600000000000023,
+          2.580000000000002,
+          2.6000000000000023,
+          2.620000000000002,
+          2.6400000000000023,
+          2.660000000000002,
+          2.6800000000000024,
+          2.700000000000002,
+          2.7200000000000024,
+          2.740000000000002,
+          2.7600000000000025,
+          2.780000000000002,
+          2.8000000000000025
+        ],
+        "whole_note_stereo_frames": 134788,
+        "right_censored": true,
+        "policy": "Only complete requested spectral windows; no clipped substitute, padding, extrapolation or retiming. Envelope samples require full5ms smoothing support."
+      },
+      "H1_all_bands": [
+        {
+          "window_seconds": [
+            0.25,
+            0.75
+          ],
+          "included_in_aggregate": true,
+          "old_signed_error_db": -37.858686219685566,
+          "candidate_signed_error_db": -37.83301126477107,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        },
+        {
+          "window_seconds": [
+            0.75,
+            1.5
+          ],
+          "included_in_aggregate": false,
+          "old_signed_error_db": -38.7094209914034,
+          "candidate_signed_error_db": -38.73121958257363,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        },
+        {
+          "window_seconds": [
+            1.5,
+            2.5
+          ],
+          "included_in_aggregate": false,
+          "old_signed_error_db": -33.104722140226066,
+          "candidate_signed_error_db": -33.104722140226066,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        }
+      ],
+      "unassigned_components": [
+        {
+          "frequency_hz": 4433.88935324979,
+          "physical_identity": "unassigned",
+          "gate": false,
+          "windows": [
+            {
+              "window_seconds": [
+                0.25,
+                0.75
+              ],
+              "old_signed_error_db": -74.96168885464041,
+              "candidate_signed_error_db": -74.96168885464041
+            },
+            {
+              "window_seconds": [
+                0.75,
+                1.5
+              ],
+              "old_signed_error_db": -48.86910802114492,
+              "candidate_signed_error_db": -48.86910802114492
+            },
+            {
+              "window_seconds": [
+                1.5,
+                2.5
+              ],
+              "old_signed_error_db": -33.02709621405789,
+              "candidate_signed_error_db": -33.02709621405789
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C8v12",
+      "fixed_old_gain": 26.889749619113974,
+      "fixed_old_onset_frame": 4756,
+      "support": {
+        "reference_frames_after_onset": 172325,
+        "late_windows_seconds": [
+          [
+            0.25,
+            0.75
+          ],
+          [
+            0.75,
+            1.5
+          ],
+          [
+            1.5,
+            2.5
+          ],
+          [
+            2.5,
+            3.5
+          ]
+        ],
+        "omitted_incomplete_late_windows_seconds": [],
+        "late_envelope_times_seconds": [
+          0.26,
+          0.28,
+          0.30000000000000004,
+          0.32000000000000006,
+          0.3400000000000001,
+          0.3600000000000001,
+          0.3800000000000001,
+          0.40000000000000013,
+          0.42000000000000015,
+          0.44000000000000017,
+          0.4600000000000002,
+          0.4800000000000002,
+          0.5000000000000002,
+          0.5200000000000002,
+          0.5400000000000003,
+          0.5600000000000003,
+          0.5800000000000003,
+          0.6000000000000003,
+          0.6200000000000003,
+          0.6400000000000003,
+          0.6600000000000004,
+          0.6800000000000004,
+          0.7000000000000004,
+          0.7200000000000004,
+          0.7400000000000004,
+          0.7600000000000005,
+          0.7800000000000005,
+          0.8000000000000005,
+          0.8200000000000005,
+          0.8400000000000005,
+          0.8600000000000005,
+          0.8800000000000006,
+          0.9000000000000006,
+          0.9200000000000006,
+          0.9400000000000006,
+          0.9600000000000006,
+          0.9800000000000006,
+          1.0000000000000007,
+          1.0200000000000007,
+          1.0400000000000007,
+          1.0600000000000007,
+          1.0800000000000007,
+          1.1000000000000008,
+          1.1200000000000008,
+          1.1400000000000008,
+          1.1600000000000008,
+          1.1800000000000008,
+          1.2000000000000008,
+          1.2200000000000009,
+          1.2400000000000009,
+          1.260000000000001,
+          1.280000000000001,
+          1.300000000000001,
+          1.320000000000001,
+          1.340000000000001,
+          1.360000000000001,
+          1.380000000000001,
+          1.400000000000001,
+          1.420000000000001,
+          1.440000000000001,
+          1.460000000000001,
+          1.480000000000001,
+          1.500000000000001,
+          1.5200000000000011,
+          1.5400000000000011,
+          1.5600000000000012,
+          1.5800000000000012,
+          1.6000000000000012,
+          1.6200000000000012,
+          1.6400000000000012,
+          1.6600000000000013,
+          1.6800000000000013,
+          1.7000000000000013,
+          1.7200000000000013,
+          1.7400000000000013,
+          1.7600000000000013,
+          1.7800000000000014,
+          1.8000000000000014,
+          1.8200000000000014,
+          1.8400000000000014,
+          1.8600000000000014,
+          1.8800000000000014,
+          1.9000000000000015,
+          1.9200000000000015,
+          1.9400000000000015,
+          1.9600000000000015,
+          1.9800000000000015,
+          2.0000000000000018,
+          2.0200000000000014,
+          2.040000000000002,
+          2.0600000000000014,
+          2.080000000000002,
+          2.1000000000000014,
+          2.120000000000002,
+          2.1400000000000015,
+          2.160000000000002,
+          2.1800000000000015,
+          2.200000000000002,
+          2.2200000000000015,
+          2.240000000000002,
+          2.2600000000000016,
+          2.280000000000002,
+          2.3000000000000016,
+          2.320000000000002,
+          2.3400000000000016,
+          2.360000000000002,
+          2.3800000000000017,
+          2.400000000000002,
+          2.4200000000000017,
+          2.440000000000002,
+          2.4600000000000017,
+          2.480000000000002,
+          2.5000000000000018,
+          2.5200000000000022,
+          2.540000000000002,
+          2.5600000000000023,
+          2.580000000000002,
+          2.6000000000000023,
+          2.620000000000002,
+          2.6400000000000023,
+          2.660000000000002,
+          2.6800000000000024,
+          2.700000000000002,
+          2.7200000000000024,
+          2.740000000000002,
+          2.7600000000000025,
+          2.780000000000002,
+          2.8000000000000025,
+          2.820000000000002,
+          2.8400000000000025,
+          2.860000000000002,
+          2.8800000000000026,
+          2.900000000000002,
+          2.9200000000000026,
+          2.940000000000002,
+          2.9600000000000026,
+          2.980000000000002,
+          3.0000000000000027,
+          3.0200000000000022,
+          3.0400000000000027,
+          3.0600000000000023,
+          3.0800000000000027,
+          3.1000000000000023,
+          3.1200000000000028,
+          3.1400000000000023,
+          3.160000000000003,
+          3.1800000000000024,
+          3.200000000000003,
+          3.2200000000000024,
+          3.240000000000003,
+          3.2600000000000025,
+          3.280000000000003,
+          3.3000000000000025,
+          3.320000000000003,
+          3.3400000000000025,
+          3.360000000000003,
+          3.3800000000000026,
+          3.400000000000003,
+          3.4200000000000026,
+          3.440000000000003,
+          3.4600000000000026,
+          3.480000000000003,
+          3.5000000000000027
+        ],
+        "whole_note_stereo_frames": 168000,
+        "right_censored": false,
+        "policy": "Only complete requested spectral windows; no clipped substitute, padding, extrapolation or retiming. Envelope samples require full5ms smoothing support."
+      },
+      "H1_all_bands": [
+        {
+          "window_seconds": [
+            0.25,
+            0.75
+          ],
+          "included_in_aggregate": true,
+          "old_signed_error_db": -47.19310259162063,
+          "candidate_signed_error_db": -47.16807419137136,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        },
+        {
+          "window_seconds": [
+            0.75,
+            1.5
+          ],
+          "included_in_aggregate": false,
+          "old_signed_error_db": -46.463166474443284,
+          "candidate_signed_error_db": -46.4856246970121,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        },
+        {
+          "window_seconds": [
+            1.5,
+            2.5
+          ],
+          "included_in_aggregate": false,
+          "old_signed_error_db": -35.254773496453225,
+          "candidate_signed_error_db": -35.254773496453225,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        },
+        {
+          "window_seconds": [
+            2.5,
+            3.5
+          ],
+          "included_in_aggregate": false,
+          "old_signed_error_db": -30.623169616613033,
+          "candidate_signed_error_db": -30.623169616613033,
+          "physical_pitch_identity": "ambiguous reference-fixed candidate family; do not equate with4434Hz component"
+        }
+      ],
+      "unassigned_components": [
+        {
+          "frequency_hz": 4433.832632086339,
+          "physical_identity": "unassigned",
+          "gate": false,
+          "windows": [
+            {
+              "window_seconds": [
+                0.25,
+                0.75
+              ],
+              "old_signed_error_db": -82.43771262500684,
+              "candidate_signed_error_db": -82.43771262500684
+            },
+            {
+              "window_seconds": [
+                0.75,
+                1.5
+              ],
+              "old_signed_error_db": -54.81806604827077,
+              "candidate_signed_error_db": -54.81806604827077
+            },
+            {
+              "window_seconds": [
+                1.5,
+                2.5
+              ],
+              "old_signed_error_db": -33.596688960963085,
+              "candidate_signed_error_db": -33.596688960963085
+            },
+            {
+              "window_seconds": [
+                2.5,
+                3.5
+              ],
+              "old_signed_error_db": -32.49715682737061,
+              "candidate_signed_error_db": -32.49715682737061
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Stored JSON aggregation only; no PCM decoded, feature recomputation, candidate rerender or rescoring. All fixed gains/onsets/thresholds retained.",
+  "limits": [
+    "All34 are already observed TRAIN; six original outputs/outcomes were reused without rerender/reprocessing/rescoring.",
+    "Every failed case is an unchanged early five-band guard failure. Late/sustain preservation and source integrity passed; this does not establish accurate absolute spectrum/body/attack/stereo.",
+    "All signed per-band errors, weak H1 and C8unassigned4434Hz component deficits remain visible; no new diagnostic gate or excluded piano key.",
+    "Short early-window powers have finite spectral resolution and edited-reference/onset ambiguity; a failed numerical guard is preserved without inferring a precise audible defect source.",
+    "No cutoff sweep, new knobs, recording fit, default change, runtime integration, SDK/Reason host validation or realtime claim."
+  ]
+}
