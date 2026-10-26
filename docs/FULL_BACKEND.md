@@ -1,9 +1,11 @@
 # Complete piano block API
 
 `keyra::FullInstrument` in `include/keyra/FullInstrument.h` exposes the complete
-working grand model as a block processor. It is separate from the live preview
-and the smaller `PhysicalInstrument` experiment. No plugin wrapper, UI, or SDK
-integration is changed. This is an integration starting point, not a claim that
+working grand model as a block processor. It is separate from the retained
+`Source/DSP` frontend, the additional live preview and the smaller
+`PhysicalInstrument` experiment. The experimental Reason wrapper consumes this
+API directly; genuine SDK/host validation remains unavailable. This is an
+integration starting point, not a claim that
 the full solver meets a DAW's real-time budget: previous hot-float measurements
 still cost roughly three CPU seconds per audio second on the study machine.
 Those timing reports predate the finite key-lift controller revision and remain
@@ -17,8 +19,11 @@ and the original stereo radiation. It uses the previously studied hot-float
 storage/rotation transformation. Hammer contact and the bridge solve retain
 their double-precision arithmetic. The rotation rounding avoids adding free
 oscillator energy; the small additional decay is the documented precision
-tradeoff in `docs/PRECISION_FINDINGS.md`. The unvalidated 17-anchor radiation
-candidate is not selected by this API.
+tradeoff in `docs/PRECISION_FINDINGS.md`. `OriginalControl` remains the default.
+The frozen 17-anchor, 17,849-mode confidence candidate is available through an
+explicit [build profile](FULL_MODEL_PROFILES.md); it is not a default promotion.
+The [part-by-part coverage map](PIANO_PARTS_COVERAGE.md) distinguishes explicit
+mechanics, effective proxies and separate research modules.
 
 ## Use and threading
 
