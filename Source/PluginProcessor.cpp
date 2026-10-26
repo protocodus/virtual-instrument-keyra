@@ -97,14 +97,16 @@ void KeyraAudioProcessor::dispatch(const juce::MidiMessage& message) noexcept
     } else if (message.isNoteOff()) {
         engine.noteOff(message.getNoteNumber(), channel);
     } else if (message.isController()) {
-        engine.controlChange(message.getControllerNumber(), message.getControllerValue(), channel);
+        const auto controller = message.getControllerNumber();
+        // Channel-wide release also cancels the GUI presses owned on channel 1.
+        // Forget their bookkeeping now: a later mouse-up must not consume a
+        // fresh host-owned press of the same piano key or pedal keyswitch.
+        if (channel == 1 && (controller == 120 || controller == 123))
+            keyboardHeld.fill(false);
+        engine.controlChange(controller, message.getControllerValue(), channel);
     } else if (message.isPitchWheel()) {
         const auto wheel = message.getPitchWheelValue();
         engine.pitchBend(2.0f * (wheel - 8192) / (wheel < 8192 ? 8192.0f : 8191.0f), channel);
-    } else if (message.isAllSoundOff()) {
-        engine.controlChange(120, 0, channel);
-    } else if (message.isAllNotesOff()) {
-        engine.controlChange(123, 0, channel);
     }
 }
 

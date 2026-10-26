@@ -32,6 +32,34 @@ double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<d
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
 double released(float sustain){keyra::Engine e;e.setParameters(dry());e.controlChange(64,static_cast<int>(sustain*127));e.noteOn(60,.7f);render(e,12000);e.noteOff(60);render(e,24000);return rms(render(e,12000));}
 double sostenuto(bool beforeNote){keyra::Engine e;e.setParameters(dry());if(beforeNote)e.controlChange(66,127);e.noteOn(60,.7f);render(e,12000);if(!beforeNote)e.controlChange(66,127);e.noteOff(60);render(e,24000);return rms(render(e,12000));}
+Audio sympatheticTail(float tuning,bool prepareAfterTuning){
+  keyra::Engine wet,direct;auto wp=dry();wp.gain=.3f;wp.resonance=1;wp.sustain=1;
+  if(prepareAfterTuning)wp.tuning=tuning;
+  auto dp=wp;dp.resonance=0;wet.setParameters(wp);direct.setParameters(dp);
+  if(prepareAfterTuning){wet.prepare(48000);direct.prepare(48000);}
+  // Keep a very quiet second channel active so stopping the main note does
+  // not clear the shared bank. Wet minus dry isolates its free radiation.
+  wet.noteOn(21,.00001f,2);direct.noteOn(21,.00001f,2);
+  wet.noteOn(69,.7f,1);direct.noteOn(69,.7f,1);render(wet,24000);render(direct,24000);
+  if(!prepareAfterTuning){wp.tuning=tuning;dp.tuning=tuning;wet.setParameters(wp);direct.setParameters(dp);}
+  wet.controlChange(120,0,1);direct.controlChange(120,0,1);
+  auto tail=render(wet,38400),base=render(direct,38400);
+  for(std::size_t i=0;i<tail.size();++i)tail[i]-=base[i];
+  return tail;
+}
+double spectralPeak(const Audio& audio,double low,double high){
+  constexpr double pi=3.14159265358979323846;
+  const std::size_t frames=audio.size()/2;std::vector<double> signal(frames);
+  for(std::size_t i=0;i<frames;++i)signal[i]=.5*(audio[2*i]+audio[2*i+1])*(.5-.5*std::cos(2*pi*i/(frames-1)));
+  double peak=low,power=-1;
+  for(double frequency=low;frequency<=high;frequency+=.25){
+    const double c=std::cos(2*pi*frequency/48000),s=std::sin(2*pi*frequency/48000);
+    double phaseC=1,phaseS=0,re=0,im=0;
+    for(const double sample:signal){re+=sample*phaseC;im+=sample*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
+    const double candidate=re*re+im*im;if(candidate>power){power=candidate;peak=frequency;}
+  }
+  return peak;
+}
 std::string timing(int count){
   std::array<double,3> onset{},cpu{},wall{};
   for(int run=0;run<3;++run){keyra::Engine e;e.setParameters(dry());
@@ -149,9 +177,22 @@ int main(int argc,char** argv){
     keyra::Engine a,b;auto pa=dry(),pb=dry();pa.tuning=composite;pb.tuning=composite<400?400:480;a.setParameters(pa);b.setParameters(pb);
     a.noteOn(72,.7f);b.noteOn(72,.7f);check(render(a,12000)!=render(b,12000),"host master tuning composes beyond UI endpoints without internal clamping");
   }
+  for(const float concert:{300.f,600.f})for(const bool prepared:{false,true}){
+    const auto tail=sympatheticTail(concert,prepared);
+    const double peak=spectralPeak(tail,concert*.94,concert*1.06);
+    check(rms(tail)>1e-7,"concert-tuning change preserves audible sympathetic state");
+    check(std::abs(peak-concert)<.75,prepared?"prepare retains the current concert tuning in sympathetic radiation":"live concert tuning moves the sympathetic bank with the piano");
+    std::cout<<"sympathetic_concert_hz="<<concert<<" after_prepare="<<prepared<<" measured_peak_hz="<<peak<<'\n';
+  }
+  {
+    keyra::Engine a,b;keyra::Parameters p;p.sustain=1;p.resonance=1;a.setParameters(p);b.setParameters(p);
+    a.noteOn(69,.7f);b.noteOn(69,.7f);render(a,12000);render(b,12000);
+    p.tuning=415;a.setParameters(p);p.tuning=440;a.setParameters(p);
+    check(render(a,12000)==render(b,12000),"concert-tuning round trip preserves live modal and sympathetic q/p states exactly");
+  }
   {
     keyra::Engine e;std::array<float,64> l{},r{};trap=true;
-    e.noteOn(60,.8f);e.noteOn(72,.8f,2);e.noteOff(60);e.noteOn(12,.7f);e.noteOn(13,.7f);e.noteOn(14,.7f);e.noteOff(12);e.controlChange(64,80);e.controlChange(66,127);e.controlChange(67,64);e.pitchBend(.5f);e.setParameters(dry());
+    e.noteOn(60,.8f);e.noteOn(72,.8f,2);e.noteOff(60);e.noteOn(12,.7f);e.noteOn(13,.7f);e.noteOn(14,.7f);e.noteOff(12);e.controlChange(64,80);e.controlChange(66,127);e.controlChange(67,64);e.pitchBend(.5f);auto p=dry();p.tuning=415;e.setParameters(p);
     const auto pedals=e.pedalState();(void)pedals;
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
     e.reset();e.controlChange(120,0);trap=false;

@@ -27,6 +27,8 @@ jobs:
         run: cmake --build build --parallel 2
       - name: Test
         run: ctest --test-dir build --output-on-failure
+      - name: Test portable benchmark replay paths
+        run: python3 Tests/test_recording_parity_paths.py
 
   sanitizers:
     name: Live DSP sanitizers

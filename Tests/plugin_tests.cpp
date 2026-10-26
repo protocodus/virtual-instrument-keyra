@@ -81,6 +81,58 @@ double sostenutoOrder(bool pedalFirst)
     processor.processBlock(audio, midi);
     return audio.getRMSLevel(0, 20000, 4000);
 }
+
+void channelWideReleaseOwnership(int controller, int note, int releaseChannel)
+{
+    KeyraAudioProcessor guiRelease, reference;
+    guiRelease.prepareToPlay(48000, 256);
+    reference.prepareToPlay(48000, 256);
+    juce::AudioBuffer<float> actual(2, 256), expected(2, 256);
+    juce::MidiBuffer actualMidi, expectedMidi;
+    guiRelease.enqueueKeyboard(true, note, .8f);
+    reference.enqueueKeyboard(true, note, .8f);
+    guiRelease.processBlock(actual, actualMidi);
+    reference.processBlock(expected, expectedMidi);
+
+    const auto channelRelease = juce::MidiMessage::controllerEvent(releaseChannel, controller, 0);
+    actualMidi.addEvent(channelRelease, 16);
+    expectedMidi.addEvent(channelRelease, 16);
+    if (releaseChannel == 1) {
+        // The panic removed the GUI-owned press. A new host press of the
+        // same key must not be consumed by the old GUI mouse-up afterwards.
+        const auto hostPress = juce::MidiMessage::noteOn(1, note, .8f);
+        actualMidi.addEvent(hostPress, 64);
+        expectedMidi.addEvent(hostPress, 64);
+    }
+    guiRelease.processBlock(actual, actualMidi);
+    reference.processBlock(expected, expectedMidi);
+
+    guiRelease.enqueueKeyboard(false, note, 0);
+    if (releaseChannel == 2) {
+        // Another channel's panic leaves GUI ownership intact. Its GUI
+        // mouse-up must still deliver the normal channel-1 note-off.
+        expectedMidi.addEvent(juce::MidiMessage::noteOff(1, note), 0);
+    }
+    guiRelease.processBlock(actual, actualMidi);
+    reference.processBlock(expected, expectedMidi);
+
+    for (int channel = 0; channel < 2; ++channel)
+        for (int frame = 0; frame < 256; ++frame)
+            require(actual.getSample(channel, frame) == expected.getSample(channel, frame),
+                "channel-wide MIDI release corrupted GUI/host piano ownership");
+    require(guiRelease.softLevel.load() == reference.softLevel.load()
+        && guiRelease.sostenutoLevel.load() == reference.sostenutoLevel.load()
+        && guiRelease.sustainLevel.load() == reference.sustainLevel.load(),
+        "channel-wide MIDI release corrupted GUI/host pedal ownership");
+    if (note == 60)
+        require(expected.getMagnitude(0, 256) > 1e-8f, "ownership piano witness was silent");
+    else {
+        const auto depth = note == 12 ? reference.softLevel.load()
+            : note == 13 ? reference.sostenutoLevel.load() : reference.sustainLevel.load();
+        require(releaseChannel == 1 ? depth > .99f : depth < .001f,
+            "ownership pedal witness did not reach its expected state");
+    }
+}
 }
 
 int main()
@@ -122,6 +174,10 @@ int main()
         require(energy > 1e-8, "plugin is silent");
         require(sostenutoOrder(false) > sostenutoOrder(true) * 20,
             "same-sample sostenuto keyswitch source ordering did not determine capture");
+        for (const auto controller : { 120, 123 })
+            for (const auto note : { 60, 12, 13, 14 })
+                for (const auto releaseChannel : { 1, 2 })
+                    channelWideReleaseOwnership(controller, note, releaseChannel);
         {
             KeyraAudioProcessor pedals;
             pedals.prepareToPlay(48000, 128);

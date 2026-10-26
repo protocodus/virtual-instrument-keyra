@@ -111,6 +111,15 @@ struct Engine::Impl {
         rotation(frequency,mode.c,mode.s);
       }
   }
+  void retuneSympathetic() noexcept {
+    // The shared open-string bank follows concert tuning, independently of
+    // channel pitch bends. Rebuild coefficients without resetting its q/p.
+    for(int i=0;i<88;++i){auto& mode=sympathetic[i];
+      const double frequency=parameters.tuning*std::pow(2.,(i+21-69)/12.);
+      rotation(frequency,mode.c,mode.s);
+      mode.decay=std::exp(-(.7+.001*frequency)/sampleRate);
+    }
+  }
   void control() noexcept {
     mute+=controlSmooth*(parameters.mute-mute);
     for(auto& channel:channels)
@@ -227,8 +236,7 @@ void Engine::prepare(double sampleRate){
   for(int i=0;i<=sineSize;++i)p.sine[i]=std::sin(2*pi*i/sineSize);
   p.smooth=1-std::exp(-1/(.012*p.sampleRate));p.controlSmooth=1-std::exp(-32/(.018*p.sampleRate));
   p.highpassCoefficient=std::exp(-2*pi*10/p.sampleRate);
-  for(int i=0;i<88;++i){auto& r=p.sympathetic[i];const double f=440*std::pow(2.,(i+21-69)/12.);
-    p.rotation(f,r.c,r.s);r.decay=std::exp(-(.7+.001*f)/p.sampleRate);}
+  p.retuneSympathetic();
   reset();
 }
 void Engine::reset() noexcept {
@@ -250,6 +258,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   p.parameters.sustain=bounded(input.sustain);p.parameters.sostenuto=bounded(input.sostenuto);
   p.parameters.soft=bounded(input.soft);
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
+  if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
 }
 void Engine::noteOn(int note,float velocity,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
