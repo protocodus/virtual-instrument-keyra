@@ -6,7 +6,10 @@
 *.ttf -text
 *.svg -text -whitespace
 # Upstream reference metadata and frozen figures retain their original bytes.
-Research/** -text -whitespace
-References/**/upstream/** -text -whitespace
-third_party/** -text -whitespace
-src/full_reference/** -text -whitespace
+Experiments/Research/** -text -whitespace
+Experiments/References/**/upstream/** -text -whitespace
+Experiments/third_party/** -text -whitespace
+Experiments/src/full_reference/** -text -whitespace
+# Generated upstream license payloads must retain their exact bytes, including
+# original line endings and whitespace, on every platform.
+ThirdParty/JUCE-DEPENDENCY-NOTICES.txt -text -whitespace

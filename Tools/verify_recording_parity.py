@@ -26,7 +26,7 @@ def event_input(root, report_name, identity, temporary):
     if not identity or Path(identity).name != identity or '\\' in identity:
         raise ValueError(f'Invalid recording case ID: {identity!r}')
     if report_name == ORIGINAL_REPORT:
-        path = root/'Research/GrandPianoV2/benchmark/events'/(identity+'.events')
+        path = root/'Experiments/Research/GrandPianoV2/benchmark/events'/(identity+'.events')
         if not path.is_file():
             raise ValueError(f'Missing tracked recording score: {path}')
         return path

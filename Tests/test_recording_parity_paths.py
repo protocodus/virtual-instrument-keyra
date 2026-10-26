@@ -19,7 +19,7 @@ class RecordingParityPaths(unittest.TestCase):
     def test_clean_relocated_checkout_reconstructs_both_score_sources(self):
         with tempfile.TemporaryDirectory(prefix='keyra-relocated-checkout-') as temporary:
             root = Path(temporary)/'different checkout'
-            original = root/'Research/GrandPianoV2/benchmark/events/C4v8.events'
+            original = root/'Experiments/Research/GrandPianoV2/benchmark/events/C4v8.events'
             original.parent.mkdir(parents=True)
             original.write_text('0.100000 on 60 61\n4.150000 off 60 0\n')
             fresh_text = '0.100000 on 39 61\n4.150000 off 39 0\n'

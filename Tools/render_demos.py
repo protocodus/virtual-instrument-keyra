@@ -26,8 +26,8 @@ def main():
     working = ROOT/'build/live-demos'
     target.mkdir(parents=True, exist_ok=True)
     working.mkdir(parents=True, exist_ok=True)
-    scores = json.loads((ROOT/'Research/GrandPianoV2/scores/manifest.json').read_text())
-    cases = [(s['id'], s['title'], ROOT/'Research/GrandPianoV2/scores'/s['events'],
+    scores = json.loads((ROOT/'Experiments/Research/GrandPianoV2/scores/manifest.json').read_text())
+    cases = [(s['id'], s['title'], ROOT/'Experiments/Research/GrandPianoV2/scores'/s['events'],
               s['duration_seconds']+7) for s in scores
              if s['id'] in ('01_nocturne', '03_jazz_waltz')]
     cases.append(('pedal-study', 'Keyra pedal and mute study',

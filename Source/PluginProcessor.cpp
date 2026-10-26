@@ -6,14 +6,7 @@
 
 namespace {
 constexpr std::array<const char*, 9> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft" }};
-struct Program { const char* name; float brightness, resonance, width, mute; };
-constexpr std::array<Program, 5> programs {{
-    { "Concert Grand", .5f, .25f, .75f, 0.f },
-    { "Studio Grand", .62f, .12f, .48f, 0.f },
-    { "Warm Walnut", .28f, .31f, .64f, 0.f },
-    { "Felt Nocturne", .35f, .17f, .58f, .32f },
-    { "Open Strings", .52f, .62f, .95f, 0.f }
-}};
+constexpr auto& programs = keyra::factoryPresets;
 }
 
 const juce::String KeyraAudioProcessor::getProgramName(int index)

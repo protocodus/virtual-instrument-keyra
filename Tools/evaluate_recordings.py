@@ -2,7 +2,7 @@
 """Reproduce real-recording evaluation of the live Keyra signal path.
 
 The 10 training cases, 12 in-range held-out cases and two edge cases remain
-locked by Research/GrandPianoV2/benchmark/split.json. This tool never fits a
+locked by Experiments/Research/GrandPianoV2/benchmark/split.json. This tool never fits a
 parameter. It renders the measured-attack engine and its fixed-2ms ablation,
 then evaluates the same four windows with the preserved phase-insensitive
 measurements. Missing model partials receive a noise-floor penalty rather
@@ -23,7 +23,7 @@ import subprocess
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-RESEARCH = ROOT / 'Research/GrandPianoV2'
+RESEARCH = ROOT / 'Experiments/Research/GrandPianoV2'
 FIELDS = ('log_band_mae_db', 'harmonic_level_mae_db', 'envelope_mae_db',
           'partial_decay_slope_mae_db_per_second', 'absolute_f1_error_cents',
           'partial_tuning_mae_cents', 'attack_rise10_90_error_ms')

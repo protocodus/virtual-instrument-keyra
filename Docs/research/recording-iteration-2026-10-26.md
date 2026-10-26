@@ -11,7 +11,7 @@ the reference renderer's numerical passivity proof or its fidelity scores.
 The measurements use Alexander Holm's Salamander Grand Piano V3 recordings,
 distributed under CC BY 3.0 at upstream commit
 `3382bf9496bba2486f5ab0de55a264d1dfc38404`. The original reference
-[attribution](../../Research/GrandPianoV2/reference/ATTRIBUTION.md) describes the
+[attribution](../../Experiments/Research/GrandPianoV2/reference/ATTRIBUTION.md) describes the
 piano, microphone configuration and acquisition limits.
 
 All 24 source FLAC hashes and losslessly decoded PCM identities were verified
@@ -86,7 +86,7 @@ compares the header and metadata exactly in that environment.
 From the canonical repository root:
 
 ```sh
-python3 Research/GrandPianoV2/reference/fetch_reference.py --jobs 4
+python3 Experiments/Research/GrandPianoV2/reference/fetch_reference.py --jobs 4
 python3 Tools/fit_realtime_modal.py --check
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --target keyra_render -j 2

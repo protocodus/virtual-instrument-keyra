@@ -106,7 +106,7 @@ The upright's muffler felt/practice rail is another distinct mechanism; it is
 not a synonym for sostenuto.
 
 Evidence: [full public controls](../include/keyra/FullInstrument.h#L16),
-[retained frontend pedals](../Source/DSP/KeyraEngine.cpp#L292),
+[retained frontend pedals](../../Source/DSP/KeyraEngine.cpp#L292),
 [reduced upright basis](../src/Piano.cpp#L98).
 
 ## Priorities from this map

@@ -18,7 +18,7 @@ import scipy
 from scipy import optimize
 
 ROOT = Path(__file__).resolve().parents[1]
-RESEARCH = ROOT / 'Research/GrandPianoV2'
+RESEARCH = ROOT / 'Experiments/Research/GrandPianoV2'
 MODULE = RESEARCH / 'tools/benchmark.py'
 spec = importlib.util.spec_from_file_location('keyra_recording_metrics', MODULE)
 metrics = importlib.util.module_from_spec(spec)

@@ -25,7 +25,7 @@ def thumbnail():
             pixels[x, y] = tuple(round(base + green * a + gold * b)
                 for base, a, b in zip((13, 14, 18), (8, 23, 20), (20, 14, 4)))
     image = image.convert("RGBA")
-    editor = Image.open(SHOTS / "keyra-editor.png").convert("RGBA")
+    editor = Image.open(SHOTS / "keyra.png").convert("RGBA")
     editor.thumbnail((728, 500), Image.Resampling.LANCZOS)
     shadow = Image.new("RGBA", image.size)
     ImageDraw.Draw(shadow).rounded_rectangle((30, 254, 770, 254 + editor.height + 14),
@@ -73,21 +73,21 @@ The soft, sostenuto and sustain pedals can be held on screen or played from MIDI
 
 The felt mute adds smooth damping even while keys remain held. Move the modulation wheel to bring it in during a phrase, or set its depth directly. Hammer brightness, sympathetic resonance, stereo width, concert tuning and output level shape the instrument around a performance.
 
-Five authored presets offer concert, studio, warm, felt and open-string starting points. The DAW front end provides a VST3 plug-in and a standalone instrument, sample-accurate MIDI scheduling, persistent panel parameters and a playable on-screen keyboard. Momentary pedal performances remain separate from the saved panel settings.
+Five authored presets offer concert, studio, warm, felt and open-string starting points. The DAW front end provides VST3 and CLAP plug-ins, an Audio Unit on macOS and a standalone instrument, sample-accurate MIDI scheduling, persistent panel parameters and a playable on-screen keyboard. Momentary pedal performances remain separate from the saved panel settings.
 
 ## Version history
 
 ### {version}
 
-Native instrument with a real-time modal core, five presets, three visible pedals, momentary pedal keyswitches, continuous pedal depth and modulation-wheel felt muting.
+Native instrument with a real-time modal core, five presets, three visible pedals, momentary pedal keyswitches, continuous pedal depth and modulation-wheel felt muting, now as VST3, CLAP, Audio Unit and standalone builds.
 
 # Images
 
-![Native editor](Docs/screenshots/keyra-editor.png)
+![Native editor](../screenshots/keyra.png)
 
-![Pedals held by MIDI keyswitches](Docs/screenshots/keyra-editor-pedals-down.png)
+![Pedals held by MIDI keyswitches](../screenshots/keyra-editor-pedals-down.png)
 
-![Product thumbnail](Docs/screenshots/Keyra_Native_Thumbnail_800.png)
+![Product thumbnail](../screenshots/Keyra_Native_Thumbnail_800.png)
 """
 
 
@@ -100,16 +100,16 @@ def main():
     copy = metadata(version)
     features = copy.split("# Top features\n\n")[1].split("\n\n# Intro")[0].splitlines()
     assert len(features) == 3 and all(len(line[2:]) <= 50 for line in features)
-    for name in ("keyra-editor.png", "keyra-editor-pedals-down.png"):
+    for name in ("keyra.png", "keyra-editor-pedals-down.png"):
         assert (SHOTS / name).is_file(), f"Render {name} first"
     generated = thumbnail()
     destination = SHOTS / "Keyra_Native_Thumbnail_800.png"
     if args.check:
-        assert (ROOT / "SHOP.md").read_text() == copy, "Shop metadata is stale"
+        assert (ROOT / "Docs/release/shop-copy.md").read_text() == copy, "Shop metadata is stale"
         assert Image.open(destination).convert("RGB").tobytes() == generated.tobytes(), "Shop thumbnail is stale"
     else:
         generated.save(destination)
-        (ROOT / "SHOP.md").write_text(copy)
+        (ROOT / "Docs/release/shop-copy.md").write_text(copy)
     print(f"Native Shop metadata and thumbnail: {'checked' if args.check else 'generated'}")
 
 

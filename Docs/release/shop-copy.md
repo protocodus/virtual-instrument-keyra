@@ -20,18 +20,18 @@ The soft, sostenuto and sustain pedals can be held on screen or played from MIDI
 
 The felt mute adds smooth damping even while keys remain held. Move the modulation wheel to bring it in during a phrase, or set its depth directly. Hammer brightness, sympathetic resonance, stereo width, concert tuning and output level shape the instrument around a performance.
 
-Five authored presets offer concert, studio, warm, felt and open-string starting points. The DAW front end provides a VST3 plug-in and a standalone instrument, sample-accurate MIDI scheduling, persistent panel parameters and a playable on-screen keyboard. Momentary pedal performances remain separate from the saved panel settings.
+Five authored presets offer concert, studio, warm, felt and open-string starting points. The DAW front end provides VST3 and CLAP plug-ins, an Audio Unit on macOS and a standalone instrument, sample-accurate MIDI scheduling, persistent panel parameters and a playable on-screen keyboard. Momentary pedal performances remain separate from the saved panel settings.
 
 ## Version history
 
-### 0.2.0
+### 0.3.0
 
-Native instrument with a real-time modal core, five presets, three visible pedals, momentary pedal keyswitches, continuous pedal depth and modulation-wheel felt muting.
+Native instrument with a real-time modal core, five presets, three visible pedals, momentary pedal keyswitches, continuous pedal depth and modulation-wheel felt muting, now as VST3, CLAP, Audio Unit and standalone builds.
 
 # Images
 
-![Native editor](Docs/screenshots/keyra-editor.png)
+![Native editor](../screenshots/keyra.png)
 
-![Pedals held by MIDI keyswitches](Docs/screenshots/keyra-editor-pedals-down.png)
+![Pedals held by MIDI keyswitches](../screenshots/keyra-editor-pedals-down.png)
 
-![Product thumbnail](Docs/screenshots/Keyra_Native_Thumbnail_800.png)
+![Product thumbnail](../screenshots/Keyra_Native_Thumbnail_800.png)

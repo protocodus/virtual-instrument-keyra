@@ -7,7 +7,7 @@ The latest priority is explicit: **get the default model on par with recordings 
 The user subsequently reports the original pre-split demos sounded better. The
 preserved full nonlinear model is therefore the sound-quality baseline; the
 reduced live model's lower note errors do not override that feedback. Follow
-`QUALITY_BASELINE.md` and the recorded listening direction in `DECISIONS.md`.
+`QUALITY_BASELINE.md` and the recorded listening direction in `Docs/decisions.md` at the repository root.
 
 The user then explicitly chose optimizing the original model and clarified that
 it also needs realism improvements. Acoustic recordings remain the target;
@@ -20,7 +20,7 @@ perceptual completeness ahead of extreme precision in one subsystem. Retain an
 exact comparison version while testing faster numerical and reduced models;
 approve their sound through recording/listening evidence, not byte equality
 alone. Give low-cost, state-linked action/release and acoustic behavior an
-explicit CPU budget alongside the tonal core. See `DECISIONS.md`.
+explicit CPU budget alongside the tonal core. See `Docs/decisions.md` at the repository root.
 
 ## Completed foundation
 

@@ -2,6 +2,7 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "DSP/KeyraEngine.h"
+#include "DSP/KeyraPresets.h"
 #include <array>
 #include <atomic>
 
@@ -22,7 +23,7 @@ public:
     bool producesMidi() const override { return false; }
     bool isMidiEffect() const override { return false; }
     double getTailLengthSeconds() const override { return 60.0; }
-    int getNumPrograms() override { return 5; }
+    int getNumPrograms() override { return static_cast<int>(keyra::factoryPresets.size()); }
     int getCurrentProgram() override { return currentProgram.load(std::memory_order_relaxed); }
     void setCurrentProgram(int) override;
     const juce::String getProgramName(int) override;
