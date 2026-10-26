@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "status": "One unpromoted diagnostic audition; no model promotion or listener verdict",
+  "audio": {
+    "file": "old-then-compatibility-room.flac",
+    "sha256": "a454641eb94839052f3c40bc25d07e4ab69d06b70ebf2d1572ee73ace3243fe3",
+    "pcm24_sha256": "c046e467fb19191115808f4b3230d18490d9d54e12edcb2c7b592dc1236a9457",
+    "frames": 888000,
+    "sample_rate": 48000,
+    "channels": 2,
+    "bits": 24,
+    "duration_seconds": 18.5,
+    "segment_start_seconds": [
+      0,
+      9.5
+    ],
+    "segment_duration_seconds": 9,
+    "gap_seconds": 0.5,
+    "order": [
+      "old frozen legacy OriginalControl",
+      "fixed400Hz compatibility"
+    ],
+    "old_segment_pcm24_sha256": "ffcdb25cb2324439688d5d7c4a9ae2b9c619332e127d790076352643c71a5112",
+    "old_segment_identical_to_prior_old_room_and_prior_comparison": true,
+    "lossless_PCM24_decode_verified": true,
+    "statistics": {
+      "combined": {
+        "frames": 888000,
+        "duration_seconds": 18.5,
+        "finite": true,
+        "sample_peak": 0.7603938579559326,
+        "true_peak_4x": 0.7603932141347435,
+        "stereo_rms": 0.06438016987768297,
+        "mono_rms": 0.048654494155786085,
+        "mono_energy_relative_average_channel_db": -2.4325831320857465,
+        "left_right_correlation": 0.14955653729959836,
+        "left_right_balance_db": -2.7666791880589225
+      },
+      "old": {
+        "frames": 432000,
+        "duration_seconds": 9.0,
+        "finite": true,
+        "sample_peak": 0.6232379674911499,
+        "true_peak_4x": 0.6242532582138471,
+        "stereo_rms": 0.06480422059965944,
+        "mono_rms": 0.048979743754990854,
+        "mono_energy_relative_average_channel_db": -2.4317356601917957,
+        "left_right_correlation": 0.1500994648636592,
+        "left_right_balance_db": -2.8241292922264547
+      },
+      "compatibility": {
+        "frames": 432000,
+        "duration_seconds": 9.0,
+        "finite": true,
+        "sample_peak": 0.7603938579559326,
+        "true_peak_4x": 0.7603932141347435,
+        "stereo_rms": 0.0657289324013604,
+        "mono_rms": 0.04966909238375536,
+        "mono_energy_relative_average_channel_db": -2.4334070848251383,
+        "left_right_correlation": 0.1490371259765233,
+        "left_right_balance_db": -2.711057822214355
+      }
+    }
+  },
+  "raw_sources": [
+    {
+      "id": "music-old-raw",
+      "sha256": "911576d4212e88a02692c346ad7793eaf8702e2da90b44daa3134431c695815e",
+      "float32_payload_sha256": "5a38eb1e7236e540f15363bc45c88c8529d9ae3629957e50480bd606f560954f",
+      "frames": 432000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "format": "IEEEfloat32 WAV",
+      "bundled": false
+    },
+    {
+      "id": "music-causal-raw",
+      "sha256": "fc9075d635c220c93bbeab5fa713ded3d7115c8497b6251a9c46b82ad7d939f8",
+      "float32_payload_sha256": "c8d86147789ab79ad251c15347fcab617414387695f4379fff9e1047c1bd66d1",
+      "frames": 432000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "format": "IEEEfloat32 WAV",
+      "bundled": false
+    }
+  ],
+  "compatibility_raw_float32_payload_sha256": "8777d692e80f9279666c6ef892e6ed861d347140019680ac66688e64d57716f4",
+  "compatibility_final_LP_state": [
+    1.8745011180448922e-05,
+    9.022449708465986e-06
+  ],
+  "crossover": {
+    "source": {
+      "file": "tools/experiments/radiation_crossover/evidence/postprocess.py",
+      "sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e"
+    },
+    "protocol": {
+      "file": "Validation/full-radiation-crossover-protocol.json",
+      "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815"
+    },
+    "result": {
+      "file": "Validation/full-radiation-crossover.json",
+      "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec"
+    },
+    "review": {
+      "file": "tools/experiments/radiation_crossover/evidence/independent-result-review.json",
+      "sha256": "85517c9037a1e56ba32a17fa3dcd0b29794097f618d1f279000a423c98b69bdc"
+    },
+    "freeze": {
+      "file": "tools/experiments/radiation_crossover/evidence/freeze.json",
+      "sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782"
+    },
+    "cutoff_hz": 400.0,
+    "coefficients_a_b": [
+      0.9489645667148798,
+      0.02551771664256012
+    ],
+    "canonical_partitions": [
+      64
+    ],
+    "state": "Zero initialized once perchannel at frame0, continuous432000frames; never reset bynote gates",
+    "output_float32_boundary": "Same as frozen6casepilot before float64 room presentation",
+    "passes_all_six_unchanged_pilot_gates": true,
+    "posthoc_TRAIN_reuse": true,
+    "broader34_validated": false,
+    "original_unfiltered_causal_pilot_still_failed": true
+  },
+  "music_recipe": {
+    "room_wet": 0.16,
+    "room_ir_seconds": 1.8,
+    "procedural_ir_float64_sha256": "38dd2ac037e8fb2cb47f3ec561c37eab0478cef092b7ded9b617b92d6458b374",
+    "rms_gain_before_fade": 0.88993492917923,
+    "fade_frames": 7200,
+    "fade_seconds": 0.15,
+    "fade": "np.linspace(1,0,7200), final150ms of each9s signal",
+    "original_common_true_peak_gain": 1.030337545260435,
+    "fixed_prior_shared_extra_safety_gain": 0.786203420103643,
+    "operation_order": [
+      "roomwet.16",
+      "historicalcontrolROOMgain",
+      "150msendfade",
+      "historicalcommongain",
+      "fixedpriorpilotextrasafety"
+    ],
+    "same_gains_for_both": true,
+    "candidate_RMS_matching_or_new_normalization": false,
+    "shared_safety_changed": false
+  },
+  "presentation_code": {
+    "file": "Research/GrandPianoV2/tools/render.py",
+    "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4"
+  },
+  "reused_source_evidence": {
+    "historical_control_presentation": {
+      "file": "Audio/full-performance/manifest.json",
+      "sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd"
+    },
+    "music_producer": {
+      "file": "tools/experiments/causal_radiation_pilot/producer/evidence/music-producer-receipt.json",
+      "sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61"
+    },
+    "original_failed_music_manifest": {
+      "file": "tools/experiments/causal_radiation_pilot/producer/evidence/music-listening-manifest.json",
+      "sha256": "9b63d84aef1bc3c110fbf2ecc14277a1a6954a8095ffe38024acdfc299d5b4a3"
+    },
+    "observer_source": {
+      "file": "tools/experiments/causal_radiation_pilot/producer/observer/CausalRadiation.h",
+      "sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169"
+    },
+    "observer_math": {
+      "file": "tools/experiments/causal_radiation_pilot/producer/evidence/math-validation.json",
+      "sha256": "cf14761683575e8c5de625c7bacedac43be5d9674782efcae99240c915f7587e"
+    },
+    "private_final_export_manifest": {
+      "id": "private-compatibility-music-export-v1",
+      "sha256": "8d703b513287cec83f5fb5fc31e59b4c7293c3e4e922e282b02ad90fb742b18c",
+      "bundled": false
+    }
+  },
+  "physics": {
+    "source_pair_same_physical_trajectory": true,
+    "state_checkpoints_rechecked": 1689,
+    "contact_bridge_force_rows_rechecked": 432000,
+    "events": 24,
+    "requests": 11,
+    "launches": 11,
+    "faults": 0,
+    "new_DSP_renders": 0,
+    "postprocessor_updates_mechanics_or_injects_force": false,
+    "scope": "Inherited existing pair proof, independently checked again; this postprocessor creates no new mechanical trajectory."
+  },
+  "environment": {
+    "required_before_numpy_import": {
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "tested_numpy": "2.3.5",
+    "tested_scipy": "1.17.0",
+    "receipt": {
+      "file": "environment-receipt.json",
+      "sha256": "59d426fefc70496d0c27f1075f7a814cfb6f4183f96fbf5fda0ce11f71d3ec05"
+    },
+    "first_attempt_preserved": true,
+    "first_attempt_complete_private_archive_id": "compatibility-music-attempt1-ir-thread-mismatch",
+    "archived_receipt": {
+      "file": "evidence/first-attempt-receipt.json",
+      "sha256": "5f10d6e563a6f4f5d371984456e3116c35b3b5c3a44ec7017eaa28f64dc18252"
+    },
+    "final_raw_compatibility_identical_to_first_attempt": true,
+    "unbundled_synthetic_IR_snapshot_hashes_recorded_in_receipt": true,
+    "IR_or_gain_source_changed": false
+  },
+  "checks": {
+    "private_final": {
+      "file": "evidence/final-export-checks.json",
+      "sha256": "6a6d15490689179fa98d79af3c705c7e8d98d90144a88ba3c441d5a47eca0ca0"
+    },
+    "samegain_RMS_shift_db_compatibility_over_old": 0.12306573213258587,
+    "fixed_recipe_safe": true,
+    "numerical_truepeak_method": "4xresample_poly/kaiser12 from historical presentation; not acousticSPL",
+    "oldfailedpilot_public_files_unchanged": 7,
+    "existing_failed_pilot_audio_package_edited": false,
+    "listener_verdict": null
+  },
+  "package_files": [
+    {
+      "file": "README.md",
+      "sha256": "7ce2d36ecf2ad28986ccc2175d82453efc315d5998b42abafef99ff5f0218b8e"
+    },
+    {
+      "file": "environment-receipt.json",
+      "sha256": "59d426fefc70496d0c27f1075f7a814cfb6f4183f96fbf5fda0ce11f71d3ec05"
+    },
+    {
+      "file": "evidence/final-export-checks.json",
+      "sha256": "6a6d15490689179fa98d79af3c705c7e8d98d90144a88ba3c441d5a47eca0ca0"
+    },
+    {
+      "file": "evidence/final-export-freeze.json",
+      "sha256": "0d4670c533e4d44cb10ea1b28794bd1be543f1fb0f243cedb8d2b996bb6eab06"
+    },
+    {
+      "file": "evidence/first-attempt-failure.json",
+      "sha256": "16d77eeed643fc8aab27fae92b22dad2d5c5b01b32bc9994946232f0f7e036d1"
+    },
+    {
+      "file": "evidence/first-attempt-freeze.json",
+      "sha256": "29c4294a5de73644e54766a8cb44232c4e9bf6247e373062c08aab5b880a54e8"
+    },
+    {
+      "file": "evidence/first-attempt-receipt.json",
+      "sha256": "5f10d6e563a6f4f5d371984456e3116c35b3b5c3a44ec7017eaa28f64dc18252"
+    },
+    {
+      "file": "evidence/first-attempt-recipe.json",
+      "sha256": "699043bffa69fe8493bfafa6598d91e49dc4d83bd479697a282536482a2915ca"
+    },
+    {
+      "file": "evidence/presentation-reproduction.json",
+      "sha256": "a93c4044f64605ef55bc2773d142dc3b2c2f0debc6ca34a9583ea7be3e7f6dc1"
+    },
+    {
+      "file": "export.py",
+      "sha256": "66d8771a05170e60982da3bb144202295562a1c9250eda4c88938752ad611bea"
+    },
+    {
+      "file": "old-then-compatibility-room.flac",
+      "sha256": "a454641eb94839052f3c40bc25d07e4ab69d06b70ebf2d1572ee73ace3243fe3"
+    }
+  ],
+  "reproducibility": {
+    "exporter": "export.py",
+    "requires_external_raw_WAVs": true,
+    "portable_musical_DSP_producer_bundled": false,
+    "scope": "Postprocess/presentation reproduction only; strict source/input/IR/finalPCM fingerprints. No new instrument rendering or metric score.",
+    "command": "OPENBLAS_NUM_THREADS=1 python3 Audio/full-radiation-crossover/export.py --inputs source-files.json --output /tmp/keyra-crossover-listening",
+    "presentation_reproduction_verified_outside_repository_working_directory": true,
+    "reproduced_FLAC_entire_file_identical": true,
+    "reproduced_PCM24_identical": true,
+    "receipt": {
+      "file": "evidence/presentation-reproduction.json",
+      "sha256": "a93c4044f64605ef55bc2773d142dc3b2c2f0debc6ca34a9583ea7be3e7f6dc1"
+    }
+  },
+  "limits": [
+    "Posthoc TRAIN reuse: one fixed400Hz crossover passed all six unchanged original pilot gates after those cases and the failed causal result were observed. This is not independent validation.",
+    "Broader34-case validation remains unperformed. No listener verdict is made by this export.",
+    "The original unfiltered causal observer pilot remains failed on both C6 early-band guards; published failed-pilot evidence is untouched.",
+    "Old means frozen legacy OriginalControl physics/contact with humanization0,mechanicalLevel0,repetitioncontrollerOFF, not the latest connected default.",
+    "Both old modal projection and dynamic observer are causal. The compatibility crossover retains old low-frequency projection and new high-frequency observer; it is not a new physical piano part or literal bridge-force identification.",
+    "Existing source pair shares one physical trajectory:1689state checkpoints and432000contact/bridge-force rows. Compatibility postprocessing has no mechanical-state update or force injection, not a new DSP parity render.",
+    "This package stages one diagnostic musical audition only. Defaults and production sources remain unchanged; no realtime, production or price claim."
+  ],
+  "default_changed": false,
+  "production_source_changed": false,
+  "realtime_claim": false,
+  "price_claim": false,
+  "subjective_improvement_claim": false
+}

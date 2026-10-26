@@ -14,6 +14,8 @@ A subsequent [confidence-prior decay candidate](docs/FULL_CONFIDENCE_LOSS.md) im
 
 The [A0 attack diagnosis](docs/FULL_ATTACK_TIMING.md) separates the large relative-rise metric change from actual hammer timing: radiation weighting changes which bass-cycle peak crosses the threshold. Early attack-band agreement improves, while excessive initial pressure remains. The next fit needs coherent pressure guards before 50 ms alongside the existing spectrum/envelope criteria.
 
+For frozen listening exports and numerical replays, follow the [replay-environment addendum](docs/REPLAY_ENVIRONMENT.md), including `OPENBLAS_NUM_THREADS=1` before Python starts. It records a later-discovered procedural-room fingerprint requirement while preserving the original evidence and its scope.
+
 The earlier 13-pitch **reduced preview** improved harmonic error from 5.83 to 2.97 dB and envelope error from 4.26 to 2.46 dB on seven recordings opened after that candidate froze. Its [validation report](docs/VALIDATION.md) preserves individual regressions. [A3](Audio/default-A3v8-real-before-after.mp3) and [D♯4](Audio/default-Dsharp4v8-real-before-after.mp3) play real → previous preview → current preview at 0 / 4.5 / 9 seconds. These historical preview results do not establish full-model or perceptual parity.
 
 A separate [connected physical research path](docs/MODULES.md) provides independently testable finger/key/keybed/action, nonlinear hammer contact, persistent strings, sympathetic coupling, wood, air, lid and player-load components. It has not replaced the default sound: physical passivity, material tables and more modules do not by themselves prove recording realism. Material/preset expansion is secondary to default-model fidelity.

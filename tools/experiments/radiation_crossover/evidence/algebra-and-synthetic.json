@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "scope": "Own pre-processing mathematical derivation and synthetic implementation checks only; no pilot PCM opened. Independent review is separate.",
+  "source": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/postprocess.py",
+    "sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e"
+  },
+  "protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/protocol.json",
+    "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815"
+  },
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/freeze.json",
+    "sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782"
+  },
+  "derivation": {
+    "recurrence": "c[n] = b*d[n] + s[n-1], s[n]=b*d[n]+a*c[n], d=old-new; hence c[n]=b*d[n]+b*d[n-1]+a*c[n-1].",
+    "transfer": "H(z)=b(1+z^-1)/(1-a*z^-1). 1-H=(1-b)(1-z^-1)/(1-a*z^-1) because a+ b=1-b.",
+    "causality": "Current/past samples only. One zeroed scalar state per channel, retained across block boundaries.",
+    "stability": "0<a<1 gives absolutely summable impulse. h[0]=b; h[n>=1]=b(1+a)*a^(n-1), positive and summing to 1. Stable BIBO bound |H*d|<=sup|d| in exact arithmetic.",
+    "DC_Nyquist": "H(1)=2b/(1-a)=1, H(-1)=0. DC old, Nyquist new.",
+    "unit_circle": "Writing t=tan(w/2), H=k/(k+j*t), 1-H=j*t/(k+j*t), so |H|^2+|1-H|^2=1 and H+(1-H)=1 in exact arithmetic. This does not guarantee absence of cancellation/boost between different correlated old/new streams.",
+    "common_board": "If old=B+Cold,new=B+Cnew, Y=B+H*Cold+(1-H)*Cnew in exact arithmetic. Existing float reductions/output quantization can leave tiny numerical residuals; do not claim bit-exact board component preservation.",
+    "mechanics": "Pure output postprocessing receives only audio; no instrument state or generalized force exists here. Source-pair mechanical trajectory/force evidence is inherited, not rerun.",
+    "precision": "float64 recurrence on float32 source WAVs; one final float32 output quantization. Signed-zero conditional is mathematically zero correction and retains identical-input bit signs."
+  },
+  "synthetic_checks": {
+    "passed": true,
+    "pole": 0.9489645667148798,
+    "b0_b1": 0.02551771664256012,
+    "DC_gain": 1.0000000000000013,
+    "Nyquist_gain": 0.0,
+    "zero_difference_bit_identity": true,
+    "partition_byte_identity": true,
+    "canonical_partition": [
+      64
+    ],
+    "alternate_partitions": [
+      1,
+      3,
+      17,
+      64,
+      129,
+      7
+    ],
+    "analytic_impulse_max_absolute_error": 6.938893903907228e-18,
+    "nonfinite_inputs_rejected": 3,
+    "scope": "Synthetic data only. One fixed coefficient set; no pilot PCM opened."
+  },
+  "frequency_response": [
+    {
+      "frequency_hz": 0,
+      "LP_real": 1.0000000000000013,
+      "LP_imag": 0.0,
+      "LP_magnitude_db": 1.1571929598639439e-14,
+      "LP_phase_degrees": 0.0,
+      "HP_magnitude_db": -297.50817048286757,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 2.6645352591003757e-15
+    },
+    {
+      "frequency_hz": 27,
+      "LP_real": 0.9954664687529265,
+      "LP_imag": -0.06717870452387553,
+      "LP_magnitude_db": -0.01973364145695051,
+      "LP_phase_degrees": -3.8607318097750665,
+      "HP_magnitude_db": -23.435633865767752,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 1.9984014443252818e-15
+    },
+    {
+      "frequency_hz": 31,
+      "LP_real": 0.9940323049384063,
+      "LP_imag": -0.07702000829165459,
+      "LP_magnitude_db": -0.02599501288291576,
+      "LP_phase_degrees": -4.430562308590229,
+      "HP_magnitude_db": -22.241933766295944,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 1.9984014443252818e-15
+    },
+    {
+      "frequency_hz": 130,
+      "LP_real": 0.9045011118342485,
+      "LP_imag": -0.2939027909443161,
+      "LP_magnitude_db": -0.43590894958746906,
+      "LP_phase_degrees": -18.000719892598315,
+      "HP_magnitude_db": -10.200016846077622,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 3.3306690738754696e-15
+    },
+    {
+      "frequency_hz": 250,
+      "LP_real": 0.7191573759478878,
+      "LP_imag": -0.4494107748682014,
+      "LP_magnitude_db": -1.4317606090107524,
+      "LP_phase_degrees": -32.001797486280424,
+      "HP_magnitude_db": -5.515369777893745,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 1.9984014443252818e-15
+    },
+    {
+      "frequency_hz": 261,
+      "LP_real": 0.7014371265483179,
+      "LP_imag": -0.45762766967039636,
+      "LP_magnitude_db": -1.5401125096043666,
+      "LP_phase_degrees": -33.1210073376907,
+      "HP_magnitude_db": -5.249641981432519,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 8.881784197001252e-16
+    },
+    {
+      "frequency_hz": 400,
+      "LP_real": 0.5,
+      "LP_imag": -0.49999999999999994,
+      "LP_magnitude_db": -3.0102999566398125,
+      "LP_phase_degrees": -45.0,
+      "HP_magnitude_db": -3.0102999566398125,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 2.220446049250313e-16
+    },
+    {
+      "frequency_hz": 600,
+      "LP_real": 0.3075705910828754,
+      "LP_imag": -0.46148772744657723,
+      "LP_magnitude_db": -5.120551927360861,
+      "LP_phase_degrees": -56.31748789125532,
+      "HP_magnitude_db": -1.5962449501502505,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 6.661338147750939e-16
+    },
+    {
+      "frequency_hz": 750,
+      "LP_real": 0.2212550280346495,
+      "LP_imag": -0.4150918459859653,
+      "LP_magnitude_db": -6.551068511481422,
+      "LP_phase_degrees": -61.9411938828469,
+      "HP_magnitude_db": -1.086047443838203,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 8.881784197001252e-16
+    },
+    {
+      "frequency_hz": 784,
+      "LP_real": 0.2063304216821318,
+      "LP_imag": -0.40467045700249205,
+      "LP_magnitude_db": -6.854367342438355,
+      "LP_phase_degrees": -62.98420658519948,
+      "HP_magnitude_db": -1.0036026606186694,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 6.661338147750939e-16
+    },
+    {
+      "frequency_hz": 2000,
+      "LP_real": 0.03805635168244013,
+      "LP_imag": -0.19133234378709382,
+      "LP_magnitude_db": -14.195728482121444,
+      "LP_phase_degrees": -78.75058124076568,
+      "HP_magnitude_db": -0.1685036864986839,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 2.220446049250313e-16
+    },
+    {
+      "frequency_hz": 8000,
+      "LP_real": 0.0020528844613320594,
+      "LP_imag": -0.04526223731457032,
+      "LP_magnitude_db": -26.87635492528063,
+      "LP_phase_degrees": -87.40310977973479,
+      "HP_magnitude_db": -0.008924727790452449,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 0.0
+    },
+    {
+      "frequency_hz": 18000,
+      "LP_real": 0.00011763410809684292,
+      "LP_imag": -0.010845287931330133,
+      "LP_magnitude_db": -39.29466735993508,
+      "LP_phase_degrees": -89.3785620382993,
+      "HP_magnitude_db": -0.0005109084910217657,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 2.220446049250313e-16
+    },
+    {
+      "frequency_hz": 24000,
+      "LP_real": -9.561050756597338e-35,
+      "LP_imag": -1.6034252516214207e-18,
+      "LP_magnitude_db": -355.89902562353535,
+      "LP_phase_degrees": -90.00000000000001,
+      "HP_magnitude_db": 0.0,
+      "complement_sum_residual": 0.0,
+      "magnitude_squared_sum_residual": 0.0
+    }
+  ],
+  "candidate_PCM_opened": false
+}

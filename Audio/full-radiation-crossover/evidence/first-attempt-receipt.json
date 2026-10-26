@@ -1,0 +1,50 @@
+{
+  "archived_at_utc": "2026-10-26T22:02:01.113261+00:00",
+  "status": "Original frozen attempt stopped at immutable proceduralIR hash assertion before room processing or comparison export. No gain/filter/recipe adjustment occurred.",
+  "files": [
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/export.py",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/export.py",
+      "sha256": "d214e152c4802ba836ce95b9b30e91625121a96e979606af2da282545ef806fc",
+      "bytes": 15065
+    },
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/recipe.json",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/recipe.json",
+      "sha256": "699043bffa69fe8493bfafa6598d91e49dc4d83bd479697a282536482a2915ca",
+      "bytes": 10085
+    },
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/freeze.json",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/freeze.json",
+      "sha256": "29c4294a5de73644e54766a8cb44232c4e9bf6247e373062c08aab5b880a54e8",
+      "bytes": 6778
+    },
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/opening-started.json",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/opening-started.json",
+      "sha256": "065b07ee68430fed5e82accbfb0fe7c1de14dc3c6824085c561a5bad82e99916",
+      "bytes": 320
+    },
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/failure.json",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/failure.json",
+      "sha256": "16d77eeed643fc8aab27fae92b22dad2d5c5b01b32bc9994946232f0f7e036d1",
+      "bytes": 155
+    },
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/run.log",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/run.log",
+      "sha256": "0dff2302ca99b612fd6cfa2c0a1d5c5d244ae2b4f5ac4a07391b456414760fff",
+      "bytes": 519
+    },
+    {
+      "original_path": "out/full-radiation-crossover/v1/music-listening/compatibility.wav",
+      "archived_path": "out/full-radiation-crossover/v1/music-listening/attempt-1-ir-thread-mismatch/compatibility.wav",
+      "sha256": "414720a2b3259935081c040839ca9d1749b3cb01972ab7a1de9a79986ce82bcf",
+      "bytes": 3456058
+    }
+  ],
+  "cause": "OPENBLAS_NUM_THREADS was not pinned; np.linalg.norm diffuse-tail reduction reconstructed a different binary64 IR. Setting only OPENBLAS_NUM_THREADS=1 reproduces EXACT historical IR SHA38dd2ac037e8fb2cb47f3ec561c37eab0478cef092b7ded9b617b92d6458b374.",
+  "authorized_correction": "Explicitly pin deterministic historical numerical environment before NumPy import, preserve filter/coefficient/audio/gains/room source/fade and fixed safety, and refreeze before transparent retry. Require compatibility raw PCM identical to this attempt and old presentation PCM24 identical to prior old-room."
+}

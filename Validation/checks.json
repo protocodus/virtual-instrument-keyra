@@ -795,5 +795,85 @@
     "sound_validation_passed": false,
     "review_command": "python3 tools/check_causal_radiation_review.py",
     "limits": "A source/evidence or numerical replay pass preserves the failed pilot. It does not establish perceived click removal, sound parity, fresh generalization, real-time budget or Reason host readiness. Separate post-hoc compatibility experiments do not rewrite this result."
+  },
+  "radiation_crossover_400hz": {
+    "scope": "Separate one-run fixed400Hz post-hoc compatibility experiment on six already observed TRAIN cases. Original failed radiation-startup pilot remains unchanged.",
+    "protocol": {
+      "path": "Validation/full-radiation-crossover-protocol.json",
+      "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815"
+    },
+    "result": {
+      "path": "Validation/full-radiation-crossover.json",
+      "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec"
+    },
+    "margins_and_C6_signed_bands": {
+      "path": "Validation/full-radiation-crossover-margins.json",
+      "sha256": "de6e106aaed99afde93cb29596a5aa9d03dc194f431e85e2417b1b19a1eaa660"
+    },
+    "review": {
+      "path": "Validation/full-radiation-crossover-review.json",
+      "sha256": "ab4871510eb3dd84518abd64d9be9c1f283b06b8231040beb64cff48843364ef"
+    },
+    "package": {
+      "path": "tools/experiments/radiation_crossover/index.json",
+      "sha256": "77bedfdd9ff38b42944bd51c2ee14c927f5bdd4c0d77d947509d7dd1989e5c7f"
+    },
+    "independent_source_review": {
+      "path": "tools/experiments/radiation_crossover/evidence/independent-review.json",
+      "sha256": "2708da8960308aaf5a18e0a4661a50555f0eacd458fc57489418baec43469b08"
+    },
+    "independent_stored_result_review": {
+      "path": "tools/experiments/radiation_crossover/evidence/independent-result-review.json",
+      "sha256": "85517c9037a1e56ba32a17fa3dcd0b29794097f618d1f279000a423c98b69bdc"
+    },
+    "matched_music": {
+      "path": "Audio/full-radiation-crossover/manifest.json",
+      "sha256": "56b18dde3d3ca147ff6c42f8170b430909447a175b6f185b631b3cbf4c700685"
+    },
+    "replay_environment_addendum": {
+      "path": "docs/REPLAY_ENVIRONMENT.md",
+      "sha256": "b5cfc8e264d08f40a7ca8858206104c80737337df502a47993f77b268edec40b"
+    },
+    "IR_environment_receipt": {
+      "path": "Audio/full-radiation-crossover/environment-receipt.json",
+      "sha256": "59d426fefc70496d0c27f1075f7a814cfb6f4183f96fbf5fda0ce11f71d3ec05"
+    },
+    "original_source_package_commit": "85a606b",
+    "training_cases": 6,
+    "fresh_cases": 0,
+    "cases_passing_all_unchanged_gates": 6,
+    "cutoff_variants": 1,
+    "full_instrument_renders": 0,
+    "gate_gain_or_onset_changes": false,
+    "state_force_proof_inherited_from_unchanged_source_pairs": true,
+    "C6_first5_individual_LF_absolute_error_worsening_db": {
+      "C6v4": 1.066723096146454,
+      "C6v12": 1.355778549729287
+    },
+    "C6_LF_signed_errors_20_to_50_and_50_to_100_ms_db": {
+      "C6v4": [
+        -35.98153914747121,
+        -36.043218060823975
+      ],
+      "C6v12": [
+        -36.445508071917196,
+        -37.999000948762536
+      ]
+    },
+    "smallest_numerical_gate_margin_db": 0.22332144746906835,
+    "stored_evidence_verifier_passed": true,
+    "PCM_features_independently_recomputed_by_publication_review": false,
+    "review_command": "python3 tools/experiments/radiation_crossover/check.py",
+    "original_failed_pilot_cases_passing": 4,
+    "original_failed_package_unchanged": true,
+    "required_environment_for_NumPy_based_presentation_and_numeric_replay": {
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "listener_verdict": null,
+    "broader_TRAIN34_qualified_by_this_study": false,
+    "default_changed": false,
+    "fix_applied": false,
+    "sound_validation_passed": false,
+    "limits": "Relative five-band guards can pass despite individual LF regressions and large inherited deficits. Six post-hoc TRAIN passes and exact presentation reproduction do not establish perceived click removal, acoustic realism, realtime or Reason host readiness."
   }
 }
