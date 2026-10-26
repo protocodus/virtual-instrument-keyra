@@ -1,0 +1,40 @@
+id,split,metric,label,units,baseline,candidate,increase
+C2v4,train,attack_rise10_90_error_ms,Attack-rise error,ms,16.822916666666668,44.729166666666664,27.906249999999996
+C2v12,train,attack_rise10_90_error_ms,Attack-rise error,ms,33.65625,45.635416666666664,11.979166666666664
+C3v4,train,attack_rise10_90_error_ms,Attack-rise error,ms,5.499999999999995,31.770833333333332,26.270833333333336
+C3v12,train,attack_rise10_90_error_ms,Attack-rise error,ms,1.9791666666666672,25.156249999999996,23.17708333333333
+C4v4,train,absolute_f1_error_cents,Fundamental tuning error,cents,0.34839978657687837,1.042747417473883,0.6943476308970047
+C4v12,train,absolute_f1_error_cents,Fundamental tuning error,cents,0.5273971635487273,1.0108691370401217,0.48347197349139437
+C5v4,train,attack_rise10_90_error_ms,Attack-rise error,ms,12.75,17.374999999999996,4.6249999999999964
+C5v12,train,partial_decay_slope_mae_db_per_second,Partial decay-rate error,dB/s,2.412096194537203,3.4532542393674786,1.0411580448302757
+C6v12,train,partial_decay_slope_mae_db_per_second,Partial decay-rate error,dB/s,5.115678813387838,9.956787236644878,4.84110842325704
+C6v12,train,attack_rise10_90_error_ms,Attack-rise error,ms,5.916666666666667,7.385416666666667,1.46875
+C2v8,heldout_velocity,attack_rise10_90_error_ms,Attack-rise error,ms,17.375,45.38541666666667,28.01041666666667
+C3v6,heldout_velocity,attack_rise10_90_error_ms,Attack-rise error,ms,5.437500000000002,32.125,26.6875
+C3v8,heldout_velocity,attack_rise10_90_error_ms,Attack-rise error,ms,4.958333333333332,32.0,27.041666666666668
+C4v6,heldout_velocity,absolute_f1_error_cents,Fundamental tuning error,cents,0.4148685947391753,1.0580437880737121,0.6431751933345369
+C4v8,heldout_velocity,absolute_f1_error_cents,Fundamental tuning error,cents,0.5248885137816144,1.0445710691886252,0.5196825554070108
+C5v6,heldout_velocity,attack_rise10_90_error_ms,Attack-rise error,ms,13.927083333333336,17.54166666666667,3.6145833333333357
+C5v8,heldout_velocity,attack_rise10_90_error_ms,Attack-rise error,ms,13.739583333333334,17.104166666666668,3.364583333333334
+C6v8,heldout_velocity,partial_decay_slope_mae_db_per_second,Partial decay-rate error,dB/s,3.9593041301294574,6.339465823303283,2.3801616931738256
+F#2v8,heldout_pitch,envelope_mae_db,Amplitude-envelope error,dB,3.465962021189084,3.9788167235385092,0.5128547023494252
+F#2v8,heldout_pitch,attack_rise10_90_error_ms,Attack-rise error,ms,11.781249999999996,36.8125,25.031250000000004
+F#3v8,heldout_pitch,envelope_mae_db,Amplitude-envelope error,dB,2.930057941900542,5.324356461178698,2.3942985192781556
+F#3v8,heldout_pitch,attack_rise10_90_error_ms,Attack-rise error,ms,4.16666666666667,16.760416666666664,12.593749999999995
+F#4v8,heldout_pitch,envelope_mae_db,Amplitude-envelope error,dB,5.586007444084639,6.654983309121954,1.0689758650373156
+F#4v8,heldout_pitch,absolute_f1_error_cents,Fundamental tuning error,cents,3.5158811624353272,5.474809668031575,1.9589285055962482
+F#4v8,heldout_pitch,attack_rise10_90_error_ms,Attack-rise error,ms,7.104166666666669,13.302083333333332,6.197916666666663
+F#5v8,heldout_pitch,log_band_mae_db,Log-frequency band error,dB,13.896238267750165,15.638364693416706,1.742126425666541
+F#5v8,heldout_pitch,harmonic_level_mae_db,Partial-level error,dB,3.6886498256377425,6.305208106166153,2.61655828052841
+F#5v8,heldout_pitch,envelope_mae_db,Amplitude-envelope error,dB,5.820583266814739,5.971048680945244,0.15046541413050463
+F#5v8,heldout_pitch,absolute_f1_error_cents,Fundamental tuning error,cents,1.5778095121989615,4.166608758555544,2.588799246356582
+F#5v8,heldout_pitch,attack_rise10_90_error_ms,Attack-rise error,ms,14.645833333333334,15.34375,0.6979166666666661
+F#5v8,heldout_pitch,partial_tuning_mae_cents,Partial tuning error,cents,1.6755657230413596,3.382610196801288,1.7070444737599282
+C1v8,edge_extrapolation,log_band_mae_db,Log-frequency band error,dB,5.920905004401733,8.480445373877343,2.5595403694756103
+C1v8,edge_extrapolation,harmonic_level_mae_db,Partial-level error,dB,7.295209182629894,8.586865823980329,1.2916566413504347
+C1v8,edge_extrapolation,envelope_mae_db,Amplitude-envelope error,dB,3.7764304805813467,6.53597928249258,2.759548801911233
+C1v8,edge_extrapolation,partial_decay_slope_mae_db_per_second,Partial decay-rate error,dB/s,4.419528754633828,4.949560954584727,0.5300321999508988
+C7v8,edge_extrapolation,log_band_mae_db,Log-frequency band error,dB,28.317581392419132,29.38607468065615,1.0684932882370184
+C7v8,edge_extrapolation,harmonic_level_mae_db,Partial-level error,dB,6.99513883901443,9.82564289896516,2.83050405995073
+C7v8,edge_extrapolation,partial_decay_slope_mae_db_per_second,Partial decay-rate error,dB/s,8.081109513239351,12.401189842069465,4.320080328830114
+C7v8,edge_extrapolation,attack_rise10_90_error_ms,Attack-rise error,ms,7.552083333333331,9.999999999999998,2.447916666666667

@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "locked_before_fitting": true,
+  "rule": "Only C2\u2013C6 at layers4/12 are fitting data. All layer8/layer6 cases, F# pitches and edge notes are excluded from parameter fitting.",
+  "physical_velocity_caveat": "MIDI velocities are SFZ-bin midpoints, not measured physical hammer speeds.",
+  "samples": [
+    {
+      "id": "C2v4",
+      "midi": 36,
+      "layer": 4,
+      "midi_velocity": 40,
+      "split": "train"
+    },
+    {
+      "id": "C2v8",
+      "midi": 36,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C2v12",
+      "midi": 36,
+      "layer": 12,
+      "midi_velocity": 93,
+      "split": "train"
+    },
+    {
+      "id": "C3v4",
+      "midi": 48,
+      "layer": 4,
+      "midi_velocity": 40,
+      "split": "train"
+    },
+    {
+      "id": "C3v8",
+      "midi": 48,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C3v12",
+      "midi": 48,
+      "layer": 12,
+      "midi_velocity": 93,
+      "split": "train"
+    },
+    {
+      "id": "C4v4",
+      "midi": 60,
+      "layer": 4,
+      "midi_velocity": 40,
+      "split": "train"
+    },
+    {
+      "id": "C4v8",
+      "midi": 60,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C4v12",
+      "midi": 60,
+      "layer": 12,
+      "midi_velocity": 93,
+      "split": "train"
+    },
+    {
+      "id": "C5v4",
+      "midi": 72,
+      "layer": 4,
+      "midi_velocity": 40,
+      "split": "train"
+    },
+    {
+      "id": "C5v8",
+      "midi": 72,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C5v12",
+      "midi": 72,
+      "layer": 12,
+      "midi_velocity": 93,
+      "split": "train"
+    },
+    {
+      "id": "C6v4",
+      "midi": 84,
+      "layer": 4,
+      "midi_velocity": 40,
+      "split": "train"
+    },
+    {
+      "id": "C6v8",
+      "midi": 84,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C6v12",
+      "midi": 84,
+      "layer": 12,
+      "midi_velocity": 93,
+      "split": "train"
+    },
+    {
+      "id": "F#2v8",
+      "midi": 42,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_pitch"
+    },
+    {
+      "id": "F#3v8",
+      "midi": 54,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_pitch"
+    },
+    {
+      "id": "F#4v8",
+      "midi": 66,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_pitch"
+    },
+    {
+      "id": "F#5v8",
+      "midi": 78,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "heldout_pitch"
+    },
+    {
+      "id": "C3v6",
+      "midi": 48,
+      "layer": 6,
+      "midi_velocity": 49,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C4v6",
+      "midi": 60,
+      "layer": 6,
+      "midi_velocity": 49,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C5v6",
+      "midi": 72,
+      "layer": 6,
+      "midi_velocity": 49,
+      "split": "heldout_velocity"
+    },
+    {
+      "id": "C1v8",
+      "midi": 24,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "edge_extrapolation"
+    },
+    {
+      "id": "C7v8",
+      "midi": 96,
+      "layer": 8,
+      "midi_velocity": 61,
+      "split": "edge_extrapolation"
+    }
+  ]
+}

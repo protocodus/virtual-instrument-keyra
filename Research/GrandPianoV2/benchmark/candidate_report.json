@@ -1,0 +1,1000 @@
+{
+  "schema_version": 1,
+  "analysis": {
+    "windows_seconds_after_onset": [
+      [
+        0.05,
+        0.25
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.75,
+        1.5
+      ],
+      [
+        1.5,
+        3.5
+      ]
+    ],
+    "early_gain_window_seconds": [
+      0.05,
+      0.75
+    ],
+    "maximum_analysis_seconds": 4.0,
+    "channel_combination": "mean stereo power; no mono waveform summation",
+    "onset": "first 1ms RMS envelope crossing a noise-aware threshold near -45dB of the first-second peak",
+    "pitch": "joint stiff-string fit to dominant partial peaks; normalized f1 convention",
+    "partial_levels": "Hann-window power integrated around each fitted partial, with bandwidth covering window leakage and unison splitting",
+    "decay": "Theil-Sen regression of partial-band dB power from 0.25 to 3.5 seconds; not a physical loss identification in isolation",
+    "gain": "one scalar from 0.05\u20130.75s RMS, applied unchanged to all windows",
+    "limits": "one piano/recording setup; microphone, room, library editing, unknown physical hammer velocities and acquisition pedal state are confounds; metrics are not perceptual scores"
+  },
+  "reference_features_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+  "model_dir": "/Users/vojta/Dev/reason-rack-extension/experiments/grand-piano-poc-v2-20261025/benchmark/candidate",
+  "cases": [
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "midi": 24,
+      "layer": 8,
+      "early_gain_db": 1.3390992214055313,
+      "f1_error_cents": 8.075746379199614,
+      "absolute_f1_error_cents": 8.075746379199614,
+      "reference_f1_hz": 32.23448722095015,
+      "model_f1_hz": 32.385203783409146,
+      "reference_B": 0.00025348922361184245,
+      "model_B": 0.00018348755463934937,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 8.480445373877343,
+      "log_band_mae_by_window_db": [
+        8.61157467874048,
+        8.389309364815887,
+        5.327342745156826,
+        11.577998106735736
+      ],
+      "harmonic_level_mae_db": 8.586865823980329,
+      "partial_tuning_mae_cents": 5.836406693436854,
+      "partial_decay_slope_mae_db_per_second": 4.949560954584727,
+      "partial_decay_pairs": 25,
+      "envelope_mae_db": 6.53597928249258,
+      "attack_rise10_90_error_ms": 25.583333333333332,
+      "reference_sha256": "19a422d06d0dbd881639b7655878c8f2473a1af623527eec75b691aa764f3e4b",
+      "model_sha256": "f498f0d8485111cb2cd9dd3bcf2abf7ae7fa81f9084e217b4d6fd5f6edf9837b"
+    },
+    {
+      "id": "C2v12",
+      "split": "train",
+      "midi": 36,
+      "layer": 12,
+      "early_gain_db": -0.10693144050372344,
+      "f1_error_cents": 0.34702466049326547,
+      "absolute_f1_error_cents": 0.34702466049326547,
+      "reference_f1_hz": 65.014200768152,
+      "model_f1_hz": 65.02723412567731,
+      "reference_B": 0.00011385705387554913,
+      "model_B": 0.00011707493400246986,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 5.640236939658226,
+      "log_band_mae_by_window_db": [
+        4.984476769817646,
+        3.588824309860863,
+        5.978975339145589,
+        8.529704737047815
+      ],
+      "harmonic_level_mae_db": 5.452790963036625,
+      "partial_tuning_mae_cents": 0.4506719292622058,
+      "partial_decay_slope_mae_db_per_second": 2.933965974457374,
+      "partial_decay_pairs": 11,
+      "envelope_mae_db": 2.9863170068279157,
+      "attack_rise10_90_error_ms": 45.635416666666664,
+      "reference_sha256": "a50bf007825a6a391af4675efabb18b0be0e54427eed6a98a36f0663d91d8872",
+      "model_sha256": "58cf02380f2f9626c6b518f412448e99eec0220e3ccd8734dffce0299a5d2608"
+    },
+    {
+      "id": "C2v4",
+      "split": "train",
+      "midi": 36,
+      "layer": 4,
+      "early_gain_db": -0.8060841015039173,
+      "f1_error_cents": 0.3410121285477101,
+      "absolute_f1_error_cents": 0.3410121285477101,
+      "reference_f1_hz": 65.01421446843138,
+      "model_f1_hz": 65.02702199111283,
+      "reference_B": 0.00011463315516257127,
+      "model_B": 0.00011727820269605357,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 5.262701489160737,
+      "log_band_mae_by_window_db": [
+        5.6178490467346895,
+        2.2743990052248155,
+        4.896172459028552,
+        8.79015457818311
+      ],
+      "harmonic_level_mae_db": 5.056711638417427,
+      "partial_tuning_mae_cents": 0.426205786508764,
+      "partial_decay_slope_mae_db_per_second": 3.089604506072058,
+      "partial_decay_pairs": 10,
+      "envelope_mae_db": 3.026056540995179,
+      "attack_rise10_90_error_ms": 44.729166666666664,
+      "reference_sha256": "6f100bd76c132c26b7b4dca012903da14497711c6ead4ca8b8545f019e7f9f14",
+      "model_sha256": "a30bd72ee8acc2943c1dd9e276d22dc0cd0929000eca3da11cf4761b1c913cbe"
+    },
+    {
+      "id": "C2v8",
+      "split": "heldout_velocity",
+      "midi": 36,
+      "layer": 8,
+      "early_gain_db": -0.26565970580404746,
+      "f1_error_cents": 0.3773827678128502,
+      "absolute_f1_error_cents": 0.3773827678128502,
+      "reference_f1_hz": 65.01296855311672,
+      "model_f1_hz": 65.0271419390481,
+      "reference_B": 0.00011461181493987795,
+      "model_B": 0.00011716260880196255,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 5.226507689073129,
+      "log_band_mae_by_window_db": [
+        4.582609758123463,
+        2.5158654262376445,
+        5.30165976314942,
+        8.927926359298759
+      ],
+      "harmonic_level_mae_db": 5.030184602563842,
+      "partial_tuning_mae_cents": 0.45954100940594583,
+      "partial_decay_slope_mae_db_per_second": 2.9439561528524134,
+      "partial_decay_pairs": 11,
+      "envelope_mae_db": 3.0720232248535413,
+      "attack_rise10_90_error_ms": 45.38541666666667,
+      "reference_sha256": "04d7143a524408ea611af50aa7f2a4836d0578984c8ef7101cc28a55629dae69",
+      "model_sha256": "1abce8a7c5597d91b00421715b318b85a89c9cf46bd95579bb03e3e181f61c7b"
+    },
+    {
+      "id": "C3v12",
+      "split": "train",
+      "midi": 48,
+      "layer": 12,
+      "early_gain_db": -0.4724597654395589,
+      "f1_error_cents": 0.7060494212312663,
+      "absolute_f1_error_cents": 0.7060494212312663,
+      "reference_f1_hz": 130.5361741198493,
+      "model_f1_hz": 130.5894215629794,
+      "reference_B": 8.998103048126795e-05,
+      "model_B": 8.97812735516049e-05,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 7.366513930922137,
+      "log_band_mae_by_window_db": [
+        10.430177739887887,
+        6.323293009211585,
+        5.815852963731391,
+        5.714732531690312
+      ],
+      "harmonic_level_mae_db": 4.228417803757802,
+      "partial_tuning_mae_cents": 0.6996042655362597,
+      "partial_decay_slope_mae_db_per_second": 2.6999240145906294,
+      "partial_decay_pairs": 16,
+      "envelope_mae_db": 3.7776189245835408,
+      "attack_rise10_90_error_ms": 25.156249999999996,
+      "reference_sha256": "17e82bb739a424d6b78a34e1517516f537960a5a9e231eba848c15cd4c5197f9",
+      "model_sha256": "619cc96877bc0e3ed08fb7f7b8dbb3da2a89c80d5e61071a08053d06d3e708c6"
+    },
+    {
+      "id": "C3v4",
+      "split": "train",
+      "midi": 48,
+      "layer": 4,
+      "early_gain_db": -1.3968577133531155,
+      "f1_error_cents": 0.6998912430493691,
+      "absolute_f1_error_cents": 0.6998912430493691,
+      "reference_f1_hz": 130.53447722932643,
+      "model_f1_hz": 130.58725946708714,
+      "reference_B": 9.355492507668998e-05,
+      "model_B": 9.095876302257726e-05,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 9.065851401523185,
+      "log_band_mae_by_window_db": [
+        10.474551683052225,
+        7.179233809331978,
+        9.795218485287894,
+        8.526520181143034
+      ],
+      "harmonic_level_mae_db": 4.1190068140545115,
+      "partial_tuning_mae_cents": 0.6161394248456616,
+      "partial_decay_slope_mae_db_per_second": 2.982190296714066,
+      "partial_decay_pairs": 13,
+      "envelope_mae_db": 4.019336419771963,
+      "attack_rise10_90_error_ms": 31.770833333333332,
+      "reference_sha256": "4a3ffe497dd0884f64437feddf106c20d4db93bcf00520a4cf4ff57e155da647",
+      "model_sha256": "b7efa660aeac787e97c5abfa6963d9e67567b0577bc1535c8da2a776cedde3e1"
+    },
+    {
+      "id": "C3v6",
+      "split": "heldout_velocity",
+      "midi": 48,
+      "layer": 6,
+      "early_gain_db": -1.382498943321793,
+      "f1_error_cents": 0.6715607009352773,
+      "absolute_f1_error_cents": 0.6715607009352773,
+      "reference_f1_hz": 130.53719177972258,
+      "model_f1_hz": 130.58783811087596,
+      "reference_B": 8.97253535703371e-05,
+      "model_B": 9.06220109470752e-05,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 9.167727871183752,
+      "log_band_mae_by_window_db": [
+        10.963943844139594,
+        7.1197941091854,
+        9.544925546133856,
+        8.415624908533635
+      ],
+      "harmonic_level_mae_db": 4.063404567635023,
+      "partial_tuning_mae_cents": 0.7004907768768011,
+      "partial_decay_slope_mae_db_per_second": 2.8758446507542166,
+      "partial_decay_pairs": 14,
+      "envelope_mae_db": 3.9309380974748818,
+      "attack_rise10_90_error_ms": 32.125,
+      "reference_sha256": "1e5b89d07c5ed2029276c93a13dea87463d842bf5400245b04826111ed801e71",
+      "model_sha256": "bd59f32cb7eaf5084fa9419f8435723329b6f05b3dd3c4f36772c9f02485524f"
+    },
+    {
+      "id": "C3v8",
+      "split": "heldout_velocity",
+      "midi": 48,
+      "layer": 8,
+      "early_gain_db": -0.268180177218543,
+      "f1_error_cents": 0.6789507206185589,
+      "absolute_f1_error_cents": 0.6789507206185589,
+      "reference_f1_hz": 130.53721986528052,
+      "model_f1_hz": 130.58842364146957,
+      "reference_B": 8.979826213301967e-05,
+      "model_B": 9.029697761654413e-05,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 7.583231884029567,
+      "log_band_mae_by_window_db": [
+        9.298484041918966,
+        6.2374514022294845,
+        7.561004981556135,
+        6.630773321324218
+      ],
+      "harmonic_level_mae_db": 3.951605370387516,
+      "partial_tuning_mae_cents": 0.695041592149062,
+      "partial_decay_slope_mae_db_per_second": 2.729894017767164,
+      "partial_decay_pairs": 15,
+      "envelope_mae_db": 3.857986084494679,
+      "attack_rise10_90_error_ms": 32.0,
+      "reference_sha256": "1c3c8fe61effac8c437fbc1d62be54188a4954e490af52448b03d0188695315a",
+      "model_sha256": "525ce9e3a27ad4ba240beb12938ec532ad91a070d5cd1c589c88430f563d7c4b"
+    },
+    {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "early_gain_db": -0.6344325057592379,
+      "f1_error_cents": 1.0108691370401217,
+      "absolute_f1_error_cents": 1.0108691370401217,
+      "reference_f1_hz": 261.59507910215393,
+      "model_f1_hz": 261.7478693097783,
+      "reference_B": 0.00028179848323789684,
+      "model_B": 0.00025680364957577696,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 8.689712295595877,
+      "log_band_mae_by_window_db": [
+        12.663590789124996,
+        7.57807685581256,
+        4.860603909192057,
+        4.412721829961547
+      ],
+      "harmonic_level_mae_db": 4.503483416677144,
+      "partial_tuning_mae_cents": 0.6338831216038178,
+      "partial_decay_slope_mae_db_per_second": 2.1630285067611372,
+      "partial_decay_pairs": 13,
+      "envelope_mae_db": 2.9621686897114197,
+      "attack_rise10_90_error_ms": 1.84375,
+      "reference_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+      "model_sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47"
+    },
+    {
+      "id": "C4v4",
+      "split": "train",
+      "midi": 60,
+      "layer": 4,
+      "early_gain_db": -1.9058432723467331,
+      "f1_error_cents": 1.042747417473883,
+      "absolute_f1_error_cents": 1.042747417473883,
+      "reference_f1_hz": 261.6038708567966,
+      "model_f1_hz": 261.7614861307654,
+      "reference_B": 0.00028024742855009923,
+      "model_B": 0.00025238364197167895,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 11.71230527141154,
+      "log_band_mae_by_window_db": [
+        13.272680451058019,
+        11.583706606745595,
+        10.86358818406908,
+        9.884846211748213
+      ],
+      "harmonic_level_mae_db": 3.768589065966034,
+      "partial_tuning_mae_cents": 0.6899540198406959,
+      "partial_decay_slope_mae_db_per_second": 1.6414468430359364,
+      "partial_decay_pairs": 7,
+      "envelope_mae_db": 3.5401317848295295,
+      "attack_rise10_90_error_ms": 1.4895833333333341,
+      "reference_sha256": "7b62800efbcb1bb8dc312dd9a8a2f7b6f0ab3b0613b41d5aa4aabd0ab7afcd0b",
+      "model_sha256": "21c8e1a44509bf2c627eea3920975c005b4bc1177dc2038ad856d0f95350a971"
+    },
+    {
+      "id": "C4v6",
+      "split": "heldout_velocity",
+      "midi": 60,
+      "layer": 6,
+      "early_gain_db": -1.4940056691162873,
+      "f1_error_cents": 1.0580437880737121,
+      "absolute_f1_error_cents": 1.0580437880737121,
+      "reference_f1_hz": 261.5981140866269,
+      "model_f1_hz": 261.7580386529845,
+      "reference_B": 0.0002813449861081294,
+      "model_B": 0.0002536748566780413,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 11.066729654599019,
+      "log_band_mae_by_window_db": [
+        12.764907746092629,
+        11.797414401325666,
+        9.268993546979416,
+        9.090349023355069
+      ],
+      "harmonic_level_mae_db": 3.547423501337023,
+      "partial_tuning_mae_cents": 0.6896107208656825,
+      "partial_decay_slope_mae_db_per_second": 1.6093472350506672,
+      "partial_decay_pairs": 9,
+      "envelope_mae_db": 3.4114987863082487,
+      "attack_rise10_90_error_ms": 1.4374999999999996,
+      "reference_sha256": "30a37797ce9c453caa458c847ec94a36de3345ddc2bab62c1f272e2d184bb20a",
+      "model_sha256": "fd9b40ef3e86bbf81cfad818d82cf47523b6a56f07fdd4247df04e802ff0fd88"
+    },
+    {
+      "id": "C4v8",
+      "split": "heldout_velocity",
+      "midi": 60,
+      "layer": 8,
+      "early_gain_db": -1.7009973630682929,
+      "f1_error_cents": 1.0445710691886252,
+      "absolute_f1_error_cents": 1.0445710691886252,
+      "reference_f1_hz": 261.59670213116004,
+      "model_f1_hz": 261.7545888135682,
+      "reference_B": 0.0002815864138458436,
+      "model_B": 0.00025478554782823617,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 9.92194624740796,
+      "log_band_mae_by_window_db": [
+        13.324323427416202,
+        8.741405765719428,
+        7.521026744463098,
+        6.788193274337431
+      ],
+      "harmonic_level_mae_db": 3.487862188686454,
+      "partial_tuning_mae_cents": 0.6718685173903374,
+      "partial_decay_slope_mae_db_per_second": 1.6061342478511456,
+      "partial_decay_pairs": 11,
+      "envelope_mae_db": 3.2107188001361853,
+      "attack_rise10_90_error_ms": 1.4791666666666652,
+      "reference_sha256": "11a1bbdf4a5ad7c60b294cc5572a49d4c4758724ba4eab9ae1e309f22552f266",
+      "model_sha256": "76c2702947aa3a896a850bcb84e962469d045977922dd313f0f376cf0ebcf8bf"
+    },
+    {
+      "id": "C5v12",
+      "split": "train",
+      "midi": 72,
+      "layer": 12,
+      "early_gain_db": -2.025991488786599,
+      "f1_error_cents": 1.0997793191055603,
+      "absolute_f1_error_cents": 1.0997793191055603,
+      "reference_f1_hz": 524.2462083114409,
+      "model_f1_hz": 524.5793454211158,
+      "reference_B": 0.0008335053191012837,
+      "model_B": 0.0007853388871473001,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 13.285188401559843,
+      "log_band_mae_by_window_db": [
+        18.114057921836608,
+        10.98206837437192,
+        6.0230687892113455,
+        7.38602689325796
+      ],
+      "harmonic_level_mae_db": 5.4686970344908135,
+      "partial_tuning_mae_cents": 0.8900749557822265,
+      "partial_decay_slope_mae_db_per_second": 3.4532542393674786,
+      "partial_decay_pairs": 7,
+      "envelope_mae_db": 2.994478009835189,
+      "attack_rise10_90_error_ms": 17.770833333333332,
+      "reference_sha256": "5ee4d9866caf2fab6e164f3f53fcbd7136b27c41042a1dda6b252cf60cb4ed33",
+      "model_sha256": "eacf095175f5f21acb40df673feb48c86cb105bdb0a8eacdc7069dba8cb38b36"
+    },
+    {
+      "id": "C5v4",
+      "split": "train",
+      "midi": 72,
+      "layer": 4,
+      "early_gain_db": -3.2307011918134982,
+      "f1_error_cents": 1.3581014247602838,
+      "absolute_f1_error_cents": 1.3581014247602838,
+      "reference_f1_hz": 524.2186201754068,
+      "model_f1_hz": 524.6300153746917,
+      "reference_B": 0.0008383168784740936,
+      "model_B": 0.0007775411926244284,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 13.177049478159297,
+      "log_band_mae_by_window_db": [
+        17.158624575675415,
+        12.357437312964166,
+        5.500836903421733,
+        10.807231580574202
+      ],
+      "harmonic_level_mae_db": 3.7019684292859183,
+      "partial_tuning_mae_cents": 0.9362782092761397,
+      "partial_decay_slope_mae_db_per_second": 2.621544251065378,
+      "partial_decay_pairs": 5,
+      "envelope_mae_db": 4.191495845200807,
+      "attack_rise10_90_error_ms": 17.374999999999996,
+      "reference_sha256": "33886387891ae3c20c6f8248e4e00ec742b0f52f394cc2375a6d815c7153ef3d",
+      "model_sha256": "a1a9fef1e463f37e901d209bd108658256de18c6a5bd5c4be378af0400ff83e2"
+    },
+    {
+      "id": "C5v6",
+      "split": "heldout_velocity",
+      "midi": 72,
+      "layer": 6,
+      "early_gain_db": -2.562942862558068,
+      "f1_error_cents": 1.2886303385074693,
+      "absolute_f1_error_cents": 1.2886303385074693,
+      "reference_f1_hz": 524.2318505148155,
+      "model_f1_hz": 524.6222035965146,
+      "reference_B": 0.0008380554160526364,
+      "model_B": 0.0007772779578669822,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 13.158841220175876,
+      "log_band_mae_by_window_db": [
+        17.41270134329172,
+        11.883623999522005,
+        6.21703083918421,
+        10.170015771286701
+      ],
+      "harmonic_level_mae_db": 4.730342021885897,
+      "partial_tuning_mae_cents": 1.1122289545668347,
+      "partial_decay_slope_mae_db_per_second": 2.8175967224601934,
+      "partial_decay_pairs": 6,
+      "envelope_mae_db": 4.128723915733491,
+      "attack_rise10_90_error_ms": 17.54166666666667,
+      "reference_sha256": "82334e49bc7b5155511088751302545fc7cac126b6cd57723ee22cc954d12d54",
+      "model_sha256": "9331b956a05e7ed48e94ebc5fdc36b6698ab2d17faef940590f690ea75bdc62c"
+    },
+    {
+      "id": "C5v8",
+      "split": "heldout_velocity",
+      "midi": 72,
+      "layer": 8,
+      "early_gain_db": -3.371443957775844,
+      "f1_error_cents": 1.1989109371585176,
+      "absolute_f1_error_cents": 1.1989109371585176,
+      "reference_f1_hz": 524.2494478494606,
+      "model_f1_hz": 524.6126258270782,
+      "reference_B": 0.000844570070522493,
+      "model_B": 0.0007776267304119313,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 13.285949083745935,
+      "log_band_mae_by_window_db": [
+        17.649830447453045,
+        11.25772321142529,
+        7.01280672300484,
+        10.387559255597214
+      ],
+      "harmonic_level_mae_db": 4.731819765762161,
+      "partial_tuning_mae_cents": 1.2365457189356934,
+      "partial_decay_slope_mae_db_per_second": 3.0200631407405436,
+      "partial_decay_pairs": 6,
+      "envelope_mae_db": 3.8548410017106147,
+      "attack_rise10_90_error_ms": 17.104166666666668,
+      "reference_sha256": "96d4741146cfa9acf65f57dabb1ad73ce29543fc8f329b7e30a76135068f4776",
+      "model_sha256": "90d17aff9fd2749ef07383ecf6a5d011841f50d6ff94002ab859fd1b99bf3961"
+    },
+    {
+      "id": "C6v12",
+      "split": "train",
+      "midi": 84,
+      "layer": 12,
+      "early_gain_db": 1.4648810532394303,
+      "f1_error_cents": 1.3105435074655092,
+      "absolute_f1_error_cents": 1.3105435074655092,
+      "reference_f1_hz": 1050.3441445113315,
+      "model_f1_hz": 1051.1395556486225,
+      "reference_B": 0.0027334517040405568,
+      "model_B": 0.0025903364856985213,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 24.6252896668566,
+      "log_band_mae_by_window_db": [
+        29.022437724779277,
+        22.355198336289686,
+        20.965173970051268,
+        22.48885184873219
+      ],
+      "harmonic_level_mae_db": 7.616968528528694,
+      "partial_tuning_mae_cents": 1.195343310678541,
+      "partial_decay_slope_mae_db_per_second": 9.956787236644878,
+      "partial_decay_pairs": 4,
+      "envelope_mae_db": 4.720480665343447,
+      "attack_rise10_90_error_ms": 7.385416666666667,
+      "reference_sha256": "34c58d8e124895ac7d8bc6dbb1412da8d8b1c8cc3b78d52dff3e6a883bc69969",
+      "model_sha256": "7809dc848ddf946d3403204dfad181e512f1a96cdb3c5039460ec4cb70c30c74"
+    },
+    {
+      "id": "C6v4",
+      "split": "train",
+      "midi": 84,
+      "layer": 4,
+      "early_gain_db": -0.9583298469534558,
+      "f1_error_cents": 1.4234473060547759,
+      "absolute_f1_error_cents": 1.4234473060547759,
+      "reference_f1_hz": 1050.3644434995263,
+      "model_f1_hz": 1051.2284244671523,
+      "reference_B": 0.0026868413857541935,
+      "model_B": 0.0026525257454500556,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 29.66600730383016,
+      "log_band_mae_by_window_db": [
+        31.138873744065176,
+        28.283214074361318,
+        30.596992103688024,
+        28.534699549405257
+      ],
+      "harmonic_level_mae_db": 6.528863092825376,
+      "partial_tuning_mae_cents": 1.2370600287963538,
+      "partial_decay_slope_mae_db_per_second": 3.7733287996030738,
+      "partial_decay_pairs": 2,
+      "envelope_mae_db": 6.688199083792282,
+      "attack_rise10_90_error_ms": 0.7291666666666671,
+      "reference_sha256": "82ba4e56e4844e951ee2b2d1ad3b47672165e458626f4d699ecf7075164e0aed",
+      "model_sha256": "1fa48a625b917b17706e9e395cd50f7dc4237cfc985372a27e257a7198c72d31"
+    },
+    {
+      "id": "C6v8",
+      "split": "heldout_velocity",
+      "midi": 84,
+      "layer": 8,
+      "early_gain_db": -1.1707619665794347,
+      "f1_error_cents": 1.3012297315838794,
+      "absolute_f1_error_cents": 1.3012297315838794,
+      "reference_f1_hz": 1050.3922200004467,
+      "model_f1_hz": 1051.1820123300781,
+      "reference_B": 0.0027719119190991316,
+      "model_B": 0.002572059860786062,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 27.859320330851414,
+      "log_band_mae_by_window_db": [
+        31.416276683173276,
+        25.819111771333358,
+        25.91039470024644,
+        26.8234496485471
+      ],
+      "harmonic_level_mae_db": 6.534888008598361,
+      "partial_tuning_mae_cents": 0.8294108811759607,
+      "partial_decay_slope_mae_db_per_second": 6.339465823303283,
+      "partial_decay_pairs": 3,
+      "envelope_mae_db": 4.201832135595971,
+      "attack_rise10_90_error_ms": 0.7291666666666674,
+      "reference_sha256": "4b261701db447d48cc66b8274523892c98255dd1365ae41141fc9e5b791484d9",
+      "model_sha256": "9777f0488c1c4a8dd015b9a33ae0a84b79922427150d0c11ad09f5a85905ce3c"
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "midi": 96,
+      "layer": 8,
+      "early_gain_db": 8.831480642943365,
+      "f1_error_cents": -15.888546448639024,
+      "absolute_f1_error_cents": 15.888546448639024,
+      "reference_f1_hz": 2121.784827101322,
+      "model_f1_hz": 2102.4010521284204,
+      "reference_B": null,
+      "model_B": 0.008799583719169573,
+      "pitch_fit_confidence": {
+        "reference": "fallback",
+        "model": "good"
+      },
+      "log_band_mae_db": 29.38607468065615,
+      "log_band_mae_by_window_db": [
+        32.37723149502915,
+        28.547139532886117,
+        26.69257637915504,
+        27.690084359559314
+      ],
+      "harmonic_level_mae_db": 9.82564289896516,
+      "partial_tuning_mae_cents": 15.888546448639024,
+      "partial_decay_slope_mae_db_per_second": 12.401189842069465,
+      "partial_decay_pairs": 1,
+      "envelope_mae_db": 8.232511477689494,
+      "attack_rise10_90_error_ms": 9.999999999999998,
+      "reference_sha256": "146eb44af450d6d3130ae9f7cf536effd90e1dc11766a8825aefab4d615a0448",
+      "model_sha256": "5ff3b696c67f166c3c9b105a5946095123fa17e821ca3e5bc9abd700098ac0fa"
+    },
+    {
+      "id": "F#2v8",
+      "split": "heldout_pitch",
+      "midi": 42,
+      "layer": 8,
+      "early_gain_db": 3.781824221998776,
+      "f1_error_cents": -2.057900786215828,
+      "absolute_f1_error_cents": 2.057900786215828,
+      "reference_f1_hz": 92.24868447516697,
+      "model_f1_hz": 92.1390945237404,
+      "reference_B": 8.496860397074778e-05,
+      "model_B": 0.00010897722594950658,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 8.335675882322757,
+      "log_band_mae_by_window_db": [
+        10.127591175880168,
+        6.238242890957218,
+        9.265254556764836,
+        7.500569048450494
+      ],
+      "harmonic_level_mae_db": 6.03127592617504,
+      "partial_tuning_mae_cents": 1.283630436113198,
+      "partial_decay_slope_mae_db_per_second": 3.072162127748716,
+      "partial_decay_pairs": 20,
+      "envelope_mae_db": 3.9788167235385092,
+      "attack_rise10_90_error_ms": 36.8125,
+      "reference_sha256": "93b51634ccff879843fd2302b8487fb6c4a95180383c8eb18cb4009a28dd8400",
+      "model_sha256": "77261b8b2ea89870a509ffb27d7ad7e02f4310f7b214c688eb7b6d5774a8480e"
+    },
+    {
+      "id": "F#3v8",
+      "split": "heldout_pitch",
+      "midi": 54,
+      "layer": 8,
+      "early_gain_db": -2.835331217002543,
+      "f1_error_cents": 3.9980610156028615,
+      "absolute_f1_error_cents": 3.9980610156028615,
+      "reference_f1_hz": 184.46492153236707,
+      "model_f1_hz": 184.8914116713365,
+      "reference_B": 0.00017678795166541772,
+      "model_B": 0.00014403768391961497,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 12.221432669274506,
+      "log_band_mae_by_window_db": [
+        14.416297743778419,
+        12.028773321226478,
+        10.847325184831544,
+        10.612269927718863
+      ],
+      "harmonic_level_mae_db": 6.080384516508283,
+      "partial_tuning_mae_cents": 2.946339368138336,
+      "partial_decay_slope_mae_db_per_second": 3.4641559104533175,
+      "partial_decay_pairs": 15,
+      "envelope_mae_db": 5.324356461178698,
+      "attack_rise10_90_error_ms": 16.760416666666664,
+      "reference_sha256": "a8a44da21e8cf182e18156dfc08864b3a34174e6b5c9991354c83bdd00ee0b44",
+      "model_sha256": "f1e9d24aef117c81c6882b7c3d71b5f20772bff85b1bcd3389c159c966c9b1b7"
+    },
+    {
+      "id": "F#4v8",
+      "split": "heldout_pitch",
+      "midi": 66,
+      "layer": 8,
+      "early_gain_db": -3.2578757053975123,
+      "f1_error_cents": 5.474809668031575,
+      "absolute_f1_error_cents": 5.474809668031575,
+      "reference_f1_hz": 369.3564085531223,
+      "model_f1_hz": 370.526300525631,
+      "reference_B": 0.0005405657040170738,
+      "model_B": 0.00044803613456659064,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 11.593016770167868,
+      "log_band_mae_by_window_db": [
+        14.104638704639031,
+        9.91476771423721,
+        9.510726656671835,
+        9.994205426324
+      ],
+      "harmonic_level_mae_db": 5.067466411914594,
+      "partial_tuning_mae_cents": 3.3906333740728756,
+      "partial_decay_slope_mae_db_per_second": 1.1445862144888088,
+      "partial_decay_pairs": 8,
+      "envelope_mae_db": 6.654983309121954,
+      "attack_rise10_90_error_ms": 13.302083333333332,
+      "reference_sha256": "073145ed2a9f8983b06c9ca875eaea1a63d58a08d4da4e9e88393802bf868832",
+      "model_sha256": "a4222e4c8bf9bb0fa61adad1dade5cea8b397bf3d3eac6df0a02ed72d56e9b60"
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "midi": 78,
+      "layer": 8,
+      "early_gain_db": 0.1940885163146244,
+      "f1_error_cents": 4.166608758555544,
+      "absolute_f1_error_cents": 4.166608758555544,
+      "reference_f1_hz": 740.9836802294078,
+      "model_f1_hz": 742.7691738362636,
+      "reference_B": 0.0014976820942908709,
+      "model_B": 0.0014312605402146308,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 15.638364693416706,
+      "log_band_mae_by_window_db": [
+        17.670339977613974,
+        15.52957950029853,
+        10.19930403432981,
+        12.948139537449267
+      ],
+      "harmonic_level_mae_db": 6.305208106166153,
+      "partial_tuning_mae_cents": 3.382610196801288,
+      "partial_decay_slope_mae_db_per_second": 2.3155670917254185,
+      "partial_decay_pairs": 3,
+      "envelope_mae_db": 5.971048680945244,
+      "attack_rise10_90_error_ms": 15.34375,
+      "reference_sha256": "970b50a5ee706e71e4bbcfec6aaf57494cbbe426f327321f7303bf950cc36107",
+      "model_sha256": "c139721414cbf247e5b743bc05971cd977209d077eea2edcb106fcce205196b7"
+    }
+  ],
+  "summary": {
+    "train": {
+      "cases": 10,
+      "log_band_mae_db": {
+        "mean": 12.849085617867761,
+        "median": 10.389078336467362,
+        "valid_cases": 10
+      },
+      "harmonic_level_mae_db": {
+        "mean": 5.044549678704035,
+        "median": 4.7800975275472855,
+        "valid_cases": 10
+      },
+      "envelope_mae_db": {
+        "mean": 3.8906282970891275,
+        "median": 3.6588753547065354,
+        "valid_cases": 10
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "mean": 3.5315074668312008,
+        "median": 2.95807813558572,
+        "valid_cases": 10
+      },
+      "absolute_f1_error_cents": {
+        "mean": 0.9339465565221745,
+        "median": 1.0268082772570024,
+        "valid_cases": 10
+      },
+      "partial_tuning_mae_cents": {
+        "mean": 0.7775215052130665,
+        "median": 0.6947791426884777,
+        "valid_cases": 10
+      },
+      "attack_rise10_90_error_ms": {
+        "mean": 19.38854166666666,
+        "median": 17.572916666666664,
+        "valid_cases": 10
+      }
+    },
+    "heldout_velocity": {
+      "cases": 8,
+      "log_band_mae_db": {
+        "mean": 12.15878174763333,
+        "median": 10.494337951003489,
+        "valid_cases": 8
+      },
+      "harmonic_level_mae_db": {
+        "mean": 4.509691253357034,
+        "median": 4.39687329476046,
+        "valid_cases": 8
+      },
+      "envelope_mae_db": {
+        "mean": 3.7085702557884517,
+        "median": 3.856413543102647,
+        "valid_cases": 8
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "mean": 2.9927877488474532,
+        "median": 2.8467206866072052,
+        "valid_cases": 8
+      },
+      "absolute_f1_error_cents": {
+        "mean": 0.9524100067348612,
+        "median": 1.0513074286311688,
+        "valid_cases": 8
+      },
+      "partial_tuning_mae_cents": {
+        "mean": 0.7993422714207896,
+        "median": 0.6977661845129315,
+        "valid_cases": 8
+      },
+      "attack_rise10_90_error_ms": {
+        "mean": 18.475260416666668,
+        "median": 17.32291666666667,
+        "valid_cases": 8
+      }
+    },
+    "heldout_pitch": {
+      "cases": 4,
+      "log_band_mae_db": {
+        "mean": 11.947122503795459,
+        "median": 11.907224719721187,
+        "valid_cases": 4
+      },
+      "harmonic_level_mae_db": {
+        "mean": 5.871083740191017,
+        "median": 6.055830221341662,
+        "valid_cases": 4
+      },
+      "envelope_mae_db": {
+        "mean": 5.482301293696101,
+        "median": 5.647702571061971,
+        "valid_cases": 4
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "mean": 2.499117836104065,
+        "median": 2.6938646097370675,
+        "valid_cases": 4
+      },
+      "absolute_f1_error_cents": {
+        "mean": 3.924345057101452,
+        "median": 4.0823348870792024,
+        "valid_cases": 4
+      },
+      "partial_tuning_mae_cents": {
+        "mean": 2.750803343781424,
+        "median": 3.164474782469812,
+        "valid_cases": 4
+      },
+      "attack_rise10_90_error_ms": {
+        "mean": 20.5546875,
+        "median": 16.052083333333332,
+        "valid_cases": 4
+      }
+    },
+    "edge_extrapolation": {
+      "cases": 2,
+      "log_band_mae_db": {
+        "mean": 18.933260027266748,
+        "median": 18.933260027266748,
+        "valid_cases": 2
+      },
+      "harmonic_level_mae_db": {
+        "mean": 9.206254361472745,
+        "median": 9.206254361472745,
+        "valid_cases": 2
+      },
+      "envelope_mae_db": {
+        "mean": 7.384245380091037,
+        "median": 7.384245380091037,
+        "valid_cases": 2
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "mean": 8.675375398327096,
+        "median": 8.675375398327096,
+        "valid_cases": 2
+      },
+      "absolute_f1_error_cents": {
+        "mean": 11.98214641391932,
+        "median": 11.98214641391932,
+        "valid_cases": 2
+      },
+      "partial_tuning_mae_cents": {
+        "mean": 10.86247657103794,
+        "median": 10.86247657103794,
+        "valid_cases": 2
+      },
+      "attack_rise10_90_error_ms": {
+        "mean": 17.791666666666664,
+        "median": 17.791666666666664,
+        "valid_cases": 2
+      }
+    },
+    "all_non_edge": {
+      "cases": 22,
+      "log_band_mae_db": {
+        "mean": 12.434072735223912,
+        "median": 11.329873212383443,
+        "valid_cases": 22
+      },
+      "harmonic_level_mae_db": {
+        "mean": 5.00033462612094,
+        "median": 4.881002184163002,
+        "valid_cases": 22
+      },
+      "envelope_mae_db": {
+        "mean": 4.113820463271969,
+        "median": 3.8944620909847805,
+        "valid_cases": 22
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "mean": 3.147902181977632,
+        "median": 2.9049053126057953,
+        "valid_cases": 22
+      },
+      "absolute_f1_error_cents": {
+        "mean": 1.4843693567048384,
+        "median": 1.078911553589636,
+        "valid_cases": 22
+      },
+      "partial_tuning_mae_cents": {
+        "mean": 1.14423484539194,
+        "median": 0.7649508290263809,
+        "valid_cases": 22
+      },
+      "attack_rise10_90_error_ms": {
+        "mean": 19.26846590909091,
+        "median": 17.239583333333332,
+        "valid_cases": 22
+      }
+    }
+  },
+  "missing": []
+}

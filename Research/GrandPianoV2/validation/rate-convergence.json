@@ -1,0 +1,412 @@
+{
+  "schema_version": 1,
+  "case": {
+    "id": "C4v12",
+    "midi": 60,
+    "velocity": 93,
+    "split": "train",
+    "duration_seconds": 4.35
+  },
+  "scope": "One-case sample-rate sensitivity check at C4, velocity 93. This is not formal numerical convergence, a keyboard-wide guarantee, or validation of polyphonic/pedal behavior. No parameters were refitted.",
+  "analysis": {
+    "windows_seconds_after_onset": [
+      [
+        0.05,
+        0.25
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.75,
+        1.5
+      ],
+      [
+        1.5,
+        3.5
+      ]
+    ],
+    "early_gain_window_seconds": [
+      0.05,
+      0.75
+    ],
+    "maximum_analysis_seconds": 4.0,
+    "channel_combination": "mean stereo power; no mono waveform summation",
+    "onset": "first 1ms RMS envelope crossing a noise-aware threshold near -45dB of the first-second peak",
+    "pitch": "joint stiff-string fit to dominant partial peaks; normalized f1 convention",
+    "partial_levels": "Hann-window power integrated around each fitted partial, with bandwidth covering window leakage and unison splitting",
+    "decay": "Theil-Sen regression of partial-band dB power from 0.25 to 3.5 seconds; not a physical loss identification in isolation",
+    "gain": "one scalar from 0.05\u20130.75s RMS, applied unchanged to all windows",
+    "limits": "one piano/recording setup; microphone, room, library editing, unknown physical hammer velocities and acquisition pedal state are confounds; metrics are not perceptual scores"
+  },
+  "inputs": {
+    "source": {
+      "path": "src/grand.cpp",
+      "sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889"
+    },
+    "calibration_header": {
+      "path": "src/calibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+    },
+    "current_binary": {
+      "path": "build/grand",
+      "sha256": "92fb07d8013116625ccefc22227188650616a5ca0c130e819ee4fbca7f07116a"
+    },
+    "benchmark_binary": {
+      "path": "build/grand_candidate",
+      "sha256": "e99c836b6c317f002e45a6e0a8a59f9e203158d4af107a25bb66d4240831890a"
+    },
+    "current_binary_provenance": {
+      "path": "build/grand.provenance.json",
+      "sha256": "4dcebaa64607de2f2ded1d62d223e34f7f5fb4bf1a250f45a58a9f815421c5c4"
+    },
+    "score": {
+      "path": "benchmark/events/C4v12.events",
+      "sha256": "45485bb6e3b471b69b17393a621f8f8f67affafd847f066dcf2c0326dbfe3786"
+    },
+    "benchmark_extractor": {
+      "path": "tools/benchmark.py",
+      "sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda"
+    },
+    "check_script": {
+      "path": "tools/check_rate_convergence.py",
+      "sha256": "cb73fa70f7b5f7bd6d2f7e117be06dcef5def0fdc867db9e9df941933a2e49c8"
+    },
+    "reference_features": {
+      "path": "benchmark/reference_features.json",
+      "sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8"
+    },
+    "candidate_features": {
+      "path": "benchmark/candidate_report_features.json",
+      "sha256": "44180e2e5811df105a3ccf436fc0d3ed689a3c5ddaec78f73e52a9454525d920"
+    },
+    "candidate_manifest": {
+      "path": "benchmark/candidate/render-manifest.json",
+      "sha256": "62d118e4f71008ed289971d9e8e435d938a61f6fcb770967578e3962d2ddca1f"
+    },
+    "reference_audio": {
+      "path": "reference/wav/C4v12.wav",
+      "sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301"
+    },
+    "frozen_96k_audio": {
+      "path": "benchmark/candidate/C4v12.wav",
+      "sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47"
+    },
+    "current_96k_audio": {
+      "path": "build/C4v12-96k-ratecheck.wav",
+      "sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47"
+    },
+    "current_192k_audio": {
+      "path": "build/C4v12-192k.wav",
+      "sha256": "10ff01826c318a2dfa32b35f225284d05e8408dfdfef973a765b7c0668791e0b"
+    }
+  },
+  "source_and_calibration_match_frozen_benchmark": true,
+  "same_binary_used_for_current_96k_and_192k": true,
+  "current_and_benchmark_binaries_identical": false,
+  "current_96k_vs_frozen_96k_raw_relative_rms_difference": 0.0,
+  "render_commands": [
+    "build/grand --events benchmark/events/C4v12.events --output build/C4v12-96k-ratecheck.wav --sample-rate 96000 --duration 4.35 --metrics validation/C4v12-96k-render.json",
+    "build/grand --events benchmark/events/C4v12.events --output build/C4v12-192k.wav --sample-rate 192000 --duration 4.35 --metrics validation/C4v12-192k-render.json"
+  ],
+  "render_metrics": {
+    "96": {
+      "sample_rate": 96000,
+      "duration_seconds": 4.35,
+      "wall_seconds": 52.004988584,
+      "realtime_factor": 11.9551697894,
+      "string_count": 230,
+      "string_modes": 17778,
+      "board_modes": 475,
+      "raw_peak": 1.04760446812,
+      "raw_rms": 0.0653866114545,
+      "nonfinite_samples": 0,
+      "max_hammer_force_N": 24.8807006763,
+      "accumulated_contact_seconds": 0.00172916666667,
+      "contact_solves": 167,
+      "contact_max_relative_residual": 1.15415309325e-12,
+      "final_mechanical_energy_J": 7.28035905876e-12
+    },
+    "192": {
+      "sample_rate": 192000,
+      "duration_seconds": 4.35,
+      "wall_seconds": 93.851603583,
+      "realtime_factor": 21.5750812834,
+      "string_count": 230,
+      "string_modes": 17778,
+      "board_modes": 475,
+      "raw_peak": 1.0480291502,
+      "raw_rms": 0.0654087539315,
+      "nonfinite_samples": 0,
+      "max_hammer_force_N": 24.882796123,
+      "accumulated_contact_seconds": 0.00172395833333,
+      "contact_solves": 334,
+      "contact_max_relative_residual": 2.83698788828e-12,
+      "final_mechanical_energy_J": 7.39561304766e-12
+    }
+  },
+  "features": {
+    "reference": {
+      "sample_rate": 48000,
+      "onset_seconds": 0.0074375,
+      "f1_hz": 261.59507910215393,
+      "B": 0.00028179848323789684,
+      "confidence": "good",
+      "rms_residual_cents": 0.30030127839933873,
+      "early_rms": 0.12801955643870852,
+      "window_rms": [
+        0.1903552540074459,
+        0.09192693006825281,
+        0.020343629805227376,
+        0.008201612465082178
+      ],
+      "attack": {
+        "t10_seconds": 0.004625,
+        "t50_seconds": 0.0088125,
+        "t90_seconds": 0.016666666666666666,
+        "rise10_90_seconds": 0.012041666666666666,
+        "definition": "5ms RMS envelope rise within first150ms; not hammer contact duration"
+      }
+    },
+    "frozen_96k": {
+      "sample_rate": 96000,
+      "onset_seconds": 0.09914583333333334,
+      "f1_hz": 261.7478693097783,
+      "B": 0.00025680364957577696,
+      "confidence": "good",
+      "rms_residual_cents": 0.6082088768493413,
+      "early_rms": 0.1377202947169725,
+      "window_rms": [
+        0.21285788150244073,
+        0.09181634016131783,
+        0.020104810622002277,
+        0.007401555492093808
+      ],
+      "attack": {
+        "t10_seconds": 0.0,
+        "t50_seconds": 0.0012083333333333334,
+        "t90_seconds": 0.010197916666666666,
+        "rise10_90_seconds": 0.010197916666666666,
+        "definition": "5ms RMS envelope rise within first150ms; not hammer contact duration"
+      }
+    },
+    "current_96k": {
+      "sample_rate": 96000,
+      "onset_seconds": 0.09914583333333334,
+      "f1_hz": 261.7478693097783,
+      "B": 0.00025680364957577696,
+      "confidence": "good",
+      "rms_residual_cents": 0.6082088768493413,
+      "early_rms": 0.1377202947169725,
+      "window_rms": [
+        0.21285788150244073,
+        0.09181634016131783,
+        0.020104810622002277,
+        0.007401555492093808
+      ],
+      "attack": {
+        "t10_seconds": 0.0,
+        "t50_seconds": 0.0012083333333333334,
+        "t90_seconds": 0.010197916666666666,
+        "rise10_90_seconds": 0.010197916666666666,
+        "definition": "5ms RMS envelope rise within first150ms; not hammer contact duration"
+      }
+    },
+    "current_192k": {
+      "sample_rate": 192000,
+      "onset_seconds": 0.09914583333333334,
+      "f1_hz": 261.74784854545084,
+      "B": 0.0002568111691473316,
+      "confidence": "good",
+      "rms_residual_cents": 0.6081754465167364,
+      "early_rms": 0.13776421427945623,
+      "window_rms": [
+        0.21292637562338607,
+        0.09184505243074223,
+        0.020116207117423613,
+        0.007404103663286228
+      ],
+      "attack": {
+        "t10_seconds": 0.0,
+        "t50_seconds": 0.001203125,
+        "t90_seconds": 0.010192708333333333,
+        "rise10_90_seconds": 0.010192708333333333,
+        "definition": "5ms RMS envelope rise within first150ms; not hammer contact duration"
+      }
+    }
+  },
+  "comparisons": {
+    "frozen_96k_vs_recording": {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "early_gain_db": -0.6344325057592379,
+      "f1_error_cents": 1.0108691370401217,
+      "absolute_f1_error_cents": 1.0108691370401217,
+      "reference_f1_hz": 261.59507910215393,
+      "model_f1_hz": 261.7478693097783,
+      "reference_B": 0.00028179848323789684,
+      "model_B": 0.00025680364957577696,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 8.689712295595877,
+      "log_band_mae_by_window_db": [
+        12.663590789124996,
+        7.57807685581256,
+        4.860603909192057,
+        4.412721829961547
+      ],
+      "harmonic_level_mae_db": 4.503483416677144,
+      "partial_tuning_mae_cents": 0.6338831216038178,
+      "partial_decay_slope_mae_db_per_second": 2.1630285067611372,
+      "partial_decay_pairs": 13,
+      "envelope_mae_db": 2.9621686897114197,
+      "attack_rise10_90_error_ms": 1.84375,
+      "reference_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+      "model_sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47"
+    },
+    "current_96k_vs_recording": {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "early_gain_db": -0.6344325057592379,
+      "f1_error_cents": 1.0108691370401217,
+      "absolute_f1_error_cents": 1.0108691370401217,
+      "reference_f1_hz": 261.59507910215393,
+      "model_f1_hz": 261.7478693097783,
+      "reference_B": 0.00028179848323789684,
+      "model_B": 0.00025680364957577696,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 8.689712295595877,
+      "log_band_mae_by_window_db": [
+        12.663590789124996,
+        7.57807685581256,
+        4.860603909192057,
+        4.412721829961547
+      ],
+      "harmonic_level_mae_db": 4.503483416677144,
+      "partial_tuning_mae_cents": 0.6338831216038178,
+      "partial_decay_slope_mae_db_per_second": 2.1630285067611372,
+      "partial_decay_pairs": 13,
+      "envelope_mae_db": 2.9621686897114197,
+      "attack_rise10_90_error_ms": 1.84375,
+      "reference_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+      "model_sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47"
+    },
+    "current_192k_vs_recording": {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "early_gain_db": -0.6372020297321646,
+      "f1_error_cents": 1.0107317991042715,
+      "absolute_f1_error_cents": 1.0107317991042715,
+      "reference_f1_hz": 261.59507910215393,
+      "model_f1_hz": 261.74784854545084,
+      "reference_B": 0.00028179848323789684,
+      "model_B": 0.0002568111691473316,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 8.690637504232164,
+      "log_band_mae_by_window_db": [
+        12.655056832100694,
+        7.5864116109312905,
+        4.868938655341414,
+        4.4178777757900916
+      ],
+      "harmonic_level_mae_db": 4.5061966457381315,
+      "partial_tuning_mae_cents": 0.6337256150724245,
+      "partial_decay_slope_mae_db_per_second": 2.1614238879446495,
+      "partial_decay_pairs": 13,
+      "envelope_mae_db": 2.96237147418123,
+      "attack_rise10_90_error_ms": 1.8489583333333326,
+      "reference_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+      "model_sha256": "10ff01826c318a2dfa32b35f225284d05e8408dfdfef973a765b7c0668791e0b"
+    },
+    "current_192k_vs_current_96k": {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "early_gain_db": -0.0027695239729264415,
+      "f1_error_cents": -0.00013733793612047315,
+      "absolute_f1_error_cents": 0.00013733793612047315,
+      "reference_f1_hz": 261.7478693097783,
+      "model_f1_hz": 261.74784854545084,
+      "reference_B": 0.00025680364957577696,
+      "model_B": 0.0002568111691473316,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 0.01348743490187975,
+      "log_band_mae_by_window_db": [
+        0.013377232562392266,
+        0.01656320756495644,
+        0.016382520587932436,
+        0.005709961002186385
+      ],
+      "harmonic_level_mae_db": 0.01910528052542144,
+      "partial_tuning_mae_cents": 0.00017874212343560513,
+      "partial_decay_slope_mae_db_per_second": 0.002460395954230243,
+      "partial_decay_pairs": 15,
+      "envelope_mae_db": 0.0031306176041346707,
+      "attack_rise10_90_error_ms": 0.00520833333333276,
+      "reference_sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47",
+      "model_sha256": "10ff01826c318a2dfa32b35f225284d05e8408dfdfef973a765b7c0668791e0b"
+    },
+    "current_96k_vs_frozen_96k": {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "early_gain_db": 0.0,
+      "f1_error_cents": 0.0,
+      "absolute_f1_error_cents": 0.0,
+      "reference_f1_hz": 261.7478693097783,
+      "model_f1_hz": 261.7478693097783,
+      "reference_B": 0.00025680364957577696,
+      "model_B": 0.00025680364957577696,
+      "pitch_fit_confidence": {
+        "reference": "good",
+        "model": "good"
+      },
+      "log_band_mae_db": 0.0,
+      "log_band_mae_by_window_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "harmonic_level_mae_db": 0.0,
+      "partial_tuning_mae_cents": 0.0,
+      "partial_decay_slope_mae_db_per_second": 0.0,
+      "partial_decay_pairs": 15,
+      "envelope_mae_db": 0.0,
+      "attack_rise10_90_error_ms": 0.0,
+      "reference_sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47",
+      "model_sha256": "7294a9c2bc7c8141170572bd7d8b721545790114c1259859ec418294d665cc47"
+    }
+  },
+  "recording_error_change_192k_minus_frozen_96k": {
+    "log_band_mae_db": 0.0009252086362874223,
+    "harmonic_level_mae_db": 0.0027132290609879206,
+    "envelope_mae_db": 0.00020278446981025766,
+    "partial_decay_slope_mae_db_per_second": -0.0016046188164877684,
+    "absolute_f1_error_cents": -0.00013733793585024578,
+    "partial_tuning_mae_cents": -0.00015750653139323667,
+    "attack_rise10_90_error_ms": 0.005208333333332593
+  },
+  "interpretation": "The direct rate comparison uses the frozen onset, stereo power, masks and one early gain definition. Differences include finite-step integration, sample-rate-dependent observation and extraction resolution. No waveform or window-specific alignment/gain was fitted.",
+  "delivery_note": "Raw rate-check WAVs are retained only under build/ and excluded from the final package."
+}

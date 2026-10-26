@@ -1,0 +1,2161 @@
+{
+  "schema_version": 1,
+  "baseline_report_sha256": "e8a3be127a4528ae9fdb38522945a40a76bcacfcf9b733d8a88e3dae4e028ffe",
+  "candidate_report_sha256": "c3ab4cb7c9f545ff49e6130865e873f218117d28742d0b4f102f216731085395",
+  "benchmark_implementation_sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda",
+  "metric_definitions_unchanged": true,
+  "analysis": {
+    "windows_seconds_after_onset": [
+      [
+        0.05,
+        0.25
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.75,
+        1.5
+      ],
+      [
+        1.5,
+        3.5
+      ]
+    ],
+    "early_gain_window_seconds": [
+      0.05,
+      0.75
+    ],
+    "maximum_analysis_seconds": 4.0,
+    "channel_combination": "mean stereo power; no mono waveform summation",
+    "onset": "first 1ms RMS envelope crossing a noise-aware threshold near -45dB of the first-second peak",
+    "pitch": "joint stiff-string fit to dominant partial peaks; normalized f1 convention",
+    "partial_levels": "Hann-window power integrated around each fitted partial, with bandwidth covering window leakage and unison splitting",
+    "decay": "Theil-Sen regression of partial-band dB power from 0.25 to 3.5 seconds; not a physical loss identification in isolation",
+    "gain": "one scalar from 0.05\u20130.75s RMS, applied unchanged to all windows",
+    "limits": "one piano/recording setup; microphone, room, library editing, unknown physical hammer velocities and acquisition pedal state are confounds; metrics are not perceptual scores"
+  },
+  "summary": {
+    "train": {
+      "cases": 10,
+      "metrics": {
+        "log_band_mae_db": {
+          "label": "Log-frequency band error",
+          "units": "dB",
+          "baseline_mean": 16.34338758760943,
+          "candidate_mean": 12.849085617867761,
+          "change": -3.49430196974167,
+          "error_reduction_percent": 21.380524392573538,
+          "improved_cases": 10,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 10
+        },
+        "harmonic_level_mae_db": {
+          "label": "Partial-level error",
+          "units": "dB",
+          "baseline_mean": 10.376351229422635,
+          "candidate_mean": 5.044549678704035,
+          "change": -5.3318015507186,
+          "error_reduction_percent": 51.38416609877299,
+          "improved_cases": 10,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 10
+        },
+        "envelope_mae_db": {
+          "label": "Amplitude-envelope error",
+          "units": "dB",
+          "baseline_mean": 5.756069043619556,
+          "candidate_mean": 3.890628297089127,
+          "change": -1.865440746530429,
+          "error_reduction_percent": 32.40824132570506,
+          "improved_cases": 10,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 10
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "label": "Partial decay-rate error",
+          "units": "dB/s",
+          "baseline_mean": 4.05414352432159,
+          "candidate_mean": 3.5315074668312008,
+          "change": -0.5226360574903897,
+          "error_reduction_percent": 12.891404913392803,
+          "improved_cases": 8,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 10
+        },
+        "absolute_f1_error_cents": {
+          "label": "Fundamental tuning error",
+          "units": "cents",
+          "baseline_mean": 4.464418729819867,
+          "candidate_mean": 0.9339465565221745,
+          "change": -3.5304721732976923,
+          "error_reduction_percent": 79.0802204487692,
+          "improved_cases": 8,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 10
+        },
+        "attack_rise10_90_error_ms": {
+          "label": "Attack-rise error",
+          "units": "ms",
+          "baseline_mean": 10.153125000000001,
+          "candidate_mean": 19.38854166666666,
+          "change": 9.23541666666666,
+          "error_reduction_percent": -90.9613214322355,
+          "improved_cases": 4,
+          "regressed_cases": 6,
+          "tied_cases": 0,
+          "valid_cases": 10
+        },
+        "partial_tuning_mae_cents": {
+          "label": "Partial tuning error",
+          "units": "cents",
+          "baseline_mean": 5.277525067248474,
+          "candidate_mean": 0.7775215052130664,
+          "change": -4.500003562035408,
+          "error_reduction_percent": 85.26730815475898,
+          "improved_cases": 10,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 10
+        }
+      }
+    },
+    "heldout_velocity": {
+      "cases": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "label": "Log-frequency band error",
+          "units": "dB",
+          "baseline_mean": 15.962188969287652,
+          "candidate_mean": 12.15878174763333,
+          "change": -3.8034072216543215,
+          "error_reduction_percent": 23.82760427766103,
+          "improved_cases": 8,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 8
+        },
+        "harmonic_level_mae_db": {
+          "label": "Partial-level error",
+          "units": "dB",
+          "baseline_mean": 11.051991905772216,
+          "candidate_mean": 4.509691253357034,
+          "change": -6.542300652415181,
+          "error_reduction_percent": 59.19566995880878,
+          "improved_cases": 8,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 8
+        },
+        "envelope_mae_db": {
+          "label": "Amplitude-envelope error",
+          "units": "dB",
+          "baseline_mean": 5.717659545413545,
+          "candidate_mean": 3.7085702557884517,
+          "change": -2.009089289625093,
+          "error_reduction_percent": 35.13831618807553,
+          "improved_cases": 8,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 8
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "label": "Partial decay-rate error",
+          "units": "dB/s",
+          "baseline_mean": 3.922260173006035,
+          "candidate_mean": 2.9927877488474532,
+          "change": -0.9294724241585817,
+          "error_reduction_percent": 23.697367924632868,
+          "improved_cases": 7,
+          "regressed_cases": 1,
+          "tied_cases": 0,
+          "valid_cases": 8
+        },
+        "absolute_f1_error_cents": {
+          "label": "Fundamental tuning error",
+          "units": "cents",
+          "baseline_mean": 3.681931708496255,
+          "candidate_mean": 0.9524100067348612,
+          "change": -2.729521701761394,
+          "error_reduction_percent": 74.1328714887046,
+          "improved_cases": 6,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 8
+        },
+        "attack_rise10_90_error_ms": {
+          "label": "Attack-rise error",
+          "units": "ms",
+          "baseline_mean": 7.716145833333333,
+          "candidate_mean": 18.475260416666668,
+          "change": 10.759114583333336,
+          "error_reduction_percent": -139.43638204522446,
+          "improved_cases": 3,
+          "regressed_cases": 5,
+          "tied_cases": 0,
+          "valid_cases": 8
+        },
+        "partial_tuning_mae_cents": {
+          "label": "Partial tuning error",
+          "units": "cents",
+          "baseline_mean": 5.25634656233285,
+          "candidate_mean": 0.7993422714207896,
+          "change": -4.45700429091206,
+          "error_reduction_percent": 84.79281641836742,
+          "improved_cases": 8,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 8
+        }
+      }
+    },
+    "heldout_pitch": {
+      "cases": 4,
+      "metrics": {
+        "log_band_mae_db": {
+          "label": "Log-frequency band error",
+          "units": "dB",
+          "baseline_mean": 14.92532293608267,
+          "candidate_mean": 11.947122503795459,
+          "change": -2.9782004322872115,
+          "error_reduction_percent": 19.9540100072962,
+          "improved_cases": 3,
+          "regressed_cases": 1,
+          "tied_cases": 0,
+          "valid_cases": 4
+        },
+        "harmonic_level_mae_db": {
+          "label": "Partial-level error",
+          "units": "dB",
+          "baseline_mean": 10.993626398410715,
+          "candidate_mean": 5.871083740191017,
+          "change": -5.122542658219698,
+          "error_reduction_percent": 46.59556794617137,
+          "improved_cases": 3,
+          "regressed_cases": 1,
+          "tied_cases": 0,
+          "valid_cases": 4
+        },
+        "envelope_mae_db": {
+          "label": "Amplitude-envelope error",
+          "units": "dB",
+          "baseline_mean": 4.450652668497251,
+          "candidate_mean": 5.482301293696101,
+          "change": 1.0316486251988497,
+          "error_reduction_percent": -23.17971547186994,
+          "improved_cases": 0,
+          "regressed_cases": 4,
+          "tied_cases": 0,
+          "valid_cases": 4
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "label": "Partial decay-rate error",
+          "units": "dB/s",
+          "baseline_mean": 3.805496811883085,
+          "candidate_mean": 2.499117836104065,
+          "change": -1.3063789757790198,
+          "error_reduction_percent": 34.32873657125942,
+          "improved_cases": 4,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 4
+        },
+        "absolute_f1_error_cents": {
+          "label": "Fundamental tuning error",
+          "units": "cents",
+          "baseline_mean": 3.726816874001221,
+          "candidate_mean": 3.924345057101452,
+          "change": 0.19752818310023113,
+          "error_reduction_percent": -5.300184843484381,
+          "improved_cases": 2,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 4
+        },
+        "attack_rise10_90_error_ms": {
+          "label": "Attack-rise error",
+          "units": "ms",
+          "baseline_mean": 9.424479166666668,
+          "candidate_mean": 20.5546875,
+          "change": 11.130208333333332,
+          "error_reduction_percent": -118.09892235424148,
+          "improved_cases": 0,
+          "regressed_cases": 4,
+          "tied_cases": 0,
+          "valid_cases": 4
+        },
+        "partial_tuning_mae_cents": {
+          "label": "Partial tuning error",
+          "units": "cents",
+          "baseline_mean": 5.012860986563749,
+          "candidate_mean": 2.750803343781424,
+          "change": -2.2620576427823247,
+          "error_reduction_percent": 45.1250822403702,
+          "improved_cases": 3,
+          "regressed_cases": 1,
+          "tied_cases": 0,
+          "valid_cases": 4
+        }
+      }
+    },
+    "edge_extrapolation": {
+      "cases": 2,
+      "metrics": {
+        "log_band_mae_db": {
+          "label": "Log-frequency band error",
+          "units": "dB",
+          "baseline_mean": 17.119243198410434,
+          "candidate_mean": 18.933260027266748,
+          "change": 1.8140168288563139,
+          "error_reduction_percent": -10.596361111481551,
+          "improved_cases": 0,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 2
+        },
+        "harmonic_level_mae_db": {
+          "label": "Partial-level error",
+          "units": "dB",
+          "baseline_mean": 7.145174010822162,
+          "candidate_mean": 9.206254361472745,
+          "change": 2.061080350650583,
+          "error_reduction_percent": -28.845768451948786,
+          "improved_cases": 0,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 2
+        },
+        "envelope_mae_db": {
+          "label": "Amplitude-envelope error",
+          "units": "dB",
+          "baseline_mean": 8.822959692479825,
+          "candidate_mean": 7.384245380091037,
+          "change": -1.4387143123887887,
+          "error_reduction_percent": 16.306481753680284,
+          "improved_cases": 1,
+          "regressed_cases": 1,
+          "tied_cases": 0,
+          "valid_cases": 2
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "label": "Partial decay-rate error",
+          "units": "dB/s",
+          "baseline_mean": 6.250319133936589,
+          "candidate_mean": 8.675375398327096,
+          "change": 2.4250562643905074,
+          "error_reduction_percent": -38.79891910196197,
+          "improved_cases": 0,
+          "regressed_cases": 2,
+          "tied_cases": 0,
+          "valid_cases": 2
+        },
+        "absolute_f1_error_cents": {
+          "label": "Fundamental tuning error",
+          "units": "cents",
+          "baseline_mean": 23.237481471500182,
+          "candidate_mean": 11.98214641391932,
+          "change": -11.255335057580862,
+          "error_reduction_percent": 48.436122784584335,
+          "improved_cases": 2,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 2
+        },
+        "attack_rise10_90_error_ms": {
+          "label": "Attack-rise error",
+          "units": "ms",
+          "baseline_mean": 19.901041666666664,
+          "candidate_mean": 17.791666666666664,
+          "change": -2.109375,
+          "error_reduction_percent": 10.59931954985606,
+          "improved_cases": 1,
+          "regressed_cases": 1,
+          "tied_cases": 0,
+          "valid_cases": 2
+        },
+        "partial_tuning_mae_cents": {
+          "label": "Partial tuning error",
+          "units": "cents",
+          "baseline_mean": 19.68864220997705,
+          "candidate_mean": 10.86247657103794,
+          "change": -8.826165638939111,
+          "error_reduction_percent": 44.828716702803035,
+          "improved_cases": 2,
+          "regressed_cases": 0,
+          "tied_cases": 0,
+          "valid_cases": 2
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "C2v4",
+      "split": "train",
+      "midi": 36,
+      "layer": 4,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 11.475325805471964,
+          "candidate": 5.262701489160737,
+          "change": -6.212624316311228,
+          "error_reduction_percent": 54.13897976952221,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 11.182788393289744,
+          "candidate": 5.056711638417427,
+          "change": -6.126076754872317,
+          "error_reduction_percent": 54.78129907696619,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 4.771018123003631,
+          "candidate": 3.026056540995179,
+          "change": -1.744961582008452,
+          "error_reduction_percent": 36.574197310109945,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.12024501731581,
+          "candidate": 3.089604506072058,
+          "change": -1.0306405112437518,
+          "error_reduction_percent": 25.014058797774524,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 10.075582039502903,
+          "candidate": 0.3410121285477101,
+          "change": -9.734569910955193,
+          "error_reduction_percent": 96.61545975993526,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 16.822916666666668,
+          "candidate": 44.729166666666664,
+          "change": 27.906249999999996,
+          "error_reduction_percent": -165.88235294117644,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 8.760770833139684,
+          "candidate": 0.426205786508764,
+          "change": -8.334565046630921,
+          "error_reduction_percent": 95.13506522854657,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C2v12",
+      "split": "train",
+      "midi": 36,
+      "layer": 12,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 11.19513845415078,
+          "candidate": 5.640236939658226,
+          "change": -5.5549015144925535,
+          "error_reduction_percent": 49.61887284594487,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 9.371599738163658,
+          "candidate": 5.452790963036625,
+          "change": -3.918808775127033,
+          "error_reduction_percent": 41.81579329693944,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 4.366588417454679,
+          "candidate": 2.9863170068279157,
+          "change": -1.3802714106267633,
+          "error_reduction_percent": 31.60983538337087,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.051232705468452,
+          "candidate": 2.933965974457374,
+          "change": -1.1172667310110782,
+          "error_reduction_percent": 27.578438767611754,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 10.075080589601296,
+          "candidate": 0.34702466049326547,
+          "change": -9.72805592910803,
+          "error_reduction_percent": 96.55561404787733,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 33.65625,
+          "candidate": 45.635416666666664,
+          "change": 11.979166666666664,
+          "error_reduction_percent": -35.592695759826675,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 8.786186879119994,
+          "candidate": 0.4506719292622058,
+          "change": -8.335514949857787,
+          "error_reduction_percent": 94.8706767171865,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C3v4",
+      "split": "train",
+      "midi": 48,
+      "layer": 4,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 14.562888317955291,
+          "candidate": 9.065851401523185,
+          "change": -5.497036916432107,
+          "error_reduction_percent": 37.74688644459727,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 13.18402359044254,
+          "candidate": 4.1190068140545115,
+          "change": -9.065016776388028,
+          "error_reduction_percent": 68.7575891699671,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 5.647863211175843,
+          "candidate": 4.019336419771963,
+          "change": -1.6285267914038801,
+          "error_reduction_percent": 28.834387989096374,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.7964459271823,
+          "candidate": 2.982190296714066,
+          "change": -1.8142556304682342,
+          "error_reduction_percent": 37.8249991350164,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 3.708435003103506,
+          "candidate": 0.6998912430493691,
+          "change": -3.008543760054137,
+          "error_reduction_percent": 81.12704570894068,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 5.499999999999995,
+          "candidate": 31.770833333333332,
+          "change": 26.270833333333336,
+          "error_reduction_percent": -477.65151515151564,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 6.623479688913491,
+          "candidate": 0.6161394248456616,
+          "change": -6.00734026406783,
+          "error_reduction_percent": 90.69764755409506,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C3v12",
+      "split": "train",
+      "midi": 48,
+      "layer": 12,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 12.570079060185844,
+          "candidate": 7.366513930922137,
+          "change": -5.203565129263707,
+          "error_reduction_percent": 41.39643915005554,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 10.85593955382348,
+          "candidate": 4.228417803757802,
+          "change": -6.627521750065679,
+          "error_reduction_percent": 61.04972966371625,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 6.064875300719733,
+          "candidate": 3.7776189245835408,
+          "change": -2.2872563761361926,
+          "error_reduction_percent": 37.71316412498635,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.555470237115857,
+          "candidate": 2.6999240145906294,
+          "change": -1.855546222525228,
+          "error_reduction_percent": 40.732265297380245,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 3.7626746997737683,
+          "candidate": 0.7060494212312663,
+          "change": -3.056625278542502,
+          "error_reduction_percent": 81.23543815058693,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 1.9791666666666672,
+          "candidate": 25.156249999999996,
+          "change": 23.17708333333333,
+          "error_reduction_percent": -1171.0526315789468,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 6.596301877595039,
+          "candidate": 0.6996042655362597,
+          "change": -5.896697612058779,
+          "error_reduction_percent": 89.39399259587358,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C4v4",
+      "split": "train",
+      "midi": 60,
+      "layer": 4,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 15.400039151030835,
+          "candidate": 11.71230527141154,
+          "change": -3.687733879619296,
+          "error_reduction_percent": 23.946263015652463,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 12.761087255618117,
+          "candidate": 3.768589065966034,
+          "change": -8.992498189652082,
+          "error_reduction_percent": 70.46811928735227,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 5.275523695377798,
+          "candidate": 3.5401317848295295,
+          "change": -1.7353919105482682,
+          "error_reduction_percent": 32.89515905442239,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.9977548097963336,
+          "candidate": 1.6414468430359364,
+          "change": -2.356307966760397,
+          "error_reduction_percent": 58.940782485868354,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 0.34839978657687837,
+          "candidate": 1.042747417473883,
+          "change": 0.6943476308970047,
+          "error_reduction_percent": -199.29622739415456,
+          "status": "regressed"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 2.760416666666668,
+          "candidate": 1.4895833333333341,
+          "change": -1.2708333333333337,
+          "error_reduction_percent": 46.037735849056595,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 4.2759522305710105,
+          "candidate": 0.6899540198406959,
+          "change": -3.5859982107303146,
+          "error_reduction_percent": 83.86431880815097,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "layer": 12,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 12.575382820170487,
+          "candidate": 8.689712295595877,
+          "change": -3.8856705245746106,
+          "error_reduction_percent": 30.899023752518506,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 10.069518090937715,
+          "candidate": 4.503483416677144,
+          "change": -5.566034674260571,
+          "error_reduction_percent": 55.2760780008911,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 3.61392490898365,
+          "candidate": 2.9621686897114197,
+          "change": -0.6517562192722304,
+          "error_reduction_percent": 18.03458111849714,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.6770522696463726,
+          "candidate": 2.1630285067611372,
+          "change": -1.5140237628852353,
+          "error_reduction_percent": 41.174931762143295,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 0.5273971635487273,
+          "candidate": 1.0108691370401217,
+          "change": 0.48347197349139437,
+          "error_reduction_percent": -91.6713260720306,
+          "status": "regressed"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 3.124999999999999,
+          "candidate": 1.84375,
+          "change": -1.2812499999999991,
+          "error_reduction_percent": 40.999999999999986,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 3.1848265650173198,
+          "candidate": 0.6338831216038178,
+          "change": -2.550943443413502,
+          "error_reduction_percent": 80.09677737034417,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C5v4",
+      "split": "train",
+      "midi": 72,
+      "layer": 4,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 15.426423017755441,
+          "candidate": 13.177049478159297,
+          "change": -2.249373539596144,
+          "error_reduction_percent": 14.581303371540955,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 8.936107340407762,
+          "candidate": 3.7019684292859183,
+          "change": -5.234138911121844,
+          "error_reduction_percent": 58.57291896499316,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 7.521503810418002,
+          "candidate": 4.191495845200807,
+          "change": -3.330007965217195,
+          "error_reduction_percent": 44.273167296742116,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.563511280338905,
+          "candidate": 2.621544251065378,
+          "change": -0.9419670292735272,
+          "error_reduction_percent": 26.4336760899475,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 2.8384748135105546,
+          "candidate": 1.3581014247602838,
+          "change": -1.4803733887502708,
+          "error_reduction_percent": 52.15383211096321,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 12.75,
+          "candidate": 17.374999999999996,
+          "change": 4.6249999999999964,
+          "error_reduction_percent": -36.27450980392154,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 2.726999938688665,
+          "candidate": 0.9362782092761397,
+          "change": -1.7907217294125255,
+          "error_reduction_percent": 65.66636485784562,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C5v12",
+      "split": "train",
+      "midi": 72,
+      "layer": 12,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 14.299825888715702,
+          "candidate": 13.285188401559843,
+          "change": -1.0146374871558592,
+          "error_reduction_percent": 7.095453434552174,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 7.790940757521225,
+          "candidate": 5.4686970344908135,
+          "change": -2.322243723030412,
+          "error_reduction_percent": 29.80697447594582,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 4.382489641531661,
+          "candidate": 2.994478009835189,
+          "change": -1.3880116316964721,
+          "error_reduction_percent": 31.671760693799797,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 2.412096194537203,
+          "candidate": 3.4532542393674786,
+          "change": 1.0411580448302757,
+          "error_reduction_percent": -43.16403496627703,
+          "status": "regressed"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 2.9925826914063482,
+          "candidate": 1.0997793191055603,
+          "change": -1.892803372300788,
+          "error_reduction_percent": 63.24982690490919,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 18.270833333333332,
+          "candidate": 17.770833333333332,
+          "change": -0.5,
+          "error_reduction_percent": 2.7366020524515395,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 4.545955949682853,
+          "candidate": 0.8900749557822265,
+          "change": -3.655880993900627,
+          "error_reduction_percent": 80.4205107653029,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C6v4",
+      "split": "train",
+      "midi": 84,
+      "layer": 4,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 29.682934054783207,
+          "candidate": 29.66600730383016,
+          "change": -0.016926750953047076,
+          "error_reduction_percent": 0.05702519475267117,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 8.423319922383518,
+          "candidate": 6.528863092825376,
+          "change": -1.894456829558142,
+          "error_reduction_percent": 22.490619459008677,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 9.489481862489917,
+          "candidate": 6.688199083792282,
+          "change": -2.8012827786976358,
+          "error_reduction_percent": 29.51987072940793,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.2519479884268385,
+          "candidate": 3.7733287996030738,
+          "change": -0.47861918882376475,
+          "error_reduction_percent": 11.256468567501155,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 5.076708060458901,
+          "candidate": 1.4234473060547759,
+          "change": -3.6532607544041253,
+          "error_reduction_percent": 71.96121405637602,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 0.7499999999999993,
+          "candidate": 0.7291666666666671,
+          "change": -0.02083333333333226,
+          "error_reduction_percent": 2.7777777777776373,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 4.241048928933419,
+          "candidate": 1.2370600287963538,
+          "change": -3.0039889001370654,
+          "error_reduction_percent": 70.83127194414467,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C6v12",
+      "split": "train",
+      "midi": 84,
+      "layer": 12,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 26.245839305874767,
+          "candidate": 24.6252896668566,
+          "change": -1.6205496390181686,
+          "error_reduction_percent": 6.174501109040285,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 11.188187651638598,
+          "candidate": 7.616968528528694,
+          "change": -3.5712191231099046,
+          "error_reduction_percent": 31.919549745725543,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 6.427421465040643,
+          "candidate": 4.720480665343447,
+          "change": -1.706940799697196,
+          "error_reduction_percent": 26.557163070469382,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 5.115678813387838,
+          "candidate": 9.956787236644878,
+          "change": 4.84110842325704,
+          "error_reduction_percent": -94.63276722118987,
+          "status": "regressed"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 5.238852450715797,
+          "candidate": 1.3105435074655092,
+          "change": -3.9283089432502876,
+          "error_reduction_percent": 74.98414929997796,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 5.916666666666667,
+          "candidate": 7.385416666666667,
+          "change": 1.46875,
+          "error_reduction_percent": -24.82394366197183,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 3.0337277808232668,
+          "candidate": 1.195343310678541,
+          "change": -1.8383844701447258,
+          "error_reduction_percent": 60.59820138660698,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C2v8",
+      "split": "heldout_velocity",
+      "midi": 36,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 11.49819012428688,
+          "candidate": 5.226507689073129,
+          "change": -6.2716824352137515,
+          "error_reduction_percent": 54.544953313708774,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 10.248312431246163,
+          "candidate": 5.030184602563842,
+          "change": -5.218127828682321,
+          "error_reduction_percent": 50.91694719193698,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 4.674894931120655,
+          "candidate": 3.0720232248535413,
+          "change": -1.602871706267114,
+          "error_reduction_percent": 34.28679638545111,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.204151908571572,
+          "candidate": 2.9439561528524134,
+          "change": -1.2601957557191588,
+          "error_reduction_percent": 29.97502904568761,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 10.108241120489115,
+          "candidate": 0.3773827678128502,
+          "change": -9.730858352676265,
+          "error_reduction_percent": 96.26658324317268,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 17.375,
+          "candidate": 45.38541666666667,
+          "change": 28.01041666666667,
+          "error_reduction_percent": -161.21103117505996,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 8.794693551302466,
+          "candidate": 0.45954100940594583,
+          "change": -8.33515254189652,
+          "error_reduction_percent": 94.77479224574131,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C3v6",
+      "split": "heldout_velocity",
+      "midi": 48,
+      "layer": 6,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 14.197726403492041,
+          "candidate": 9.167727871183752,
+          "change": -5.029998532308289,
+          "error_reduction_percent": 35.42819737018683,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 12.54785489573012,
+          "candidate": 4.063404567635023,
+          "change": -8.484450328095097,
+          "error_reduction_percent": 67.61673926419289,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 5.8212678207823005,
+          "candidate": 3.9309380974748818,
+          "change": -1.8903297233074188,
+          "error_reduction_percent": 32.47281831904074,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.672204638043115,
+          "candidate": 2.8758446507542166,
+          "change": -1.7963599872888985,
+          "error_reduction_percent": 38.44780197900916,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 3.7221999960824435,
+          "candidate": 0.6715607009352773,
+          "change": -3.050639295147166,
+          "error_reduction_percent": 81.95796298849916,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 5.437500000000002,
+          "candidate": 32.125,
+          "change": 26.6875,
+          "error_reduction_percent": -490.80459770114925,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 6.603565961068997,
+          "candidate": 0.7004907768768011,
+          "change": -5.903075184192196,
+          "error_reduction_percent": 89.39223472580557,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C3v8",
+      "split": "heldout_velocity",
+      "midi": 48,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 13.423687463436984,
+          "candidate": 7.583231884029567,
+          "change": -5.840455579407417,
+          "error_reduction_percent": 43.5085783642942,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 12.512119499004646,
+          "candidate": 3.951605370387516,
+          "change": -8.560514128617129,
+          "error_reduction_percent": 68.41777789365045,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 5.979134348053459,
+          "candidate": 3.857986084494679,
+          "change": -2.12114826355878,
+          "error_reduction_percent": 35.4758421551329,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.6553607165671345,
+          "candidate": 2.729894017767164,
+          "change": -1.9254666987999705,
+          "error_reduction_percent": 41.36020420389272,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 3.7308209040461557,
+          "candidate": 0.6789507206185589,
+          "change": -3.0518701834275967,
+          "error_reduction_percent": 81.80157294920745,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 4.958333333333332,
+          "candidate": 32.0,
+          "change": 27.041666666666668,
+          "error_reduction_percent": -545.3781512605044,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 6.59729946531948,
+          "candidate": 0.695041592149062,
+          "change": -5.902257873170418,
+          "error_reduction_percent": 89.46475605961592,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C4v6",
+      "split": "heldout_velocity",
+      "midi": 60,
+      "layer": 6,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 15.491498823501415,
+          "candidate": 11.066729654599019,
+          "change": -4.424769168902396,
+          "error_reduction_percent": 28.562563373079108,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 12.764298649052689,
+          "candidate": 3.547423501337023,
+          "change": -9.216875147715665,
+          "error_reduction_percent": 72.20823800138601,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 4.761958280142856,
+          "candidate": 3.4114987863082487,
+          "change": -1.3504594938346077,
+          "error_reduction_percent": 28.359330644830735,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.775220133597103,
+          "candidate": 1.6093472350506672,
+          "change": -2.1658728985464357,
+          "error_reduction_percent": 57.37077102528456,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 0.4148685947391753,
+          "candidate": 1.0580437880737121,
+          "change": 0.6431751933345369,
+          "error_reduction_percent": -155.03106320662718,
+          "status": "regressed"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 2.7083333333333335,
+          "candidate": 1.4374999999999996,
+          "change": -1.270833333333334,
+          "error_reduction_percent": 46.92307692307695,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 4.171524793534039,
+          "candidate": 0.6896107208656825,
+          "change": -3.4819140726683564,
+          "error_reduction_percent": 83.4686174720909,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C4v8",
+      "split": "heldout_velocity",
+      "midi": 60,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 14.66964623887805,
+          "candidate": 9.92194624740796,
+          "change": -4.747699991470091,
+          "error_reduction_percent": 32.364106905915406,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 12.236390252345922,
+          "candidate": 3.487862188686454,
+          "change": -8.748528063659467,
+          "error_reduction_percent": 71.49598765029766,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 4.180303777491329,
+          "candidate": 3.2107188001361853,
+          "change": -0.9695849773551442,
+          "error_reduction_percent": 23.19412724443218,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.7502015794695995,
+          "candidate": 1.6061342478511456,
+          "change": -2.144067331618454,
+          "error_reduction_percent": 57.1720555864545,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 0.5248885137816144,
+          "candidate": 1.0445710691886252,
+          "change": 0.5196825554070108,
+          "error_reduction_percent": -99.0081782630188,
+          "status": "regressed"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 2.7708333333333317,
+          "candidate": 1.4791666666666652,
+          "change": -1.2916666666666665,
+          "error_reduction_percent": 46.61654135338348,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 3.0900410040567445,
+          "candidate": 0.6718685173903374,
+          "change": -2.418172486666407,
+          "error_reduction_percent": 78.25697081338797,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C5v6",
+      "split": "heldout_velocity",
+      "midi": 72,
+      "layer": 6,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 15.298500289342307,
+          "candidate": 13.158841220175876,
+          "change": -2.139659069166431,
+          "error_reduction_percent": 13.986070717382821,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 10.125488465792301,
+          "candidate": 4.730342021885897,
+          "change": -5.3951464439064045,
+          "error_reduction_percent": 53.282826424949604,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 7.123450235967332,
+          "candidate": 4.128723915733491,
+          "change": -2.994726320233841,
+          "error_reduction_percent": 42.04039083635391,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.2426113134818366,
+          "candidate": 2.8175967224601934,
+          "change": -0.4250145910216432,
+          "error_reduction_percent": 13.107170423249801,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 2.856544593705892,
+          "candidate": 1.2886303385074693,
+          "change": -1.5679142551984226,
+          "error_reduction_percent": 54.88849215423291,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 13.927083333333336,
+          "candidate": 17.54166666666667,
+          "change": 3.6145833333333357,
+          "error_reduction_percent": -25.953627524308168,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 3.2890502801729653,
+          "candidate": 1.1122289545668347,
+          "change": -2.176821325606131,
+          "error_reduction_percent": 66.18388714603826,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C5v8",
+      "split": "heldout_velocity",
+      "midi": 72,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 14.192127528569921,
+          "candidate": 13.285949083745935,
+          "change": -0.9061784448239862,
+          "error_reduction_percent": 6.385078227346636,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 8.15768610162998,
+          "candidate": 4.731819765762161,
+          "change": -3.42586633586782,
+          "error_reduction_percent": 41.99556459010234,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 6.105068324843388,
+          "candidate": 3.8548410017106147,
+          "change": -2.250227323132773,
+          "error_reduction_percent": 36.858347907031785,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.119026964188462,
+          "candidate": 3.0200631407405436,
+          "change": -0.09896382344791821,
+          "error_reduction_percent": 3.172906954129765,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 2.995146427944266,
+          "candidate": 1.1989109371585176,
+          "change": -1.7962354907857483,
+          "error_reduction_percent": 59.97154175926563,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 13.739583333333334,
+          "candidate": 17.104166666666668,
+          "change": 3.364583333333334,
+          "error_reduction_percent": -24.4882486732373,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 4.216226567410337,
+          "candidate": 1.2365457189356934,
+          "change": -2.9796808484746435,
+          "error_reduction_percent": 70.67174405441887,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C6v8",
+      "split": "heldout_velocity",
+      "midi": 84,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 28.926134882793622,
+          "candidate": 27.859320330851414,
+          "change": -1.0668145519422083,
+          "error_reduction_percent": 3.6880646386558564,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 9.823784951375911,
+          "candidate": 6.534888008598361,
+          "change": -3.2888969427775505,
+          "error_reduction_percent": 33.47891835027303,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 7.095198644907042,
+          "candidate": 4.201832135595971,
+          "change": -2.893366509311071,
+          "error_reduction_percent": 40.779217807917746,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.9593041301294574,
+          "candidate": 6.339465823303283,
+          "change": 2.3801616931738256,
+          "error_reduction_percent": -60.11565706865771,
+          "status": "regressed"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 5.102743517181376,
+          "candidate": 1.3012297315838794,
+          "change": -3.8015137855974968,
+          "error_reduction_percent": 74.49940944116578,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 0.812499999999999,
+          "candidate": 0.7291666666666674,
+          "change": -0.0833333333333316,
+          "error_reduction_percent": 10.256410256410055,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 5.2883708757977725,
+          "candidate": 0.8294108811759607,
+          "change": -4.458959994621812,
+          "error_reduction_percent": 84.31632537400583,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "F#2v8",
+      "split": "heldout_pitch",
+      "midi": 42,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 11.888182095759133,
+          "candidate": 8.335675882322757,
+          "change": -3.5525062134363754,
+          "error_reduction_percent": 29.882669905465697,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 9.569772119798616,
+          "candidate": 6.03127592617504,
+          "change": -3.538496193623576,
+          "error_reduction_percent": 36.97576232043067,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 3.465962021189084,
+          "candidate": 3.9788167235385092,
+          "change": 0.5128547023494252,
+          "error_reduction_percent": -14.796893307373223,
+          "status": "regressed"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.188584904703758,
+          "candidate": 3.072162127748716,
+          "change": -1.1164227769550417,
+          "error_reduction_percent": 26.65393688692582,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 4.6224877774222755,
+          "candidate": 2.057900786215828,
+          "change": -2.5645869912064474,
+          "error_reduction_percent": 55.480665708468045,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 11.781249999999996,
+          "candidate": 36.8125,
+          "change": 25.031250000000004,
+          "error_reduction_percent": -212.46684350132637,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 5.453976354531234,
+          "candidate": 1.283630436113198,
+          "change": -4.170345918418036,
+          "error_reduction_percent": 76.4643197426637,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "F#3v8",
+      "split": "heldout_pitch",
+      "midi": 54,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 16.546280773554855,
+          "candidate": 12.221432669274506,
+          "change": -4.324848104280349,
+          "error_reduction_percent": 26.13788659498968,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 16.35752362810049,
+          "candidate": 6.080384516508283,
+          "change": -10.27713911159221,
+          "error_reduction_percent": 62.82820887348238,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 2.930057941900542,
+          "candidate": 5.324356461178698,
+          "change": 2.3942985192781556,
+          "error_reduction_percent": -81.71505706556528,
+          "status": "regressed"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 3.5166584790879134,
+          "candidate": 3.4641559104533175,
+          "change": -0.0525025686345959,
+          "error_reduction_percent": 1.4929675129617095,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 5.19108904394832,
+          "candidate": 3.9980610156028615,
+          "change": -1.1930280283454588,
+          "error_reduction_percent": 22.982230091704356,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 4.16666666666667,
+          "candidate": 16.760416666666664,
+          "change": 12.593749999999995,
+          "error_reduction_percent": -302.24999999999966,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 7.8760892431944045,
+          "candidate": 2.946339368138336,
+          "change": -4.929749875056069,
+          "error_reduction_percent": 62.59134099217809,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "F#4v8",
+      "split": "heldout_pitch",
+      "midi": 66,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 17.37059060726653,
+          "candidate": 11.593016770167868,
+          "change": -5.777573837098661,
+          "error_reduction_percent": 33.260664347715185,
+          "status": "improved"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 14.358560020106014,
+          "candidate": 5.067466411914594,
+          "change": -9.29109360819142,
+          "error_reduction_percent": 64.70769767428826,
+          "status": "improved"
+        },
+        "envelope_mae_db": {
+          "baseline": 5.586007444084639,
+          "candidate": 6.654983309121954,
+          "change": 1.0689758650373156,
+          "error_reduction_percent": -19.136670971846247,
+          "status": "regressed"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 2.640784254937823,
+          "candidate": 1.1445862144888088,
+          "change": -1.496198040449014,
+          "error_reduction_percent": 56.65733721531303,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 3.5158811624353272,
+          "candidate": 5.474809668031575,
+          "change": 1.9589285055962482,
+          "error_reduction_percent": -55.71657331669787,
+          "status": "regressed"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 7.104166666666669,
+          "candidate": 13.302083333333332,
+          "change": 6.197916666666663,
+          "error_reduction_percent": -87.24340175953071,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 5.045812625487998,
+          "candidate": 3.3906333740728756,
+          "change": -1.6551792514151225,
+          "error_reduction_percent": 32.80302647494851,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "midi": 78,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 13.896238267750165,
+          "candidate": 15.638364693416706,
+          "change": 1.742126425666541,
+          "error_reduction_percent": -12.53667641630468,
+          "status": "regressed"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 3.6886498256377425,
+          "candidate": 6.305208106166153,
+          "change": 2.61655828052841,
+          "error_reduction_percent": -70.9353938219393,
+          "status": "regressed"
+        },
+        "envelope_mae_db": {
+          "baseline": 5.820583266814739,
+          "candidate": 5.971048680945244,
+          "change": 0.15046541413050463,
+          "error_reduction_percent": -2.585057325583892,
+          "status": "regressed"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.875959608802844,
+          "candidate": 2.3155670917254185,
+          "change": -2.560392517077425,
+          "error_reduction_percent": 52.51053582263078,
+          "status": "improved"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 1.5778095121989615,
+          "candidate": 4.166608758555544,
+          "change": 2.588799246356582,
+          "error_reduction_percent": -164.0755253622869,
+          "status": "regressed"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 14.645833333333334,
+          "candidate": 15.34375,
+          "change": 0.6979166666666661,
+          "error_reduction_percent": -4.765291607396866,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 1.6755657230413596,
+          "candidate": 3.382610196801288,
+          "change": 1.7070444737599282,
+          "error_reduction_percent": -101.878693881457,
+          "status": "regressed"
+        }
+      }
+    },
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "midi": 24,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 5.920905004401733,
+          "candidate": 8.480445373877343,
+          "change": 2.5595403694756103,
+          "error_reduction_percent": -43.228870714405836,
+          "status": "regressed"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 7.295209182629894,
+          "candidate": 8.586865823980329,
+          "change": 1.2916566413504347,
+          "error_reduction_percent": -17.705546325195265,
+          "status": "regressed"
+        },
+        "envelope_mae_db": {
+          "baseline": 3.7764304805813467,
+          "candidate": 6.53597928249258,
+          "change": 2.759548801911233,
+          "error_reduction_percent": -73.07294060094617,
+          "status": "regressed"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 4.419528754633828,
+          "candidate": 4.949560954584727,
+          "change": 0.5300321999508988,
+          "error_reduction_percent": -11.9929573802448,
+          "status": "regressed"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 23.56922746360819,
+          "candidate": 8.075746379199614,
+          "change": -15.493481084408575,
+          "error_reduction_percent": 65.73605820696125,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 32.25,
+          "candidate": 25.583333333333332,
+          "change": -6.666666666666668,
+          "error_reduction_percent": 20.671834625323,
+          "status": "improved"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 16.471548940561924,
+          "candidate": 5.836406693436854,
+          "change": -10.63514224712507,
+          "error_reduction_percent": 64.56674041708098,
+          "status": "improved"
+        }
+      }
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "midi": 96,
+      "layer": 8,
+      "metrics": {
+        "log_band_mae_db": {
+          "baseline": 28.317581392419132,
+          "candidate": 29.38607468065615,
+          "change": 1.0684932882370184,
+          "error_reduction_percent": -3.7732505238708822,
+          "status": "regressed"
+        },
+        "harmonic_level_mae_db": {
+          "baseline": 6.99513883901443,
+          "candidate": 9.82564289896516,
+          "change": 2.83050405995073,
+          "error_reduction_percent": -40.46387248476014,
+          "status": "regressed"
+        },
+        "envelope_mae_db": {
+          "baseline": 13.869488904378304,
+          "candidate": 8.232511477689494,
+          "change": -5.63697742668881,
+          "error_reduction_percent": 40.6430075798203,
+          "status": "improved"
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "baseline": 8.081109513239351,
+          "candidate": 12.401189842069465,
+          "change": 4.320080328830114,
+          "error_reduction_percent": -53.458999927577885,
+          "status": "regressed"
+        },
+        "absolute_f1_error_cents": {
+          "baseline": 22.905735479392177,
+          "candidate": 15.888546448639024,
+          "change": -7.017189030753153,
+          "error_reduction_percent": 30.635074071585148,
+          "status": "improved"
+        },
+        "attack_rise10_90_error_ms": {
+          "baseline": 7.552083333333331,
+          "candidate": 9.999999999999998,
+          "change": 2.447916666666667,
+          "error_reduction_percent": -32.413793103448285,
+          "status": "regressed"
+        },
+        "partial_tuning_mae_cents": {
+          "baseline": 22.905735479392177,
+          "candidate": 15.888546448639024,
+          "change": -7.017189030753153,
+          "error_reduction_percent": 30.635074071585148,
+          "status": "improved"
+        }
+      }
+    }
+  ],
+  "regressions": [
+    {
+      "id": "C2v4",
+      "split": "train",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 16.822916666666668,
+      "candidate": 44.729166666666664,
+      "increase": 27.906249999999996
+    },
+    {
+      "id": "C2v12",
+      "split": "train",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 33.65625,
+      "candidate": 45.635416666666664,
+      "increase": 11.979166666666664
+    },
+    {
+      "id": "C3v4",
+      "split": "train",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 5.499999999999995,
+      "candidate": 31.770833333333332,
+      "increase": 26.270833333333336
+    },
+    {
+      "id": "C3v12",
+      "split": "train",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 1.9791666666666672,
+      "candidate": 25.156249999999996,
+      "increase": 23.17708333333333
+    },
+    {
+      "id": "C4v4",
+      "split": "train",
+      "metric": "absolute_f1_error_cents",
+      "label": "Fundamental tuning error",
+      "units": "cents",
+      "baseline": 0.34839978657687837,
+      "candidate": 1.042747417473883,
+      "increase": 0.6943476308970047
+    },
+    {
+      "id": "C4v12",
+      "split": "train",
+      "metric": "absolute_f1_error_cents",
+      "label": "Fundamental tuning error",
+      "units": "cents",
+      "baseline": 0.5273971635487273,
+      "candidate": 1.0108691370401217,
+      "increase": 0.48347197349139437
+    },
+    {
+      "id": "C5v4",
+      "split": "train",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 12.75,
+      "candidate": 17.374999999999996,
+      "increase": 4.6249999999999964
+    },
+    {
+      "id": "C5v12",
+      "split": "train",
+      "metric": "partial_decay_slope_mae_db_per_second",
+      "label": "Partial decay-rate error",
+      "units": "dB/s",
+      "baseline": 2.412096194537203,
+      "candidate": 3.4532542393674786,
+      "increase": 1.0411580448302757
+    },
+    {
+      "id": "C6v12",
+      "split": "train",
+      "metric": "partial_decay_slope_mae_db_per_second",
+      "label": "Partial decay-rate error",
+      "units": "dB/s",
+      "baseline": 5.115678813387838,
+      "candidate": 9.956787236644878,
+      "increase": 4.84110842325704
+    },
+    {
+      "id": "C6v12",
+      "split": "train",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 5.916666666666667,
+      "candidate": 7.385416666666667,
+      "increase": 1.46875
+    },
+    {
+      "id": "C2v8",
+      "split": "heldout_velocity",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 17.375,
+      "candidate": 45.38541666666667,
+      "increase": 28.01041666666667
+    },
+    {
+      "id": "C3v6",
+      "split": "heldout_velocity",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 5.437500000000002,
+      "candidate": 32.125,
+      "increase": 26.6875
+    },
+    {
+      "id": "C3v8",
+      "split": "heldout_velocity",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 4.958333333333332,
+      "candidate": 32.0,
+      "increase": 27.041666666666668
+    },
+    {
+      "id": "C4v6",
+      "split": "heldout_velocity",
+      "metric": "absolute_f1_error_cents",
+      "label": "Fundamental tuning error",
+      "units": "cents",
+      "baseline": 0.4148685947391753,
+      "candidate": 1.0580437880737121,
+      "increase": 0.6431751933345369
+    },
+    {
+      "id": "C4v8",
+      "split": "heldout_velocity",
+      "metric": "absolute_f1_error_cents",
+      "label": "Fundamental tuning error",
+      "units": "cents",
+      "baseline": 0.5248885137816144,
+      "candidate": 1.0445710691886252,
+      "increase": 0.5196825554070108
+    },
+    {
+      "id": "C5v6",
+      "split": "heldout_velocity",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 13.927083333333336,
+      "candidate": 17.54166666666667,
+      "increase": 3.6145833333333357
+    },
+    {
+      "id": "C5v8",
+      "split": "heldout_velocity",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 13.739583333333334,
+      "candidate": 17.104166666666668,
+      "increase": 3.364583333333334
+    },
+    {
+      "id": "C6v8",
+      "split": "heldout_velocity",
+      "metric": "partial_decay_slope_mae_db_per_second",
+      "label": "Partial decay-rate error",
+      "units": "dB/s",
+      "baseline": 3.9593041301294574,
+      "candidate": 6.339465823303283,
+      "increase": 2.3801616931738256
+    },
+    {
+      "id": "F#2v8",
+      "split": "heldout_pitch",
+      "metric": "envelope_mae_db",
+      "label": "Amplitude-envelope error",
+      "units": "dB",
+      "baseline": 3.465962021189084,
+      "candidate": 3.9788167235385092,
+      "increase": 0.5128547023494252
+    },
+    {
+      "id": "F#2v8",
+      "split": "heldout_pitch",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 11.781249999999996,
+      "candidate": 36.8125,
+      "increase": 25.031250000000004
+    },
+    {
+      "id": "F#3v8",
+      "split": "heldout_pitch",
+      "metric": "envelope_mae_db",
+      "label": "Amplitude-envelope error",
+      "units": "dB",
+      "baseline": 2.930057941900542,
+      "candidate": 5.324356461178698,
+      "increase": 2.3942985192781556
+    },
+    {
+      "id": "F#3v8",
+      "split": "heldout_pitch",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 4.16666666666667,
+      "candidate": 16.760416666666664,
+      "increase": 12.593749999999995
+    },
+    {
+      "id": "F#4v8",
+      "split": "heldout_pitch",
+      "metric": "envelope_mae_db",
+      "label": "Amplitude-envelope error",
+      "units": "dB",
+      "baseline": 5.586007444084639,
+      "candidate": 6.654983309121954,
+      "increase": 1.0689758650373156
+    },
+    {
+      "id": "F#4v8",
+      "split": "heldout_pitch",
+      "metric": "absolute_f1_error_cents",
+      "label": "Fundamental tuning error",
+      "units": "cents",
+      "baseline": 3.5158811624353272,
+      "candidate": 5.474809668031575,
+      "increase": 1.9589285055962482
+    },
+    {
+      "id": "F#4v8",
+      "split": "heldout_pitch",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 7.104166666666669,
+      "candidate": 13.302083333333332,
+      "increase": 6.197916666666663
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "metric": "log_band_mae_db",
+      "label": "Log-frequency band error",
+      "units": "dB",
+      "baseline": 13.896238267750165,
+      "candidate": 15.638364693416706,
+      "increase": 1.742126425666541
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "metric": "harmonic_level_mae_db",
+      "label": "Partial-level error",
+      "units": "dB",
+      "baseline": 3.6886498256377425,
+      "candidate": 6.305208106166153,
+      "increase": 2.61655828052841
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "metric": "envelope_mae_db",
+      "label": "Amplitude-envelope error",
+      "units": "dB",
+      "baseline": 5.820583266814739,
+      "candidate": 5.971048680945244,
+      "increase": 0.15046541413050463
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "metric": "absolute_f1_error_cents",
+      "label": "Fundamental tuning error",
+      "units": "cents",
+      "baseline": 1.5778095121989615,
+      "candidate": 4.166608758555544,
+      "increase": 2.588799246356582
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 14.645833333333334,
+      "candidate": 15.34375,
+      "increase": 0.6979166666666661
+    },
+    {
+      "id": "F#5v8",
+      "split": "heldout_pitch",
+      "metric": "partial_tuning_mae_cents",
+      "label": "Partial tuning error",
+      "units": "cents",
+      "baseline": 1.6755657230413596,
+      "candidate": 3.382610196801288,
+      "increase": 1.7070444737599282
+    },
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "metric": "log_band_mae_db",
+      "label": "Log-frequency band error",
+      "units": "dB",
+      "baseline": 5.920905004401733,
+      "candidate": 8.480445373877343,
+      "increase": 2.5595403694756103
+    },
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "metric": "harmonic_level_mae_db",
+      "label": "Partial-level error",
+      "units": "dB",
+      "baseline": 7.295209182629894,
+      "candidate": 8.586865823980329,
+      "increase": 1.2916566413504347
+    },
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "metric": "envelope_mae_db",
+      "label": "Amplitude-envelope error",
+      "units": "dB",
+      "baseline": 3.7764304805813467,
+      "candidate": 6.53597928249258,
+      "increase": 2.759548801911233
+    },
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "metric": "partial_decay_slope_mae_db_per_second",
+      "label": "Partial decay-rate error",
+      "units": "dB/s",
+      "baseline": 4.419528754633828,
+      "candidate": 4.949560954584727,
+      "increase": 0.5300321999508988
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "metric": "log_band_mae_db",
+      "label": "Log-frequency band error",
+      "units": "dB",
+      "baseline": 28.317581392419132,
+      "candidate": 29.38607468065615,
+      "increase": 1.0684932882370184
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "metric": "harmonic_level_mae_db",
+      "label": "Partial-level error",
+      "units": "dB",
+      "baseline": 6.99513883901443,
+      "candidate": 9.82564289896516,
+      "increase": 2.83050405995073
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "metric": "partial_decay_slope_mae_db_per_second",
+      "label": "Partial decay-rate error",
+      "units": "dB/s",
+      "baseline": 8.081109513239351,
+      "candidate": 12.401189842069465,
+      "increase": 4.320080328830114
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "metric": "attack_rise10_90_error_ms",
+      "label": "Attack-rise error",
+      "units": "ms",
+      "baseline": 7.552083333333331,
+      "candidate": 9.999999999999998,
+      "increase": 2.447916666666667
+    }
+  ],
+  "not_comparable": [],
+  "interpretation": "Errors measure agreement with one acoustic piano recording set; percentages are error reductions, not percentages of realism."
+}

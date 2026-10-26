@@ -1,0 +1,217 @@
+{
+  "passed": true,
+  "existing_reference_verification": {
+    "verified": true,
+    "samples": 24,
+    "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+    "container_matches": true,
+    "results": [
+      {
+        "id": "C2v4",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C2v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C2v12",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C3v4",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C3v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C3v12",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C4v4",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C4v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C4v12",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C5v4",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C5v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C5v12",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C6v4",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C6v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C6v12",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "F#2v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "F#3v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "F#4v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "F#5v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C3v6",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C4v6",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C5v6",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C1v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      {
+        "id": "C7v8",
+        "container_matches": true,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      }
+    ]
+  },
+  "alternate_and_corruption_tests": [
+    {
+      "check": "alternate PCM24 WAV container with identical samples accepted",
+      "passed": true,
+      "result": {
+        "id": "C2v4",
+        "container_matches": false,
+        "decoded_pcm_matches": true,
+        "sample_rate": 48000,
+        "channels": 2
+      }
+    },
+    {
+      "check": "one changed 24-bit sample rejected",
+      "passed": true,
+      "error": "Decoded PCM or format mismatch: C2v4"
+    },
+    {
+      "check": "identical PCM at different sample rate rejected",
+      "passed": true,
+      "error": "Decoded PCM or format mismatch: C2v4"
+    },
+    {
+      "check": "identical PCM byte sequence with different channel count rejected",
+      "passed": true,
+      "error": "Decoded PCM or format mismatch: C2v4"
+    },
+    {
+      "check": "modified pinned FLAC rejected despite matching decoded WAV",
+      "passed": true,
+      "error": "FLAC checksum mismatch: C2v4"
+    }
+  ],
+  "all_original_audio_hashes_unchanged": true,
+  "canonical_pcm_encoding": "Signed 24-bit little-endian PCM, frame-major interleaved channels; SHA-256 excludes WAV chunks. Identity also requires exact sample rate, channels, frames and PCM bit depth.",
+  "strict_source_policy": "Pinned FLAC whole-file SHA-256 must always match. A WAV container mismatch is accepted only if decoded_pcm identity and format metadata match exactly, and reports container_matches=false.",
+  "manifest_sha256": "7f2d494760bba221bcb8a83d3d4c6619fbd988b42b307e39fcf433b53e4b38f7",
+  "fetch_script_sha256": "719a012dfac146eebd3d79e8e40104057752dfba3b31b8940563fc15877a9aa3"
+}

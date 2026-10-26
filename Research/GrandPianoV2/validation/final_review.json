@@ -1,0 +1,309 @@
+{
+  "status": "complete",
+  "review_utc": "2026-10-25T20:37:05.904689+00:00",
+  "scope": "Independent source, train-split, input/output hash and metric audit; no model changes, fitting, or blind listening performed.",
+  "overall": "No blocking defect found in the default render path. Provenance and fitting isolation checks pass. Measurement gains are substantial but nonuniform; attack, interpolated-pitch envelopes and edge behavior have material regressions.",
+  "fit_checks": {
+    "header_exact_reproduction": true,
+    "mechanics_exact_reproduction": true,
+    "poisoned_heldout_values_do_not_change_mechanics": true,
+    "training_ids_exact": {
+      "profile": true,
+      "mechanics": true,
+      "radiation": true
+    },
+    "stem_ids_exact_train10": true,
+    "stem_hash_errors": [],
+    "stem_files_checked": 30,
+    "mechanics_feature_hash_errors": [],
+    "radiation_fields_match_fit": true,
+    "max_stem_reconstruction_relative_rms": 3.818732202834229e-08,
+    "candidate_engine_matches": [
+      "/Users/vojta/Dev/reason-rack-extension/experiments/grand-piano-poc-v2-20261025/build/grand_candidate"
+    ]
+  },
+  "hash_checks": {
+    "baseline": {
+      "cases": 24,
+      "audio_hash_links": 96,
+      "reference_feature_links": 24,
+      "event_hashes": 24,
+      "manifest_sha256": "4778b9765e1b19dc23cb0da1c69a2aa3d13d1a57c6181b4253d7a4f02e59f599",
+      "source_sha256": "0f45e67c7be38e81a0bab0525f125b5d776be748e1fdceae854f0a45d6f848f3",
+      "calibration_sha256": null,
+      "engine_sha256": "65d38e9290b4b2f58beb5614c2b4d6b19a884d474227ed18f5548ee3bf6bc6d8"
+    },
+    "candidate": {
+      "cases": 24,
+      "audio_hash_links": 96,
+      "reference_feature_links": 24,
+      "event_hashes": 24,
+      "manifest_sha256": "62d118e4f71008ed289971d9e8e435d938a61f6fcb770967578e3962d2ddca1f",
+      "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+      "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "engine_sha256": "e99c836b6c317f002e45a6e0a8a59f9e203158d4af107a25bb66d4240831890a"
+    }
+  },
+  "reference_files_checked": {
+    "flac": 24,
+    "wav": 24,
+    "feature_links": 24
+  },
+  "hash_or_identity_errors": [],
+  "all_checks_passed": true,
+  "fit_source_review": [
+    "Mechanics filters split=train before measurement access; exact current mechanics profile reproduced. Poisoning every held-out measurement leaves that profile unchanged.",
+    "Radiation filters references to train before global gain, stem, Gram and target calculations, and asserts exactly C2-C6 at layers 4/12. All 30 fitting stem hashes match.",
+    "Final generated header reproduces byte-for-byte from calibration.json; both radiation fields exactly match radiation_fit.json. Velocity exponents and detune scales remain authored constants in fit_calibration.py, not separately identified physical quantities."
+  ],
+  "numerical_review": {
+    "physics_probe_passed": true,
+    "physics_probe_source_matches": true,
+    "pointer_lifetime": "Cached pointers target completed modal vector buffers; outer String moves preserve those allocations. Piano copy and move operations are deleted. No later mode resizing occurs in the render path.",
+    "damping_cache": "Cache includes contact and opt.loss; noteOn writes zero-contact/current-loss state. Prior independent test checked 711120 coefficients across retriggers, pedal and loss changes with zero discrepancy.",
+    "passivity": "Common-unison step is a mean-velocity contraction; reciprocal bridge uses implicit midpoint. Published probe finds zero mechanical-energy increase and preserves opposite unisons.",
+    "observation": "Loaded-board matrix order, acceleration sign and q/p phase projection agree with an independent single-board-mode analytic transfer. Correction changes observation only, is gain bounded to 0.025..40, and tapers to the analytic observation above partial64."
+  },
+  "summary_mean_errors": {
+    "train": {
+      "log_band_mae_db": {
+        "baseline_mean": 16.34338758760943,
+        "candidate_mean": 12.849085617867761
+      },
+      "harmonic_level_mae_db": {
+        "baseline_mean": 10.376351229422635,
+        "candidate_mean": 5.044549678704035
+      },
+      "envelope_mae_db": {
+        "baseline_mean": 5.756069043619556,
+        "candidate_mean": 3.8906282970891275
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "baseline_mean": 4.054143524321591,
+        "candidate_mean": 3.5315074668312008
+      },
+      "absolute_f1_error_cents": {
+        "baseline_mean": 4.464418729819867,
+        "candidate_mean": 0.9339465565221745
+      },
+      "partial_tuning_mae_cents": {
+        "baseline_mean": 5.277525067248474,
+        "candidate_mean": 0.7775215052130665
+      },
+      "attack_rise10_90_error_ms": {
+        "baseline_mean": 10.153125000000001,
+        "candidate_mean": 19.38854166666666
+      }
+    },
+    "heldout_velocity": {
+      "log_band_mae_db": {
+        "baseline_mean": 15.962188969287652,
+        "candidate_mean": 12.15878174763333
+      },
+      "harmonic_level_mae_db": {
+        "baseline_mean": 11.051991905772216,
+        "candidate_mean": 4.509691253357034
+      },
+      "envelope_mae_db": {
+        "baseline_mean": 5.717659545413545,
+        "candidate_mean": 3.7085702557884517
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "baseline_mean": 3.922260173006035,
+        "candidate_mean": 2.9927877488474532
+      },
+      "absolute_f1_error_cents": {
+        "baseline_mean": 3.681931708496255,
+        "candidate_mean": 0.9524100067348612
+      },
+      "partial_tuning_mae_cents": {
+        "baseline_mean": 5.25634656233285,
+        "candidate_mean": 0.7993422714207896
+      },
+      "attack_rise10_90_error_ms": {
+        "baseline_mean": 7.716145833333333,
+        "candidate_mean": 18.475260416666668
+      }
+    },
+    "heldout_pitch": {
+      "log_band_mae_db": {
+        "baseline_mean": 14.92532293608267,
+        "candidate_mean": 11.947122503795459
+      },
+      "harmonic_level_mae_db": {
+        "baseline_mean": 10.993626398410715,
+        "candidate_mean": 5.871083740191017
+      },
+      "envelope_mae_db": {
+        "baseline_mean": 4.450652668497251,
+        "candidate_mean": 5.482301293696101
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "baseline_mean": 3.805496811883085,
+        "candidate_mean": 2.499117836104065
+      },
+      "absolute_f1_error_cents": {
+        "baseline_mean": 3.726816874001221,
+        "candidate_mean": 3.924345057101452
+      },
+      "partial_tuning_mae_cents": {
+        "baseline_mean": 5.012860986563749,
+        "candidate_mean": 2.750803343781424
+      },
+      "attack_rise10_90_error_ms": {
+        "baseline_mean": 9.424479166666668,
+        "candidate_mean": 20.5546875
+      }
+    },
+    "edge_extrapolation": {
+      "log_band_mae_db": {
+        "baseline_mean": 17.119243198410434,
+        "candidate_mean": 18.933260027266748
+      },
+      "harmonic_level_mae_db": {
+        "baseline_mean": 7.145174010822162,
+        "candidate_mean": 9.206254361472745
+      },
+      "envelope_mae_db": {
+        "baseline_mean": 8.822959692479825,
+        "candidate_mean": 7.384245380091037
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "baseline_mean": 6.250319133936589,
+        "candidate_mean": 8.675375398327096
+      },
+      "absolute_f1_error_cents": {
+        "baseline_mean": 23.237481471500182,
+        "candidate_mean": 11.98214641391932
+      },
+      "partial_tuning_mae_cents": {
+        "baseline_mean": 19.68864220997705,
+        "candidate_mean": 10.86247657103794
+      },
+      "attack_rise10_90_error_ms": {
+        "baseline_mean": 19.901041666666664,
+        "candidate_mean": 17.791666666666664
+      }
+    },
+    "all_non_edge": {
+      "log_band_mae_db": {
+        "baseline_mean": 15.946939971578466,
+        "candidate_mean": 12.434072735223912
+      },
+      "harmonic_level_mae_db": {
+        "baseline_mean": 10.734270597002135,
+        "candidate_mean": 5.00033462612094
+      },
+      "envelope_mae_db": {
+        "baseline_mean": 5.504753521522407,
+        "candidate_mean": 4.113820463271969
+      },
+      "partial_decay_slope_mae_db_per_second": {
+        "baseline_mean": 3.9609774488543876,
+        "candidate_mean": 3.147902181977632
+      },
+      "absolute_f1_error_cents": {
+        "baseline_mean": 4.045768566462437,
+        "candidate_mean": 1.4843693567048384
+      },
+      "partial_tuning_mae_cents": {
+        "baseline_mean": 5.2217030507910245,
+        "candidate_mean": 1.14423484539194
+      },
+      "attack_rise10_90_error_ms": {
+        "baseline_mean": 9.134469696969695,
+        "candidate_mean": 19.26846590909091
+      }
+    }
+  },
+  "regression_count_all_cases_and_metrics": 39,
+  "important_regressions": [
+    {
+      "id": "C2v8",
+      "metric": "attack_rise10_90_error_ms",
+      "baseline": 17.375,
+      "candidate": 45.38541666666667
+    },
+    {
+      "id": "C3v8",
+      "metric": "attack_rise10_90_error_ms",
+      "baseline": 4.958333333333332,
+      "candidate": 32.0
+    },
+    {
+      "id": "F#3v8",
+      "metric": "envelope_mae_db",
+      "baseline": 2.930057941900542,
+      "candidate": 5.324356461178698
+    },
+    {
+      "id": "F#5v8",
+      "metric": "harmonic_level_mae_db",
+      "baseline": 3.6886498256377425,
+      "candidate": 6.305208106166153
+    },
+    {
+      "id": "F#5v8",
+      "metric": "absolute_f1_error_cents",
+      "baseline": 1.5778095121989615,
+      "candidate": 4.166608758555544
+    },
+    {
+      "id": "C7v8",
+      "metric": "partial_decay_slope_mae_db_per_second",
+      "baseline": 8.081109513239351,
+      "candidate": 12.401189842069465
+    }
+  ],
+  "generalization_findings": [
+    "Held-out velocity harmonic-level error improves 11.052 to 4.510 dB and envelope error 5.718 to 3.709 dB, while attack-rise error worsens 7.716 to 18.475 ms.",
+    "Held-out pitch harmonic-level error improves 10.994 to 5.871 dB and decay-slope error 3.805 to 2.499 dB/s, but all four pitch envelope errors regress; their mean rises 4.451 to 5.482 dB.",
+    "Non-edge attack-rise error rises 9.134 to 19.268 ms. F#5v8 regresses in spectral, harmonic, fundamental and partial tuning metrics.",
+    "Edge spectral/harmonic/decay errors worsen as a group despite improved tuning; the two edge samples are diagnostics, not evidence of validated full-keyboard extrapolation."
+  ],
+  "limitations": [
+    {
+      "kind": "model",
+      "detail": "The radiation correction is a continuous-time steady-state observation approximation, retaining analytic phase. Broadband hammer/board transients are not uniquely identified; the attack regression must not be hidden."
+    },
+    {
+      "kind": "ablation",
+      "detail": "--no-sympathetic removes unstruck mechanical ports but radiationTransfer still sums their resistive loads. This optional ablation has an observation/load mismatch; the default all-string benchmark and demos are unaffected."
+    },
+    {
+      "kind": "measurement",
+      "detail": "One early-energy scalar is removed per case; amplitude velocity response is not validated by these spectral/envelope errors. Onset alignment and phase-insensitive powers also do not validate absolute latency, phase or spatial fidelity."
+    },
+    {
+      "kind": "external_validity",
+      "detail": "The 24 recordings share one Yamaha C5, microphone setup and library process. Physical hammer speeds, acquisition pedal state and precise release times are undocumented. No pedal/chord/polyphonic or blind perceptual validation follows from the isolated-note scores."
+    },
+    {
+      "kind": "fit_provenance",
+      "detail": "The radiation-fit artifact binds its stem bytes but does not itself hash the reference/model feature tables and analytic basis. This review snapshots those current inputs and verifies current consistency; it does not assert cryptographic proof of historical optimizer inputs."
+    },
+    {
+      "kind": "claim",
+      "detail": "Report improvements as reductions in named recording-agreement errors, not percentages of realism, equivalence to Pianoteq, unique recovered soundboard physics, or uniformly improved full-range sound."
+    }
+  ],
+  "review_input_sha256": {
+    "src/grand.cpp": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+    "src/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "tools/fit_calibration.py": "906605c9a03bafff4a265a8508dab6c6e51198db881fddc27db69477804d7576",
+    "tools/radiation_fit.py": "6d0681588d66bc8754da0ce32f53a7ed0fc3a4e8990ff2633bcf86c8ed0227ee",
+    "tools/benchmark.py": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda",
+    "tools/benchmark_render.py": "5294f6e5ea45d5c5df315ac8fdab828daf7bfc66902bc67b12d199c0e8cac6cf",
+    "benchmark/split.json": "d8f7969885ab0a6060a064e6165145473a1e2bb20f291e2818410b6d37db7169",
+    "benchmark/calibration.json": "70b1b6cde161637554eb9232159e94ae7dddc9ac875aca344ef5396679bf7b0c",
+    "benchmark/calibration_mechanics.json": "c1df26e9ba444b78c3037b2c15a76978e6693ac3443f7da7a63dd04a02e12c20",
+    "benchmark/reference_features.json": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+    "benchmark/mechanics_report_features.json": "d9696bdb168de7050442a98ea119fd4791d77d7e48a3cf76866447f88f96dace",
+    "benchmark/radiation-basis.json": "ab85361ea36ae8be7516da13408f42a0ed8fe81a3889effa78df8f26d052f8dd",
+    "benchmark/radiation_fit.json": "9198351bb802603f362ce02d4668e8e3cb3069c4005eb0c0330884f91fce8616",
+    "benchmark/baseline_report.json": "e8a3be127a4528ae9fdb38522945a40a76bcacfcf9b733d8a88e3dae4e028ffe",
+    "benchmark/candidate_report.json": "c3ab4cb7c9f545ff49e6130865e873f218117d28742d0b4f102f216731085395",
+    "benchmark/candidate_report_features.json": "44180e2e5811df105a3ccf436fc0d3ed689a3c5ddaec78f73e52a9454525d920",
+    "validation/v2_physics.json": "515bb22f3f0e426a04b8cf26a9ee6c600ae42e300c1f3c4808011a8999f60c32"
+  }
+}

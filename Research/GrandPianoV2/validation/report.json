@@ -1,0 +1,152 @@
+{
+  "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+  "solver_source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+  "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "model_source_sha256": "1df3cf230036f4859f3a7608afaa49d614e42a4613dccd0dc85b00ca5f46aab7",
+  "engine_self_test": {
+    "passed": true,
+    "conservative_contact_relative_energy_error": 4.35493676455e-15,
+    "bridge_max_relative_energy_increase": 0,
+    "bridge_energy_remaining_ratio": 0.9967486365,
+    "contact_max_relative_residual": 7.25007527263e-13
+  },
+  "mechanical_contracts": {
+    "passed": true,
+    "contact_cases": 12,
+    "contact_registers": [
+      21,
+      60,
+      108
+    ],
+    "contact_velocities": [
+      32,
+      127
+    ],
+    "conservative_max_relative_energy_error": 4.66629216777e-14,
+    "dissipative_max_relative_energy_increase": 3.97363835443e-16,
+    "max_contact_relative_residual": 1.33419455184e-12,
+    "soft_string_energy_J": 0.00214470336614,
+    "hard_string_energy_J": 0.0198861165926,
+    "soft_modal_energy_centroid_hz": 457.68538655,
+    "hard_modal_energy_centroid_hz": 561.940614036,
+    "soft_contact_seconds": 0.0020625,
+    "hard_contact_seconds": 0.00167708333333,
+    "soft_peak_force_N": 10.5211296145,
+    "hard_peak_force_N": 30.4770102933,
+    "damped_key_energy_after_release_J": 2.03065329152e-22,
+    "sustained_key_energy_after_release_J": 0.00171876786257,
+    "unstruck_string_energy_J": 1.87396977969e-10,
+    "struck_string_energy_J": 0.00406348926814
+  },
+  "scores": [
+    {
+      "score": "01_nocturne.events",
+      "onsets": 64,
+      "last_event_seconds": 30.749997
+    },
+    {
+      "score": "02_prelude.events",
+      "onsets": 99,
+      "last_event_seconds": 24.120729
+    },
+    {
+      "score": "03_jazz_waltz.events",
+      "onsets": 116,
+      "last_event_seconds": 24.751638
+    },
+    {
+      "score": "04_etude.events",
+      "onsets": 102,
+      "last_event_seconds": 23.054424
+    },
+    {
+      "score": "05_diagnostics.events",
+      "onsets": 18,
+      "last_event_seconds": 28.76333
+    }
+  ],
+  "scope": "Numerical and behavioral contracts. Recording agreement is evaluated separately in benchmark/candidate_report.json; no blind listening evaluation.",
+  "audio": [
+    {
+      "file": "01_nocturne-dry.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 37.75,
+      "sample_peak_dbfs": -7.197403470231073,
+      "rms_dbfs": -30.00389643157582,
+      "finite": true
+    },
+    {
+      "file": "01_nocturne-room.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 37.75,
+      "sample_peak_dbfs": -7.185490896077946,
+      "rms_dbfs": -29.380548595425502,
+      "finite": true
+    },
+    {
+      "file": "02_prelude-dry.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 31.120729166666667,
+      "sample_peak_dbfs": -7.938488442202254,
+      "rms_dbfs": -27.4286308752019,
+      "finite": true
+    },
+    {
+      "file": "02_prelude-room.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 31.120729166666667,
+      "sample_peak_dbfs": -7.500784938008148,
+      "rms_dbfs": -27.167001172093016,
+      "finite": true
+    },
+    {
+      "file": "03_jazz_waltz-dry.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 31.751645833333335,
+      "sample_peak_dbfs": -5.718121417490998,
+      "rms_dbfs": -26.551445555474128,
+      "finite": true
+    },
+    {
+      "file": "03_jazz_waltz-room.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 31.751645833333335,
+      "sample_peak_dbfs": -5.524061280665674,
+      "rms_dbfs": -25.898013672339385,
+      "finite": true
+    },
+    {
+      "file": "04_etude-dry.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 30.0544375,
+      "sample_peak_dbfs": -1.5025945571858856,
+      "rms_dbfs": -25.785083509807972,
+      "finite": true
+    },
+    {
+      "file": "04_etude-room.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 30.0544375,
+      "sample_peak_dbfs": -1.6118732578127495,
+      "rms_dbfs": -25.12133335680535,
+      "finite": true
+    },
+    {
+      "file": "05_diagnostics-dry.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 35.763333333333335,
+      "sample_peak_dbfs": -2.184621406417841,
+      "rms_dbfs": -32.92282911318265,
+      "finite": true
+    },
+    {
+      "file": "05_diagnostics-room.wav",
+      "sample_rate": 48000,
+      "duration_seconds": 35.763333333333335,
+      "sample_peak_dbfs": -1.8148169768043656,
+      "rms_dbfs": -31.832412677195734,
+      "finite": true
+    }
+  ],
+  "passed": true
+}

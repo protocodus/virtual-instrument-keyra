@@ -1,0 +1,3239 @@
+{
+  "scope": "TRAIN10 ONLY: C2,C3,C4,C5,C6 \u00d7 layers4,12. No holdout waveform read.",
+  "pitch_anchors": [
+    {
+      "midi_note": 36,
+      "fundamental_hz_median": 64.98368052991879,
+      "stretch_cents_vs_ET": -11.224993973319183,
+      "engine_B_median": 0.00013509271288120506,
+      "source_ids": [
+        "C2v4",
+        "C2v12"
+      ],
+      "early_median_T60_seconds": 7.280083254387224,
+      "early_median_sigma_per_second": 0.9491930171477818,
+      "early_reliable_partial_fit_count": 14,
+      "late_median_T60_seconds": 18.7434946564309,
+      "late_median_sigma_per_second": 0.4609999965294498,
+      "late_reliable_partial_fit_count": 8,
+      "late_to_early_extrapolated_onset_amplitude_db_median": -8.45852644547957
+    },
+    {
+      "midi_note": 48,
+      "fundamental_hz_median": 130.5296983826264,
+      "stretch_cents_vs_ET": -3.750521634959015,
+      "engine_B_median": 9.179268144602544e-05,
+      "source_ids": [
+        "C3v4",
+        "C3v12"
+      ],
+      "early_median_T60_seconds": 5.174766511335077,
+      "early_median_sigma_per_second": 1.3348921664100268,
+      "early_reliable_partial_fit_count": 15,
+      "late_median_T60_seconds": 10.292130751735321,
+      "late_median_sigma_per_second": 0.6711686283054114,
+      "late_reliable_partial_fit_count": 5,
+      "late_to_early_extrapolated_onset_amplitude_db_median": -6.783582572240334
+    },
+    {
+      "midi_note": 60,
+      "fundamental_hz_median": 261.5302606781727,
+      "stretch_cents_vs_ET": -0.630766593849129,
+      "engine_B_median": 0.0002905449782973662,
+      "source_ids": [
+        "C4v4",
+        "C4v12"
+      ],
+      "early_median_T60_seconds": 2.6005395136878624,
+      "early_median_sigma_per_second": 2.6562777618349473,
+      "early_reliable_partial_fit_count": 13,
+      "late_median_T60_seconds": 9.179688409895013,
+      "late_median_sigma_per_second": 0.7525043302707419,
+      "late_reliable_partial_fit_count": 9,
+      "late_to_early_extrapolated_onset_amplitude_db_median": -6.701775406999143
+    },
+    {
+      "midi_note": 72,
+      "fundamental_hz_median": 524.3610794917377,
+      "stretch_cents_vs_ET": 3.668498729849084,
+      "engine_B_median": 0.0008130929319176098,
+      "source_ids": [
+        "C5v4",
+        "C5v12"
+      ],
+      "early_median_T60_seconds": 1.6017509967856323,
+      "early_median_sigma_per_second": 4.3201543398567654,
+      "early_reliable_partial_fit_count": 14,
+      "late_median_T60_seconds": 6.212647846206744,
+      "late_median_sigma_per_second": 1.111885857686237,
+      "late_reliable_partial_fit_count": 15,
+      "late_to_early_extrapolated_onset_amplitude_db_median": -16.712780626419672
+    },
+    {
+      "midi_note": 84,
+      "fundamental_hz_median": 1050.5142840794008,
+      "stretch_cents_vs_ET": 6.624419917515231,
+      "engine_B_median": 0.0026066321710597916,
+      "source_ids": [
+        "C6v4",
+        "C6v12"
+      ],
+      "early_median_T60_seconds": 1.6981975586465874,
+      "early_median_sigma_per_second": 4.067698274450125,
+      "early_reliable_partial_fit_count": 9,
+      "late_median_T60_seconds": 5.465393583001548,
+      "late_median_sigma_per_second": 1.2639081109303123,
+      "late_reliable_partial_fit_count": 7,
+      "late_to_early_extrapolated_onset_amplitude_db_median": -17.96381204539051
+    }
+  ],
+  "method": {
+    "frequency": "Stereo power sum; Hann window0.1..2.1s after observed onset; interpolated high-resolution FFT peaks; dominant peaks in each broad harmonic band; require>=18dB local prominence and>=-60dB global relative peak, then exclude initialfit residuals>4c ifatleast4partials remain.",
+    "model": "f_n=n f1 sqrt((1+B n\u00b2)/(1+B)); A=f1\u00b2/(1+B),C=A B. engine_B=C/A; normalized_B=C/(A+C).",
+    "decay": "Per-channel complex heterodyne,polyphase down128,zero-phase4th-order lowpass spanning unison cluster,combined channel power. OLS amplitude-dB slopes in0.2..0.8s and1..3s,excluding estimates<12dB over late-file floor. ExtrapolatedT60 is not measured decay-to-silence.",
+    "unison": "Long-window power spectrum around fundamental,peaks separated by Hann resolution; candidatebeat rates are observations,not identified physical strings."
+  },
+  "limitations": [
+    "Microphone and soundboard radiation affect amplitude estimates.",
+    "Unison interference makes short-window decay non-exponential; inspect slopes/R\u00b2 bypartial.",
+    "A stiff-string law cannot exactly explain every recorded partial,especially wound-bass and unresolved polarization components.",
+    "No absoluteSPL or physicalhammerforce inference.",
+    "Recorded pedalstate andnoteofftimeunknown."
+  ],
+  "samples": [
+    {
+      "id": "C2v4",
+      "midi_note": 36,
+      "layer": 4,
+      "source_wav_sha256": "6f100bd76c132c26b7b4dca012903da14497711c6ead4ca8b8545f019e7f9f14",
+      "onset_seconds": 0.009,
+      "fit": {
+        "fundamental_hz": 64.98346971428816,
+        "engine_B": 0.0001343893801759482,
+        "normalized_B": 0.00013437132209725814,
+        "linear_A_hz2": 4222.283905990754,
+        "linear_C_hz2": 0.567430117052979,
+        "rms_partial_error_cents": 1.1333912991588815,
+        "max_partial_error_cents": 2.369733926282652,
+        "partials_used": 7,
+        "excluded_inconsistent_partials": [
+          {
+            "partial": 4,
+            "frequency_hz": 260.95663530158083,
+            "relative_spectral_peak_db": -6.04296328980546,
+            "local_peak_to_median_db": 61.954894249992726,
+            "fit_error_cents": 4.6758911338107305
+          }
+        ],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 1.9651219786261613,
+        "dominant_fundamental_peak_hz": 64.98005037576074,
+        "dominant_fundamental_vs_ET_cents": -11.321707824785403,
+        "fit_fundamental_vs_ET_cents": -11.230610334024606
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 64.98005037576074,
+          "relative_spectral_peak_db": -9.804544300939014,
+          "local_peak_to_median_db": 46.810532778678684,
+          "fit_error_cents": -0.09109749076078293,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 4.248733514668943e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -2.3621306959348507,
+              "sigma_per_second": 0.27195034640816196,
+              "extrapolated_T60_seconds": 25.40079602845771,
+              "r_squared": 0.921492732526966,
+              "extrapolated_onset_amplitude_dbfs": -45.95900188779308,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 40.22640492511559
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -2.210955883229053,
+              "sigma_per_second": 0.2545457028995351,
+              "extrapolated_T60_seconds": 27.137583547063503,
+              "r_squared": 0.9902763988808916,
+              "extrapolated_onset_amplitude_dbfs": -45.56565185339138,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 37.380956238397175
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 129.943257343703,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 57.651692630383934,
+          "fit_error_cents": -0.6643596738375275,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.1449780576208064e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -25.614204357135847,
+              "sigma_per_second": 2.948944256082207,
+              "extrapolated_T60_seconds": 2.3424502734274717,
+              "r_squared": 0.9950031303745538,
+              "extrapolated_onset_amplitude_dbfs": -16.822887186932313,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 60.44819211705394
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.577800161473748,
+              "sigma_per_second": 0.8724264844748664,
+              "extrapolated_T60_seconds": 7.917865174783266,
+              "r_squared": 0.961276338076697,
+              "extrapolated_onset_amplitude_dbfs": -33.82879559456122,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 39.77121329187224
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 194.98637829414247,
+          "relative_spectral_peak_db": -12.973540496417847,
+          "local_peak_to_median_db": 48.685051786600184,
+          "fit_error_cents": -0.610622723431052,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.484633963156531e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -53.2689747524487,
+              "sigma_per_second": 6.132817359203228,
+              "extrapolated_T60_seconds": 1.1263592039987946,
+              "r_squared": 0.9437208763392423,
+              "extrapolated_onset_amplitude_dbfs": -13.517079334088583,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 55.662655430864575
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -1.8647791559001279,
+              "sigma_per_second": 0.21469063430508273,
+              "extrapolated_T60_seconds": 32.175391820613754,
+              "r_squared": 0.6586332832451885,
+              "extrapolated_onset_amplitude_dbfs": -54.446552368120585,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 37.73638289700447
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 325.8866140870796,
+          "relative_spectral_peak_db": -2.53599078192034,
+          "local_peak_to_median_db": 68.55582641085269,
+          "fit_error_cents": 2.369733926282652,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 5.194645118959335e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -4.577692410291964,
+              "sigma_per_second": 0.527026315212513,
+              "extrapolated_T60_seconds": 13.107040539705729,
+              "r_squared": 0.8535637184622442,
+              "extrapolated_onset_amplitude_dbfs": -35.32062446653223,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 48.02674503376938
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.223769235254838,
+              "sigma_per_second": 0.8316671678163393,
+              "extrapolated_T60_seconds": 8.305913166103975,
+              "r_squared": 0.9980047765073586,
+              "extrapolated_onset_amplitude_dbfs": -32.80715685907787,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 38.59315715758927
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 391.114877278679,
+          "relative_spectral_peak_db": -6.173916176970117,
+          "local_peak_to_median_db": 66.87587634075703,
+          "fit_error_cents": 1.3208277971820122,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 2.4353886045937313e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.25043145210175,
+              "sigma_per_second": 0.8347367689692332,
+              "extrapolated_T60_seconds": 8.275369596468256,
+              "r_squared": 0.9846202569217704,
+              "extrapolated_onset_amplitude_dbfs": -34.61307376517314,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 54.08607966764737
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 1.0570378255749742,
+              "sigma_per_second": -0.1216959769949888,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.031046500250825892,
+              "extrapolated_onset_amplitude_dbfs": -52.31612683332933,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 43.49123926680501
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 456.2832013292656,
+          "relative_spectral_peak_db": -15.904043651443862,
+          "local_peak_to_median_db": 57.039896740402355,
+          "fit_error_cents": -0.24922570607162114,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 7.229404143525552e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.399792270039853,
+              "sigma_per_second": 0.9670618232620193,
+              "extrapolated_T60_seconds": 7.1430337883481165,
+              "r_squared": 0.939371343066438,
+              "extrapolated_onset_amplitude_dbfs": -40.93765534629099,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 57.94366366089325
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 7.515776777601928,
+              "sigma_per_second": -0.8652857785188515,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.524297096642291,
+              "extrapolated_onset_amplitude_dbfs": -68.59958450039684,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 52.180216908887374
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 521.8029680187278,
+          "relative_spectral_peak_db": -26.353769802492568,
+          "local_peak_to_median_db": 52.29493111486094,
+          "fit_error_cents": -0.8643840673555085,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.8910009410118545e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -14.676436163391369,
+              "sigma_per_second": 1.6896871564051845,
+              "extrapolated_T60_seconds": 4.0881859418748325,
+              "r_squared": 0.9666332295328653,
+              "extrapolated_onset_amplitude_dbfs": -48.71156997840216,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 59.0622327000084
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 2.6134139102704577,
+              "sigma_per_second": -0.30088039558060176,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.7180225572889234,
+              "extrapolated_onset_amplitude_dbfs": -73.37429199364628,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 46.32007503091937
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": false,
+        "hann_resolution_hz": 0.1935483870967742,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 64.95872037353647,
+            "relative_peak_db": 0.0
+          }
+        ],
+        "candidate_beat_rates_hz": [],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C2v12",
+      "midi_note": 36,
+      "layer": 12,
+      "source_wav_sha256": "a50bf007825a6a391af4675efabb18b0be0e54427eed6a98a36f0663d91d8872",
+      "onset_seconds": 0.005,
+      "fit": {
+        "fundamental_hz": 64.9838913455494,
+        "engine_B": 0.00013579604558646192,
+        "normalized_B": 0.00013577760752428092,
+        "linear_A_hz2": 4222.332758318439,
+        "linear_C_hz2": 0.5733760917298223,
+        "rms_partial_error_cents": 1.0905369613996332,
+        "max_partial_error_cents": 2.3011916770848235,
+        "partials_used": 7,
+        "excluded_inconsistent_partials": [
+          {
+            "partial": 4,
+            "frequency_hz": 260.93958294724354,
+            "relative_spectral_peak_db": -5.907846902506354,
+            "local_peak_to_median_db": 64.00168527584377,
+            "fit_error_cents": 4.545043048797316
+          }
+        ],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 1.9044484865421607,
+        "dominant_fundamental_peak_hz": 64.972998085377,
+        "dominant_fundamental_vs_ET_cents": -11.509608999752885,
+        "fit_fundamental_vs_ET_cents": -11.219377630834334
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 64.972998085377,
+          "relative_spectral_peak_db": -9.345098718760143,
+          "local_peak_to_median_db": 52.052571662318776,
+          "fit_error_cents": -0.2902313689184815,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 2.4296985395116452e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -1.6770754721314214,
+              "sigma_per_second": 0.19308044909778813,
+              "extrapolated_T60_seconds": 35.77656521548494,
+              "r_squared": 0.7782914239863669,
+              "extrapolated_onset_amplitude_dbfs": -41.171667200233024,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 50.25016662249362
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -1.9965995339133025,
+              "sigma_per_second": 0.2298670161733815,
+              "extrapolated_T60_seconds": 30.051093862774263,
+              "r_squared": 0.9978458218956519,
+              "extrapolated_onset_amplitude_dbfs": -41.08281168356326,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 47.206285116354266
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 129.956345635982,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 61.89752060421004,
+          "fit_error_cents": -0.5048762716282411,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 5.792057988653143e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -23.17140692874356,
+              "sigma_per_second": 2.667706808891194,
+              "extrapolated_T60_seconds": 2.589398226206604,
+              "r_squared": 0.9908451978244086,
+              "extrapolated_onset_amplitude_dbfs": -12.389103608669648,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 61.144368718608426
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.797434302777277,
+              "sigma_per_second": 0.6674542901593644,
+              "extrapolated_T60_seconds": 10.3494057657983,
+              "r_squared": 0.9261776793731991,
+              "extrapolated_onset_amplitude_dbfs": -33.45149670202481,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 38.92915244489263
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 195.00144429440465,
+          "relative_spectral_peak_db": -12.992772210104999,
+          "local_peak_to_median_db": 51.75794017955652,
+          "fit_error_cents": -0.49782136645885433,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.5900995662268296e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -57.604636615181015,
+              "sigma_per_second": 6.63197887787274,
+              "extrapolated_T60_seconds": 1.0415828225915362,
+              "r_squared": 0.9955715442085032,
+              "extrapolated_onset_amplitude_dbfs": -6.800556376089659,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 53.20341679957208
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -1.2598290104415968,
+              "sigma_per_second": 0.14504317495821303,
+              "extrapolated_T60_seconds": 47.625510686540494,
+              "r_squared": 0.5714656331293216,
+              "extrapolated_onset_amplitude_dbfs": -49.32995493218606,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 36.61593736895941
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 325.88130791521405,
+          "relative_spectral_peak_db": -1.5052837457062485,
+          "local_peak_to_median_db": 71.38750442777996,
+          "fit_error_cents": 2.3011916770848235,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 7.399597281862698e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.489059565534556,
+              "sigma_per_second": 0.6319513365078121,
+              "extrapolated_T60_seconds": 10.930834195485152,
+              "r_squared": 0.9904631659847217,
+              "extrapolated_onset_amplitude_dbfs": -29.104893523301165,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 50.757356892804694
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.564517117999826,
+              "sigma_per_second": 0.8708972175802341,
+              "extrapolated_T60_seconds": 7.93176868583317,
+              "r_squared": 0.9974199592385671,
+              "extrapolated_onset_amplitude_dbfs": -26.952602171887744,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 40.812404175048336
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 391.11178498527045,
+          "relative_spectral_peak_db": -4.618342108044166,
+          "local_peak_to_median_db": 66.67734213267995,
+          "fit_error_cents": 1.2535021011547152,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.822729483053939e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.089379314295357,
+              "sigma_per_second": 0.9313242110335442,
+              "extrapolated_T60_seconds": 7.41713272042633,
+              "r_squared": 0.9889914402076292,
+              "extrapolated_onset_amplitude_dbfs": -28.123288005574924,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 56.3018934034657
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.6594387037354874,
+              "sigma_per_second": -0.07592068644823252,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.013559132267959795,
+              "extrapolated_onset_amplitude_dbfs": -45.58192586111874,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 45.3330792085227
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 456.31278699495766,
+          "relative_spectral_peak_db": -12.73380415866665,
+          "local_peak_to_median_db": 59.699146678108704,
+          "fit_error_cents": -0.20626205740386097,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.0758460009506345e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.602331266628713,
+              "sigma_per_second": 0.875250732327091,
+              "extrapolated_T60_seconds": 7.892315908855056,
+              "r_squared": 0.916289592643624,
+              "extrapolated_onset_amplitude_dbfs": -34.405535359246315,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 61.47821065894087
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 6.975914255416157,
+              "sigma_per_second": -0.8031318087262951,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.5231573023972883,
+              "extrapolated_onset_amplitude_dbfs": -60.21862193661078,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 55.89957965154373
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 521.815435095223,
+          "relative_spectral_peak_db": -23.185254195784562,
+          "local_peak_to_median_db": 53.185776311050425,
+          "fit_error_cents": -0.9102971770704911,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.0498514899467625e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -12.75443767774289,
+              "sigma_per_second": 1.4684089033146188,
+              "extrapolated_T60_seconds": 4.704245025611979,
+              "r_squared": 0.9770606798611727,
+              "extrapolated_onset_amplitude_dbfs": -42.40290286924523,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 61.750805008940155
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 1.8287881736338,
+              "sigma_per_second": -0.21054701934264974,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.49173998241107875,
+              "extrapolated_onset_amplitude_dbfs": -64.64177891720301,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 49.53760777195174
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": false,
+        "hann_resolution_hz": 0.19354838709677416,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 64.95975812926828,
+            "relative_peak_db": 0.0
+          }
+        ],
+        "candidate_beat_rates_hz": [],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C3v4",
+      "midi_note": 48,
+      "layer": 4,
+      "source_wav_sha256": "4a3ffe497dd0884f64437feddf106c20d4db93bcf00520a4cf4ff57e155da647",
+      "onset_seconds": 0.008,
+      "fit": {
+        "fundamental_hz": 130.5519529292528,
+        "engine_B": 8.358801274076148e-05,
+        "normalized_B": 8.358102636886446e-05,
+        "linear_A_hz2": 17042.387874307067,
+        "linear_C_hz2": 1.424539334770578,
+        "rms_partial_error_cents": 1.05594859522935,
+        "max_partial_error_cents": 2.8097204411472148,
+        "partials_used": 8,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 1.05594859522935,
+        "dominant_fundamental_peak_hz": 130.76400531717715,
+        "dominant_fundamental_vs_ET_cents": -0.6456611196942679,
+        "fit_fundamental_vs_ET_cents": -3.4553815608416114
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 130.76400531717715,
+          "relative_spectral_peak_db": -22.48211813524044,
+          "local_peak_to_median_db": 42.98272768507935,
+          "fit_error_cents": 2.8097204411472148,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.0614775378173027e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -76.11078527766342,
+              "sigma_per_second": 8.762577979820925,
+              "extrapolated_T60_seconds": 0.7883245427190261,
+              "r_squared": 0.9831532629975922,
+              "extrapolated_onset_amplitude_dbfs": -6.864159772201829,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 45.60325834497199
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -2.1267101385582503,
+              "sigma_per_second": 0.24484655310817643,
+              "extrapolated_T60_seconds": 28.21258944139679,
+              "r_squared": 0.7713581558417936,
+              "extrapolated_onset_amplitude_dbfs": -53.50577965185163,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 32.893031921715775
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 261.1037057548227,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 73.5335844920044,
+          "fit_error_cents": -0.21834704720632356,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 6.925076913632627e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.203322702967297,
+              "sigma_per_second": 0.8293131737939037,
+              "extrapolated_T60_seconds": 8.329489386236151,
+              "r_squared": 0.9736960872896586,
+              "extrapolated_onset_amplitude_dbfs": -25.165999012127923,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 54.44276954879294
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.17867343279788,
+              "sigma_per_second": 0.7113460670419374,
+              "extrapolated_T60_seconds": 9.710822339550365,
+              "r_squared": 0.9998556509046204,
+              "extrapolated_onset_amplitude_dbfs": -26.485642821738626,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 44.382869798493594
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 391.6652865820325,
+          "relative_spectral_peak_db": -10.851617668626275,
+          "local_peak_to_median_db": 71.06585466445041,
+          "fit_error_cents": -0.5369267354439908,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 9.689340225727702e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -9.663331830854561,
+              "sigma_per_second": 1.1125321911190287,
+              "extrapolated_T60_seconds": 6.209038564568676,
+              "r_squared": 0.9916950289392434,
+              "extrapolated_onset_amplitude_dbfs": -33.10676653114873,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 62.442476660063726
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.711758429941605,
+              "sigma_per_second": 0.6575904907783308,
+              "extrapolated_T60_seconds": 10.504645939764197,
+              "r_squared": 0.9348953538698497,
+              "extrapolated_onset_amplitude_dbfs": -39.89034910338906,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 47.93663001467184
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 522.3285126990195,
+          "relative_spectral_peak_db": -19.163347003630122,
+          "local_peak_to_median_db": 65.67709900155832,
+          "fit_error_cents": -0.6844535349729515,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.9072869405067337e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -14.723522453745623,
+              "sigma_per_second": 1.6951081659178893,
+              "extrapolated_T60_seconds": 4.075111793967222,
+              "r_squared": 0.9912533243930735,
+              "extrapolated_onset_amplitude_dbfs": -35.497739510603274,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 51.66884871642692
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -1.2516613553518467,
+              "sigma_per_second": 0.14410283891549427,
+              "extrapolated_T60_seconds": 47.93628863226649,
+              "r_squared": 0.09239795127768213,
+              "extrapolated_onset_amplitude_dbfs": -57.67779462661121,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 33.619103352782616
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 653.3178406547501,
+          "relative_spectral_peak_db": -20.086924660392146,
+          "local_peak_to_median_db": 65.80453940092528,
+          "fit_error_cents": -0.25515693557044067,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 8.161438271730736e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -17.335543164796526,
+              "sigma_per_second": 1.9958281635107653,
+              "extrapolated_T60_seconds": 3.4610972052979943,
+              "r_squared": 0.9837833056585833,
+              "extrapolated_onset_amplitude_dbfs": -35.705083471109006,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 57.56883366086864
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.05927961075213894,
+              "sigma_per_second": -0.006824817401818234,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.00043981194444708827,
+              "extrapolated_onset_amplitude_dbfs": -57.50074168833085,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 44.66364498567203
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 784.3984602151637,
+          "relative_spectral_peak_db": -23.664426080088855,
+          "local_peak_to_median_db": 65.46308916361036,
+          "fit_error_cents": -0.12832758788585713,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 4.095712467648366e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -16.164942340883158,
+              "sigma_per_second": 1.861057763161292,
+              "extrapolated_T60_seconds": 3.711736097459037,
+              "r_squared": 0.9873582636823997,
+              "extrapolated_onset_amplitude_dbfs": -40.04879843039718,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 59.91928315497725
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -0.1726245799504384,
+              "sigma_per_second": 0.019874139223911916,
+              "extrapolated_T60_seconds": 347.5750673352913,
+              "r_squared": 0.005945642432323428,
+              "extrapolated_onset_amplitude_dbfs": -58.74078646749862,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 48.87468167752526
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 915.7160201249512,
+          "relative_spectral_peak_db": -21.473825202240082,
+          "local_peak_to_median_db": 67.89269231913588,
+          "fit_error_cents": 0.03974918376582376,
+          "decay": {
+            "bandwidth_hz": 4.578580100624756,
+            "late_file_envelope_floor": 4.59339453509932e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -10.382148945099742,
+              "sigma_per_second": 1.1952890697115262,
+              "extrapolated_T60_seconds": 5.779150377949387,
+              "r_squared": 0.9429479812090491,
+              "extrapolated_onset_amplitude_dbfs": -42.891261464403186,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 59.15495352109681
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.46107431393746895,
+              "sigma_per_second": -0.05308314210174364,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.023841922589619924,
+              "extrapolated_onset_amplitude_dbfs": -56.4431182653346,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 51.524812665608934
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 1047.3865517318202,
+          "relative_spectral_peak_db": -36.60313580812009,
+          "local_peak_to_median_db": 59.327723964221605,
+          "fit_error_cents": 0.37161149840474617,
+          "decay": {
+            "bandwidth_hz": 5.236932758659101,
+            "late_file_envelope_floor": 3.8856552900199526e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.310335130199121,
+              "sigma_per_second": 1.3021504533781685,
+              "extrapolated_T60_seconds": 5.304882597138718,
+              "r_squared": 0.9485388216609244,
+              "extrapolated_onset_amplitude_dbfs": -57.081282539181096,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 66.04344608367727
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.31872528147676,
+              "sigma_per_second": -0.036694604094435944,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.010313890160075667,
+              "extrapolated_onset_amplitude_dbfs": -71.4353439314136,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 57.792386052482826
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": false,
+        "hann_resolution_hz": 0.19354838709677422,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          7.999999999999999
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 130.38041911908996,
+            "relative_peak_db": 0.0
+          }
+        ],
+        "candidate_beat_rates_hz": [],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C3v12",
+      "midi_note": 48,
+      "layer": 12,
+      "source_wav_sha256": "17e82bb739a424d6b78a34e1517516f537960a5a9e231eba848c15cd4c5197f9",
+      "onset_seconds": 0.01,
+      "fit": {
+        "fundamental_hz": 130.50744383600005,
+        "engine_B": 9.999735015128939e-05,
+        "normalized_B": 9.998735168107264e-05,
+        "linear_A_hz2": 17030.489892745656,
+        "linear_C_hz2": 1.7030038610528824,
+        "rms_partial_error_cents": 0.14878972827155837,
+        "max_partial_error_cents": 0.27571650593060787,
+        "partials_used": 7,
+        "excluded_inconsistent_partials": [
+          {
+            "partial": 1,
+            "frequency_hz": 129.83781352636126,
+            "relative_spectral_peak_db": -21.810956720304617,
+            "local_peak_to_median_db": 48.51672973088317,
+            "fit_error_cents": -8.232353361860351
+          }
+        ],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 2.9372412893447426,
+        "dominant_fundamental_peak_hz": 129.83781352636126,
+        "dominant_fundamental_vs_ET_cents": -12.951496302395245,
+        "fit_fundamental_vs_ET_cents": -4.045712033014933
+      },
+      "partials": [
+        {
+          "partial": 2,
+          "frequency_hz": 261.0956108196173,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 77.49807832553476,
+          "fit_error_cents": 0.27571650593060787,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 0.00014194123133404283,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.836280374152976,
+              "sigma_per_second": 0.78705586405262,
+              "extrapolated_T60_seconds": 8.776702638887025,
+              "r_squared": 0.980652292245246,
+              "extrapolated_onset_amplitude_dbfs": -19.32084061473504,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 54.366025063396854
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.003592432414838,
+              "sigma_per_second": 0.6911891219645135,
+              "extrapolated_T60_seconds": 9.99401619537755,
+              "r_squared": 0.9996024793914414,
+              "extrapolated_onset_amplitude_dbfs": -20.737584123662643,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 44.2039719560018
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 391.66766978935203,
+          "relative_spectral_peak_db": -10.456671274472049,
+          "local_peak_to_median_db": 72.26274477494671,
+          "fit_error_cents": -0.04959146637965886,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.9515696267741364e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -9.63838523026868,
+              "sigma_per_second": 1.1096601075875323,
+              "extrapolated_T60_seconds": 6.225109140852159,
+              "r_squared": 0.9835890286588608,
+              "extrapolated_onset_amplitude_dbfs": -26.541334285537623,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 62.9601220303923
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.829696633992296,
+              "sigma_per_second": 0.6711686283054114,
+              "extrapolated_T60_seconds": 10.292130751735321,
+              "r_squared": 0.9119277849890038,
+              "extrapolated_onset_amplitude_dbfs": -33.655767266489505,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 47.6198829130482
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 522.3427846380741,
+          "relative_spectral_peak_db": -18.738118747911557,
+          "local_peak_to_median_db": 68.98333397633434,
+          "fit_error_cents": -0.2595510559106879,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.770154317827138e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -15.125286038029639,
+              "sigma_per_second": 1.741362907921901,
+              "extrapolated_T60_seconds": 3.966867128935048,
+              "r_squared": 0.9870649637098506,
+              "extrapolated_onset_amplitude_dbfs": -29.141804377597868,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 51.96555606776569
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -1.2061572080829674,
+              "sigma_per_second": 0.13886398035695793,
+              "extrapolated_T60_seconds": 49.74475930493532,
+              "r_squared": 0.12182595377689509,
+              "extrapolated_onset_amplitude_dbfs": -50.497968955282076,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 35.01458228056177
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 653.3163460029452,
+          "relative_spectral_peak_db": -19.848594282961695,
+          "local_peak_to_median_db": 68.95655254123582,
+          "fit_error_cents": -0.008876279095444892,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.4728136980460198e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -18.582021966133563,
+              "sigma_per_second": 2.1393343388453525,
+              "extrapolated_T60_seconds": 3.228927406788791,
+              "r_squared": 0.995894761370246,
+              "extrapolated_onset_amplitude_dbfs": -28.553898011124893,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 58.98214611784105
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -0.26968099449968413,
+              "sigma_per_second": 0.031048171889939098,
+              "extrapolated_T60_seconds": 222.48508876686998,
+              "r_squared": 0.01166873198953089,
+              "extrapolated_onset_amplitude_dbfs": -50.545219222622,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 45.89382726382442
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 784.4048376028223,
+          "relative_spectral_peak_db": -23.361634933053512,
+          "local_peak_to_median_db": 67.00066526685416,
+          "fit_error_cents": -0.01938590539382423,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 6.190342170390083e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -16.61710856451971,
+              "sigma_per_second": 1.9131153234663387,
+              "extrapolated_T60_seconds": 3.6107364748227,
+              "r_squared": 0.9878496330419344,
+              "extrapolated_onset_amplitude_dbfs": -33.38946030765956,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 62.88181165902077
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.19154330412019152,
+              "sigma_per_second": -0.0220522378364989,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.005886880428449093,
+              "extrapolated_onset_amplitude_dbfs": -52.6997938286292,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 52.05452519371298
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 915.7276324874346,
+          "relative_spectral_peak_db": -19.351230040653014,
+          "local_peak_to_median_db": 72.28567147199423,
+          "fit_error_cents": -0.026652909082034295,
+          "decay": {
+            "bandwidth_hz": 4.578638162437173,
+            "late_file_envelope_floor": 1.0279380551703882e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.59826735181886,
+              "sigma_per_second": 0.9899121114937749,
+              "extrapolated_T60_seconds": 6.978150078958375,
+              "r_squared": 0.8991903223101775,
+              "extrapolated_onset_amplitude_dbfs": -35.872078978194246,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 60.15546085683124
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 1.1394705872883282,
+              "sigma_per_second": -0.13118639940976376,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.10227968300582557,
+              "extrapolated_onset_amplitude_dbfs": -48.9674595912264,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 53.582222674566026
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 1047.396729402172,
+          "relative_spectral_peak_db": -33.59922358249872,
+          "local_peak_to_median_db": 64.10965071836887,
+          "fit_error_cents": 0.08920789005572757,
+          "decay": {
+            "bandwidth_hz": 5.23698364701086,
+            "late_file_envelope_floor": 7.598133291444719e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.59472603615504,
+              "sigma_per_second": 1.3348921664100268,
+              "extrapolated_T60_seconds": 5.174766511335077,
+              "r_squared": 0.9610269416657348,
+              "extrapolated_onset_amplitude_dbfs": -47.58370258355438,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 69.44009955633192
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.5589754453802338,
+              "sigma_per_second": -0.0643544263941117,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.018070494846487595,
+              "extrapolated_onset_amplitude_dbfs": -62.50970290499408,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 61.568427884969935
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": false,
+        "hann_resolution_hz": 0.1935483870967742,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 130.3855507484514,
+            "relative_peak_db": 0.0
+          }
+        ],
+        "candidate_beat_rates_hz": [],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C4v4",
+      "midi_note": 60,
+      "layer": 4,
+      "source_wav_sha256": "7b62800efbcb1bb8dc312dd9a8a2f7b6f0ab3b0613b41d5aa4aabd0ab7afcd0b",
+      "onset_seconds": 0.01,
+      "fit": {
+        "fundamental_hz": 261.5379152852234,
+        "engine_B": 0.0002896085935351829,
+        "normalized_B": 0.0002895247446810822,
+        "linear_A_hz2": 68382.27703666537,
+        "linear_C_hz2": 19.804095075321893,
+        "rms_partial_error_cents": 0.18186815346558366,
+        "max_partial_error_cents": 0.38255544843369743,
+        "partials_used": 8,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 0.18186815346558366,
+        "dominant_fundamental_peak_hz": 261.52182019719316,
+        "dominant_fundamental_vs_ET_cents": -0.6866403723800927,
+        "fit_fundamental_vs_ET_cents": -0.5800966545626735
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 261.52182019719316,
+          "relative_spectral_peak_db": -1.038073054002908,
+          "local_peak_to_median_db": 67.2115719946488,
+          "fit_error_cents": -0.10654371781739976,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.4804250187254107e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -23.99238754325543,
+              "sigma_per_second": 2.7622256951217996,
+              "extrapolated_T60_seconds": 2.5007932158409463,
+              "r_squared": 0.9988927365130449,
+              "extrapolated_onset_amplitude_dbfs": -18.703216145256796,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 65.98823287700594
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -0.857581850159306,
+              "sigma_per_second": 0.09873275920995359,
+              "extrapolated_T60_seconds": 69.96416725570194,
+              "r_squared": 0.14001747927967578,
+              "extrapolated_onset_amplitude_dbfs": -47.59530163759864,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 47.115359042918044
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 523.310288949612,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 75.0162938739317,
+          "fit_error_cents": 0.024291195037937457,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 5.081628321744868e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -20.08342622274285,
+              "sigma_per_second": 2.3121898918366703,
+              "extrapolated_T60_seconds": 2.9875380492624743,
+              "r_squared": 0.993440563908835,
+              "extrapolated_onset_amplitude_dbfs": -19.354420112418204,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 76.659369152887
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 0.017632566251847406,
+              "sigma_per_second": -0.0020300242101366868,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 2.3700593588138474e-05,
+              "extrapolated_onset_amplitude_dbfs": -48.2678675742533,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 57.96822856487274
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 785.5484017268587,
+          "relative_spectral_peak_db": -12.63680754613009,
+          "local_peak_to_median_db": 68.66537144575815,
+          "fit_error_cents": 0.05844949828080155,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 1.7723306086847944e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -15.670901141387187,
+              "sigma_per_second": 1.8041791680970758,
+              "extrapolated_T60_seconds": 3.8287523773306633,
+              "r_squared": 0.9165590235248703,
+              "extrapolated_onset_amplitude_dbfs": -41.45249603304454,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 64.70325527948724
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.5126954921457125,
+              "sigma_per_second": 0.7498017777712119,
+              "extrapolated_T60_seconds": 9.212775274440482,
+              "r_squared": 0.9737304607703672,
+              "extrapolated_onset_amplitude_dbfs": -45.68288734740113,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 55.91635849266379
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 1048.449576910993,
+          "relative_spectral_peak_db": -13.098811748791409,
+          "local_peak_to_median_db": 71.81042884456656,
+          "fit_error_cents": 0.04743371847690933,
+          "decay": {
+            "bandwidth_hz": 5.242247884554965,
+            "late_file_envelope_floor": 4.5928254227284575e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -25.858640254999262,
+              "sigma_per_second": 2.9770859788128528,
+              "extrapolated_T60_seconds": 2.3203076189746743,
+              "r_squared": 0.8317486443687873,
+              "extrapolated_onset_amplitude_dbfs": -36.470566881489155,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 75.00256429836496
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -9.426280546684453,
+              "sigma_per_second": 1.0852406534587693,
+              "extrapolated_T60_seconds": 6.365182926907906,
+              "r_squared": 0.9822066888533489,
+              "extrapolated_onset_amplitude_dbfs": -40.73919904873377,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 67.8377427163814
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 1312.009092114694,
+          "relative_spectral_peak_db": -12.155097177733435,
+          "local_peak_to_median_db": 74.89366529936304,
+          "fit_error_cents": -0.284890728073063,
+          "decay": {
+            "bandwidth_hz": 6.560045460573471,
+            "late_file_envelope_floor": 6.076407898657473e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -4.471457999318275,
+              "sigma_per_second": 0.5147956266589621,
+              "extrapolated_T60_seconds": 13.418442040414488,
+              "r_squared": 0.25622133364299293,
+              "extrapolated_onset_amplitude_dbfs": -46.215018802477545,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 75.53615670119203
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.209689308371075,
+              "sigma_per_second": 0.9451754109783919,
+              "extrapolated_T60_seconds": 7.308437353265065,
+              "r_squared": 0.9127121948632244,
+              "extrapolated_onset_amplitude_dbfs": -45.3032035266454,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 61.48463849881898
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 1577.5067767996636,
+          "relative_spectral_peak_db": -19.910826681100275,
+          "local_peak_to_median_db": 67.22738482386147,
+          "fit_error_cents": 0.38255544843369743,
+          "decay": {
+            "bandwidth_hz": 7.8875338839983185,
+            "late_file_envelope_floor": 2.7766141613789343e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -26.0271654668085,
+              "sigma_per_second": 2.9964881608381337,
+              "extrapolated_T60_seconds": 2.305283688172491,
+              "r_squared": 0.9609967657642898,
+              "extrapolated_onset_amplitude_dbfs": -36.14460805921085,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 83.06719897286756
+            },
+            "late": {
+              "valid": false,
+              "amplitude_slope_db_per_second": 2.2643028351910814,
+              "sigma_per_second": -0.2606874977167569,
+              "extrapolated_T60_seconds": null,
+              "r_squared": 0.1627653802127903,
+              "extrapolated_onset_amplitude_dbfs": -71.95107612773496,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 64.37092468508737
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 1843.466784591278,
+          "relative_spectral_peak_db": -19.799276874561002,
+          "local_peak_to_median_db": 67.61489580354808,
+          "fit_error_cents": 0.02256268085459436,
+          "decay": {
+            "bandwidth_hz": 9.21733392295639,
+            "late_file_envelope_floor": 1.1746042689106667e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -15.302458735172461,
+              "sigma_per_second": 1.7617606684882314,
+              "extrapolated_T60_seconds": 3.9209385261788645,
+              "r_squared": 0.9971708015183025,
+              "extrapolated_onset_amplitude_dbfs": -47.06155405180438,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 83.83330410057314
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.31277741554409,
+              "sigma_per_second": 0.6116561039713628,
+              "extrapolated_T60_seconds": 11.293527905846833,
+              "r_squared": 0.8247990042598214,
+              "extrapolated_onset_amplitude_dbfs": -56.196472698558054,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 70.06460815642258
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 2111.1309561341477,
+          "relative_spectral_peak_db": -29.572104234192448,
+          "local_peak_to_median_db": 61.67142224315876,
+          "fit_error_cents": -0.13776720169781426,
+          "decay": {
+            "bandwidth_hz": 10.55565478067074,
+            "late_file_envelope_floor": 5.6878635100302626e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -3.649800059663451,
+              "sigma_per_second": 0.42019876048949206,
+              "extrapolated_T60_seconds": 16.439256676852764,
+              "r_squared": 0.4198718144841207,
+              "extrapolated_onset_amplitude_dbfs": -63.466160977793756,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 79.83694058696142
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.532376186758404,
+              "sigma_per_second": 0.6369383468232572,
+              "extrapolated_T60_seconds": 10.845249486759128,
+              "r_squared": 0.5950354642290059,
+              "extrapolated_onset_amplitude_dbfs": -66.14676414691749,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 69.23113844428175
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": false,
+        "hann_resolution_hz": 0.1935483870967742,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 261.49073001167295,
+            "relative_peak_db": 0.0
+          }
+        ],
+        "candidate_beat_rates_hz": [],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C4v12",
+      "midi_note": 60,
+      "layer": 12,
+      "source_wav_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+      "onset_seconds": 0.01,
+      "fit": {
+        "fundamental_hz": 261.5226060711219,
+        "engine_B": 0.0002914813630595495,
+        "normalized_B": 0.00029139642643198247,
+        "linear_A_hz2": 68374.1436976282,
+        "linear_C_hz2": 19.929788603014174,
+        "rms_partial_error_cents": 0.28315484839689664,
+        "max_partial_error_cents": 0.4613803054291763,
+        "partials_used": 8,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 0.28315484839689664,
+        "dominant_fundamental_peak_hz": 261.4529186114708,
+        "dominant_fundamental_vs_ET_cents": -1.142818321621447,
+        "fit_fundamental_vs_ET_cents": -0.681438016192268
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 261.4529186114708,
+          "relative_spectral_peak_db": -2.7841347165178347,
+          "local_peak_to_median_db": 70.08873177172335,
+          "fit_error_cents": -0.4613803054291763,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 8.939847162009007e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -24.334550423490175,
+              "sigma_per_second": 2.8016186524920212,
+              "extrapolated_T60_seconds": 2.4656301002414214,
+              "r_squared": 0.9974403272748389,
+              "extrapolated_onset_amplitude_dbfs": -11.440344218145965,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 57.5076872240006
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -0.08215772012985738,
+              "sigma_per_second": 0.009458757082269323,
+              "extrapolated_T60_seconds": 730.3026411293401,
+              "r_squared": 0.001018054097103871,
+              "extrapolated_onset_amplitude_dbfs": -43.18166332663697,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 37.713902739317476
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 523.3080850620105,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 77.05054822821481,
+          "fit_error_cents": 0.11348531342022464,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 3.5654934778990536e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -20.174765432798893,
+              "sigma_per_second": 2.322705707010715,
+              "extrapolated_T60_seconds": 2.9740122728988805,
+              "r_squared": 0.993532829411547,
+              "extrapolated_onset_amplitude_dbfs": -11.045932853193099,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 68.00139834691784
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -0.40447289314173873,
+              "sigma_per_second": 0.04656666271341706,
+              "extrapolated_T60_seconds": 148.3412140031206,
+              "r_squared": 0.010545946586632438,
+              "extrapolated_onset_amplitude_dbfs": -40.16060643845089,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 48.22222555208
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 785.5864443738088,
+          "relative_spectral_peak_db": -15.705207190552592,
+          "local_peak_to_median_db": 69.64198271080133,
+          "fit_error_cents": 0.23069804389122084,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 7.272803195432137e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -23.072135487344756,
+              "sigma_per_second": 2.6562777618349473,
+              "extrapolated_T60_seconds": 2.6005395136878624,
+              "r_squared": 0.9713733209560855,
+              "extrapolated_onset_amplitude_dbfs": -30.697185356327363,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 59.780800300896516
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.389983284179988,
+              "sigma_per_second": 0.7356740127316989,
+              "extrapolated_T60_seconds": 9.38969592432974,
+              "r_squared": 0.9673761854648969,
+              "extrapolated_onset_amplitude_dbfs": -40.5177299843938,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 49.48010370102931
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 1048.479715994887,
+          "relative_spectral_peak_db": -14.115897690656187,
+          "local_peak_to_median_db": 72.52546556196909,
+          "fit_error_cents": 0.17434403077972138,
+          "decay": {
+            "bandwidth_hz": 5.242398579974435,
+            "late_file_envelope_floor": 4.274854280688138e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -31.01887055496458,
+              "sigma_per_second": 3.571179447068669,
+              "extrapolated_T60_seconds": 1.9343064053116203,
+              "r_squared": 0.910513265977491,
+              "extrapolated_onset_amplitude_dbfs": -24.54264727089852,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 65.648656274308
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -14.096111367605143,
+              "sigma_per_second": 1.6228747952115756,
+              "extrapolated_T60_seconds": 4.256493045159141,
+              "r_squared": 0.9500585518876924,
+              "extrapolated_onset_amplitude_dbfs": -26.810397084154843,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 54.61399814117079
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 1311.9439092790174,
+          "relative_spectral_peak_db": -10.487221987173784,
+          "local_peak_to_median_db": 78.03858032755623,
+          "fit_error_cents": -0.3081767905966893,
+          "decay": {
+            "bandwidth_hz": 6.559719546395087,
+            "late_file_envelope_floor": 3.3490252361859365e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.3426453872929915,
+              "sigma_per_second": 0.8453532905961169,
+              "extrapolated_T60_seconds": 8.171441876225506,
+              "r_squared": 0.42532484515258817,
+              "extrapolated_onset_amplitude_dbfs": -34.024851256020945,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 71.08557028302388
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -9.745006680816036,
+              "sigma_per_second": 1.1219353557187195,
+              "extrapolated_T60_seconds": 6.156999370571562,
+              "r_squared": 0.923576928364755,
+              "extrapolated_onset_amplitude_dbfs": -33.67402746076361,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 54.6893441837312
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 1577.5170829262397,
+          "relative_spectral_peak_db": -18.028927031268662,
+          "local_peak_to_median_db": 71.7093913056397,
+          "fit_error_cents": 0.4390723154120228,
+          "decay": {
+            "bandwidth_hz": 7.887585414631198,
+            "late_file_envelope_floor": 1.2661251827542597e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -24.886774796499665,
+              "sigma_per_second": 2.865195832956003,
+              "extrapolated_T60_seconds": 2.4109190721024656,
+              "r_squared": 0.9578879171856052,
+              "extrapolated_onset_amplitude_dbfs": -27.4758327850259,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 79.09214516045752
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -2.122958093550383,
+              "sigma_per_second": 0.24441458296300858,
+              "extrapolated_T60_seconds": 28.262451426753067,
+              "r_squared": 0.45957028158949076,
+              "extrapolated_onset_amplitude_dbfs": -53.73199843763239,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 59.60316113689086
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 1843.4324924123546,
+          "relative_spectral_peak_db": -15.90326075830355,
+          "local_peak_to_median_db": 70.890114276054,
+          "fit_error_cents": 0.015000994011851608,
+          "decay": {
+            "bandwidth_hz": 9.217162462061774,
+            "late_file_envelope_floor": 1.0814769384767086e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -20.934239823258945,
+              "sigma_per_second": 2.410143427509918,
+              "extrapolated_T60_seconds": 2.866117924823672,
+              "r_squared": 0.9994365480650723,
+              "extrapolated_onset_amplitude_dbfs": -29.33417594748893,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 79.49533283266075
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.5361695648977065,
+              "sigma_per_second": 0.7525043302707419,
+              "extrapolated_T60_seconds": 9.179688409895013,
+              "r_squared": 0.7888852738432751,
+              "extrapolated_onset_amplitude_dbfs": -44.56076186423862,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 58.83335093927392
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 2111.041634724372,
+          "relative_spectral_peak_db": -22.61369462807826,
+          "local_peak_to_median_db": 69.25939194487745,
+          "fit_error_cents": -0.20991129554290122,
+          "decay": {
+            "bandwidth_hz": 10.555208173621862,
+            "late_file_envelope_floor": 3.419595579460585e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.924052529925751,
+              "sigma_per_second": 1.3728072801742486,
+              "extrapolated_T60_seconds": 5.031846333234294,
+              "r_squared": 0.8555122830747619,
+              "extrapolated_onset_amplitude_dbfs": -41.290272427508995,
+              "accepted_time_seconds": [
+                0.20066666666666666,
+                0.798
+              ],
+              "median_snr_db": 82.8445224914421
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.607040890852507,
+              "sigma_per_second": 0.6455344385542519,
+              "extrapolated_T60_seconds": 10.700831538055265,
+              "r_squared": 0.4122563800968323,
+              "extrapolated_onset_amplitude_dbfs": -52.89901995250932,
+              "accepted_time_seconds": [
+                1.0006666666666666,
+                2.998
+              ],
+              "median_snr_db": 65.5908617236404
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": false,
+        "hann_resolution_hz": 0.1935483870967742,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 261.48399570815616,
+            "relative_peak_db": 0.0
+          }
+        ],
+        "candidate_beat_rates_hz": [],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C5v4",
+      "midi_note": 72,
+      "layer": 4,
+      "source_wav_sha256": "33886387891ae3c20c6f8248e4e00ec742b0f52f394cc2375a6d815c7153ef3d",
+      "onset_seconds": 0.009,
+      "fit": {
+        "fundamental_hz": 524.4021642401748,
+        "engine_B": 0.000811461882471829,
+        "normalized_B": 0.000810803945975512,
+        "linear_A_hz2": 274774.66069635504,
+        "linear_C_hz2": 222.96916342422233,
+        "rms_partial_error_cents": 0.642732527994143,
+        "max_partial_error_cents": 1.567606086655183,
+        "partials_used": 8,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 0.642732527994143,
+        "dominant_fundamental_peak_hz": 523.9275409749614,
+        "dominant_fundamental_vs_ET_cents": 2.2365330097936678,
+        "fit_fundamental_vs_ET_cents": 3.8041390964491004
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 523.9275409749614,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 73.03600967145175,
+          "fit_error_cents": -1.567606086655183,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 4.368546638311681e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -39.090674625735,
+              "sigma_per_second": 4.5004802334149,
+              "extrapolated_T60_seconds": 1.5348929271356073,
+              "r_squared": 0.9933810196879035,
+              "extrapolated_onset_amplitude_dbfs": -14.103903396911504,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 74.12154779931616
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -3.5858775301617056,
+              "sigma_per_second": 0.4128394073126326,
+              "extrapolated_T60_seconds": 16.732305968434535,
+              "r_squared": 0.8100862999849374,
+              "extrapolated_onset_amplitude_dbfs": -41.66286830184828,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 59.43439186456456
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 1050.3726812220714,
+          "relative_spectral_peak_db": -15.131449999899607,
+          "local_peak_to_median_db": 69.47046080701445,
+          "fit_error_cents": 0.48392492566208684,
+          "decay": {
+            "bandwidth_hz": 5.251863406110357,
+            "late_file_envelope_floor": 2.1595881123933425e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -43.041986857215186,
+              "sigma_per_second": 4.955391865513467,
+              "extrapolated_T60_seconds": 1.393987693900848,
+              "r_squared": 0.9461179258625128,
+              "extrapolated_onset_amplitude_dbfs": -28.50967465949377,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 85.34418602791654
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.328281068849234,
+              "sigma_per_second": 0.9588287919698383,
+              "extrapolated_T60_seconds": 7.204367804590742,
+              "r_squared": 0.5216872117241356,
+              "extrapolated_onset_amplitude_dbfs": -49.41882894702487,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 65.39349225720406
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 1578.5356356883756,
+          "relative_spectral_peak_db": -16.302215239721747,
+          "local_peak_to_median_db": 71.21759635696074,
+          "fit_error_cents": 0.2579074433102948,
+          "decay": {
+            "bandwidth_hz": 7.892678178441878,
+            "late_file_envelope_floor": 1.3301474369001816e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.931967714062523,
+              "sigma_per_second": 1.0283307854752235,
+              "extrapolated_T60_seconds": 6.717444791648292,
+              "r_squared": 0.2650437816050646,
+              "extrapolated_onset_amplitude_dbfs": -48.635646935598324,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 83.55555358838916
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -9.65771784998794,
+              "sigma_per_second": 1.111885857686237,
+              "extrapolated_T60_seconds": 6.212647846206744,
+              "r_squared": 0.5991311855283803,
+              "extrapolated_onset_amplitude_dbfs": -52.868014604937414,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 65.69170834984605
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 2111.1596024887053,
+          "relative_spectral_peak_db": -27.30849925335611,
+          "local_peak_to_median_db": 62.796369078418934,
+          "fit_error_cents": 0.6839452650304892,
+          "decay": {
+            "bandwidth_hz": 10.555798012443526,
+            "late_file_envelope_floor": 8.47793992436469e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -21.088433510151177,
+              "sigma_per_second": 2.4278956317535103,
+              "extrapolated_T60_seconds": 2.845161541805287,
+              "r_squared": 0.9629576550046925,
+              "extrapolated_onset_amplitude_dbfs": -51.97559675944077,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 79.18435742092582
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -6.774144748014841,
+              "sigma_per_second": 0.779902235728144,
+              "extrapolated_T60_seconds": 8.857206663259294,
+              "r_squared": 0.44986276446792284,
+              "extrapolated_onset_amplitude_dbfs": -69.90059920981211,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 56.51269689785085
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 2647.3050243118023,
+          "relative_spectral_peak_db": -35.25713298729981,
+          "local_peak_to_median_db": 57.767307730390634,
+          "fit_error_cents": -0.06155159134635871,
+          "decay": {
+            "bandwidth_hz": 13.236525121559012,
+            "late_file_envelope_floor": 1.0468350546167877e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -35.958093005072165,
+              "sigma_per_second": 4.1398284462986314,
+              "extrapolated_T60_seconds": 1.6686090664356572,
+              "r_squared": 0.9446929997406727,
+              "extrapolated_onset_amplitude_dbfs": -51.54226642505648,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 68.28562215943349
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.490125006719742,
+              "sigma_per_second": 0.9774617639064426,
+              "extrapolated_T60_seconds": 7.067033754215792,
+              "r_squared": 0.7847148396429913,
+              "extrapolated_onset_amplitude_dbfs": -67.02364530826873,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 55.097401827724354
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 3190.6087792321264,
+          "relative_spectral_peak_db": -36.75075273620914,
+          "local_peak_to_median_db": 58.41291588199701,
+          "fit_error_cents": -0.0740963745863381,
+          "decay": {
+            "bandwidth_hz": 15.953043896160633,
+            "late_file_envelope_floor": 6.123731599548562e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -42.741555357866574,
+              "sigma_per_second": 4.920803410920168,
+              "extrapolated_T60_seconds": 1.4037860694968138,
+              "r_squared": 0.807017827727204,
+              "extrapolated_onset_amplitude_dbfs": -53.33748127763813,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 65.20142486909225
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -10.774827850294479,
+              "sigma_per_second": 1.2404978993832574,
+              "extrapolated_T60_seconds": 5.568534442836614,
+              "r_squared": 0.795160409663227,
+              "extrapolated_onset_amplitude_dbfs": -66.14623725335375,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 56.860089867431256
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 3741.8167449952525,
+          "relative_spectral_peak_db": -35.2192065573725,
+          "local_peak_to_median_db": 60.60617518497497,
+          "fit_error_cents": 0.11656052421689185,
+          "decay": {
+            "bandwidth_hz": 18.709083724976264,
+            "late_file_envelope_floor": 7.342241956952173e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -25.450096604860576,
+              "sigma_per_second": 2.9300506528805172,
+              "extrapolated_T60_seconds": 2.3575549017185624,
+              "r_squared": 0.5862654314298578,
+              "extrapolated_onset_amplitude_dbfs": -62.22148460701391,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 64.89838361833752
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.061931243658664,
+              "sigma_per_second": 1.2735518990686763,
+              "extrapolated_T60_seconds": 5.424007678080214,
+              "r_squared": 0.9161541493597585,
+              "extrapolated_onset_amplitude_dbfs": -67.74615140822644,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 53.65836357807335
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 4300.441680676504,
+          "relative_spectral_peak_db": -49.03986675052358,
+          "local_peak_to_median_db": 48.87692941643721,
+          "fit_error_cents": -0.23686713984045538,
+          "decay": {
+            "bandwidth_hz": 21.50220840338252,
+            "late_file_envelope_floor": 5.825420744653201e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -19.768740395548928,
+              "sigma_per_second": 2.275960347103009,
+              "extrapolated_T60_seconds": 3.0350947404574864,
+              "r_squared": 0.6874786676719867,
+              "extrapolated_onset_amplitude_dbfs": -75.11241463512131,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 58.73981906588635
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -15.455999068577158,
+              "sigma_per_second": 1.7794376526317812,
+              "extrapolated_T60_seconds": 3.881987811579459,
+              "r_squared": 0.9079408191845615,
+              "extrapolated_onset_amplitude_dbfs": -75.4059949705384,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 35.92634892371411
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": true,
+        "hann_resolution_hz": 0.1935483870967742,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 524.3989138593529,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 524.7847844734454,
+            "relative_peak_db": -8.129523541224842
+          }
+        ],
+        "candidate_beat_rates_hz": [
+          0.38587061409248236
+        ],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C5v12",
+      "midi_note": 72,
+      "layer": 12,
+      "source_wav_sha256": "5ee4d9866caf2fab6e164f3f53fcbd7136b27c41042a1dda6b252cf60cb4ed33",
+      "onset_seconds": 0.009,
+      "fit": {
+        "fundamental_hz": 524.3199947433004,
+        "engine_B": 0.0008147239813633906,
+        "normalized_B": 0.000814060746550889,
+        "linear_A_hz2": 274687.66226178524,
+        "linear_C_hz2": 223.79462582932405,
+        "rms_partial_error_cents": 0.7283478546063054,
+        "max_partial_error_cents": 1.3738529790013014,
+        "partials_used": 8,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 8,
+        "initial_all_candidate_rms_error_cents": 0.7283478546063054,
+        "dominant_fundamental_peak_hz": 523.9040759114906,
+        "dominant_fundamental_vs_ET_cents": 2.1589947561348954,
+        "fit_fundamental_vs_ET_cents": 3.532847735136322
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 523.9040759114906,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 74.18478604819332,
+          "fit_error_cents": -1.3738529790013014,
+          "decay": {
+            "bandwidth_hz": 4,
+            "late_file_envelope_floor": 7.763983376221587e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -39.466067914463984,
+              "sigma_per_second": 4.543698982946769,
+              "extrapolated_T60_seconds": 1.5202933347715266,
+              "r_squared": 0.9949701716596653,
+              "extrapolated_onset_amplitude_dbfs": -7.145898247820185,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 75.84215075449855
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -3.572303749490008,
+              "sigma_per_second": 0.4112766680611214,
+              "extrapolated_T60_seconds": 16.795884170982315,
+              "r_squared": 0.8487762789313771,
+              "extrapolated_onset_amplitude_dbfs": -35.00132735690001,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 60.90482582094515
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 1050.3823655229526,
+          "relative_spectral_peak_db": -13.41168471959984,
+          "local_peak_to_median_db": 74.29794127638091,
+          "fit_error_cents": 0.7627411054921331,
+          "decay": {
+            "bandwidth_hz": 5.251911827614763,
+            "late_file_envelope_floor": 7.297452342592852e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -42.41955244374949,
+              "sigma_per_second": 4.883731455422836,
+              "extrapolated_T60_seconds": 1.4144420802073074,
+              "r_squared": 0.948461254858122,
+              "extrapolated_onset_amplitude_dbfs": -19.748995194149778,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 83.85630619555961
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -9.294096532038266,
+              "sigma_per_second": 1.0700224063759485,
+              "extrapolated_T60_seconds": 6.455710869062982,
+              "r_squared": 0.5690549421353568,
+              "extrapolated_onset_amplitude_dbfs": -39.35498680198689,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 64.93251513434403
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 1577.578940092761,
+          "relative_spectral_peak_db": -14.02764649694401,
+          "local_peak_to_median_db": 75.03753435460808,
+          "fit_error_cents": -0.5427675754502987,
+          "decay": {
+            "bandwidth_hz": 7.887894700463805,
+            "late_file_envelope_floor": 1.8149880765716518e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -13.891085201237189,
+              "sigma_per_second": 1.5992702854939473,
+              "extrapolated_T60_seconds": 4.319316967018256,
+              "r_squared": 0.4580231552698877,
+              "extrapolated_onset_amplitude_dbfs": -35.00048452619282,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 91.46645333604542
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.676459926486991,
+              "sigma_per_second": 0.8837851096847557,
+              "extrapolated_T60_seconds": 7.816102809704635,
+              "r_squared": 0.5971782954098505,
+              "extrapolated_onset_amplitude_dbfs": -47.25941237386075,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 70.93385510006559
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 2111.0816445504806,
+          "relative_spectral_peak_db": -22.81686012231404,
+          "local_peak_to_median_db": 70.54238459160631,
+          "fit_error_cents": 0.8495288619244997,
+          "decay": {
+            "bandwidth_hz": 10.555408222752403,
+            "late_file_envelope_floor": 7.649519831853344e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -18.400866953607714,
+              "sigma_per_second": 2.1184780972771944,
+              "extrapolated_T60_seconds": 3.260715929921784,
+              "r_squared": 0.8838020824179402,
+              "extrapolated_onset_amplitude_dbfs": -41.54630867529961,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 92.79748272938738
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -8.939892623650822,
+              "sigma_per_second": 1.0292431744092907,
+              "extrapolated_T60_seconds": 6.711490006185057,
+              "r_squared": 0.505379280901687,
+              "extrapolated_onset_amplitude_dbfs": -56.67622250625838,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 65.26081125493218
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 2648.2826904939075,
+          "relative_spectral_peak_db": -31.956948111774075,
+          "local_peak_to_median_db": 66.47942127196752,
+          "fit_error_cents": 0.7826118320560527,
+          "decay": {
+            "bandwidth_hz": 13.241413452469537,
+            "late_file_envelope_floor": 9.65790068708228e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -31.506523461606204,
+              "sigma_per_second": 3.6273225627380805,
+              "extrapolated_T60_seconds": 1.90436752163773,
+              "r_squared": 0.9465489632062348,
+              "extrapolated_onset_amplitude_dbfs": -39.04668244756015,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 84.52132230360672
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.225761097469931,
+              "sigma_per_second": 1.2924135080273371,
+              "extrapolated_T60_seconds": 5.34484918029503,
+              "r_squared": 0.8308632092734649,
+              "extrapolated_onset_amplitude_dbfs": -55.75946307397982,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 63.83378763943976
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 3189.8106666201415,
+          "relative_spectral_peak_db": -33.00348100902929,
+          "local_peak_to_median_db": 66.64865440015862,
+          "fit_error_cents": -0.33185937357287226,
+          "decay": {
+            "bandwidth_hz": 15.949053333100709,
+            "late_file_envelope_floor": 6.774377940120733e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -44.814967220861966,
+              "sigma_per_second": 5.159513773288678,
+              "extrapolated_T60_seconds": 1.338838422090136,
+              "r_squared": 0.9567218493323468,
+              "extrapolated_onset_amplitude_dbfs": -34.586067411562425,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 86.26816189982841
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.439683102852866,
+              "sigma_per_second": 1.3170421890602442,
+              "extrapolated_T60_seconds": 5.2449005326936895,
+              "r_squared": 0.815176688373699,
+              "extrapolated_onset_amplitude_dbfs": -59.79360921755352,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 61.16454130627824
+            }
+          }
+        },
+        {
+          "partial": 7,
+          "frequency_hz": 3740.9968826116788,
+          "relative_spectral_peak_db": -35.47279522550888,
+          "local_peak_to_median_db": 65.10414802050579,
+          "fit_error_cents": -0.12175697740375853,
+          "decay": {
+            "bandwidth_hz": 18.704984413058394,
+            "late_file_envelope_floor": 6.621499363794537e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -42.064973947378995,
+              "sigma_per_second": 4.842909097420889,
+              "extrapolated_T60_seconds": 1.4263648439449113,
+              "r_squared": 0.9214798597307334,
+              "extrapolated_onset_amplitude_dbfs": -39.863031652338684,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 83.42939683688908
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -11.041637622252438,
+              "sigma_per_second": 1.2712155095620343,
+              "extrapolated_T60_seconds": 5.433976557886737,
+              "r_squared": 0.6974646850106099,
+              "extrapolated_onset_amplitude_dbfs": -60.07347927069694,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 61.764384185081056
+            }
+          }
+        },
+        {
+          "partial": 8,
+          "frequency_hz": 4300.416358545155,
+          "relative_spectral_peak_db": -47.98550648811886,
+          "local_peak_to_median_db": 54.92505684980297,
+          "fit_error_cents": -0.14472789401842617,
+          "decay": {
+            "bandwidth_hz": 21.502081792725775,
+            "late_file_envelope_floor": 6.72401762091156e-08,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -33.31595216483037,
+              "sigma_per_second": 3.8356407406820567,
+              "extrapolated_T60_seconds": 1.8009390727646186,
+              "r_squared": 0.7111268103060719,
+              "extrapolated_onset_amplitude_dbfs": -55.21086615342619,
+              "accepted_time_seconds": [
+                0.20166666666666666,
+                0.799
+              ],
+              "median_snr_db": 68.81157091189804
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -17.474412800256626,
+              "sigma_per_second": 2.0118161211347627,
+              "extrapolated_T60_seconds": 3.4335917713423165,
+              "r_squared": 0.9513032392134693,
+              "extrapolated_onset_amplitude_dbfs": -63.472067304227224,
+              "accepted_time_seconds": [
+                1.0016666666666667,
+                2.999
+              ],
+              "median_snr_db": 42.905205019039414
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": true,
+        "hann_resolution_hz": 0.1935483870967742,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          8.0
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 524.3869692559387,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 524.7683526351072,
+            "relative_peak_db": -8.430226367902426
+          }
+        ],
+        "candidate_beat_rates_hz": [
+          0.38138337916859655
+        ],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C6v4",
+      "midi_note": 84,
+      "layer": 4,
+      "source_wav_sha256": "82ba4e56e4844e951ee2b2d1ad3b47672165e458626f4d699ecf7075164e0aed",
+      "onset_seconds": 0.005,
+      "fit": {
+        "fundamental_hz": 1050.6536325695097,
+        "engine_B": 0.002606424047148952,
+        "normalized_B": 0.0025996482614062933,
+        "linear_A_hz2": 1101003.3739616205,
+        "linear_C_hz2": 2869.681669885698,
+        "rms_partial_error_cents": 1.0669279070492956,
+        "max_partial_error_cents": 1.7971101503458835,
+        "partials_used": 4,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 4,
+        "initial_all_candidate_rms_error_cents": 1.0669279070492956,
+        "dominant_fundamental_peak_hz": 1050.3014190001213,
+        "dominant_fundamental_vs_ET_cents": 6.273585454666619,
+        "fit_fundamental_vs_ET_cents": 6.854049210066973
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 1050.3014190001213,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 64.98184100904282,
+          "fit_error_cents": -0.5804637554004515,
+          "decay": {
+            "bandwidth_hz": 5.251507095000607,
+            "late_file_envelope_floor": 5.135066143842134e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -12.414942398016871,
+              "sigma_per_second": 1.42932306480267,
+              "extrapolated_T60_seconds": 4.832885894789511,
+              "r_squared": 0.7300263906410325,
+              "extrapolated_onset_amplitude_dbfs": -36.65464163227653,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 63.20526326828448
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -10.978166364195953,
+              "sigma_per_second": 1.2639081109303123,
+              "extrapolated_T60_seconds": 5.465393583001548,
+              "r_squared": 0.8124477042667839,
+              "extrapolated_onset_amplitude_dbfs": -47.70817551373242,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 36.35029997527124
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 2111.676232098959,
+          "relative_spectral_peak_db": -28.780118907379986,
+          "local_peak_to_median_db": 45.38530933125716,
+          "fit_error_cents": 1.7971101503458835,
+          "decay": {
+            "bandwidth_hz": 10.558381160494797,
+            "late_file_envelope_floor": 2.1960762045167897e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -38.71029356635188,
+              "sigma_per_second": 4.4566872455652575,
+              "extrapolated_T60_seconds": 1.5499753288400209,
+              "r_squared": 0.748241335468336,
+              "extrapolated_onset_amplitude_dbfs": -51.83184950270843,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 40.62974832023152
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -5.126571173777453,
+              "sigma_per_second": 0.5902183181456475,
+              "extrapolated_T60_seconds": 11.703729055182455,
+              "r_squared": 0.6129365482728957,
+              "extrapolated_onset_amplitude_dbfs": -79.5384271350709,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 24.103662779008012
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 3182.7815741044406,
+          "relative_spectral_peak_db": -39.65749652251754,
+          "local_peak_to_median_db": 37.45015223380658,
+          "fit_error_cents": -0.9715366771920545,
+          "decay": {
+            "bandwidth_hz": 15.913907870522204,
+            "late_file_envelope_floor": 4.484839082412935e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -26.83192426683418,
+              "sigma_per_second": 3.0891394416578786,
+              "extrapolated_T60_seconds": 2.2361422685648935,
+              "r_squared": 0.8072726612082153,
+              "extrapolated_onset_amplitude_dbfs": -69.00999096458484,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 42.989830089718865
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -7.984140091589417,
+              "sigma_per_second": 0.9192080977634953,
+              "extrapolated_T60_seconds": 7.514898199645153,
+              "r_squared": 0.6709777357835263,
+              "extrapolated_onset_amplitude_dbfs": -85.39504665998506,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.997666666666667
+              ],
+              "median_snr_db": 26.344978720655824
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 4284.28344692391,
+          "relative_spectral_peak_db": -48.267661410067326,
+          "local_peak_to_median_db": 30.92249060676959,
+          "fit_error_cents": 0.20715708151830922,
+          "decay": {
+            "bandwidth_hz": 21.42141723461955,
+            "late_file_envelope_floor": 3.5443463374509063e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -14.769390956180295,
+              "sigma_per_second": 1.7003889724150913,
+              "extrapolated_T60_seconds": 4.062455938637932,
+              "r_squared": 0.29538513358231233,
+              "extrapolated_onset_amplitude_dbfs": -85.37770114254928,
+              "accepted_time_seconds": [
+                0.20033333333333334,
+                0.7976666666666666
+              ],
+              "median_snr_db": 35.27578976988802
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -4.918226908949479,
+              "sigma_per_second": 0.5662317982254628,
+              "extrapolated_T60_seconds": 12.19951846687282,
+              "r_squared": 0.4427448675706003,
+              "extrapolated_onset_amplitude_dbfs": -101.33694986982522,
+              "accepted_time_seconds": [
+                1.0003333333333335,
+                2.981666666666667
+              ],
+              "median_snr_db": 18.277795870049594
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": true,
+        "hann_resolution_hz": 0.29450864096533386,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          5.343229166666667
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 1050.2641606474344,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 1051.1469150712826,
+            "relative_peak_db": -4.473430168568248
+          },
+          {
+            "frequency_hz": 1052.1199201153968,
+            "relative_peak_db": -5.488254690069553
+          },
+          {
+            "frequency_hz": 1051.7791723175114,
+            "relative_peak_db": -9.990690706121294
+          }
+        ],
+        "candidate_beat_rates_hz": [
+          0.8827544238481551,
+          0.6322572462288463,
+          0.34074779788534215
+        ],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    },
+    {
+      "id": "C6v12",
+      "midi_note": 84,
+      "layer": 12,
+      "source_wav_sha256": "34c58d8e124895ac7d8bc6dbb1412da8d8b1c8cc3b78d52dff3e6a883bc69969",
+      "onset_seconds": 0.008,
+      "fit": {
+        "fundamental_hz": 1050.374935589292,
+        "engine_B": 0.0026068402949706317,
+        "normalized_B": 0.002600062347673281,
+        "linear_A_hz2": 1100418.8890129833,
+        "linear_C_hz2": 2868.6163012258603,
+        "rms_partial_error_cents": 2.315463231755887,
+        "max_partial_error_cents": 3.530556571556608,
+        "partials_used": 6,
+        "excluded_inconsistent_partials": [],
+        "all_candidate_count": 6,
+        "initial_all_candidate_rms_error_cents": 2.315463231755887,
+        "dominant_fundamental_peak_hz": 1050.148582253498,
+        "dominant_fundamental_vs_ET_cents": 6.021643080402012,
+        "fit_fundamental_vs_ET_cents": 6.394760163104771
+      },
+      "partials": [
+        {
+          "partial": 1,
+          "frequency_hz": 1050.148582253498,
+          "relative_spectral_peak_db": 0.0,
+          "local_peak_to_median_db": 67.70480634231609,
+          "fit_error_cents": -0.37311708270279176,
+          "decay": {
+            "bandwidth_hz": 5.250742911267491,
+            "late_file_envelope_floor": 2.61115327876568e-05,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -10.46318485960236,
+              "sigma_per_second": 1.2046186741480698,
+              "extrapolated_T60_seconds": 5.734391660387831,
+              "r_squared": 0.5323530150051248,
+              "extrapolated_onset_amplitude_dbfs": -27.386172958863565,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 59.30371557723846
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -13.821961080341966,
+              "sigma_per_second": 1.5913120769769644,
+              "extrapolated_T60_seconds": 4.340918025397562,
+              "r_squared": 0.8660246876133101,
+              "extrapolated_onset_amplitude_dbfs": -32.25683435470749,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 34.031191303038064
+            }
+          }
+        },
+        {
+          "partial": 2,
+          "frequency_hz": 2111.3767394109796,
+          "relative_spectral_peak_db": -13.952434416828874,
+          "local_peak_to_median_db": 61.48367088020042,
+          "fit_error_cents": 2.0097790680737333,
+          "decay": {
+            "bandwidth_hz": 10.556883697054898,
+            "late_file_envelope_floor": 1.0777126550698357e-06,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -35.02293466098491,
+              "sigma_per_second": 4.032164363164417,
+              "extrapolated_T60_seconds": 1.7131631195611718,
+              "r_squared": 0.9170800123674349,
+              "extrapolated_onset_amplitude_dbfs": -25.741478837467103,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 75.13966250242696
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -10.669229563223999,
+              "sigma_per_second": 1.2283404473005477,
+              "extrapolated_T60_seconds": 5.623648797174194,
+              "r_squared": 0.746314168753933,
+              "extrapolated_onset_amplitude_dbfs": -55.398926914089245,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 40.74441748106375
+            }
+          }
+        },
+        {
+          "partial": 3,
+          "frequency_hz": 3184.7758266718592,
+          "relative_spectral_peak_db": -30.43119641121705,
+          "local_peak_to_median_db": 48.15957993356968,
+          "fit_error_cents": 0.5693522066616363,
+          "decay": {
+            "bandwidth_hz": 15.923879133359296,
+            "late_file_envelope_floor": 5.349229831637213e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -36.81056920368887,
+              "sigma_per_second": 4.237973395651985,
+              "extrapolated_T60_seconds": 1.6299666453945314,
+              "r_squared": 0.9330543733260912,
+              "extrapolated_onset_amplitude_dbfs": -38.92772643894903,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 69.0703932210866
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -13.063404597863391,
+              "sigma_per_second": 1.5039800345395062,
+              "extrapolated_T60_seconds": 4.592983364368383,
+              "r_squared": 0.7646769840254976,
+              "extrapolated_onset_amplitude_dbfs": -58.801663331139196,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 39.19221998727152
+            }
+          }
+        },
+        {
+          "partial": 4,
+          "frequency_hz": 4275.926797765585,
+          "relative_spectral_peak_db": -40.552505877878104,
+          "local_peak_to_median_db": 46.28302483172689,
+          "fit_error_cents": -2.718860636562697,
+          "decay": {
+            "bandwidth_hz": 21.379633988827926,
+            "late_file_envelope_floor": 3.761309392479242e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -35.33157829282136,
+              "sigma_per_second": 4.067698274450125,
+              "extrapolated_T60_seconds": 1.6981975586465874,
+              "r_squared": 0.7584593882391866,
+              "extrapolated_onset_amplitude_dbfs": -50.49918378620258,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 60.656508587096184
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -13.93757532899773,
+              "sigma_per_second": 1.604622659251588,
+              "extrapolated_T60_seconds": 4.304909468375564,
+              "r_squared": 0.901991833617067,
+              "extrapolated_onset_amplitude_dbfs": -68.46299583159309,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 32.430663576092655
+            }
+          }
+        },
+        {
+          "partial": 5,
+          "frequency_hz": 5402.229393570168,
+          "relative_spectral_peak_db": -55.71615411325762,
+          "local_peak_to_median_db": 33.61887100250183,
+          "fit_error_cents": -3.530556571556608,
+          "decay": {
+            "bandwidth_hz": 27.01114696785084,
+            "late_file_envelope_floor": 3.497118408800606e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -59.06104015367341,
+              "sigma_per_second": 6.799653531728557,
+              "extrapolated_T60_seconds": 1.015898125801433,
+              "r_squared": 0.8191542242593394,
+              "extrapolated_onset_amplitude_dbfs": -51.478413700594906,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 45.12829054142938
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -3.232761314253749,
+              "sigma_per_second": 0.3721854005704261,
+              "extrapolated_T60_seconds": 18.559984535650884,
+              "r_squared": 0.3274485008339152,
+              "extrapolated_onset_amplitude_dbfs": -106.93301727763864,
+              "accepted_time_seconds": [
+                1.0,
+                2.989333333333333
+              ],
+              "median_snr_db": 14.900981316296345
+            }
+          }
+        },
+        {
+          "partial": 6,
+          "frequency_hz": 6593.399716513231,
+          "relative_spectral_peak_db": -53.948208418055245,
+          "local_peak_to_median_db": 36.851686569946956,
+          "fit_error_cents": 2.79438665981757,
+          "decay": {
+            "bandwidth_hz": 32.966998582566156,
+            "late_file_envelope_floor": 3.169120042808854e-07,
+            "early": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -49.98710057509689,
+              "sigma_per_second": 5.75497763131061,
+              "extrapolated_T60_seconds": 1.2003096660879635,
+              "r_squared": 0.8100499836882293,
+              "extrapolated_onset_amplitude_dbfs": -56.282406876313644,
+              "accepted_time_seconds": [
+                0.20266666666666666,
+                0.8
+              ],
+              "median_snr_db": 49.5867411512398
+            },
+            "late": {
+              "valid": true,
+              "amplitude_slope_db_per_second": -3.1868270842008446,
+              "sigma_per_second": 0.3668970269015273,
+              "extrapolated_T60_seconds": 18.827504101951018,
+              "r_squared": 0.265541937479405,
+              "extrapolated_onset_amplitude_dbfs": -107.16984752935566,
+              "accepted_time_seconds": [
+                1.0,
+                3.0
+              ],
+              "median_snr_db": 15.694377265034873
+            }
+          }
+        }
+      ],
+      "unison_observation": {
+        "resolved_multiple_components": true,
+        "hann_resolution_hz": 0.2543648298228631,
+        "analysis_window_seconds_after_onset": [
+          0.25,
+          6.147041666666667
+        ],
+        "peaks": [
+          {
+            "frequency_hz": 1050.1414965428107,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 1051.0510738322541,
+            "relative_peak_db": -5.820063140940361
+          },
+          {
+            "frequency_hz": 1052.082407569262,
+            "relative_peak_db": -8.351456514640933
+          },
+          {
+            "frequency_hz": 1051.5925098812784,
+            "relative_peak_db": -13.962639347922094
+          }
+        ],
+        "candidate_beat_rates_hz": [
+          0.9095772894434049,
+          0.5414360490242416,
+          0.48989768798355726
+        ],
+        "interpretation": "Multiple components can include unison strings, polarization splitting, leakage or recording artifacts. No individual-string identification is asserted."
+      }
+    }
+  ],
+  "algorithm_sanity_checks": [
+    {
+      "midi_note": 36,
+      "known_fundamental_hz": 65.1,
+      "known_engine_B": 0.00013,
+      "recovered_fundamental_error_cents": 2.8441022509317522e-06,
+      "relative_B_error": 1.4071545665350627e-06,
+      "opposite_stereo_polarity": true,
+      "passed": true
+    },
+    {
+      "midi_note": 60,
+      "known_fundamental_hz": 261.4,
+      "known_engine_B": 0.00029,
+      "recovered_fundamental_error_cents": 3.058324222333825e-06,
+      "relative_B_error": 3.376716473102448e-07,
+      "opposite_stereo_polarity": true,
+      "passed": true
+    },
+    {
+      "midi_note": 84,
+      "known_fundamental_hz": 1050.2,
+      "known_engine_B": 0.0026,
+      "recovered_fundamental_error_cents": 2.1910360933402274e-07,
+      "relative_B_error": 1.0203292655219798e-08,
+      "opposite_stereo_polarity": true,
+      "passed": true
+    }
+  ]
+}

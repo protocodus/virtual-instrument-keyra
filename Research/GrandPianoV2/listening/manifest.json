@@ -1,0 +1,251 @@
+{
+  "order": [
+    "real",
+    "v1",
+    "v2"
+  ],
+  "sample_rate": 48000,
+  "pcm_bits": 24,
+  "level_matching": "One 0.05\u20130.75s post-onset RMS scalar per model note, fixed through decay; one common final presentation gain.",
+  "presentation_gain_db": 1.2580515817920532,
+  "room_added": false,
+  "limiter": false,
+  "compressor": false,
+  "attribution": "Real recordings: Salamander Grand Piano V3, Alexander Holm, CC BY 3.0. Excerpted, onset-aligned, end-faded and concatenated for comparison. See reference/ATTRIBUTION.md.",
+  "cases": [
+    {
+      "id": "C2v8",
+      "split": "heldout_velocity",
+      "segments": [
+        {
+          "label": "real",
+          "start_seconds": 0,
+          "end_seconds": 4.05,
+          "source": "reference/wav/C2v8.wav",
+          "source_sha256": "04d7143a524408ea611af50aa7f2a4836d0578984c8ef7101cc28a55629dae69",
+          "gain_db": 0.0
+        },
+        {
+          "label": "v1",
+          "start_seconds": 4.6,
+          "end_seconds": 8.649999999999999,
+          "source": "benchmark/baseline/C2v8.wav",
+          "source_sha256": "5eddb63506cd20dfd8e3f28501fe494b915ae0191944be7733dff0e5c77011c1",
+          "gain_db": -9.880078443085598
+        },
+        {
+          "label": "v2",
+          "start_seconds": 9.2,
+          "end_seconds": 13.25,
+          "source": "benchmark/candidate/C2v8.wav",
+          "source_sha256": "1abce8a7c5597d91b00421715b318b85a89c9cf46bd95579bb03e3e181f61c7b",
+          "gain_db": -0.26565970580404746
+        }
+      ],
+      "file": "C2v8-real-v1-v2.wav",
+      "mp3": "C2v8-real-v1-v2.mp3",
+      "sha256": "3cf595d4b925042619f437f935c98453f823684812f037d473688aefc168b788",
+      "sample_peak_dbfs": -4.660407254761943,
+      "estimated_true_peak_dbtp": -4.660414609058805,
+      "whole_file_rms_dbfs": -27.5240434405484,
+      "duration_seconds": 13.25,
+      "stereo_correlation": 0.17024126388761868,
+      "nonfinite_samples": 0
+    },
+    {
+      "id": "C4v8",
+      "split": "heldout_velocity",
+      "segments": [
+        {
+          "label": "real",
+          "start_seconds": 0,
+          "end_seconds": 4.05,
+          "source": "reference/wav/C4v8.wav",
+          "source_sha256": "11a1bbdf4a5ad7c60b294cc5572a49d4c4758724ba4eab9ae1e309f22552f266",
+          "gain_db": 0.0
+        },
+        {
+          "label": "v1",
+          "start_seconds": 4.6,
+          "end_seconds": 8.649999999999999,
+          "source": "benchmark/baseline/C4v8.wav",
+          "source_sha256": "9879d491ea124b51ac130828e553586dca3b275436730924e99ad4c55cf2b73f",
+          "gain_db": -6.826619947570101
+        },
+        {
+          "label": "v2",
+          "start_seconds": 9.2,
+          "end_seconds": 13.25,
+          "source": "benchmark/candidate/C4v8.wav",
+          "source_sha256": "76c2702947aa3a896a850bcb84e962469d045977922dd313f0f376cf0ebcf8bf",
+          "gain_db": -1.7009973630682929
+        }
+      ],
+      "file": "C4v8-real-v1-v2.wav",
+      "mp3": "C4v8-real-v1-v2.mp3",
+      "sha256": "4e8780eea1abff4f2c4f19594140fbe19418e456d6c468d54d8037a95269080e",
+      "sample_peak_dbfs": -3.702457973211393,
+      "estimated_true_peak_dbtp": -3.701597259094525,
+      "whole_file_rms_dbfs": -27.8079527099749,
+      "duration_seconds": 13.25,
+      "stereo_correlation": 0.8087731380994554,
+      "nonfinite_samples": 0
+    },
+    {
+      "id": "C6v8",
+      "split": "heldout_velocity",
+      "segments": [
+        {
+          "label": "real",
+          "start_seconds": 0,
+          "end_seconds": 4.05,
+          "source": "reference/wav/C6v8.wav",
+          "source_sha256": "4b261701db447d48cc66b8274523892c98255dd1365ae41141fc9e5b791484d9",
+          "gain_db": 0.0
+        },
+        {
+          "label": "v1",
+          "start_seconds": 4.6,
+          "end_seconds": 8.649999999999999,
+          "source": "benchmark/baseline/C6v8.wav",
+          "source_sha256": "07612d643cdd92195b219be157f5bbd3a81164b4bca5351e51883d7844cb5ac7",
+          "gain_db": -5.674614401015936
+        },
+        {
+          "label": "v2",
+          "start_seconds": 9.2,
+          "end_seconds": 13.25,
+          "source": "benchmark/candidate/C6v8.wav",
+          "source_sha256": "9777f0488c1c4a8dd015b9a33ae0a84b79922427150d0c11ad09f5a85905ce3c",
+          "gain_db": -1.1707619665794347
+        }
+      ],
+      "file": "C6v8-real-v1-v2.wav",
+      "mp3": "C6v8-real-v1-v2.mp3",
+      "sha256": "c9e736c7873965c2dd132fec7b93d07e5c84f126483ae30a9ddaa73d2730eff0",
+      "sample_peak_dbfs": -5.304852642258588,
+      "estimated_true_peak_dbtp": -5.300849086066927,
+      "whole_file_rms_dbfs": -37.6387713193114,
+      "duration_seconds": 13.25,
+      "stereo_correlation": -0.17891384672781976,
+      "nonfinite_samples": 0
+    },
+    {
+      "id": "F#3v8",
+      "split": "heldout_pitch",
+      "segments": [
+        {
+          "label": "real",
+          "start_seconds": 0,
+          "end_seconds": 4.05,
+          "source": "reference/wav/F#3v8.wav",
+          "source_sha256": "a8a44da21e8cf182e18156dfc08864b3a34174e6b5c9991354c83bdd00ee0b44",
+          "gain_db": 0.0
+        },
+        {
+          "label": "v1",
+          "start_seconds": 4.6,
+          "end_seconds": 8.649999999999999,
+          "source": "benchmark/baseline/F#3v8.wav",
+          "source_sha256": "589a9539bb0dc5e683370f5d415a95c9229594f4a3eeaf3d1b2207eb6f20f584",
+          "gain_db": -14.82086849031852
+        },
+        {
+          "label": "v2",
+          "start_seconds": 9.2,
+          "end_seconds": 13.25,
+          "source": "benchmark/candidate/F#3v8.wav",
+          "source_sha256": "f1e9d24aef117c81c6882b7c3d71b5f20772bff85b1bcd3389c159c966c9b1b7",
+          "gain_db": -2.835331217002543
+        }
+      ],
+      "file": "Fsharp3v8-real-v1-v2.wav",
+      "mp3": "Fsharp3v8-real-v1-v2.mp3",
+      "sha256": "08d2eafe153ae3f759e5c8be46a23a77c7050fee5dbfba38466064cbf24e3ada",
+      "sample_peak_dbfs": -4.2067581431359695,
+      "estimated_true_peak_dbtp": -4.200956394382758,
+      "whole_file_rms_dbfs": -29.191339102472405,
+      "duration_seconds": 13.25,
+      "stereo_correlation": 0.5733545975372473,
+      "nonfinite_samples": 0
+    },
+    {
+      "id": "C1v8",
+      "split": "edge_extrapolation",
+      "segments": [
+        {
+          "label": "real",
+          "start_seconds": 0,
+          "end_seconds": 4.05,
+          "source": "reference/wav/C1v8.wav",
+          "source_sha256": "19a422d06d0dbd881639b7655878c8f2473a1af623527eec75b691aa764f3e4b",
+          "gain_db": 0.0
+        },
+        {
+          "label": "v1",
+          "start_seconds": 4.6,
+          "end_seconds": 8.649999999999999,
+          "source": "benchmark/baseline/C1v8.wav",
+          "source_sha256": "26929643071d113a206ef675aeb36ed144b80b862cb38632ff8c290b22be9a75",
+          "gain_db": -5.597510733739154
+        },
+        {
+          "label": "v2",
+          "start_seconds": 9.2,
+          "end_seconds": 13.25,
+          "source": "benchmark/candidate/C1v8.wav",
+          "source_sha256": "f498f0d8485111cb2cd9dd3bcf2abf7ae7fa81f9084e217b4d6fd5f6edf9837b",
+          "gain_db": 1.3390992214055313
+        }
+      ],
+      "file": "C1v8-real-v1-v2.wav",
+      "mp3": "C1v8-real-v1-v2.mp3",
+      "sha256": "2a828fcd9362398a123ce569ef022ab39af86881f826e3374fa59a0c31b7deae",
+      "sample_peak_dbfs": -3.57515764976563,
+      "estimated_true_peak_dbtp": -3.570843838536467,
+      "whole_file_rms_dbfs": -25.564845600948686,
+      "duration_seconds": 13.25,
+      "stereo_correlation": 0.09993961204365384,
+      "nonfinite_samples": 0
+    },
+    {
+      "id": "C7v8",
+      "split": "edge_extrapolation",
+      "segments": [
+        {
+          "label": "real",
+          "start_seconds": 0,
+          "end_seconds": 4.05,
+          "source": "reference/wav/C7v8.wav",
+          "source_sha256": "146eb44af450d6d3130ae9f7cf536effd90e1dc11766a8825aefab4d615a0448",
+          "gain_db": 0.0
+        },
+        {
+          "label": "v1",
+          "start_seconds": 4.6,
+          "end_seconds": 8.649999999999999,
+          "source": "benchmark/baseline/C7v8.wav",
+          "source_sha256": "423d6260a34c17db97d061e975d7bba4051afdde3d6d38155b86ab9680730e0d",
+          "gain_db": 12.280454595290522
+        },
+        {
+          "label": "v2",
+          "start_seconds": 9.2,
+          "end_seconds": 13.25,
+          "source": "benchmark/candidate/C7v8.wav",
+          "source_sha256": "5ff3b696c67f166c3c9b105a5946095123fa17e821ca3e5bc9abd700098ac0fa",
+          "gain_db": 8.831480642943365
+        }
+      ],
+      "file": "C7v8-real-v1-v2.wav",
+      "mp3": "C7v8-real-v1-v2.mp3",
+      "sha256": "53900815eb0e9b8f47b784a9ef39e862f6ac56b16039a0c3183ad89581e80b14",
+      "sample_peak_dbfs": -2.0109523685715716,
+      "estimated_true_peak_dbtp": -1.9999999999999976,
+      "whole_file_rms_dbfs": -42.030233825771504,
+      "duration_seconds": 13.25,
+      "stereo_correlation": 0.026428290390731884,
+      "nonfinite_samples": 0
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "case": "C4v8",
+  "split": "heldout_velocity",
+  "purpose": "Visual diagnostic only. No model fitting or metric changes.",
+  "parameters": {
+    "analysis_sample_rate": 48000,
+    "resampling": "scipy.signal.resample_poly default polyphase antialias filter",
+    "window": "Hann",
+    "window_samples": 4096,
+    "window_seconds": 0.08533333333333333,
+    "hop_samples": 512,
+    "hop_seconds": 0.010666666666666666,
+    "fft_samples": 8192,
+    "spectrum": "One-sided PSD; arithmetic mean of channel powers; no mono waveform summation",
+    "detrend": false,
+    "time_seconds": [
+      0,
+      3.5
+    ],
+    "frequency_hz": [
+      80,
+      12000
+    ],
+    "frequency_axis": "log",
+    "color_db_per_hz": [
+      -85.0,
+      -5.0
+    ],
+    "color_reference": "Recorded early RMS squared; one global maximum rounded up to 5 dB and 80 dB common range",
+    "alignment": "Frozen detected onset from each feature file; actual pre-onset samples retained; file boundaries zero-padded",
+    "gain": "One frozen 0.05\u20130.75 s early RMS scalar per model, fixed across all times, frequencies and envelope",
+    "envelope": "Frozen feature-file 5 ms stereo-power RMS envelope sampled every 20 ms; same model gains"
+  },
+  "inputs": [
+    {
+      "label": "Recorded Yamaha C5",
+      "audio_path": "reference/wav/C4v8.wav",
+      "audio_sha256": "11a1bbdf4a5ad7c60b294cc5572a49d4c4758724ba4eab9ae1e309f22552f266",
+      "feature_path": "benchmark/reference_features.json",
+      "feature_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+      "onset_seconds": 0.0077083333333333335,
+      "gain_linear": 1.0,
+      "gain_db": 0.0
+    },
+    {
+      "label": "Original POC",
+      "audio_path": "benchmark/baseline/C4v8.wav",
+      "audio_sha256": "9879d491ea124b51ac130828e553586dca3b275436730924e99ad4c55cf2b73f",
+      "feature_path": "benchmark/baseline_report_features.json",
+      "feature_sha256": "b7ebcb995ebac6df184d850e30618e264c5c0bbfc7b96f091bc0ab26deb5bf79",
+      "onset_seconds": 0.10060416666666666,
+      "gain_linear": 0.4556894800006441,
+      "gain_db": -6.826619947570101
+    },
+    {
+      "label": "Calibrated model",
+      "audio_path": "benchmark/candidate/C4v8.wav",
+      "audio_sha256": "76c2702947aa3a896a850bcb84e962469d045977922dd313f0f376cf0ebcf8bf",
+      "feature_path": "benchmark/candidate_report_features.json",
+      "feature_sha256": "44180e2e5811df105a3ccf436fc0d3ed689a3c5ddaec78f73e52a9454525d920",
+      "onset_seconds": 0.09916666666666667,
+      "gain_linear": 0.8221482408070283,
+      "gain_db": -1.7009973630682929
+    }
+  ],
+  "script_sha256": "ff51e28bffead2a18538289ce7bfdee47320fc892a1ec1d109b420fadca66310",
+  "image_sha256": "54b3f9b4725d2ee4c45c38cffb25cdba980879be9883597cfdaf67b8782931b3"
+}

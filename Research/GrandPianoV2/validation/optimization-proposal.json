@@ -1,0 +1,91 @@
+{
+  "scope": "Optimization proposal only; main source and header untouched. No recording or held-out data read.",
+  "compiler_flags": [
+    "-std=c++17",
+    "-O3",
+    "-march=native",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic"
+  ],
+  "global_fast_math": false,
+  "frozen_original_snapshot": {
+    "grand.cpp": "ad2d38885cb8b79d7a0a3b0ceab10a2a7e5bd09bffd6e2ef377e8803d15f10e2",
+    "calibration.h": "dd678525411bcd71bcb57ab1108a45664075621028e6f70d4f1bbfd0a8a8257d"
+  },
+  "tested_header_sha256": "7bc6bba7268848c161c3d2b2f91c809bf7b267618e2960fc8be7e0703e7d9fdc",
+  "header_test_change": "Both baseline and candidate copies force radiationEnabled=true to exercise final observation path; all numeric profile coefficients are identical.",
+  "test_note": "MIDI60, velocity93, held 1 second, 96000 Hz; stereo float64 directly from Piano.step; sequential runs.",
+  "baseline": {
+    "build_wall": 0.331041082972661,
+    "build_thread_cpu": 0.328401375,
+    "render_wall": 8.64826325001195,
+    "render_thread_cpu": 8.509353334,
+    "peak": 0.705885028769325,
+    "rms": 0.0476741358013523,
+    "energy": 0.000874169801946339,
+    "finite": true,
+    "radiation_enabled": true,
+    "capture_stems": false
+  },
+  "optimized": {
+    "build_wall": 0.337303375010379,
+    "build_thread_cpu": 0.3359985,
+    "render_wall": 6.11607783398358,
+    "render_thread_cpu": 6.060635209,
+    "peak": 0.705885028769328,
+    "rms": 0.0476741358013523,
+    "energy": 0.00087416980194636,
+    "finite": true,
+    "radiation_enabled": true,
+    "capture_stems": false
+  },
+  "cpu_speedup": 1.4040365474172858,
+  "wall_speedup": 1.4140211234655078,
+  "waveform_errors": {
+    "max_abs_error": 1.8984813721090177e-14,
+    "max_abs_error_over_peak": 2.6895050818954547e-14,
+    "rms_error": 9.324724573678432e-16,
+    "rms_error_relative": 1.955929439923656e-14
+  },
+  "self_test": {
+    "passed": true,
+    "conservative_contact_relative_energy_error": 4.35493676455e-15,
+    "bridge_max_relative_energy_increase": 0,
+    "bridge_energy_remaining_ratio": 0.9967486365,
+    "contact_max_relative_residual": 7.25007527263e-13
+  },
+  "physics_probe": {
+    "passed": true,
+    "radiation_enabled": true,
+    "unison_ports": 6168,
+    "valid_port_topology": true,
+    "minimum_port_coefficient": 3.72505876001e-07,
+    "maximum_N_times_coefficient": 0.000100858632686,
+    "random_state_max_relative_energy_increase": 0,
+    "random_state_energy_ratio_after128_steps": 0.9973718233,
+    "common_velocity_cases": 88,
+    "maximum_common_energy_ratio_error": 3.33066907388e-16,
+    "opposite_velocity_cases": 77,
+    "maximum_opposite_relative_energy_error": 0,
+    "maximum_opposite_velocity_change": 1.87830172207e-23,
+    "analytic_single_board_mode_transfer_cases": 42,
+    "maximum_transfer_relative_error": 1.84155939547e-15,
+    "maximum_qp_phase_projection_error": 1.37903091969e-16,
+    "keys_checked": 88,
+    "modes_checked": 17778,
+    "all_projection_coefficients_finite": true,
+    "maximum_candidate_projection_coefficient": 1305359.94431,
+    "maximum_stored_projection_coefficient_error": 0,
+    "observation_rebuild_relative_mechanical_energy_change": 0,
+    "scope": "Numerical mechanics and observation math only; no recording or held-out tuning comparison. Enabled-projection runtime path is covered only when radiation_enabled is true."
+  },
+  "cache_invalidation_test": {
+    "passed": true,
+    "coefficient_checks": 711120,
+    "maximum_absolute_error": 0,
+    "scope": "40 updates with retriggers, note-off, pedal 0/.4/1, opt.loss 0/.77/1 against independently recomputed exp for every mode."
+  },
+  "integration_caveat": "UnisonPort velocityState pointers refer to owned modal p vectors. Current Piano instances are not copied; delete copying or rebind pointers if copying is introduced.",
+  "concurrency": "No six-worker throughput experiment performed, as parent requested no further profiling. Sequential optimized wall/thread CPU ratio is near one; no cache-contention attribution asserted."
+}
