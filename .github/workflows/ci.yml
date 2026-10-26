@@ -253,10 +253,11 @@ jobs:
 
   # The full physical research is its own CMake project (Experiments/), not
   # part of the product build; its tests still run on every push.
+  # The sanitized run alone takes about nine minutes of tests on four cores.
   experiments:
-    name: Experiments build and tests, live DSP under ASan + UBSan
+    name: Experiments build and tests, then again under ASan + UBSan
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
