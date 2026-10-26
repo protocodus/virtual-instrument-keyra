@@ -19,11 +19,11 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
-| 1 | Concert Grand | [01-concert-grand.mp3](Docs/audio/01-concert-grand.mp3) | 18.3 s | -8.6 dBFS |
-| 2 | Studio Grand | [02-studio-grand.mp3](Docs/audio/02-studio-grand.mp3) | 16.2 s | -8.7 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.mp3](Docs/audio/03-warm-walnut.mp3) | 16.1 s | -16.9 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.mp3](Docs/audio/04-felt-nocturne.mp3) | 16.1 s | -17.8 dBFS |
-| 5 | Open Strings | [05-open-strings.mp3](Docs/audio/05-open-strings.mp3) | 13.3 s | -12.7 dBFS |
+| 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -8.6 dBFS |
+| 2 | Studio Grand | [02-studio-grand.wav](Docs/audio/02-studio-grand.wav) | 11.6 s | -8.9 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -19.8 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -17.8 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -12.6 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -138,7 +138,7 @@ The JUCE-free engine, tests and demo renderer (`build-dsp`):
 ```bash
 cmake -S . -B build-dsp -DCMAKE_BUILD_TYPE=Release -DKEYRA_BUILD_PLUGIN=OFF -DBUILD_TESTING=ON
 cmake --build build-dsp --parallel && ctest --test-dir build-dsp --output-on-failure
-./build-dsp/RenderKeyraPresetDemos Docs/audio/midi build-dsp/demos   # MP3s + demos.json; needs ffmpeg
+./build-dsp/RenderKeyraPresetDemos Docs/audio/midi build-dsp/demos   # WAVs + demos.json
 ```
 
 The full plug-in (`build-plugin`). JUCE 8.0.14 and clap-juce-extensions are
