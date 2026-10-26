@@ -1,8 +1,44 @@
 cmake_minimum_required(VERSION 3.18)
-project(Keyra VERSION 0.1.0 LANGUAGES CXX)
+project(Keyra VERSION 0.2.0 LANGUAGES C CXX)
 
 include(CTest)
 option(KEYRA_BUILD_REFERENCE "Build the preserved offline research renderer" ON)
+option(KEYRA_BUILD_PLUGIN "Build the JUCE VST3 and standalone instrument" OFF)
+option(KEYRA_ENABLE_SANITIZERS "Enable address and undefined behavior sanitizers" OFF)
+
+if(KEYRA_ENABLE_SANITIZERS)
+  if(MSVC)
+    message(FATAL_ERROR "KEYRA_ENABLE_SANITIZERS requires Clang or GCC")
+  endif()
+  add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+  add_link_options(-fsanitize=address,undefined)
+endif()
+
+# One canonical engine is compiled by the DAW plug-in and the Reason adapter.
+# The SDK has a C++17 freestanding toolchain, so keep this target C++17 as well.
+add_library(KeyraDSP STATIC Source/DSP/KeyraEngine.cpp)
+target_include_directories(KeyraDSP PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+target_compile_features(KeyraDSP PUBLIC cxx_std_17)
+set_target_properties(KeyraDSP PROPERTIES POSITION_INDEPENDENT_CODE ON)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  target_compile_options(KeyraDSP PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_executable(keyra_render Tools/render.cpp)
+target_link_libraries(keyra_render PRIVATE KeyraDSP)
+
+if(BUILD_TESTING)
+  add_executable(keyra_engine_tests Tests/engine_tests.cpp)
+  target_link_libraries(keyra_engine_tests PRIVATE KeyraDSP)
+  add_test(NAME realtime_engine_contract COMMAND keyra_engine_tests)
+  add_executable(keyra_parameter_extremes Tests/parameter_extremes.cpp)
+  target_link_libraries(keyra_parameter_extremes PRIVATE KeyraDSP)
+  add_test(NAME realtime_parameter_extremes COMMAND keyra_parameter_extremes)
+endif()
+
+if(KEYRA_BUILD_PLUGIN)
+  include(cmake/Plugin.cmake)
+endif()
 
 if(KEYRA_BUILD_REFERENCE)
   set(KEYRA_REFERENCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Research/GrandPianoV2")

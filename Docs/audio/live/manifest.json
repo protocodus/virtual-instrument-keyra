@@ -1,0 +1,97 @@
+{
+  "engine": "Current reduced modal engine; not the preserved nonlinear solver",
+  "renderer_sha256": "52d1a649cb2fd3e33d64911ad85c3001d5028da702457b3a2e501883f275bcb9",
+  "source_sha256": "3ab2a57e0b8bb3d420c87adc983694c12ba4b7b0dd3cbbb6de49656afdc22752",
+  "calibration_sha256": "bd29f9b34963ce76089650a58e538976463398ff7148a021ef7b1f12730985e6",
+  "settings": "48 kHz, all product defaults, no post-render normalization or effects",
+  "composition_provenance": "Original authored scores and controller study; no external MIDI",
+  "cases": [
+    {
+      "id": "01_nocturne",
+      "title": "Window at Dusk",
+      "events": "Research/GrandPianoV2/scores/01_nocturne.events",
+      "events_sha256": "3839125ef9b7b874bb319080b451b609400ebf85f7a7d1a8232b4247a5957a3b",
+      "render_command": [
+        "/workspace/virtual-instrument-keyra/build/keyra_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/scores/01_nocturne.events",
+        "--duration",
+        "37.75",
+        "--output",
+        "/workspace/virtual-instrument-keyra/build/live-demos/01_nocturne.wav",
+        "--sample-rate",
+        "48000"
+      ],
+      "metrics": {
+        "sample_rate": 48000,
+        "frames": 1812000,
+        "duration_seconds": 37.75,
+        "wall_seconds": 5.025198667,
+        "realtime_factor": 0.1331178455,
+        "peak": 0.1272406131,
+        "rms": 0.0107488086,
+        "legacy_attack": false
+      },
+      "mp3": "01_nocturne.mp3",
+      "sha256": "b8cd9587cf85b9c577202b71688aa5473c4c63c022deb6c1f2e3edbaacfc1118"
+    },
+    {
+      "id": "03_jazz_waltz",
+      "title": "Sunday on the River",
+      "events": "Research/GrandPianoV2/scores/03_jazz_waltz.events",
+      "events_sha256": "0ecf7436b4288c53e7b52e02db56e4a2fbd0e2462606ce5ca5295cf8b3c919ff",
+      "render_command": [
+        "/workspace/virtual-instrument-keyra/build/keyra_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/scores/03_jazz_waltz.events",
+        "--duration",
+        "31.752",
+        "--output",
+        "/workspace/virtual-instrument-keyra/build/live-demos/03_jazz_waltz.wav",
+        "--sample-rate",
+        "48000"
+      ],
+      "metrics": {
+        "sample_rate": 48000,
+        "frames": 1524096,
+        "duration_seconds": 31.752,
+        "wall_seconds": 3.444151671,
+        "realtime_factor": 0.1084703852,
+        "peak": 0.1415171921,
+        "rms": 0.01418163136,
+        "legacy_attack": false
+      },
+      "mp3": "03_jazz_waltz.mp3",
+      "sha256": "603a305a8c02ccbc1ad437afea3c4b101cad2a740164f25d4a9482bb9ab1597a"
+    },
+    {
+      "id": "pedal-study",
+      "title": "Keyra pedal and mute study",
+      "events": "Docs/audio/events/pedal-study.events",
+      "events_sha256": "61398a430bd10d881a40aebc81faff7f097b2430ecf67534fd8dfac03df68dd3",
+      "render_command": [
+        "/workspace/virtual-instrument-keyra/build/keyra_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/Docs/audio/events/pedal-study.events",
+        "--duration",
+        "14",
+        "--output",
+        "/workspace/virtual-instrument-keyra/build/live-demos/pedal-study.wav",
+        "--sample-rate",
+        "48000"
+      ],
+      "metrics": {
+        "sample_rate": 48000,
+        "frames": 672000,
+        "duration_seconds": 14,
+        "wall_seconds": 0.932026787,
+        "realtime_factor": 0.06657334193,
+        "peak": 0.1680413932,
+        "rms": 0.009531060207,
+        "legacy_attack": false
+      },
+      "mp3": "pedal-study.mp3",
+      "sha256": "384edc1f8126db32b4dc32ab307b49148d1e5c913aed3945dccf07e8b24f49ed"
+    }
+  ]
+}

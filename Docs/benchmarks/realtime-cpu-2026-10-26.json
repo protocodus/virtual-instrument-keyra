@@ -1,0 +1,90 @@
+{
+  "scope": "Native development machine, not Reason/DAW-host performance; no release acceptance implied.",
+  "sample_rate": 48000,
+  "block_size": 256,
+  "input": "Simultaneous velocity0.6 strikes at notes36+i%60, channel1+i//88, one second held, resonance0.0, other controls default. Three-run medians.",
+  "source_sha256": "3ab2a57e0b8bb3d420c87adc983694c12ba4b7b0dd3cbbb6de49656afdc22752",
+  "measured_data_sha256": "bd29f9b34963ce76089650a58e538976463398ff7148a021ef7b1f12730985e6",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "native": {
+    "flags": "g++ -std=c++17 -O3 -Wall -Wextra -Werror -I Source",
+    "scope": "development machine native DSP only; not Reason host performance",
+    "compiler": "14.2.0",
+    "clock": "process CPU median; wall also reported for contention",
+    "cases": [
+      {
+        "notes": 12,
+        "sample_rate": 48000,
+        "duration_seconds": 1,
+        "block_size": 256,
+        "runs": 3,
+        "median_onset_process_cpu_ms": 0.258,
+        "median_process_cpu_realtime_factor": 0.228573,
+        "median_wall_realtime_factor": 0.228581513
+      },
+      {
+        "notes": 32,
+        "sample_rate": 48000,
+        "duration_seconds": 1,
+        "block_size": 256,
+        "runs": 3,
+        "median_onset_process_cpu_ms": 0.481,
+        "median_process_cpu_realtime_factor": 0.48235,
+        "median_wall_realtime_factor": 0.482371095
+      },
+      {
+        "notes": 128,
+        "sample_rate": 48000,
+        "duration_seconds": 1,
+        "block_size": 256,
+        "runs": 3,
+        "median_onset_process_cpu_ms": 1.482,
+        "median_process_cpu_realtime_factor": 1.385495,
+        "median_wall_realtime_factor": 1.38553789
+      }
+    ]
+  },
+  "no_builtin": {
+    "flags": "g++ -std=c++17 -O3 -fno-builtin -Wall -Wextra -Werror -I Source",
+    "limitation": "Host compiler/library, not proprietary Jukebox compiler or SDK object code.",
+    "scope": "development machine native DSP only; not Reason host performance",
+    "compiler": "14.2.0",
+    "clock": "process CPU median; wall also reported for contention",
+    "cases": [
+      {
+        "notes": 12,
+        "sample_rate": 48000,
+        "duration_seconds": 1,
+        "block_size": 256,
+        "runs": 3,
+        "median_onset_process_cpu_ms": 0.238,
+        "median_process_cpu_realtime_factor": 0.204913,
+        "median_wall_realtime_factor": 0.205079513
+      },
+      {
+        "notes": 32,
+        "sample_rate": 48000,
+        "duration_seconds": 1,
+        "block_size": 256,
+        "runs": 3,
+        "median_onset_process_cpu_ms": 0.546,
+        "median_process_cpu_realtime_factor": 0.458295,
+        "median_wall_realtime_factor": 0.458807579
+      },
+      {
+        "notes": 128,
+        "sample_rate": 48000,
+        "duration_seconds": 1,
+        "block_size": 256,
+        "runs": 3,
+        "median_onset_process_cpu_ms": 1.568,
+        "median_process_cpu_realtime_factor": 1.467918,
+        "median_wall_realtime_factor": 1.46889719
+      }
+    ]
+  },
+  "result": "128-strike workload exceeds realtime on this machine.12/32 fit average CPU budget but whole-rack headroom and per-block maxima remain unverified.",
+  "onset_limit": "128 simultaneous strikes consume over1ms of event computation before rendering; small-buffer/whole-rack budget not validated.",
+  "header_sha256": "c9b334901eee8b5c5150d5676d60340fb1907df7cbf1256eed1e800ea8e6611a",
+  "controls_revision": "Includes momentary MIDI12/13/14 pedal keyswitches; benchmark notes all21..108, no switches active."
+}

@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "sequence": [
+    "real_recording",
+    "initial_live",
+    "refit_live"
+  ],
+  "level_matching": "Each 3.45-second stereo segment independently matched to -27.456 dBFS whole-segment RMS after identical 10ms edit fades; 450ms silent gaps. Common target lowered from -23 dBFS if needed to prevent clipping.",
+  "reference_attribution": "Salamander Grand Piano V3 by Alexander Holm, CC BY 3.0; upstream commit 3382bf9496bba2486f5ab0de55a264d1dfc38404.",
+  "limits": "Sighted comparisons of the same recorded piano. Both model variants use the reduced live engine, not the preserved physical solver; resonance=0. Preview processing is not used in scoring or runtime synthesis.",
+  "cases": [
+    {
+      "id": "C4v8",
+      "file": "C4v8-real-initial-refit.mp3",
+      "sha256": "e3667c70a8cde9501d1f8d3275602cb95303bdb13ee470c9ec92ad2b3a8e8c17",
+      "segments": [
+        {
+          "variant": "real_recording",
+          "source_sha256": "8d5df48ffd6f867e58a844b48dfe34c081bc48c326f5bb17284f95e347298522",
+          "start_frame": 0,
+          "frames": 165600,
+          "source_rms": 0.03843505989213593,
+          "gain_db": 0.8494205158780056,
+          "rms_dbfs": -27.45602824105913
+        },
+        {
+          "variant": "initial_live",
+          "source_sha256": "d3670e2c6adec074f68cd60235c8ed805ac1e35844915087f9be84077a84f2f0",
+          "start_frame": 2358,
+          "frames": 165600,
+          "source_rms": 0.019859198217962355,
+          "gain_db": 6.58473754699605,
+          "rms_dbfs": -27.45602824105913
+        },
+        {
+          "variant": "refit_live",
+          "source_sha256": "015b13690aaae77d1fba9bb0357596b88ba69621c0e29161deb092efac500550",
+          "start_frame": 2358,
+          "frames": 165600,
+          "source_rms": 0.005136236562220597,
+          "gain_db": 18.3310713981413,
+          "rms_dbfs": -27.45602824105913
+        }
+      ],
+      "renderer_receipts": [
+        {
+          "variant": "initial_live",
+          "renderer_sha256": "5fce2f749e7dfb5d3b09c0dfca898286fa867e02d009d94175096bc6f17d3474",
+          "command": [
+            "/workspace/virtual-instrument-keyra/build/recording-iteration-01/keyra_render",
+            "--events",
+            "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/benchmark/events/C4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/recording-comparison-previews/C4v8-initial_live.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--resonance",
+            "0",
+            "--gain",
+            ".7"
+          ]
+        },
+        {
+          "variant": "refit_live",
+          "renderer_sha256": "6dbdbe1f59ebe944faec9b588309be4d789905ce95c5a4bbd35bbca88529c629",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/benchmark/events/C4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/recording-comparison-previews/C4v8-refit_live.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--resonance",
+            "0",
+            "--gain",
+            ".7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F#3v8",
+      "file": "Fsharp3v8-real-initial-refit.mp3",
+      "sha256": "4e9256571056629f50c2337d54b28334e3d758acdc6428d75619c7e557c0644c",
+      "segments": [
+        {
+          "variant": "real_recording",
+          "source_sha256": "858dee91a1655707cbb96fc56182e7be659ab41971d45e35dbafacec43c66e3a",
+          "start_frame": 0,
+          "frames": 165600,
+          "source_rms": 0.03403374797690261,
+          "gain_db": 1.9057761880990718,
+          "rms_dbfs": -27.45602824105913
+        },
+        {
+          "variant": "initial_live",
+          "source_sha256": "507d696afb8ff1801ce39993317a611de1aac941397e17e3ce0e740a1c967add",
+          "start_frame": 2361,
+          "frames": 165600,
+          "source_rms": 0.01733008247465303,
+          "gain_db": 7.76795916801916,
+          "rms_dbfs": -27.45602824105913
+        },
+        {
+          "variant": "refit_live",
+          "source_sha256": "6e6266daf38512512581a83a51e77f22a8ee475467ff91ae40cbf4acd0e2c777",
+          "start_frame": 2361,
+          "frames": 165600,
+          "source_rms": 0.004483472953844284,
+          "gain_db": 19.51168067374783,
+          "rms_dbfs": -27.45602824105913
+        }
+      ],
+      "renderer_receipts": [
+        {
+          "variant": "initial_live",
+          "renderer_sha256": "5fce2f749e7dfb5d3b09c0dfca898286fa867e02d009d94175096bc6f17d3474",
+          "command": [
+            "/workspace/virtual-instrument-keyra/build/recording-iteration-01/keyra_render",
+            "--events",
+            "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/benchmark/events/F#3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/recording-comparison-previews/F#3v8-initial_live.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--resonance",
+            "0",
+            "--gain",
+            ".7"
+          ]
+        },
+        {
+          "variant": "refit_live",
+          "renderer_sha256": "6dbdbe1f59ebe944faec9b588309be4d789905ce95c5a4bbd35bbca88529c629",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/benchmark/events/F#3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/recording-comparison-previews/F#3v8-refit_live.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--resonance",
+            "0",
+            "--gain",
+            ".7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C6v8",
+      "file": "C6v8-real-initial-refit.mp3",
+      "sha256": "67f001317b59f4830cbada5385fe6e14d7d542d308870de84779dd9fe62041c4",
+      "segments": [
+        {
+          "variant": "real_recording",
+          "source_sha256": "fbf3389747d81c8160408a75f88ba1cb5c283359981170695b402955235212cb",
+          "start_frame": 0,
+          "frames": 165600,
+          "source_rms": 0.013098629728816794,
+          "gain_db": 10.199454444817635,
+          "rms_dbfs": -27.45602824105913
+        },
+        {
+          "variant": "initial_live",
+          "source_sha256": "88a38ed78dfbb5b793e660f28be44c47f05d809fc2252ef235366755cf524762",
+          "start_frame": 2355,
+          "frames": 165600,
+          "source_rms": 0.004280482219950053,
+          "gain_db": 19.91411781014256,
+          "rms_dbfs": -27.45602824105913
+        },
+        {
+          "variant": "refit_live",
+          "source_sha256": "d729d45eb6d6404a7e04ac620e1baa4441e3160e56e3b6fec7f2cfab0a3084ea",
+          "start_frame": 2355,
+          "frames": 165600,
+          "source_rms": 0.002162964028692629,
+          "gain_db": 25.842985820184,
+          "rms_dbfs": -27.45602824105913
+        }
+      ],
+      "renderer_receipts": [
+        {
+          "variant": "initial_live",
+          "renderer_sha256": "5fce2f749e7dfb5d3b09c0dfca898286fa867e02d009d94175096bc6f17d3474",
+          "command": [
+            "/workspace/virtual-instrument-keyra/build/recording-iteration-01/keyra_render",
+            "--events",
+            "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/benchmark/events/C6v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/recording-comparison-previews/C6v8-initial_live.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--resonance",
+            "0",
+            "--gain",
+            ".7"
+          ]
+        },
+        {
+          "variant": "refit_live",
+          "renderer_sha256": "6dbdbe1f59ebe944faec9b588309be4d789905ce95c5a4bbd35bbca88529c629",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/benchmark/events/C6v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/recording-comparison-previews/C6v8-refit_live.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--resonance",
+            "0",
+            "--gain",
+            ".7"
+          ]
+        }
+      ]
+    }
+  ]
+}

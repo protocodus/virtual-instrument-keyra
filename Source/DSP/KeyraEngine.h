@@ -1,0 +1,39 @@
+#pragma once
+#include <memory>
+
+namespace keyra {
+struct Parameters {
+  float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
+  float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
+};
+struct PedalState {float sustain=0,sostenuto=0,soft=0;};
+
+// Front-end-neutral reduced modal piano. Construct/prepare outside the callback.
+// All event and render methods are bounded, allocation-free and C++17 compatible.
+class Engine {
+public:
+  explicit Engine(double sampleRate=48000);
+  ~Engine();
+  Engine(const Engine&)=delete;
+  Engine& operator=(const Engine&)=delete;
+  void prepare(double sampleRate);
+  void reset() noexcept;
+  void setParameters(const Parameters&) noexcept;
+  // MIDI12/13/14 are counted momentary soft/sostenuto/sustain switches.
+  // Piano notes are21..108; other note numbers are ignored.
+  void noteOn(int note,float velocity01,int channel=1) noexcept;
+  void noteOff(int note,int channel=1) noexcept;
+  void controlChange(int cc,int value,int channel=1) noexcept;
+  void pitchBend(float semitones,int channel=1) noexcept;
+  // Audio-thread query for front ends to publish through their own UI bridge.
+  // Channel0 returns maxima across all channels;1..16 return one channel.
+  PedalState pedalState(int channel=0) const noexcept;
+  void process(float* left,float* right,int frames) noexcept;
+  // Offline diagnostic: fixed 2ms rise versus training-recording rise. This
+  // changes only future strikes; it is deliberately absent from product UIs.
+  void setLegacyAttackForComparison(bool enabled) noexcept;
+private:
+  struct Impl;
+  std::unique_ptr<Impl> impl;
+};
+}

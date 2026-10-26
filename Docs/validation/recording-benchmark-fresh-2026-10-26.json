@@ -1,0 +1,1474 @@
+{
+  "schema_version": 1,
+  "purpose": "Fresh pitch holdout within the same recorded piano and microphone setup; not independent-piano validation.",
+  "manifest_sha256": "753116876f67f8464516d73d3febf18a1657999ae13b525df6e7f6413e88ccdf",
+  "model_header_sha256": "bd29f9b34963ce76089650a58e538976463398ff7148a021ef7b1f12730985e6",
+  "renderer_sha256": "6dbdbe1f59ebe944faec9b588309be4d789905ce95c5a4bbd35bbca88529c629",
+  "engine_sources": {
+    "Source/DSP/KeyraEngine.cpp": "467a7f945172d0abf047848ac7c7c3592bc17ac79f3cc432a2b57b0f038c1cc7",
+    "Source/DSP/KeyraEngine.h": "6d17c97a4c8c22fbfda34420e0572f4052fd26efcae0dd823d64b619dade7e98",
+    "Source/DSP/MeasuredModalData.h": "bd29f9b34963ce76089650a58e538976463398ff7148a021ef7b1f12730985e6"
+  },
+  "sample_rate": 48000,
+  "case_count": 8,
+  "fitting_used_these_recordings": false,
+  "analysis": {
+    "windows_seconds_after_onset": [
+      [
+        0.05,
+        0.25
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.75,
+        1.5
+      ],
+      [
+        1.5,
+        3.5
+      ]
+    ],
+    "early_gain_window_seconds": [
+      0.05,
+      0.75
+    ],
+    "maximum_analysis_seconds": 4.0,
+    "channel_combination": "mean stereo power; no mono waveform summation",
+    "onset": "first 1ms RMS envelope crossing a noise-aware threshold near -45dB of the first-second peak",
+    "pitch": "joint stiff-string fit to dominant partial peaks; normalized f1 convention",
+    "partial_levels": "Hann-window power integrated around each fitted partial, with bandwidth covering window leakage and unison splitting",
+    "decay": "Theil-Sen regression of partial-band dB power from 0.25 to 3.5 seconds; not a physical loss identification in isolation",
+    "gain": "one scalar from 0.05\u20130.75s RMS, applied unchanged to all windows",
+    "limits": "one piano/recording setup; microphone, room, library editing, unknown physical hammer velocities and acquisition pedal state are confounds; metrics are not perceptual scores"
+  },
+  "parameters_common": {
+    "gain": 0.7,
+    "brightness": 0.5,
+    "width": 0.75,
+    "tuning": 440,
+    "mute": 0,
+    "sustain": 0,
+    "sostenuto": 0,
+    "soft": 0
+  },
+  "variants": {
+    "fixed_attack": {
+      "resonance": 0,
+      "cases": [
+        {
+          "id": "D#2v8",
+          "split": "fresh_same_piano",
+          "midi": 39,
+          "layer": 8,
+          "early_gain_db": 23.63194330637129,
+          "f1_error_cents": -1.977181153306342,
+          "absolute_f1_error_cents": 1.977181153306342,
+          "reference_f1_hz": 77.4838061543028,
+          "model_f1_hz": 77.39536515309055,
+          "reference_B": 0.00011558603174658426,
+          "model_B": 9.945568586830161e-05,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 11.00522229812562,
+          "log_band_mae_by_window_db": [
+            14.05831533754412,
+            10.660291223400941,
+            10.226317309400487,
+            8.34547049899277
+          ],
+          "harmonic_level_mae_db": 5.482466336248803,
+          "partial_tuning_mae_cents": 2.497012487779126,
+          "partial_decay_slope_mae_db_per_second": 3.6701834950063423,
+          "partial_decay_pairs": 19,
+          "envelope_mae_db": 3.325457842991582,
+          "attack_rise10_90_error_ms": 25.104166666666664,
+          "reference_sha256": "0045f6c4dbac544773b7ce3dbf5c49b1445844712e6fe1ef1ae0c5fd621698a9",
+          "model_sha256": "8236c7ce129ac45732016c011560a6c6b844b1fa7bbdb2fa833da780812c3241",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#3v8",
+          "split": "fresh_same_piano",
+          "midi": 51,
+          "layer": 8,
+          "early_gain_db": 19.763846418492882,
+          "f1_error_cents": 0.16796264572578606,
+          "absolute_f1_error_cents": 0.16796264572578606,
+          "reference_f1_hz": 155.33691648240463,
+          "model_f1_hz": 155.35198785024093,
+          "reference_B": 0.00012246944108001946,
+          "model_B": 0.00011080362756111454,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 11.39477650608413,
+          "log_band_mae_by_window_db": [
+            14.862514293475991,
+            13.033078397089206,
+            8.687198059359797,
+            6.642502157272052
+          ],
+          "harmonic_level_mae_db": 8.535508555224151,
+          "partial_tuning_mae_cents": 0.2897036434757805,
+          "partial_decay_slope_mae_db_per_second": 3.514869986668737,
+          "partial_decay_pairs": 16,
+          "envelope_mae_db": 4.380998844536754,
+          "attack_rise10_90_error_ms": 29.270833333333332,
+          "reference_sha256": "8a78d6658629d9f17a92f99ae0541454fc7aa6a747f94404b2e6643ee3cb65ac",
+          "model_sha256": "c9d1f26b53dc0cbfc019a7c1ec5040bd8260566d5fabe16bee22c127050116d5",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#4v8",
+          "split": "fresh_same_piano",
+          "midi": 63,
+          "layer": 8,
+          "early_gain_db": 16.146492081301783,
+          "f1_error_cents": 1.2878104747704024,
+          "absolute_f1_error_cents": 1.2878104747704024,
+          "reference_f1_hz": 311.0921426125802,
+          "model_f1_hz": 311.3236403492472,
+          "reference_B": 0.0003723773760204291,
+          "model_B": 0.00034375597634156473,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.222104611396725,
+          "log_band_mae_by_window_db": [
+            19.01059588072274,
+            13.670754712260706,
+            11.140193592620133,
+            7.792659464806615
+          ],
+          "harmonic_level_mae_db": 9.517060250841554,
+          "partial_tuning_mae_cents": 0.7714875452706138,
+          "partial_decay_slope_mae_db_per_second": 3.0678697215690764,
+          "partial_decay_pairs": 10,
+          "envelope_mae_db": 4.505825309486487,
+          "attack_rise10_90_error_ms": 6.354166666666668,
+          "reference_sha256": "a84de1e7bb8d7e2f5dc06126581f5f69b122ed07544902403d7d4b6ddb0fe502",
+          "model_sha256": "9462578a7cb807f4ca8f24370b86934a45cc232de917aa44bb73bfc3324ecda1",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#5v8",
+          "split": "fresh_same_piano",
+          "midi": 75,
+          "layer": 8,
+          "early_gain_db": 17.0784771582182,
+          "f1_error_cents": 2.137163150192846,
+          "absolute_f1_error_cents": 2.137163150192846,
+          "reference_f1_hz": 623.180073107479,
+          "model_f1_hz": 623.9498476429002,
+          "reference_B": 0.0011453394082648776,
+          "model_B": 0.0010443439890247023,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 16.60414766075531,
+          "log_band_mae_by_window_db": [
+            21.537534427200907,
+            12.813243974525154,
+            10.959621994011647,
+            13.335341658628385
+          ],
+          "harmonic_level_mae_db": 8.074233399400336,
+          "partial_tuning_mae_cents": 1.5068225760639502,
+          "partial_decay_slope_mae_db_per_second": 3.6652922848385914,
+          "partial_decay_pairs": 5,
+          "envelope_mae_db": 6.5402339620198315,
+          "attack_rise10_90_error_ms": 6.208333333333335,
+          "reference_sha256": "888ccf9f046d5d4b2c26348eec18483e21b0ca322a292fc3dcea78fe1644f9ce",
+          "model_sha256": "ef7580f8e5eb8f2bb61615eee26adde006da9e0f37734eda60c142376439d3e0",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A2v8",
+          "split": "fresh_same_piano",
+          "midi": 45,
+          "layer": 8,
+          "early_gain_db": 22.784020290151716,
+          "f1_error_cents": -3.660229991683192,
+          "absolute_f1_error_cents": 3.660229991683192,
+          "reference_f1_hz": 109.91855868875713,
+          "model_f1_hz": 109.6864108757735,
+          "reference_B": 8.13785214148324e-05,
+          "model_B": 8.928148693425541e-05,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 10.264436533435429,
+          "log_band_mae_by_window_db": [
+            10.747120873814284,
+            11.211139661601514,
+            10.954712740267672,
+            7.741599309628148
+          ],
+          "harmonic_level_mae_db": 5.824917769101015,
+          "partial_tuning_mae_cents": 3.4051630935614385,
+          "partial_decay_slope_mae_db_per_second": 3.5717068650488755,
+          "partial_decay_pairs": 16,
+          "envelope_mae_db": 4.432471800170637,
+          "attack_rise10_90_error_ms": 8.166666666666668,
+          "reference_sha256": "8091d3048e23ae3ece24e6671cf7d86d3948b3e01e401700576f15f3ae2dcd41",
+          "model_sha256": "9a1a3ab2b1c22e690fce5438e0cbbf262e9756dc7fef1f8a3872179a860a8521",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A3v8",
+          "split": "fresh_same_piano",
+          "midi": 57,
+          "layer": 8,
+          "early_gain_db": 15.980734199501844,
+          "f1_error_cents": -0.49876146390439985,
+          "absolute_f1_error_cents": 0.49876146390439985,
+          "reference_f1_hz": 220.01976052231072,
+          "model_f1_hz": 219.95638285712576,
+          "reference_B": 0.00021097163278623163,
+          "model_B": 0.00019379313675804694,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.400536401538604,
+          "log_band_mae_by_window_db": [
+            16.53944786082794,
+            13.268590358120406,
+            13.135845714046019,
+            13.936223772275287
+          ],
+          "harmonic_level_mae_db": 6.54522793116986,
+          "partial_tuning_mae_cents": 1.048884176048198,
+          "partial_decay_slope_mae_db_per_second": 2.6952952109889026,
+          "partial_decay_pairs": 11,
+          "envelope_mae_db": 4.860933824672423,
+          "attack_rise10_90_error_ms": 2.3749999999999996,
+          "reference_sha256": "96584d02f0d3e51d676a713f6708c942a4695207495239d9735c493f19c397cf",
+          "model_sha256": "9c99413582225b8367d5ad2971d0feefee980170303390d3b7c3152c10c95425",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A4v8",
+          "split": "fresh_same_piano",
+          "midi": 69,
+          "layer": 8,
+          "early_gain_db": 18.075570060479244,
+          "f1_error_cents": 2.552498852903362,
+          "absolute_f1_error_cents": 2.552498852903362,
+          "reference_f1_hz": 440.23043930142694,
+          "model_f1_hz": 440.87998548565037,
+          "reference_B": 0.0006573110229198764,
+          "model_B": 0.0005818141242223246,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.584700028134735,
+          "log_band_mae_by_window_db": [
+            19.564066420476827,
+            12.837239191961123,
+            8.225408406214282,
+            12.320515840060002
+          ],
+          "harmonic_level_mae_db": 5.104373488685345,
+          "partial_tuning_mae_cents": 1.7704367734935,
+          "partial_decay_slope_mae_db_per_second": 1.999516508273862,
+          "partial_decay_pairs": 8,
+          "envelope_mae_db": 5.324695727188476,
+          "attack_rise10_90_error_ms": 11.0625,
+          "reference_sha256": "ca284d9ff71a08ddcef162ec737362bffc985cfae4bd84347475b9da9501a503",
+          "model_sha256": "c86e10d83401b03394fde2f1204b2fb4a9d2d51251bd91bb3628422e943dd678",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A5v8",
+          "split": "fresh_same_piano",
+          "midi": 81,
+          "layer": 8,
+          "early_gain_db": 16.182532578486924,
+          "f1_error_cents": 2.6602030509320045,
+          "absolute_f1_error_cents": 2.6602030509320045,
+          "reference_f1_hz": 881.9368587461877,
+          "model_f1_hz": 883.2930789361706,
+          "reference_B": 0.0019825843524914153,
+          "model_B": 0.0019590133226841553,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 23.42345106102365,
+          "log_band_mae_by_window_db": [
+            27.439212899004577,
+            21.228471809270655,
+            19.898212941770293,
+            19.63225327644525
+          ],
+          "harmonic_level_mae_db": 6.804019629709948,
+          "partial_tuning_mae_cents": 2.385525424180665,
+          "partial_decay_slope_mae_db_per_second": 2.269074338482901,
+          "partial_decay_pairs": 4,
+          "envelope_mae_db": 13.836706988519554,
+          "attack_rise10_90_error_ms": 1.1458333333333337,
+          "reference_sha256": "a97f8a6d5531f9bdf0f53133638cd40e518c307802e6eae834ae005f812c76a3",
+          "model_sha256": "6351d137e99f4571827cd259a72a76ba5065e03a89e9b10ece11524275833fa5",
+          "missing_reference_partials": []
+        }
+      ],
+      "summary": {
+        "cases": 8,
+        "log_band_mae_db": {
+          "mean": 14.487421887561775,
+          "median": 14.311320506467665,
+          "valid_cases": 8
+        },
+        "harmonic_level_mae_db": {
+          "mean": 6.985975920047626,
+          "median": 6.674623780439903,
+          "valid_cases": 8
+        },
+        "envelope_mae_db": {
+          "mean": 5.900915537448218,
+          "median": 4.683379567079455,
+          "valid_cases": 8
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "mean": 3.0567260513596612,
+          "median": 3.2913698541189067,
+          "valid_cases": 8
+        },
+        "absolute_f1_error_cents": {
+          "mean": 1.867726347927292,
+          "median": 2.057172151749594,
+          "valid_cases": 8
+        },
+        "partial_tuning_mae_cents": {
+          "mean": 1.7093794649841592,
+          "median": 1.6386296747787252,
+          "valid_cases": 8
+        },
+        "attack_rise10_90_error_ms": {
+          "mean": 11.2109375,
+          "median": 7.260416666666668,
+          "valid_cases": 8
+        }
+      },
+      "render_receipts": [
+        {
+          "id": "D#2v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#2v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/D#2v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "8236c7ce129ac45732016c011560a6c6b844b1fa7bbdb2fa833da780812c3241",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.274473202,\"realtime_factor\":0.06238027318,\"peak\":0.03804674372,\"rms\":0.002946511033,\"legacy_attack\":true}"
+        },
+        {
+          "id": "D#3v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/D#3v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "c9d1f26b53dc0cbfc019a7c1ec5040bd8260566d5fabe16bee22c127050116d5",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.84833239,\"realtime_factor\":0.1928028159,\"peak\":0.05483138189,\"rms\":0.004341716422,\"legacy_attack\":true}"
+        },
+        {
+          "id": "D#4v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/D#4v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "9462578a7cb807f4ca8f24370b86934a45cc232de917aa44bb73bfc3324ecda1",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.368166249,\"realtime_factor\":0.0836741475,\"peak\":0.0509442836,\"rms\":0.004004386821,\"legacy_attack\":true}"
+        },
+        {
+          "id": "D#5v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#5v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/D#5v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "ef7580f8e5eb8f2bb61615eee26adde006da9e0f37734eda60c142376439d3e0",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.372867543,\"realtime_factor\":0.08474262341,\"peak\":0.04307816923,\"rms\":0.0034927089,\"legacy_attack\":true}"
+        },
+        {
+          "id": "A2v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A2v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/A2v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "9a1a3ab2b1c22e690fce5438e0cbbf262e9756dc7fef1f8a3872179a860a8521",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.647437756,\"realtime_factor\":0.1471449445,\"peak\":0.03535132483,\"rms\":0.002614517353,\"legacy_attack\":true}"
+        },
+        {
+          "id": "A3v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/A3v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "9c99413582225b8367d5ad2971d0feefee980170303390d3b7c3152c10c95425",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.585773026,\"realtime_factor\":0.1331302332,\"peak\":0.05036240816,\"rms\":0.004123735592,\"legacy_attack\":true}"
+        },
+        {
+          "id": "A4v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/A4v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "c86e10d83401b03394fde2f1204b2fb4a9d2d51251bd91bb3628422e943dd678",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.415767674,\"realtime_factor\":0.09449265318,\"peak\":0.0596764721,\"rms\":0.003970298417,\"legacy_attack\":true}"
+        },
+        {
+          "id": "A5v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A5v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/fixed_attack/A5v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0",
+            "--legacy-attack"
+          ],
+          "output_sha256": "6351d137e99f4571827cd259a72a76ba5065e03a89e9b10ece11524275833fa5",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.47968723,\"realtime_factor\":0.109019825,\"peak\":0.02653799765,\"rms\":0.002427594345,\"legacy_attack\":true}"
+        }
+      ]
+    },
+    "measured_attack": {
+      "resonance": 0,
+      "cases": [
+        {
+          "id": "D#2v8",
+          "split": "fresh_same_piano",
+          "midi": 39,
+          "layer": 8,
+          "early_gain_db": 23.74966556172533,
+          "f1_error_cents": -1.9771866224906158,
+          "absolute_f1_error_cents": 1.9771866224906158,
+          "reference_f1_hz": 77.4838061543028,
+          "model_f1_hz": 77.39536490858895,
+          "reference_B": 0.00011558603174658426,
+          "model_B": 9.945297758616734e-05,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 11.003951148593412,
+          "log_band_mae_by_window_db": [
+            14.062317240883832,
+            10.669855125974934,
+            10.196813284369197,
+            8.356467634961264
+          ],
+          "harmonic_level_mae_db": 5.478477310897627,
+          "partial_tuning_mae_cents": 2.4971052836631187,
+          "partial_decay_slope_mae_db_per_second": 3.670245590649919,
+          "partial_decay_pairs": 19,
+          "envelope_mae_db": 3.2792095661254215,
+          "attack_rise10_90_error_ms": 5.895833333333337,
+          "reference_sha256": "0045f6c4dbac544773b7ce3dbf5c49b1445844712e6fe1ef1ae0c5fd621698a9",
+          "model_sha256": "1ea4ff9fb651fd7a79b1a761fffbd14ca9893c5fcb2172ec57b2f99b2590406a",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#3v8",
+          "split": "fresh_same_piano",
+          "midi": 51,
+          "layer": 8,
+          "early_gain_db": 19.784976873766045,
+          "f1_error_cents": 0.16802092773729346,
+          "absolute_f1_error_cents": 0.16802092773729346,
+          "reference_f1_hz": 155.33691648240463,
+          "model_f1_hz": 155.35199308016723,
+          "reference_B": 0.00012246944108001946,
+          "model_B": 0.00011080374972710405,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 11.394629591859896,
+          "log_band_mae_by_window_db": [
+            14.86555527180282,
+            13.027973116790621,
+            8.688192528964308,
+            6.643290179154972
+          ],
+          "harmonic_level_mae_db": 8.532985355247673,
+          "partial_tuning_mae_cents": 0.28968859998044505,
+          "partial_decay_slope_mae_db_per_second": 3.512549832524079,
+          "partial_decay_pairs": 16,
+          "envelope_mae_db": 4.387489775925929,
+          "attack_rise10_90_error_ms": 17.791666666666664,
+          "reference_sha256": "8a78d6658629d9f17a92f99ae0541454fc7aa6a747f94404b2e6643ee3cb65ac",
+          "model_sha256": "9483269f790f8b613ba778a0757532ad66aea85b326e362319bd1d60f21ce5d7",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#4v8",
+          "split": "fresh_same_piano",
+          "midi": 63,
+          "layer": 8,
+          "early_gain_db": 16.14730761484435,
+          "f1_error_cents": 1.2879207478452528,
+          "absolute_f1_error_cents": 1.2879207478452528,
+          "reference_f1_hz": 311.0921426125802,
+          "model_f1_hz": 311.3236601793887,
+          "reference_B": 0.0003723773760204291,
+          "model_B": 0.0003437532710911756,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.222932020711005,
+          "log_band_mae_by_window_db": [
+            19.01232590297966,
+            13.671641122628717,
+            11.139921473451073,
+            7.792781299399746
+          ],
+          "harmonic_level_mae_db": 9.518585716336169,
+          "partial_tuning_mae_cents": 0.7715559355139889,
+          "partial_decay_slope_mae_db_per_second": 3.0660317819426472,
+          "partial_decay_pairs": 10,
+          "envelope_mae_db": 4.505410160749269,
+          "attack_rise10_90_error_ms": 0.33333333333333304,
+          "reference_sha256": "a84de1e7bb8d7e2f5dc06126581f5f69b122ed07544902403d7d4b6ddb0fe502",
+          "model_sha256": "13b459723183437c03a489c5ffb3c73053309327e0f2f6d2a89f495bca0c0ebd",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#5v8",
+          "split": "fresh_same_piano",
+          "midi": 75,
+          "layer": 8,
+          "early_gain_db": 17.09015062575586,
+          "f1_error_cents": 2.13712953561148,
+          "absolute_f1_error_cents": 2.13712953561148,
+          "reference_f1_hz": 623.180073107479,
+          "model_f1_hz": 623.9498355279509,
+          "reference_B": 0.0011453394082648776,
+          "model_B": 0.0010443462261877725,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 16.60237898223,
+          "log_band_mae_by_window_db": [
+            21.539170202743513,
+            12.809613559070677,
+            10.954509483600264,
+            13.32820300534675
+          ],
+          "harmonic_level_mae_db": 8.070567133424278,
+          "partial_tuning_mae_cents": 1.50679255618601,
+          "partial_decay_slope_mae_db_per_second": 3.6649833401683596,
+          "partial_decay_pairs": 5,
+          "envelope_mae_db": 6.530853255257567,
+          "attack_rise10_90_error_ms": 1.687499999999998,
+          "reference_sha256": "888ccf9f046d5d4b2c26348eec18483e21b0ca322a292fc3dcea78fe1644f9ce",
+          "model_sha256": "df8fce8271b377cf340b615c5f19474813b9c2fddb3f961c1a9c3e8d24961f6d",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A2v8",
+          "split": "fresh_same_piano",
+          "midi": 45,
+          "layer": 8,
+          "early_gain_db": 22.814286299798376,
+          "f1_error_cents": -3.660162073585727,
+          "absolute_f1_error_cents": 3.660162073585727,
+          "reference_f1_hz": 109.91855868875713,
+          "model_f1_hz": 109.68641517888463,
+          "reference_B": 8.13785214148324e-05,
+          "model_B": 8.92819745366501e-05,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 10.266867534625373,
+          "log_band_mae_by_window_db": [
+            10.762464632631154,
+            11.205294407658187,
+            10.956229494115354,
+            7.738180904139503
+          ],
+          "harmonic_level_mae_db": 5.817794798907955,
+          "partial_tuning_mae_cents": 3.405079442344994,
+          "partial_decay_slope_mae_db_per_second": 3.573177021575083,
+          "partial_decay_pairs": 16,
+          "envelope_mae_db": 4.462739653037569,
+          "attack_rise10_90_error_ms": 16.416666666666668,
+          "reference_sha256": "8091d3048e23ae3ece24e6671cf7d86d3948b3e01e401700576f15f3ae2dcd41",
+          "model_sha256": "61a213fff3d2db3d1978860a8d752e3ad0be2774bcd5c8fae7f2dc36a385cbf4",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A3v8",
+          "split": "fresh_same_piano",
+          "midi": 57,
+          "layer": 8,
+          "early_gain_db": 15.984700684985643,
+          "f1_error_cents": -0.4987233273006824,
+          "absolute_f1_error_cents": 0.4987233273006824,
+          "reference_f1_hz": 220.01976052231072,
+          "model_f1_hz": 219.95638770244952,
+          "reference_B": 0.00021097163278623163,
+          "model_B": 0.00019379271922351246,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.39994355820675,
+          "log_band_mae_by_window_db": [
+            16.539738804205026,
+            13.268131490185477,
+            13.134032843833406,
+            13.935408372708348
+          ],
+          "harmonic_level_mae_db": 6.543867667040143,
+          "partial_tuning_mae_cents": 1.0488594181577597,
+          "partial_decay_slope_mae_db_per_second": 2.6947480809334463,
+          "partial_decay_pairs": 11,
+          "envelope_mae_db": 4.861202575882044,
+          "attack_rise10_90_error_ms": 5.645833333333334,
+          "reference_sha256": "96584d02f0d3e51d676a713f6708c942a4695207495239d9735c493f19c397cf",
+          "model_sha256": "73d879d5119688659f86bfd62c7f2eb62a3a6d7abe2cf709eb5af0978a09028a",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A4v8",
+          "split": "fresh_same_piano",
+          "midi": 69,
+          "layer": 8,
+          "early_gain_db": 18.08496339371432,
+          "f1_error_cents": 2.5525315142331086,
+          "absolute_f1_error_cents": 2.5525315142331086,
+          "reference_f1_hz": 440.23043930142694,
+          "model_f1_hz": 440.8799938032587,
+          "reference_B": 0.0006573110229198764,
+          "model_B": 0.0005818132058605009,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.584296093445754,
+          "log_band_mae_by_window_db": [
+            19.56481527467455,
+            12.835287037594265,
+            8.225312873584771,
+            12.319025976994187
+          ],
+          "harmonic_level_mae_db": 5.102554759260285,
+          "partial_tuning_mae_cents": 1.7704586880864135,
+          "partial_decay_slope_mae_db_per_second": 1.9994716362449996,
+          "partial_decay_pairs": 8,
+          "envelope_mae_db": 5.321005113605171,
+          "attack_rise10_90_error_ms": 2.5833333333333317,
+          "reference_sha256": "ca284d9ff71a08ddcef162ec737362bffc985cfae4bd84347475b9da9501a503",
+          "model_sha256": "9e62b2dbf640d1bd8b3026b154009e3116f807216d9bd3baf671c14d3b7d48e6",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A5v8",
+          "split": "fresh_same_piano",
+          "midi": 81,
+          "layer": 8,
+          "early_gain_db": 16.182579661149695,
+          "f1_error_cents": 2.6601885023627134,
+          "absolute_f1_error_cents": 2.6601885023627134,
+          "reference_f1_hz": 881.9368587461877,
+          "model_f1_hz": 883.2930715133436,
+          "reference_B": 0.0019825843524914153,
+          "model_B": 0.0019590136149598464,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 23.42370211138874,
+          "log_band_mae_by_window_db": [
+            27.43944008932494,
+            21.228937226700268,
+            19.898318560464425,
+            19.63228358941668
+          ],
+          "harmonic_level_mae_db": 6.8047563414758105,
+          "partial_tuning_mae_cents": 2.385514282562101,
+          "partial_decay_slope_mae_db_per_second": 2.2693212283294777,
+          "partial_decay_pairs": 4,
+          "envelope_mae_db": 13.836574605739989,
+          "attack_rise10_90_error_ms": 5.479166666666668,
+          "reference_sha256": "a97f8a6d5531f9bdf0f53133638cd40e518c307802e6eae834ae005f812c76a3",
+          "model_sha256": "0ba09c95e98547ec403a6facb4dc5c9446f7c8073de840caab0337d75bf63bd5",
+          "missing_reference_partials": []
+        }
+      ],
+      "summary": {
+        "cases": 8,
+        "log_band_mae_db": {
+          "mean": 14.487337630132616,
+          "median": 14.311437789458878,
+          "valid_cases": 8
+        },
+        "harmonic_level_mae_db": {
+          "mean": 6.9836986353237425,
+          "median": 6.674312004257977,
+          "valid_cases": 8
+        },
+        "envelope_mae_db": {
+          "mean": 5.898060588290369,
+          "median": 4.683306368315657,
+          "valid_cases": 8
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "mean": 3.056316064046001,
+          "median": 3.289290807233363,
+          "valid_cases": 8
+        },
+        "absolute_f1_error_cents": {
+          "mean": 1.8677329063958592,
+          "median": 2.0571580790510477,
+          "valid_cases": 8
+        },
+        "partial_tuning_mae_cents": {
+          "mean": 1.709381775811854,
+          "median": 1.6386256221362117,
+          "valid_cases": 8
+        },
+        "attack_rise10_90_error_ms": {
+          "mean": 6.979166666666666,
+          "median": 5.562500000000001,
+          "valid_cases": 8
+        }
+      },
+      "render_receipts": [
+        {
+          "id": "D#2v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#2v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/D#2v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "1ea4ff9fb651fd7a79b1a761fffbd14ca9893c5fcb2172ec57b2f99b2590406a",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.357596428,\"realtime_factor\":0.08127191545,\"peak\":0.03570273146,\"rms\":0.002775693784,\"legacy_attack\":false}"
+        },
+        {
+          "id": "D#3v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/D#3v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "9483269f790f8b613ba778a0757532ad66aea85b326e362319bd1d60f21ce5d7",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.707742444,\"realtime_factor\":0.1608505555,\"peak\":0.04399190098,\"rms\":0.004115616438,\"legacy_attack\":false}"
+        },
+        {
+          "id": "D#4v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/D#4v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "13b459723183437c03a489c5ffb3c73053309327e0f2f6d2a89f495bca0c0ebd",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.347159281,\"realtime_factor\":0.07889983659,\"peak\":0.04057583585,\"rms\":0.003897769779,\"legacy_attack\":false}"
+        },
+        {
+          "id": "D#5v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#5v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/D#5v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "df8fce8271b377cf340b615c5f19474813b9c2fddb3f961c1a9c3e8d24961f6d",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.443688222,\"realtime_factor\":0.1008382323,\"peak\":0.03612531722,\"rms\":0.003301333967,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A2v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A2v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/A2v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "61a213fff3d2db3d1978860a8d752e3ad0be2774bcd5c8fae7f2dc36a385cbf4",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.594263579,\"realtime_factor\":0.1350599043,\"peak\":0.0264925044,\"rms\":0.00253093215,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A3v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/A3v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "73d879d5119688659f86bfd62c7f2eb62a3a6d7abe2cf709eb5af0978a09028a",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.956606864,\"realtime_factor\":0.2174106509,\"peak\":0.04362738132,\"rms\":0.004013215025,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A4v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/A4v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "9e62b2dbf640d1bd8b3026b154009e3116f807216d9bd3baf671c14d3b7d48e6",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.561079967,\"realtime_factor\":0.1275181743,\"peak\":0.0470892489,\"rms\":0.003712707678,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A5v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A5v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/measured_attack/A5v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0"
+          ],
+          "output_sha256": "0ba09c95e98547ec403a6facb4dc5c9446f7c8073de840caab0337d75bf63bd5",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.607445476,\"realtime_factor\":0.13805579,\"peak\":0.02622343414,\"rms\":0.002383567532,\"legacy_attack\":false}"
+        }
+      ]
+    },
+    "product_default": {
+      "resonance": 0.25,
+      "cases": [
+        {
+          "id": "D#2v8",
+          "split": "fresh_same_piano",
+          "midi": 39,
+          "layer": 8,
+          "early_gain_db": 23.7465591719673,
+          "f1_error_cents": -1.9687933258547567,
+          "absolute_f1_error_cents": 1.9687933258547567,
+          "reference_f1_hz": 77.4838061543028,
+          "model_f1_hz": 77.39574013447533,
+          "reference_B": 0.00011558603174658426,
+          "model_B": 9.929964125808743e-05,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 10.997326916368186,
+          "log_band_mae_by_window_db": [
+            14.061542463272195,
+            10.664704460345257,
+            10.182917015439223,
+            8.348724246074239
+          ],
+          "harmonic_level_mae_db": 5.474950380752308,
+          "partial_tuning_mae_cents": 2.493656237569251,
+          "partial_decay_slope_mae_db_per_second": 3.6675916293075255,
+          "partial_decay_pairs": 19,
+          "envelope_mae_db": 3.2761273135047078,
+          "attack_rise10_90_error_ms": 5.895833333333337,
+          "reference_sha256": "0045f6c4dbac544773b7ce3dbf5c49b1445844712e6fe1ef1ae0c5fd621698a9",
+          "model_sha256": "72b7872954b2fe9b778f557a7f19f0c66b1a68ddd1e0f9d9fc33375d16441be1",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#3v8",
+          "split": "fresh_same_piano",
+          "midi": 51,
+          "layer": 8,
+          "early_gain_db": 19.773067098980036,
+          "f1_error_cents": 0.19700083526521886,
+          "absolute_f1_error_cents": 0.19700083526521886,
+          "reference_f1_hz": 155.33691648240463,
+          "model_f1_hz": 155.35459360900828,
+          "reference_B": 0.00012246944108001946,
+          "model_B": 0.00011034081825475214,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 11.35522064289944,
+          "log_band_mae_by_window_db": [
+            14.867696469805091,
+            13.009593918068342,
+            8.542441805343378,
+            6.627028889753429
+          ],
+          "harmonic_level_mae_db": 8.50688134981309,
+          "partial_tuning_mae_cents": 0.29672777276809953,
+          "partial_decay_slope_mae_db_per_second": 3.4567248989970696,
+          "partial_decay_pairs": 16,
+          "envelope_mae_db": 4.3815506419897545,
+          "attack_rise10_90_error_ms": 17.791666666666664,
+          "reference_sha256": "8a78d6658629d9f17a92f99ae0541454fc7aa6a747f94404b2e6643ee3cb65ac",
+          "model_sha256": "0c85b0771b97fda577f6b2af0915080f415505c04f8bb4c9252ccd3a540a0c29",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#4v8",
+          "split": "fresh_same_piano",
+          "midi": 63,
+          "layer": 8,
+          "early_gain_db": 16.153143844241356,
+          "f1_error_cents": 1.2566083908399055,
+          "absolute_f1_error_cents": 1.2566083908399055,
+          "reference_f1_hz": 311.0921426125802,
+          "model_f1_hz": 311.31802940436995,
+          "reference_B": 0.0003723773760204291,
+          "model_B": 0.00034466290091231906,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.22647645621667,
+          "log_band_mae_by_window_db": [
+            19.010255110785987,
+            13.674791515703467,
+            11.182781300341418,
+            7.752047454461594
+          ],
+          "harmonic_level_mae_db": 9.519916978353443,
+          "partial_tuning_mae_cents": 0.7508671302980464,
+          "partial_decay_slope_mae_db_per_second": 3.1015644017252284,
+          "partial_decay_pairs": 10,
+          "envelope_mae_db": 4.525918622895781,
+          "attack_rise10_90_error_ms": 0.33333333333333304,
+          "reference_sha256": "a84de1e7bb8d7e2f5dc06126581f5f69b122ed07544902403d7d4b6ddb0fe502",
+          "model_sha256": "54b0b155c1dc88728c6dea4f01897f08fed335d80c0997f3934d1d96e1b778ec",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "D#5v8",
+          "split": "fresh_same_piano",
+          "midi": 75,
+          "layer": 8,
+          "early_gain_db": 17.139891606704857,
+          "f1_error_cents": 2.135460172924045,
+          "absolute_f1_error_cents": 2.135460172924045,
+          "reference_f1_hz": 623.180073107479,
+          "model_f1_hz": 623.9492338773117,
+          "reference_B": 0.0011453394082648776,
+          "model_B": 0.0010444478592401437,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 16.589753577868596,
+          "log_band_mae_by_window_db": [
+            21.53633868231203,
+            12.793358410189512,
+            10.922538215397372,
+            13.31497922773807
+          ],
+          "harmonic_level_mae_db": 8.051865536356338,
+          "partial_tuning_mae_cents": 1.505393205752165,
+          "partial_decay_slope_mae_db_per_second": 3.6553791297370593,
+          "partial_decay_pairs": 5,
+          "envelope_mae_db": 6.511802270875554,
+          "attack_rise10_90_error_ms": 1.687499999999998,
+          "reference_sha256": "888ccf9f046d5d4b2c26348eec18483e21b0ca322a292fc3dcea78fe1644f9ce",
+          "model_sha256": "87a246a4dc6d8285ec29ff7540e676437e69e0d86c7798c75cf0a88a24ee01ce",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A2v8",
+          "split": "fresh_same_piano",
+          "midi": 45,
+          "layer": 8,
+          "early_gain_db": 22.80218354144068,
+          "f1_error_cents": -3.6277562349874475,
+          "absolute_f1_error_cents": 3.6277562349874475,
+          "reference_f1_hz": 109.91855868875713,
+          "model_f1_hz": 109.6884683464132,
+          "reference_B": 8.13785214148324e-05,
+          "model_B": 8.876059837497003e-05,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 10.255910433591918,
+          "log_band_mae_by_window_db": [
+            10.76429655067954,
+            11.198335804126609,
+            10.89087301301571,
+            7.765639199370217
+          ],
+          "harmonic_level_mae_db": 5.817733646682981,
+          "partial_tuning_mae_cents": 3.3894967704465473,
+          "partial_decay_slope_mae_db_per_second": 3.620498872616193,
+          "partial_decay_pairs": 16,
+          "envelope_mae_db": 4.47942612193878,
+          "attack_rise10_90_error_ms": 16.416666666666668,
+          "reference_sha256": "8091d3048e23ae3ece24e6671cf7d86d3948b3e01e401700576f15f3ae2dcd41",
+          "model_sha256": "8be7fffd4a73017f29c880aa7fd52dd23442e2dda9125518f8311457ef5d019c",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A3v8",
+          "split": "fresh_same_piano",
+          "midi": 57,
+          "layer": 8,
+          "early_gain_db": 15.974738935245675,
+          "f1_error_cents": -0.5155305321275208,
+          "absolute_f1_error_cents": 0.5155305321275208,
+          "reference_f1_hz": 220.01976052231072,
+          "model_f1_hz": 219.954252327329,
+          "reference_B": 0.00021097163278623163,
+          "model_B": 0.00019410447846458613,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.36433992465698,
+          "log_band_mae_by_window_db": [
+            16.54400001019481,
+            13.264876319750222,
+            13.078910122823839,
+            13.805917434617323
+          ],
+          "harmonic_level_mae_db": 6.50978304045479,
+          "partial_tuning_mae_cents": 1.0556772831238928,
+          "partial_decay_slope_mae_db_per_second": 2.682702265810774,
+          "partial_decay_pairs": 11,
+          "envelope_mae_db": 4.79851497891164,
+          "attack_rise10_90_error_ms": 5.645833333333334,
+          "reference_sha256": "96584d02f0d3e51d676a713f6708c942a4695207495239d9735c493f19c397cf",
+          "model_sha256": "828255b7d65b0bb32ca32518e4e2d6f4ab0819cbb4376e4e0fdb4890fb87a803",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A4v8",
+          "split": "fresh_same_piano",
+          "midi": 69,
+          "layer": 8,
+          "early_gain_db": 18.136126960336437,
+          "f1_error_cents": 2.548216875945187,
+          "absolute_f1_error_cents": 2.548216875945187,
+          "reference_f1_hz": 440.23043930142694,
+          "model_f1_hz": 440.8788950290449,
+          "reference_B": 0.0006573110229198764,
+          "model_B": 0.0005819785535094424,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 14.551381330097305,
+          "log_band_mae_by_window_db": [
+            19.572084255554135,
+            12.722241985828939,
+            8.208682664655925,
+            12.291728521878412
+          ],
+          "harmonic_level_mae_db": 5.055147102096259,
+          "partial_tuning_mae_cents": 1.7668262514991717,
+          "partial_decay_slope_mae_db_per_second": 1.9863566695313812,
+          "partial_decay_pairs": 8,
+          "envelope_mae_db": 5.214991510766782,
+          "attack_rise10_90_error_ms": 2.5833333333333317,
+          "reference_sha256": "ca284d9ff71a08ddcef162ec737362bffc985cfae4bd84347475b9da9501a503",
+          "model_sha256": "6c2d7de1330a3f669545f8426bc46ebe40fbacb96a5960887dac539314b721bf",
+          "missing_reference_partials": []
+        },
+        {
+          "id": "A5v8",
+          "split": "fresh_same_piano",
+          "midi": 81,
+          "layer": 8,
+          "early_gain_db": 16.22203456039199,
+          "f1_error_cents": 2.659785707172714,
+          "absolute_f1_error_cents": 2.659785707172714,
+          "reference_f1_hz": 881.9368587461877,
+          "model_f1_hz": 883.2928660031994,
+          "reference_B": 0.0019825843524914153,
+          "model_B": 0.0019590247526644275,
+          "pitch_fit_confidence": {
+            "reference": "good",
+            "model": "good"
+          },
+          "log_band_mae_db": 23.417567379257367,
+          "log_band_mae_by_window_db": [
+            27.433564587666183,
+            21.220421892640772,
+            19.897644564476135,
+            19.62400376064317
+          ],
+          "harmonic_level_mae_db": 6.785637841769376,
+          "partial_tuning_mae_cents": 2.385241315509899,
+          "partial_decay_slope_mae_db_per_second": 2.265385676002572,
+          "partial_decay_pairs": 4,
+          "envelope_mae_db": 13.80775106471367,
+          "attack_rise10_90_error_ms": 5.479166666666668,
+          "reference_sha256": "a97f8a6d5531f9bdf0f53133638cd40e518c307802e6eae834ae005f812c76a3",
+          "model_sha256": "f0a8f63df229577aef10d355ed6dcd5e07ffa9804aeadf1e3789321054244ab4",
+          "missing_reference_partials": []
+        }
+      ],
+      "summary": {
+        "cases": 8,
+        "log_band_mae_db": {
+          "mean": 14.469747082619557,
+          "median": 14.295408190436824,
+          "valid_cases": 8
+        },
+        "harmonic_level_mae_db": {
+          "mean": 6.965239484534823,
+          "median": 6.647710441112084,
+          "valid_cases": 8
+        },
+        "envelope_mae_db": {
+          "mean": 5.874510315699585,
+          "median": 4.66221680090371,
+          "valid_cases": 8
+        },
+        "partial_decay_slope_mae_db_per_second": {
+          "mean": 3.0545254429659754,
+          "median": 3.279144650361149,
+          "valid_cases": 8
+        },
+        "absolute_f1_error_cents": {
+          "mean": 1.8636440093895994,
+          "median": 2.0521267493894007,
+          "valid_cases": 8
+        },
+        "partial_tuning_mae_cents": {
+          "mean": 1.705485745870884,
+          "median": 1.6361097286256685,
+          "valid_cases": 8
+        },
+        "attack_rise10_90_error_ms": {
+          "mean": 6.979166666666666,
+          "median": 5.562500000000001,
+          "valid_cases": 8
+        }
+      },
+      "render_receipts": [
+        {
+          "id": "D#2v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#2v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/D#2v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "72b7872954b2fe9b778f557a7f19f0c66b1a68ddd1e0f9d9fc33375d16441be1",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.512812557,\"realtime_factor\":0.1165483084,\"peak\":0.03571163118,\"rms\":0.002777190235,\"legacy_attack\":false}"
+        },
+        {
+          "id": "D#3v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/D#3v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "0c85b0771b97fda577f6b2af0915080f415505c04f8bb4c9252ccd3a540a0c29",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.495124651,\"realtime_factor\":0.1125283298,\"peak\":0.04399124905,\"rms\":0.004120802252,\"legacy_attack\":false}"
+        },
+        {
+          "id": "D#4v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/D#4v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "54b0b155c1dc88728c6dea4f01897f08fed335d80c0997f3934d1d96e1b778ec",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.487870809,\"realtime_factor\":0.1108797293,\"peak\":0.04059590399,\"rms\":0.003894303049,\"legacy_attack\":false}"
+        },
+        {
+          "id": "D#5v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/D#5v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/D#5v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "87a246a4dc6d8285ec29ff7540e676437e69e0d86c7798c75cf0a88a24ee01ce",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.433631067,\"realtime_factor\":0.09855251523,\"peak\":0.03613395989,\"rms\":0.003289648315,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A2v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A2v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/A2v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "8be7fffd4a73017f29c880aa7fd52dd23442e2dda9125518f8311457ef5d019c",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.69992092,\"realtime_factor\":0.1590729364,\"peak\":0.02649115212,\"rms\":0.002534525277,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A3v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A3v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/A3v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "828255b7d65b0bb32ca32518e4e2d6f4ab0819cbb4376e4e0fdb4890fb87a803",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.68726411,\"realtime_factor\":0.1561963886,\"peak\":0.0436238125,\"rms\":0.004019184992,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A4v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A4v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/A4v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "6c2d7de1330a3f669545f8426bc46ebe40fbacb96a5960887dac539314b721bf",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.697649658,\"realtime_factor\":0.1585567405,\"peak\":0.04710234702,\"rms\":0.003697796269,\"legacy_attack\":false}"
+        },
+        {
+          "id": "A5v8",
+          "command": [
+            "/tmp/keyra_render-hotcold",
+            "--events",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/events/A5v8.events",
+            "--output",
+            "/workspace/virtual-instrument-keyra/build/fresh-recording-holdout/product_default/A5v8.wav",
+            "--sample-rate",
+            "48000",
+            "--duration",
+            "4.4",
+            "--gain",
+            ".7",
+            "--resonance",
+            "0.25"
+          ],
+          "output_sha256": "f0a8f63df229577aef10d355ed6dcd5e07ffa9804aeadf1e3789321054244ab4",
+          "renderer_stdout": "{\"sample_rate\":48000,\"frames\":211200,\"duration_seconds\":4.4,\"wall_seconds\":0.491953124,\"realtime_factor\":0.1118075282,\"peak\":0.02623256855,\"rms\":0.002376585099,\"legacy_attack\":false}"
+        }
+      ]
+    }
+  }
+}
