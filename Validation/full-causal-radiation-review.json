@@ -1,0 +1,3508 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-10-26T21:54:55.973948+00:00",
+  "passed": true,
+  "scope": "Published evidence consistency; captured inputs and frozen numerical replay",
+  "review_index_sha256": "3f520eeef1d07389486efc93972e8eaa59e7760b68e7298a9260690a0de90f8d",
+  "review_tool_sha256": "1128da6966bf9e899ab35856f2d0a24b8d4485d03864e8f597e1f30566c1f8e5",
+  "pilot_passes_all_gates": false,
+  "case_results": [
+    {
+      "id": "C3v4",
+      "passed": true,
+      "failed_gates": []
+    },
+    {
+      "id": "C3v12",
+      "passed": true,
+      "failed_gates": []
+    },
+    {
+      "id": "C4v4",
+      "passed": true,
+      "failed_gates": []
+    },
+    {
+      "id": "C4v12",
+      "passed": true,
+      "failed_gates": []
+    },
+    {
+      "id": "C6v4",
+      "passed": false,
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ]
+    },
+    {
+      "id": "C6v12",
+      "passed": false,
+      "failed_gates": [
+        "each_early_window_band_MAE"
+      ]
+    }
+  ],
+  "external_artifacts_verified": 71,
+  "external_artifacts_unverified": 0,
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0"
+  },
+  "numerical_replay": [
+    {
+      "id": "C3v4",
+      "baseline_float32_payload_exact": true,
+      "floating_roundoff_cells": 54,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/34/power",
+          "stored": 3.428713413882451e-13,
+          "recomputed": 3.4287134138824516e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.4724793775335237e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.218123704618695e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/35/power",
+          "stored": 4.3492396351921364e-13,
+          "recomputed": 4.349239635192136e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1608258493191623e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5451603144328403e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/36/power",
+          "stored": 3.6790260861138483e-13,
+          "recomputed": 3.679026086113848e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.3722951877048043e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3070526300800539e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/37/power",
+          "stored": 2.705923782499125e-13,
+          "recomputed": 2.7059237824991257e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.865798965243437e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.613372435876236e-28
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/38/power",
+          "stored": 3.6407548634500305e-13,
+          "recomputed": 3.640754863450031e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.3867206067892872e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2934559604538375e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/40/power",
+          "stored": 5.422750879817218e-13,
+          "recomputed": 5.422750879817217e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.8620474756475074e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9265481227454082e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/0/partials/44/power",
+          "stored": 4.3192766534248543e-13,
+          "recomputed": 4.319276653424854e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1688785411351776e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.534515324914613e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/1/partials/34/power",
+          "stored": 4.422465814776234e-13,
+          "recomputed": 4.4224658147762346e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.141605159851287e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5711754794183131e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/1/partials/38/power",
+          "stored": 4.3607374823829995e-13,
+          "recomputed": 4.360737482383e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1577651289055632e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5492451703320142e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/1/partials/40/power",
+          "stored": 4.948073974919748e-13,
+          "recomputed": 4.94807397491975e-13,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 4.0813535278614003e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.757909009441416e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/1/partials/41/power",
+          "stored": 3.612717734173484e-13,
+          "recomputed": 3.6127177341734833e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.397482495146972e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2834951711843288e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/2/partials/38/power",
+          "stored": 3.89459031802358e-13,
+          "recomputed": 3.8945903180235797e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2963391219995087e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3836364296166366e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/2/partials/42/power",
+          "stored": 4.3655919027973666e-13,
+          "recomputed": 4.365591902797366e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.15647772531816e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5509698069128911e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/3/partials/34/power",
+          "stored": 4.448463646002445e-13,
+          "recomputed": 4.4484636460024453e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1349333601841241e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5804117644799637e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/3/partials/36/power",
+          "stored": 3.3773747648638786e-13,
+          "recomputed": 3.377374764863878e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.4948621769600857e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1998845525567527e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/3/partials/42/power",
+          "stored": 3.887301614448765e-13,
+          "recomputed": 3.8873016144487655e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2987697622044185e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.38104696192754e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/3/partials/44/power",
+          "stored": 4.486645253881543e-13,
+          "recomputed": 4.4866452538815437e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1252750123372628e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5939765965390306e-27
+        },
+        {
+          "path": "C3v4/reference/late_harmonics/3/partials/45/power",
+          "stored": 4.3427802293202723e-13,
+          "recomputed": 4.342780229320272e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1625524495409925e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5428654724730508e-27
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/37/power",
+          "stored": 5.5649044777924405e-11,
+          "recomputed": 5.56490447779244e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 1.161268546721596e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9770512259471362e-25
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/39/power",
+          "stored": 1.9711160653410548e-11,
+          "recomputed": 1.971116065341055e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.6392612919149364e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.002811007840589e-26
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/39/signed_error_db",
+          "stored": 15.652947734806695,
+          "recomputed": 15.652947734806697,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.1348385425514789e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.5610441530997067e-14
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/42/power",
+          "stored": 5.862218895952425e-12,
+          "recomputed": 5.8622188959524245e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.3779655473187088e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0826785259772952e-26
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/42/signed_error_db",
+          "stored": 11.036905580158457,
+          "recomputed": 11.036905580158455,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.609469997273228e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.921096542625853e-14
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/44/power",
+          "stored": 1.4136659121430905e-11,
+          "recomputed": 1.4136659121430907e-11,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.1428351776859589e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.0223502233247454e-26
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/44/signed_error_db",
+          "stored": 15.149357640642291,
+          "recomputed": 15.149357640642293,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.1725624818802137e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.382133011495076e-14
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/0/partials/46/power",
+          "stored": 8.56132781655827e-12,
+          "recomputed": 8.561327816558272e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.887075426276706e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.04159464425818e-26
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/1/partials/39/power",
+          "stored": 4.48057073005996e-14,
+          "recomputed": 4.480570730059959e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.4085007517967786e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5918184921517166e-28
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/1/partials/41/power",
+          "stored": 1.6003318775839231e-15,
+          "recomputed": 1.6003318775839233e-15,
+          "absolute_difference": 1.9721522630525295e-31,
+          "relative_difference": 1.2323395482379294e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.685520952112893e-30
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/1/partials/42/power",
+          "stored": 1.1171185816387908e-14,
+          "recomputed": 1.1171185816387906e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.41231364008603e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.968802465830346e-29
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/1/partials/44/power",
+          "stored": 2.363125140533402e-14,
+          "recomputed": 2.3631251405334023e-14,
+          "absolute_difference": 3.1554436208840472e-30,
+          "relative_difference": 1.3352841822722108e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.395507011490374e-29
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/1/partials/46/power",
+          "stored": 1.2360522091932426e-14,
+          "recomputed": 1.2360522091932428e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.2764200401144744e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.391339591312412e-29
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/2/partials/36/power",
+          "stored": 5.6297657883114495e-15,
+          "recomputed": 5.629765788311448e-15,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 2.802464382652824e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.0000945924577172e-29
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/3/partials/40/power",
+          "stored": 3.046655670575908e-19,
+          "recomputed": 3.0466556705759074e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.580363973345877e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.082389527545014e-33
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/3/partials/41/power",
+          "stored": 2.7310784584942622e-19,
+          "recomputed": 2.731078458494262e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.7629756647938517e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.702739797369952e-34
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/3/partials/42/power",
+          "stored": 4.417179223565347e-19,
+          "recomputed": 4.417179223565348e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 2.1800450546725971e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5692973049273988e-33
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/3/partials/44/power",
+          "stored": 2.6258893944921084e-19,
+          "recomputed": 2.625889394492108e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.8335977406616392e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.329033170829278e-34
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/3/partials/46/power",
+          "stored": 1.0386157782787714e-19,
+          "recomputed": 1.0386157782787716e-19,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.1589523675798995e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.68990448250902e-34
+        },
+        {
+          "path": "C3v4/baseline/late_harmonics/3/partials/47/power",
+          "stored": 9.181675215996488e-20,
+          "recomputed": 9.181675215996487e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.3109875778930872e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.2619863134174267e-34
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/0/partials/39/power",
+          "stored": 1.9795796093396777e-11,
+          "recomputed": 1.9795796093396774e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.6322527533323487e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.032879556375625e-26
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/0/partials/42/power",
+          "stored": 5.794765618692244e-12,
+          "recomputed": 5.7947656186922444e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.3940055907362445e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0587143078970785e-26
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/0/partials/45/power",
+          "stored": 8.644526108748625e-12,
+          "recomputed": 8.644526108748626e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.8689134760754434e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.071152615329931e-26
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/0/partials/45/signed_error_db",
+          "stored": 14.191298221254291,
+          "recomputed": 14.191298221254293,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.2517225779525953e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.0417619310587344e-14
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/0/partials/46/power",
+          "stored": 8.569948375882997e-12,
+          "recomputed": 8.569948375882998e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.8851772064801632e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.0446572821613666e-26
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/0/partials/46/signed_error_db",
+          "stored": 13.535317925475871,
+          "recomputed": 13.535317925475873,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.3123864907944506e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.808710914075175e-14
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/1/partials/39/power",
+          "stored": 4.529838514630665e-14,
+          "recomputed": 4.5298385146306644e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.393181505562488e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6093219253685707e-28
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/1/partials/40/power",
+          "stored": 6.645206866643697e-15,
+          "recomputed": 6.645206866643698e-15,
+          "absolute_difference": 7.888609052210118e-31,
+          "relative_difference": 1.1871126378033176e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.360851733358408e-29
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/1/partials/45/power",
+          "stored": 1.3530173786226377e-14,
+          "recomputed": 1.3530173786226379e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.1660765304050517e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.806883348687442e-29
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/2/partials/38/power",
+          "stored": 2.1222250393327967e-15,
+          "recomputed": 2.1222250393327963e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.8585703462179032e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.539657926730558e-30
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/2/partials/40/power",
+          "stored": 6.602356699694903e-17,
+          "recomputed": 6.602356699694902e-17,
+          "absolute_difference": 1.232595164407831e-32,
+          "relative_difference": 1.8669018056306917e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.3456282959326213e-31
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/2/partials/41/power",
+          "stored": 1.1620755098497687e-17,
+          "recomputed": 1.1620755098497688e-17,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.3258552843170867e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.12852155964234e-32
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/2/partials/43/power",
+          "stored": 1.18708709734726e-16,
+          "recomputed": 1.1870870973472602e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 2.0766718249440433e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.217380568673193e-31
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/2/partials/45/power",
+          "stored": 4.862154941281488e-17,
+          "recomputed": 4.8621549412814886e-17,
+          "absolute_difference": 6.162975822039155e-33,
+          "relative_difference": 1.267539989257277e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.727384436833819e-31
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/2/partials/47/power",
+          "stored": 1.156692739338868e-17,
+          "recomputed": 1.1566927393388679e-17,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.3320252674797916e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.109398117218419e-32
+        },
+        {
+          "path": "C3v4/candidate/late_harmonics/3/partials/42/power",
+          "stored": 3.9118242599342446e-19,
+          "recomputed": 3.9118242599342455e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 2.4616774890848613e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.389759155733204e-33
+        }
+      ],
+      "maximum_absolute_roundoff": 1.7763568394002505e-15,
+      "maximum_ULP_distance": 2
+    },
+    {
+      "id": "C3v12",
+      "baseline_float32_payload_exact": true,
+      "floating_roundoff_cells": 54,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C3v12/reference/late_harmonics/0/partials/34/power",
+          "stored": 4.445441817944024e-13,
+          "recomputed": 4.4454418179440246e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1357048410880917e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5793381954921502e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/0/partials/38/power",
+          "stored": 5.049675828961634e-13,
+          "recomputed": 5.049675828961636e-13,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 3.99923477420739e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.7940052391060262e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/0/partials/40/power",
+          "stored": 1.798807801872537e-12,
+          "recomputed": 1.7988078018725372e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.1226790962678348e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.390649083245624e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/0/partials/46/power",
+          "stored": 4.01136043303246e-13,
+          "recomputed": 4.0113604330324607e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2586028799206687e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4251215081033524e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/35/power",
+          "stored": 3.6336796259520986e-13,
+          "recomputed": 3.633679625952098e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.3894207286069173e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2909423311498708e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/36/power",
+          "stored": 3.899214675888345e-13,
+          "recomputed": 3.8992146758883457e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2948017006178929e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3852793315608188e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/37/power",
+          "stored": 5.383194133515591e-13,
+          "recomputed": 5.38319413351559e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.8757301587848648e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.912494743377945e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/38/power",
+          "stored": 6.003431264155795e-13,
+          "recomputed": 6.003431264155796e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.681941400265012e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.132847237190488e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/39/power",
+          "stored": 5.480828526793524e-13,
+          "recomputed": 5.480828526793523e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.8423162734369095e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.947181447829935e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/40/power",
+          "stored": 1.1492991563974489e-12,
+          "recomputed": 1.149299156397449e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.757143826413299e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.0831308339670935e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/42/power",
+          "stored": 4.3797236887506775e-13,
+          "recomputed": 4.379723688750677e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1527461895329355e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.555990425839112e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/1/partials/43/power",
+          "stored": 3.961425046792695e-13,
+          "recomputed": 3.9614250467926954e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.274468085039772e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4073808951283323e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/2/partials/37/power",
+          "stored": 6.110779266417145e-13,
+          "recomputed": 6.110779266417144e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.652394751406107e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.170984908793068e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/2/partials/41/power",
+          "stored": 3.8868863410647645e-13,
+          "recomputed": 3.886886341064765e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2989085222469982e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.380899427184362e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/2/partials/42/power",
+          "stored": 5.3228419526575e-13,
+          "recomputed": 5.322841952657501e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.896997821208589e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.8910533415299473e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/2/partials/45/power",
+          "stored": 3.2832013281383047e-13,
+          "recomputed": 3.283201328138305e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.537739933931276e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1664274268732929e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/3/partials/36/power",
+          "stored": 3.911396504010835e-13,
+          "recomputed": 3.9113965040108343e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2907691123202197e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3896071863011751e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/3/partials/42/power",
+          "stored": 5.153451911493814e-13,
+          "recomputed": 5.153451911493813e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.959350695464634e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.830873909900466e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/3/partials/43/power",
+          "stored": 4.3569389178845796e-13,
+          "recomputed": 4.356938917884579e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1587745177446213e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5478956491266799e-27
+        },
+        {
+          "path": "C3v12/reference/late_harmonics/3/partials/46/power",
+          "stored": 4.2754318187954643e-13,
+          "recomputed": 4.275431818795465e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.1808654674878829e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5189385105413552e-27
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/0/partials/34/power",
+          "stored": 1.1043183819442136e-09,
+          "recomputed": 1.1043183819442138e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 1.8726044637071293e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.9233270212840444e-24
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/0/partials/35/power",
+          "stored": 1.872609196317271e-09,
+          "recomputed": 1.8726091963172715e-09,
+          "absolute_difference": 4.1359030627651384e-25,
+          "relative_difference": 2.2086311820421086e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.652844306803983e-24
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/0/partials/36/power",
+          "stored": 1.9410487740690455e-09,
+          "recomputed": 1.941048774069045e-09,
+          "absolute_difference": 4.1359030627651384e-25,
+          "relative_difference": 2.130756897002125e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.895990530854041e-24
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/0/partials/39/power",
+          "stored": 5.757514891217864e-10,
+          "recomputed": 5.757514891217865e-10,
+          "absolute_difference": 1.0339757656912846e-25,
+          "relative_difference": 1.7958716307767495e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0454801909927287e-24
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/0/partials/46/power",
+          "stored": 1.5780504901824476e-10,
+          "recomputed": 1.5780504901824474e-10,
+          "absolute_difference": 2.5849394142282115e-26,
+          "relative_difference": 1.638058750534244e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.606361562309017e-25
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/1/partials/34/power",
+          "stored": 5.056968447618329e-12,
+          "recomputed": 5.0569684476183284e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.597387002338844e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7965960977116173e-26
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/1/partials/40/power",
+          "stored": 1.7807533789345425e-13,
+          "recomputed": 1.7807533789345423e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.417576923660033e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.326506887910961e-28
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/1/partials/45/power",
+          "stored": 4.1668235685023964e-13,
+          "recomputed": 4.166823568502396e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2116447241919194e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.480353108896678e-27
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/1/partials/47/power",
+          "stored": 1.3014978147215038e-13,
+          "recomputed": 1.301497814721504e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.9395767462332636e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.623849089290047e-28
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/2/partials/36/power",
+          "stored": 1.3685464844490762e-13,
+          "recomputed": 1.3685464844490764e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.8445518112769439e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.862053815376571e-28
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/2/partials/42/power",
+          "stored": 2.5877509197637927e-15,
+          "recomputed": 2.5877509197637923e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.5242210894335576e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.193538089973404e-30
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/2/partials/43/power",
+          "stored": 2.6858716829259972e-15,
+          "recomputed": 2.6858716829259976e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.4685379615038498e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.542133067434114e-30
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/2/partials/45/power",
+          "stored": 1.4917502614647867e-15,
+          "recomputed": 1.4917502614647869e-15,
+          "absolute_difference": 1.9721522630525295e-31,
+          "relative_difference": 1.3220391603055755e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.299761559260172e-30
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/2/partials/46/power",
+          "stored": 7.022648402674942e-16,
+          "recomputed": 7.022648402674941e-16,
+          "absolute_difference": 9.860761315262648e-32,
+          "relative_difference": 1.4041371217597427e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.4949459041589754e-30
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/34/power",
+          "stored": 1.8936255513059876e-15,
+          "recomputed": 1.8936255513059872e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 2.0829379511618692e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.727509398650922e-30
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/37/power",
+          "stored": 2.7608303447130477e-16,
+          "recomputed": 2.760830344713048e-16,
+          "absolute_difference": 4.930380657631324e-32,
+          "relative_difference": 1.785832536603683e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.808439730509548e-31
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/40/power",
+          "stored": 8.024412986048194e-18,
+          "recomputed": 8.024412986048195e-18,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.9200706122536735e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.8508441779877797e-32
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/41/power",
+          "stored": 1.8952075241469695e-18,
+          "recomputed": 1.89520752414697e-18,
+          "absolute_difference": 3.851859888774472e-34,
+          "relative_difference": 2.0324211674434904e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.73312969520257e-33
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/42/power",
+          "stored": 9.191358111843378e-18,
+          "recomputed": 9.19135811184338e-18,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.6762962956741806e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.265426369069992e-32
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/43/power",
+          "stored": 5.888373364624774e-18,
+          "recomputed": 5.888373364624775e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 1.3082933605790208e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0919704598386968e-32
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/45/power",
+          "stored": 2.063841476754914e-18,
+          "recomputed": 2.063841476754915e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 3.7327090594486464e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 7.332237845343012e-33
+        },
+        {
+          "path": "C3v12/baseline/late_harmonics/3/partials/47/power",
+          "stored": 1.075078093885309e-18,
+          "recomputed": 1.0750780938853087e-18,
+          "absolute_difference": 1.925929944387236e-34,
+          "relative_difference": 1.7914325994932766e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.819444649925106e-33
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/0/partials/40/power",
+          "stored": 8.221334966748053e-11,
+          "recomputed": 8.221334966748056e-11,
+          "absolute_difference": 2.5849394142282115e-26,
+          "relative_difference": 3.144184520741749e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.920804919436668e-25
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/0/partials/41/power",
+          "stored": 1.9254606188471982e-11,
+          "recomputed": 1.9254606188471986e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.6781305398600236e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.84061027857012e-26
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/0/partials/44/power",
+          "stored": 3.4431465271455014e-10,
+          "recomputed": 3.443146527145502e-10,
+          "absolute_difference": 5.169878828456423e-26,
+          "relative_difference": 1.5014983497500025e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2232513765104265e-24
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/0/partials/47/power",
+          "stored": 9.527607117411674e-11,
+          "recomputed": 9.527607117411676e-11,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.3565522708762004e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.384886013226547e-25
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/1/partials/35/power",
+          "stored": 6.443216273942628e-12,
+          "recomputed": 6.443216273942627e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.2537117063929072e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.289090259190597e-26
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/1/partials/39/power",
+          "stored": 1.3270064141457083e-12,
+          "recomputed": 1.3270064141457081e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.5218343301421648e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.7144738393914605e-27
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/1/partials/39/signed_error_db",
+          "stored": 3.840268071044201,
+          "recomputed": 3.8402680710442,
+          "absolute_difference": 1.3322676295501878e-15,
+          "relative_difference": 3.46920476618689e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 1.3643372906259548e-14
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/3/partials/34/power",
+          "stored": 1.8923607518319316e-15,
+          "recomputed": 1.892360751831931e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 2.08433012695212e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.723015928258503e-30
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/3/partials/36/power",
+          "stored": 8.251046206239271e-16,
+          "recomputed": 8.251046206239272e-16,
+          "absolute_difference": 9.860761315262648e-32,
+          "relative_difference": 1.1950922427032514e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.9313604721321242e-30
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/3/partials/39/power",
+          "stored": 5.95447078796291e-17,
+          "recomputed": 5.954470787962911e-17,
+          "absolute_difference": 1.232595164407831e-32,
+          "relative_difference": 2.0700331033608364e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.115452981841383e-31
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/3/partials/41/power",
+          "stored": 1.8477005792372218e-18,
+          "recomputed": 1.8477005792372214e-18,
+          "absolute_difference": 3.851859888774472e-34,
+          "relative_difference": 2.0846775349091562e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.564351122183687e-33
+        },
+        {
+          "path": "C3v12/candidate/late_harmonics/3/partials/43/power",
+          "stored": 5.920819452738814e-18,
+          "recomputed": 5.920819452738812e-18,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 2.602247827025162e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.103497625945328e-32
+        }
+      ],
+      "maximum_absolute_roundoff": 1.3322676295501878e-15,
+      "maximum_ULP_distance": 3
+    },
+    {
+      "id": "C4v4",
+      "baseline_float32_payload_exact": true,
+      "floating_roundoff_cells": 98,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C4v4/reference/late_harmonics/0/partials/18/power",
+          "stored": 2.8582787822778586e-11,
+          "recomputed": 2.858278782277859e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.1304615518330345e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.0154646127623788e-25
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/0/partials/20/power",
+          "stored": 4.786296051948505e-12,
+          "recomputed": 4.786296051948504e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.6877216916355657e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7004339454546287e-26
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/0/partials/24/power",
+          "stored": 9.461857196831724e-13,
+          "recomputed": 9.461857196831722e-13,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 2.1343419958208719e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.361526949004103e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/0/partials/25/power",
+          "stored": 3.4522564067992193e-13,
+          "recomputed": 3.452256406799219e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.4624376635150973e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2264878559162253e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/0/partials/31/power",
+          "stored": 2.0650676036279862e-13,
+          "recomputed": 2.0650676036279864e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.2224078728814294e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.336593923056918e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/0/partials/46/power",
+          "stored": 6.967919731193007e-14,
+          "recomputed": 6.967919731193008e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.8114121531901113e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.475502374179331e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/24/power",
+          "stored": 3.2366597097156274e-13,
+          "recomputed": 3.236659709715627e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.559851898628557e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1498925224329168e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/27/power",
+          "stored": 4.776492911855165e-13,
+          "recomputed": 4.776492911855164e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 2.1139819053781795e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.696951170464148e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/30/power",
+          "stored": 4.36586083253074e-13,
+          "recomputed": 4.3658608325307407e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.156406488222372e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5510653499471305e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/32/power",
+          "stored": 3.3609530909899185e-13,
+          "recomputed": 3.360953090989919e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.5021660989405398e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.194050402016671e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/36/power",
+          "stored": 2.0487249743896887e-13,
+          "recomputed": 2.0487249743896885e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.232158990720186e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.278533240614453e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/37/power",
+          "stored": 1.7456630106181518e-13,
+          "recomputed": 1.745663010618152e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.4460722839131163e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.201840856399173e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/38/power",
+          "stored": 1.8770584544559872e-13,
+          "recomputed": 1.877058454455987e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.344846182448192e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.668651247053913e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/39/power",
+          "stored": 1.920141002354501e-13,
+          "recomputed": 1.9201410023545007e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.314671627558519e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.82171120429054e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/40/power",
+          "stored": 1.7535037391614686e-13,
+          "recomputed": 1.753503739161469e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.4396062240017763e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.229696719946776e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/41/power",
+          "stored": 1.5569993610216208e-13,
+          "recomputed": 1.556999361021621e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.6212947544505664e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.5315729277851525e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/43/power",
+          "stored": 1.3030862127840342e-13,
+          "recomputed": 1.303086212784034e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.9372124974862345e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.6294922128141785e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/1/partials/47/power",
+          "stored": 4.905923354209268e-14,
+          "recomputed": 4.9059233542092675e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.2863811327898898e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7429341007646102e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/17/power",
+          "stored": 1.2375334037389436e-12,
+          "recomputed": 1.2375334037389434e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.6318621471261702e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.396601851435888e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/25/power",
+          "stored": 4.874891297925222e-13,
+          "recomputed": 4.874891297925224e-13,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 4.1426234841898767e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.731909299680447e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/26/power",
+          "stored": 4.0508569605742323e-13,
+          "recomputed": 4.050856960574233e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2463312929960358e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4391534934696298e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/30/power",
+          "stored": 3.308390387154879e-13,
+          "recomputed": 3.3083903871548787e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.5260320586761895e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1753763783257224e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/36/power",
+          "stored": 2.2075129045337808e-13,
+          "recomputed": 2.2075129045337805e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.1435289422420716e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.842661292065787e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/38/power",
+          "stored": 1.8236856056694425e-13,
+          "recomputed": 1.8236856056694423e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.3842050893309496e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.479032797093405e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/39/power",
+          "stored": 2.0238477931624123e-13,
+          "recomputed": 2.023847793162412e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.2473047159157884e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.190151738578309e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/2/partials/45/power",
+          "stored": 8.177805693873845e-14,
+          "recomputed": 8.177805693873843e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.543418241520633e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.905340215119823e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/24/power",
+          "stored": 4.454117336365881e-13,
+          "recomputed": 4.4541173363658803e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.133492769082218e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5824203587889517e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/26/power",
+          "stored": 3.7770408652006116e-13,
+          "recomputed": 3.777040865200611e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.33668392098435e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3418744747186692e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/28/power",
+          "stored": 4.192937146560793e-13,
+          "recomputed": 4.1929371465607923e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2040986108164344e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.489630515493727e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/29/power",
+          "stored": 3.5355197787795383e-13,
+          "recomputed": 3.535519778779539e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.4279964784010598e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2560689479739789e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/31/power",
+          "stored": 3.887188722499217e-13,
+          "recomputed": 3.8871887224992167e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.298807481147577e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3810068546502014e-27
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/32/power",
+          "stored": 2.763193242359819e-13,
+          "recomputed": 2.7631932423598187e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.8271287422166616e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.816834429300837e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/36/power",
+          "stored": 2.055300243631278e-13,
+          "recomputed": 2.0553002436312777e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.228217096032276e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.3018932895908435e-28
+        },
+        {
+          "path": "C4v4/reference/late_harmonics/3/partials/43/power",
+          "stored": 9.433638818540675e-14,
+          "recomputed": 9.433638818540676e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.3379539673206079e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.3515017671492856e-28
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/18/power",
+          "stored": 2.362570579261444e-09,
+          "recomputed": 2.3625705792614445e-09,
+          "absolute_difference": 4.1359030627651384e-25,
+          "relative_difference": 1.7505945003590326e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.393536814073757e-24
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/26/power",
+          "stored": 1.3340333701536688e-11,
+          "recomputed": 1.3340333701536686e-11,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.211054513356387e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.739438602121271e-26
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/32/power",
+          "stored": 2.1698964778796213e-14,
+          "recomputed": 2.1698964778796216e-14,
+          "absolute_difference": 3.1554436208840472e-30,
+          "relative_difference": 1.4541908579747004e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.70902089854396e-29
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/37/power",
+          "stored": 1.1155469907668786e-13,
+          "recomputed": 1.1155469907668785e-13,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.131442654411124e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.963219053442226e-28
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/38/power",
+          "stored": 4.546631129300477e-14,
+          "recomputed": 4.5466311293004766e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.3880359022525448e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6152878605525974e-28
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/42/power",
+          "stored": 1.349070391220223e-15,
+          "recomputed": 1.3490703912202232e-15,
+          "absolute_difference": 1.9721522630525295e-31,
+          "relative_difference": 1.4618601637745038e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.79286083255283e-30
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/0/partials/47/power",
+          "stored": 2.0511323362010935e-16,
+          "recomputed": 2.0511323362010937e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 1.2018680049583958e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.2870859078516535e-31
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/18/power",
+          "stored": 1.1959610335256215e-10,
+          "recomputed": 1.1959610335256212e-10,
+          "absolute_difference": 2.5849394142282115e-26,
+          "relative_difference": 2.1613910000127387e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.24890712311886e-25
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/19/power",
+          "stored": 3.745593707245772e-11,
+          "recomputed": 3.7455937072457725e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 1.7253202137405483e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3307021998961135e-25
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/19/signed_error_db",
+          "stored": 11.764697404297248,
+          "recomputed": 11.764697404297252,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 3.019808803159538e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 4.179660139519559e-14
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/20/power",
+          "stored": 3.4349785524630865e-11,
+          "recomputed": 3.434978552463087e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 1.8813359201141545e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2203495289721954e-25
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/24/power",
+          "stored": 2.7353381730215704e-19,
+          "recomputed": 2.73533817302157e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.7602302005859225e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.717873343438905e-34
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/27/power",
+          "stored": 1.8668467001855184e-13,
+          "recomputed": 1.866846700185518e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.3522025651363764e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.632371807972669e-28
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/27/signed_error_db",
+          "stored": -4.080004811430871,
+          "recomputed": -4.080004811430872,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 2.1769053242577869e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4495088903142316e-14
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/38/power",
+          "stored": 3.835597447302719e-17,
+          "recomputed": 3.8355974473027184e-17,
+          "absolute_difference": 6.162975822039155e-33,
+          "relative_difference": 1.6067837948878347e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3626779517404653e-31
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/40/power",
+          "stored": 3.587695473618161e-19,
+          "recomputed": 3.5876954736181604e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.3420383352972762e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2746054784493882e-33
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/1/partials/42/power",
+          "stored": 5.790049694758983e-19,
+          "recomputed": 5.790049694758984e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 1.6631376636806262e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0570388751504907e-33
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/18/power",
+          "stored": 3.6375339073763124e-12,
+          "recomputed": 3.637533907376312e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 1.1103588138494674e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.292311646983646e-26
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/18/signed_error_db",
+          "stored": 5.623337630985309,
+          "recomputed": 5.623337630985308,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.5794506358753006e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.997810852211511e-14
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/19/power",
+          "stored": 1.0389931333673315e-12,
+          "recomputed": 1.0389931333673317e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.9436932280974085e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.6912451170939126e-27
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/19/signed_error_db",
+          "stored": 1.3556214559382918,
+          "recomputed": 1.3556214559382926,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 6.55181736619367e-16,
+          "ULP_distance": 4,
+          "allowed_absolute_bound": 4.816134889787423e-15
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/21/power",
+          "stored": 1.9812186307854375e-13,
+          "recomputed": 1.9812186307854378e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.2741425188932722e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.038702530285824e-28
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/21/signed_error_db",
+          "stored": -3.4775002343671924,
+          "recomputed": -3.477500234367192,
+          "absolute_difference": 4.440892098500626e-16,
+          "relative_difference": 1.2770357438405016e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2354562650668272e-14
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/30/power",
+          "stored": 6.285124033128167e-18,
+          "recomputed": 6.285124033128168e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 1.2257068813508723e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.2329246125452215e-32
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/31/power",
+          "stored": 5.889863013425408e-19,
+          "recomputed": 5.889863013425407e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 1.634953088040633e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0924996894057586e-33
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/43/power",
+          "stored": 1.677349661150577e-20,
+          "recomputed": 1.6773496611505773e-20,
+          "absolute_difference": 3.009265538105056e-36,
+          "relative_difference": 1.7940597645221162e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.959143085301041e-35
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/44/power",
+          "stored": 1.912290693735543e-20,
+          "recomputed": 1.9122906937355435e-20,
+          "absolute_difference": 3.009265538105056e-36,
+          "relative_difference": 1.573644398293148e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.793821305477165e-35
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/45/power",
+          "stored": 2.0956513886685138e-20,
+          "recomputed": 2.095651388668514e-20,
+          "absolute_difference": 3.009265538105056e-36,
+          "relative_difference": 1.4359571226285935e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.445249354519895e-35
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/2/partials/47/power",
+          "stored": 2.2404313802023857e-20,
+          "recomputed": 2.240431380202386e-20,
+          "absolute_difference": 3.009265538105056e-36,
+          "relative_difference": 1.3431634482075584e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.959611210858903e-35
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/3/partials/18/power",
+          "stored": 1.631012599414117e-13,
+          "recomputed": 1.6310125994141172e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.5477224992707118e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.794520772234496e-28
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/3/partials/31/power",
+          "stored": 5.571836164978298e-21,
+          "recomputed": 5.571836164978297e-21,
+          "absolute_difference": 7.52316384526264e-37,
+          "relative_difference": 1.3502126807944184e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9795138559353724e-35
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/3/partials/33/power",
+          "stored": 4.309374157376051e-21,
+          "recomputed": 4.309374157376052e-21,
+          "absolute_difference": 7.52316384526264e-37,
+          "relative_difference": 1.7457671509877534e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5309972515979282e-35
+        },
+        {
+          "path": "C4v4/baseline/late_harmonics/3/partials/35/power",
+          "stored": 4.081809318814227e-20,
+          "recomputed": 4.081809318814228e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.4744762937526207e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4501499801206662e-34
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/17/power",
+          "stored": 2.063764453060705e-09,
+          "recomputed": 2.0637644530607053e-09,
+          "absolute_difference": 4.1359030627651384e-25,
+          "relative_difference": 2.0040577095081312e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.331964202211002e-24
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/28/power",
+          "stored": 7.674617718865081e-12,
+          "recomputed": 7.67461771886508e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 2.1051043753245659e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.726571934937667e-26
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/29/power",
+          "stored": 9.165431092698042e-12,
+          "recomputed": 9.165431092698039e-12,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 3.525392570306367e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 3.2562152415131756e-26
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/32/power",
+          "stored": 2.2085532335386587e-14,
+          "recomputed": 2.2085532335386584e-14,
+          "absolute_difference": 3.1554436208840472e-30,
+          "relative_difference": 1.4287378601367157e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.84635728315187e-29
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/33/power",
+          "stored": 5.628701010325578e-14,
+          "recomputed": 5.6287010103255785e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.1211978092620445e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9997163073261882e-28
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/35/power",
+          "stored": 9.761005578028684e-14,
+          "recomputed": 9.761005578028685e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.2930813718564905e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.46780580359105e-28
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/37/power",
+          "stored": 1.1137244444525368e-13,
+          "recomputed": 1.1137244444525367e-13,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.1332941955620413e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.956744068221016e-28
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/0/partials/39/power",
+          "stored": 9.184547789996083e-15,
+          "recomputed": 9.18454778999608e-15,
+          "absolute_difference": 3.1554436208840472e-30,
+          "relative_difference": 3.4356004160825354e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 3.2630068567115993e-29
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/17/power",
+          "stored": 1.5377536655440618e-10,
+          "recomputed": 1.5377536655440616e-10,
+          "absolute_difference": 2.5849394142282115e-26,
+          "relative_difference": 1.6809840692616084e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.463198482203999e-25
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/17/signed_error_db",
+          "stored": 12.627510416896875,
+          "recomputed": 12.627510416896872,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 2.8134711922681243e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 4.4861928987305345e-14
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/18/power",
+          "stored": 1.1982944339570253e-10,
+          "recomputed": 1.1982944339570256e-10,
+          "absolute_difference": 2.5849394142282115e-26,
+          "relative_difference": 2.1571821924367838e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.257197026749628e-25
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/22/power",
+          "stored": 2.1037020127583267e-12,
+          "recomputed": 2.1037020127583263e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 1.9199334365021484e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.473850916846653e-27
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/22/signed_error_db",
+          "stored": 3.688225626427922,
+          "recomputed": 3.6882256264279216,
+          "absolute_difference": 4.440892098500626e-16,
+          "relative_difference": 1.2040727841267313e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3103209633513025e-14
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/25/power",
+          "stored": 1.4453023158351547e-13,
+          "recomputed": 1.4453023158351544e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.746592992379288e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.134745307469596e-28
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/25/signed_error_db",
+          "stored": -4.421776907977103,
+          "recomputed": -4.4217769079771045,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 4.017291863358404e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.5709307305574443e-14
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/30/power",
+          "stored": 9.238930572782813e-15,
+          "recomputed": 9.238930572782814e-15,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.707688782822843e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.282327502341365e-29
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/33/power",
+          "stored": 1.4642066168618072e-16,
+          "recomputed": 1.464206616861807e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 1.6836355610106687e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.201906876315147e-31
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/36/power",
+          "stored": 1.7617177385799877e-16,
+          "recomputed": 1.761717738579988e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 1.3993106130626237e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.258878708038608e-31
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/37/power",
+          "stored": 1.170899422082488e-16,
+          "recomputed": 1.1708994220824877e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 2.105381796526323e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.159870393332056e-31
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/1/partials/45/power",
+          "stored": 3.172234736011325e-19,
+          "recomputed": 3.1722347360113243e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.517802199916047e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.127004173899353e-33
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/20/power",
+          "stored": 8.683189502392671e-13,
+          "recomputed": 8.68318950239267e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.1628698860075076e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.0848886120767358e-27
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/20/signed_error_db",
+          "stored": 2.37761856222153,
+          "recomputed": 2.3776185622215293,
+          "absolute_difference": 4.440892098500626e-16,
+          "relative_difference": 1.8677899681062699e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.446997988974409e-15
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/24/power",
+          "stored": 5.1203728747942006e-20,
+          "recomputed": 5.1203728747942e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.1754087492020805e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.81912187528404e-34
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/30/power",
+          "stored": 6.330476468764968e-18,
+          "recomputed": 6.330476468764967e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 1.216925742566086e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.2490370343905994e-32
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/34/power",
+          "stored": 6.451514698912175e-20,
+          "recomputed": 6.451514698912174e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.8657730338039622e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.292038451980778e-34
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/35/power",
+          "stored": 7.989041794687582e-20,
+          "recomputed": 7.98904179468758e-20,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 3.013393210791418e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.8382778064495477e-34
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/37/power",
+          "stored": 4.2357942804619093e-20,
+          "recomputed": 4.235794280461908e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 2.84174852587685e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.504856428078195e-34
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/2/partials/39/power",
+          "stored": 8.723155960048338e-21,
+          "recomputed": 8.72315596004834e-21,
+          "absolute_difference": 1.504632769052528e-36,
+          "relative_difference": 1.7248720256105453e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.099087550157385e-35
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/3/partials/35/power",
+          "stored": 4.356478978776252e-20,
+          "recomputed": 4.3564789787762513e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.3815127091238107e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5477322459305227e-34
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/3/partials/36/power",
+          "stored": 1.2251587976530798e-20,
+          "recomputed": 1.2251587976530797e-20,
+          "absolute_difference": 1.504632769052528e-36,
+          "relative_difference": 1.2281124470842554e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.352638419124872e-35
+        },
+        {
+          "path": "C4v4/candidate/late_harmonics/3/partials/44/power",
+          "stored": 1.995989458523081e-21,
+          "recomputed": 1.9959894585230807e-21,
+          "absolute_difference": 3.76158192263132e-37,
+          "relative_difference": 1.884570034460341e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.091179052036555e-36
+        }
+      ],
+      "maximum_absolute_roundoff": 3.552713678800501e-15,
+      "maximum_ULP_distance": 4
+    },
+    {
+      "id": "C4v12",
+      "baseline_float32_payload_exact": true,
+      "floating_roundoff_cells": 104,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/23/power",
+          "stored": 1.351196780767531e-09,
+          "recomputed": 1.3511967807675307e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 1.530459190561344e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.800415285784009e-24
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/25/power",
+          "stored": 7.428208469892156e-12,
+          "recomputed": 7.428208469892158e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 2.1749351010285893e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.6390297839967607e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/29/power",
+          "stored": 5.45216827613e-12,
+          "recomputed": 5.452168276130001e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.481600578035892e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.93699928137292e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/31/power",
+          "stored": 1.591247672035675e-12,
+          "recomputed": 1.5912476720356749e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.2691197937667834e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.653247370800596e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/32/power",
+          "stored": 1.3152519370193555e-12,
+          "recomputed": 1.3152519370193557e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.5354350451993067e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.67271354771752e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/39/power",
+          "stored": 2.3603911029244126e-13,
+          "recomputed": 2.360391102924413e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 2.1389293440224218e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.385793758678563e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/44/power",
+          "stored": 9.551323573601781e-14,
+          "recomputed": 9.551323573601782e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.321468630632576e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.3933117910584734e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/0/partials/45/power",
+          "stored": 8.154380605713099e-14,
+          "recomputed": 8.1543806057131e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.5478520189127735e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.8970179520062447e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/1/partials/22/power",
+          "stored": 1.0064291632296944e-09,
+          "recomputed": 1.0064291632296942e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 2.0547412643989596e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.5755546549498775e-24
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/1/partials/34/power",
+          "stored": 2.426245780223628e-13,
+          "recomputed": 2.4262457802236276e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 2.0808731887620775e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.619756571532477e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/1/partials/36/power",
+          "stored": 2.5803278746235375e-13,
+          "recomputed": 2.580327874623538e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.9566156080653383e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.167166135965267e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/1/partials/42/power",
+          "stored": 1.353645441246665e-13,
+          "recomputed": 1.3536454412466653e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.8648567932104772e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.809114675362968e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/1/partials/44/power",
+          "stored": 1.0076873261114745e-13,
+          "recomputed": 1.0076873261114744e-13,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.2525486980412727e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.580024547430137e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/2/partials/17/power",
+          "stored": 4.957393617765522e-10,
+          "recomputed": 4.957393617765523e-10,
+          "absolute_difference": 1.0339757656912846e-25,
+          "relative_difference": 2.085724567010144e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7612200117033875e-24
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/2/partials/21/power",
+          "stored": 4.400771334348359e-12,
+          "recomputed": 4.40077133434836e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.8355726884544647e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.563468051681255e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/2/partials/24/power",
+          "stored": 4.243241369857012e-13,
+          "recomputed": 4.243241369857013e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 2.379647704832122e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.5075021657143185e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/2/partials/28/power",
+          "stored": 3.9917238438577927e-13,
+          "recomputed": 3.991723843857792e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.2647943572507163e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4181451902067695e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/2/partials/38/power",
+          "stored": 1.7805378888069185e-13,
+          "recomputed": 1.7805378888069187e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.4177484863288852e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.325741313186905e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/2/partials/44/power",
+          "stored": 9.437901772887257e-14,
+          "recomputed": 9.437901772887258e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.3373496341946898e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.353016272771206e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/17/power",
+          "stored": 2.275820496071582e-11,
+          "recomputed": 2.2758204960715824e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.4197843254170397e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.085338606888053e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/18/power",
+          "stored": 1.5879291862169812e-11,
+          "recomputed": 1.5879291862169815e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 2.0348352406589892e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.641457740839618e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/19/power",
+          "stored": 9.690346138306634e-12,
+          "recomputed": 9.690346138306633e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.6672130291673484e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.442702527787359e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/20/power",
+          "stored": 7.036917823052322e-12,
+          "recomputed": 7.036917823052321e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.1479366212009121e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.5000154206553027e-26
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/21/power",
+          "stored": 6.804069579603289e-13,
+          "recomputed": 6.804069579603288e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.4840265033588445e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.4172911066966978e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/23/power",
+          "stored": 5.023854826319287e-13,
+          "recomputed": 5.023854826319286e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 2.0098947791902653e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7848317761772444e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/24/power",
+          "stored": 4.656134757764027e-13,
+          "recomputed": 4.656134757764026e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 2.168627007625085e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6541913644246714e-27
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/37/power",
+          "stored": 1.762603589854604e-13,
+          "recomputed": 1.7626035898546041e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.4321739222802047e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.26202588397932e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/41/power",
+          "stored": 1.3959155306192036e-13,
+          "recomputed": 1.3959155306192039e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.8083865687685828e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.959288200080905e-28
+        },
+        {
+          "path": "C4v12/reference/late_harmonics/3/partials/43/power",
+          "stored": 9.717589176007814e-14,
+          "recomputed": 9.717589176007816e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.2988586217143902e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.4523811990566656e-28
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/19/power",
+          "stored": 7.725349377018907e-08,
+          "recomputed": 7.725349377018908e-08,
+          "absolute_difference": 1.3234889800848443e-23,
+          "relative_difference": 1.7131768616470753e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.7445954405248004e-22
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/20/power",
+          "stored": 3.352115864557864e-08,
+          "recomputed": 3.352115864557863e-08,
+          "absolute_difference": 6.617444900424222e-24,
+          "relative_difference": 1.9741098362353434e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.190910788493889e-22
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/20/signed_error_db",
+          "stored": 1.2083068847908287,
+          "recomputed": 1.208306884790828,
+          "absolute_difference": 6.661338147750939e-16,
+          "relative_difference": 5.512952240526289e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 4.292768397785198e-15
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/22/power",
+          "stored": 5.387465526143552e-09,
+          "recomputed": 5.387465526143553e-09,
+          "absolute_difference": 8.271806125530277e-25,
+          "relative_difference": 1.5353798711824683e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9140122468796338e-23
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/22/signed_error_db",
+          "stored": -4.913969681240515,
+          "recomputed": -4.9139696812405145,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.807456043310197e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7457927303754116e-14
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/23/power",
+          "stored": 1.3456934420633542e-09,
+          "recomputed": 1.345693442063354e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 1.5367181460078866e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.780863499090608e-24
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/23/signed_error_db",
+          "stored": -0.017724658783485326,
+          "recomputed": -0.017724658783486294,
+          "absolute_difference": 9.679756995950584e-16,
+          "relative_difference": 5.4611810101354486e-14,
+          "ULP_distance": 279,
+          "allowed_absolute_bound": 3.552713678800501e-15
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/31/power",
+          "stored": 2.691376898199341e-11,
+          "recomputed": 2.6913768981993408e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.200565506060141e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.561691521040462e-26
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/31/signed_error_db",
+          "stored": 12.282367389655807,
+          "recomputed": 12.282367389655803,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 2.8925316806535126e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 4.363573463328339e-14
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/34/power",
+          "stored": 6.754118719293362e-12,
+          "recomputed": 6.754118719293363e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.1960014333755003e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.399544996227605e-26
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/0/partials/40/power",
+          "stored": 6.87365382733753e-14,
+          "recomputed": 6.873653827337529e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.8362540216002062e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.442012397572146e-28
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/20/power",
+          "stored": 8.521305566830802e-10,
+          "recomputed": 8.521305566830804e-10,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 2.4268012866855446e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 3.0273758848518655e-24
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/20/signed_error_db",
+          "stored": -7.112885289528485,
+          "recomputed": -7.112885289528484,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.24868936239938e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.527004486384671e-14
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/22/power",
+          "stored": 1.0351540765715666e-10,
+          "recomputed": 1.0351540765715667e-10,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.248577131043882e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.6776060475019063e-25
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/27/power",
+          "stored": 1.4144818738828293e-11,
+          "recomputed": 1.414481873882829e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 2.284351837549898e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.0252491017588926e-26
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/27/signed_error_db",
+          "stored": 4.470838327304641,
+          "recomputed": 4.470838327304639,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 3.9732075046229027e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.588360848112075e-14
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/34/power",
+          "stored": 1.3911482563871449e-14,
+          "recomputed": 1.391148256387145e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.1341147884118518e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.9423514397060766e-29
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/39/power",
+          "stored": 4.867161292085779e-16,
+          "recomputed": 4.86716129208578e-16,
+          "absolute_difference": 9.860761315262648e-32,
+          "relative_difference": 2.0259779209077543e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.729163049932147e-30
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/41/power",
+          "stored": 4.257277891034941e-18,
+          "recomputed": 4.25727789103494e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 1.8095412079562828e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5124889397934783e-32
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/1/partials/45/power",
+          "stored": 1.0288653417045196e-17,
+          "recomputed": 1.0288653417045198e-17,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.4975175983255887e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.655263973117399e-32
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/17/power",
+          "stored": 3.792722412335789e-10,
+          "recomputed": 3.7927224123357887e-10,
+          "absolute_difference": 5.169878828456423e-26,
+          "relative_difference": 1.3631049853902958e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3474456794198592e-24
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/17/signed_error_db",
+          "stored": -1.1630234527224657,
+          "recomputed": -1.1630234527224663,
+          "absolute_difference": 6.661338147750939e-16,
+          "relative_difference": 5.72760431628247e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 4.131889329252894e-15
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/21/power",
+          "stored": 1.3272100173010302e-11,
+          "recomputed": 1.3272100173010304e-11,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.2172806962217146e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.71519718310642e-26
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/22/power",
+          "stored": 4.672737043015512e-12,
+          "recomputed": 4.6727370430155115e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.728737481929891e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6600896810159015e-26
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/22/signed_error_db",
+          "stored": -9.841065658693058,
+          "recomputed": -9.84106565869306,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.805045206492565e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.4962488579612695e-14
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/24/power",
+          "stored": 7.630207033472406e-19,
+          "recomputed": 7.630207033472405e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 1.2620430454498237e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.710794089989721e-33
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/26/power",
+          "stored": 2.8782232954363026e-13,
+          "recomputed": 2.878223295436302e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.7541063618725088e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.0225503272338808e-27
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/36/power",
+          "stored": 1.3874245063688693e-18,
+          "recomputed": 1.3874245063688695e-18,
+          "absolute_difference": 1.925929944387236e-34,
+          "relative_difference": 1.3881331456568607e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.9291220220797154e-33
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/39/power",
+          "stored": 1.6774937901852245e-19,
+          "recomputed": 1.677493790185225e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 2.870248992359279e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.959655134493946e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/40/power",
+          "stored": 1.4824703886245508e-19,
+          "recomputed": 1.482470388624551e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.6239194043650768e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.266792828083137e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/43/power",
+          "stored": 1.803619798523234e-19,
+          "recomputed": 1.8036197985232337e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.3347671346561974e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.407744729568897e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/46/power",
+          "stored": 1.8366888259200608e-19,
+          "recomputed": 1.8366888259200603e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 2.6214701113326464e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 6.525229515546232e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/2/partials/47/power",
+          "stored": 1.6390117769165616e-19,
+          "recomputed": 1.639011776916562e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.4688194828063156e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.8229395595665845e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/20/power",
+          "stored": 1.6461316376648025e-12,
+          "recomputed": 1.646131637664803e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 2.453611693206533e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.848234386238015e-27
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/20/signed_error_db",
+          "stored": -6.309179175011214,
+          "recomputed": -6.309179175011211,
+          "absolute_difference": 2.6645352591003757e-15,
+          "relative_difference": 4.2232676948751256e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 2.24147071570656e-14
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/30/power",
+          "stored": 1.035635727689677e-19,
+          "recomputed": 1.0356357276896771e-19,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.16228726284606e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.6793172160176265e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/31/power",
+          "stored": 3.7537244515179815e-20,
+          "recomputed": 3.753724451517981e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.60334919463155e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.333590820535584e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/38/power",
+          "stored": 8.7491515467507e-20,
+          "recomputed": 8.749151546750701e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.3757976517037931e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.1083230378039776e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/42/power",
+          "stored": 5.479627814589587e-20,
+          "recomputed": 5.479627814589586e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 2.1966933813226102e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.946754869162812e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/43/power",
+          "stored": 4.376836971880238e-20,
+          "recomputed": 4.376836971880237e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.3750868754941588e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5549648579878685e-34
+        },
+        {
+          "path": "C4v12/baseline/late_harmonics/3/partials/44/power",
+          "stored": 4.65834729776572e-20,
+          "recomputed": 4.6583472977657204e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.291988486795902e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6549774165375625e-34
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/19/power",
+          "stored": 7.839738932987934e-08,
+          "recomputed": 7.839738932987936e-08,
+          "absolute_difference": 1.3234889800848443e-23,
+          "relative_difference": 1.6881799144049136e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.7852347745451082e-22
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/19/signed_error_db",
+          "stored": 9.789105092029816,
+          "recomputed": 9.789105092029818,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.8146263858649764e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.477788756366997e-14
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/25/power",
+          "stored": 3.5262352043405474e-10,
+          "recomputed": 3.526235204340547e-10,
+          "absolute_difference": 5.169878828456423e-26,
+          "relative_difference": 1.4661185453802589e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2527704045128542e-24
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/26/power",
+          "stored": 4.922093646939593e-10,
+          "recomputed": 4.922093646939594e-10,
+          "absolute_difference": 1.0339757656912846e-25,
+          "relative_difference": 2.1006828391698294e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7486789427819338e-24
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/26/signed_error_db",
+          "stored": 3.3905076548863793,
+          "recomputed": 3.39050765488638,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 2.619603050947511e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.2045502923592651e-14
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/27/power",
+          "stored": 5.670387724800038e-10,
+          "recomputed": 5.670387724800039e-10,
+          "absolute_difference": 1.0339757656912846e-25,
+          "relative_difference": 1.823465723814762e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.014526403399955e-24
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/27/signed_error_db",
+          "stored": 5.327489531741297,
+          "recomputed": 5.327489531741298,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.6671612668750244e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.8927044933083785e-14
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/34/power",
+          "stored": 6.725004900177476e-12,
+          "recomputed": 6.725004900177475e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.2011791499586834e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.3892016898860915e-26
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/35/power",
+          "stored": 8.324685800572246e-12,
+          "recomputed": 8.324685800572248e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.9407184518382363e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.9575225115409324e-26
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/40/power",
+          "stored": 6.866824295335128e-14,
+          "recomputed": 6.866824295335129e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.8380803033085609e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.4395860603956724e-28
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/44/power",
+          "stored": 1.0002885707285494e-13,
+          "recomputed": 1.0002885707285493e-13,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.2618133259628525e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.55373888797512e-28
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/0/partials/45/power",
+          "stored": 4.9298385174941053e-14,
+          "recomputed": 4.929838517494106e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.28014076310475e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7514304735378893e-28
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/23/power",
+          "stored": 2.9051182713585634e-11,
+          "recomputed": 2.905118271358564e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 2.224470032522443e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.0321053421188836e-25
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/23/signed_error_db",
+          "stored": -5.5364457408570225,
+          "recomputed": -5.536445740857021,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 3.208478729036143e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.9669406515479517e-14
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/24/power",
+          "stored": 7.996879389463085e-18,
+          "recomputed": 7.996879389463088e-18,
+          "absolute_difference": 3.0814879110195774e-33,
+          "relative_difference": 3.853362994419838e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.841062279466331e-32
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/38/power",
+          "stored": 1.4681138772714518e-15,
+          "recomputed": 1.4681138772714516e-15,
+          "absolute_difference": 1.9721522630525295e-31,
+          "relative_difference": 1.3433237663537743e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.215788253819127e-30
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/39/power",
+          "stored": 4.951159162855168e-16,
+          "recomputed": 4.951159162855167e-16,
+          "absolute_difference": 9.860761315262648e-32,
+          "relative_difference": 1.9916066098703797e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.759005088379399e-30
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/40/power",
+          "stored": 3.857757295571339e-17,
+          "recomputed": 3.8577572955713385e-17,
+          "absolute_difference": 6.162975822039155e-33,
+          "relative_difference": 1.5975540579274335e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3705507113468724e-31
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/1/partials/45/power",
+          "stored": 9.320338822503391e-18,
+          "recomputed": 9.32033882250339e-18,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.6530986532268079e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.311249522576315e-32
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/2/partials/19/power",
+          "stored": 7.551940507139167e-11,
+          "recomputed": 7.551940507139168e-11,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.7114405309367566e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.6829882341200916e-25
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/2/partials/19/signed_error_db",
+          "stored": -2.3671811961828753,
+          "recomputed": -2.3671811961828744,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 3.7520508406045545e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 8.409917015878233e-15
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/2/partials/20/power",
+          "stored": 2.1544890309387275e-11,
+          "recomputed": 2.1544890309387278e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.4997404124064703e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.654282651041654e-26
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/2/partials/26/power",
+          "stored": 2.891475842711332e-13,
+          "recomputed": 2.8914758427113325e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.7460667382509786e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.0272585778321757e-27
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/2/partials/39/power",
+          "stored": 6.741191653516032e-20,
+          "recomputed": 6.741191653516033e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.785598566411029e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.394952379886218e-34
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/17/power",
+          "stored": 1.5920672135793655e-11,
+          "recomputed": 1.5920672135793658e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 2.0295463911481321e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.656158967253211e-26
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/17/signed_error_db",
+          "stored": -1.5517660561889066,
+          "recomputed": -1.5517660561889057,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 5.723661863576693e-16,
+          "ULP_distance": 4,
+          "allowed_absolute_bound": 5.512980494120635e-15
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/21/power",
+          "stored": 1.2373406293728417e-12,
+          "recomputed": 1.2373406293728415e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.6321163868912845e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.3959169793085154e-27
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/21/signed_error_db",
+          "stored": 1.6560375978562945,
+          "recomputed": 1.6560375978562938,
+          "absolute_difference": 6.661338147750939e-16,
+          "relative_difference": 4.02245586475446e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 5.8834274265119804e-15
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/23/power",
+          "stored": 5.404088572393394e-14,
+          "recomputed": 5.404088572393395e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.1677986319482346e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9199179392591485e-28
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/26/power",
+          "stored": 9.787540212319331e-15,
+          "recomputed": 9.787540212319333e-15,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.611969684125726e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.477232799411685e-29
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/28/power",
+          "stored": 1.9763197946513106e-15,
+          "recomputed": 1.9763197946513102e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.9957825331608173e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.021298368141908e-30
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/35/power",
+          "stored": 2.1449124353160352e-19,
+          "recomputed": 2.144912435316035e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.122382616113339e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.620259748776573e-34
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/39/power",
+          "stored": 2.1844986483156786e-20,
+          "recomputed": 2.184498648315679e-20,
+          "absolute_difference": 3.009265538105056e-36,
+          "relative_difference": 1.377554314545033e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.760898229192317e-35
+        },
+        {
+          "path": "C4v12/candidate/late_harmonics/3/partials/45/power",
+          "stored": 1.3333879682214675e-20,
+          "recomputed": 1.3333879682214674e-20,
+          "absolute_difference": 1.504632769052528e-36,
+          "relative_difference": 1.1284283381223805e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.7371456738484154e-35
+        }
+      ],
+      "maximum_absolute_roundoff": 3.552713678800501e-15,
+      "maximum_ULP_distance": 279
+    },
+    {
+      "id": "C6v4",
+      "baseline_float32_payload_exact": true,
+      "floating_roundoff_cells": 37,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C6v4/reference/late_harmonics/0/partials/4/power",
+          "stored": 8.857082976628049e-12,
+          "recomputed": 8.857082976628048e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.824062321822909e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.146667984533753e-26
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/0/partials/6/power",
+          "stored": 1.0955121268490676e-12,
+          "recomputed": 1.0955121268490678e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.8434153925564174e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.892040918348513e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/1/partials/5/power",
+          "stored": 1.0218747970640865e-12,
+          "recomputed": 1.0218747970640863e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.9762537672598446e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.630428569551066e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/1/partials/7/power",
+          "stored": 7.3547409227016e-13,
+          "recomputed": 7.354740922701599e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.3729130220837052e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.612928868011579e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/2/partials/9/power",
+          "stored": 6.756310235220994e-13,
+          "recomputed": 6.756310235220995e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.4945168642775727e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.4003235790889458e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/3/partials/6/power",
+          "stored": 1.3313081737689974e-12,
+          "recomputed": 1.3313081737689972e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.5169169371570328e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.729756759648031e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/3/partials/9/power",
+          "stored": 5.877234610667869e-13,
+          "recomputed": 5.877234610667868e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.7180562383031215e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0880131794839476e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/3/partials/11/power",
+          "stored": 3.8311760518626453e-13,
+          "recomputed": 3.8311760518626443e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 2.6355926875038217e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.3611071565345317e-27
+        },
+        {
+          "path": "C6v4/reference/late_harmonics/3/partials/12/power",
+          "stored": 2.114297693217296e-13,
+          "recomputed": 2.1142976932172959e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.1939448757880275e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.511494335749433e-28
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/0/partials/9/power",
+          "stored": 9.678643785887324e-13,
+          "recomputed": 9.678643785887322e-13,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 2.086536049927213e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.438545017035936e-27
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/0/partials/9/signed_error_db",
+          "stored": 2.401514429014473,
+          "recomputed": 2.4015144290144725,
+          "absolute_difference": 4.440892098500626e-16,
+          "relative_difference": 1.8492048371006738e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.531893161796493e-15
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/0/partials/12/power",
+          "stored": 2.5126654758027348e-17,
+          "recomputed": 2.5126654758027344e-17,
+          "absolute_difference": 3.0814879110195774e-33,
+          "relative_difference": 1.2263820793872761e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.926781006134145e-32
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/4/power",
+          "stored": 1.8183305266978547e-10,
+          "recomputed": 1.818330526697855e-10,
+          "absolute_difference": 2.5849394142282115e-26,
+          "relative_difference": 1.4216004055778254e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.460007734779989e-25
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/5/power",
+          "stored": 3.6105857231401855e-11,
+          "recomputed": 3.610585723140185e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 1.789833847221364e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2827377287081935e-25
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/5/signed_error_db",
+          "stored": 15.481799724534707,
+          "recomputed": 15.481799724534703,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 2.294767883588079e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.500240165380428e-14
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/6/power",
+          "stored": 4.1438514955954975e-12,
+          "recomputed": 4.143851495595497e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.9493786584893797e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.4721917891320038e-26
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/6/signed_error_db",
+          "stored": 6.703237003364539,
+          "recomputed": 6.7032370033645385,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.3249992790860953e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.381468179409488e-14
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/10/power",
+          "stored": 3.8951657358387555e-14,
+          "recomputed": 3.895165735838756e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.6201845235243e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3838408590909367e-28
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/1/partials/12/power",
+          "stored": 2.9631969492048728e-18,
+          "recomputed": 2.963196949204873e-18,
+          "absolute_difference": 3.851859888774472e-34,
+          "relative_difference": 1.2999000588901312e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.0527390334420066e-32
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/2/partials/6/power",
+          "stored": 5.4784655915400596e-14,
+          "recomputed": 5.478465591540059e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.1519443056306633e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9463419645902248e-28
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/2/partials/7/power",
+          "stored": 3.1572482176388392e-15,
+          "recomputed": 3.157248217638839e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.2492855341778681e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1216798930174005e-29
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/2/partials/8/power",
+          "stored": 2.414950405888141e-15,
+          "recomputed": 2.4149504058881405e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.6332859326999186e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.57962734062362e-30
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/2/partials/11/power",
+          "stored": 1.4125777570918594e-16,
+          "recomputed": 1.4125777570918596e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 1.7451714190168657e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.018484319989581e-31
+        },
+        {
+          "path": "C6v4/baseline/late_harmonics/3/partials/6/power",
+          "stored": 2.4133375271979625e-15,
+          "recomputed": 2.413337527197963e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.6343774882930052e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.573897244438779e-30
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/0/partials/4/power",
+          "stored": 6.459476529073604e-09,
+          "recomputed": 6.459476529073603e-09,
+          "absolute_difference": 8.271806125530277e-25,
+          "relative_difference": 1.2805691124194844e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.2948670622730575e-23
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/0/partials/7/power",
+          "stored": 7.704465533509688e-12,
+          "recomputed": 7.70446553350969e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 2.0969490055680321e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.7371760088746875e-26
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/1/partials/5/power",
+          "stored": 3.6138086902862725e-11,
+          "recomputed": 3.613808690286273e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 1.7882375879334675e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2838827566548166e-25
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/2/partials/4/power",
+          "stored": 1.2829199950981171e-11,
+          "recomputed": 1.2829199950981173e-11,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.2593046644105602e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.557847415391753e-26
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/2/partials/4/signed_error_db",
+          "stored": 10.409667143402624,
+          "recomputed": 10.409667143402626,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.7064492216026896e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.6982566852126643e-14
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/2/partials/5/power",
+          "stored": 8.701509426185307e-13,
+          "recomputed": 8.701509426185306e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.1604216110417525e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.091397156462004e-27
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/2/partials/5/signed_error_db",
+          "stored": -0.6739413249653543,
+          "recomputed": -0.6739413249653549,
+          "absolute_difference": 5.551115123125783e-16,
+          "relative_difference": 8.236792903909176e-16,
+          "ULP_distance": 5,
+          "allowed_absolute_bound": 3.552713678800501e-15
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/2/partials/12/power",
+          "stored": 1.5527373601902303e-19,
+          "recomputed": 1.55273736019023e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.5504311883041868e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.5164312591324115e-34
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/3/partials/4/power",
+          "stored": 2.16071938662462e-12,
+          "recomputed": 2.1607193866246197e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 1.869269956910544e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.676417320910716e-27
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/3/partials/4/signed_error_db",
+          "stored": 3.0481719650430876,
+          "recomputed": 3.048171965043087,
+          "absolute_difference": 4.440892098500626e-16,
+          "relative_difference": 1.4569033996209764e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.082928223554478e-14
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/3/partials/5/power",
+          "stored": 3.3532852520277554e-14,
+          "recomputed": 3.353285252027756e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.8820013113861563e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1913262383798994e-28
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/3/partials/5/signed_error_db",
+          "stored": -15.406014900801985,
+          "recomputed": -15.406014900801983,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.153028119755862e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.4733159873883554e-14
+        },
+        {
+          "path": "C6v4/candidate/late_harmonics/3/partials/11/power",
+          "stored": 4.535820772855412e-18,
+          "recomputed": 4.5358207728554124e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 1.6984180291363804e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6114472504310884e-32
+        }
+      ],
+      "maximum_absolute_roundoff": 3.552713678800501e-15,
+      "maximum_ULP_distance": 5
+    },
+    {
+      "id": "C6v12",
+      "baseline_float32_payload_exact": true,
+      "floating_roundoff_cells": 30,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C6v12/reference/late_harmonics/0/partials/4/power",
+          "stored": 2.591535443941352e-09,
+          "recomputed": 2.5915354439413517e-09,
+          "absolute_difference": 4.1359030627651384e-25,
+          "relative_difference": 1.5959276468451558e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.20698342078677e-24
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/0/partials/6/power",
+          "stored": 3.135074684625822e-12,
+          "recomputed": 3.1350746846258218e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 1.2883163053621606e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.1138022716131325e-26
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/0/partials/9/power",
+          "stored": 8.384843471115493e-13,
+          "recomputed": 8.384843471115494e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.2042466411702283e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.9788948094433088e-27
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/0/partials/11/power",
+          "stored": 3.779285959582632e-13,
+          "recomputed": 3.7792859595826314e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.3358898605206455e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3426720924707893e-27
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/1/partials/5/power",
+          "stored": 1.8702618374135316e-11,
+          "recomputed": 1.8702618374135313e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.727658771166394e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.644504812717612e-26
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/1/partials/6/power",
+          "stored": 1.256845310743357e-12,
+          "recomputed": 1.2568453107433571e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.6067879635652004e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.465211527614191e-27
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/1/partials/8/power",
+          "stored": 1.122100228328357e-12,
+          "recomputed": 1.1221002283283575e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 3.5994715380716124e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 3.986500830167321e-27
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/2/partials/10/power",
+          "stored": 5.860575486085913e-13,
+          "recomputed": 5.860575486085914e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.7229399417859366e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.082094669506032e-27
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/2/partials/12/power",
+          "stored": 1.917742976540551e-13,
+          "recomputed": 1.9177429765405508e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.316315547801387e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.813191705179204e-28
+        },
+        {
+          "path": "C6v12/reference/late_harmonics/3/partials/6/power",
+          "stored": 8.227211801417652e-13,
+          "recomputed": 8.22721180141765e-13,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 2.4546395134956995e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.9228927905285403e-27
+        },
+        {
+          "path": "C6v12/baseline/late_harmonics/0/partials/9/power",
+          "stored": 6.97329237881592e-11,
+          "recomputed": 6.973292378815918e-11,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.8534569280939428e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.47741112204946e-25
+        },
+        {
+          "path": "C6v12/baseline/late_harmonics/0/partials/9/signed_error_db",
+          "stored": 19.19942915272513,
+          "recomputed": 19.199429152725127,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 1.8504267239092552e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.821007457604768e-14
+        },
+        {
+          "path": "C6v12/baseline/late_harmonics/3/partials/10/power",
+          "stored": 1.7541231888270843e-15,
+          "recomputed": 1.7541231888270845e-15,
+          "absolute_difference": 1.9721522630525295e-31,
+          "relative_difference": 1.1242951895363931e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.231897447247137e-30
+        },
+        {
+          "path": "C6v12/baseline/late_harmonics/3/partials/12/power",
+          "stored": 6.498509990623032e-19,
+          "recomputed": 6.498509990623033e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 1.481824254456975e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.3087345335508163e-33
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/0/partials/7/power",
+          "stored": 1.7507157390039161e-09,
+          "recomputed": 1.750715739003916e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 1.181203484558348e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.2197917536505404e-24
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/0/partials/7/signed_error_db",
+          "stored": 31.900771570784826,
+          "recomputed": 31.900771570784823,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 1.11367641090353e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.133343075238174e-13
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/0/partials/9/power",
+          "stored": 6.972703436718659e-11,
+          "recomputed": 6.972703436718658e-11,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.8536134783933096e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.4772018877849644e-25
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/0/partials/9/signed_error_db",
+          "stored": 19.19906234592763,
+          "recomputed": 19.199062345927626,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 1.850462077151428e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.820877141652072e-14
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/0/partials/11/power",
+          "stored": 7.326099056414732e-13,
+          "recomputed": 7.326099056414733e-13,
+          "absolute_difference": 1.0097419586828951e-28,
+          "relative_difference": 1.3782805158753141e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.6027532329972066e-27
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/0/partials/11/signed_error_db",
+          "stored": 2.874630324355386,
+          "recomputed": 2.874630324355387,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 3.0897135265533393e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.0212738474832103e-14
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/1/partials/5/power",
+          "stored": 1.2715974012111831e-09,
+          "recomputed": 1.2715974012111833e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 1.6262627852281444e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.51762148121014e-24
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/1/partials/7/power",
+          "stored": 6.802097326322573e-11,
+          "recomputed": 6.802097326322574e-11,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.9001046958157173e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.4165904215758523e-25
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/1/partials/10/power",
+          "stored": 1.4332888837789286e-12,
+          "recomputed": 1.4332888837789288e-12,
+          "absolute_difference": 2.0194839173657902e-28,
+          "relative_difference": 1.408985962439988e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.092065023074102e-27
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/1/partials/11/power",
+          "stored": 8.75427428905065e-14,
+          "recomputed": 8.754274289050651e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.4417842149774524e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.110143001468178e-28
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/1/partials/12/power",
+          "stored": 4.219562200166678e-16,
+          "recomputed": 4.219562200166677e-16,
+          "absolute_difference": 9.860761315262648e-32,
+          "relative_difference": 2.336915738526887e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.4990896347081694e-30
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/2/partials/8/power",
+          "stored": 2.0220913172260953e-13,
+          "recomputed": 2.022091317226095e-13,
+          "absolute_difference": 2.524354896707238e-29,
+          "relative_difference": 1.248388178714969e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.183911482492872e-28
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/3/partials/4/power",
+          "stored": 6.154265411981949e-11,
+          "recomputed": 6.154265411981947e-11,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 2.100120194032829e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.186434291211707e-25
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/3/partials/7/power",
+          "stored": 3.4646301654654414e-15,
+          "recomputed": 3.4646301654654418e-15,
+          "absolute_difference": 3.944304526105059e-31,
+          "relative_difference": 1.1384489361724348e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.2308838980833918e-29
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/3/partials/9/power",
+          "stored": 4.068857104425851e-15,
+          "recomputed": 4.0688571044258514e-15,
+          "absolute_difference": 7.888609052210118e-31,
+          "relative_difference": 1.9387776099655542e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.445548429197832e-29
+        },
+        {
+          "path": "C6v12/candidate/late_harmonics/3/partials/11/power",
+          "stored": 1.407501903804423e-16,
+          "recomputed": 1.4075019038044228e-16,
+          "absolute_difference": 2.465190328815662e-32,
+          "relative_difference": 1.7514650048801695e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.000451266583721e-31
+        }
+      ],
+      "maximum_absolute_roundoff": 3.552713678800501e-15,
+      "maximum_ULP_distance": 2
+    }
+  ],
+  "new_synthesis_fit_acquisition_or_default_change": false,
+  "limits": [
+    "A review/replay pass preserves the failed pilot; it does not establish sound fidelity, physical correctness or fresh generalization.",
+    "Supplemental source-path/music files are hash-pinned metadata; this command does not independently replay those separate diagnoses or listening exports.",
+    "Physical parity uses finite-width source-produced state/force hashes plus exact baseline PCM, not a collision-free proof.",
+    "Original chronology is archived evidence; a later replay cannot recreate first-use chronology."
+  ]
+}

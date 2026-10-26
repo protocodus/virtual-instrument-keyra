@@ -1,0 +1,69 @@
+{
+  "passed": true,
+  "render_started_at_utc": "2026-10-26T21:24:08.874818+00:00",
+  "render_finished_at_utc": "2026-10-26T21:25:11.290435+00:00",
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/freeze.json",
+    "sha256": "467b7031894e2853e10f4cba858987f07ff13e8b2b11acd41e9d880cb69183f2"
+  },
+  "binary": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/producer",
+    "sha256": "b8b70a367021bb8780fc021cc13f8d4b1104d5ecb42598397900368b53da70aa"
+  },
+  "original_control": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-performance/control.wav",
+    "sha256": "bd8cc2bf6f259978296b685a77859cd1535d8fabc0f64b9145396b1202de9ea4"
+  },
+  "score": {
+    "path": "/workspace/virtual-instrument-keyra/out/quality-baseline/passage.events",
+    "sha256": "2f2cfb1a4d6b99a5796c0aec2b30412552f32b8fafd797c379e841b56f708ca5"
+  },
+  "configuration": {
+    "rate": 48000,
+    "frames": 432000,
+    "seed": 123456,
+    "gain_db": 0,
+    "stereo_width": 1,
+    "humanization": 0,
+    "mechanical_level": 0,
+    "repetition_controller": false
+  },
+  "diagnostics": {
+    "sample_rate": 48000,
+    "frames": 432000,
+    "seed": 123456,
+    "events_applied": 24,
+    "requests": 11,
+    "launches": 11,
+    "original_fault_flags": 0,
+    "parity_mismatches": 0,
+    "new_observer_faults": 0,
+    "process_cpu_seconds_diagnostic": 61.606475
+  },
+  "baseline_f32_payload_identical_to_original_control": true,
+  "mechanical_state_checkpoint_parity": true,
+  "mechanical_state_checkpoints": 1689,
+  "all_frame_contact_bridge_force_parity": true,
+  "force_frames": 432000,
+  "baseline": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/baseline.wav",
+    "sha256": "911576d4212e88a02692c346ad7793eaf8702e2da90b44daa3134431c695815e"
+  },
+  "candidate": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/candidate.wav",
+    "sha256": "fc9075d635c220c93bbeab5fa713ded3d7115c8497b6251a9c46b82ad7d939f8"
+  },
+  "state_proof": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/state-proof.u64le",
+    "sha256": "0a00ba11ad017f91dc127d0d8428966d16510f768eccef489e08cec72593cc00"
+  },
+  "force_proof": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/force-proof.u64le",
+    "sha256": "dd006e2de9d573f39215789c32d6fc3f5d473bdbcfb20d5c323daa98b2571612"
+  },
+  "limits": [
+    "DIAGNOSTIC-only:4of6pilotcasespassed;C6v4/v12failedpreregisteredearlybandguards. No default,preset,promotion,priceorRTclaim.",
+    "CPUincludesadditionalobserver/proofcapture, not a productioncallbackbenchmark.",
+    "Sameold/newtrajectoryphysicalstate; onlyreadoutradiationdiffers. Currentpublishedmain/defaultunchanged."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "Analytic source-path notes, no new render/refinement",
+  "instantaneous_observation": "y_j=L_j*q_j+M_j*p_j; L/M are stored radiation correction radQ/radP, not isolated physical noise. Both old projection and new stateful observer are causal.",
+  "continuous_single_mode_identity": "For qdot=omega*p and qddot+2sigma*qdot+omega^2*q=h*F_hammer+b*f_bridge: y(s)=[L+M*s/omega]*[h*F+b*f]/[s^2+2sigma*s+omega^2]. LF quasi-static term is L*(h*F+b*f)/omega^2; ydot contains M*(h*F+b*f)/omega. This is a continuous single-mode explanation, not the exact full coupled sampled transfer.",
+  "sampled_nominal_identity": "After the active-key force/damping and before unison: delta y_contact=(L*forceQ+M*damp*forceP)*F_float. After common-unison projection P_u, use L*forceQ+M*P_u*D*forceP. Subsequent bridge kick contributes M*portInverse*J_float. Float writes/products/reductions make this a real-arithmetic expression of the exact code path, not a claim of bit-linear superposition.",
+  "all_string_limit": "The sum includes unstruck lower strings driven by sympathetic bridge forces. C6 low-frequency output cannot be assigned solely to the struck modes above~1050Hz.",
+  "carrier_ratio_limit": "U=sum r*b*omega*p(t)*(ratio-1) applies a ratio identified at each mode carrier to every forced/off-carrier component of that modal state. The independent loaded observer then adds its own homogeneous startup response. Negative correction ratios can cancel real body-ring pressure.",
+  "time_dependent_C6_result": "In5\u201320ms old LF is almost all old instantaneous correction while raw board is~27\u201328dB weaker. In20\u2013100ms raw board LF grows/persists and new correction nearly opposes it, removing~16\u201320dB. Both missing old force-like LF and later body cancellation occur.",
+  "precision_and_attribution_limits": [
+    "HP24, Hann/native FFT, exact MIDI4800 anchor used in posthoc path report. Fixed old-model metric onset can differ slightly.",
+    "Reference low-frequency source remains unassigned: direct/frame/key/bridge/microphone contributions cannot be isolated from these recordings.",
+    "No physical whole-instrument passivity is claimed for a pressure mapping or virtual correction drive; only independent observer nominal storage/port work is audited.",
+    "No next refinement or gate adjustment chosen in these notes."
+  ]
+}

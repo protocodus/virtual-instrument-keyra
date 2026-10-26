@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "staged_at_utc": "2026-10-26T21:45:30.502703+00:00",
+  "status": "Rejected and unpromoted pilot; listening diagnostics only",
+  "default_model_changed": false,
+  "runtime_feature_added": false,
+  "pilot_result": {
+    "passed_all_gates": false,
+    "passed_cases": [
+      "C3v4",
+      "C3v12",
+      "C4v4",
+      "C4v12"
+    ],
+    "failed_cases": [
+      "C6v4",
+      "C6v12"
+    ],
+    "C6_5_to_20ms_band_MAE_worsening_db": {
+      "C6v4": 8.226516355415487,
+      "C6v12": 8.87176514500158
+    },
+    "maximum_allowed_worsening_db": 1.0,
+    "failure_retained": true,
+    "thresholds_relaxed": false,
+    "notes": "Some first-5-ms energy decreased, but both C6 early-band guards failed. Overlapping musical notes do not isolate individual key attacks."
+  },
+  "files": {
+    "old-then-new-room.flac": {
+      "sha256": "1a81dbe06fe4ab83532d06cd0d487ef336bc0e9c9165e990fc4c9160c963bc76",
+      "pcm24_sha256": "532b5ad94d80f5a16c38393c1bd2fac2e2334ef60b544d644f954b5b2b9fa2dc",
+      "frames": 888000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "sequence": [
+        "old",
+        "new"
+      ],
+      "segment_start_seconds": [
+        0,
+        9.5
+      ],
+      "gap_seconds": 0.5,
+      "technical_checks": {
+        "frames": 888000,
+        "duration_seconds": 18.5,
+        "finite": true,
+        "sample_peak": 0.7760573625564575,
+        "true_peak_4x": 0.7762800814514663,
+        "stereo_RMS": 0.06512737427597827,
+        "mono_RMS": 0.04939736146683227,
+        "mono_sample_peak": 0.6538841724395752,
+        "mono_energy_relative_to_average_channel_db": -2.4011963449081133,
+        "LR_energy_balance_db": -2.6912541398612015,
+        "LR_correlation": 0.15784806902703746
+      }
+    },
+    "old-then-new-dry.flac": {
+      "sha256": "0b1215f3a367df3273b418678833d6c13b238bb20b6460e27e1df69deea67ab3",
+      "pcm24_sha256": "c9956fa300cee94ad2a2ef693d8dd2fa94b40e02d8a9b8dd0152c2fef56d27b1",
+      "frames": 888000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "sequence": [
+        "old",
+        "new"
+      ],
+      "segment_start_seconds": [
+        0,
+        9.5
+      ],
+      "gap_seconds": 0.5,
+      "technical_checks": {
+        "frames": 888000,
+        "duration_seconds": 18.5,
+        "finite": true,
+        "sample_peak": 0.7934654951095581,
+        "true_peak_4x": 0.7943282656929844,
+        "stereo_RMS": 0.06489952865738677,
+        "mono_RMS": 0.04899416710143827,
+        "mono_sample_peak": 0.6599720120429993,
+        "mono_energy_relative_to_average_channel_db": -2.4419432720400804,
+        "LR_energy_balance_db": -3.033009433585944,
+        "LR_correlation": 0.1484295735893925
+      }
+    },
+    "C6-v4-v12-real-old-new.flac": {
+      "sha256": "30ecab6df8fe11854491397f92bbb914b16b9a683159c0f6951ef9a028dbd2f1",
+      "pcm24_sha256": "919494451fd82783d23269b0170ab73173775439a9248f1ee2eaa232cf7b6a6d",
+      "frames": 504000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "sequence": [
+        "C6v4 real",
+        "C6v4 old",
+        "C6v4 new",
+        "C6v12 real",
+        "C6v12 old",
+        "C6v12 new"
+      ],
+      "segment_start_seconds": [
+        0,
+        1.75,
+        3.5,
+        5.5,
+        7.25,
+        9.0
+      ],
+      "technical_checks": {
+        "frames": 504000,
+        "duration_seconds": 10.5,
+        "finite": true,
+        "sample_peak": 0.7943289279937744,
+        "true_peak_4x": 0.794328255439953,
+        "stereo_RMS": 0.025902684841478774,
+        "mono_RMS": 0.016414775819328313,
+        "mono_sample_peak": 0.31776362657546997,
+        "mono_energy_relative_to_average_channel_db": -3.9621965134380495,
+        "LR_energy_balance_db": -1.5403709749121997,
+        "LR_correlation": -0.19992793699096575
+      }
+    }
+  },
+  "raw_inputs": {
+    "music-old": {
+      "encoding": "float32-WAV",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 432000,
+      "pcm_sha256": "5a38eb1e7236e540f15363bc45c88c8529d9ae3629957e50480bd606f560954f",
+      "historical_WAV_sha256": "911576d4212e88a02692c346ad7793eaf8702e2da90b44daa3134431c695815e"
+    },
+    "music-new": {
+      "encoding": "float32-WAV",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 432000,
+      "pcm_sha256": "c8d86147789ab79ad251c15347fcab617414387695f4379fff9e1047c1bd66d1",
+      "historical_WAV_sha256": "fc9075d635c220c93bbeab5fa713ded3d7115c8497b6251a9c46b82ad7d939f8"
+    },
+    "C6v4-real": {
+      "encoding": "PCM24-audio",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 261515,
+      "pcm_sha256": "acd51ee873365dc9b2dc3f44649bd1993f9f5d8ea469c92a2bea8825209edc7a",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C6v4.flac",
+      "source_git_blob_sha1": "c92b02529426929342b3354731b32b1fd6f06aaf"
+    },
+    "C6v4-old": {
+      "encoding": "float32-WAV",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 182400,
+      "pcm_sha256": "b24a8ab0049ab1ea9da303330156a5aa1bbb22b3a9aa68f7e7b16edb7d4d3615",
+      "historical_WAV_sha256": "0523ae405b77e9932611377431c57d372abe088b6ef766ccfaf6ddf3a1e881e9"
+    },
+    "C6v4-new": {
+      "encoding": "float32-WAV",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 182400,
+      "pcm_sha256": "6a6a6b778f1332282caef83d59b47240f89036fb4ceb41e423275439245e118b",
+      "historical_WAV_sha256": "66eb52f44b529db67e32ab57b038b978843b7c49d91197319521b11f1ea9cfe0"
+    },
+    "C6v12-real": {
+      "encoding": "PCM24-audio",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 300242,
+      "pcm_sha256": "20fe66c60c9e741b687e7a8ef6d488638c51318b3d09ad3d494c45292bda3847",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C6v12.flac",
+      "source_git_blob_sha1": "7511b31db67a31f8555d83aa5d5f48fbe9365b87"
+    },
+    "C6v12-old": {
+      "encoding": "float32-WAV",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 182400,
+      "pcm_sha256": "8bacbebf1b60485526343cf2274e1922fe99beb5345161018f41ace7c3b1f2cd",
+      "historical_WAV_sha256": "46c19d974ad39b1d0d886a70835333c1654d64c104d1dfa8f602ca9388633d06"
+    },
+    "C6v12-new": {
+      "encoding": "float32-WAV",
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 182400,
+      "pcm_sha256": "a44179a066530e6b24971ae62cd290a5b242c54e1a5b742c36c42fa69dfecdb3",
+      "historical_WAV_sha256": "c9d4f29378380e824fa3a6bb469743f3b2e32d24f8fa0518e97839195ed99f3e"
+    }
+  },
+  "input_map_example": {
+    "music-old": "music-old.wav",
+    "music-new": "music-new.wav",
+    "C6v4-real": "C6v4-real.wav",
+    "C6v4-old": "C6v4-old.wav",
+    "C6v4-new": "C6v4-new.wav",
+    "C6v12-real": "C6v12-real.wav",
+    "C6v12-old": "C6v12-old.wav",
+    "C6v12-new": "C6v12-new.wav"
+  },
+  "music_recipe": {
+    "control_rms_gain_before_fade": {
+      "dry": 0.9376616126301774,
+      "room": 0.88993492917923
+    },
+    "original_common_true_peak_gain": 1.030337545260435,
+    "extra_shared_safety_gain": 0.786203420103643,
+    "extra_shared_safety_gain_db": -2.089301425304373,
+    "candidate_RMS_matched": false,
+    "end_fade_frames": 7200,
+    "room_wet": 0.16,
+    "procedural_ir_float64_sha256": "38dd2ac037e8fb2cb47f3ec561c37eab0478cef092b7ded9b617b92d6458b374",
+    "old_starts_seconds": 0,
+    "new_starts_seconds": 9.5,
+    "gap_seconds": 0.5,
+    "performance": "Original algorithmic 6-second nocturne prefix plus 3 seconds of held tail; no added note releases.",
+    "RMS_shift_db_new_over_old_same_gain": {
+      "dry": 0.2596345284766805,
+      "room": 0.3185553580156328
+    }
+  },
+  "C6_recipe": {
+    "cases": [
+      {
+        "id": "C6v4",
+        "midi": 84,
+        "source_layer": 4,
+        "midi_velocity_proxy": 40,
+        "fixed_onset_frames": {
+          "real": 220,
+          "old": 4759,
+          "new": 4759
+        },
+        "fixed_gains": {
+          "real": 1.0,
+          "old": 1.2762378364686846,
+          "new": 1.2762378364686846
+        }
+      },
+      {
+        "id": "C6v12",
+        "midi": 84,
+        "source_layer": 12,
+        "midi_velocity_proxy": 93,
+        "fixed_onset_frames": {
+          "real": 373,
+          "old": 4757,
+          "new": 4757
+        },
+        "fixed_gains": {
+          "real": 1.0,
+          "old": 1.2851955517711928,
+          "new": 1.2851955517711928
+        }
+      }
+    ],
+    "segment_frames": 72000,
+    "end_fade_frames": 960,
+    "within_group_gap_frames": 12000,
+    "between_group_gap_frames": 24000,
+    "common_presentation_gain_all_six_segments": 0.7704149548287759,
+    "candidate_RMS_matched": false,
+    "candidate_onset_reestimated": false,
+    "room_added": false
+  },
+  "presentation_code": {
+    "file": "Research/GrandPianoV2/tools/render.py",
+    "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4"
+  },
+  "source_provenance": {
+    "old_model_label": "Frozen old OriginalControl full physical core, not latest connected default",
+    "old_prepared_model_sha256": "5c8c92f8a761b46a66f3823765f6348ab0c08b74457d7efc062f0941ab07faf8",
+    "old_calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "observer_id": "full-causal-radiation-v1 DC-stationary-corrected endpoint",
+    "observer_sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169",
+    "music_producer_sha256": "b8b70a367021bb8780fc021cc13f8d4b1104d5ecb42598397900368b53da70aa",
+    "music_producer_receipt_sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61",
+    "music_freeze_sha256": "467b7031894e2853e10f4cba858987f07ff13e8b2b11acd41e9d880cb69183f2",
+    "sixnote_producer_sha256": "19cddb44e6b12328f74680ea4fdebd99bfae6378108822237cdd7d8c39f128f4",
+    "sixnote_producer_receipt_sha256": "c18f0a3fbcec5fb85a21e1b33b95863aacb4a64b064bddd5e93056f8ae8d60ae",
+    "sixnote_freeze_sha256": "e69b90e55119da36668feba4048eace7230f92c362fdfce93c38c9c69adea8ea",
+    "math_validation_sha256": "cf14761683575e8c5de625c7bacedac43be5d9674782efcae99240c915f7587e",
+    "protocol_sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa",
+    "gated_result_sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+    "historical_control_presentation_manifest_file": "Audio/full-performance/manifest.json",
+    "historical_control_presentation_manifest_sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd",
+    "private_music_export_manifest_sha256": "9b63d84aef1bc3c110fbf2ecc14277a1a6954a8095ffe38024acdfc299d5b4a3",
+    "private_C6_export_manifest_sha256": "41dfb87fcd73cea7fd367d78bc3df528d1da3235e4f81d857fc5431a5bb9b073"
+  },
+  "physical_comparison": {
+    "same_old_new_music_trajectory": true,
+    "state_checkpoints_verified": 1689,
+    "contact_bridge_force_frames_verified": 432000,
+    "old_float32_payload_identical_to_historical_control": true,
+    "seed": 123456,
+    "humanization": 0,
+    "mechanical_level": 0,
+    "repetition_controller": false,
+    "legacy_contact": true,
+    "new_observer_is_a_readout_only": true,
+    "both_old_and_new_operators_are_causal": true,
+    "added_observer_states_are_new_physical_parts": false
+  },
+  "attribution": {
+    "recording_title": "Salamander Grand Piano V3",
+    "recording_author": "Alexander Holm",
+    "instrument": "Yamaha C5 acoustic grand",
+    "distribution_maintainer": "kinwie / sfzinstruments",
+    "original_distribution": "https://archive.org/details/SalamanderGrandPianoV3",
+    "pinned_source_repository": "https://github.com/sfzinstruments/SalamanderGrandPiano/tree/3382bf9496bba2486f5ab0de55a264d1dfc38404",
+    "license": "Creative Commons Attribution 3.0 Unported",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_file": "LICENSE-CC-BY-3.0.txt",
+    "source_recordings": [
+      {
+        "id": "C6v4",
+        "url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C6v4.flac",
+        "git_blob_sha1": "c92b02529426929342b3354731b32b1fd6f06aaf",
+        "FLAC_sha256": "1f3f32e401bbd2a87a9c5b094aa6f748213fe762f3026554eb60305c02399ef7",
+        "PCM24_sha256": "acd51ee873365dc9b2dc3f44649bd1993f9f5d8ea469c92a2bea8825209edc7a"
+      },
+      {
+        "id": "C6v12",
+        "url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C6v12.flac",
+        "git_blob_sha1": "7511b31db67a31f8555d83aa5d5f48fbe9365b87",
+        "FLAC_sha256": "a3bd4d493607a6683ecd0c9d638febf643f94130042828e77253dda60d5d3761",
+        "PCM24_sha256": "20fe66c60c9e741b687e7a8ef6d488638c51318b3d09ad3d494c45292bda3847"
+      }
+    ],
+    "changes": "Frozen-onset cropping, 1.5-second excerpts, shared level adjustment, 20 ms ending fade, PCM24 conversion and concatenation beside synthesized notes. No denoising, EQ, time stretching or room added to C6.",
+    "endorsement_claimed": false
+  },
+  "reproduction": {
+    "export_tool": "export.py",
+    "scope": "Presentation reproduction from fingerprint-matched raw inputs only. No new DSP render. Private observer producer/raw model WAVs are not included in this folder; current main does not recreate this exact historical experiment by default.",
+    "relative_input_paths": "Resolve relative to the input-map JSON file.",
+    "verify": "Decoded PCM24 fingerprints must match; FLAC container bytes can vary with encoder versions."
+  },
+  "validation": {
+    "all_staged_audio_finite": true,
+    "all_FLAC_48k_stereo_24bit": true,
+    "lossless_PCM24_decode_verified": true,
+    "numerical_true_peak_target_dbfs": -2,
+    "quantization_true_peak_tolerance": 3e-07,
+    "music_mono_notes": "Old/new dry mono energy relative to average channel is −2.4506/−2.4338 dB; complete per-file measurements are retained above.",
+    "private_artifacts_unchanged": true,
+    "sound_improvement_claim": false,
+    "realtime_or_price_claim": false,
+    "presentation_reproduction_from_all_eight_raw_sources_verified": true,
+    "reproduction_check_source_id": "full-causal-radiation-v1-musical-export-reproduction",
+    "reproduction_checks": {
+      "old-then-new-dry.flac": {
+        "pcm24_sha256": "c9956fa300cee94ad2a2ef693d8dd2fa94b40e02d8a9b8dd0152c2fef56d27b1",
+        "frames": 888000,
+        "true_peak_4x": 0.7943282656929844,
+        "staged_PCM24_identical": true
+      },
+      "old-then-new-room.flac": {
+        "pcm24_sha256": "532b5ad94d80f5a16c38393c1bd2fac2e2334ef60b544d644f954b5b2b9fa2dc",
+        "frames": 888000,
+        "true_peak_4x": 0.7762800814514663,
+        "staged_PCM24_identical": true
+      },
+      "C6-v4-v12-real-old-new.flac": {
+        "pcm24_sha256": "919494451fd82783d23269b0170ab73173775439a9248f1ee2eaa232cf7b6a6d",
+        "frames": 504000,
+        "true_peak_4x": 0.794328255439953,
+        "staged_PCM24_identical": true
+      }
+    }
+  },
+  "auxiliary_files": {
+    "export.py": "a4739d3826fbf9a5dea08a6d68624f8edbd12981ee7d8e36b0cad3392aafbccd",
+    "README.md": "4a11ad8c6409a2dccdad69742f9347b79ee6191843c0474885faa55d141d3424",
+    "LICENSE-CC-BY-3.0.txt": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76"
+  }
+}

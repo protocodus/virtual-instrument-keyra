@@ -1,0 +1,80 @@
+{
+  "scope": "Posthoc existing fixed musical old/new diagnostic, no reference, parameter choice or new render",
+  "created_at_utc": "2026-10-26T21:50:55.623356+00:00",
+  "events": [
+    {
+      "description": "third_all_presses",
+      "midi": 48,
+      "event_seconds": 1.147563,
+      "rounded_event_frame": 55083,
+      "windows": [
+        {
+          "seconds_after_event": [
+            0,
+            0.005
+          ],
+          "old_stereo_RMS": 0.31110426094730564,
+          "new_stereo_RMS": 0.056069616132996755,
+          "RMS_change_dB": -14.883567530361363,
+          "old_peak": 0.6466765999794006,
+          "new_peak": 0.15077762305736542,
+          "peak_change_dB": -12.647005073948534
+        },
+        {
+          "seconds_after_event": [
+            0.005,
+            0.02
+          ],
+          "old_stereo_RMS": 0.2066354150517046,
+          "new_stereo_RMS": 0.10717659894426423,
+          "RMS_change_dB": -5.702095710298284,
+          "old_peak": 0.46316683292388916,
+          "new_peak": 0.2894327640533447,
+          "peak_change_dB": -4.0837952037803085
+        }
+      ]
+    },
+    {
+      "description": "third_melody_press",
+      "midi": 77,
+      "event_seconds": 2.160396,
+      "rounded_event_frame": 103699,
+      "windows": [
+        {
+          "seconds_after_event": [
+            0,
+            0.005
+          ],
+          "old_stereo_RMS": 0.22552049680186742,
+          "new_stereo_RMS": 0.2766562169724237,
+          "RMS_change_dB": 1.775088289516891,
+          "old_peak": 0.5588545799255371,
+          "new_peak": 0.7046059966087341,
+          "peak_change_dB": 2.0129504109682634
+        },
+        {
+          "seconds_after_event": [
+            0.005,
+            0.02
+          ],
+          "old_stereo_RMS": 0.24335435074743555,
+          "new_stereo_RMS": 0.3033293069560001,
+          "RMS_change_dB": 1.9135051553533489,
+          "old_peak": 0.6404334902763367,
+          "new_peak": 0.8365876078605652,
+          "peak_change_dB": 2.320747854939195
+        }
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/baseline.wav": "911576d4212e88a02692c346ad7793eaf8702e2da90b44daa3134431c695815e",
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/candidate.wav": "fc9075d635c220c93bbeab5fa713ded3d7115c8497b6251a9c46b82ad7d939f8",
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/producer-receipt.json": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61"
+  },
+  "limits": [
+    "Overlapping original notes remain; these are not isolated-note or real-reference comparisons.",
+    "C3 onset becomes softer while F5 becomes louder; music is not uniformly improved.",
+    "Global pilot FAIL remains:4of6passed,bothC6casesfailed. No default promotion."
+  ]
+}

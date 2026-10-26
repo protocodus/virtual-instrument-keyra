@@ -1,0 +1,66 @@
+{
+  "id": "C4v12",
+  "midi": 60,
+  "velocity": 93,
+  "frames": 182400,
+  "render_started_at_utc": "2026-10-26T21:06:54.782000+00:00",
+  "command": [
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer",
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12",
+    "60",
+    "93"
+  ],
+  "baseline": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/baseline.wav",
+    "sha256": "079dc86cdd522908f0f0067978dee2dda6665bc87abaf88a0890570d203f2bb8"
+  },
+  "candidate": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/candidate.wav",
+    "sha256": "6099efa08e6988f0c4f66b92bce4581743b3cee4ad078491edeb44c1eb4c0afe"
+  },
+  "mechanical_state_bit_parity": true,
+  "force_bit_parity": true,
+  "new_faults": 0,
+  "baseline_float32_payload_identical_to_cached_control": true,
+  "cached_control_audio": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.wav",
+    "sha256": "984c6f41e5adde8f2f94d1a48471e4e1d475402033af8a0ba5ae2ad1aab2728f"
+  },
+  "stems": {
+    "primary": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/primary.wav",
+      "sha256": "5b1fa06837f5f5a9d5eb5120ec50e84e9257f7aac05f75c7f60f9a728146dee5"
+    },
+    "secondary": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/secondary.wav",
+      "sha256": "b649ce83f9ff121c762f005eae928eaea83657b3e802381b09b1903271f43f7e"
+    },
+    "transient": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/transient.wav",
+      "sha256": "9907b9ac0df4210a8bdce61b7ac37a79420949906f55930a8c0f9894f259afea"
+    }
+  },
+  "diagnostics": {
+    "frames": 182400,
+    "sample_rate": 48000,
+    "midi": 60,
+    "velocity": 93,
+    "note_on_frame": 4800,
+    "launches": 1,
+    "original_fault_flags": 0,
+    "parity_mismatches": 0,
+    "new_observer_faults": 0
+  },
+  "parity_proof": {
+    "scope": "Oneintactphysicaltrajectory, observerread-only. Physicalq/p/damp,board,hammer,pedal/counters hashesbefore/afterevery256samples+last; contact88+Schur3forcehashesbefore/afterEVERYsample. CorrectstandardFNV1a64 bit-wordbytes; no cryptographiccollision guarantee. Sourcehasnophysicalfeedback/constp-onlydriver.",
+    "state_checkpoints": 714,
+    "state_rows": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/state-proof.u64le",
+      "sha256": "da54e39d6a3dd469436ee1e254ba130858cf29d23044fe62cc6c0a0583495e00"
+    },
+    "force_rows": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/force-proof.u64le",
+      "sha256": "be51a11e3d2327996ece09ebfcd9f73a77de2513b3183d7858956a45263389c8"
+    }
+  }
+}
