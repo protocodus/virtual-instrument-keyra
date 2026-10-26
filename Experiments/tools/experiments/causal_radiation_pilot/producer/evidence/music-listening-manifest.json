@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-26T21:30:43.189374+00:00",
+  "status": "PRIVATE DIAGNOSTIC: global six-TRAIN pilot FAILED; no model promotion",
+  "purpose": "Listen to one frozen dynamic radiation correction versus unchanged original control at identical fixed presentation gains.",
+  "pilot": {
+    "report": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-result.json",
+    "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+    "passes_all_gates": false,
+    "passed_cases": [
+      "C3v4",
+      "C3v12",
+      "C4v4",
+      "C4v12"
+    ],
+    "failed_cases": [
+      "C6v4",
+      "C6v12"
+    ],
+    "C6_5_to_20ms_band_MAE_worsening_db": {
+      "C6v4": 8.226516355415487,
+      "C6v12": 8.87176514500158
+    },
+    "note": "Four of six pilot cases passed. Both C6 cases failed the preregistered early-band guard despite some early excess reduction; thresholds were not relaxed."
+  },
+  "producer_receipt": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/producer-receipt.json",
+    "sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61",
+    "frozen_copy": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/validation/producer-receipt.json"
+  },
+  "configuration": {
+    "rate": 48000,
+    "frames": 432000,
+    "seed": 123456,
+    "gain_db": 0,
+    "stereo_width": 1,
+    "humanization": 0,
+    "mechanical_level": 0,
+    "repetition_controller": false
+  },
+  "events_applied": 24,
+  "requests": 11,
+  "launches": 11,
+  "baseline_float32_payload_bit_exact_to_original_control": true,
+  "baseline_wav_container_identical": false,
+  "baseline_container_note": "Baseline sample payload is bit-exact; WAV container metadata differs from the original renderer file.",
+  "independently_verified_state_checkpoints": 1689,
+  "independently_verified_force_frames": 432000,
+  "physical_state_and_force_parity": true,
+  "old_presentation_pcm24_exact_before_shared_safety": {
+    "dry": true,
+    "room": true
+  },
+  "gain_policy": "Replay the historical old control presentation gains identically for old and new. No candidate RMS matching, peak normalization per version, onset adjustment, limiter or added release.",
+  "historical_presentation_manifest": {
+    "path": "/workspace/virtual-instrument-keyra/Audio/full-performance/manifest.json",
+    "sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd"
+  },
+  "rms_gain_before_fade": {
+    "dry": 0.9376616126301774,
+    "room": 0.88993492917923
+  },
+  "original_common_true_peak_gain": 1.030337545260435,
+  "shared_extra_safety_gain_all_four_versions": 0.786203420103643,
+  "true_peak_target_dbfs": -2,
+  "true_peaks_before_shared_safety": {
+    "old-dry": 0.7819406181425401,
+    "old-room": 0.7940097898125584,
+    "new-dry": 1.0103342397309432,
+    "new-room": 0.9873781268536331
+  },
+  "true_peak_estimate": "Same four-times resample_poly/kaiser12 helper as the historical presentation; final PCM24 quantization tolerance3e-7.",
+  "presentation_code": {
+    "path": "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/render.py",
+    "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4"
+  },
+  "room": {
+    "kind": "Same immutable procedural IR",
+    "wet": 0.16,
+    "length_seconds": 1.8,
+    "float64_ir_sha256": "38dd2ac037e8fb2cb47f3ec561c37eab0478cef092b7ded9b617b92d6458b374",
+    "recorded_IR": false
+  },
+  "end_fade": {
+    "duration_seconds": 0.15,
+    "frames": 7200,
+    "shape": "linear amplitude from1to0, identical on every9s segment"
+  },
+  "performance": "Original algorithmic first-six-second nocturne score prefix, followed by three seconds with the final note/pedal still held; no added release events.",
+  "A_B_order": [
+    "old OriginalControl physical run",
+    "same physical run with independent dynamic radiation correction"
+  ],
+  "A_B_segment_start_seconds": [
+    0,
+    9.5
+  ],
+  "acoustic_recording_audio_read_for_this_export": false,
+  "runtime_samples_or_recorded_IR_used": false,
+  "default_changed": false,
+  "canonical_source_edited": false,
+  "public_Audio_files_created": false,
+  "published_or_pushed": false,
+  "realtime_claim": false,
+  "price_claim": false,
+  "limits": [
+    "Both old modal projection and new dynamic observer are causal; the change concerns fixed-load startup memory, not repairing noncausality.",
+    "The observer uses empirically weighted virtual drives, not literal physical bridge forces. Its extra states are not newly modeled physical piano parts.",
+    "These private files isolate readout changes using an old frozen control core, legacy contact, humanization0, mechanicalLevel0 and repetition-controllerOFF; they do not represent the latest connected canonical defaults.",
+    "The global pilot remains failed. Musical listening cannot erase both C6 early-band regressions or establish generalization, listener approval, production readiness or realtime performance."
+  ],
+  "inputs": {
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/producer-receipt.json": {
+      "sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61",
+      "bytes": 2821
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/freeze.json": {
+      "sha256": "467b7031894e2853e10f4cba858987f07ff13e8b2b11acd41e9d880cb69183f2",
+      "bytes": 6230
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/CausalRadiation.h": {
+      "sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169",
+      "bytes": 4922
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/music.cpp": {
+      "sha256": "bdbe9fff607ae9ff37fc13b18e0884645a1cb7c32188fe1c90f819a780837b96",
+      "bytes": 2927
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/produce_music.py": {
+      "sha256": "4231a7040fd9eeff8bfd4f1b5e152e1688ad3c07597d09a796db6e80b76b19b8",
+      "bytes": 9483
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/CMakeLists.txt": {
+      "sha256": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+      "bytes": 14792
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/include/keyra/FullInstrument.h": {
+      "sha256": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "bytes": 2633
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/include/keyra/physics/MechanismExciter.h": {
+      "sha256": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "bytes": 7981
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/include/keyra/physics/StrikeController.h": {
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "bytes": 10100
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/src/full_instrument/Capture.h": {
+      "sha256": "9836de40959b4e48185db560267c3a0b03dcc8f412204a059109065cf910ed28",
+      "bytes": 2560
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/src/full_instrument/FullInstrument.cpp": {
+      "sha256": "2fcad020f18a93980a2ef393a1fcedfc5c5721e73bfef2d5180d289b6a46fa90",
+      "bytes": 16653
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/src/full_instrument/PreparedCalibration.h": {
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "bytes": 18586
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/src/full_instrument/PreparedModel.h": {
+      "sha256": "000c337ade12501e0b43a1e3487c9d9e28df1f77936a5691fa8a0b2218a6c99a",
+      "bytes": 30765
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/src/full_instrument/Trace.h": {
+      "sha256": "76a5f7869ba2e8d12f59780563b0c39f83833e09acaf523da3fd050fb1f3f367",
+      "bytes": 131
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/sources/tools/render_full.cpp": {
+      "sha256": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+      "bytes": 10605
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/producer": {
+      "sha256": "b8b70a367021bb8780fc021cc13f8d4b1104d5ecb42598397900368b53da70aa",
+      "bytes": 327264
+    },
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/passage.events": {
+      "sha256": "2f2cfb1a4d6b99a5796c0aec2b30412552f32b8fafd797c379e841b56f708ca5",
+      "bytes": 705
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/baseline.wav": {
+      "sha256": "911576d4212e88a02692c346ad7793eaf8702e2da90b44daa3134431c695815e",
+      "bytes": 3456058
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/candidate.wav": {
+      "sha256": "fc9075d635c220c93bbeab5fa713ded3d7115c8497b6251a9c46b82ad7d939f8",
+      "bytes": 3456058
+    },
+    "/workspace/virtual-instrument-keyra/out/full-performance/control.wav": {
+      "sha256": "bd8cc2bf6f259978296b685a77859cd1535d8fabc0f64b9145396b1202de9ea4",
+      "bytes": 3456044
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/force-proof.u64le": {
+      "sha256": "dd006e2de9d573f39215789c32d6fc3f5d473bdbcfb20d5c323daa98b2571612",
+      "bytes": 10368000
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/state-proof.u64le": {
+      "sha256": "0a00ba11ad017f91dc127d0d8428966d16510f768eccef489e08cec72593cc00",
+      "bytes": 40536
+    },
+    "/workspace/virtual-instrument-keyra/Audio/full-performance/manifest.json": {
+      "sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd",
+      "bytes": 15540
+    },
+    "/workspace/virtual-instrument-keyra/Audio/full-performance/control-dry.flac": {
+      "sha256": "846fca1f96c2efe697907fd2b56b7bd910313244fc54463d57dae807d492f883",
+      "bytes": 906098
+    },
+    "/workspace/virtual-instrument-keyra/Audio/full-performance/control-room.flac": {
+      "sha256": "3b629e0610835a5a9fd7eedbca4c55699a17f6eb91dd3c93157ef206324fdf2a",
+      "bytes": 903471
+    },
+    "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/render.py": {
+      "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4",
+      "bytes": 19199
+    },
+    "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-result.json": {
+      "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+      "bytes": 967592
+    }
+  },
+  "exporter_sha256": "de18c7e76aa0efc4a1ece47bfeee7f62e0f2f50354a4e084ee30a6276b2d4d53",
+  "entries": [
+    {
+      "file": "old-dry.flac",
+      "sha256": "3b651d229723deb13d17aa1e06f8f5f56604a8e19a4fa57cb63c0b087a9114c5",
+      "float32_wav": "old-dry.wav",
+      "wav_sha256": "f08bb2e0025b82cb1c3c5c368742f3a9bb90a1614010055dcc9882fc22e5a668",
+      "pcm24_sha256": "74e29df1f3ccc31c1325afcfdaaa12751f375d2b0aef49228d38b2eae4738409",
+      "lossless_pcm24_decode_verified": true,
+      "frames": 432000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "rms_after_quantization": 0.06480422103567894,
+      "sample_peak_after_quantization": 0.6140987873077393,
+      "true_peak_4x_after_quantization": 0.6147644662023354,
+      "encoder_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-dry.wav",
+        "-c:a",
+        "flac",
+        "-sample_fmt",
+        "s32",
+        "-bits_per_raw_sample",
+        "24",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-dry.flac"
+      ],
+      "engine": "old",
+      "presentation": "dry",
+      "duration_seconds": 9,
+      "verified_stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 432000,
+        "bits_per_raw_sample": "24"
+      }
+    },
+    {
+      "file": "old-room.flac",
+      "sha256": "6ec57b5998fc7a66cfecc0f3b500fc3ad5585d72da1ffc0bbe0e1e6348383282",
+      "float32_wav": "old-room.wav",
+      "wav_sha256": "27bdc73752c97f6c07d29d04210642d72f0d78c16c19869f8498ebd900671ca9",
+      "pcm24_sha256": "ffcdb25cb2324439688d5d7c4a9ae2b9c619332e127d790076352643c71a5112",
+      "lossless_pcm24_decode_verified": true,
+      "frames": 432000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "rms_after_quantization": 0.06480422059965944,
+      "sample_peak_after_quantization": 0.6232379674911499,
+      "true_peak_4x_after_quantization": 0.6242532582138471,
+      "encoder_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-room.wav",
+        "-c:a",
+        "flac",
+        "-sample_fmt",
+        "s32",
+        "-bits_per_raw_sample",
+        "24",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-room.flac"
+      ],
+      "engine": "old",
+      "presentation": "room",
+      "duration_seconds": 9,
+      "verified_stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 432000,
+        "bits_per_raw_sample": "24"
+      }
+    },
+    {
+      "file": "new-dry.flac",
+      "sha256": "7469bb0bd6936f813be55d2e0e1dcd2897335bd7587beffe8e34717ebe3fb106",
+      "float32_wav": "new-dry.wav",
+      "wav_sha256": "b6398b69a1899747233667f888b0101034a4f66d6c93392cd95c5158f16747e7",
+      "pcm24_sha256": "63823d9596c0fb9971ebb5b2469eadcd0e52e08ee35e1361db329c58ec904602",
+      "lossless_pcm24_decode_verified": true,
+      "frames": 432000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "rms_after_quantization": 0.06677056037300227,
+      "sample_peak_after_quantization": 0.7934654951095581,
+      "true_peak_4x_after_quantization": 0.7943282656929844,
+      "encoder_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/new-dry.wav",
+        "-c:a",
+        "flac",
+        "-sample_fmt",
+        "s32",
+        "-bits_per_raw_sample",
+        "24",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/new-dry.flac"
+      ],
+      "engine": "new",
+      "presentation": "dry",
+      "duration_seconds": 9,
+      "verified_stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 432000,
+        "bits_per_raw_sample": "24"
+      }
+    },
+    {
+      "file": "new-room.flac",
+      "sha256": "c0e40fa478a8d3cffc6d66668fa6c3f2c26889424f56c9b77d4ee00ebe89772c",
+      "float32_wav": "new-room.wav",
+      "wav_sha256": "5dab49203818c4f474b1d690afa2febabd44e4e68b914a6773cf07e4c2e43d1d",
+      "pcm24_sha256": "c39010b798145d2af5d39f987fb00a367e2a4e268ab934908d77122a494533c5",
+      "lossless_pcm24_decode_verified": true,
+      "frames": 432000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "rms_after_quantization": 0.06722503850152044,
+      "sample_peak_after_quantization": 0.7760573625564575,
+      "true_peak_4x_after_quantization": 0.7762800814514663,
+      "encoder_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/new-room.wav",
+        "-c:a",
+        "flac",
+        "-sample_fmt",
+        "s32",
+        "-bits_per_raw_sample",
+        "24",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/new-room.flac"
+      ],
+      "engine": "new",
+      "presentation": "room",
+      "duration_seconds": 9,
+      "verified_stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 432000,
+        "bits_per_raw_sample": "24"
+      }
+    },
+    {
+      "file": "old-then-new-dry.flac",
+      "sha256": "0b1215f3a367df3273b418678833d6c13b238bb20b6460e27e1df69deea67ab3",
+      "float32_wav": "old-then-new-dry.wav",
+      "wav_sha256": "1976f4c013be8cddac8962ea1a91f1a5d7186fcac3ce867d24e4ecddc1a893ea",
+      "pcm24_sha256": "c9956fa300cee94ad2a2ef693d8dd2fa94b40e02d8a9b8dd0152c2fef56d27b1",
+      "lossless_pcm24_decode_verified": true,
+      "frames": 888000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "rms_after_quantization": 0.06489952865738677,
+      "sample_peak_after_quantization": 0.7934654951095581,
+      "true_peak_4x_after_quantization": 0.7943282656929844,
+      "encoder_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-then-new-dry.wav",
+        "-c:a",
+        "flac",
+        "-sample_fmt",
+        "s32",
+        "-bits_per_raw_sample",
+        "24",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-then-new-dry.flac"
+      ],
+      "order": [
+        "old",
+        "new"
+      ],
+      "segment_start_seconds": [
+        0,
+        9.5
+      ],
+      "gap_seconds": 0.5,
+      "presentation": "dry",
+      "duration_seconds": 18.5,
+      "verified_stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 888000,
+        "bits_per_raw_sample": "24"
+      }
+    },
+    {
+      "file": "old-then-new-room.flac",
+      "sha256": "1a81dbe06fe4ab83532d06cd0d487ef336bc0e9c9165e990fc4c9160c963bc76",
+      "float32_wav": "old-then-new-room.wav",
+      "wav_sha256": "ec58c05bc1c480f85293ddc809113321d4aef3e2404f404fb60be9fb7a34d9f7",
+      "pcm24_sha256": "532b5ad94d80f5a16c38393c1bd2fac2e2334ef60b544d644f954b5b2b9fa2dc",
+      "lossless_pcm24_decode_verified": true,
+      "frames": 888000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits": 24,
+      "rms_after_quantization": 0.06512737427597827,
+      "sample_peak_after_quantization": 0.7760573625564575,
+      "true_peak_4x_after_quantization": 0.7762800814514663,
+      "encoder_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-y",
+        "-i",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-then-new-room.wav",
+        "-c:a",
+        "flac",
+        "-sample_fmt",
+        "s32",
+        "-bits_per_raw_sample",
+        "24",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/music/listening/old-then-new-room.flac"
+      ],
+      "order": [
+        "old",
+        "new"
+      ],
+      "segment_start_seconds": [
+        0,
+        9.5
+      ],
+      "gap_seconds": 0.5,
+      "presentation": "room",
+      "duration_seconds": 18.5,
+      "verified_stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 888000,
+        "bits_per_raw_sample": "24"
+      }
+    }
+  ],
+  "tools": {
+    "numpy": "2.3.5",
+    "ffmpeg": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "musical_RMS_shift_db_new_over_old_same_gain": {
+    "dry": 0.2596345284766805,
+    "room": 0.3185553580156328
+  },
+  "shared_extra_safety_gain_db": -2.089301425304373
+}

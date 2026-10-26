@@ -1,0 +1,852 @@
+{
+  "schema_version": 1,
+  "scope": "Portable published-source/evidence inventory for a failed six-TRAIN pilot; original absolute paths and bytes retained. No audio/binary bundled or silently substituted.",
+  "archive_root": "/workspace/virtual-instrument-keyra",
+  "published_artifacts": [
+    {
+      "package_path": "Validation/full-causal-radiation-pilot-protocol.json",
+      "sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-pilot-protocol.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/protocol.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-pilot.json",
+      "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-pilot.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-result.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-metric-checks.json",
+      "sha256": "851b1ff2153eaf6fe23f55102dfaece59d124fc4326796b4a565428192d5b1e3",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-metric-checks.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-metric-replay.json",
+      "sha256": "d70fd3bbef05d63e0041c4fb3367c79d125e9058aa2701201bf0038f589d50dd",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-metric-replay.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-metric-review.json",
+      "sha256": "3172f389a66f6c4d2bfee9cc9ef1b5b3138ddc1741c91fd0c4b6b25fa45861af",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-metric-review.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metric-source-ready.json"
+      ]
+    },
+    {
+      "package_path": "Validation/full-causal-radiation-C6-diagnostic.json",
+      "sha256": "2f7966b9fddda5678024cacb22d701e9a7715b0b4b28858c079f0812187169a6",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-C6-diagnostic.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/posthoc-C6/report.json"
+      ]
+    },
+    {
+      "package_path": "tools/probe_full_causal_radiation_metrics.py",
+      "sha256": "14fc804b80f3742ee6c95cc3908c498459a77e61c90a1bdfe4b6c23c8580c1cd",
+      "role": "metric_or_review_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/probe_full_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/check_causal_radiation_metrics.py",
+      "sha256": "e5b941d6e4af318b35140946863d2276495b02fbced36747da755b659869cb13",
+      "role": "metric_or_review_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/prepare_causal_metrics_capture.py",
+      "sha256": "79c7cca06013c110f603b21db80f017bf5ddcc69101c94ddbb3f06293d7b0fab",
+      "role": "metric_or_review_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/prepare_causal_metrics_capture.py"
+      ]
+    },
+    {
+      "package_path": "tools/diagnose_causal_radiation_pilot.py",
+      "sha256": "78300d5d997aabbc09ec6a824de1a47616274d00e8295fb71605e607e94b19a8",
+      "role": "metric_or_review_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/diagnose_causal_radiation_pilot.py"
+      ]
+    },
+    {
+      "package_path": "tools/check_causal_radiation_review.py",
+      "sha256": "1128da6966bf9e899ab35856f2d0a24b8d4485d03864e8f597e1f30566c1f8e5",
+      "role": "metric_or_review_source",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_review.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/reference-control.json",
+      "sha256": "4675d46574d65063d63ce9266ef4caa3d30c4880e4fac6fbabd11e6ff9747faf",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/reference-control.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/analysis-code-freeze.json",
+      "sha256": "bda29f579eb96c2ad9f3ae0e1f1eff3727aa6b789c3d38dcd27a024b6322856d",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/analysis-code-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/candidate-opening-started.json",
+      "sha256": "87c635bd40c37c38599be9f87829b8cdd0cdaa4e330781c99c784645424c84fd",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/capture-adapted.json",
+      "sha256": "95eefc5ba3d49c6cd432e84c751c5903ddd02c2bb484fa68590e665712a9b886",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/capture-adapted.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/producer-registration.json",
+      "sha256": "8296fae4a432e7472f500b994f2cb55f60ffb642ffede45e883353ff3146a61d",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/producer-registration.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/fixture-identity-roundoff.json",
+      "sha256": "fc50c7c609ba4c21ad8d3db333d82e29b43e1606cad913b2e2b022b098c7f025",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/fixture-identity-roundoff.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/C6-diagnostic-protocol.json",
+      "sha256": "bb1ee4c9348c0c9dbc8f686106578e302b2c3c18ba53f70be2a618c87dc2fcbb",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/posthoc-C6/protocol.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/analysis-code-freeze.json",
+      "sha256": "199916cb1790494d197daf5fc0f4b20aeefa420eab15b2c391f41691fcab0ca8",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metadata-preflight-1/analysis-code-freeze.json",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/analysis-code-freeze.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/candidate-opening-started.json",
+      "sha256": "13c25562a26432ed198894c154489b155a513a7d48623a1e70c01621fae68737",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metadata-preflight-1/candidate-opening-started.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metadata-preflight-1/failure.json",
+      "sha256": "f844d7fabd970cb6082e87badc231a86ce9ccad8258adaf724d6c09779509d30",
+      "role": "published_evidence",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/metadata-preflight-1/failure.json"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/check_causal_radiation_metrics-pre-audio.py",
+      "sha256": "eb57821510364ff744c161cd8770f1f5d6c0b3bc6ac89dd04874dc76f563f6f8",
+      "role": "archived_pre_audio_checker",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/check_causal_radiation_metrics-replay-v1.py",
+      "sha256": "361d2067df12fe466250e93ae43e2bd689c1cc3d7aa794f8f1ab16563fc288b2",
+      "role": "archived_initial_replay_checker",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/evidence/metric-replay-v1.json",
+      "sha256": "1a8192797ec7a3c9c4ff57106cff16a34a191e4d01eba2e61aeb163bde5641f3",
+      "role": "archived_initial_replay_receipt",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/README.md",
+      "sha256": "460f8bf2c0a1257c06a697c6144fca44b7a3d49380becc398a71557714dd6716",
+      "role": "review_documentation",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/REGRESSION_CHECKLIST.md",
+      "sha256": "4858a5b216a51ddb88fa78785ad969c994e80f4f99d09d8ca5fe3652d788fc35",
+      "role": "review_documentation",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/fit_full_calibration.py",
+      "sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/tools/fit_full_calibration.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/benchmark.py",
+      "sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/benchmark.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/radiation_fit.py",
+      "sha256": "d222d5f00257358d48c398dc4d84f1ba4bbbf4ddaa94b46c2a46f81b723414d7",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/radiation_fit.py"
+      ]
+    },
+    {
+      "package_path": "Research/GrandPianoV2/tools/fit_calibration.py",
+      "sha256": "906605c9a03bafff4a265a8508dab6c6e51198db881fddc27db69477804d7576",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/fit_calibration.py"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/combined_train_features.json",
+      "sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/combined_train_features.json"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/split.json",
+      "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/split.json"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/manifest.json",
+      "sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/manifest.json"
+      ]
+    },
+    {
+      "package_path": "References/GrandFullRange/upstream/LICENSE-CC-BY-3.0.txt",
+      "sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "role": "tracked_metric_dependency_or_reference_metadata",
+      "archived_paths": [
+        "/workspace/virtual-instrument-keyra/References/GrandFullRange/upstream/LICENSE-CC-BY-3.0.txt"
+      ]
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/README.md",
+      "sha256": "2722232ef3592471c57ad65862bf5e7cead9c2174f8a03b814ca8dace6c9819c",
+      "role": "portable_producer_documentation",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/replay.py",
+      "sha256": "26d1bf2a696b23e6b87b065f239d03fe17f37366de9a4217c424e1835cb57c9a",
+      "role": "new_portable_orchestration_not_frozen_DSP",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/cases.json",
+      "sha256": "9c2ad31818dd63c3aa4cbcf870ce76d70e4c1c9b21551514ec88c606b6576c3f",
+      "role": "new_portable_case_table_bound_to_producer_receipt",
+      "archived_paths": []
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/manifest.json",
+      "sha256": "62cbc6e46b95330b4e0b5b92abc19e1c23c5b21bfbd4ab6e7f282b42486a03c4",
+      "role": "separate_posthoc_listening_manifest",
+      "archived_paths": []
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/README.md",
+      "sha256": "4a11ad8c6409a2dccdad69742f9347b79ee6191843c0474885faa55d141d3424",
+      "role": "separate_posthoc_listening_documentation",
+      "archived_paths": []
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/export.py",
+      "sha256": "a4739d3826fbf9a5dea08a6d68624f8edbd12981ee7d8e36b0cad3392aafbccd",
+      "role": "separate_posthoc_listening_exporter",
+      "archived_paths": []
+    },
+    {
+      "package_path": "Audio/full-radiation-pilot/LICENSE-CC-BY-3.0.txt",
+      "sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "role": "separate_reference_license",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/C6-source-notes.json",
+      "sha256": "f0c0cb354d7eec18cf87e7b412af7501b89f3e49c175334592696c0881ca20fe",
+      "role": "new_portable_support_or_posthoc_diagnostic",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/music-window-diagnostic.json",
+      "sha256": "7e2c26aaac8b7b8c09f332680d34796af206424104000873cc1694b31e30ad23",
+      "role": "new_portable_support_or_posthoc_diagnostic",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/evidence/portable-checks.json",
+      "sha256": "a94522b52533d81ce02464301ef7af9ad46be633d4272c5b3eee33712adc7e42",
+      "role": "new_portable_support_or_posthoc_diagnostic",
+      "archived_paths": []
+    },
+    {
+      "package_path": "tools/experiments/causal_radiation_pilot/producer/verify_c6.py",
+      "sha256": "2ff4d60e1389a2b04b9636771efa5b5a5beb2eef7ad192fc5826fc7757b2ba2a",
+      "role": "new_portable_support_or_posthoc_diagnostic",
+      "archived_paths": []
+    }
+  ],
+  "producer_index": {
+    "path": "tools/experiments/causal_radiation_pilot/producer/source-index.json",
+    "sha256": "758117591289e8ea2814cc8120f4c8ac67e89b86e8d9de3f7460be87154abfcb"
+  },
+  "external_input_artifacts": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C3v12.wav",
+      "sha256": "2ee3c48a5150b505202c808118ca6ab87d2ae0ea807f18f1722f4a9dfcad6001",
+      "archive_relative_path": "References/GrandFullRange/recordings/C3v12.wav",
+      "bytes": 4553262,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C3v4.wav",
+      "sha256": "9a35672fe713b73c5e6c02861e8ab7c03826a33b5be63d0623046282b797e002",
+      "archive_relative_path": "References/GrandFullRange/recordings/C3v4.wav",
+      "bytes": 4569294,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C4v12.wav",
+      "sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a",
+      "archive_relative_path": "References/GrandFullRange/recordings/C4v12.wav",
+      "bytes": 4526724,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C4v4.wav",
+      "sha256": "b25c65964c4d4e118fc9a7d67d68156fde483db5415339ab759a58dffa4abf51",
+      "archive_relative_path": "References/GrandFullRange/recordings/C4v4.wav",
+      "bytes": 4530516,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C6v12.wav",
+      "sha256": "1d2d99da7dab09066cd67940ccd21f381a6b3399fafda3c9b1f3cc4a45281100",
+      "archive_relative_path": "References/GrandFullRange/recordings/C6v12.wav",
+      "bytes": 1801554,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C6v4.wav",
+      "sha256": "f7795b27c5f2c078c41651dde88e2f765f7762caa5770a4d50ae41fce806c9cb",
+      "archive_relative_path": "References/GrandFullRange/recordings/C6v4.wav",
+      "bytes": 1569192,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/render",
+      "sha256": "9d10341175e9d4e569b87ab0dec299aab8e73444d9cd6054b2d4432952db7bab",
+      "role": "legacy_cached_control_executable_for_synthetic_metadata_fixture",
+      "archive_relative_path": "out/full-calibration/v3/control-f32/render",
+      "bytes": 230712
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v12.events",
+      "sha256": "a6fe7807ef6e75375b5484fe3f54a057107fddc5773b44d8a7cddb2acf3815c4",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C3v12.events",
+      "bytes": 100,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v12.json",
+      "sha256": "d5e450336428bd3d84da2924eeba4dcd20c78175eecaed8ba479d0c07686c6a4",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C3v12.json",
+      "bytes": 1737,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v12.wav",
+      "sha256": "4a0190c1f0866f7f37813666dcc0cd73f2972c0a594d42dae05ccdac7cec2766",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C3v12.wav",
+      "bytes": 1459244,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v4.events",
+      "sha256": "d8743a40fc06587df739719a46c056b73a58d8ed4434abda2767caac26070de6",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C3v4.events",
+      "bytes": 100,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v4.json",
+      "sha256": "8f8a2febcb88150cc947d24eac82dd0bc9492255423beb705359896a2e21e150",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C3v4.json",
+      "bytes": 1743,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v4.wav",
+      "sha256": "f63a904a8e6966339379fbc02aeb73b97a54cbe3a616c8ec49d48a9045365191",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C3v4.wav",
+      "bytes": 1459244,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.events",
+      "sha256": "f0f384cabc6724edcfec8005bc810359f3ad77776f8dfbb842ede6ef1ea96a9d",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C4v12.events",
+      "bytes": 100,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.json",
+      "sha256": "bbb8e21111acc2fd23d5bd9863e293c98f76260c2e78b14727a37261e489f39c",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C4v12.json",
+      "bytes": 1746,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.wav",
+      "sha256": "984c6f41e5adde8f2f94d1a48471e4e1d475402033af8a0ba5ae2ad1aab2728f",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C4v12.wav",
+      "bytes": 1459244,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v4.events",
+      "sha256": "f338852e0381db325716a399dbb1ecf1b7236adeed9f4a1c19b01be0b1ab30fb",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C4v4.events",
+      "bytes": 100,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v4.json",
+      "sha256": "d767b5f5412177f1198445839a897ecc9b9006be342782b92f68629eba2f7d66",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C4v4.json",
+      "bytes": 1741,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v4.wav",
+      "sha256": "20012ff05245b7da85923e64e2c969e505ab7f5cb7b0baedc1aa8179adfe551e",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C4v4.wav",
+      "bytes": 1459244,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v12.events",
+      "sha256": "737aff11652e9ec0bd083e71a17eaeb8899d295f484d9c946b985447b762b20d",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C6v12.events",
+      "bytes": 100,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v12.json",
+      "sha256": "f197eba9cae43cae40d01c8060baa1c6a9d7cfd49566b31ba6c54c8b7ab092fb",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C6v12.json",
+      "bytes": 1747,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v12.wav",
+      "sha256": "204aebe76971f2f6871789a90a158e13b1dbea9128dbdb22e7f00fba792ac646",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C6v12.wav",
+      "bytes": 1459244,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v4.events",
+      "sha256": "1e1146c59deecb62e814a46c934d88e3091af15d17167f31c875055bf856498d",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C6v4.events",
+      "bytes": 100,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v4.json",
+      "sha256": "714eaa21d265cddf987330731c88dc2a87564327ac4793c57a2548563770ab95",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C6v4.json",
+      "bytes": 1743,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v4.wav",
+      "sha256": "a545afc58fd6f6974bf83f2623a720e4c7c13506a84c5041b0d5bb5a7c1ed46a",
+      "archive_relative_path": "out/full-calibration/v3/control-renders/C6v4.wav",
+      "bytes": 1459244,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/board.f64le",
+      "sha256": "132e022ad28fe71719be0dfbf04d9fac3fa86853dc530a5dd31ae878570bdf71",
+      "archive_relative_path": "out/full-causal-radiation/v1/board.f64le",
+      "bytes": 41800,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/math_probe",
+      "sha256": "2e2502b422b7c1caf6a9702a4a4f979c9b718a6b63b8d4112f375c023bff71d0",
+      "archive_relative_path": "out/full-causal-radiation/v1/math_probe",
+      "bytes": 241304,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/modes.f64le",
+      "sha256": "d68ec91d6987933f8132768f576191dc70a2d2d59c376adb7bc744f9f00c4c02",
+      "archive_relative_path": "out/full-causal-radiation/v1/modes.f64le",
+      "bytes": 3271152,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/baseline.wav",
+      "sha256": "234edb27a4f5f70c52d5055ac7d34f2e898a92337caf39a059fbda177a2b797d",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/baseline.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/candidate.wav",
+      "sha256": "e56570131246e7483175749eedf4ec09d0405c45863720e95d3ef70f8674dc1b",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/candidate.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/force-proof.u64le",
+      "sha256": "76f2730514160a92aed174f04e920e9c374fa68c135184cc85b8e0c2bb4b754d",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/force-proof.u64le",
+      "bytes": 4377600,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/primary.wav",
+      "sha256": "4a523df85b6e61064e9b2d1fe060fd4d8173108c6e3399046a05a1c627c65716",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/primary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/secondary.wav",
+      "sha256": "15269c05ec553decd568148ed5da1f40651e6a0c465a086e6099ef35f03256ba",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/secondary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/state-proof.u64le",
+      "sha256": "f1c2c6ad5614a7be7a572606634394c5df9f6ceeaafa6b52318b390a55ff7508",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/state-proof.u64le",
+      "bytes": 17136,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/transient.wav",
+      "sha256": "975c48f9b84e20e2560ea4a8d1058525e2cfc880a681d8720cc2b8e3d0c71c02",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v12/transient.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/baseline.wav",
+      "sha256": "b03aa61c4f894aacdc71c19f9f26ab5ceda8fcb85aec02a46439c34b2f19f5db",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/baseline.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/candidate.wav",
+      "sha256": "39a4be9df1bf557eb05d099b055c198c8bb3a3f6043b286ea2056e481dd68992",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/candidate.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/force-proof.u64le",
+      "sha256": "56bc2281073a63c5172f6c6d3524daffdf9eb43f8c0ebfee24751c7c70b53f80",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/force-proof.u64le",
+      "bytes": 4377600,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/primary.wav",
+      "sha256": "b459724d3f718ca44a50b7378414d33fbcfaef2e1024fe0a6483023be1e576d9",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/primary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/secondary.wav",
+      "sha256": "1538d9d05d34363ebaa5acd2897c61a6fcd1b41a0ab289cae1d0caa599c2946c",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/secondary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/state-proof.u64le",
+      "sha256": "a380a2980ca4f296319e55d4e6d1f9ded4518f6cbd0fda8bc4909e1145a53010",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/state-proof.u64le",
+      "bytes": 17136,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/transient.wav",
+      "sha256": "952b6d908051a91fcebb1d3125413620882bb146b1c3c0f20e60d1a719c4ed40",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C3v4/transient.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/baseline.wav",
+      "sha256": "079dc86cdd522908f0f0067978dee2dda6665bc87abaf88a0890570d203f2bb8",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/baseline.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/candidate.wav",
+      "sha256": "6099efa08e6988f0c4f66b92bce4581743b3cee4ad078491edeb44c1eb4c0afe",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/candidate.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/force-proof.u64le",
+      "sha256": "be51a11e3d2327996ece09ebfcd9f73a77de2513b3183d7858956a45263389c8",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/force-proof.u64le",
+      "bytes": 4377600,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/primary.wav",
+      "sha256": "5b1fa06837f5f5a9d5eb5120ec50e84e9257f7aac05f75c7f60f9a728146dee5",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/primary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/secondary.wav",
+      "sha256": "b649ce83f9ff121c762f005eae928eaea83657b3e802381b09b1903271f43f7e",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/secondary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/state-proof.u64le",
+      "sha256": "da54e39d6a3dd469436ee1e254ba130858cf29d23044fe62cc6c0a0583495e00",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/state-proof.u64le",
+      "bytes": 17136,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/transient.wav",
+      "sha256": "9907b9ac0df4210a8bdce61b7ac37a79420949906f55930a8c0f9894f259afea",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v12/transient.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/baseline.wav",
+      "sha256": "105b5ca3c8ad82ead96744d3fcb6412accee099cf8c96d0bce0be2b00e81835f",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/baseline.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/candidate.wav",
+      "sha256": "cb027eac41c0cf30e183bec21337e0390fa61fa5afcd283ace463fb3171abd9c",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/candidate.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/force-proof.u64le",
+      "sha256": "11d987db8e06a27a8b82875b312b53d5efc5710227ead1f2ce53ecbd1c9d0bb4",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/force-proof.u64le",
+      "bytes": 4377600,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/primary.wav",
+      "sha256": "c4b52a2c06e283bea696d2ef88712820f1a29d45fe891773484eff2c6b0f4dd8",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/primary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/secondary.wav",
+      "sha256": "271369d7055f20bb98305d66cffbb5352b6a0a857821cc646455800ab3a41b6f",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/secondary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/state-proof.u64le",
+      "sha256": "5ea75d09166608ae9fdbdc5c81df82fa0e3a6bcc5c708325d6345e4f78546312",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/state-proof.u64le",
+      "bytes": 17136,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/transient.wav",
+      "sha256": "8dcd230db2ee224b0cc2b5e35544dd9de9a2ca7a7fadf775158b7cc64b1f9643",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C4v4/transient.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/baseline.wav",
+      "sha256": "46c19d974ad39b1d0d886a70835333c1654d64c104d1dfa8f602ca9388633d06",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/baseline.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/candidate.wav",
+      "sha256": "c9d4f29378380e824fa3a6bb469743f3b2e32d24f8fa0518e97839195ed99f3e",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/candidate.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/force-proof.u64le",
+      "sha256": "810383596f13dc3ff87828df97620b398e4365e28974da275f74f93dada44776",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/force-proof.u64le",
+      "bytes": 4377600,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/primary.wav",
+      "sha256": "0101df3dc689677d4789a9015c57fa1040a7c4028c82182088abf357f27ec0c8",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/primary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/secondary.wav",
+      "sha256": "1e8ad0f573eb4d4c132293a8fe28fe40fe818bbc73a9f2279a5b8c8cfa17e722",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/secondary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/state-proof.u64le",
+      "sha256": "f5c84ac34125f03782f6eae304b1da0b7a8397866b49933e4d5a5d800075544d",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/state-proof.u64le",
+      "bytes": 17136,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/transient.wav",
+      "sha256": "8332761341fb0bc00e3fd2e1abc4719ec3fe83c2807d6583e6ea309373632ae8",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v12/transient.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/baseline.wav",
+      "sha256": "0523ae405b77e9932611377431c57d372abe088b6ef766ccfaf6ddf3a1e881e9",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/baseline.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/candidate.wav",
+      "sha256": "66eb52f44b529db67e32ab57b038b978843b7c49d91197319521b11f1ea9cfe0",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/candidate.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/force-proof.u64le",
+      "sha256": "4fdc7c426182a34b0c59a8575356b199e79512c6f18c4b1f1806f1bca06bb568",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/force-proof.u64le",
+      "bytes": 4377600,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/primary.wav",
+      "sha256": "e5a1432cec6fa74f1a41b550b62aa139acf184075df4215ee0eee21e6f4dccb5",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/primary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/secondary.wav",
+      "sha256": "b5fcee2671951a3015dc919616791719eb363157e843a9f94b6fcecb06d503a6",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/secondary.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/state-proof.u64le",
+      "sha256": "ef407ed0e3b73dee3ac7e9458576c863059427e5ea1bea05f1c2a52bb9ca518a",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/state-proof.u64le",
+      "bytes": 17136,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/transient.wav",
+      "sha256": "3bb903bdb58ff43af009851d25953223930e8c0ed76c3a4c868c88788d669496",
+      "archive_relative_path": "out/full-causal-radiation/v1/pilot/C6v4/transient.wav",
+      "bytes": 1459258,
+      "role": "external_original_capture_or_executable"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer",
+      "sha256": "19cddb44e6b12328f74680ea4fdebd99bfae6378108822237cdd7d8c39f128f4",
+      "archive_relative_path": "out/full-causal-radiation/v1/producer",
+      "bytes": 298536,
+      "role": "external_original_capture_or_executable"
+    }
+  ],
+  "limits": [
+    "Default review does not open or verify external pressure audio, proof rows or executables.",
+    "Original-artifact replay requires exact external bytes. Fresh renders need new receipts and cannot recreate original chronology."
+  ],
+  "posthoc_listening_scope": "The separate listening manifest is pinned as metadata. Its clips are verified by its exporter, not opened by the default evidence check and not part of the original numerical pilot gates."
+}

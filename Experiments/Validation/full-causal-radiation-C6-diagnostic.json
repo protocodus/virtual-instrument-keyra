@@ -1,0 +1,1356 @@
+{
+  "schema_version": 1,
+  "completed_at_utc": "2026-10-26T21:23:46.989360+00:00",
+  "pilot": {
+    "path": "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-pilot.json",
+    "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+  },
+  "diagnostic_protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/posthoc-C6/protocol.json",
+    "sha256": "bb1ee4c9348c0c9dbc8f686106578e302b2c3c18ba53f70be2a618c87dc2fcbb"
+  },
+  "tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/diagnose_causal_radiation_pilot.py",
+    "sha256": "78300d5d997aabbc09ec6a824de1a47616274d00e8295fb71605e607e94b19a8"
+  },
+  "frozen_metric_tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/probe_full_causal_radiation_metrics.py",
+    "sha256": "14fc804b80f3742ee6c95cc3908c498459a77e61c90a1bdfe4b6c23c8580c1cd"
+  },
+  "C6_cases": [
+    {
+      "id": "C6v4",
+      "midi": 84,
+      "frozen_reference_f1_hz": 1050.3644434995263,
+      "source_reference_onset_frame": 220,
+      "source_model_fixed_onset_frame": 4759,
+      "fixed_model_gain": 1.2762378364686846,
+      "noise_SNR": {
+        "available": false,
+        "actual_reference_onset_ms": 4.583333333333333,
+        "reason": "No\u22655ms noise segment before a5ms onset safetygap in this edited recording."
+      },
+      "true_SNR_db": null,
+      "windows": [
+        {
+          "window_seconds": [
+            0.005,
+            0.02
+          ],
+          "H1_center_hz": 1050.3644434995263,
+          "H1_half_width_hz": 200.0,
+          "H1_power_dBFS": {
+            "reference": -26.058356972175424,
+            "baseline": -23.037475454033633,
+            "candidate": -23.64655542080083
+          },
+          "H1_adjacent_band_prominence_db": {
+            "reference": 11.537360887397597,
+            "baseline": 24.276846778467128,
+            "candidate": 27.083346991902076
+          },
+          "broad_mono_candidate_minus_baseline_db": -1.020029083194649,
+          "fine_bands": [
+            {
+              "band_hz": [
+                31.25,
+                250.0
+              ],
+              "reference_dBFS": -48.37646854490754,
+              "baseline_reference_equivalent_dBFS": -46.22937034181879,
+              "candidate_reference_equivalent_dBFS": -90.85766954351642,
+              "baseline_minus_reference_db": 2.14709820308875,
+              "candidate_minus_reference_db": -42.481200998608884,
+              "reference_relative_H1_db": -22.318111572732118,
+              "reference_relative_sustain_db": -3.4676617563009042,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -44.62829920169764,
+              "difference_reference_equivalent_dBFS": -46.223396476915624,
+              "old_new_real_correlation": -0.11432667826815492,
+              "difference_power_over_old": 1.0013764797071094,
+              "twice_old_difference_cross_over_old": -2.001342031225847,
+              "coherent_identity_relative_defect": 3.797977403025045e-17
+            },
+            {
+              "band_hz": [
+                250.0,
+                500.0
+              ],
+              "reference_dBFS": -41.90038777506701,
+              "baseline_reference_equivalent_dBFS": -54.49374060248572,
+              "candidate_reference_equivalent_dBFS": -78.22716253040176,
+              "baseline_minus_reference_db": -12.593352827418702,
+              "candidate_minus_reference_db": -36.32677475533474,
+              "reference_relative_H1_db": -15.842030802891593,
+              "reference_relative_sustain_db": 3.008419013539619,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -23.733421927916034,
+              "difference_reference_equivalent_dBFS": -54.28702202222871,
+              "old_new_real_correlation": -0.342108098378058,
+              "difference_power_over_old": 1.0487497203353167,
+              "twice_old_difference_cross_over_old": -2.044516627361752,
+              "coherent_identity_relative_defect": 1.060887814741526e-17
+            },
+            {
+              "band_hz": [
+                500.0,
+                1000.0
+              ],
+              "reference_dBFS": -29.25766537367447,
+              "baseline_reference_equivalent_dBFS": -30.00348718517767,
+              "candidate_reference_equivalent_dBFS": -31.270110290442346,
+              "baseline_minus_reference_db": -0.745821811503201,
+              "candidate_minus_reference_db": -2.012444916767874,
+              "reference_relative_H1_db": -3.1993084014990463,
+              "reference_relative_sustain_db": 15.651141414932166,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -1.2666231052646728,
+              "difference_reference_equivalent_dBFS": -44.40550243081039,
+              "old_new_real_correlation": 0.9896571602251781,
+              "difference_power_over_old": 0.036290961566749144,
+              "twice_old_difference_cross_over_old": -0.28926156968572014,
+              "coherent_identity_relative_defect": 9.13853986161122e-17
+            },
+            {
+              "band_hz": [
+                1000.0,
+                2000.0
+              ],
+              "reference_dBFS": -27.86144693374469,
+              "baseline_reference_equivalent_dBFS": -23.972558795257754,
+              "candidate_reference_equivalent_dBFS": -24.449971066212527,
+              "baseline_minus_reference_db": 3.88888813848694,
+              "candidate_minus_reference_db": 3.411475867532168,
+              "reference_relative_H1_db": -1.803089961569269,
+              "reference_relative_sustain_db": 17.047359854861945,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.47741227095477284,
+              "difference_reference_equivalent_dBFS": -45.39114436406305,
+              "old_new_real_correlation": 0.9977004066705599,
+              "difference_power_over_old": 0.007213423711896064,
+              "twice_old_difference_cross_over_old": -0.11131499910827135,
+              "coherent_identity_relative_defect": 1.0824956106250481e-16
+            },
+            {
+              "band_hz": [
+                2000.0,
+                4000.0
+              ],
+              "reference_dBFS": -46.76509776988865,
+              "baseline_reference_equivalent_dBFS": -46.6425721896959,
+              "candidate_reference_equivalent_dBFS": -46.42340617919993,
+              "baseline_minus_reference_db": 0.12252558019274509,
+              "candidate_minus_reference_db": 0.3416915906887168,
+              "reference_relative_H1_db": -20.706740797713223,
+              "reference_relative_sustain_db": -1.8562909812820105,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.219166010495972,
+              "difference_reference_equivalent_dBFS": -72.61018440035978,
+              "old_new_real_correlation": 0.9990845381441347,
+              "difference_power_over_old": 0.002530689009135911,
+              "twice_old_difference_cross_over_old": 0.0492291926254724,
+              "coherent_identity_relative_defect": 1.4869655700642032e-16
+            },
+            {
+              "band_hz": [
+                4000.0,
+                8000.0
+              ],
+              "reference_dBFS": -68.73288060813815,
+              "baseline_reference_equivalent_dBFS": -63.920030483187624,
+              "candidate_reference_equivalent_dBFS": -63.885895420332815,
+              "baseline_minus_reference_db": 4.812850124950522,
+              "candidate_minus_reference_db": 4.8469851878053225,
+              "reference_relative_H1_db": -42.674523635962714,
+              "reference_relative_sustain_db": -23.824073819531506,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.0341350628548001,
+              "difference_reference_equivalent_dBFS": -86.12653203145464,
+              "old_new_real_correlation": 0.9970112304219354,
+              "difference_power_over_old": 0.0060165820705964405,
+              "twice_old_difference_cross_over_old": 0.0018742766293925175,
+              "coherent_identity_relative_defect": 1.2952985008960297e-16
+            },
+            {
+              "band_hz": [
+                8000.0,
+                12000.0
+              ],
+              "reference_dBFS": -88.5898906640328,
+              "baseline_reference_equivalent_dBFS": -96.07888388602316,
+              "candidate_reference_equivalent_dBFS": -96.06796028614623,
+              "baseline_minus_reference_db": -7.488993221990368,
+              "candidate_minus_reference_db": -7.478069622113451,
+              "reference_relative_H1_db": -62.53153369185736,
+              "reference_relative_sustain_db": -43.681083875426154,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.010923599876916566,
+              "difference_reference_equivalent_dBFS": -138.44838254158978,
+              "old_new_real_correlation": 0.999971852448658,
+              "difference_power_over_old": 5.794955888538746e-05,
+              "twice_old_difference_cross_over_old": 0.0024604681646135597,
+              "coherent_identity_relative_defect": 3.736538234950406e-17
+            },
+            {
+              "band_hz": [
+                12000.0,
+                19000.0
+              ],
+              "reference_dBFS": -98.38028262913735,
+              "baseline_reference_equivalent_dBFS": -114.73547508237291,
+              "candidate_reference_equivalent_dBFS": -114.69123138584804,
+              "baseline_minus_reference_db": -16.355192453235578,
+              "candidate_minus_reference_db": -16.31094875671068,
+              "reference_relative_H1_db": -72.32192565696192,
+              "reference_relative_sustain_db": -53.471475840530715,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.044243696524896126,
+              "difference_reference_equivalent_dBFS": -155.03554237475817,
+              "old_new_real_correlation": 0.9999665482289047,
+              "difference_power_over_old": 9.332398404655759e-05,
+              "twice_old_difference_cross_over_old": 0.010146232743173939,
+              "coherent_identity_relative_defect": 2.7816254903252267e-18
+            }
+          ]
+        },
+        {
+          "window_seconds": [
+            0.02,
+            0.05
+          ],
+          "H1_center_hz": 1050.3644434995263,
+          "H1_half_width_hz": 99.99999999999999,
+          "H1_power_dBFS": {
+            "reference": -27.730978973401513,
+            "baseline": -25.617863537400403,
+            "candidate": -25.59891391425323
+          },
+          "H1_adjacent_band_prominence_db": {
+            "reference": 20.96616881989827,
+            "baseline": 26.37295014105849,
+            "candidate": 30.581837473147747
+          },
+          "broad_mono_candidate_minus_baseline_db": 0.0830895616728508,
+          "fine_bands": [
+            {
+              "band_hz": [
+                31.25,
+                250.0
+              ],
+              "reference_dBFS": -36.910448829865274,
+              "baseline_reference_equivalent_dBFS": -72.6552984072559,
+              "candidate_reference_equivalent_dBFS": -91.0290826628866,
+              "baseline_minus_reference_db": -35.744849577390625,
+              "candidate_minus_reference_db": -54.11863383302132,
+              "reference_relative_H1_db": -9.179469856463761,
+              "reference_relative_sustain_db": 7.998357958741358,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -18.37378425563069,
+              "difference_reference_equivalent_dBFS": -71.83394548924657,
+              "old_new_real_correlation": -0.8029209111686378,
+              "difference_power_over_old": 1.2081901529528298,
+              "twice_old_difference_cross_over_old": -2.193648238868692,
+              "coherent_identity_relative_defect": 2.7920161905046267e-20
+            },
+            {
+              "band_hz": [
+                250.0,
+                500.0
+              ],
+              "reference_dBFS": -39.67204082512344,
+              "baseline_reference_equivalent_dBFS": -62.904483622528254,
+              "candidate_reference_equivalent_dBFS": -87.87375718650338,
+              "baseline_minus_reference_db": -23.23244279740482,
+              "candidate_minus_reference_db": -48.20171636137994,
+              "reference_relative_H1_db": -11.941061851721923,
+              "reference_relative_sustain_db": 5.236765963483197,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -24.96927356397513,
+              "difference_reference_equivalent_dBFS": -62.96417427334775,
+              "old_new_real_correlation": 0.14915798975518152,
+              "difference_power_over_old": 0.9863497410983975,
+              "twice_old_difference_cross_over_old": -1.9831650109175303,
+              "coherent_identity_relative_defect": 1.1562766358182723e-18
+            },
+            {
+              "band_hz": [
+                500.0,
+                1000.0
+              ],
+              "reference_dBFS": -41.40255401535116,
+              "baseline_reference_equivalent_dBFS": -46.238157097359036,
+              "candidate_reference_equivalent_dBFS": -48.801645885168526,
+              "baseline_minus_reference_db": -4.835603082007876,
+              "candidate_minus_reference_db": -7.399091869817368,
+              "reference_relative_H1_db": -13.671575041949646,
+              "reference_relative_sustain_db": 3.5062527732554742,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -2.563488787809492,
+              "difference_reference_equivalent_dBFS": -55.5188443677398,
+              "old_new_real_correlation": 0.9646047040984131,
+              "difference_power_over_old": 0.1180133864862835,
+              "twice_old_difference_cross_over_old": -0.5638330382546737,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                1000.0,
+                2000.0
+              ],
+              "reference_dBFS": -27.753937113431984,
+              "baseline_reference_equivalent_dBFS": -25.634601526110284,
+              "candidate_reference_equivalent_dBFS": -25.612003711943085,
+              "baseline_minus_reference_db": 2.119335587321703,
+              "candidate_minus_reference_db": 2.141933401488899,
+              "reference_relative_H1_db": -0.022958140030468723,
+              "reference_relative_sustain_db": 17.154869675174652,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.022597814167196077,
+              "difference_reference_equivalent_dBFS": -62.73842506654916,
+              "old_new_real_correlation": 0.9999062309986525,
+              "difference_power_over_old": 0.00019481287067148068,
+              "twice_old_difference_cross_over_old": 0.005022087011699218,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                2000.0,
+                4000.0
+              ],
+              "reference_dBFS": -49.705979932628594,
+              "baseline_reference_equivalent_dBFS": -46.31389454006664,
+              "candidate_reference_equivalent_dBFS": -46.356882347399164,
+              "baseline_minus_reference_db": 3.392085392561958,
+              "candidate_minus_reference_db": 3.349097585229435,
+              "reference_relative_H1_db": -21.97500095922708,
+              "reference_relative_sustain_db": -4.7971731440219605,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.04298780733252266,
+              "difference_reference_equivalent_dBFS": -91.58033653179253,
+              "old_new_real_correlation": 0.9999973028018659,
+              "difference_power_over_old": 2.9741016013955877e-05,
+              "twice_old_difference_cross_over_old": -0.009879222429953757,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                4000.0,
+                8000.0
+              ],
+              "reference_dBFS": -73.1300899132012,
+              "baseline_reference_equivalent_dBFS": -68.56491313962458,
+              "candidate_reference_equivalent_dBFS": -68.54540423275259,
+              "baseline_minus_reference_db": 4.565176773576633,
+              "candidate_minus_reference_db": 4.584685680448628,
+              "reference_relative_H1_db": -45.3991109397997,
+              "reference_relative_sustain_db": -28.221283124594578,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.019508906871995014,
+              "difference_reference_equivalent_dBFS": -118.57254278993493,
+              "old_new_real_correlation": 0.9999975423363545,
+              "difference_power_over_old": 9.982447503486944e-06,
+              "twice_old_difference_cross_over_old": 0.004492213935889044,
+              "coherent_identity_relative_defect": 1.8936109159725175e-16
+            },
+            {
+              "band_hz": [
+                8000.0,
+                12000.0
+              ],
+              "reference_dBFS": -93.52256532778293,
+              "baseline_reference_equivalent_dBFS": -108.16353461552549,
+              "candidate_reference_equivalent_dBFS": -108.14973566824636,
+              "baseline_minus_reference_db": -14.640969287742555,
+              "candidate_minus_reference_db": -14.627170340463444,
+              "reference_relative_H1_db": -65.79158635438142,
+              "reference_relative_sustain_db": -48.613758539176295,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.013798947279109306,
+              "difference_reference_equivalent_dBFS": -158.8586989263849,
+              "old_new_real_correlation": 0.9999970082562083,
+              "difference_power_over_old": 8.520862729598639e-06,
+              "twice_old_difference_cross_over_old": 0.0031738572151409927,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                12000.0,
+                19000.0
+              ],
+              "reference_dBFS": -102.01953797637213,
+              "baseline_reference_equivalent_dBFS": -123.10217228096654,
+              "candidate_reference_equivalent_dBFS": -123.05681211398378,
+              "baseline_minus_reference_db": -21.08263430459441,
+              "candidate_minus_reference_db": -21.037274137611654,
+              "reference_relative_H1_db": -74.28855900297062,
+              "reference_relative_sustain_db": -57.110731187765495,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.04536016698275633,
+              "difference_reference_equivalent_dBFS": -163.5399009172103,
+              "old_new_real_correlation": 0.9999686655001236,
+              "difference_power_over_old": 9.041222067585353e-05,
+              "twice_old_difference_cross_over_old": 0.010408887068029681,
+              "coherent_identity_relative_defect": 0.0
+            }
+          ]
+        },
+        {
+          "window_seconds": [
+            0.05,
+            0.1
+          ],
+          "H1_center_hz": 1050.3644434995263,
+          "H1_half_width_hz": 60.0,
+          "H1_power_dBFS": {
+            "reference": -30.508134508841405,
+            "baseline": -27.028771081130095,
+            "candidate": -27.02117624914052
+          },
+          "H1_adjacent_band_prominence_db": {
+            "reference": 29.444912103850754,
+            "baseline": 44.63953783326056,
+            "candidate": 45.03922174924878
+          },
+          "broad_mono_candidate_minus_baseline_db": 0.06349160894813052,
+          "fine_bands": [
+            {
+              "band_hz": [
+                31.25,
+                250.0
+              ],
+              "reference_dBFS": -45.1866225242621,
+              "baseline_reference_equivalent_dBFS": -80.37657591925323,
+              "candidate_reference_equivalent_dBFS": -96.90926518615956,
+              "baseline_minus_reference_db": -35.18995339499113,
+              "candidate_minus_reference_db": -51.72264266189747,
+              "reference_relative_H1_db": -14.678488015420697,
+              "reference_relative_sustain_db": -0.2778157356554655,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -16.532689266906342,
+              "difference_reference_equivalent_dBFS": -79.1774900190441,
+              "old_new_real_correlation": -0.9920735150923157,
+              "difference_power_over_old": 1.3179793020582562,
+              "twice_old_difference_cross_over_old": -2.295759966216073,
+              "coherent_identity_relative_defect": 2.901292651609207e-20
+            },
+            {
+              "band_hz": [
+                250.0,
+                500.0
+              ],
+              "reference_dBFS": -43.03784470537223,
+              "baseline_reference_equivalent_dBFS": -74.30915835872904,
+              "candidate_reference_equivalent_dBFS": -100.2070776164045,
+              "baseline_minus_reference_db": -31.271313653356806,
+              "candidate_minus_reference_db": -57.16923291103227,
+              "reference_relative_H1_db": -12.529710196530829,
+              "reference_relative_sustain_db": 1.8709620832344034,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -25.89791925767546,
+              "difference_reference_equivalent_dBFS": -74.12145613648273,
+              "old_new_real_correlation": -0.41012616478158775,
+              "difference_power_over_old": 1.044167621835941,
+              "twice_old_difference_cross_over_old": -2.041595994259323,
+              "coherent_identity_relative_defect": 2.64300844853778e-19
+            },
+            {
+              "band_hz": [
+                500.0,
+                1000.0
+              ],
+              "reference_dBFS": -51.56153030028637,
+              "baseline_reference_equivalent_dBFS": -65.70729256389212,
+              "candidate_reference_equivalent_dBFS": -66.55485166892976,
+              "baseline_minus_reference_db": -14.14576226360575,
+              "candidate_minus_reference_db": -14.993321368643391,
+              "reference_relative_H1_db": -21.053395791444967,
+              "reference_relative_sustain_db": -6.652723511679737,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.8475591050376423,
+              "difference_reference_equivalent_dBFS": -78.21773050412867,
+              "old_new_real_correlation": 0.9738399892338075,
+              "difference_power_over_old": 0.05609914031065899,
+              "twice_old_difference_cross_over_old": -0.23339422981513044,
+              "coherent_identity_relative_defect": 3.7923058433679075e-18
+            },
+            {
+              "band_hz": [
+                1000.0,
+                2000.0
+              ],
+              "reference_dBFS": -30.50529841862612,
+              "baseline_reference_equivalent_dBFS": -27.028992979811264,
+              "candidate_reference_equivalent_dBFS": -27.021373831436108,
+              "baseline_minus_reference_db": 3.4763054388148573,
+              "candidate_minus_reference_db": 3.4839245871900126,
+              "reference_relative_H1_db": 0.0028360902152842465,
+              "reference_relative_sustain_db": 14.403508369980516,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.007619148375156323,
+              "difference_reference_equivalent_dBFS": -72.97750663522605,
+              "old_new_real_correlation": 0.9999876866594678,
+              "difference_power_over_old": 2.541842485742043e-05,
+              "twice_old_difference_cross_over_old": 0.0017304951360970933,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                2000.0,
+                4000.0
+              ],
+              "reference_dBFS": -49.64275179277305,
+              "baseline_reference_equivalent_dBFS": -49.86139258413293,
+              "candidate_reference_equivalent_dBFS": -49.899711795289605,
+              "baseline_minus_reference_db": -0.21864079135988868,
+              "candidate_minus_reference_db": -0.25696000251656015,
+              "reference_relative_H1_db": -19.13461728393164,
+              "reference_relative_sustain_db": -4.73394500416641,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.03831921115667143,
+              "difference_reference_equivalent_dBFS": -96.53035786711382,
+              "old_new_real_correlation": 0.9999989173210736,
+              "difference_power_over_old": 2.15329470124116e-05,
+              "twice_old_difference_cross_over_old": -0.008806046090500444,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                4000.0,
+                8000.0
+              ],
+              "reference_dBFS": -80.49441732707496,
+              "baseline_reference_equivalent_dBFS": -77.6342470771653,
+              "candidate_reference_equivalent_dBFS": -77.61741583721397,
+              "baseline_minus_reference_db": 2.860170249909653,
+              "candidate_minus_reference_db": 2.8770014898609957,
+              "reference_relative_H1_db": -49.98628281823356,
+              "reference_relative_sustain_db": -35.58561053846832,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.01683123995134217,
+              "difference_reference_equivalent_dBFS": -126.8634878384712,
+              "old_new_real_correlation": 0.9999959180481067,
+              "difference_power_over_old": 1.1941968571082111e-05,
+              "twice_old_difference_cross_over_old": 0.003871113853809575,
+              "coherent_identity_relative_defect": 1.9116215684292323e-16
+            },
+            {
+              "band_hz": [
+                8000.0,
+                12000.0
+              ],
+              "reference_dBFS": -97.18060442009362,
+              "baseline_reference_equivalent_dBFS": -105.8701940924162,
+              "candidate_reference_equivalent_dBFS": -105.8651201969525,
+              "baseline_minus_reference_db": -8.689589672322576,
+              "candidate_minus_reference_db": -8.684515776858882,
+              "reference_relative_H1_db": -66.67246991125222,
+              "reference_relative_sustain_db": -52.27179763148698,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.005073895463693053,
+              "difference_reference_equivalent_dBFS": -158.88188055097757,
+              "old_new_real_correlation": 0.9999976728753369,
+              "difference_power_over_old": 4.998403985452464e-06,
+              "twice_old_difference_cross_over_old": 0.0011639919390129987,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                12000.0,
+                19000.0
+              ],
+              "reference_dBFS": -106.32659356649319,
+              "baseline_reference_equivalent_dBFS": -114.22216173265082,
+              "candidate_reference_equivalent_dBFS": -114.17850839158193,
+              "baseline_minus_reference_db": -7.895568166157619,
+              "candidate_minus_reference_db": -7.851914825088741,
+              "reference_relative_H1_db": -75.81845905765178,
+              "reference_relative_sustain_db": -61.41778677788655,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.04365334106887815,
+              "difference_reference_equivalent_dBFS": -155.1656967225121,
+              "old_new_real_correlation": 0.9999725947944988,
+              "difference_power_over_old": 8.04723160880991e-05,
+              "twice_old_difference_cross_over_old": 0.010021767469465837,
+              "coherent_identity_relative_defect": 6.934094284355217e-17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C6v12",
+      "midi": 84,
+      "frozen_reference_f1_hz": 1050.3441445113315,
+      "source_reference_onset_frame": 373,
+      "source_model_fixed_onset_frame": 4757,
+      "fixed_model_gain": 1.2851955517711928,
+      "noise_SNR": {
+        "available": false,
+        "actual_reference_onset_ms": 7.770833333333333,
+        "reason": "No\u22655ms noise segment before a5ms onset safetygap in this edited recording."
+      },
+      "true_SNR_db": null,
+      "windows": [
+        {
+          "window_seconds": [
+            0.005,
+            0.02
+          ],
+          "H1_center_hz": 1050.3441445113315,
+          "H1_half_width_hz": 200.0,
+          "H1_power_dBFS": {
+            "reference": -14.718386439188142,
+            "baseline": -13.909763998164411,
+            "candidate": -14.481623261885165
+          },
+          "H1_adjacent_band_prominence_db": {
+            "reference": 12.268381688362792,
+            "baseline": 24.678733864935772,
+            "candidate": 25.875544321764924
+          },
+          "broad_mono_candidate_minus_baseline_db": -0.9609020261956789,
+          "fine_bands": [
+            {
+              "band_hz": [
+                31.25,
+                250.0
+              ],
+              "reference_dBFS": -34.89463579320018,
+              "baseline_reference_equivalent_dBFS": -41.389429387285745,
+              "candidate_reference_equivalent_dBFS": -84.60315037817657,
+              "baseline_minus_reference_db": -6.494793594085558,
+              "candidate_minus_reference_db": -49.70851458497638,
+              "reference_relative_H1_db": -20.176249354012036,
+              "reference_relative_sustain_db": -0.450802841485342,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -43.21372099089081,
+              "difference_reference_equivalent_dBFS": -41.37461810485013,
+              "old_new_real_correlation": -0.2438355229469075,
+              "difference_power_over_old": 1.003416245926475,
+              "twice_old_difference_cross_over_old": -2.003368533895808,
+              "coherent_identity_relative_defect": 8.066957638645345e-17
+            },
+            {
+              "band_hz": [
+                250.0,
+                500.0
+              ],
+              "reference_dBFS": -28.565983920837258,
+              "baseline_reference_equivalent_dBFS": -48.978064222905346,
+              "candidate_reference_equivalent_dBFS": -72.01613707880604,
+              "baseline_minus_reference_db": -20.412080302068084,
+              "candidate_minus_reference_db": -43.450153157968785,
+              "reference_relative_H1_db": -13.84759748164912,
+              "reference_relative_sustain_db": 5.877849030877577,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -23.038072855900698,
+              "difference_reference_equivalent_dBFS": -48.805673846053075,
+              "old_new_real_correlation": -0.2520011443303497,
+              "difference_power_over_old": 1.0404927002313897,
+              "twice_old_difference_cross_over_old": -2.0355245729425437,
+              "coherent_identity_relative_defect": 7.89581226914021e-19
+            },
+            {
+              "band_hz": [
+                500.0,
+                1000.0
+              ],
+              "reference_dBFS": -21.51146593853181,
+              "baseline_reference_equivalent_dBFS": -21.026888217246405,
+              "candidate_reference_equivalent_dBFS": -22.190999826636872,
+              "baseline_minus_reference_db": 0.4845777212854057,
+              "candidate_minus_reference_db": -0.6795338881050628,
+              "reference_relative_H1_db": -6.793079499343666,
+              "reference_relative_sustain_db": 12.93236701318303,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -1.1641116093904686,
+              "difference_reference_equivalent_dBFS": -36.11820705588903,
+              "old_new_real_correlation": 0.9912917033604867,
+              "difference_power_over_old": 0.030964788368704085,
+              "twice_old_difference_cross_over_old": -0.26609265407227073,
+              "coherent_identity_relative_defect": 4.3949007637745547e-16
+            },
+            {
+              "band_hz": [
+                1000.0,
+                2000.0
+              ],
+              "reference_dBFS": -15.14243713554687,
+              "baseline_reference_equivalent_dBFS": -14.81056041641616,
+              "candidate_reference_equivalent_dBFS": -15.260019927465402,
+              "baseline_minus_reference_db": 0.3318767191307112,
+              "candidate_minus_reference_db": -0.11758279191852976,
+              "reference_relative_H1_db": -0.42405069635872883,
+              "reference_relative_sustain_db": 19.301395816167968,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.4494595110492412,
+              "difference_reference_equivalent_dBFS": -36.37684595259945,
+              "old_new_real_correlation": 0.9976678658972005,
+              "difference_power_over_old": 0.006972225845126404,
+              "twice_old_difference_cross_over_old": -0.10528887876337197,
+              "coherent_identity_relative_defect": 2.100614160515956e-16
+            },
+            {
+              "band_hz": [
+                2000.0,
+                4000.0
+              ],
+              "reference_dBFS": -25.498763419367858,
+              "baseline_reference_equivalent_dBFS": -26.895454531380942,
+              "candidate_reference_equivalent_dBFS": -26.720658846272258,
+              "baseline_minus_reference_db": -1.3966911120130825,
+              "candidate_minus_reference_db": -1.2218954269044002,
+              "reference_relative_H1_db": -10.780376980179714,
+              "reference_relative_sustain_db": 8.945069532346983,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.1747956851086822,
+              "difference_reference_equivalent_dBFS": -52.438306373200774,
+              "old_new_real_correlation": 0.9988349407351996,
+              "difference_power_over_old": 0.002790710688981047,
+              "twice_old_difference_cross_over_old": 0.038278418432831245,
+              "coherent_identity_relative_defect": 1.5383197166564087e-16
+            },
+            {
+              "band_hz": [
+                4000.0,
+                8000.0
+              ],
+              "reference_dBFS": -33.87053378812426,
+              "baseline_reference_equivalent_dBFS": -40.869506559492464,
+              "candidate_reference_equivalent_dBFS": -40.89702276125452,
+              "baseline_minus_reference_db": -6.998972771368205,
+              "candidate_minus_reference_db": -7.026488973130255,
+              "reference_relative_H1_db": -19.15214734893612,
+              "reference_relative_sustain_db": 0.5732991635905752,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.027516201762050812,
+              "difference_reference_equivalent_dBFS": -67.04381281949586,
+              "old_new_real_correlation": 0.9987946561182033,
+              "difference_power_over_old": 0.0024130669640071867,
+              "twice_old_difference_cross_over_old": -0.008728877454336311,
+              "coherent_identity_relative_defect": 3.3042558304045416e-17
+            },
+            {
+              "band_hz": [
+                8000.0,
+                12000.0
+              ],
+              "reference_dBFS": -59.9902551539994,
+              "baseline_reference_equivalent_dBFS": -72.76152373739839,
+              "candidate_reference_equivalent_dBFS": -72.74828649028726,
+              "baseline_minus_reference_db": -12.771268583398994,
+              "candidate_minus_reference_db": -12.758031336287862,
+              "reference_relative_H1_db": -45.27186871481126,
+              "reference_relative_sustain_db": -25.54642220228456,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.013237247111131355,
+              "difference_reference_equivalent_dBFS": -121.44282715037448,
+              "old_new_real_correlation": 0.9999943976814681,
+              "difference_power_over_old": 1.3547827513176109e-05,
+              "twice_old_difference_cross_over_old": 0.003039090800367119,
+              "coherent_identity_relative_defect": 1.9807839302186286e-17
+            },
+            {
+              "band_hz": [
+                12000.0,
+                19000.0
+              ],
+              "reference_dBFS": -84.90463107721058,
+              "baseline_reference_equivalent_dBFS": -99.2646262951137,
+              "candidate_reference_equivalent_dBFS": -99.22048985979812,
+              "baseline_minus_reference_db": -14.359995217903114,
+              "candidate_minus_reference_db": -14.315858782587528,
+              "reference_relative_H1_db": -70.18624463802244,
+              "reference_relative_sustain_db": -50.46079812549576,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.04413643531558739,
+              "difference_reference_equivalent_dBFS": -140.18304764053724,
+              "old_new_real_correlation": 0.9999726459318892,
+              "difference_power_over_old": 8.093900579049407e-05,
+              "twice_old_difference_cross_over_old": 0.010133667328792683,
+              "coherent_identity_relative_defect": 7.996749213231247e-18
+            }
+          ]
+        },
+        {
+          "window_seconds": [
+            0.02,
+            0.05
+          ],
+          "H1_center_hz": 1050.3441445113315,
+          "H1_half_width_hz": 99.99999999999999,
+          "H1_power_dBFS": {
+            "reference": -16.28420365396408,
+            "baseline": -16.329593827836998,
+            "candidate": -16.310974482283104
+          },
+          "H1_adjacent_band_prominence_db": {
+            "reference": 23.39265664106708,
+            "baseline": 27.714119775281794,
+            "candidate": 31.656699878755195
+          },
+          "broad_mono_candidate_minus_baseline_db": 0.09083134031272685,
+          "fine_bands": [
+            {
+              "band_hz": [
+                31.25,
+                250.0
+              ],
+              "reference_dBFS": -31.44191338241741,
+              "baseline_reference_equivalent_dBFS": -67.63015253301882,
+              "candidate_reference_equivalent_dBFS": -85.94126309279643,
+              "baseline_minus_reference_db": -36.1882391506014,
+              "candidate_minus_reference_db": -54.49934971037901,
+              "reference_relative_H1_db": -15.157709728453332,
+              "reference_relative_sustain_db": 3.0019195692974265,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -18.311110559777614,
+              "difference_reference_equivalent_dBFS": -66.81056346319258,
+              "old_new_real_correlation": -0.7942585668844466,
+              "difference_power_over_old": 1.2076995569638855,
+              "twice_old_difference_cross_over_old": -2.192946264764022,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                250.0,
+                500.0
+              ],
+              "reference_dBFS": -32.08584415675253,
+              "baseline_reference_equivalent_dBFS": -57.29633471026372,
+              "candidate_reference_equivalent_dBFS": -82.23306829491115,
+              "baseline_minus_reference_db": -25.2104905535112,
+              "candidate_minus_reference_db": -50.14722413815861,
+              "reference_relative_H1_db": -15.80164050278845,
+              "reference_relative_sustain_db": 2.35798879496231,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -24.936733584647413,
+              "difference_reference_equivalent_dBFS": -57.38290006570213,
+              "old_new_real_correlation": 0.20252151432640858,
+              "difference_power_over_old": 0.9802649274679722,
+              "twice_old_difference_cross_over_old": -1.977056245737312,
+              "coherent_identity_relative_defect": 4.907392861238949e-19
+            },
+            {
+              "band_hz": [
+                500.0,
+                1000.0
+              ],
+              "reference_dBFS": -33.351258971052054,
+              "baseline_reference_equivalent_dBFS": -37.86180511780704,
+              "candidate_reference_equivalent_dBFS": -40.06190614032516,
+              "baseline_minus_reference_db": -4.51054614675498,
+              "candidate_minus_reference_db": -6.710647169273107,
+              "reference_relative_H1_db": -17.067055317087977,
+              "reference_relative_sustain_db": 1.092573980662785,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -2.200101022518127,
+              "difference_reference_equivalent_dBFS": -47.829565971315176,
+              "old_new_real_correlation": 0.9673581446254411,
+              "difference_power_over_old": 0.1007450959089493,
+              "twice_old_difference_cross_over_old": -0.498199525987517,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                1000.0,
+                2000.0
+              ],
+              "reference_dBFS": -16.305119116395502,
+              "baseline_reference_equivalent_dBFS": -16.344902035676814,
+              "candidate_reference_equivalent_dBFS": -16.32322972461706,
+              "baseline_minus_reference_db": -0.03978291928131225,
+              "candidate_minus_reference_db": -0.018110608221561103,
+              "reference_relative_H1_db": -0.02091546243142165,
+              "reference_relative_sustain_db": 18.138713835319336,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.021672311059751367,
+              "difference_reference_equivalent_dBFS": -53.79738063927561,
+              "old_new_real_correlation": 0.9999134445902667,
+              "difference_power_over_old": 0.000179784455720311,
+              "twice_old_difference_cross_over_old": 0.0048229215372083325,
+              "coherent_identity_relative_defect": 1.4817405396973739e-16
+            },
+            {
+              "band_hz": [
+                2000.0,
+                4000.0
+              ],
+              "reference_dBFS": -23.18347350229267,
+              "baseline_reference_equivalent_dBFS": -26.70918848775412,
+              "candidate_reference_equivalent_dBFS": -26.748962353860488,
+              "baseline_minus_reference_db": -3.525714985461449,
+              "candidate_minus_reference_db": -3.565488851567817,
+              "reference_relative_H1_db": -6.899269848328591,
+              "reference_relative_sustain_db": 11.260359449422168,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.03977386610636781,
+              "difference_reference_equivalent_dBFS": -72.11012969783437,
+              "old_new_real_correlation": 0.9999960010579315,
+              "difference_power_over_old": 2.883406538842316e-05,
+              "twice_old_difference_cross_over_old": -0.009145295949955447,
+              "coherent_identity_relative_defect": 9.0264631752741e-17
+            },
+            {
+              "band_hz": [
+                4000.0,
+                8000.0
+              ],
+              "reference_dBFS": -37.939378964141945,
+              "baseline_reference_equivalent_dBFS": -44.06838271560016,
+              "candidate_reference_equivalent_dBFS": -44.06236660895304,
+              "baseline_minus_reference_db": -6.12900375145821,
+              "candidate_minus_reference_db": -6.122987644811095,
+              "reference_relative_H1_db": -21.655175310177867,
+              "reference_relative_sustain_db": -3.495546012427107,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.0060161066471157675,
+              "difference_reference_equivalent_dBFS": -93.55924059536919,
+              "old_new_real_correlation": 0.999994621846398,
+              "difference_power_over_old": 1.124382848056115e-05,
+              "twice_old_difference_cross_over_old": 0.001374975835348661,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                8000.0,
+                12000.0
+              ],
+              "reference_dBFS": -73.16655137417806,
+              "baseline_reference_equivalent_dBFS": -86.06972555678901,
+              "candidate_reference_equivalent_dBFS": -86.05465997344054,
+              "baseline_minus_reference_db": -12.903174182610947,
+              "candidate_minus_reference_db": -12.888108599262482,
+              "reference_relative_H1_db": -56.882347720213986,
+              "reference_relative_sustain_db": -38.72271842246322,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.015065583348465153,
+              "difference_reference_equivalent_dBFS": -136.84587595319573,
+              "old_new_real_correlation": 0.9999973297538054,
+              "difference_power_over_old": 8.363440284449918e-06,
+              "twice_old_difference_cross_over_old": 0.003466639193635275,
+              "coherent_identity_relative_defect": 8.574829406203289e-18
+            },
+            {
+              "band_hz": [
+                12000.0,
+                19000.0
+              ],
+              "reference_dBFS": -93.35714984649752,
+              "baseline_reference_equivalent_dBFS": -107.45879251342076,
+              "candidate_reference_equivalent_dBFS": -107.41525230745572,
+              "baseline_minus_reference_db": -14.101642666923249,
+              "candidate_minus_reference_db": -14.058102460958214,
+              "reference_relative_H1_db": -77.07294619253344,
+              "reference_relative_sustain_db": -58.913316894782675,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.04354020596503724,
+              "difference_reference_equivalent_dBFS": -148.15118700352969,
+              "old_new_real_correlation": 0.9999701455370004,
+              "difference_power_over_old": 8.526298854424016e-05,
+              "twice_old_difference_cross_over_old": 0.00999066365280088,
+              "coherent_identity_relative_defect": 6.999634551145641e-18
+            }
+          ]
+        },
+        {
+          "window_seconds": [
+            0.05,
+            0.1
+          ],
+          "H1_center_hz": 1050.3441445113315,
+          "H1_half_width_hz": 60.0,
+          "H1_power_dBFS": {
+            "reference": -19.17546080926404,
+            "baseline": -17.74545382088192,
+            "candidate": -17.737862569832085
+          },
+          "H1_adjacent_band_prominence_db": {
+            "reference": 31.877341510357585,
+            "baseline": 44.747509853661604,
+            "candidate": 45.07058947133036
+          },
+          "broad_mono_candidate_minus_baseline_db": 0.06160217643101152,
+          "fine_bands": [
+            {
+              "band_hz": [
+                31.25,
+                250.0
+              ],
+              "reference_dBFS": -38.09962233840047,
+              "baseline_reference_equivalent_dBFS": -75.24622602920134,
+              "candidate_reference_equivalent_dBFS": -91.76701394663971,
+              "baseline_minus_reference_db": -37.14660369080085,
+              "candidate_minus_reference_db": -53.66739160823924,
+              "reference_relative_H1_db": -18.924161529136434,
+              "reference_relative_sustain_db": -3.655789386685637,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -16.52078791743838,
+              "difference_reference_equivalent_dBFS": -74.04633831461668,
+              "old_new_real_correlation": -0.99132603899324,
+              "difference_power_over_old": 1.3182226559009533,
+              "twice_old_difference_cross_over_old": -2.295942346973198,
+              "coherent_identity_relative_defect": 7.409613800272998e-20
+            },
+            {
+              "band_hz": [
+                250.0,
+                500.0
+              ],
+              "reference_dBFS": -37.90320193679346,
+              "baseline_reference_equivalent_dBFS": -68.80998608863655,
+              "candidate_reference_equivalent_dBFS": -94.7673385646195,
+              "baseline_minus_reference_db": -30.906784151843084,
+              "candidate_minus_reference_db": -56.86413662782604,
+              "reference_relative_H1_db": -18.727741127529416,
+              "reference_relative_sustain_db": -3.4593689850786187,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -25.957352475982958,
+              "difference_reference_equivalent_dBFS": -68.63480382220607,
+              "old_new_real_correlation": -0.38344895653209193,
+              "difference_power_over_old": 1.0411618025978602,
+              "twice_old_difference_cross_over_old": -2.03862512804393,
+              "coherent_identity_relative_defect": 1.477003583248912e-19
+            },
+            {
+              "band_hz": [
+                500.0,
+                1000.0
+              ],
+              "reference_dBFS": -43.70627000364772,
+              "baseline_reference_equivalent_dBFS": -56.736166838567655,
+              "candidate_reference_equivalent_dBFS": -57.374585508420594,
+              "baseline_minus_reference_db": -13.029896834919937,
+              "candidate_minus_reference_db": -13.668315504772872,
+              "reference_relative_H1_db": -24.53080919438368,
+              "reference_relative_sustain_db": -9.262437051932883,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.6384186698529377,
+              "difference_reference_equivalent_dBFS": -71.06541402438813,
+              "old_new_real_correlation": 0.9828429858103945,
+              "difference_power_over_old": 0.03690415633810841,
+              "twice_old_difference_cross_over_old": -0.17361132816321467,
+              "coherent_identity_relative_defect": 4.971269557503699e-18
+            },
+            {
+              "band_hz": [
+                1000.0,
+                2000.0
+              ],
+              "reference_dBFS": -19.171754797516126,
+              "baseline_reference_equivalent_dBFS": -17.745668600218746,
+              "candidate_reference_equivalent_dBFS": -17.738054742128945,
+              "baseline_minus_reference_db": 1.426086197297377,
+              "candidate_minus_reference_db": 1.4337000553871782,
+              "reference_relative_H1_db": 0.00370601174791748,
+              "reference_relative_sustain_db": 15.272078154198713,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.007613858089801306,
+              "difference_reference_equivalent_dBFS": -63.713545611961244,
+              "old_new_real_correlation": 0.9999877426069893,
+              "difference_power_over_old": 2.5305347108940978e-05,
+              "twice_old_difference_cross_over_old": 0.001729387942432466,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                2000.0,
+                4000.0
+              ],
+              "reference_dBFS": -24.07527629266192,
+              "baseline_reference_equivalent_dBFS": -30.400867665778645,
+              "candidate_reference_equivalent_dBFS": -30.437618899814836,
+              "baseline_minus_reference_db": -6.325591373116723,
+              "candidate_minus_reference_db": -6.362342607152913,
+              "reference_relative_H1_db": -4.899815483397878,
+              "reference_relative_sustain_db": 10.368556659052919,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": -0.036751234036190725,
+              "difference_reference_equivalent_dBFS": -77.16185388363385,
+              "old_new_real_correlation": 0.9999983658547197,
+              "difference_power_over_old": 2.108149366362069e-05,
+              "twice_old_difference_cross_over_old": -0.008447661513840393,
+              "coherent_identity_relative_defect": 2.77100878369878e-17
+            },
+            {
+              "band_hz": [
+                4000.0,
+                8000.0
+              ],
+              "reference_dBFS": -46.4184202690734,
+              "baseline_reference_equivalent_dBFS": -58.23976942660329,
+              "candidate_reference_equivalent_dBFS": -58.22736080485714,
+              "baseline_minus_reference_db": -11.82134915752988,
+              "candidate_minus_reference_db": -11.808940535783739,
+              "reference_relative_H1_db": -27.24295945980936,
+              "reference_relative_sustain_db": -11.974587317358562,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.012408621746144504,
+              "difference_reference_equivalent_dBFS": -107.03494336828591,
+              "old_new_real_correlation": 0.9999944312502914,
+              "difference_power_over_old": 1.319722453715398e-05,
+              "twice_old_difference_cross_over_old": 0.002848079180912182,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                8000.0,
+                12000.0
+              ],
+              "reference_dBFS": -78.35695394767183,
+              "baseline_reference_equivalent_dBFS": -84.01030499763158,
+              "candidate_reference_equivalent_dBFS": -84.00187385795726,
+              "baseline_minus_reference_db": -5.653351049959753,
+              "candidate_minus_reference_db": -5.644919910285436,
+              "reference_relative_H1_db": -59.18149313840779,
+              "reference_relative_sustain_db": -43.91312099595699,
+              "reference_above_minus50dB_sustain": true,
+              "candidate_minus_baseline_db": 0.008431139674317335,
+              "difference_reference_equivalent_dBFS": -136.09274828090932,
+              "old_new_real_correlation": 0.9999973786407634,
+              "difference_power_over_old": 6.190926837354105e-06,
+              "twice_old_difference_cross_over_old": 0.0019370363499886898,
+              "coherent_identity_relative_defect": 0.0
+            },
+            {
+              "band_hz": [
+                12000.0,
+                19000.0
+              ],
+              "reference_dBFS": -101.95080111112878,
+              "baseline_reference_equivalent_dBFS": -98.6238025843174,
+              "candidate_reference_equivalent_dBFS": -98.58033659619848,
+              "baseline_minus_reference_db": 3.326998526811387,
+              "candidate_minus_reference_db": 3.3704645149303136,
+              "reference_relative_H1_db": -82.77534030186474,
+              "reference_relative_sustain_db": -67.50696815941394,
+              "reference_above_minus50dB_sustain": false,
+              "candidate_minus_baseline_db": 0.043465988118925776,
+              "difference_reference_equivalent_dBFS": -139.62077890179918,
+              "old_new_real_correlation": 0.9999729753867378,
+              "difference_power_over_old": 7.948814613460695e-05,
+              "twice_old_difference_cross_over_old": 0.009979177161655261,
+              "coherent_identity_relative_defect": 3.7283272392639136e-16
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "T_half_posthoc_diagnostic_gate_application": [
+    {
+      "id": "C3v4",
+      "changes": {
+        "first5_excess_reduction_db": 6.239470641395982,
+        "ring5_20_excess_reduction_db": 4.813985513392726,
+        "late_harmonic_MAE_db": -0.0015127725833892214,
+        "late_envelope_MAE_db": 0.025825031829787015,
+        "late_RMS_db": -0.12681205121148395,
+        "early_window_MAE_db": [
+          -4.318549879357441,
+          -1.458471705713201,
+          -0.4594266023718774,
+          0.0071948659677474325
+        ],
+        "stereo_LR_db": -0.011289012344918303,
+        "mono_energy_db": -0.10050270259388586
+      },
+      "gates": {
+        "same_physical_run_observational_mixture": true,
+        "late_harmonic": true,
+        "late_envelope": true,
+        "late_RMS": true,
+        "stereo_LR": true,
+        "mono_energy": true,
+        "C3_first5": true,
+        "C3_ring5_20": true
+      },
+      "passes_numerical_diagnostic_gates": true,
+      "scope": "Post-hoc gate application to preregistered T*.5 mixture; not another production candidate or a changed frozen result."
+    },
+    {
+      "id": "C3v12",
+      "changes": {
+        "first5_excess_reduction_db": 6.328374826051423,
+        "ring5_20_excess_reduction_db": 4.7842357425032045,
+        "late_harmonic_MAE_db": -0.015384245366480975,
+        "late_envelope_MAE_db": 0.02446512118026778,
+        "late_RMS_db": -0.13249717049653564,
+        "early_window_MAE_db": [
+          -4.26988896400362,
+          -1.108203836515134,
+          -0.4549602204091858,
+          -0.035533229667193744
+        ],
+        "stereo_LR_db": -0.02316068495835033,
+        "mono_energy_db": -0.10684627994949009
+      },
+      "gates": {
+        "same_physical_run_observational_mixture": true,
+        "late_harmonic": true,
+        "late_envelope": true,
+        "late_RMS": true,
+        "stereo_LR": true,
+        "mono_energy": true,
+        "C3_first5": true,
+        "C3_ring5_20": true
+      },
+      "passes_numerical_diagnostic_gates": true,
+      "scope": "Post-hoc gate application to preregistered T*.5 mixture; not another production candidate or a changed frozen result."
+    },
+    {
+      "id": "C4v4",
+      "changes": {
+        "first5_excess_reduction_db": 1.7393392783535226,
+        "ring5_20_excess_reduction_db": 3.9141108324196523,
+        "late_harmonic_MAE_db": 0.009133034489040348,
+        "late_envelope_MAE_db": 0.009433424156557013,
+        "late_RMS_db": -0.014953697359593725,
+        "early_window_MAE_db": [
+          -0.23197352687296302,
+          -0.5693408613683344,
+          -0.03663050312183369,
+          0.008646535522550458
+        ],
+        "stereo_LR_db": -0.01914442313578274,
+        "mono_energy_db": -0.009905099214870176
+      },
+      "gates": {
+        "same_physical_run_observational_mixture": true,
+        "late_harmonic": true,
+        "late_envelope": true,
+        "late_RMS": true,
+        "stereo_LR": true,
+        "mono_energy": true,
+        "each_early_window_MAE": true
+      },
+      "passes_numerical_diagnostic_gates": true,
+      "scope": "Post-hoc gate application to preregistered T*.5 mixture; not another production candidate or a changed frozen result."
+    },
+    {
+      "id": "C4v12",
+      "changes": {
+        "first5_excess_reduction_db": 2.4212321160483725,
+        "ring5_20_excess_reduction_db": 3.8965364914804983,
+        "late_harmonic_MAE_db": -0.004686980322094136,
+        "late_envelope_MAE_db": 0.00864910185050105,
+        "late_RMS_db": -0.014542130899362148,
+        "early_window_MAE_db": [
+          -0.5024216837705566,
+          -0.573539880495356,
+          -0.02902756213191715,
+          -0.0308695830018908
+        ],
+        "stereo_LR_db": -0.023474638113727075,
+        "mono_energy_db": -0.00953707869163165
+      },
+      "gates": {
+        "same_physical_run_observational_mixture": true,
+        "late_harmonic": true,
+        "late_envelope": true,
+        "late_RMS": true,
+        "stereo_LR": true,
+        "mono_energy": true,
+        "each_early_window_MAE": true
+      },
+      "passes_numerical_diagnostic_gates": true,
+      "scope": "Post-hoc gate application to preregistered T*.5 mixture; not another production candidate or a changed frozen result."
+    },
+    {
+      "id": "C6v4",
+      "changes": {
+        "first5_excess_reduction_db": -3.067250858472626,
+        "ring5_20_excess_reduction_db": 0.0,
+        "late_harmonic_MAE_db": -0.003947730862440935,
+        "late_envelope_MAE_db": 0.003908051821565728,
+        "late_RMS_db": 0.07943032522717097,
+        "early_window_MAE_db": [
+          1.3214929328371525,
+          1.191627281693287,
+          0.6421948393500649,
+          1.512752665383454
+        ],
+        "stereo_LR_db": -0.11850493863481226,
+        "mono_energy_db": 0.11710945240207146
+      },
+      "gates": {
+        "same_physical_run_observational_mixture": true,
+        "late_harmonic": true,
+        "late_envelope": true,
+        "late_RMS": true,
+        "stereo_LR": true,
+        "mono_energy": true,
+        "each_early_window_MAE": false
+      },
+      "passes_numerical_diagnostic_gates": false,
+      "scope": "Post-hoc gate application to preregistered T*.5 mixture; not another production candidate or a changed frozen result."
+    },
+    {
+      "id": "C6v12",
+      "changes": {
+        "first5_excess_reduction_db": -2.070641232622247,
+        "ring5_20_excess_reduction_db": 0.0,
+        "late_harmonic_MAE_db": -0.008103475161092888,
+        "late_envelope_MAE_db": 0.01802277779589989,
+        "late_RMS_db": 0.04861547883010144,
+        "early_window_MAE_db": [
+          1.329551678419687,
+          -0.29958824539486884,
+          0.544266237848344,
+          1.4108551621229548
+        ],
+        "stereo_LR_db": -0.12506539415319318,
+        "mono_energy_db": 0.07007983244121044
+      },
+      "gates": {
+        "same_physical_run_observational_mixture": true,
+        "late_harmonic": true,
+        "late_envelope": true,
+        "late_RMS": true,
+        "stereo_LR": true,
+        "mono_energy": true,
+        "each_early_window_MAE": false
+      },
+      "passes_numerical_diagnostic_gates": false,
+      "scope": "Post-hoc gate application to preregistered T*.5 mixture; not another production candidate or a changed frozen result."
+    }
+  ],
+  "coherent_pressure_power_maximum_relative_closure_error": 4.3949007637745547e-16,
+  "inputs": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C6v4.wav",
+      "sha256": "f7795b27c5f2c078c41651dde88e2f765f7762caa5770a4d50ae41fce806c9cb"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/baseline.wav",
+      "sha256": "0523ae405b77e9932611377431c57d372abe088b6ef766ccfaf6ddf3a1e881e9"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/candidate.wav",
+      "sha256": "66eb52f44b529db67e32ab57b038b978843b7c49d91197319521b11f1ea9cfe0"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C6v12.wav",
+      "sha256": "1d2d99da7dab09066cd67940ccd21f381a6b3399fafda3c9b1f3cc4a45281100"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/baseline.wav",
+      "sha256": "46c19d974ad39b1d0d886a70835333c1654d64c104d1dfa8f602ca9388633d06"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/candidate.wav",
+      "sha256": "c9d4f29378380e824fa3a6bb469743f3b2e32d24f8fa0518e97839195ed99f3e"
+    }
+  ],
+  "original_frozen_pilot_passes_all_gates": false,
+  "frozen_gates_rescored_or_changed": false,
+  "default_promoted": false,
+  "new_synthesis_fit_or_acquisition": false,
+  "limits": [
+    "Absolute model levels are reference-equivalent dBFS after the pre-existing fixed gain; they are not calibrated acoustic SPL.",
+    "H1 prominence is adjacent-band contrast, not measured noise SNR; edited references provide no usable separate pre-onset noise here.",
+    "Fine-band estimates are leakage-weighted finite-window powers.500\u20131000Hz includes H1 leakage below the1050Hz carrier,especially in15ms windows.",
+    "Coherent differences describe observed pressure power; mechanical state/force remains unchanged.",
+    "This post-hoc diagnosis cannot turn the failed frozen pilot into a pass or assign the real low-frequency component to a particular physical source."
+  ]
+}

@@ -1,0 +1,627 @@
+{
+  "passed": true,
+  "scope": "Known-answer cached TRAIN controls and synthetic metadata only; no new candidate access.",
+  "protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/protocol.json",
+    "sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa"
+  },
+  "reference_control": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/reference-control.json",
+    "sha256": "4675d46574d65063d63ce9266ef4caa3d30c4880e4fac6fbabd11e6ff9747faf"
+  },
+  "metric_tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/probe_full_causal_radiation_metrics.py",
+    "sha256": "14fc804b80f3742ee6c95cc3908c498459a77e61c90a1bdfe4b6c23c8580c1cd"
+  },
+  "test_tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/check_causal_radiation_metrics.py",
+    "sha256": "e5b941d6e4af318b35140946863d2276495b02fbced36747da755b659869cb13"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0"
+  },
+  "replay_comparison": {
+    "exact_structure_and_nonfloats": true,
+    "float_relative_bound": 3.552713678800501e-15,
+    "absolute_dB_bound": 3.552713678800501e-15,
+    "absolute_power_bound": 0.0,
+    "reason": "Exact JSON dictionary equality is fragile to binary64 reduction/libm rounding. All nonidentical floats are recorded; no frozen numerical formula, threshold, gate or receipt changed.",
+    "comparator_rejects_material_tiny_power_change_metadata_and_type_change": true
+  },
+  "cases": [
+    {
+      "id": "C3v4",
+      "cached_identity_within_binary64_replay_roundoff": true,
+      "cached_identity_exact": false,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C3v4/late_harmonics/0/partials/37/power",
+          "stored": 5.5649044777924405e-11,
+          "recomputed": 5.56490447779244e-11,
+          "absolute_difference": 6.462348535570529e-27,
+          "relative_difference": 1.161268546721596e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9770512259471362e-25
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/39/power",
+          "stored": 1.9711160653410548e-11,
+          "recomputed": 1.971116065341055e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.6392612919149364e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 7.002811007840589e-26
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/39/signed_error_db",
+          "stored": 15.652947734806695,
+          "recomputed": 15.652947734806697,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.1348385425514789e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.5610441530997067e-14
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/42/power",
+          "stored": 5.862218895952425e-12,
+          "recomputed": 5.8622188959524245e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.3779655473187088e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.0826785259772952e-26
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/42/signed_error_db",
+          "stored": 11.036905580158457,
+          "recomputed": 11.036905580158455,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.609469997273228e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.921096542625853e-14
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/44/power",
+          "stored": 1.4136659121430905e-11,
+          "recomputed": 1.4136659121430907e-11,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.1428351776859589e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.0223502233247454e-26
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/44/signed_error_db",
+          "stored": 15.149357640642291,
+          "recomputed": 15.149357640642293,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.1725624818802137e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.382133011495076e-14
+        },
+        {
+          "path": "C3v4/late_harmonics/0/partials/46/power",
+          "stored": 8.56132781655827e-12,
+          "recomputed": 8.561327816558272e-12,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.887075426276706e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.04159464425818e-26
+        },
+        {
+          "path": "C3v4/late_harmonics/1/partials/39/power",
+          "stored": 4.48057073005996e-14,
+          "recomputed": 4.480570730059959e-14,
+          "absolute_difference": 6.310887241768095e-30,
+          "relative_difference": 1.4085007517967786e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5918184921517166e-28
+        },
+        {
+          "path": "C3v4/late_harmonics/1/partials/41/power",
+          "stored": 1.6003318775839231e-15,
+          "recomputed": 1.6003318775839233e-15,
+          "absolute_difference": 1.9721522630525295e-31,
+          "relative_difference": 1.2323395482379294e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.685520952112893e-30
+        },
+        {
+          "path": "C3v4/late_harmonics/1/partials/42/power",
+          "stored": 1.1171185816387908e-14,
+          "recomputed": 1.1171185816387906e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.41231364008603e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.968802465830346e-29
+        },
+        {
+          "path": "C3v4/late_harmonics/1/partials/44/power",
+          "stored": 2.363125140533402e-14,
+          "recomputed": 2.3631251405334023e-14,
+          "absolute_difference": 3.1554436208840472e-30,
+          "relative_difference": 1.3352841822722108e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 8.395507011490374e-29
+        },
+        {
+          "path": "C3v4/late_harmonics/1/partials/46/power",
+          "stored": 1.2360522091932426e-14,
+          "recomputed": 1.2360522091932428e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.2764200401144744e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.391339591312412e-29
+        },
+        {
+          "path": "C3v4/late_harmonics/2/partials/36/power",
+          "stored": 5.6297657883114495e-15,
+          "recomputed": 5.629765788311448e-15,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 2.802464382652824e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 2.0000945924577172e-29
+        },
+        {
+          "path": "C3v4/late_harmonics/3/partials/40/power",
+          "stored": 3.046655670575908e-19,
+          "recomputed": 3.0466556705759074e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.580363973345877e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.082389527545014e-33
+        },
+        {
+          "path": "C3v4/late_harmonics/3/partials/41/power",
+          "stored": 2.7310784584942622e-19,
+          "recomputed": 2.731078458494262e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.7629756647938517e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.702739797369952e-34
+        },
+        {
+          "path": "C3v4/late_harmonics/3/partials/42/power",
+          "stored": 4.417179223565347e-19,
+          "recomputed": 4.417179223565348e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 2.1800450546725971e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5692973049273988e-33
+        },
+        {
+          "path": "C3v4/late_harmonics/3/partials/44/power",
+          "stored": 2.6258893944921084e-19,
+          "recomputed": 2.625889394492108e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 1.8335977406616392e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.329033170829278e-34
+        },
+        {
+          "path": "C3v4/late_harmonics/3/partials/46/power",
+          "stored": 1.0386157782787714e-19,
+          "recomputed": 1.0386157782787716e-19,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.1589523675798995e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.68990448250902e-34
+        },
+        {
+          "path": "C3v4/late_harmonics/3/partials/47/power",
+          "stored": 9.181675215996488e-20,
+          "recomputed": 9.181675215996487e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.3109875778930872e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.2619863134174267e-34
+        }
+      ],
+      "maximum_roundoff_absolute_difference": 1.7763568394002505e-15,
+      "maximum_roundoff_relative_difference": 2.802464382652824e-16,
+      "maximum_roundoff_ULP_distance": 2,
+      "amplitude2_fixed_gain_RMS_and_power_shift_db": 6.020599913279624,
+      "maximum_nonfloored_band_error_shift_defect_db": 4.440892098500626e-15,
+      "stereo_LR_invariant_under_common_gain": true,
+      "mono_energy_gain_db_correct": true,
+      "known48frame_delay_detected_but_not_retimed": true
+    },
+    {
+      "id": "C4v12",
+      "cached_identity_within_binary64_replay_roundoff": true,
+      "cached_identity_exact": false,
+      "numeric_roundoff_witness": [
+        {
+          "path": "C4v12/late_harmonics/0/partials/19/power",
+          "stored": 7.725349377018907e-08,
+          "recomputed": 7.725349377018908e-08,
+          "absolute_difference": 1.3234889800848443e-23,
+          "relative_difference": 1.7131768616470753e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.7445954405248004e-22
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/20/power",
+          "stored": 3.352115864557864e-08,
+          "recomputed": 3.352115864557863e-08,
+          "absolute_difference": 6.617444900424222e-24,
+          "relative_difference": 1.9741098362353434e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.190910788493889e-22
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/20/signed_error_db",
+          "stored": 1.2083068847908287,
+          "recomputed": 1.208306884790828,
+          "absolute_difference": 6.661338147750939e-16,
+          "relative_difference": 5.512952240526289e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 4.292768397785198e-15
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/22/power",
+          "stored": 5.387465526143552e-09,
+          "recomputed": 5.387465526143553e-09,
+          "absolute_difference": 8.271806125530277e-25,
+          "relative_difference": 1.5353798711824683e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.9140122468796338e-23
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/22/signed_error_db",
+          "stored": -4.913969681240515,
+          "recomputed": -4.9139696812405145,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.807456043310197e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.7457927303754116e-14
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/23/power",
+          "stored": 1.3456934420633542e-09,
+          "recomputed": 1.345693442063354e-09,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 1.5367181460078866e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.780863499090608e-24
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/23/signed_error_db",
+          "stored": -0.017724658783485326,
+          "recomputed": -0.017724658783486294,
+          "absolute_difference": 9.679756995950584e-16,
+          "relative_difference": 5.4611810101354486e-14,
+          "ULP_distance": 279,
+          "allowed_absolute_bound": 3.552713678800501e-15
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/31/power",
+          "stored": 2.691376898199341e-11,
+          "recomputed": 2.6913768981993408e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 1.200565506060141e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 9.561691521040462e-26
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/31/signed_error_db",
+          "stored": 12.282367389655807,
+          "recomputed": 12.282367389655803,
+          "absolute_difference": 3.552713678800501e-15,
+          "relative_difference": 2.8925316806535126e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 4.363573463328339e-14
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/34/power",
+          "stored": 6.754118719293362e-12,
+          "recomputed": 6.754118719293363e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.1960014333755003e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.399544996227605e-26
+        },
+        {
+          "path": "C4v12/late_harmonics/0/partials/40/power",
+          "stored": 6.87365382733753e-14,
+          "recomputed": 6.873653827337529e-14,
+          "absolute_difference": 1.262177448353619e-29,
+          "relative_difference": 1.8362540216002062e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.442012397572146e-28
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/20/power",
+          "stored": 8.521305566830802e-10,
+          "recomputed": 8.521305566830804e-10,
+          "absolute_difference": 2.0679515313825692e-25,
+          "relative_difference": 2.4268012866855446e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 3.0273758848518655e-24
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/20/signed_error_db",
+          "stored": -7.112885289528485,
+          "recomputed": -7.112885289528484,
+          "absolute_difference": 8.881784197001252e-16,
+          "relative_difference": 1.24868936239938e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.527004486384671e-14
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/22/power",
+          "stored": 1.0351540765715666e-10,
+          "recomputed": 1.0351540765715667e-10,
+          "absolute_difference": 1.2924697071141057e-26,
+          "relative_difference": 1.248577131043882e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.6776060475019063e-25
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/27/power",
+          "stored": 1.4144818738828293e-11,
+          "recomputed": 1.414481873882829e-11,
+          "absolute_difference": 3.2311742677852644e-27,
+          "relative_difference": 2.284351837549898e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.0252491017588926e-26
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/27/signed_error_db",
+          "stored": 4.470838327304641,
+          "recomputed": 4.470838327304639,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 3.9732075046229027e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 1.588360848112075e-14
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/34/power",
+          "stored": 1.3911482563871449e-14,
+          "recomputed": 1.391148256387145e-14,
+          "absolute_difference": 1.5777218104420236e-30,
+          "relative_difference": 1.1341147884118518e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.9423514397060766e-29
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/39/power",
+          "stored": 4.867161292085779e-16,
+          "recomputed": 4.86716129208578e-16,
+          "absolute_difference": 9.860761315262648e-32,
+          "relative_difference": 2.0259779209077543e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.729163049932147e-30
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/41/power",
+          "stored": 4.257277891034941e-18,
+          "recomputed": 4.25727789103494e-18,
+          "absolute_difference": 7.703719777548943e-34,
+          "relative_difference": 1.8095412079562828e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5124889397934783e-32
+        },
+        {
+          "path": "C4v12/late_harmonics/1/partials/45/power",
+          "stored": 1.0288653417045196e-17,
+          "recomputed": 1.0288653417045198e-17,
+          "absolute_difference": 1.5407439555097887e-33,
+          "relative_difference": 1.4975175983255887e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.655263973117399e-32
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/17/power",
+          "stored": 3.792722412335789e-10,
+          "recomputed": 3.7927224123357887e-10,
+          "absolute_difference": 5.169878828456423e-26,
+          "relative_difference": 1.3631049853902958e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.3474456794198592e-24
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/17/signed_error_db",
+          "stored": -1.1630234527224657,
+          "recomputed": -1.1630234527224663,
+          "absolute_difference": 6.661338147750939e-16,
+          "relative_difference": 5.72760431628247e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 4.131889329252894e-15
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/21/power",
+          "stored": 1.3272100173010302e-11,
+          "recomputed": 1.3272100173010304e-11,
+          "absolute_difference": 1.6155871338926322e-27,
+          "relative_difference": 1.2172806962217146e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.71519718310642e-26
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/22/power",
+          "stored": 4.672737043015512e-12,
+          "recomputed": 4.6727370430155115e-12,
+          "absolute_difference": 8.077935669463161e-28,
+          "relative_difference": 1.728737481929891e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6600896810159015e-26
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/22/signed_error_db",
+          "stored": -9.841065658693058,
+          "recomputed": -9.84106565869306,
+          "absolute_difference": 1.7763568394002505e-15,
+          "relative_difference": 1.805045206492565e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.4962488579612695e-14
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/24/power",
+          "stored": 7.630207033472406e-19,
+          "recomputed": 7.630207033472405e-19,
+          "absolute_difference": 9.62964972193618e-35,
+          "relative_difference": 1.2620430454498237e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 2.710794089989721e-33
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/26/power",
+          "stored": 2.8782232954363026e-13,
+          "recomputed": 2.878223295436302e-13,
+          "absolute_difference": 5.048709793414476e-29,
+          "relative_difference": 1.7541063618725088e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.0225503272338808e-27
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/36/power",
+          "stored": 1.3874245063688693e-18,
+          "recomputed": 1.3874245063688695e-18,
+          "absolute_difference": 1.925929944387236e-34,
+          "relative_difference": 1.3881331456568607e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 4.9291220220797154e-33
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/39/power",
+          "stored": 1.6774937901852245e-19,
+          "recomputed": 1.677493790185225e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 2.870248992359279e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.959655134493946e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/40/power",
+          "stored": 1.4824703886245508e-19,
+          "recomputed": 1.482470388624551e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.6239194043650768e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.266792828083137e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/43/power",
+          "stored": 1.803619798523234e-19,
+          "recomputed": 1.8036197985232337e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.3347671346561974e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 6.407744729568897e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/46/power",
+          "stored": 1.8366888259200608e-19,
+          "recomputed": 1.8366888259200603e-19,
+          "absolute_difference": 4.81482486096809e-35,
+          "relative_difference": 2.6214701113326464e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 6.525229515546232e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/2/partials/47/power",
+          "stored": 1.6390117769165616e-19,
+          "recomputed": 1.639011776916562e-19,
+          "absolute_difference": 2.407412430484045e-35,
+          "relative_difference": 1.4688194828063156e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 5.8229395595665845e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/20/power",
+          "stored": 1.6461316376648025e-12,
+          "recomputed": 1.646131637664803e-12,
+          "absolute_difference": 4.0389678347315804e-28,
+          "relative_difference": 2.453611693206533e-16,
+          "ULP_distance": 2,
+          "allowed_absolute_bound": 5.848234386238015e-27
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/20/signed_error_db",
+          "stored": -6.309179175011214,
+          "recomputed": -6.309179175011211,
+          "absolute_difference": 2.6645352591003757e-15,
+          "relative_difference": 4.2232676948751256e-16,
+          "ULP_distance": 3,
+          "allowed_absolute_bound": 2.24147071570656e-14
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/30/power",
+          "stored": 1.035635727689677e-19,
+          "recomputed": 1.0356357276896771e-19,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.16228726284606e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.6793172160176265e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/31/power",
+          "stored": 3.7537244515179815e-20,
+          "recomputed": 3.753724451517981e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.60334919463155e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.333590820535584e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/38/power",
+          "stored": 8.7491515467507e-20,
+          "recomputed": 8.749151546750701e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 1.3757976517037931e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 3.1083230378039776e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/42/power",
+          "stored": 5.479627814589587e-20,
+          "recomputed": 5.479627814589586e-20,
+          "absolute_difference": 1.2037062152420224e-35,
+          "relative_difference": 2.1966933813226102e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.946754869162812e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/43/power",
+          "stored": 4.376836971880238e-20,
+          "recomputed": 4.376836971880237e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.3750868754941588e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.5549648579878685e-34
+        },
+        {
+          "path": "C4v12/late_harmonics/3/partials/44/power",
+          "stored": 4.65834729776572e-20,
+          "recomputed": 4.6583472977657204e-20,
+          "absolute_difference": 6.018531076210112e-36,
+          "relative_difference": 1.291988486795902e-16,
+          "ULP_distance": 1,
+          "allowed_absolute_bound": 1.6549774165375625e-34
+        }
+      ],
+      "maximum_roundoff_absolute_difference": 3.552713678800501e-15,
+      "maximum_roundoff_relative_difference": 5.4611810101354486e-14,
+      "maximum_roundoff_ULP_distance": 279,
+      "amplitude2_fixed_gain_RMS_and_power_shift_db": 6.020599913279624,
+      "maximum_nonfloored_band_error_shift_defect_db": 6.217248937900877e-15,
+      "stereo_LR_invariant_under_common_gain": true,
+      "mono_energy_gain_db_correct": true,
+      "known48frame_delay_detected_but_not_retimed": true
+    }
+  ],
+  "producer_capture_guards_rejected": [
+    "missing_frozen_source_identity",
+    "changed_humanization",
+    "render_before_frozen_protocol",
+    "binary_mismatch",
+    "wrong_case_midi",
+    "capture_only_parity_claim",
+    "capture_only_fault_claim",
+    "capture_audio_binding_changed",
+    "post_read_metadata_mutation"
+  ],
+  "synthetic_guard_fixture_scope": "Metadata only, not a physical validation receipt.",
+  "new_fit_acquisition_or_candidate_access": false
+}

@@ -1,0 +1,1357 @@
+{
+  "created_utc": "2026-10-26T21:29:20.329266+00:00",
+  "scope": "PosthocC6source-path diagnosis fromexisting6pilottraces only. No rendering/fitting/gate changes.",
+  "components": {
+    "raw_B": "Originaluncorrectedphysicalboardobserver,HP24sameasAPI",
+    "old_instant_C": "OldAPIoutput minusraw_B; instantaneousmodalradiationcorrection includingoriginalfloatobserverroundoff",
+    "new_causal_C": "Independentloadedobservercorrection, HP24same",
+    "old": "Exactold3.8control APIoutput",
+    "new": "Exactpilotcandidate APIoutput"
+  },
+  "cases": [
+    {
+      "id": "C6v4",
+      "new_raw_reconstruction_max_error_after_HP": 7.430459109114551e-09,
+      "windows": [
+        {
+          "window_seconds": [
+            0.005,
+            0.02
+          ],
+          "native_FFT_resolution_Hz": 66.66666666666667,
+          "bands": {
+            "31.25-250Hz": {
+              "old": {
+                "band_rms_model_units": 0.002998388893484354,
+                "band_rms_db_reference1": -50.46224078972166,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 0.9999999999999999,
+                "coherent_projection_on_new": 6.315307060754095
+              },
+              "new": {
+                "band_rms_model_units": 2.184960678984961e-05,
+                "band_rms_db_reference1": -93.21112748557383,
+                "power_db_relative_old": -42.748886695852164,
+                "coherent_projection_on_old": 0.00033535578459377153,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.00011591968931936008,
+                "band_rms_db_reference1": -78.71685583008001,
+                "power_db_relative_old": -28.254615040358342,
+                "coherent_projection_on_old": 0.0075833299655320065,
+                "coherent_projection_on_new": -4.647951697846223
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.002977821345014322,
+                "band_rms_db_reference1": -50.52202722772708,
+                "power_db_relative_old": -0.059786438005414416,
+                "coherent_projection_on_old": 0.9924166700344679,
+                "coherent_projection_on_new": 10.963258758600318
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00013547212609054676,
+                "band_rms_db_reference1": -77.3630010670615,
+                "power_db_relative_old": -26.900760277339838,
+                "coherent_projection_on_old": -0.007247977594499958,
+                "coherent_projection_on_new": 5.647952316548104
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": 178.97400673338328,
+                "normalized_squared_coherence": 0.9942716151737763,
+                "two_cross_over_B_plus_C_own_power": -0.9849825468202096
+              }
+            },
+            "250-500Hz": {
+              "old": {
+                "band_rms_model_units": 0.0014525138427249264,
+                "band_rms_db_reference1": -56.75759440022729,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": -8.049579027218481
+              },
+              "new": {
+                "band_rms_model_units": 8.871470449861392e-05,
+                "band_rms_db_reference1": -81.0400877942719,
+                "power_db_relative_old": -24.2824933940446,
+                "coherent_projection_on_old": -0.030027821742118255,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0014495760659501856,
+                "band_rms_db_reference1": -56.77517980548066,
+                "power_db_relative_old": -0.01758540525337105,
+                "coherent_projection_on_old": 0.9975122819793653,
+                "coherent_projection_on_new": -7.960454650810053
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 4.4401182769927506e-05,
+                "band_rms_db_reference1": -87.05210921770258,
+                "power_db_relative_old": -30.29451481747528,
+                "coherent_projection_on_old": 0.0024877180206352204,
+                "coherent_projection_on_new": -0.08912437640843208
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0014948054089406286,
+                "band_rms_db_reference1": -56.508306786573534,
+                "power_db_relative_old": 0.24928761365375812,
+                "coherent_projection_on_old": -1.0275400631968792,
+                "coherent_projection_on_new": 8.960454511818075
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.74964607036583,
+                "normalized_squared_coherence": 0.997332777327691,
+                "two_cross_over_B_plus_C_own_power": -0.9981847749551935
+              }
+            },
+            "500-1000Hz": {
+              "old": {
+                "band_rms_model_units": 0.01176382428936324,
+                "band_rms_db_reference1": -38.589029419324284,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 0.9999999999999999,
+                "coherent_projection_on_new": 1.4257199214955867
+              },
+              "new": {
+                "band_rms_model_units": 0.008150735234760832,
+                "band_rms_db_reference1": -41.776064281648225,
+                "power_db_relative_old": -3.1870348623239435,
+                "coherent_projection_on_old": 0.6844326704037874,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.012003305683859173,
+                "band_rms_db_reference1": -38.41398267478962,
+                "power_db_relative_old": 0.17504674453466218,
+                "coherent_projection_on_old": 1.0197752231672264,
+                "coherent_projection_on_new": 1.45933567931536
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.00046743511681949764,
+                "band_rms_db_reference1": -66.60557327284948,
+                "power_db_relative_old": -28.0165438535252,
+                "coherent_projection_on_old": -0.019775223167226606,
+                "coherent_projection_on_new": -0.03361575781977309
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.004075954347795461,
+                "band_rms_db_reference1": -47.795413777961635,
+                "power_db_relative_old": -9.206384358637349,
+                "coherent_projection_on_old": -0.3353425514422759,
+                "coherent_projection_on_new": -0.4593356778601416
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -178.1062179900254,
+                "normalized_squared_coherence": 0.9289516128214004,
+                "two_cross_over_B_plus_C_own_power": -0.5865744747636842
+              }
+            },
+            "1000-2000Hz": {
+              "old": {
+                "band_rms_model_units": 0.053144268094075214,
+                "band_rms_db_reference1": -25.490871393972085,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0000000000000002,
+                "coherent_projection_on_new": 1.0510467094418503
+              },
+              "new": {
+                "band_rms_model_units": 0.05044657238099734,
+                "band_rms_db_reference1": -25.94336673585142,
+                "power_db_relative_old": -0.45249534187933593,
+                "coherent_projection_on_old": 0.9470490716611046,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.06151166848930791,
+                "band_rms_db_reference1": -24.22084985364895,
+                "power_db_relative_old": 1.270021540323138,
+                "coherent_projection_on_old": 1.155411024010692,
+                "coherent_projection_on_new": 1.2188837828045251
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.009028471979854777,
+                "band_rms_db_reference1": -40.887714909278955,
+                "power_db_relative_old": -15.39684351530687,
+                "coherent_projection_on_old": -0.15541102401069182,
+                "coherent_projection_on_new": -0.1678370733626748
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.011170183061381449,
+                "band_rms_db_reference1": -39.0387941887239,
+                "power_db_relative_old": -13.547922794751813,
+                "coherent_projection_on_old": -0.20836195339689847,
+                "coherent_projection_on_new": -0.21888378390412896
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -177.2665059052951,
+                "normalized_squared_coherence": 0.986889088027544,
+                "two_cross_over_B_plus_C_own_power": -0.3488847950961434
+              }
+            },
+            "4000-8000Hz": {
+              "old": {
+                "band_rms_model_units": 0.0004938170515377771,
+                "band_rms_db_reference1": -66.1286783585188,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9949046895770011
+              },
+              "new": {
+                "band_rms_model_units": 0.000495563594336829,
+                "band_rms_db_reference1": -66.0980121153047,
+                "power_db_relative_old": 0.030666243214093322,
+                "coherent_projection_on_old": 1.0019547356765537,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.00028646708893877843,
+                "band_rms_db_reference1": -70.85850530382983,
+                "power_db_relative_old": -4.729826945311027,
+                "coherent_projection_on_old": 0.5521916450900065,
+                "coherent_projection_on_new": 0.550243499752421
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.0002379264099469336,
+                "band_rms_db_reference1": -72.47114696777706,
+                "power_db_relative_old": -6.342468609258262,
+                "coherent_projection_on_old": 0.44780835490999427,
+                "coherent_projection_on_new": 0.44466118982458075
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00023955264256973773,
+                "band_rms_db_reference1": -72.41198067919957,
+                "power_db_relative_old": -6.283302320680776,
+                "coherent_projection_on_old": 0.4497631336181611,
+                "coherent_projection_on_new": 0.4497565457750258
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -0.845641305994058,
+                "normalized_squared_coherence": 0.5981303697894939,
+                "two_cross_over_B_plus_C_own_power": 0.7610993418189473
+              }
+            }
+          }
+        },
+        {
+          "window_seconds": [
+            0.02,
+            0.05
+          ],
+          "native_FFT_resolution_Hz": 33.33333333333333,
+          "bands": {
+            "31.25-250Hz": {
+              "old": {
+                "band_rms_model_units": 0.0002014995634073901,
+                "band_rms_db_reference1": -73.91451781030524,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": -6.691432996712812
+              },
+              "new": {
+                "band_rms_model_units": 2.1126861071317527e-05,
+                "band_rms_db_reference1": -93.5033004713259,
+                "power_db_relative_old": -19.58878266102066,
+                "coherent_projection_on_old": -0.07355985550914727,
+                "coherent_projection_on_new": 0.9999999999999999
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.00014060773939272712,
+                "band_rms_db_reference1": -77.03981548062698,
+                "power_db_relative_old": -3.125297670321732,
+                "coherent_projection_on_old": 0.48672592430971945,
+                "coherent_projection_on_new": -6.584302617359043
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.00014438991095456344,
+                "band_rms_db_reference1": -76.8092630286568,
+                "power_db_relative_old": -2.8947452183515576,
+                "coherent_projection_on_old": 0.5132740756902819,
+                "coherent_projection_on_new": -0.10713037935377004
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00016153829976783864,
+                "band_rms_db_reference1": -75.8344898498356,
+                "power_db_relative_old": -1.919972039530363,
+                "coherent_projection_on_old": -0.5602858050254841,
+                "coherent_projection_on_new": 7.584304035967662
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": 179.78013604815845,
+                "normalized_squared_coherence": 0.9996512179756979,
+                "two_cross_over_B_plus_C_own_power": -0.9902683095826814
+              }
+            },
+            "250-500Hz": {
+              "old": {
+                "band_rms_model_units": 0.0005172070885291482,
+                "band_rms_db_reference1": -65.72671063144008,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.5029750415804122
+              },
+              "new": {
+                "band_rms_model_units": 2.7448308556427508e-05,
+                "band_rms_db_reference1": -91.2296882572418,
+                "power_db_relative_old": -25.502977625801737,
+                "coherent_projection_on_old": 0.0042330559247683525,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0005172324479939002,
+                "band_rms_db_reference1": -65.72628475925639,
+                "power_db_relative_old": 0.0004258721836956212,
+                "coherent_projection_on_old": 1.0000479108674183,
+                "coherent_projection_on_new": 1.5022741763613296
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 7.74735379707697e-07,
+                "band_rms_db_reference1": -122.21693221457598,
+                "power_db_relative_old": -56.490221583135906,
+                "coherent_projection_on_old": -4.79108674176877e-05,
+                "coherent_projection_on_new": 0.000700865219075231
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0005157704357922199,
+                "band_rms_db_reference1": -65.75087110903641,
+                "power_db_relative_old": -0.024160477596343464,
+                "coherent_projection_on_old": -0.9958148231733395,
+                "coherent_projection_on_new": -0.5022740236864244
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.60339743907767,
+                "normalized_squared_coherence": 0.9972336173561056,
+                "two_cross_over_B_plus_C_own_power": -0.9985879262985042
+              }
+            },
+            "500-1000Hz": {
+              "old": {
+                "band_rms_model_units": 0.00257974221635833,
+                "band_rms_db_reference1": -51.76847378466161,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.6896669240639255
+              },
+              "new": {
+                "band_rms_model_units": 0.0014860625537486854,
+                "band_rms_db_reference1": -56.55925818329763,
+                "power_db_relative_old": -4.790784398636024,
+                "coherent_projection_on_old": 0.5606898093734397,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0025690578781117097,
+                "band_rms_db_reference1": -51.804522228714404,
+                "power_db_relative_old": -0.036048444052798244,
+                "coherent_projection_on_old": 0.9935712713263166,
+                "coherent_projection_on_new": 1.6942291703868737
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.00017480204703102642,
+                "band_rms_db_reference1": -75.14906971674701,
+                "power_db_relative_old": -23.3805959320854,
+                "coherent_projection_on_old": 0.006428728673683518,
+                "coherent_projection_on_new": -0.004562246322947851
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0011512732695911306,
+                "band_rms_db_reference1": -58.77643157450527,
+                "power_db_relative_old": -7.007957789843655,
+                "coherent_projection_on_old": -0.432881459973381,
+                "coherent_projection_on_new": -0.6942291729638177
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -176.25713639283958,
+                "normalized_squared_coherence": 0.9380858765345231,
+                "two_cross_over_B_plus_C_own_power": -0.7213569995034285
+              }
+            },
+            "1000-2000Hz": {
+              "old": {
+                "band_rms_model_units": 0.04085200061305063,
+                "band_rms_db_reference1": -27.775733404940695,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9976719580092581
+              },
+              "new": {
+                "band_rms_model_units": 0.04094399638075585,
+                "band_rms_db_reference1": -27.75619539692689,
+                "power_db_relative_old": 0.019538008013808842,
+                "coherent_projection_on_old": 1.0021703883967608,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.04908317312017011,
+                "band_rms_db_reference1": -26.181347376914207,
+                "power_db_relative_old": 1.594386028026489,
+                "coherent_projection_on_old": 1.20123393162805,
+                "coherent_projection_on_new": 1.1985713090097923
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.008282449244982214,
+                "band_rms_db_reference1": -41.6368243360657,
+                "power_db_relative_old": -13.861090931125,
+                "coherent_projection_on_old": -0.2012339316280503,
+                "coherent_projection_on_new": -0.20089935100053466
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.008183694376335935,
+                "band_rms_db_reference1": -41.74101195822793,
+                "power_db_relative_old": -13.965278553287233,
+                "coherent_projection_on_old": -0.19906354240650923,
+                "coherent_projection_on_new": -0.19857130818045504
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -174.76870559166875,
+                "normalized_squared_coherence": 0.9992569802232839,
+                "two_cross_over_B_plus_C_own_power": -0.32297159546974813
+              }
+            },
+            "4000-8000Hz": {
+              "old": {
+                "band_rms_model_units": 0.0002830325873623025,
+                "band_rms_db_reference1": -70.96327116959465,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9977464797627011
+              },
+              "new": {
+                "band_rms_model_units": 0.0002836711601893496,
+                "band_rms_db_reference1": -70.94369630186844,
+                "power_db_relative_old": 0.01957486772621135,
+                "coherent_projection_on_old": 1.002253752517899,
+                "coherent_projection_on_new": 0.9999999999999998
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0001686757612108726,
+                "band_rms_db_reference1": -75.45894642512098,
+                "power_db_relative_old": -4.495675255526346,
+                "coherent_projection_on_old": 0.5704472042720251,
+                "coherent_projection_on_new": 0.5693098754819566
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.00013101458416948139,
+                "band_rms_db_reference1": -77.65360714462759,
+                "power_db_relative_old": -6.690335975032941,
+                "coherent_projection_on_old": 0.4295527957279747,
+                "coherent_projection_on_new": 0.4284366042807445
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00013151754493578052,
+                "band_rms_db_reference1": -77.62032613579991,
+                "power_db_relative_old": -6.657054966205264,
+                "coherent_projection_on_old": 0.43180644916226363,
+                "coherent_projection_on_new": 0.43069002633235415
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -2.860983647602123,
+                "normalized_squared_coherence": 0.6139505237870562,
+                "two_cross_over_B_plus_C_own_power": 0.758954448603818
+              }
+            }
+          }
+        },
+        {
+          "window_seconds": [
+            0.05,
+            0.1
+          ],
+          "native_FFT_resolution_Hz": 20.0,
+          "bands": {
+            "31.25-250Hz": {
+              "old": {
+                "band_rms_model_units": 7.457835327929115e-05,
+                "band_rms_db_reference1": -82.54774420539194,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": -6.651159749867772
+              },
+              "new": {
+                "band_rms_model_units": 1.1118301337919728e-05,
+                "band_rms_db_reference1": -99.07923119018692,
+                "power_db_relative_old": -16.531486984794974,
+                "coherent_projection_on_old": -0.14782526986843075,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 7.45782416581666e-05,
+                "band_rms_db_reference1": -82.54775720553812,
+                "power_db_relative_old": -1.3000146182585813e-05,
+                "coherent_projection_on_old": 0.999992289501055,
+                "coherent_projection_on_new": -6.6510909383927315
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 2.629096725684954e-07,
+                "band_rms_db_reference1": -131.60386871409574,
+                "power_db_relative_old": -49.05612450870379,
+                "coherent_projection_on_old": 7.710498944469024e-06,
+                "coherent_projection_on_new": -6.881147503530032e-05
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 8.561484632386727e-05,
+                "band_rms_db_reference1": -81.34901837060191,
+                "power_db_relative_old": 1.1987258347900336,
+                "coherent_projection_on_old": -1.1478175837245013,
+                "coherent_projection_on_new": 7.6510911761593965
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.86045575901016,
+                "normalized_squared_coherence": 0.99972246703147,
+                "two_cross_over_B_plus_C_own_power": -0.9904112280965756
+              }
+            },
+            "250-500Hz": {
+              "old": {
+                "band_rms_model_units": 0.0001458035565865103,
+                "band_rms_db_reference1": -76.72463764284964,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0000000000000002,
+                "coherent_projection_on_new": -8.543245833860535
+              },
+              "new": {
+                "band_rms_model_units": 7.449626467540081e-06,
+                "band_rms_db_reference1": -102.55731005417002,
+                "power_db_relative_old": -25.832672411320353,
+                "coherent_projection_on_old": -0.022302608576394135,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.00014580054479614122,
+                "band_rms_db_reference1": -76.72481706473457,
+                "power_db_relative_old": -0.00017942188491655548,
+                "coherent_projection_on_old": 0.9999786584588458,
+                "coherent_projection_on_new": -8.541764989182068
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 1.7069106849148913e-07,
+                "band_rms_db_reference1": -135.35578405999502,
+                "power_db_relative_old": -58.631146417145374,
+                "coherent_projection_on_old": 2.134154115408388e-05,
+                "coherent_projection_on_new": -0.0014808446784629107
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00014920247828547709,
+                "band_rms_db_reference1": -76.52447926156078,
+                "power_db_relative_old": 0.20015838128886804,
+                "coherent_projection_on_old": -1.0222812728426527,
+                "coherent_projection_on_new": 9.541764416534338
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.80204880293275,
+                "normalized_squared_coherence": 0.9979938032154619,
+                "two_cross_over_B_plus_C_own_power": -0.9987247720888388
+              }
+            },
+            "500-1000Hz": {
+              "old": {
+                "band_rms_model_units": 0.0003098669346308826,
+                "band_rms_db_reference1": -70.17649528215165,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.0921202937524452
+              },
+              "new": {
+                "band_rms_model_units": 0.00027191506412754856,
+                "band_rms_db_reference1": -71.31133463558031,
+                "power_db_relative_old": -1.1348393534286474,
+                "coherent_projection_on_old": 0.8409816929445936,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0003512889836106173,
+                "band_rms_db_reference1": -69.0867093885681,
+                "power_db_relative_old": 1.0897858935835656,
+                "coherent_projection_on_old": 1.1286572240037638,
+                "coherent_projection_on_new": 1.2608289989537556
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 5.176618970958738e-05,
+                "band_rms_db_reference1": -85.71907600845643,
+                "power_db_relative_old": -15.542580726304767,
+                "coherent_projection_on_old": -0.12865722400376287,
+                "coherent_projection_on_new": -0.1687087052013097
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0001043834186556058,
+                "band_rms_db_reference1": -79.6273696738587,
+                "power_db_relative_old": -9.45087439170704,
+                "coherent_projection_on_old": -0.287675495729823,
+                "coherent_projection_on_new": -0.2608289809409395
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -176.10679038751857,
+                "normalized_squared_coherence": 0.6805852164725094,
+                "two_cross_over_B_plus_C_own_power": -0.4494572718348984
+              }
+            },
+            "1000-2000Hz": {
+              "old": {
+                "band_rms_model_units": 0.03473125234044461,
+                "band_rms_db_reference1": -29.18559113209242,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9990673293829375
+              },
+              "new": {
+                "band_rms_model_units": 0.034763249633595984,
+                "band_rms_db_reference1": -29.17759265829163,
+                "power_db_relative_old": 0.007998473800792272,
+                "coherent_projection_on_old": 1.0009090237409821,
+                "coherent_projection_on_new": 0.9999999999999997
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.041485739795185834,
+                "band_rms_db_reference1": -27.642023218791834,
+                "power_db_relative_old": 1.5435679133005855,
+                "coherent_projection_on_old": 1.1937986649093526,
+                "coherent_projection_on_new": 1.1925481341183009
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.006874853098201087,
+                "band_rms_db_reference1": -43.254731547982416,
+                "power_db_relative_old": -14.069140415889994,
+                "coherent_projection_on_old": -0.19379866490935263,
+                "coherent_projection_on_new": -0.19348080473536353
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.006870268230991118,
+                "band_rms_db_reference1": -43.26052613518382,
+                "power_db_relative_old": -14.0749350030914,
+                "coherent_projection_on_old": -0.192889641104529,
+                "coherent_projection_on_new": -0.19254813405236765
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -169.24714527152256,
+                "normalized_squared_coherence": 0.9991307859388731,
+                "two_cross_over_B_plus_C_own_power": -0.31657187852072277
+              }
+            },
+            "4000-8000Hz": {
+              "old": {
+                "band_rms_model_units": 0.00010529260874904426,
+                "band_rms_db_reference1": -79.55204228040569,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 0.9999999999999999,
+                "coherent_projection_on_new": 0.9980365819990266
+              },
+              "new": {
+                "band_rms_model_units": 0.00010549933019201568,
+                "band_rms_db_reference1": -79.53500595326605,
+                "power_db_relative_old": 0.01703632713963863,
+                "coherent_projection_on_old": 1.0019593282382795,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 5.935492031079755e-05,
+                "band_rms_db_reference1": -84.53086547512899,
+                "power_db_relative_old": -4.978823194723315,
+                "coherent_projection_on_old": 0.5325392139716131,
+                "coherent_projection_on_new": 0.5316700967032476
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 5.292931509445324e-05,
+                "band_rms_db_reference1": -85.52607451489374,
+                "power_db_relative_old": -5.9740322344880505,
+                "coherent_projection_on_old": 0.467460786028387,
+                "coherent_projection_on_new": 0.46636648529577895
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 5.30850598019974e-05,
+                "band_rms_db_reference1": -85.5005537812014,
+                "power_db_relative_old": -5.948511500795722,
+                "coherent_projection_on_old": 0.469420119666788,
+                "coherent_projection_on_new": 0.4683299086603114
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -7.426471409352023,
+                "normalized_squared_coherence": 0.5873577708672056,
+                "two_cross_over_B_plus_C_own_power": 0.7552524662373475
+              }
+            }
+          }
+        }
+      ],
+      "artifacts": {
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/baseline.f32le": "b24a8ab0049ab1ea9da303330156a5aa1bbb22b3a9aa68f7e7b16edb7d4d3615",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/candidate.f32le": "6a6a6b778f1332282caef83d59b47240f89036fb4ceb41e423275439245e118b",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/trace.f64le": "850a074058420ecf489c5bbf9d9fce7414f64e2c33c5cdf354f22300dc01d2cf"
+      }
+    },
+    {
+      "id": "C6v12",
+      "new_raw_reconstruction_max_error_after_HP": 1.4840504936053378e-08,
+      "windows": [
+        {
+          "window_seconds": [
+            0.005,
+            0.02
+          ],
+          "native_FFT_resolution_Hz": 66.66666666666667,
+          "bands": {
+            "31.25-250Hz": {
+              "old": {
+                "band_rms_model_units": 0.0051600928821860376,
+                "band_rms_db_reference1": -45.746849619169666,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 0.9999999999999998,
+                "coherent_projection_on_new": -40.67582731770789
+              },
+              "new": {
+                "band_rms_model_units": 3.688125695664676e-05,
+                "band_rms_db_reference1": -88.66388572198134,
+                "power_db_relative_old": -42.91703610281168,
+                "coherent_projection_on_old": -0.0020779389541011367,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0002216384257399298,
+                "band_rms_db_reference1": -73.08709886442149,
+                "power_db_relative_old": -27.340249245251826,
+                "coherent_projection_on_old": 0.005718723203777904,
+                "coherent_projection_on_new": -3.697967365266351
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.0051352840533008814,
+                "band_rms_db_reference1": -45.78871057641009,
+                "power_db_relative_old": -0.041860957240422325,
+                "coherent_projection_on_old": 0.9942812767962218,
+                "coherent_projection_on_new": -36.9778599524415
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00024605702763875846,
+                "band_rms_db_reference1": -72.17928453122039,
+                "power_db_relative_old": -26.432434912050724,
+                "coherent_projection_on_old": -0.007796705759487879,
+                "coherent_projection_on_new": 4.6979756444469425
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": 176.9214316501475,
+                "normalized_squared_coherence": 0.9888924493584499,
+                "two_cross_over_B_plus_C_own_power": -0.9875966193706228
+              }
+            },
+            "250-500Hz": {
+              "old": {
+                "band_rms_model_units": 0.0026932130877913795,
+                "band_rms_db_reference1": -51.3945856745039,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": -8.508574823754477
+              },
+              "new": {
+                "band_rms_model_units": 0.0001669879761740516,
+                "band_rms_db_reference1": -75.54629597456388,
+                "power_db_relative_old": -24.151710300059975,
+                "coherent_projection_on_old": -0.03271039528639292,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0026909912994586473,
+                "band_rms_db_reference1": -51.40175412798918,
+                "power_db_relative_old": -0.00716845348527798,
+                "coherent_projection_on_old": 0.9987207420628964,
+                "coherent_projection_on_new": -8.340770516776919
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 8.12118723031432e-05,
+                "band_rms_db_reference1": -81.80760953861423,
+                "power_db_relative_old": -30.413023864110333,
+                "coherent_projection_on_old": 0.0012792579371033314,
+                "coherent_projection_on_new": -0.1678043069775546
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0027810939732278205,
+                "band_rms_db_reference1": -51.11568672135212,
+                "power_db_relative_old": 0.27889895315178903,
+                "coherent_projection_on_old": -1.0314311412382813,
+                "coherent_projection_on_new": 9.340769619656214
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.8611950312443,
+                "normalized_squared_coherence": 0.997366401997287,
+                "two_cross_over_B_plus_C_own_power": -0.9981380150177066
+              }
+            },
+            "500-1000Hz": {
+              "old": {
+                "band_rms_model_units": 0.03047919750560616,
+                "band_rms_db_reference1": -30.31992943659302,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.3951358528361082
+              },
+              "new": {
+                "band_rms_model_units": 0.021589610157897586,
+                "band_rms_db_reference1": -33.31510399240984,
+                "power_db_relative_old": -2.9951745558168117,
+                "coherent_projection_on_old": 0.7000016181933466,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.031214374593124584,
+                "band_rms_db_reference1": -30.11290724218925,
+                "power_db_relative_old": 0.2070221944037724,
+                "coherent_projection_on_old": 1.0234283448166115,
+                "coherent_projection_on_new": 1.4336272710024636
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.001351556045206547,
+                "band_rms_db_reference1": -57.38331881256038,
+                "power_db_relative_old": -27.06338937596736,
+                "coherent_projection_on_old": -0.023428344816611577,
+                "coherent_projection_on_new": -0.03849141816635515
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.010197490026741696,
+                "band_rms_db_reference1": -39.83013421510957,
+                "power_db_relative_old": -9.510204778516545,
+                "coherent_projection_on_old": -0.3234267299331619,
+                "coherent_projection_on_new": -0.43362727631336623
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -177.22162300532693,
+                "normalized_squared_coherence": 0.9269863048499823,
+                "two_cross_over_B_plus_C_own_power": -0.5677454974671761
+              }
+            },
+            "1000-2000Hz": {
+              "old": {
+                "band_rms_model_units": 0.15191173593277357,
+                "band_rms_db_reference1": -16.36817346889832,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.0471783750837227
+              },
+              "new": {
+                "band_rms_model_units": 0.14474149990305055,
+                "band_rms_db_reference1": -16.78813862504591,
+                "power_db_relative_old": -0.4199651561475895,
+                "coherent_projection_on_old": 0.9506576548443042,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.17619034247605228,
+                "band_rms_db_reference1": -15.080358005233773,
+                "power_db_relative_old": 1.2878154636645465,
+                "coherent_projection_on_old": 1.157839873610169,
+                "coherent_projection_on_new": 1.2167000712040383
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.02609337722232672,
+                "band_rms_db_reference1": -31.669394145017655,
+                "power_db_relative_old": -15.301220676119335,
+                "coherent_projection_on_old": -0.15783987361016916,
+                "coherent_projection_on_new": -0.1695216961203159
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.03183014123274127,
+                "band_rms_db_reference1": -29.943228687545933,
+                "power_db_relative_old": -13.575055218647611,
+                "coherent_projection_on_old": -0.20718221924769106,
+                "coherent_projection_on_new": -0.21670007172219427
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -177.53565944772606,
+                "normalized_squared_coherence": 0.9822565775586364,
+                "two_cross_over_B_plus_C_own_power": -0.34645699571136457
+              }
+            },
+            "4000-8000Hz": {
+              "old": {
+                "band_rms_model_units": 0.006978427030864356,
+                "band_rms_db_reference1": -43.12484916587643,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.0031343532794263
+              },
+              "new": {
+                "band_rms_model_units": 0.0069526579559014085,
+                "band_rms_db_reference1": -43.15698271422504,
+                "power_db_relative_old": -0.0321335483486079,
+                "coherent_projection_on_old": 0.995739530155427,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0019910897953049614,
+                "band_rms_db_reference1": -54.018183069405964,
+                "power_db_relative_old": -10.893333903529538,
+                "coherent_projection_on_old": 0.24961152825049546,
+                "coherent_projection_on_new": 0.2509867271495198
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.005324612326250474,
+                "band_rms_db_reference1": -45.474240135997384,
+                "power_db_relative_old": -2.349390970120963,
+                "coherent_projection_on_old": 0.7503884717495046,
+                "coherent_projection_on_new": 0.7521476261299064
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.005295164916876256,
+                "band_rms_db_reference1": -45.52241018658229,
+                "power_db_relative_old": -2.39756102070587,
+                "coherent_projection_on_old": 0.7461280358267508,
+                "coherent_projection_on_new": 0.7490133066350462
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -0.637362253921258,
+                "normalized_squared_coherence": 0.600285147931753,
+                "two_cross_over_B_plus_C_own_power": 0.5104564764740216
+              }
+            }
+          }
+        },
+        {
+          "window_seconds": [
+            0.02,
+            0.05
+          ],
+          "native_FFT_resolution_Hz": 33.33333333333333,
+          "bands": {
+            "31.25-250Hz": {
+              "old": {
+                "band_rms_model_units": 0.0003543007657193084,
+                "band_rms_db_reference1": -69.01255818126133,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 0.9999999999999999,
+                "coherent_projection_on_new": -6.366479127134694
+              },
+              "new": {
+                "band_rms_model_units": 3.755125144794832e-05,
+                "band_rms_db_reference1": -88.50751169895827,
+                "power_db_relative_old": -19.494953517696935,
+                "coherent_projection_on_old": -0.07151612384623228,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.00025062911448965006,
+                "band_rms_db_reference1": -72.01936960636206,
+                "power_db_relative_old": -3.006811425100742,
+                "coherent_projection_on_old": 0.5038298961725153,
+                "coherent_projection_on_new": -6.527019491077438
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.00024870349154557504,
+                "band_rms_db_reference1": -72.08636235263647,
+                "power_db_relative_old": -3.0738041713751456,
+                "coherent_projection_on_old": 0.4961701038274856,
+                "coherent_projection_on_new": 0.16054036394274887
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.000287458825488114,
+                "band_rms_db_reference1": -70.82848706428084,
+                "power_db_relative_old": -1.81592888301951,
+                "coherent_projection_on_old": -0.575346323394308,
+                "coherent_projection_on_new": 7.527022642511636
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": 179.7239551695325,
+                "normalized_squared_coherence": 0.9992782808218822,
+                "two_cross_over_B_plus_C_own_power": -0.9903050579196733
+              }
+            },
+            "250-500Hz": {
+              "old": {
+                "band_rms_model_units": 0.0009754437184865574,
+                "band_rms_db_reference1": -60.215955672613475,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 2.0350874130395256
+              },
+              "new": {
+                "band_rms_model_units": 5.0594158687626127e-05,
+                "band_rms_db_reference1": -85.9179924284888,
+                "power_db_relative_old": -25.70203675587532,
+                "coherent_projection_on_old": 0.005474940359484467,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.000975217537982935,
+                "band_rms_db_reference1": -60.21796994228232,
+                "power_db_relative_old": -0.0020142696688463667,
+                "coherent_projection_on_old": 0.9997664015694661,
+                "coherent_projection_on_new": 2.0341234391594685
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 1.8253233210283499e-06,
+                "band_rms_db_reference1": -114.77320394906286,
+                "power_db_relative_old": -54.55724827644939,
+                "coherent_projection_on_old": 0.00023359843053431375,
+                "coherent_projection_on_new": 0.0009639738800477568
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0009711824555925268,
+                "band_rms_db_reference1": -60.253983434523306,
+                "power_db_relative_old": -0.038027761909825715,
+                "coherent_projection_on_old": -0.9942915212092104,
+                "coherent_projection_on_new": -1.0341225637269842
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.6044155574999,
+                "normalized_squared_coherence": 0.997363827948694,
+                "two_cross_over_B_plus_C_own_power": -0.9986486574311427
+              }
+            },
+            "500-1000Hz": {
+              "old": {
+                "band_rms_model_units": 0.0061940676011726994,
+                "band_rms_db_reference1": -44.16048118250338,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0000000000000002,
+                "coherent_projection_on_new": 1.6476562543728142
+              },
+              "new": {
+                "band_rms_model_units": 0.0036481012500650624,
+                "band_rms_db_reference1": -48.75866233376752,
+                "power_db_relative_old": -4.598181151264134,
+                "coherent_projection_on_old": 0.5715424552187035,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.006183583005233155,
+                "band_rms_db_reference1": -44.17519610182162,
+                "power_db_relative_old": -0.014714919318236368,
+                "coherent_projection_on_old": 0.9949827165431729,
+                "coherent_projection_on_new": 1.662713045785416
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.0005051893504071824,
+                "band_rms_db_reference1": -65.93091626241902,
+                "power_db_relative_old": -21.770435079915625,
+                "coherent_projection_on_old": 0.005017283456827078,
+                "coherent_projection_on_new": -0.015056791412602166
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0026997100618921708,
+                "band_rms_db_reference1": -51.373657496684366,
+                "power_db_relative_old": -7.213176314180981,
+                "coherent_projection_on_old": -0.4234402798133759,
+                "coherent_projection_on_new": -0.6627130736345671
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -176.24811457079903,
+                "normalized_squared_coherence": 0.9350728096845214,
+                "two_cross_over_B_plus_C_own_power": -0.7076638539259129
+              }
+            },
+            "1000-2000Hz": {
+              "old": {
+                "band_rms_model_units": 0.11814189942398344,
+                "band_rms_db_reference1": -18.551921021228292,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9977121203357651
+              },
+              "new": {
+                "band_rms_model_units": 0.1184040960528788,
+                "band_rms_db_reference1": -18.53266546874963,
+                "power_db_relative_old": 0.019255552478661196,
+                "coherent_projection_on_old": 1.0021455523602885,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.14192945835656592,
+                "band_rms_db_reference1": -16.958549092413,
+                "power_db_relative_old": 1.5933719288152899,
+                "coherent_projection_on_old": 1.2010958636173297,
+                "coherent_projection_on_new": 1.1984666334466798
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.023934668136235456,
+                "band_rms_db_reference1": -32.41945179614608,
+                "power_db_relative_old": -13.867530774917787,
+                "coherent_projection_on_old": -0.20109586361733006,
+                "coherent_projection_on_new": -0.20075451311091494
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.02365635999283511,
+                "band_rms_db_reference1": -32.52104159030819,
+                "power_db_relative_old": -13.969120569079891,
+                "coherent_projection_on_old": -0.1989503129099047,
+                "coherent_projection_on_new": -0.19846663509419252
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -174.735126846214,
+                "normalized_squared_coherence": 0.9992003097050124,
+                "two_cross_over_B_plus_C_own_power": -0.3228456100193011
+              }
+            },
+            "4000-8000Hz": {
+              "old": {
+                "band_rms_model_units": 0.004765383294742434,
+                "band_rms_db_reference1": -46.43804323903633,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9992997936806325
+              },
+              "new": {
+                "band_rms_model_units": 0.0047686967465087535,
+                "band_rms_db_reference1": -46.43200589145848,
+                "power_db_relative_old": 0.006037347577844718,
+                "coherent_projection_on_old": 1.0006899369721864,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0012592184723424211,
+                "band_rms_db_reference1": -57.997978279472484,
+                "power_db_relative_old": -11.559935040436159,
+                "coherent_projection_on_old": 0.23588797194008637,
+                "coherent_projection_on_new": 0.23580002016818055
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.0036852417532034945,
+                "band_rms_db_reference1": -48.67068033987919,
+                "power_db_relative_old": -2.2326371008428607,
+                "coherent_projection_on_old": 0.7641120280599136,
+                "coherent_projection_on_new": 0.7634997735124522
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.003688047416516354,
+                "band_rms_db_reference1": -48.66407007883766,
+                "power_db_relative_old": -2.2260268398013343,
+                "coherent_projection_on_old": 0.7648019625407354,
+                "coherent_projection_on_new": 0.7641999772825724
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -1.0083003630036367,
+                "normalized_squared_coherence": 0.6615075994101536,
+                "two_cross_over_B_plus_C_own_power": 0.4973320635881469
+              }
+            }
+          }
+        },
+        {
+          "window_seconds": [
+            0.05,
+            0.1
+          ],
+          "native_FFT_resolution_Hz": 20.0,
+          "bands": {
+            "31.25-250Hz": {
+              "old": {
+                "band_rms_model_units": 0.00013359197806429862,
+                "band_rms_db_reference1": -77.48439239215068,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": -6.6249812142754045
+              },
+              "new": {
+                "band_rms_model_units": 1.9967507392360614e-05,
+                "band_rms_db_reference1": -93.99352292222349,
+                "power_db_relative_old": -16.509130530072817,
+                "coherent_projection_on_old": -0.14800336789988092,
+                "coherent_projection_on_new": 0.9999999999999998
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0001335904165059216,
+                "band_rms_db_reference1": -77.48449392222155,
+                "power_db_relative_old": -0.00010153007085743294,
+                "coherent_projection_on_old": 0.9999795503512159,
+                "coherent_projection_on_new": -6.623772160349521
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 5.591970640699465e-07,
+                "band_rms_db_reference1": -125.0487023483079,
+                "power_db_relative_old": -47.56430995615722,
+                "coherent_projection_on_old": 2.0449648788374523e-05,
+                "coherent_projection_on_new": -0.0012090539259183959
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0001533848478881487,
+                "band_rms_db_reference1": -76.28435080038503,
+                "power_db_relative_old": 1.2000415917656528,
+                "coherent_projection_on_old": -1.1479828505418066,
+                "coherent_projection_on_new": 7.623771415471989
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.8458688598948,
+                "normalized_squared_coherence": 0.9996714403854616,
+                "two_cross_over_B_plus_C_own_power": -0.9903633345154483
+              }
+            },
+            "250-500Hz": {
+              "old": {
+                "band_rms_model_units": 0.0002722687456214629,
+                "band_rms_db_reference1": -71.30004418995998,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": -8.200746488363514
+              },
+              "new": {
+                "band_rms_model_units": 1.3783996109741836e-05,
+                "band_rms_db_reference1": -97.21249716261944,
+                "power_db_relative_old": -25.912452972659466,
+                "coherent_projection_on_old": -0.021018808305951306,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0002722577506282098,
+                "band_rms_db_reference1": -71.30039495819122,
+                "power_db_relative_old": -0.00035076823125601076,
+                "coherent_projection_on_old": 0.9999578549876764,
+                "coherent_projection_on_new": -8.196584705016122
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 5.112505449536222e-07,
+                "band_rms_db_reference1": -125.82732432119913,
+                "power_db_relative_old": -54.52728013123916,
+                "coherent_projection_on_old": 4.214501232573403e-05,
+                "coherent_projection_on_new": -0.004161783347358389
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00027826059683341083,
+                "band_rms_db_reference1": -71.11096575397869,
+                "power_db_relative_old": 0.1890784359812837,
+                "coherent_projection_on_old": -1.0209766677308114,
+                "coherent_projection_on_new": 9.196583022375577
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -179.82172529650245,
+                "normalized_squared_coherence": 0.99797840039298,
+                "two_cross_over_B_plus_C_own_power": -0.9987463289714731
+              }
+            },
+            "500-1000Hz": {
+              "old": {
+                "band_rms_model_units": 0.0008532023162161405,
+                "band_rms_db_reference1": -61.378959484552425,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 1.0677167765343316
+              },
+              "new": {
+                "band_rms_model_units": 0.0007771921093092844,
+                "band_rms_db_reference1": -62.189432347261686,
+                "power_db_relative_old": -0.8104728627092566,
+                "coherent_projection_on_old": 0.8859491185163889,
+                "coherent_projection_on_new": 0.9999999999999998
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.000979125503354124,
+                "band_rms_db_reference1": -60.18323274369656,
+                "power_db_relative_old": 1.1957267408558712,
+                "coherent_projection_on_old": 1.1431141551403001,
+                "coherent_projection_on_new": 1.2414498309246627
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.00014957092120638086,
+                "band_rms_db_reference1": -76.50305663038546,
+                "power_db_relative_old": -15.12409714583303,
+                "coherent_projection_on_old": -0.14311415514030057,
+                "coherent_projection_on_new": -0.17373305439033127
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.00025094713336257034,
+                "band_rms_db_reference1": -72.00835522035402,
+                "power_db_relative_old": -10.629395735801584,
+                "coherent_projection_on_old": -0.2571650276284577,
+                "coherent_projection_on_new": -0.241449822403518
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -175.29711950508735,
+                "normalized_squared_coherence": 0.7271415685781728,
+                "two_cross_over_B_plus_C_own_power": -0.408778980583545
+              }
+            },
+            "1000-2000Hz": {
+              "old": {
+                "band_rms_model_units": 0.10040511574470619,
+                "band_rms_db_reference1": -19.964883177466245,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 1.0,
+                "coherent_projection_on_new": 0.9990667190415807
+              },
+              "new": {
+                "band_rms_model_units": 0.10049768537676694,
+                "band_rms_db_reference1": -19.95687881256611,
+                "power_db_relative_old": 0.008004364900135461,
+                "coherent_projection_on_old": 1.0009097699834268,
+                "coherent_projection_on_new": 1.0
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.11991900243734989,
+                "band_rms_db_reference1": -18.42223985765789,
+                "power_db_relative_old": 1.5426433198083553,
+                "coherent_projection_on_old": 1.1936695596368974,
+                "coherent_projection_on_new": 1.1924186282529452
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.019863073285700923,
+                "band_rms_db_reference1": -34.039071100941385,
+                "power_db_relative_old": -14.07418792347514,
+                "coherent_projection_on_old": -0.1936695596368975,
+                "coherent_projection_on_new": -0.19335190921136436
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.019849657996484922,
+                "band_rms_db_reference1": -34.0449394319407,
+                "power_db_relative_old": -14.080056254474451,
+                "coherent_projection_on_old": -0.1927597906399411,
+                "coherent_projection_on_new": -0.19241862923775413
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -169.22901043676254,
+                "normalized_squared_coherence": 0.9991290863307969,
+                "two_cross_over_B_plus_C_own_power": -0.3164078143690571
+              }
+            },
+            "4000-8000Hz": {
+              "old": {
+                "band_rms_model_units": 0.0009394793302778167,
+                "band_rms_db_reference1": -60.542255409620054,
+                "power_db_relative_old": 0.0,
+                "coherent_projection_on_old": 0.9999999999999999,
+                "coherent_projection_on_new": 0.9985647329763737
+              },
+              "new": {
+                "band_rms_model_units": 0.0009408244300235938,
+                "band_rms_db_reference1": -60.5298282792982,
+                "power_db_relative_old": 0.012427130321864979,
+                "coherent_projection_on_old": 1.0014261705121053,
+                "coherent_projection_on_new": 1.0000000000000002
+              },
+              "raw_B": {
+                "band_rms_model_units": 0.0003619672448515571,
+                "band_rms_db_reference1": -68.82661455750491,
+                "power_db_relative_old": -8.284359147884857,
+                "coherent_projection_on_old": 0.33191995409471425,
+                "coherent_projection_on_new": 0.3315886957012316
+              },
+              "old_instant_C": {
+                "band_rms_model_units": 0.0006540048786085589,
+                "band_rms_db_reference1": -63.68838024009343,
+                "power_db_relative_old": -3.146124830473374,
+                "coherent_projection_on_old": 0.6680800459052856,
+                "coherent_projection_on_new": 0.6669760372751417
+              },
+              "new_causal_C": {
+                "band_rms_model_units": 0.0006551023089922547,
+                "band_rms_db_reference1": -63.67381739677327,
+                "power_db_relative_old": -3.131561987153211,
+                "coherent_projection_on_old": 0.6695062350503095,
+                "coherent_projection_on_new": 0.6684113231127923
+              },
+              "raw_B_vs_new_C": {
+                "phase_degrees": -3.9757431112974704,
+                "normalized_squared_coherence": 0.4718088219057636,
+                "two_cross_over_B_plus_C_own_power": 0.5801201638803516
+              }
+            }
+          }
+        }
+      ],
+      "artifacts": {
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/baseline.f32le": "8bacbebf1b60485526343cf2274e1922fe99beb5345161018f41ace7c3b1f2cd",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/candidate.f32le": "a44179a066530e6b24971ae62cd290a5b242c54e1a5b742c36c42fa69dfecdb3",
+        "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/trace.f64le": "468c02eb9387a9a53e0907844a345820fe8165dccf7d6eb08a67ff9f83507e7f"
+      }
+    }
+  ],
+  "limits": [
+    "Force/subsystemidentity ofreferenceLF remainsUNASSIGNED. Theseprojections explainmodelpaths only.",
+    "Shortwindow nativebins cancontain highcarrier leakage; allrecordedcomponentpowers/crossphases retained.",
+    "Pressurecomponentscoherentlycancel, so ownpowers do notadd. Largepositive/negativeprojection shares are valid.",
+    "Reconstructiondifferenceincludes APIfloat32 rounding and independentdoubleHP accumulation; notmechanicalchanges.",
+    "GlobalpilotFAILandbothC6regressions remain unchanged."
+  ],
+  "source_sha256": "19fbbc15f482047d427330bebd3e19f3dc22bc1caca1a61b1b599717cdd62020"
+}

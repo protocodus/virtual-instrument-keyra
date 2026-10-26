@@ -1,0 +1,43 @@
+{
+  "recorded_at_utc": "2026-10-26T22:25:30.584576+00:00",
+  "reviewer": "/root/waveguide_finalize",
+  "recorded_by": "/root/contact_finalize",
+  "source": "Independent reviewer mailbox messages, reproduced as an attributed statement; this receipt adds no new audit or PCM analysis.",
+  "result": "PASS, no blocker before producer start",
+  "bound_inputs": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/consume.py",
+      "sha256": "508d9445b5eedf98dcc6c610141e41476b20f68dc1013e3d6dd45f1b9d02150e"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/measure_references.py",
+      "sha256": "45b38bc157afdff800c1c2f9c6090d4c51225acb058f5057f214808d0a74e3b6"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/reference-control.json",
+      "sha256": "e3ad140a8052c2e81acdc0a281a4e658a2df7f796029572d562634c8adf375fe"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/protocol.json",
+      "sha256": "4d88205cd74ff1e05aa5082619d187435983e0c233b135100ff5bc906cb87cb6"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/protocol-freeze.json",
+      "sha256": "f1af614a7ddaed18659c57c679ff313e454528f9d6a88210bcb7ab5deb330a08"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/producer-plan.json",
+      "sha256": "c703d4062f276d68f1cbc61ad06a1cbebb7face8e1f68b37002909b5918d31c2"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/train34/producer/candidate-freeze.json",
+      "sha256": "ab3352f721dc3041e9a8bf4a3731eca25e827e251d5045528976ec4a808d9486"
+    }
+  ],
+  "reviewer_consumer_statement": "C8v4 support134788 after onset: only3complete windows(.25-.75,.75-1.5,1.5-2.5), omitted2.5-3.5,128 envelope samples through2.8000000000000025; ceil(t*48k)+120<frames covers full240 smoother+interpolation, no padded boundary support. H1 inclusion reference fixed; excluded weak H1 kept separately,4433.8 unassigned diagnostic gateFalse. Six reference old keys exact and final protocol reused outcome objects exact. Consumer reads producer fixed400 WAV; never calls operator.process; actual hashed u64 rows cardinality714/182400+full indices and parity checked, physical OR observer fault validated, mismatch/invalid feature fails case or once-only batch, not dropped/retried. Protocol4d88205c bound freeze chronology verified. No PCM opened/edits/synthesis.",
+  "reviewer_producer_statement": "Producer source27+binary/freeze/protocol verified. Exact four operator function source strings. Cached float32 bytes checked in producer; all714 state/182400 force schedule/equality, physical OR observer fault0/parity0, partition output AND state bytes, finite PCM, six unchanged reuse. Read-only source/metadata audit; no new audio access.",
+  "scope_limits": [
+    "Review occurred before producer rendering and covered source/contract consistency, not perceptual fidelity or new metric outcomes.",
+    "Consumer owner persists the attributed review message; the reviewer did not write this JSON."
+  ]
+}

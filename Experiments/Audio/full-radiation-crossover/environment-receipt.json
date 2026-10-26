@@ -1,0 +1,44 @@
+{
+  "scope": "Procedural IR only; no old/causal/compatibility piano PCM opened, DSP rendered, candidate processed or metrics scored.",
+  "source": {
+    "path": "Research/GrandPianoV2/tools/render.py",
+    "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4"
+  },
+  "diagnostic_source_sha256": "b147aecf3341e8df1c0a716941961d5727ef59423a1d828531891f813dfdb432",
+  "observations": [
+    {
+      "OPENBLAS_NUM_THREADS": 1,
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "diffuse_L_R_norms": [
+        11.579841132970085,
+        11.797006866168122
+      ],
+      "float64_IR_sha256": "38dd2ac037e8fb2cb47f3ec561c37eab0478cef092b7ded9b617b92d6458b374"
+    },
+    {
+      "OPENBLAS_NUM_THREADS": 8,
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "diffuse_L_R_norms": [
+        11.579841132970088,
+        11.797006866168116
+      ],
+      "float64_IR_sha256": "b033d343963462d49247dade80a831015e5a3c04534160fc2f303d55d7806657"
+    }
+  ],
+  "absolute_IR_difference_max": 1.1102230246251565e-16,
+  "absolute_IR_difference_RMS": 1.2068982398181725e-18,
+  "different_float64_elements": 139793,
+  "conclusion": "BLAS diffuse-tail norm reduction changes binary64 IR bits. Pinning one thread reconstructs the exact historical immutable IR without a new room, gain, version or candidate. Only the one-thread IR was used for the completed music presentation.",
+  "synthetic_IR_snapshots": [
+    {
+      "file": "ir-openblas-1.npy",
+      "sha256": "c2ae01c8f0720b49e2c1aa4227de6d41336fcb0e1c13595b88c6310e1ebf2b2d"
+    },
+    {
+      "file": "ir-openblas-8.npy",
+      "sha256": "4aaf7abd0aa245a167f80fb9e90f9116a5d2cac2062e607baa4409fa9b2a4b5f"
+    }
+  ]
+}

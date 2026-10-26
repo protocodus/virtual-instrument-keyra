@@ -725,6 +725,210 @@
     "user_hears_in_both_halves": true,
     "added_mechanism_layer_excluded_as_shared_cause": true,
     "fix_applied": false,
-    "status": "Original attack transient under investigation; unfinished diagnostics excluded from publication."
+    "status": "Proposed radiation observer/crossover rejected by full TRAIN34 confirmation:26 pass,8 early-attack failures. No click fix adopted; current default unchanged.",
+    "diagnostic_report": {
+      "path": "Validation/full-causal-radiation-pilot.json",
+      "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+    },
+    "latest_confirmation": {
+      "path": "tools/experiments/radiation_crossover_train34/index.json",
+      "sha256": "08ae312e625d41f28b87aa0db5ab85dd78f47f28c28397feb367346fefc9cd98"
+    }
+  },
+  "full_causal_radiation_pilot": {
+    "scope": "One frozen readout candidate using the historical five-anchor OriginalControl prototype; six previously observed TRAIN cases, no fresh holdout or universal causality claim.",
+    "protocol": {
+      "path": "Validation/full-causal-radiation-pilot-protocol.json",
+      "sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa"
+    },
+    "result": {
+      "path": "Validation/full-causal-radiation-pilot.json",
+      "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+    },
+    "original_metric_fixtures": {
+      "path": "Validation/full-causal-radiation-metric-checks.json",
+      "sha256": "851b1ff2153eaf6fe23f55102dfaece59d124fc4326796b4a565428192d5b1e3"
+    },
+    "metric_replay": {
+      "path": "Validation/full-causal-radiation-metric-replay.json",
+      "sha256": "d70fd3bbef05d63e0041c4fb3367c79d125e9058aa2701201bf0038f589d50dd"
+    },
+    "review": {
+      "path": "Validation/full-causal-radiation-review.json",
+      "sha256": "eabc126ba12e52f598d0c5aba3f56c33a6c088e6af7cadd7c9ca27c1fad0289d"
+    },
+    "posthoc_C6_diagnostic": {
+      "path": "Validation/full-causal-radiation-C6-diagnostic.json",
+      "sha256": "2f7966b9fddda5678024cacb22d701e9a7715b0b4b28858c079f0812187169a6"
+    },
+    "package": {
+      "path": "tools/experiments/causal_radiation_pilot/review-index.json",
+      "sha256": "3f520eeef1d07389486efc93972e8eaa59e7760b68e7298a9260690a0de90f8d"
+    },
+    "producer_sources": {
+      "path": "tools/experiments/causal_radiation_pilot/producer/source-index.json",
+      "sha256": "758117591289e8ea2814cc8120f4c8ac67e89b86e8d9de3f7460be87154abfcb"
+    },
+    "candidate_freeze": {
+      "path": "tools/experiments/causal_radiation_pilot/producer/evidence/candidate-freeze.json",
+      "sha256": "e69b90e55119da36668feba4048eace7230f92c362fdfce93c38c9c69adea8ea"
+    },
+    "listening_diagnostics": {
+      "path": "Audio/full-radiation-pilot/manifest.json",
+      "sha256": "62cbc6e46b95330b4e0b5b92abc19e1c23c5b21bfbd4ab6e7f282b42486a03c4"
+    },
+    "training_cases": 6,
+    "fresh_cases": 0,
+    "cases_passing_all_gates": 4,
+    "pilot_passes_all_gates": false,
+    "failed_cases": [
+      "C6v4",
+      "C6v12"
+    ],
+    "failed_gate": "each_early_window_band_MAE",
+    "frozen_metric_protocol_and_gates_unchanged": true,
+    "baseline_float32_payloads_exact_to_cached_controls": true,
+    "source_producer_parity_scope": "714 sampled full-state checkpoints and 182400 before/after force bit-hash rows per case, plus exact old baseline PCM and source review; finite-width hashes are not collision-free proofs.",
+    "published_evidence_consistency_passed": true,
+    "full_local_numeric_replay_passed": true,
+    "external_input_artifacts_checked_in_local_replay": 71,
+    "portable_producer_build_reproduced_original_binary": true,
+    "new_portable_synthesis_run": false,
+    "fix_applied": false,
+    "default_unchanged": true,
+    "sound_validation_passed": false,
+    "review_command": "python3 tools/check_causal_radiation_review.py",
+    "limits": "A source/evidence or numerical replay pass preserves the failed pilot. It does not establish perceived click removal, sound parity, fresh generalization, real-time budget or Reason host readiness. Separate post-hoc compatibility experiments do not rewrite this result."
+  },
+  "radiation_crossover_400hz": {
+    "scope": "Separate one-run fixed400Hz post-hoc compatibility experiment on six already observed TRAIN cases. Original failed radiation-startup pilot remains unchanged.",
+    "protocol": {
+      "path": "Validation/full-radiation-crossover-protocol.json",
+      "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815"
+    },
+    "result": {
+      "path": "Validation/full-radiation-crossover.json",
+      "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec"
+    },
+    "margins_and_C6_signed_bands": {
+      "path": "Validation/full-radiation-crossover-margins.json",
+      "sha256": "de6e106aaed99afde93cb29596a5aa9d03dc194f431e85e2417b1b19a1eaa660"
+    },
+    "review": {
+      "path": "Validation/full-radiation-crossover-review.json",
+      "sha256": "ab4871510eb3dd84518abd64d9be9c1f283b06b8231040beb64cff48843364ef"
+    },
+    "package": {
+      "path": "tools/experiments/radiation_crossover/index.json",
+      "sha256": "77bedfdd9ff38b42944bd51c2ee14c927f5bdd4c0d77d947509d7dd1989e5c7f"
+    },
+    "independent_source_review": {
+      "path": "tools/experiments/radiation_crossover/evidence/independent-review.json",
+      "sha256": "2708da8960308aaf5a18e0a4661a50555f0eacd458fc57489418baec43469b08"
+    },
+    "independent_stored_result_review": {
+      "path": "tools/experiments/radiation_crossover/evidence/independent-result-review.json",
+      "sha256": "85517c9037a1e56ba32a17fa3dcd0b29794097f618d1f279000a423c98b69bdc"
+    },
+    "matched_music": {
+      "path": "Audio/full-radiation-crossover/manifest.json",
+      "sha256": "56b18dde3d3ca147ff6c42f8170b430909447a175b6f185b631b3cbf4c700685"
+    },
+    "replay_environment_addendum": {
+      "path": "docs/REPLAY_ENVIRONMENT.md",
+      "sha256": "b5cfc8e264d08f40a7ca8858206104c80737337df502a47993f77b268edec40b"
+    },
+    "IR_environment_receipt": {
+      "path": "Audio/full-radiation-crossover/environment-receipt.json",
+      "sha256": "59d426fefc70496d0c27f1075f7a814cfb6f4183f96fbf5fda0ce11f71d3ec05"
+    },
+    "original_source_package_commit": "85a606b",
+    "training_cases": 6,
+    "fresh_cases": 0,
+    "cases_passing_all_unchanged_gates": 6,
+    "cutoff_variants": 1,
+    "full_instrument_renders": 0,
+    "gate_gain_or_onset_changes": false,
+    "state_force_proof_inherited_from_unchanged_source_pairs": true,
+    "C6_first5_individual_LF_absolute_error_worsening_db": {
+      "C6v4": 1.066723096146454,
+      "C6v12": 1.355778549729287
+    },
+    "C6_LF_signed_errors_20_to_50_and_50_to_100_ms_db": {
+      "C6v4": [
+        -35.98153914747121,
+        -36.043218060823975
+      ],
+      "C6v12": [
+        -36.445508071917196,
+        -37.999000948762536
+      ]
+    },
+    "smallest_numerical_gate_margin_db": 0.22332144746906835,
+    "stored_evidence_verifier_passed": true,
+    "PCM_features_independently_recomputed_by_publication_review": false,
+    "review_command": "python3 tools/experiments/radiation_crossover/check.py",
+    "original_failed_pilot_cases_passing": 4,
+    "original_failed_package_unchanged": true,
+    "required_environment_for_NumPy_based_presentation_and_numeric_replay": {
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "listener_verdict": null,
+    "broader_TRAIN34_qualified_by_this_study": false,
+    "default_changed": false,
+    "fix_applied": false,
+    "sound_validation_passed": false,
+    "limits": "Relative five-band guards can pass despite individual LF regressions and large inherited deficits. Six post-hoc TRAIN passes and exact presentation reproduction do not establish perceived click removal, acoustic realism, realtime or Reason host readiness."
+  },
+  "radiation_crossover_train34_confirmation": {
+    "scope": "One frozen confirmation on34 already observed TRAIN recordings;6 previous outcomes reused verbatim and28 new one-trajectory pressure pairs. Frozen legacy OriginalControl physics, not current connected/default or optional confidence-profile qualification.",
+    "package": {
+      "path": "tools/experiments/radiation_crossover_train34/index.json",
+      "sha256": "08ae312e625d41f28b87aa0db5ab85dd78f47f28c28397feb367346fefc9cd98"
+    },
+    "result": {
+      "path": "tools/experiments/radiation_crossover_train34/evidence/result.json.gz",
+      "sha256": "cb7137fac3f60ea0e368d4f16789170991daf60727fef54b0fd9ac7ae2ead26d",
+      "uncompressed_sha256": "5895dc53be8bf77398327c4b1f0c3057abadbb5cfe5904f957a9bde97cab49fe"
+    },
+    "summary": {
+      "path": "tools/experiments/radiation_crossover_train34/evidence/summary.json",
+      "sha256": "af2136bbd8b2fbbe8aae5fa908b18c36487b7df2271e18f311a1a457a5706b49"
+    },
+    "findings": {
+      "path": "docs/RADIATION_STARTUP.md",
+      "sha256": "52b81a3229e734deec60c536f6698586c297d837a3a237321569f055638e6a66"
+    },
+    "review_command": "python3 tools/experiments/radiation_crossover_train34/check.py",
+    "training_cases": 34,
+    "reused_cases": 6,
+    "new_rendered_cases": 28,
+    "fresh_holdouts": 0,
+    "cases_passing_all_preservation_gates": 26,
+    "passes_all_preservation_gates": false,
+    "failed_cases": [
+      "A0v4",
+      "A0v12",
+      "D#5v4",
+      "D#5v12",
+      "C7v4",
+      "C7v12",
+      "C8v4",
+      "C8v12"
+    ],
+    "failed_guard": "each_early_window_band_MAE",
+    "all_late_harmonic_envelope_RMS_sustain_stereo_and_mono_guards_pass": true,
+    "cached_baseline_payloads_exact": true,
+    "sampled_state_checkpoints": 19992,
+    "all_frame_force_checks": 5107200,
+    "physical_and_observer_faults": 0,
+    "actual_filter_partition_output_and_final_state_bytes_match": true,
+    "cutoff_variants": 1,
+    "gain_onset_or_gate_changes": false,
+    "retries_or_rescores": 0,
+    "default_changed": false,
+    "fix_applied": false,
+    "sound_validation_passed": false,
+    "limits": "Relative guard failures reject this observer/crossover; original source, calibration and defaults remain unchanged. Reference C8 LF dominance and weak/unassigned tonal families limit interpretation of its large fixed RMS-matching gains. Stored-evidence verification does not open the external waveform/proof bundle or establish realism, real-time performance or Reason host qualification."
   }
 }

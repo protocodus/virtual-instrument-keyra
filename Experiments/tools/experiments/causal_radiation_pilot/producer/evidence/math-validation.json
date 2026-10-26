@@ -1,0 +1,355 @@
+{
+  "passed": true,
+  "validated_at_utc": "2026-10-26T20:57:22.854233+00:00",
+  "scope": "Beforeaudio:fixedDC-stationary-correctedendpointobservermath/passivity/constantforce/compiledFRF/resetpartition",
+  "readout_method": "DC-stationary-corrected endpoint; d0 from actual stored damped-rotation matrix determinant",
+  "readout_coefficient_range": [
+    0.7760288974219304,
+    1.0003363622740118
+  ],
+  "probe": {
+    "readout": "DC_stationary_corrected_endpoint",
+    "passivity": [
+      {
+        "resistance_scale": 0,
+        "frames": 24000,
+        "initial_energy_J": 5.085914192515762e-06,
+        "max_energy_ratio": 1,
+        "max_step_rise_over_initial": 0,
+        "max_balance_over_initial": 0,
+        "final_energy_ratio": 2.646554201874664e-05,
+        "passed": true
+      },
+      {
+        "resistance_scale": 1,
+        "frames": 24000,
+        "initial_energy_J": 5.085914192515762e-06,
+        "max_energy_ratio": 1,
+        "max_step_rise_over_initial": 0,
+        "max_balance_over_initial": 1.6759391329479763e-15,
+        "final_energy_ratio": 1.210859419208576e-06,
+        "passed": true
+      },
+      {
+        "resistance_scale": 1000,
+        "frames": 24000,
+        "initial_energy_J": 5.085914192515762e-06,
+        "max_energy_ratio": 1,
+        "max_step_rise_over_initial": 0,
+        "max_balance_over_initial": 1.3663104149752742e-15,
+        "final_energy_ratio": 0.00013907143612010143,
+        "passed": true
+      }
+    ],
+    "constant_force": {
+      "input": [
+        0.3,
+        -0.1,
+        0.2
+      ],
+      "frames": 240000,
+      "last100ms_max_pressure": 9.489410562596453e-15,
+      "last_stereo_norm": 6.392033169977998e-16,
+      "passed": true
+    },
+    "forced_cases": [
+      {
+        "id": 0,
+        "Hz": 31,
+        "group": 1,
+        "settle_frames": 144000,
+        "fit_frames": 48000
+      },
+      {
+        "id": 1,
+        "Hz": 65.4,
+        "group": 0,
+        "settle_frames": 144000,
+        "fit_frames": 48000
+      },
+      {
+        "id": 2,
+        "Hz": 784.5,
+        "group": 1,
+        "settle_frames": 144000,
+        "fit_frames": 48000
+      },
+      {
+        "id": 3,
+        "Hz": 2080,
+        "group": 2,
+        "settle_frames": 144000,
+        "fit_frames": 48000
+      },
+      {
+        "id": 4,
+        "Hz": 10000,
+        "group": 1,
+        "settle_frames": 144000,
+        "fit_frames": 48000
+      },
+      {
+        "id": 5,
+        "Hz": 19000,
+        "group": 1,
+        "settle_frames": 144000,
+        "fit_frames": 48000
+      }
+    ],
+    "reset_partition_byte_identical": true,
+    "passed": true
+  },
+  "compiled_forced_response_vs_analytic_discrete": [
+    {
+      "id": 0,
+      "Hz": 31,
+      "group": 1,
+      "settle_frames": 144000,
+      "fit_frames": 48000,
+      "measured_complex": [
+        [
+          -0.04361879418604577,
+          0.0036248003806488107
+        ],
+        [
+          -0.04518300970555948,
+          0.0045388117415676435
+        ]
+      ],
+      "analytic_discrete_complex": [
+        [
+          -0.04361879418602861,
+          0.0036248003806455143
+        ],
+        [
+          -0.045183009705577,
+          0.0045388117415647074
+        ]
+      ],
+      "absolute_l2_error": 2.4918333328124494e-14,
+      "relative_l2_error": 3.9508918464656335e-13,
+      "passed": true,
+      "time_trace_sha256": "4247d16452b824d7bdf99c8e3f8fb38c876930a810b0677149bc717892f711a2"
+    },
+    {
+      "id": 1,
+      "Hz": 65.4,
+      "group": 0,
+      "settle_frames": 144000,
+      "fit_frames": 48000,
+      "measured_complex": [
+        [
+          -0.7158689261671138,
+          0.19175467715188343
+        ],
+        [
+          -0.33787325407003377,
+          0.1706325943603117
+        ]
+      ],
+      "analytic_discrete_complex": [
+        [
+          -0.7158689261670624,
+          0.19175467715146788
+        ],
+        [
+          -0.337873254070115,
+          0.17063259436067885
+        ]
+      ],
+      "absolute_l2_error": 5.627829830168801e-13,
+      "relative_l2_error": 6.762811887826724e-13,
+      "passed": true,
+      "time_trace_sha256": "33e014230d9a806c0dfb3297ccab45573097f805c9540c99e7dca4def175bd69"
+    },
+    {
+      "id": 2,
+      "Hz": 784.5,
+      "group": 1,
+      "settle_frames": 144000,
+      "fit_frames": 48000,
+      "measured_complex": [
+        [
+          6.969182717971763,
+          2.002914651317728
+        ],
+        [
+          6.271805809338135,
+          1.7378548123104778
+        ]
+      ],
+      "analytic_discrete_complex": [
+        [
+          6.9691827179716626,
+          2.0029146513177625
+        ],
+        [
+          6.271805809338096,
+          1.7378548123104693
+        ]
+      ],
+      "absolute_l2_error": 1.1345153919102347e-13,
+      "relative_l2_error": 1.1643752225974707e-14,
+      "passed": true,
+      "time_trace_sha256": "25d15acbcd8b8af3be19592ebf5f30d6cf5432dc06aa8d6f7a7d87a9b578cc72"
+    },
+    {
+      "id": 3,
+      "Hz": 2080,
+      "group": 2,
+      "settle_frames": 144000,
+      "fit_frames": 48000,
+      "measured_complex": [
+        [
+          5.476066387803094,
+          1.1394995760226483
+        ],
+        [
+          -2.603650552862608,
+          -0.4338622921008829
+        ]
+      ],
+      "analytic_discrete_complex": [
+        [
+          5.47606638780307,
+          1.1394995760226403
+        ],
+        [
+          -2.603650552862618,
+          -0.4338622921008585
+        ]
+      ],
+      "absolute_l2_error": 3.6445808187778824e-14,
+      "relative_l2_error": 5.89270721120652e-15,
+      "passed": true,
+      "time_trace_sha256": "6d1d6fa0a6d18ffadea48ff19426eb420652088adfc79729ce4979b0261b82d5"
+    },
+    {
+      "id": 4,
+      "Hz": 10000,
+      "group": 1,
+      "settle_frames": 144000,
+      "fit_frames": 48000,
+      "measured_complex": [
+        [
+          0.5176926992085659,
+          1.075257837419404
+        ],
+        [
+          -0.07027271925687822,
+          1.5362039159221441
+        ]
+      ],
+      "analytic_discrete_complex": [
+        [
+          0.517692699208584,
+          1.0752578374194242
+        ],
+        [
+          -0.07027271925687285,
+          1.5362039159221597
+        ]
+      ],
+      "absolute_l2_error": 3.172075257458427e-14,
+      "relative_l2_error": 1.6295907496711692e-14,
+      "passed": true,
+      "time_trace_sha256": "36c50ae2c840c454d86e97a7327d7849609ff8f143485a4a6fb9c0f8bfacc050"
+    },
+    {
+      "id": 5,
+      "Hz": 19000,
+      "group": 1,
+      "settle_frames": 144000,
+      "fit_frames": 48000,
+      "measured_complex": [
+        [
+          -1.9440625722955687,
+          -0.03692270306602138
+        ],
+        [
+          1.1255324316650386,
+          0.02545669541582747
+        ]
+      ],
+      "analytic_discrete_complex": [
+        [
+          -1.9440625722955682,
+          -0.03692270306602132
+        ],
+        [
+          1.1255324316650384,
+          0.02545669541582748
+        ]
+      ],
+      "absolute_l2_error": 4.997087695367749e-16,
+      "relative_l2_error": 2.224068188233707e-16,
+      "passed": true,
+      "time_trace_sha256": "135a4569b562a3280288289f830892508e74316c014a82c39e2918272976b1b2"
+    }
+  ],
+  "continuous_vs_discrete_table": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/frequency-analysis.json",
+    "sha256": "60033e3b129803a06d8b03a1e6e4a8e8c174233cb0a9bf8a5a9801037a2419f7",
+    "summary": {
+      "48": {
+        "modal_rows": 453,
+        "gain_db_min": -0.08467567602422474,
+        "gain_db_max": 0.21144484321595047,
+        "maximum_absolute_vector_phase_degrees": 1.1526502869852833,
+        "coefficient_weighted_relative_complex_error": 0.008596058486460802,
+        "maximum_relative_complex_error": 0.0313580651786484
+      },
+      "60": {
+        "modal_rows": 249,
+        "gain_db_min": -0.10930713505432263,
+        "gain_db_max": 0.20009339155822842,
+        "maximum_absolute_vector_phase_degrees": 1.0448955676975114,
+        "coefficient_weighted_relative_complex_error": 0.0055655498727935505,
+        "maximum_relative_complex_error": 0.029969742085595247
+      },
+      "84": {
+        "modal_rows": 63,
+        "gain_db_min": -0.027328279199714076,
+        "gain_db_max": 0.2672399369670083,
+        "maximum_absolute_vector_phase_degrees": 1.3446039254642943,
+        "coefficient_weighted_relative_complex_error": 0.005296113043030384,
+        "maximum_relative_complex_error": 0.04132571110132558
+      }
+    }
+  },
+  "source_inputs": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/CausalRadiation.h",
+      "sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/math_probe.cpp",
+      "sha256": "d163e41ead8277021f50794e6885237ac8c5729beffaecae2e924c902e71bd4c"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/math_probe",
+      "sha256": "2e2502b422b7c1caf6a9702a4a4f979c9b718a6b63b8d4112f375c023bff71d0"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/validate_math.py",
+      "sha256": "32ae3ed6d941b1224a6ea7664ad2020a02d551f5170aa4adb1299bee3e050719"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/board.f64le",
+      "sha256": "132e022ad28fe71719be0dfbf04d9fac3fa86853dc530a5dd31ae878570bdf71"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/modes.f64le",
+      "sha256": "d68ec91d6987933f8132768f576191dc70a2d2d59c376adb7bc744f9f00c4c02"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/frequency_analysis.py",
+      "sha256": "7eea1e89dde406649437771959f27cd8eb8feedd19df08888e77e4268bc7e6dc"
+    }
+  ],
+  "limits": [
+    "Passivity applies to nominalobserver storage and U\u2192midpointvelocity port, notthe noncollocatedpressureobserver or originalinstrument energy.",
+    "No candidateaudio opened; readout chosen frommath-onlycomparisons, rejectedendpointDCleak andfinite-differenceHFnegatives retained.",
+    "Compiledsteadyforcedfit has finite settle/support; tolerance2e-7*max(1,stereoL2), allactualerrors retained."
+  ]
+}

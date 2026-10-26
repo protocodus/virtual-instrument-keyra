@@ -1,0 +1,37 @@
+{
+  "scope": "Independent source/protocol/synthetic-data-only audit; no WAV or candidate pressure PCM opened. Existing JSON feature records were used to check exact gate extraction.",
+  "passed": true,
+  "postprocessor_source_sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e",
+  "protocol_sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815",
+  "freeze_sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782",
+  "filter_algebra": "H(z)=b(1+z^-1)/(1-a*z^-1); 0<a<1; DC=1; Nyquist=0. Y=H*old+(1-H)*new preserves shared B in exact arithmetic. Transition boost/cancellation remains possible.",
+  "same_input_identity": "From reset, zero difference leaves zero LP state and preserves new float32 sample signs; not a claim for nonzero prior filter state.",
+  "selftests": {
+    "passed": true,
+    "pole": 0.9489645667148798,
+    "b0_b1": 0.02551771664256012,
+    "DC_gain": 1.0000000000000013,
+    "Nyquist_gain": 0.0,
+    "zero_difference_bit_identity": true,
+    "partition_byte_identity": true,
+    "canonical_partition": [
+      64
+    ],
+    "alternate_partitions": [
+      1,
+      3,
+      17,
+      64,
+      129,
+      7
+    ],
+    "analytic_impulse_max_absolute_error": 6.938893903907228e-18,
+    "nonfinite_inputs_rejected": 3,
+    "scope": "Synthetic data only. One fixed coefficient set; no pilot PCM opened."
+  },
+  "exact_original_gate_block_sha256": "3e79de5cc8cff0470711fe6b54bed880e753ed34aa7060941fb07031cd216f40",
+  "six_stored_pilot_cases_exact_original_changes_and_gates": true,
+  "protocol_original_analysis_and_gates_exact": true,
+  "new_synthesis_or_audio_access": false,
+  "adoption_or_fresh_holdout_claim": false
+}

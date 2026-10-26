@@ -1,0 +1,509 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-26T21:54:29.224566+00:00",
+  "scope": "Read-only aggregation of frozen stored features only: no PCM decode, feature recomputation, rescoring, threshold change or experiment rerun.",
+  "result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/result.json",
+    "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec"
+  },
+  "reference_control": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/reference-control.json",
+    "sha256": "4675d46574d65063d63ce9266ef4caa3d30c4880e4fac6fbabd11e6ff9747faf"
+  },
+  "original_failed_causal_pilot": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-result.json",
+    "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+  },
+  "minimum_gate_margins": [
+    {
+      "id": "C3v4",
+      "margin_definition": "Positive is remaining numerical headroom to the unchanged threshold; negative would fail. Units dB. Boolean parity/fault/payload requirements are separate exact requirements, no numerical headroom.",
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7087250026830656,
+        "late_envelope_MAE_db": 0.7290037096474453,
+        "late_RMS_drift_db": 0.33795238635034996,
+        "stereo_LR_shift_db": 0.37443920212165077,
+        "mono_energy_shift_db": 0.5930776390669611,
+        "C3_first5_excess_reduction_db": 0.8062142777342061,
+        "C3_ring5_20_excess_reduction_db": 1.353108245355962
+      },
+      "minimum_numeric_margin_db": 0.33795238635034996,
+      "limiting_numeric_gate": "late_RMS_drift_db",
+      "boolean_gate_requirements": {
+        "baseline_payload_exact_to_cached_control": true,
+        "mechanical_state_force_bit_parity": true,
+        "no_new_faults": true
+      }
+    },
+    {
+      "id": "C3v12",
+      "margin_definition": "Positive is remaining numerical headroom to the unchanged threshold; negative would fail. Units dB. Boolean parity/fault/payload requirements are separate exact requirements, no numerical headroom.",
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7630827597900502,
+        "late_envelope_MAE_db": 0.7213337091422911,
+        "late_RMS_drift_db": 0.3233326023578904,
+        "stereo_LR_shift_db": 0.38019376459877874,
+        "mono_energy_shift_db": 0.577428036008273,
+        "C3_first5_excess_reduction_db": 1.2660414694952102,
+        "C3_ring5_20_excess_reduction_db": 1.3303297008896244
+      },
+      "minimum_numeric_margin_db": 0.3233326023578904,
+      "limiting_numeric_gate": "late_RMS_drift_db",
+      "boolean_gate_requirements": {
+        "baseline_payload_exact_to_cached_control": true,
+        "mechanical_state_force_bit_parity": true,
+        "no_new_faults": true
+      }
+    },
+    {
+      "id": "C4v4",
+      "margin_definition": "Positive is remaining numerical headroom to the unchanged threshold; negative would fail. Units dB. Boolean parity/fault/payload requirements are separate exact requirements, no numerical headroom.",
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7468233758486864,
+        "late_envelope_MAE_db": 0.7492312721838879,
+        "late_RMS_drift_db": 0.4926484351430456,
+        "stereo_LR_shift_db": 0.49522326299745634,
+        "mono_energy_shift_db": 0.7429248216069488,
+        "each_early_window_band_MAE_db": 0.8920497843492186
+      },
+      "minimum_numeric_margin_db": 0.4926484351430456,
+      "limiting_numeric_gate": "late_RMS_drift_db",
+      "boolean_gate_requirements": {
+        "baseline_payload_exact_to_cached_control": true,
+        "mechanical_state_force_bit_parity": true,
+        "no_new_faults": true
+      }
+    },
+    {
+      "id": "C4v12",
+      "margin_definition": "Positive is remaining numerical headroom to the unchanged threshold; negative would fail. Units dB. Boolean parity/fault/payload requirements are separate exact requirements, no numerical headroom.",
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7495229496324329,
+        "late_envelope_MAE_db": 0.7488008295547814,
+        "late_RMS_drift_db": 0.4940497525253046,
+        "stereo_LR_shift_db": 0.494458327936958,
+        "mono_energy_shift_db": 0.7445354902860816,
+        "each_early_window_band_MAE_db": 0.8915017269472978
+      },
+      "minimum_numeric_margin_db": 0.4940497525253046,
+      "limiting_numeric_gate": "late_RMS_drift_db",
+      "boolean_gate_requirements": {
+        "baseline_payload_exact_to_cached_control": true,
+        "mechanical_state_force_bit_parity": true,
+        "no_new_faults": true
+      }
+    },
+    {
+      "id": "C6v4",
+      "margin_definition": "Positive is remaining numerical headroom to the unchanged threshold; negative would fail. Units dB. Boolean parity/fault/payload requirements are separate exact requirements, no numerical headroom.",
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7597467302702086,
+        "late_envelope_MAE_db": 0.7301767134180164,
+        "late_RMS_drift_db": 0.49811005441993594,
+        "stereo_LR_shift_db": 0.4905818883885722,
+        "mono_energy_shift_db": 0.6983029281221674,
+        "each_early_window_band_MAE_db": 0.22332144746906835
+      },
+      "minimum_numeric_margin_db": 0.22332144746906835,
+      "limiting_numeric_gate": "each_early_window_band_MAE_db",
+      "boolean_gate_requirements": {
+        "baseline_payload_exact_to_cached_control": true,
+        "mechanical_state_force_bit_parity": true,
+        "no_new_faults": true
+      }
+    },
+    {
+      "id": "C6v12",
+      "margin_definition": "Positive is remaining numerical headroom to the unchanged threshold; negative would fail. Units dB. Boolean parity/fault/payload requirements are separate exact requirements, no numerical headroom.",
+      "gate_margins_db": {
+        "late_harmonic_MAE_db": 0.7577700694163525,
+        "late_envelope_MAE_db": 0.7590567802842338,
+        "late_RMS_drift_db": 0.492765477747595,
+        "stereo_LR_shift_db": 0.4771577917048979,
+        "mono_energy_shift_db": 0.7081556264232777,
+        "each_early_window_band_MAE_db": 0.5536110421647074
+      },
+      "minimum_numeric_margin_db": 0.4771577917048979,
+      "limiting_numeric_gate": "stereo_LR_shift_db",
+      "boolean_gate_requirements": {
+        "baseline_payload_exact_to_cached_control": true,
+        "mechanical_state_force_bit_parity": true,
+        "no_new_faults": true
+      }
+    }
+  ],
+  "C6_signed_LF_analysis": [
+    {
+      "id": "C6v4",
+      "windows": [
+        {
+          "window_seconds": [
+            0.0,
+            0.005
+          ],
+          "five_band_MAE_db": {
+            "old": 35.742919062645,
+            "causal": 27.082012921831392,
+            "crossover": 36.51959761517593
+          },
+          "crossover_five_band_MAE_worsening_db": 0.7766785525309317,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": 43.22251807884921,
+            "causal": -6.788031253264047,
+            "crossover": 44.28924117499567
+          },
+          "LF_signed_error_change_crossover_minus_old_db": 1.066723096146454,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 1.066723096146454,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              43.22251807884921,
+              45.8826008559138,
+              48.54898706744463,
+              35.71252370364101,
+              5.34796560737636
+            ],
+            "causal": [
+              -6.788031253264047,
+              35.22040230374109,
+              46.99022699603234,
+              40.349022994987806,
+              6.062381061131692
+            ],
+            "crossover": [
+              44.28924117499567,
+              43.301439580678135,
+              48.58218329270961,
+              40.35823448578686,
+              6.066889541709397
+            ]
+          }
+        },
+        {
+          "window_seconds": [
+            0.005,
+            0.02
+          ],
+          "five_band_MAE_db": {
+            "old": 5.618083976673396,
+            "causal": 13.844600332088882,
+            "crossover": 5.856145628030656
+          },
+          "crossover_five_band_MAE_worsening_db": 0.23806165135725976,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": 2.147098203088749,
+            "causal": -42.481200998608884,
+            "crossover": 2.673991432197222
+          },
+          "LF_signed_error_change_crossover_minus_old_db": 0.5268932291084729,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 0.5268932291084729,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              2.147098203088749,
+              -0.960525701146412,
+              3.856765215693432,
+              4.7708383102028105,
+              -16.355192453235578
+            ],
+            "causal": [
+              -42.481200998608884,
+              -2.2424778684313647,
+              3.3834147368638194,
+              4.80495929982966,
+              -16.31094875671068
+            ],
+            "crossover": [
+              2.673991432197222,
+              -2.042694954917362,
+              3.4500685867211978,
+              4.804149084783484,
+              -16.30982408153401
+            ]
+          }
+        },
+        {
+          "window_seconds": [
+            0.02,
+            0.05
+          ],
+          "five_band_MAE_db": {
+            "old": 14.43731007244042,
+            "causal": 18.642411811041097,
+            "crossover": 14.8955219214407
+          },
+          "crossover_five_band_MAE_worsening_db": 0.4582118490002802,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": -35.744849577390625,
+            "causal": -54.11863383302132,
+            "crossover": -35.98153914747121
+          },
+          "LF_signed_error_change_crossover_minus_old_db": -0.23668957008058555,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 0.23668957008058555,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              -35.744849577390625,
+              -8.704209652956296,
+              2.12870040042116,
+              4.526156426839605,
+              -21.08263430459441
+            ],
+            "causal": [
+              -54.11863383302132,
+              -11.359740154937679,
+              2.15074622172649,
+              4.545664707908341,
+              -21.037274137611654
+            ],
+            "crossover": [
+              -35.98153914747121,
+              -10.77545282555125,
+              2.1392165252174684,
+              4.546223146140979,
+              -21.0351779628226
+            ]
+          }
+        },
+        {
+          "window_seconds": [
+            0.05,
+            0.1
+          ],
+          "five_band_MAE_db": {
+            "old": 14.397053162991707,
+            "causal": 17.981105424853112,
+            "crossover": 14.73533541437059
+          },
+          "crossover_five_band_MAE_worsening_db": 0.33828225137888346,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": -35.18995339499112,
+            "causal": -51.72264266189747,
+            "crossover": -36.043218060823975
+          },
+          "LF_signed_error_change_crossover_minus_old_db": -0.8532646658328531,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 0.8532646658328531,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              -35.18995339499112,
+              -22.679002468274415,
+              3.446218761219255,
+              2.7745230243161316,
+              -7.895568166157619
+            ],
+            "causal": [
+              -51.72264266189747,
+              -24.086031869779312,
+              3.453601101757282,
+              2.7913366657427434,
+              -7.85191482508874
+            ],
+            "crossover": [
+              -36.043218060823975,
+              -23.548620990848825,
+              3.4421502678327274,
+              2.79214828617408,
+              -7.850539466173351
+            ]
+          }
+        }
+      ],
+      "worst_five_band_MAE_window": [
+        0.0,
+        0.005
+      ],
+      "worst_five_band_MAE_worsening_db": 0.7766785525309317,
+      "worst_LF_absolute_error_worsening_window": [
+        0.0,
+        0.005
+      ],
+      "worst_LF_absolute_error_worsening_db": 1.066723096146454
+    },
+    {
+      "id": "C6v12",
+      "windows": [
+        {
+          "window_seconds": [
+            0.0,
+            0.005
+          ],
+          "five_band_MAE_db": {
+            "old": 23.164580066680596,
+            "causal": 16.631476583851473,
+            "crossover": 23.61096902451589
+          },
+          "crossover_five_band_MAE_worsening_db": 0.44638895783529264,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": 36.03296761243377,
+            "causal": -8.750777100933568,
+            "crossover": 37.38874616216306
+          },
+          "LF_signed_error_change_crossover_minus_old_db": 1.355778549729287,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 1.355778549729287,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              36.03296761243377,
+              32.50967904293694,
+              25.80521519939746,
+              19.694762653118552,
+              -1.7802758255162838
+            ],
+            "causal": [
+              -8.750777100933568,
+              24.849096615827516,
+              25.284732379532002,
+              23.291884306725684,
+              -0.9808925162386093
+            ],
+            "crossover": [
+              37.38874616216306,
+              29.909840809026782,
+              26.43638869208578,
+              23.339100500311577,
+              -0.9807689589922363
+            ]
+          }
+        },
+        {
+          "window_seconds": [
+            0.005,
+            0.02
+          ],
+          "five_band_MAE_db": {
+            "old": 5.672197822992084,
+            "causal": 14.543962967993664,
+            "crossover": 5.749738980665308
+          },
+          "crossover_five_band_MAE_worsening_db": 0.07754115767322389,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": -6.494793594085558,
+            "causal": -49.70851458497637,
+            "crossover": -5.967100452437297
+          },
+          "LF_signed_error_change_crossover_minus_old_db": 0.5276931416482613,
+          "LF_absolute_error_worsening_crossover_minus_old_db": -0.5276931416482613,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              -6.494793594085558,
+              -0.2895433587992511,
+              0.20989304434495953,
+              -7.006763899827533,
+              -14.359995217903114
+            ],
+            "causal": [
+              -49.70851458497637,
+              -1.4605651031940052,
+              -0.2006227355378072,
+              -7.034253633672616,
+              -14.315858782587528
+            ],
+            "crossover": [
+              -5.967100452437297,
+              -1.2952077283958645,
+              -0.14394302003882536,
+              -7.028036570849109,
+              -14.314407131605442
+            ]
+          }
+        },
+        {
+          "window_seconds": [
+            0.02,
+            0.05
+          ],
+          "five_band_MAE_db": {
+            "old": 13.007702746610438,
+            "causal": 17.106512581110117,
+            "crossover": 13.405517960746462
+          },
+          "crossover_five_band_MAE_worsening_db": 0.39781521413602405,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": -36.1882391506014,
+            "causal": -54.49934971037901,
+            "crossover": -36.445508071917196
+          },
+          "LF_signed_error_change_crossover_minus_old_db": -0.2572689213157986,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 0.2572689213157986,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              -36.1882391506014,
+              -8.150290604197254,
+              -0.4683083153017426,
+              -6.130032996028557,
+              -14.101642666923247
+            ],
+            "causal": [
+              -54.49934971037901,
+              -10.399317381717868,
+              -0.45177703447996564,
+              -6.124016318015546,
+              -14.05810246095821
+            ],
+            "crossover": [
+              -36.445508071917196,
+              -9.94059116293555,
+              -0.4621694242517259,
+              -6.122642492530117,
+              -14.056678652097714
+            ]
+          }
+        },
+        {
+          "window_seconds": [
+            0.05,
+            0.1
+          ],
+          "five_band_MAE_db": {
+            "old": 14.462039215785856,
+            "causal": 17.95327957885646,
+            "crossover": 14.760263091943022
+          },
+          "crossover_five_band_MAE_worsening_db": 0.2982238761571665,
+          "LF_31_25_to_250_Hz_signed_error_db": {
+            "old": -37.14660369080085,
+            "causal": -53.66739160823924,
+            "crossover": -37.999000948762536
+          },
+          "LF_signed_error_change_crossover_minus_old_db": -0.8523972579616839,
+          "LF_absolute_error_worsening_crossover_minus_old_db": 0.8523972579616839,
+          "all_five_band_signed_errors_db": {
+            "old": [
+              -37.14660369080085,
+              -19.58507444338199,
+              0.43887754828189157,
+              -11.81264186965315,
+              3.326998526811389
+            ],
+            "causal": [
+              -53.66739160823924,
+              -20.484078944186468,
+              0.44421907857263654,
+              -11.800243748353656,
+              3.370464514930314
+            ],
+            "crossover": [
+              -37.999000948762536,
+              -20.197937327439433,
+              0.43335929431527204,
+              -11.799103484198856,
+              3.3719144049990177
+            ]
+          }
+        }
+      ],
+      "worst_five_band_MAE_window": [
+        0.0,
+        0.005
+      ],
+      "worst_five_band_MAE_worsening_db": 0.44638895783529264,
+      "worst_LF_absolute_error_worsening_window": [
+        0.0,
+        0.005
+      ],
+      "worst_LF_absolute_error_worsening_db": 1.355778549729287
+    }
+  ],
+  "interpretation": [
+    "Every unchanged pilot gate passes, with all nonnumeric requirements true. Margins are relative numerical guard headroom, not confidence intervals or perceptual guarantees.",
+    "C6 inherited baseline LF deficits are preserved as signed values. Passing a relative five-band MAE guard does not imply accurate absolute LF body energy.",
+    "A five-band mean can hide an individual-band regression; LF-only changes are therefore retained separately without inventing a new pass threshold.",
+    "Original pure-causal pilot remains FAILED4/6, unchanged. The fixed400Hz compatibility candidate is a separately labeled posthoc TRAIN-reuse experiment."
+  ]
+}

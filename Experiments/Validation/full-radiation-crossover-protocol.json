@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "frozen_at_utc": "2026-10-26T21:50:44.601127+00:00",
+  "scope": "ONE PRIVATE fixed-400Hz compatibility experiment, posthoc TRAIN reuse after observing the six-case causal observer pilot and its C6 LF failure. No new DSP render; no production/default or publication decision.",
+  "candidate_PCM_opened_by_this_experiment_at_freeze": false,
+  "prior_causal_pilot_results_observed": true,
+  "sample_rate": 48000,
+  "cutoff_hz": 400.0,
+  "formula": "Y = new + LP400(old - new), L/R identical; all case streams start at frame zero without retiming.",
+  "filter": {
+    "method": "First-order prewarped Tustin lowpass",
+    "k": "tan(pi*400/48000)",
+    "a": 0.9489645667148798,
+    "b0": 0.02551771664256012,
+    "b1": 0.02551771664256012,
+    "transfer": "H(z)=b(1+z^-1)/(1-a*z^-1)",
+    "initial_state": [
+      0.0,
+      0.0
+    ],
+    "state_precision": "float64",
+    "output_encoding": "float32 stereo WAV at 48000 Hz",
+    "implementation": "t=b*(old-new); c=t+s; s=t+a*c; Y=new+c, with exact zero correction retaining new sample sign.",
+    "identical_channels": true,
+    "shared_physical_board": "If old=B+Cold and new=B+Cnew, exact arithmetic gives Y=B+H*Cold+(1-H)*Cnew: actual B unchanged."
+  },
+  "processing": {
+    "case_order": [
+      "C3v4",
+      "C3v12",
+      "C4v4",
+      "C4v12",
+      "C6v4",
+      "C6v12"
+    ],
+    "frames_each": 182400,
+    "canonical_chunk": [
+      64
+    ],
+    "partition_identity_check": [
+      1,
+      3,
+      17,
+      64,
+      129,
+      7
+    ],
+    "cutoff_variants": 1,
+    "tuning_sweep": false,
+    "gain_changes": false,
+    "onset_changes": false,
+    "metrics_evaluations_per_case": 1,
+    "rescore_after_failure": false,
+    "no_full_DSP_render": true
+  },
+  "original_metric_tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/probe_full_causal_radiation_metrics.py",
+    "sha256": "14fc804b80f3742ee6c95cc3908c498459a77e61c90a1bdfe4b6c23c8580c1cd"
+  },
+  "original_protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/protocol.json",
+    "sha256": "5ec7ace5cffb6655fb017430d328dc784762beb9ff5460eb5c63a07e606b96fa"
+  },
+  "reference_control": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/reference-control.json",
+    "sha256": "4675d46574d65063d63ce9266ef4caa3d30c4880e4fac6fbabd11e6ff9747faf"
+  },
+  "original_causal_pilot_result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/candidate-result.json",
+    "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+  },
+  "upstream_capture": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation-metrics/v1/capture-adapted.json",
+    "sha256": "95eefc5ba3d49c6cd432e84c751c5903ddd02c2bb484fa68590e665712a9b886"
+  },
+  "upstream_producer": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/producer-receipt.json",
+    "sha256": "c18f0a3fbcec5fb85a21e1b33b95863aacb4a64b064bddd5e93056f8ae8d60ae"
+  },
+  "unchanged_original_gates": {
+    "all_state_force_parity_and_no_new_faults": true,
+    "C3_each_layer_minimum_first5_positive_excess_reduction_db": 3.0,
+    "C3_each_layer_minimum_ring5_20_positive_excess_reduction_db": 3.0,
+    "each_pilot_maximum_late_harmonic_MAE_worsening_db": 0.75,
+    "each_pilot_maximum_late_envelope_MAE_worsening_db": 0.75,
+    "each_pilot_maximum_absolute_late_RMS_drift_db": 0.5,
+    "C4_C6_each_early_window_maximum_band_MAE_worsening_db": 1.0,
+    "each_pilot_maximum_absolute_stereo_LR_shift_db": 0.5,
+    "each_pilot_maximum_absolute_mono_energy_shift_db": 0.75
+  },
+  "unchanged_original_analysis": {
+    "reference_onset": "Use unchanged frozen benchmark onset_index on authenticated reference PCM.",
+    "model_alignment": "Use old-control onset_index for both baseline and candidate; candidate onset never trims or shifts scoring windows.",
+    "actual_event_axis": "Also report model timing relative to actual MIDI frame4800 and retain pre-roll. Real MIDI timing is unknown.",
+    "onset_sensitivity": "Report unchanged detector result independently for candidate; diagnostic only,never substitute it in scoring.",
+    "gain_window_seconds": [
+      0.25,
+      0.75
+    ],
+    "gain": "Reference unity; G=referenceRMS(.25\u2013.75)/baselineRMS(.25\u2013.75),sameG multiplies baseline and candidate. One optional common presentationgain may multiply all3; no candidate normalization.",
+    "rms_channels": "Mean square across samples and both stereo channels; RMS=sqrt(mean).",
+    "early_windows_seconds": [
+      [
+        0,
+        0.005
+      ],
+      [
+        0.005,
+        0.02
+      ],
+      [
+        0.02,
+        0.05
+      ],
+      [
+        0.05,
+        0.1
+      ]
+    ],
+    "early_bands_hz": [
+      [
+        31.25,
+        250
+      ],
+      [
+        250,
+        1000
+      ],
+      [
+        1000,
+        4000
+      ],
+      [
+        4000,
+        12000
+      ],
+      [
+        12000,
+        19000
+      ]
+    ],
+    "extra_bands_hz": {
+      "C3_ring": [
+        740,
+        810
+      ],
+      "bright_click": [
+        4000,
+        8000
+      ]
+    },
+    "spectrum": "Frozen benchmark spectrum() Hann window and integrated_power() fractional-bin integration; no model-peak substitution.",
+    "C3_first5_excess": "Positive part of10log10(model rectangular-window mean-square/reference same-window mean-square),after fixedG.",
+    "C3_ring5_20_excess": "Positive part of10log10(model740\u2013810Hz Hann-band power/reference same-window band power),after fixedG.",
+    "band_error_floor": "Powerfloor=1e\u221210*referencegain-windowRMS\u00b2 applied identically to each power before log. C3 excess uses samefloor.",
+    "C4_C6_window_MAE": "Unweighted mean absolute dB error across the five fixed bands,each earlywindow separately; no candidate-dependent mask.",
+    "late_windows_seconds": [
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.75,
+        1.5
+      ],
+      [
+        1.5,
+        2.5
+      ],
+      [
+        2.5,
+        3.5
+      ]
+    ],
+    "late_harmonic_centers": "Frozen TRAIN reference partial frequencies/orders; no candidate peak fitting or centering.",
+    "late_harmonic_bandwidth": "For eachwindow center\u00b1min(.38*referencef1,max(3/windowduration,.004*center)),as immutablebenchmark; include centers<17000Hz.",
+    "late_harmonic_mask": "Referenceband power/referencegain-windowRMS\u00b2>1e\u22125; fixed to reference for bothmodels.",
+    "late_harmonic_MAE": "Unweighted mean absolute log-power errors across all accepted referencepartial/windowcells,using fixedG.",
+    "late_envelope": "Centered5ms RMS mode=nearest; sample at.26,.28,\u2026,3.50safter fixedonset; referenceamplitude/referencegain-windowRMS>10^(\u221250/20); logamplitudefloor=1e\u22125*referencegain-windowRMS.",
+    "late_RMS_drift": "20log10(candidateRMS/baselineRMS) over.25\u2013.75s with sameG.",
+    "stereo_gate_window_seconds": [
+      0.25,
+      0.75
+    ],
+    "stereo_LR_shift": "Candidate(10log10(EL/ER)) minusbaseline over samegatewindow.",
+    "mono_energy_shift": "10log10(E((L+R)/2)candidate / baseline) over samegatewindow; sameG.",
+    "stereo_extra_diagnostics": "Also retain LR/mono shifts per earlywindow andwhole0\u20133.5s; these do not replace fixed sustain-window gates.",
+    "short_window_caveat": "0\u20135ms frequency resolution is~200Hz; retain broad timepower as first5msgate. 740\u2013810Hz ringgate uses5\u201320ms (~67Hz Rayleigh resolution),same Hann/window/band for all3; no claim of uniquely isolated partial."
+  },
+  "metric_contract": "Import original SHA-bound module; locked() supplies strict TRAIN resolver and reference provenance. observation_features uses unchanged fixed OLD gain/onset and frozen reference features. Execute exact original evaluate gate arithmetic block, without invoking its once-only CLI or writing canonical Validation. Score emitted float32 only, once.",
+  "state_force_proof_scope": "Inherited from unchanged authenticated old/causal source WAV pairs and source-read-only 714 sampled state checkpoints plus EVERY-frame contact88/Schur3 before/after FNV proofs. This postprocessor creates no generalized force and updates no instrument mechanical state; it is not a new DSP physical parity run. FNV bit hashes are not a cryptographic no-collision guarantee.",
+  "cases": [
+    {
+      "id": "C3v4",
+      "old_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/baseline.wav",
+        "sha256": "b03aa61c4f894aacdc71c19f9f26ab5ceda8fcb85aec02a46439c34b2f19f5db"
+      },
+      "causal_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v4/candidate.wav",
+        "sha256": "39a4be9df1bf557eb05d099b055c198c8bb3a3f6043b286ea2056e481dd68992"
+      },
+      "cached_control_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v4.wav",
+        "sha256": "f63a904a8e6966339379fbc02aeb73b97a54cbe3a616c8ec49d48a9045365191"
+      },
+      "fixed_old_gain": 0.7237024708052873,
+      "fixed_old_onset_frame": 4761
+    },
+    {
+      "id": "C3v12",
+      "old_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/baseline.wav",
+        "sha256": "234edb27a4f5f70c52d5055ac7d34f2e898a92337caf39a059fbda177a2b797d"
+      },
+      "causal_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C3v12/candidate.wav",
+        "sha256": "e56570131246e7483175749eedf4ec09d0405c45863720e95d3ef70f8674dc1b"
+      },
+      "cached_control_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C3v12.wav",
+        "sha256": "4a0190c1f0866f7f37813666dcc0cd73f2972c0a594d42dae05ccdac7cec2766"
+      },
+      "fixed_old_gain": 0.8395775967177541,
+      "fixed_old_onset_frame": 4758
+    },
+    {
+      "id": "C4v4",
+      "old_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/baseline.wav",
+        "sha256": "105b5ca3c8ad82ead96744d3fcb6412accee099cf8c96d0bce0be2b00e81835f"
+      },
+      "causal_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v4/candidate.wav",
+        "sha256": "cb027eac41c0cf30e183bec21337e0390fa61fa5afcd283ace463fb3171abd9c"
+      },
+      "cached_control_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v4.wav",
+        "sha256": "20012ff05245b7da85923e64e2c969e505ab7f5cb7b0baedc1aa8179adfe551e"
+      },
+      "fixed_old_gain": 0.8476915574464547,
+      "fixed_old_onset_frame": 4761
+    },
+    {
+      "id": "C4v12",
+      "old_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/baseline.wav",
+        "sha256": "079dc86cdd522908f0f0067978dee2dda6665bc87abaf88a0890570d203f2bb8"
+      },
+      "causal_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C4v12/candidate.wav",
+        "sha256": "6099efa08e6988f0c4f66b92bce4581743b3cee4ad078491edeb44c1eb4c0afe"
+      },
+      "cached_control_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.wav",
+        "sha256": "984c6f41e5adde8f2f94d1a48471e4e1d475402033af8a0ba5ae2ad1aab2728f"
+      },
+      "fixed_old_gain": 1.0021259437143617,
+      "fixed_old_onset_frame": 4759
+    },
+    {
+      "id": "C6v4",
+      "old_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/baseline.wav",
+        "sha256": "0523ae405b77e9932611377431c57d372abe088b6ef766ccfaf6ddf3a1e881e9"
+      },
+      "causal_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v4/candidate.wav",
+        "sha256": "66eb52f44b529db67e32ab57b038b978843b7c49d91197319521b11f1ea9cfe0"
+      },
+      "cached_control_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v4.wav",
+        "sha256": "a545afc58fd6f6974bf83f2623a720e4c7c13506a84c5041b0d5bb5a7c1ed46a"
+      },
+      "fixed_old_gain": 1.2762378364686846,
+      "fixed_old_onset_frame": 4759
+    },
+    {
+      "id": "C6v12",
+      "old_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/baseline.wav",
+        "sha256": "46c19d974ad39b1d0d886a70835333c1654d64c104d1dfa8f602ca9388633d06"
+      },
+      "causal_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-causal-radiation/v1/pilot/C6v12/candidate.wav",
+        "sha256": "c9d4f29378380e824fa3a6bb469743f3b2e32d24f8fa0518e97839195ed99f3e"
+      },
+      "cached_control_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C6v12.wav",
+        "sha256": "204aebe76971f2f6871789a90a158e13b1dbea9128dbdb22e7f00fba792ac646"
+      },
+      "fixed_old_gain": 1.2851955517711928,
+      "fixed_old_onset_frame": 4757
+    }
+  ],
+  "freeze_input_identity_scope": "Audio expected SHA values copied from prior authenticated capture/reference metadata without reopening pilot candidate PCM or hashing audio bytes in this new experiment before this freeze. Actual input files and float32 payloads will be checked in the one run.",
+  "required_checks": [
+    "0<a<1",
+    "DC gain unity and Nyquist zero",
+    "exact analytic impulse matches implementation",
+    "zero-difference sample-bit identity, including signed zero",
+    "synthetic and actual fixed chunk partition bit identity",
+    "reject nonfinite inputs; finite outputs/state",
+    "verify input metadata and output audio hashes",
+    "retain every failed gate and signed spectral error"
+  ],
+  "limits": [
+    "Engineering observation compatibility crossover, not a physical piano part or identified LF force path.",
+    "One fixed 400Hz cutoff is an engineering prior between the observed LF regression and C3 ring; selected after observing TRAIN results, without cutoff sweep.",
+    "Complementary branches can cancel or boost correlated pressure in transition; no per-note phase adjustment.",
+    "Preserving both observation representations costs more than either alone; no realtime budget proof.",
+    "The original positive-excess gates can reward overattenuation; signed errors and all gates remain visible.",
+    "No fresh holdout, generalization, audibility, SDK/Reason host, or production readiness claim."
+  ]
+}

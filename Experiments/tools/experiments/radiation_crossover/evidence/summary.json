@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "packaged_at_utc": "2026-10-26T21:52:41.231229+00:00",
+  "status": "Private posthoc TRAIN compatibility experiment: all six unchanged pilot gates pass; not adopted or published.",
+  "run_count": 1,
+  "DSP_renders": 0,
+  "cutoff_variants": 1,
+  "result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/result.json",
+    "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec"
+  },
+  "protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/protocol.json",
+    "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815"
+  },
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/freeze.json",
+    "sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782"
+  },
+  "source": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/postprocess.py",
+    "sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e"
+  },
+  "own_algebra_and_synthetic_checks": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/algebra-and-synthetic.json",
+    "sha256": "a2455d02830c68150bb351911fc08ccad7441648b93f5a5a8cc47f025ebc6ee8"
+  },
+  "independent_preprocessing_review": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/independent-review.json",
+    "sha256": "2708da8960308aaf5a18e0a4661a50555f0eacd458fc57489418baec43469b08"
+  },
+  "run_synthetic_checks": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/postprocessor-checks.json",
+    "sha256": "b3bce644855d05dd2192da814186b48f08fcf2e9326f8e6ce819ab04a4fcb124"
+  },
+  "run_log": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/run.log",
+    "sha256": "8df7ffda325b50fbd9ff5224cb8e54edce5122ad84257bd7548ca0331eec23ae"
+  },
+  "opening_receipt": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/opening-started.json",
+    "sha256": "fde4ed15fa0051787d8be8547ce96e8e576c98d7650f7b496c0e3f01278dad4e"
+  },
+  "chronology_utc": {
+    "protocol": "2026-10-26T21:50:44.601127+00:00",
+    "source_freeze": "2026-10-26T21:50:44.604109+00:00",
+    "opening_marker": "2026-10-26T21:51:41.555583+00:00",
+    "completed": "2026-10-26T21:51:46.454351+00:00"
+  },
+  "passes_all_unchanged_gates": true,
+  "cases": [
+    {
+      "id": "C3v4",
+      "all_unchanged_pilot_gates_pass": true,
+      "failed_gates": [],
+      "first5_positive_excess_reduction_db": 3.806214277734206,
+      "ring5_20_positive_excess_reduction_db": 4.353108245355962,
+      "first5_broad_signed_error_db": {
+        "old": 25.79932333049115,
+        "causal": 9.583869296592084,
+        "crossover": 21.993109052756942
+      },
+      "ring5_20_signed_error_db": {
+        "old": 16.18906779815784,
+        "causal": 6.26771373650522,
+        "crossover": 11.835959552801878
+      },
+      "five_band_MAE_worsening_db_each_early_window": {
+        "causal": [
+          -7.77217758222422,
+          -1.3393741653262232,
+          -0.660567053862783,
+          -0.24579228715124657
+        ],
+        "crossover": [
+          -2.6804077610317236,
+          -0.7689538163135659,
+          -0.4269528816178436,
+          -0.1484655820892069
+        ]
+      },
+      "late_changes_db": {
+        "late_harmonic_MAE_db": 0.0412749973169344,
+        "late_envelope_MAE_db": 0.02099629035255468,
+        "late_RMS_db": -0.16204761364965
+      },
+      "sustain_stereo_changes_db": {
+        "LR_db": -0.12556079787834923,
+        "mono_energy_db": -0.15692236093303888
+      },
+      "actual_chunk_partition_bit_identity": true,
+      "sample_peak": 0.38996270298957825,
+      "output_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/C3v4/compatibility.wav",
+        "sha256": "c515f4cbff879b11b4cd7a7fc713c1e0a74d5b9a8bd0e4142fd222d2cab79b04"
+      }
+    },
+    {
+      "id": "C3v12",
+      "all_unchanged_pilot_gates_pass": true,
+      "failed_gates": [],
+      "first5_positive_excess_reduction_db": 4.26604146949521,
+      "ring5_20_positive_excess_reduction_db": 4.330329700889624,
+      "first5_broad_signed_error_db": {
+        "old": 36.07181706698413,
+        "causal": 20.1290598600728,
+        "crossover": 31.80577559748892
+      },
+      "ring5_20_signed_error_db": {
+        "old": 17.025218844073276,
+        "causal": 7.267389549535625,
+        "crossover": 12.694889143183651
+      },
+      "five_band_MAE_worsening_db_each_early_window": {
+        "causal": [
+          -7.703699556371092,
+          -1.4407937612072086,
+          -0.6555090448831749,
+          -0.23966432347446798
+        ],
+        "crossover": [
+          -2.606902155083464,
+          -0.41809746805183146,
+          -0.4028887571453641,
+          -0.1398596379520427
+        ]
+      },
+      "late_changes_db": {
+        "late_harmonic_MAE_db": -0.013082759790050247,
+        "late_envelope_MAE_db": 0.028666290857708887,
+        "late_RMS_db": -0.17666739764210956
+      },
+      "sustain_stereo_changes_db": {
+        "LR_db": -0.11980623540122126,
+        "mono_energy_db": -0.172571963991727
+      },
+      "actual_chunk_partition_bit_identity": true,
+      "sample_peak": 0.7671537399291992,
+      "output_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/C3v12/compatibility.wav",
+        "sha256": "ff5aad1a850442b9154a498adee21053c886e1808b3877fd4470f6495b092400"
+      }
+    },
+    {
+      "id": "C4v4",
+      "all_unchanged_pilot_gates_pass": true,
+      "failed_gates": [],
+      "first5_positive_excess_reduction_db": 3.282882322416256,
+      "ring5_20_positive_excess_reduction_db": 3.1648262551779958,
+      "first5_broad_signed_error_db": {
+        "old": 13.80385902252578,
+        "causal": 9.123783755190061,
+        "crossover": 10.520976700109523
+      },
+      "ring5_20_signed_error_db": {
+        "old": 16.523973799633364,
+        "causal": 10.305514838701244,
+        "crossover": 13.359147544455368
+      },
+      "five_band_MAE_worsening_db_each_early_window": {
+        "causal": [
+          -3.1684001534221924,
+          -0.2760110446381985,
+          0.1747865793682024,
+          0.016016274707861378
+        ],
+        "crossover": [
+          -1.2728821837456135,
+          -0.22437966236122797,
+          0.10795021565078144,
+          -0.04984662793894756
+        ]
+      },
+      "late_changes_db": {
+        "late_harmonic_MAE_db": 0.0031766241513135896,
+        "late_envelope_MAE_db": 0.0007687278161121469,
+        "late_RMS_db": 0.007351564856954382
+      },
+      "sustain_stereo_changes_db": {
+        "LR_db": 0.004776737002543635,
+        "mono_energy_db": 0.007075178393051118
+      },
+      "actual_chunk_partition_bit_identity": true,
+      "sample_peak": 0.411409854888916,
+      "output_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/C4v4/compatibility.wav",
+        "sha256": "049571a5f50b2829c15f47054b8954a2eb2595a1e94c1f425fb266f1810fa685"
+      }
+    },
+    {
+      "id": "C4v12",
+      "all_unchanged_pilot_gates_pass": true,
+      "failed_gates": [],
+      "first5_positive_excess_reduction_db": 3.203929234948504,
+      "ring5_20_positive_excess_reduction_db": 3.16327666038314,
+      "first5_broad_signed_error_db": {
+        "old": 42.49919808124736,
+        "causal": 38.1400062386306,
+        "crossover": 39.29526884629885
+      },
+      "ring5_20_signed_error_db": {
+        "old": 19.469612432137716,
+        "causal": 13.2745918466793,
+        "crossover": 16.306335771754576
+      },
+      "five_band_MAE_worsening_db_each_early_window": {
+        "causal": [
+          -2.8793093976300668,
+          -0.34438010313744716,
+          0.17748207845839215,
+          0.03328681083409224
+        ],
+        "crossover": [
+          -1.291263289907448,
+          -0.25102811727105934,
+          0.10849827305270221,
+          -0.028920913935278847
+        ]
+      },
+      "late_changes_db": {
+        "late_harmonic_MAE_db": 0.00047705036756706676,
+        "late_envelope_MAE_db": 0.0011991704452185559,
+        "late_RMS_db": 0.005950247474695416
+      },
+      "sustain_stereo_changes_db": {
+        "LR_db": 0.0055416720630420135,
+        "mono_energy_db": 0.005464509713918441
+      },
+      "actual_chunk_partition_bit_identity": true,
+      "sample_peak": 0.9486851096153259,
+      "output_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/C4v12/compatibility.wav",
+        "sha256": "10525fd79903dd77dda3132420e84eef71f486b65a4e4e6fe516bdb8630273da"
+      }
+    },
+    {
+      "id": "C6v4",
+      "all_unchanged_pilot_gates_pass": true,
+      "failed_gates": [],
+      "first5_positive_excess_reduction_db": 1.8868957295933555,
+      "ring5_20_positive_excess_reduction_db": 0.0,
+      "first5_broad_signed_error_db": {
+        "old": 43.30710329568823,
+        "causal": 36.789477658113114,
+        "crossover": 41.420207566094874
+      },
+      "ring5_20_signed_error_db": {
+        "old": -9.477961991157413,
+        "causal": -14.69901562919497,
+        "crossover": -12.930218031455627
+      },
+      "five_band_MAE_worsening_db_each_early_window": {
+        "causal": [
+          -8.660906140813609,
+          8.226516355415487,
+          4.205101738600677,
+          3.5840522618614052
+        ],
+        "crossover": [
+          0.7766785525309317,
+          0.23806165135725976,
+          0.4582118490002802,
+          0.33828225137888346
+        ]
+      },
+      "late_changes_db": {
+        "late_harmonic_MAE_db": -0.009746730270208559,
+        "late_envelope_MAE_db": 0.019823286581983623,
+        "late_RMS_db": 0.00188994558006407
+      },
+      "sustain_stereo_changes_db": {
+        "LR_db": -0.009418111611427804,
+        "mono_energy_db": 0.05169707187783258
+      },
+      "actual_chunk_partition_bit_identity": true,
+      "sample_peak": 0.2576243579387665,
+      "output_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/C6v4/compatibility.wav",
+        "sha256": "eee4d14cf165937af9f77e72cf3464d08ffde80a444f30d4fc652e5ba224ac5b"
+      }
+    },
+    {
+      "id": "C6v12",
+      "all_unchanged_pilot_gates_pass": true,
+      "failed_gates": [],
+      "first5_positive_excess_reduction_db": 1.50285483083913,
+      "ring5_20_positive_excess_reduction_db": 0.0,
+      "first5_broad_signed_error_db": {
+        "old": 15.835931385976668,
+        "causal": 11.799266382879544,
+        "crossover": 14.333076555137538
+      },
+      "ring5_20_signed_error_db": {
+        "old": -14.195082432592487,
+        "causal": -19.295704296953822,
+        "crossover": -17.617418864123493
+      },
+      "five_band_MAE_worsening_db_each_early_window": {
+        "causal": [
+          -6.533103482829123,
+          8.87176514500158,
+          4.098809834499679,
+          3.491240363070604
+        ],
+        "crossover": [
+          0.44638895783529264,
+          0.07754115767322389,
+          0.39781521413602405,
+          0.2982238761571665
+        ]
+      },
+      "late_changes_db": {
+        "late_harmonic_MAE_db": -0.007770069416352499,
+        "late_envelope_MAE_db": -0.009056780284233845,
+        "late_RMS_db": -0.007234522252405011
+      },
+      "sustain_stereo_changes_db": {
+        "LR_db": -0.022842208295102084,
+        "mono_energy_db": 0.041844373576722355
+      },
+      "actual_chunk_partition_bit_identity": true,
+      "sample_peak": 0.5890405178070068,
+      "output_audio": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-radiation-crossover/v1/C6v12/compatibility.wav",
+        "sha256": "97319ac10e4e3ee1c04b6b1ecb830ea514425b971cae4338695422c9ac43f0ee"
+      }
+    }
+  ],
+  "residuals_and_limits": [
+    "All six gates pass, but C6 early five-band MAE worsens in every window relative to old; maximum worsening is .7767dB/.4464dB, beneath the unchanged1dB limit.",
+    "C3 initial broad and ring excess remain substantial after only about4dB reduction; a pass does not imply click eliminated or perceptual parity with recordings.",
+    "The cutoff was chosen after observing the failed causal pilot and these six TRAIN cases. This is reuse of TRAIN evidence, not independent validation; no holdout or broad keyboard/dynamics result.",
+    "C3 positive-excess reduction can reward excessive attenuation; full signed errors are retained.",
+    "The common actual-board signal is preserved in exact-real crossover algebra; existing float reductions and final float32 quantization prevent a bit-exact component claim.",
+    "State/force parity is inherited from the authenticated source-pair observer pilot, not a new physics rerender. This filter cannot feed the instrument.",
+    "No timing/realtime/SDK/Reason-host proof or audibility claim; no production/default promotion."
+  ],
+  "canonical_or_tracked_files_modified_by_experiment": false,
+  "adopted": false,
+  "published": false
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-10-26T22:12:04.291489+00:00",
+  "passed": true,
+  "scope": "Published hashes, archived source/protocol/reviews and stored original-gate arithmetic only. No PCM, filtering, synthesis or new scoring.",
+  "index_sha256": "77bedfdd9ff38b42944bd51c2ee14c927f5bdd4c0d77d947509d7dd1989e5c7f",
+  "verifier_sha256": "4979d70e5965c5e28ac7f1eb034bba887e57b4c48eb2c378d92587531dff416e",
+  "python": "3.12.14",
+  "six_posthoc_TRAIN_cases_pass_unchanged_gates": true,
+  "original_failed_pilot_passes": false,
+  "source_archive_files_reused_without_copy": 52,
+  "captured_audio_files_not_opened": 24,
+  "presentation_metadata_and_environment_bindings_consistent": true,
+  "comparison_audio_opened_or_reproduced_by_this_verifier": false,
+  "C6_caveats": [
+    {
+      "id": "C6v4",
+      "first5_LF_absolute_error_worsening_db": 1.066723096146454,
+      "worst_five_band_MAE_worsening_db": 0.7766785525309317,
+      "LF_signed_errors_20_to_50_and_50_to_100_ms_db": [
+        -35.98153914747121,
+        -36.043218060823975
+      ]
+    },
+    {
+      "id": "C6v12",
+      "first5_LF_absolute_error_worsening_db": 1.355778549729287,
+      "worst_five_band_MAE_worsening_db": 0.44638895783529264,
+      "LF_signed_errors_20_to_50_and_50_to_100_ms_db": [
+        -36.445508071917196,
+        -37.999000948762536
+      ]
+    }
+  ],
+  "default_changed": false,
+  "broader_TRAIN34_listening_or_host_qualification": false,
+  "limits": [
+    "Stored arithmetic review is not independent PCM feature verification or acoustic realism validation.",
+    "Presentation hashes and environment/reproduction receipts are checked as metadata; this verifier does not open the comparison audio or regenerate the room IR.",
+    "Relative five-band means can pass while an individual band regresses and large inherited signed deficits remain.",
+    "Finite-width physical parity evidence is inherited from source pairs, not a new instrument-state run.",
+    "This package preserves archived chronology; publication and later review cannot recreate first-use chronology."
+  ]
+}

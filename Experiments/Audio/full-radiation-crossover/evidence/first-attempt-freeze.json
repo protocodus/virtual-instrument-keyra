@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "frozen_at_utc": "2026-10-26T21:59:22.666116+00:00",
+  "export_source": {
+    "path": "out/full-radiation-crossover/v1/music-listening/export.py",
+    "sha256": "d214e152c4802ba836ce95b9b30e91625121a96e979606af2da282545ef806fc",
+    "bytes": 15065
+  },
+  "recipe": {
+    "path": "out/full-radiation-crossover/v1/music-listening/recipe.json",
+    "sha256": "699043bffa69fe8493bfafa6598d91e49dc4d83bd479697a282536482a2915ca",
+    "bytes": 10085
+  },
+  "inputs": [
+    {
+      "id": "crossover-postprocessor",
+      "path": "out/full-radiation-crossover/v1/postprocess.py",
+      "sha256": "636dc354c5eb475757bbf8f0a1195d7b40782dd5a72969af0127beaccdb51a3e",
+      "bytes": 11905
+    },
+    {
+      "id": "crossover-freeze",
+      "path": "out/full-radiation-crossover/v1/freeze.json",
+      "sha256": "a30adc67e25c3ee6109f81750adf8b8e9016f660f89d9726bca24c46dee35782",
+      "bytes": 804
+    },
+    {
+      "id": "crossover-protocol",
+      "path": "out/full-radiation-crossover/v1/protocol.json",
+      "sha256": "90c143438639a27b073ba2c35babebc2e31d8711be35d1ebb72476eda3e16815",
+      "bytes": 14613
+    },
+    {
+      "id": "crossover-result",
+      "path": "out/full-radiation-crossover/v1/result.json",
+      "sha256": "e807196b36d7f9cca224630cfc7b9de64bd06c2b5ec73e9f48ff7001ae2b32ec",
+      "bytes": 480209
+    },
+    {
+      "id": "crossover-result-review",
+      "path": "out/full-radiation-crossover/v1/independent-result-review.json",
+      "sha256": "85517c9037a1e56ba32a17fa3dcd0b29794097f618d1f279000a423c98b69bdc",
+      "bytes": 868
+    },
+    {
+      "id": "music-producer-receipt",
+      "path": "out/full-causal-radiation/v1/music/producer-receipt.json",
+      "sha256": "3ca85496a9f08a6ff2aaecc7f5877e1e9786bc353e900bc3d945b22ad8a9df61",
+      "bytes": 2821
+    },
+    {
+      "id": "music-producer-freeze",
+      "path": "out/full-causal-radiation/v1/music/freeze.json",
+      "sha256": "467b7031894e2853e10f4cba858987f07ff13e8b2b11acd41e9d880cb69183f2",
+      "bytes": 6230
+    },
+    {
+      "id": "music-old-raw",
+      "path": "out/full-causal-radiation/v1/music/baseline.wav",
+      "sha256": "911576d4212e88a02692c346ad7793eaf8702e2da90b44daa3134431c695815e",
+      "bytes": 3456058
+    },
+    {
+      "id": "music-causal-raw",
+      "path": "out/full-causal-radiation/v1/music/candidate.wav",
+      "sha256": "fc9075d635c220c93bbeab5fa713ded3d7115c8497b6251a9c46b82ad7d939f8",
+      "bytes": 3456058
+    },
+    {
+      "id": "music-original-control-raw",
+      "path": "out/full-performance/control.wav",
+      "sha256": "bd8cc2bf6f259978296b685a77859cd1535d8fabc0f64b9145396b1202de9ea4",
+      "bytes": 3456044
+    },
+    {
+      "id": "music-force-proof",
+      "path": "out/full-causal-radiation/v1/music/force-proof.u64le",
+      "sha256": "dd006e2de9d573f39215789c32d6fc3f5d473bdbcfb20d5c323daa98b2571612",
+      "bytes": 10368000
+    },
+    {
+      "id": "music-state-proof",
+      "path": "out/full-causal-radiation/v1/music/state-proof.u64le",
+      "sha256": "0a00ba11ad017f91dc127d0d8428966d16510f768eccef489e08cec72593cc00",
+      "bytes": 40536
+    },
+    {
+      "id": "historical-presentation-manifest",
+      "path": "Audio/full-performance/manifest.json",
+      "sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd",
+      "bytes": 15540
+    },
+    {
+      "id": "presentation-code",
+      "path": "Research/GrandPianoV2/tools/render.py",
+      "sha256": "f084c15720df5826b181a327fde0bd3dcf668558379513bbef26117a80c093a4",
+      "bytes": 19199
+    },
+    {
+      "id": "prior-music-listening-manifest",
+      "path": "out/full-causal-radiation/v1/music/listening/manifest.json",
+      "sha256": "9b63d84aef1bc3c110fbf2ecc14277a1a6954a8095ffe38024acdfc299d5b4a3",
+      "bytes": 19913
+    },
+    {
+      "id": "prior-old-room-flac",
+      "path": "out/full-causal-radiation/v1/music/listening/old-room.flac",
+      "sha256": "6ec57b5998fc7a66cfecc0f3b500fc3ad5585d72da1ffc0bbe0e1e6348383282",
+      "bytes": 873956
+    },
+    {
+      "id": "prior-old-then-causal-room-flac",
+      "path": "out/full-causal-radiation/v1/music/listening/old-then-new-room.flac",
+      "sha256": "1a81dbe06fe4ab83532d06cd0d487ef336bc0e9c9165e990fc4c9160c963bc76",
+      "bytes": 1738502
+    },
+    {
+      "id": "original-causal-pilot-result",
+      "path": "out/full-causal-radiation-metrics/v1/candidate-result.json",
+      "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c",
+      "bytes": 967592
+    },
+    {
+      "id": "causal-observer-header",
+      "path": "out/full-causal-radiation/v1/CausalRadiation.h",
+      "sha256": "b7745a4e400909725f899121d79fcbf5f26187a28a5149e79fd3db629793b169",
+      "bytes": 4922
+    },
+    {
+      "id": "causal-observer-math-validation",
+      "path": "out/full-causal-radiation/v1/math-validation.json",
+      "sha256": "cf14761683575e8c5de625c7bacedac43be5d9674782efcae99240c915f7587e",
+      "bytes": 10244
+    },
+    {
+      "id": "music-score",
+      "path": "out/quality-baseline/passage.events",
+      "sha256": "2f2cfb1a4d6b99a5796c0aec2b30412552f32b8fafd797c379e841b56f708ca5",
+      "bytes": 705
+    }
+  ],
+  "unchanged_file_guards": [
+    {
+      "path": "Audio/full-radiation-pilot/C6-v4-v12-real-old-new.flac",
+      "sha256": "30ecab6df8fe11854491397f92bbb914b16b9a683159c0f6951ef9a028dbd2f1",
+      "bytes": 985095
+    },
+    {
+      "path": "Audio/full-radiation-pilot/LICENSE-CC-BY-3.0.txt",
+      "sha256": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "bytes": 19467
+    },
+    {
+      "path": "Audio/full-radiation-pilot/README.md",
+      "sha256": "4a11ad8c6409a2dccdad69742f9347b79ee6191843c0474885faa55d141d3424",
+      "bytes": 3160
+    },
+    {
+      "path": "Audio/full-radiation-pilot/export.py",
+      "sha256": "a4739d3826fbf9a5dea08a6d68624f8edbd12981ee7d8e36b0cad3392aafbccd",
+      "bytes": 5948
+    },
+    {
+      "path": "Audio/full-radiation-pilot/manifest.json",
+      "sha256": "62cbc6e46b95330b4e0b5b92abc19e1c23c5b21bfbd4ab6e7f282b42486a03c4",
+      "bytes": 15354
+    },
+    {
+      "path": "Audio/full-radiation-pilot/old-then-new-dry.flac",
+      "sha256": "0b1215f3a367df3273b418678833d6c13b238bb20b6460e27e1df69deea67ab3",
+      "bytes": 1743079
+    },
+    {
+      "path": "Audio/full-radiation-pilot/old-then-new-room.flac",
+      "sha256": "1a81dbe06fe4ab83532d06cd0d487ef336bc0e9c9165e990fc4c9160c963bc76",
+      "bytes": 1738502
+    }
+  ],
+  "source_recipe_and_input_hashes_final_before_compatibility_music_processing": true,
+  "new_music_compatibility_processing_started": false,
+  "scope": "Freeze before this compatibility music processing. The same old/causal raw pair was previously used for the failed-pilot presentation; this is not new unseen evidence."
+}

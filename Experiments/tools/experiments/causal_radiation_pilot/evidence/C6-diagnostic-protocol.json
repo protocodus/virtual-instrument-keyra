@@ -1,0 +1,66 @@
+{
+  "frozen_at_utc": "2026-10-26T21:23:46.936395+00:00",
+  "diagnostic_only": true,
+  "pilot": {
+    "path": "/workspace/virtual-instrument-keyra/Validation/full-causal-radiation-pilot.json",
+    "sha256": "ddbfffa64b0b792b61dbf71bfd3ecb8f659cb5f33a21e1ce16ffb84097e0f36c"
+  },
+  "tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/diagnose_causal_radiation_pilot.py",
+    "sha256": "78300d5d997aabbc09ec6a824de1a47616274d00e8295fb71605e607e94b19a8"
+  },
+  "windows_seconds": [
+    [
+      0.005,
+      0.02
+    ],
+    [
+      0.02,
+      0.05
+    ],
+    [
+      0.05,
+      0.1
+    ]
+  ],
+  "fine_bands_hz": [
+    [
+      31.25,
+      250.0
+    ],
+    [
+      250.0,
+      500.0
+    ],
+    [
+      500.0,
+      1000.0
+    ],
+    [
+      1000.0,
+      2000.0
+    ],
+    [
+      2000.0,
+      4000.0
+    ],
+    [
+      4000.0,
+      8000.0
+    ],
+    [
+      8000.0,
+      12000.0
+    ],
+    [
+      12000.0,
+      19000.0
+    ]
+  ],
+  "gain_alignment": "Exactly old pilot gain/onsets; no candidate retiming or trim.",
+  "carrier": "Frozen reference H1,fixed center; width uses existing3/windowduration rule.",
+  "tonal_prominence": "H1-band power / mean of equal-width left/right adjacent bands. Local contrast proxy, not source-separated SNR.",
+  "noise_rule": "Reference pre-onset\u221235..\u22125ms if at least5ms actual support; otherwise SNR unavailable. No tail-floor inference.",
+  "coherent_difference": "Candidate\u2212baseline pressure; Enew=Eold+Edifference+2ReCross(old,difference), Hann-band units.",
+  "T_half": "Mixture preregistered; applying complete gate table is post-hoc diagnostic only; original globalFAIL unchanged."
+}
