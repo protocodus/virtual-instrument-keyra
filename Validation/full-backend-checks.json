@@ -1,0 +1,170 @@
+{
+  "schema_version": 2,
+  "checked_utc": "2026-10-26T16:17:08.530443+00:00",
+  "passed": true,
+  "scope": "Complete physical piano block API only; no plugin/UI/SDK integration or DAW deadline claim",
+  "topology": {
+    "strings": 230,
+    "string_modes": 17778,
+    "board_modes": 475
+  },
+  "tests": [
+    {
+      "name": "full_instrument",
+      "variant": "native",
+      "passed": true,
+      "seconds": 13.9816
+    },
+    {
+      "name": "full_sdk_portable",
+      "variant": "scalar-portable",
+      "passed": true,
+      "seconds": 18.3969
+    },
+    {
+      "name": "full_instrument",
+      "variant": "asan+ubsan",
+      "passed": true,
+      "seconds": 94.2412
+    }
+  ],
+  "sanitizers": {
+    "build_dir": "out/full-backend-sanitize",
+    "compile_flags": "-g -fPIC -Wall -Wextra -Wpedantic -fno-exceptions -fno-rtti -fno-builtin -ffp-contract=off -O1 -fsanitize=address,undefined -fno-omit-frame-pointer",
+    "environment": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+      "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+    },
+    "log": "out/full-backend-revalidation/sanitizer-ctest.log",
+    "log_sha256": "98739d8f3a6020b5842bb6f886d73787d4bce0f1a5095b9fbbbd9791d9783b2b",
+    "findings": 0,
+    "initial_harness_issue": {
+      "finding": "alloc-dealloc-mismatch: test replaced delete with free but did not replace nothrow new",
+      "resolution": "Added matching test-only nothrow new/new[] and delete/delete[] overloads using the existing tracked malloc/free allocator; no sanitizer suppression or core allocation change",
+      "initial_log": "out/full-backend-revalidation/baseline-before-zero-gap/out/full-backend-sanitize/initial-allocator-harness-failure.log"
+    }
+  },
+  "portable_compile_flags": "-O3 -DNDEBUG -O3 -fno-exceptions -fno-rtti -fno-builtin -ffp-contract=off -fno-tree-vectorize",
+  "coverage": [
+    "input rejection and full topology",
+    "absolute-clock block partition identity",
+    "reset and deterministic instance independence",
+    "queued repeat launches exactly once without active-hammer overwrite",
+    "pedal and independently enabled mechanical body/direct paths",
+    "no allocation in render/events/reset/parameters/diagnostics",
+    "44.1 and 96 kHz endpoints",
+    "virgin-hammer immediate launch on existing body/string motion after prepare and reset",
+    "initial note at 0 ms, same-frame noteOff/noteOn at 100/200 ms: finite lift, all three launches, no expiry/cancellation/fault, identical audio across block partitions"
+  ],
+  "virgin_hammer_regression": {
+    "fixture": "480 frames at 48 kHz after pedal-only body excitation, level .2, direct observation disabled; first C4 press",
+    "before_fix": {
+      "requests": 1,
+      "launches": 0,
+      "deferred": 1
+    },
+    "after_fix": {
+      "requests": 1,
+      "launches": 1,
+      "deferred": 0
+    },
+    "fix": "After model/controller reset, initialize inactive virgin hammerX=-controller.config().restDepth (.012 m); original admitted launch math unchanged",
+    "before_log": "out/full-backend-sanitize/virgin-repro-before.log"
+  },
+  "actual_cli_parity": [
+    {
+      "report": "out/full-backend-revalidation/parity-48000/report.json",
+      "report_sha256": "9cab34c8c3ba413f4b9c9737ae22ad9f46cc3adcb1f6a0a97c9e6a84d61d922d",
+      "sample_rate": 48000,
+      "frames": 8192,
+      "bit_identical_float32": true,
+      "audio_sha256": "cdbc4cf58ed39c25938868bc3151b5a77f45fb87adb684361bb566f5fd655656",
+      "private_model_fault_checks_rerun": false
+    },
+    {
+      "report": "out/full-backend-revalidation/parity-96000/report.json",
+      "report_sha256": "64243b3ebb358dfc40a09f17e482a2157c29832452eeabc9004dfaadf0725c45",
+      "sample_rate": 96000,
+      "frames": 8192,
+      "bit_identical_float32": true,
+      "audio_sha256": "1200754723f12bf41926448cff98209f8f0f9e24597b3ba2bdf11f2b6a728639",
+      "private_model_fault_checks_rerun": false
+    }
+  ],
+  "provenance": {
+    "manifest": "src/full_instrument/prepared_model_provenance.json",
+    "default_control": true,
+    "prepared_model_and_generator_inputs_unchanged_from_baseline": true,
+    "generator_reproduction_rerun": false,
+    "private_fault_checks_rerun": false,
+    "reason": "StrikeController/test-only change does not enter the prepared-model generator or private contact/bridge fault paths",
+    "historical_generated_artifacts_reproduced_byte_identically": true,
+    "historical_fault_and_generation_evidence": "out/full-backend-revalidation/baseline-before-zero-gap/full-backend-checks.json"
+  },
+  "source_sha256": {
+    "include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "src/full_instrument/FullInstrument.cpp": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+    "src/full_instrument/PreparedModel.h": "c5ede1cd6c4e10f091ba961638409d45ea2d3bf81a45eafed9d5e2423c940150",
+    "src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "src/full_instrument/generate_prepared_model.py": "152313bb96b364ba8ea1381fe8c282db5b83beb28828c8902e78cff236e415e4",
+    "src/full_instrument/prepared_model_provenance.json": "8d0ffb8432bb6ecf1c9984b4df61537d13ebb849125567f18aaf1429b285375f",
+    "src/full_instrument/check_cli_parity.py": "52e6673fe7143b0bacc1e3319e01fd25481f93ea4ddb1db1f4987c1582ed47ae",
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "tests/full_instrument_tests.cpp": "7fce4176f6612c3a341031169da2560c071bb94a5adf0def71ca4446e7f3f54e",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "tools/probe_full_precision.py": "280d77738d50f23b0fbcd14822edb50a1bda22428fafa43e16f45a493426f961",
+    "docs/FULL_BACKEND.md": "bb335dc45ab50c1cbdf6c654480fb74365bb81e16eee06579aab36ad9eb0ed25"
+  },
+  "research": {
+    "unchanged_from_head": true,
+    "no_untracked_files": true,
+    "head_tree": "b978cd75bef5b48cbd768d9c2c1821c80875cadf",
+    "status_output": "",
+    "diff_output": ""
+  },
+  "documentation": {
+    "path": "docs/FULL_BACKEND.md",
+    "no_pending_cmake_integration_claim": true,
+    "sha256": "bb335dc45ab50c1cbdf6c654480fb74365bb81e16eee06579aab36ad9eb0ed25",
+    "touching_note_regression_documented": true,
+    "historical_timing_scope_explicit": true
+  },
+  "baseline_archive": {
+    "report": "out/full-backend-revalidation/baseline-before-zero-gap/full-backend-checks.json",
+    "report_sha256": "4698cb314196ec0e3ece8aa6714ecd4a77ead2b22883e584fd2e7aea4b1ac1f1",
+    "source_manifest": "out/full-backend-revalidation/baseline-before-zero-gap/baseline-manifest.json",
+    "all_13_old_source_snapshots_match_prior_report": true
+  },
+  "touching_midi_regression": {
+    "test": "touchingNotesAndPartition",
+    "sample_rate": 48000,
+    "request_frames": [
+      0,
+      4800,
+      9600
+    ],
+    "render_frames": 12000,
+    "sustain": 1,
+    "requests": 3,
+    "launches": 3,
+    "cancelled": 0,
+    "expired": 0,
+    "faults": 0,
+    "repeated_requests_launch_immediately": false,
+    "partition_audio_bit_identical": true,
+    "exact_launch_latency_asserted_by_this_test": false,
+    "policy": "Pending short-release presses finish finite key lift using existing 18 ms release coefficient until .20 minimum readiness; hammer contact/separation/recovery gates remain in force",
+    "controller_review": "out/zero-gap-review/final-source-sha256.json"
+  },
+  "timing_evidence": {
+    "current_controller_rebenchmarked": false,
+    "prior_budget_is_historical": true,
+    "prior_budget": "out/full-backend-revalidation/baseline-before-zero-gap/Validation/full-backend-budget.json",
+    "prior_budget_sha256": "adf4857486145a3a2552f25c709cd193fe79841828a973811b56b0e469bad213",
+    "prior_controller_sha256": "be9daa57cfaffdc879a1da885ac62187d3c89b16c6b525d53eaf7ddf66b154fc",
+    "current_controller_sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "no_new_realtime_or_callback_deadline_claim": true
+  }
+}

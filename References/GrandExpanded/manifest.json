@@ -1,0 +1,745 @@
+{
+  "schema_version": 1,
+  "dataset_title": "Expanded Salamander Grand Piano V3 fitting / reserved recordings",
+  "recording_author": "Alexander Holm",
+  "instrument": "Yamaha C5 acoustic grand piano",
+  "capture": {
+    "sample_rate": 48000,
+    "bits": 24,
+    "channels": 2,
+    "microphones": "Two AKG C414 in AB configuration approximately 12 cm above the strings",
+    "velocity_layers": 16,
+    "sampled_keys": "Minor thirds beginning at A0",
+    "room": null,
+    "acquisition_pedal_state": null,
+    "physical_strike_velocity": null,
+    "normalization_or_noise_reduction_history": null
+  },
+  "source_repository": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+  "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "source_tree_sha": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "split_sha256": "35fc73788b8e27e6762a1e9664992c6bbc4702858e2b7bb5185885974dac0061",
+  "source_git_tree_selection": "upstream-file-identities.json",
+  "license": "Creative Commons Attribution 3.0 Unported",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/",
+  "license_copy": "upstream/LICENSE-CC-BY-3.0.txt",
+  "source_project": "https://sfzinstruments.github.io/pianos/salamander/",
+  "acquisition_date": "2026-10-26",
+  "modifications": {
+    "flac": "None; byte-identical files downloaded from pinned repository commit.",
+    "wav": "Lossless decode to signed PCM24 WAV using ffmpeg; original sample rate/channel count retained. No gain, trim, EQ, denoising, pitch correction or looping applied by this acquisition."
+  },
+  "velocity_interpretation": "model_velocity is rounded midpoint of the upstream SFZ playback bin, not a measured recording MIDI value or calibrated physical hammer velocity.",
+  "original_reference_manifest": "Research/GrandPianoV2/reference/manifest.json",
+  "original_reference_manifest_sha256": "7f2d494760bba221bcb8a83d3d4c6619fbd988b42b307e39fcf433b53e4b38f7",
+  "original_reference_features": "Research/GrandPianoV2/benchmark/reference_features.json",
+  "original_reference_features_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+  "original_training_ids": [
+    "C2v4",
+    "C2v12",
+    "C3v4",
+    "C3v12",
+    "C4v4",
+    "C4v12",
+    "C5v4",
+    "C5v12",
+    "C6v4",
+    "C6v12"
+  ],
+  "new_training_cases": 16,
+  "reserved_new_cases": 7,
+  "initial_acquisition_verified": true,
+  "reserved_feature_policy": "Do not extract, listen to, plot or inspect reserved audio before the expanded candidate and training-based method are frozen. Hash/PCM-format verification is allowed.",
+  "samples": [
+    {
+      "id": "A1v4",
+      "note": "A1",
+      "midi": 33,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A1v4.flac",
+      "source_path": "Samples/A1v4.flac",
+      "git_blob_sha1": "79631701dd545f3d8b6f907f0c4c341502e1cfbd",
+      "flac_bytes": 2242163,
+      "flac_path": "recordings/A1v4.flac",
+      "wav_path": "recordings/A1v4.wav",
+      "flac_sha256": "a1f2cabbc5fbfce7825b465dc3230578d70a935b756254250473eb984cf9b2ae",
+      "wav_sha256": "09c85c5c04af17ad23274587bbb03c585f9f9605cf7264bf6a07af61ae471e36",
+      "decoded_pcm": {
+        "sha256": "d82817e48186addd8b3f050e8d76c6eb824466a127af95ee03785f999e127f42",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 948756,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 462
+    },
+    {
+      "id": "A1v12",
+      "note": "A1",
+      "midi": 33,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A1v12.flac",
+      "source_path": "Samples/A1v12.flac",
+      "git_blob_sha1": "a251b3f48b712f11565d4caeacbfc6905af02a5f",
+      "flac_bytes": 2786755,
+      "flac_path": "recordings/A1v12.flac",
+      "wav_path": "recordings/A1v12.wav",
+      "flac_sha256": "eebd4b102ae1101870b50aec8fbef972f695c796e468398d958f82930a9fa539",
+      "wav_sha256": "84eb9ee0b568c799a566cbd38431c3f5cdb4cc9393d11a3b997ce0b29713c2b8",
+      "decoded_pcm": {
+        "sha256": "bbc024bd2b2676670384786c80e53d265f14221b2621e434522d309eb8b3c8fd",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 1122992,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 717
+    },
+    {
+      "id": "D#2v4",
+      "note": "D#2",
+      "midi": 39,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%232v4.flac",
+      "source_path": "Samples/D#2v4.flac",
+      "git_blob_sha1": "02d16509980233442732fd8bb270e381d86b826b",
+      "flac_bytes": 2546475,
+      "flac_path": "recordings/D#2v4.flac",
+      "wav_path": "recordings/D#2v4.wav",
+      "flac_sha256": "1e05e5b875256fe71006b3c3e61440196f85a85c44aba9ecb7b1461ff3a10a02",
+      "wav_sha256": "189921f32e206edc7235e3ac0f36369aaeafe28629a458db08524feda5d19140",
+      "decoded_pcm": {
+        "sha256": "bb5bd6e0cfabfce4b3f9679552a7a80c505374762b569b311434e8faabd2ade8",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 1067409,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 595
+    },
+    {
+      "id": "D#2v12",
+      "note": "D#2",
+      "midi": 39,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%232v12.flac",
+      "source_path": "Samples/D#2v12.flac",
+      "git_blob_sha1": "d1a5949eb9cdbc805ce9ed808424e593930549d7",
+      "flac_bytes": 2579711,
+      "flac_path": "recordings/D#2v12.flac",
+      "wav_path": "recordings/D#2v12.wav",
+      "flac_sha256": "5bef947e86d4577bf7d0c8ee88f8561d8da8450922daea9d1ccfc2e103a7c412",
+      "wav_sha256": "f882a3ad57bd130f902885baf471b98c7009fee9d4c60b102cc00fefeadb2537",
+      "decoded_pcm": {
+        "sha256": "8a57bbacc19776339b3f0b92e65689622378d30e1a0880dada351550e4b8b9b4",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 1053345,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 719
+    },
+    {
+      "id": "A2v4",
+      "note": "A2",
+      "midi": 45,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A2v4.flac",
+      "source_path": "Samples/A2v4.flac",
+      "git_blob_sha1": "174e85b13bb2a848aa7a8d326d230e8118b45f26",
+      "flac_bytes": 1898385,
+      "flac_path": "recordings/A2v4.flac",
+      "wav_path": "recordings/A2v4.wav",
+      "flac_sha256": "43563ad2ee61ba19560b969b79286b98edbd5ac6867b08bd956dac75bb376d27",
+      "wav_sha256": "7da5754791a94849275cff7df6f7836f2651c96653e277185b5eb1f8bb9560d8",
+      "decoded_pcm": {
+        "sha256": "04117b8ff76adbed698b00d1d72beaae442b990cebf87ed253470d1e11d2df61",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 777647,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 577
+    },
+    {
+      "id": "A2v12",
+      "note": "A2",
+      "midi": 45,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A2v12.flac",
+      "source_path": "Samples/A2v12.flac",
+      "git_blob_sha1": "5e09e9e0dee6a74ba90e133bd4f7d127b9f8490b",
+      "flac_bytes": 1976480,
+      "flac_path": "recordings/A2v12.flac",
+      "wav_path": "recordings/A2v12.wav",
+      "flac_sha256": "f51451e0661c762b600b0f8f535f74dd8d73c41de1a228abbd037e5cc1783c0e",
+      "wav_sha256": "be7cc834d31d1ce05899397fc736fd24f256dbb4f5cfb7247f47cf85e8d20c51",
+      "decoded_pcm": {
+        "sha256": "eaa4e5f24d717577e632ddc7a786576c8daa0f5ced0ec2af54618772c0f241cd",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 776208,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 757
+    },
+    {
+      "id": "D#3v4",
+      "note": "D#3",
+      "midi": 51,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%233v4.flac",
+      "source_path": "Samples/D#3v4.flac",
+      "git_blob_sha1": "c15e1da31dc99ff6adcc3cad8ea22f08201b0dd8",
+      "flac_bytes": 1746227,
+      "flac_path": "recordings/D#3v4.flac",
+      "wav_path": "recordings/D#3v4.wav",
+      "flac_sha256": "cc750a11b5cd63da9367fbe152ae51f18a6cb248364a24e1e76ee6b17d3d4b96",
+      "wav_sha256": "9972e6708929c4f4d39e4b690f152e83a691d3411c36d8bb4fc5350c5cbe38b9",
+      "decoded_pcm": {
+        "sha256": "d2dee0cba8691996aa00396058bd3223eb1914fe7d416a00b393f0e25e7f5f75",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 764598,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 816
+    },
+    {
+      "id": "D#3v12",
+      "note": "D#3",
+      "midi": 51,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%233v12.flac",
+      "source_path": "Samples/D#3v12.flac",
+      "git_blob_sha1": "7c636afe2c88b455620bcf55621035c0998b391c",
+      "flac_bytes": 1769835,
+      "flac_path": "recordings/D#3v12.flac",
+      "wav_path": "recordings/D#3v12.wav",
+      "flac_sha256": "0681df11bb97982d3c29da9ad543f19ed412829677ea3e12a2152dcb4d921f9a",
+      "wav_sha256": "6558337707f54bdd77d6e4f77aad9d1e59377c2d807bec69db77ff88dcde41df",
+      "decoded_pcm": {
+        "sha256": "c94bc0954ec4e39deb2fcbed09f4548de916aee833c84865e6325ec1ee11159b",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 760659,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 720
+    },
+    {
+      "id": "D#4v4",
+      "note": "D#4",
+      "midi": 63,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%234v4.flac",
+      "source_path": "Samples/D#4v4.flac",
+      "git_blob_sha1": "84b262757ef3d13bb03e2ce2f91bf8f20080de87",
+      "flac_bytes": 1550296,
+      "flac_path": "recordings/D#4v4.flac",
+      "wav_path": "recordings/D#4v4.wav",
+      "flac_sha256": "dfd69f142177241a5219427e0c7012a19002b6bc98e11bafe287d7190f847b79",
+      "wav_sha256": "39fce098db49de9797453735ba7d0e224702d7413e6eca7a7b798fc38f666722",
+      "decoded_pcm": {
+        "sha256": "651c70893bf87aa0380184b5f082672beeb2e00b25db3a7605a85fc004740538",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 726851,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 731
+    },
+    {
+      "id": "D#4v12",
+      "note": "D#4",
+      "midi": 63,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%234v12.flac",
+      "source_path": "Samples/D#4v12.flac",
+      "git_blob_sha1": "618418d9da018a7b39f76ec08929b9cad232f993",
+      "flac_bytes": 1645028,
+      "flac_path": "recordings/D#4v12.flac",
+      "wav_path": "recordings/D#4v12.wav",
+      "flac_sha256": "78bc671f77911b0750e5cf2b5377bea3f1615b64f97d209c5694433c673b0b31",
+      "wav_sha256": "274f99ac2c1eed43c65b6ca6ca964f342c342feed4d14508cb257fa2535188ff",
+      "decoded_pcm": {
+        "sha256": "fdfda175dd625f0d9cc8e24a89bb8cfd69a39936317a17f11b9a6e4ce24071de",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 746959,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 573
+    },
+    {
+      "id": "A4v4",
+      "note": "A4",
+      "midi": 69,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A4v4.flac",
+      "source_path": "Samples/A4v4.flac",
+      "git_blob_sha1": "1a9018881386288b67074613e667fbf8c19495d9",
+      "flac_bytes": 1383657,
+      "flac_path": "recordings/A4v4.flac",
+      "wav_path": "recordings/A4v4.wav",
+      "flac_sha256": "4c6cc00539fef67b2f9540d789f099fb3dd04d779f4d4d385224a4d815918583",
+      "wav_sha256": "9c8a92b8865a32c132fe89f9230d6094e3c4f11e1779746f810f986cf7fa7ff9",
+      "decoded_pcm": {
+        "sha256": "b1caccf87dfef380c1c897f17813c536fb340f81ead2e1a8cdd5c039b8596067",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 654195,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 663
+    },
+    {
+      "id": "A4v12",
+      "note": "A4",
+      "midi": 69,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A4v12.flac",
+      "source_path": "Samples/A4v12.flac",
+      "git_blob_sha1": "b585d2e01dea3a2a9af9fa79d523d00053003e5b",
+      "flac_bytes": 1451680,
+      "flac_path": "recordings/A4v12.flac",
+      "wav_path": "recordings/A4v12.wav",
+      "flac_sha256": "16f43b59ecb870359978c4523c97745a13c439d56e574ed5a96aec633aae5f4f",
+      "wav_sha256": "3a1de38c485e43e33af4729ff32b651ac82936f75118ce85f04c5af78c386750",
+      "decoded_pcm": {
+        "sha256": "61f2509b5a81ff66766e4730a933e1a22dabaa6f2c90ee2679c7d753a4e1beb2",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 659642,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 537
+    },
+    {
+      "id": "D#5v4",
+      "note": "D#5",
+      "midi": 75,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%235v4.flac",
+      "source_path": "Samples/D#5v4.flac",
+      "git_blob_sha1": "64ad0790398a06cea1f047e846e3365d2d142cc5",
+      "flac_bytes": 1263747,
+      "flac_path": "recordings/D#5v4.flac",
+      "wav_path": "recordings/D#5v4.wav",
+      "flac_sha256": "c7f25db21896025a0b71832e3e6b859a5e88f270b8230555b9ac4772913bf821",
+      "wav_sha256": "3266c8e013868547d3de3277913c88c936f687ef46ef3020149041a72397f8cc",
+      "decoded_pcm": {
+        "sha256": "5d380436b2743c879315400feacb92d5d7f4cbd1aa911ca6acbf9e8275a78af1",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 622833,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 719
+    },
+    {
+      "id": "D#5v12",
+      "note": "D#5",
+      "midi": 75,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%235v12.flac",
+      "source_path": "Samples/D#5v12.flac",
+      "git_blob_sha1": "1f5e56bd4b02d7f30e88eef34ca587377ad3216f",
+      "flac_bytes": 1346881,
+      "flac_path": "recordings/D#5v12.flac",
+      "wav_path": "recordings/D#5v12.wav",
+      "flac_sha256": "84561eff0510969f90068b03de4b70c2965082609f4daf73dc80a213c67b4721",
+      "wav_sha256": "9fc0b2765b668fec01d2e15fdca89378b5d1a9dcf1fdd845ec84dd3786894bd9",
+      "decoded_pcm": {
+        "sha256": "d0d103d3a6f17681f1d55bb55a448ad51464e1778c9f4aa418613cac347b4c91",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 642215,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 686
+    },
+    {
+      "id": "A5v4",
+      "note": "A5",
+      "midi": 81,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A5v4.flac",
+      "source_path": "Samples/A5v4.flac",
+      "git_blob_sha1": "b5a67dd216af1634e63f6dda86eaa814c4128fac",
+      "flac_bytes": 717980,
+      "flac_path": "recordings/A5v4.flac",
+      "wav_path": "recordings/A5v4.wav",
+      "flac_sha256": "36bfb6bd47e8412e842334856c0c7f19005462f69f7cc9e1829bd7bfe0e3fe72",
+      "wav_sha256": "b8869f5c30590142cebbe9074e0d912896e14bb9ae7bda24d14c75a465f1819a",
+      "decoded_pcm": {
+        "sha256": "f0bc3557a4007f0b651ba6d0ac0a81695c47c74d990f168d43b61c68023fbf72",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 329567,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 1122
+    },
+    {
+      "id": "A5v12",
+      "note": "A5",
+      "midi": 81,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A5v12.flac",
+      "source_path": "Samples/A5v12.flac",
+      "git_blob_sha1": "2b6646139a55836d798370917dc3c0c9ff7399ea",
+      "flac_bytes": 1119370,
+      "flac_path": "recordings/A5v12.flac",
+      "wav_path": "recordings/A5v12.wav",
+      "flac_sha256": "5cbe3f13c10a181fb6ab5637f083988eeaac4dfa900cef847693c2748c0b7bab",
+      "wav_sha256": "a28e52d067e76267586198870ff4cdfb52cac939320c4bda6d46c3fdf37fdbd4",
+      "decoded_pcm": {
+        "sha256": "0eebbf4bf46b9f188c8545859d2e0680ec265cff7a2d426086ef7ee7d8d1a95a",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 498346,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 636
+    },
+    {
+      "id": "A3v4",
+      "note": "A3",
+      "midi": 57,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "fresh_validation_pitch",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A3v4.flac",
+      "source_path": "Samples/A3v4.flac",
+      "git_blob_sha1": "85daca85afedb67bcb43091f237369fd11ab471f",
+      "flac_bytes": 1757672,
+      "flac_path": "recordings/A3v4.flac",
+      "wav_path": "recordings/A3v4.wav",
+      "flac_sha256": "7cfc9b2a18f8728431dfc236ca5c97793d3bdb413fd713eb13198c673982618f",
+      "wav_sha256": "99cfb26805ab192afcee0e3a6c8e9e27b2f0c2a66a761d1ccd4c993277cdb22f",
+      "decoded_pcm": {
+        "sha256": "788fcfe1cad016661f7329cd2bba2a24947926108529b0eba21b95a432f5cb51",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 748017,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 546
+    },
+    {
+      "id": "A3v8",
+      "note": "A3",
+      "midi": 57,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_pitch",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A3v8.flac",
+      "source_path": "Samples/A3v8.flac",
+      "git_blob_sha1": "b4620f98c824e392d397866958d2e0b95db3f7ee",
+      "flac_bytes": 1787465,
+      "flac_path": "recordings/A3v8.flac",
+      "wav_path": "recordings/A3v8.wav",
+      "flac_sha256": "b02ed7c37d6b902552274c92d66911751ee52aac20b28618387e1388b1653ed4",
+      "wav_sha256": "96584d02f0d3e51d676a713f6708c942a4695207495239d9735c493f19c397cf",
+      "decoded_pcm": {
+        "sha256": "ac961d13c0bc255ee2dd895a1776c6a683bc173e0c6ce737047c5b0e12bfb868",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 749610,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 705
+    },
+    {
+      "id": "A3v12",
+      "note": "A3",
+      "midi": 57,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "fresh_validation_pitch",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A3v12.flac",
+      "source_path": "Samples/A3v12.flac",
+      "git_blob_sha1": "eeb68a29bca9d50f817cbf667fef6cf52da805d5",
+      "flac_bytes": 1788330,
+      "flac_path": "recordings/A3v12.flac",
+      "wav_path": "recordings/A3v12.wav",
+      "flac_sha256": "d1fbc87c103c7c04ed6620156f6716c3b3862af36e6368e02bbf8886576b739e",
+      "wav_sha256": "52172c761e261116534290c45134c49da3c488fe508877a6de6a69fa8a00d525",
+      "decoded_pcm": {
+        "sha256": "2115724e87155ab9df65128a44b8fd04b8027c99d05939e38888f07f2e2d61cd",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 735165,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 727
+    },
+    {
+      "id": "D#3v8",
+      "note": "D#3",
+      "midi": 51,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%233v8.flac",
+      "source_path": "Samples/D#3v8.flac",
+      "git_blob_sha1": "39c4deeac4149cb57627669f9aa7ffe2e7cf96dc",
+      "flac_bytes": 1770977,
+      "flac_path": "recordings/D#3v8.flac",
+      "wav_path": "recordings/D#3v8.wav",
+      "flac_sha256": "900ad0d774e6cefd44c1081b66d50556b3121bf1d3f255c5329a9117447b9cff",
+      "wav_sha256": "8a78d6658629d9f17a92f99ae0541454fc7aa6a747f94404b2e6643ee3cb65ac",
+      "decoded_pcm": {
+        "sha256": "60f44a094182bb0e5eadeae171b33b7f53c5a52326c0905eb8fddf1d6f6b526d",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 771912,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 781
+    },
+    {
+      "id": "D#4v8",
+      "note": "D#4",
+      "midi": 63,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%234v8.flac",
+      "source_path": "Samples/D#4v8.flac",
+      "git_blob_sha1": "d29ac26013b03f46ec0c787c05e494437cdd0213",
+      "flac_bytes": 1652067,
+      "flac_path": "recordings/D#4v8.flac",
+      "wav_path": "recordings/D#4v8.wav",
+      "flac_sha256": "295179461449c598c44ad712977d47b41c0c25d9c782d349094e748dc06c0dfa",
+      "wav_sha256": "a84de1e7bb8d7e2f5dc06126581f5f69b122ed07544902403d7d4b6ddb0fe502",
+      "decoded_pcm": {
+        "sha256": "678b4c5c1bde6cf54dd1580a372f0b529b7dbf142a7b9d0801e7a6b9bfe8d0e3",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 759551,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 687
+    },
+    {
+      "id": "A4v8",
+      "note": "A4",
+      "midi": 69,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A4v8.flac",
+      "source_path": "Samples/A4v8.flac",
+      "git_blob_sha1": "f2d55a0077eca5782b8a70ae42bbe3230dc2cc26",
+      "flac_bytes": 1382828,
+      "flac_path": "recordings/A4v8.flac",
+      "wav_path": "recordings/A4v8.wav",
+      "flac_sha256": "59529694455698d7fd212cde8eec4029eaae8e5e6d454bb48bf36428eaa8009b",
+      "wav_sha256": "ca284d9ff71a08ddcef162ec737362bffc985cfae4bd84347475b9da9501a503",
+      "decoded_pcm": {
+        "sha256": "ce0224d74581b59dae7ac02e05b3a87634bd3894459760f076d77483a66ada41",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 639502,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 612
+    },
+    {
+      "id": "D#5v8",
+      "note": "D#5",
+      "midi": 75,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%235v8.flac",
+      "source_path": "Samples/D#5v8.flac",
+      "git_blob_sha1": "2669ad6e47a5d17882db0960d2a05f162b2f0b1a",
+      "flac_bytes": 1276573,
+      "flac_path": "recordings/D#5v8.flac",
+      "wav_path": "recordings/D#5v8.wav",
+      "flac_sha256": "f841ad0506994313f4202fbe3f07d917e60eeb10fb3461df3eae4fb9cd58432a",
+      "wav_sha256": "888ccf9f046d5d4b2c26348eec18483e21b0ca322a292fc3dcea78fe1644f9ce",
+      "decoded_pcm": {
+        "sha256": "809765a03ed1d81fe968f22a93bcaa7caa8a25ddb8eb6e9766403ae3a6dbbc57",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 621479,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 754
+    }
+  ]
+}

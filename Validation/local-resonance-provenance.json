@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "source_hashes": {
+    "include/keyra/physics/LocalResonance.h": "45751b9b116ecfb6a0eb231e9da90086b164f3313f243c2ac001599b5e5f0763",
+    "tests/local_resonance_tests.cpp": "86e0e5225c0d5f58bef1db3de897d0fef5501ede8842f8a9b768b3eca9b3e49c",
+    "tools/local_resonance_support.h": "59277df66d70ea98da347fee82dfc11e552aeca3b86a3c80b64f39e4376c39a0",
+    "tools/probe_local_resonance.cpp": "a945e220a0d48406793158cbc1535ea2c93978a3c498c1e54a519a207a8e5865",
+    "docs/LOCAL_RESONANCE.md": "cb5f96c20bce9e813e55479870025fba75f34fa9644f30e45cbdc50b6be8bee5",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "out/full-calibration/v3/mechanics/solver/grand.cpp": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba",
+    "out/full-calibration/v3/mechanics/solver/calibration.h": "3d73bba0188f52e41097f0516f8e4b806a8fd8fc3151a3a86dca3c36c6dc07e9",
+    "out/full-calibration/c8-component-audit/report.json": "423105279baa12bd461e3b9daec0c439025703d0815b2ef482c2a3e657d2baae"
+  },
+  "test_binary_sha256": "d3a696e77d2d20f8749881c7fae99a1a3036a3972ef2095cfef5a6ae4ba4fecb",
+  "probe_binary_sha256": "d38cafa5387a74e91e5193a75080dc5c267422a046de3203e8c71499dd226de9",
+  "report_sha256": "2a9c5094331e251e48a5f0828323a454ce7e7ec4dcac4fcf66c026157bc75b92",
+  "probe_compile_flags": [
+    "g++",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-ffp-contract=off",
+    "-Iinclude",
+    "-DKEYRA_LOCAL_RESONANCE_SOLVER=\"/workspace/virtual-instrument-keyra/out/full-calibration/v3/mechanics/solver/grand.cpp\""
+  ],
+  "probe_command": [
+    "out/local-resonance/probe-v3",
+    "out/local-resonance/v3"
+  ],
+  "policy": "C8 authoredMIDI40/93 only; no referencewaveform/A0/C8v8 opened; nofit/defaultpromotion.",
+  "shared_gain": 25.1307410927667,
+  "comparisons": [
+    {
+      "MIDI_velocity": 40,
+      "coupling_off_float_output_identical": true,
+      "network_effect_relative_rms_db": -56.1808221158452,
+      "unit_aux_direct_relative_rms_db": -101.78343587753,
+      "combined_effect_relative_rms_db": -56.1947318770114
+    },
+    {
+      "MIDI_velocity": 93,
+      "coupling_off_float_output_identical": true,
+      "network_effect_relative_rms_db": -39.0488146279205,
+      "unit_aux_direct_relative_rms_db": -86.7516663452754,
+      "combined_effect_relative_rms_db": -39.0630487432306
+    }
+  ],
+  "audio": {
+    "v3-midi40-baseline-auxiliary-direct.wav": {
+      "sha256": "d8d08054bd8ec00d4d882c3dd163764c63a4b5c99a12b8ce4fd0a9d5251c0801",
+      "rms": 0.0,
+      "peak": 0.0
+    },
+    "v3-midi40-baseline-body.wav": {
+      "sha256": "95076ab031f75de179a763eece7927a50d92755a296f165c2cd68e831097f5c9",
+      "rms": 0.004523866916171031,
+      "peak": 0.09389664977788925
+    },
+    "v3-midi40-baseline-combined.wav": {
+      "sha256": "f6b979d83284b098d11be0ca3c831de8f15ce98e2f8f3aa0e6bb31cbe6278c85",
+      "rms": 0.0076675492622963505,
+      "peak": 0.2543278932571411
+    },
+    "v3-midi40-baseline-network.wav": {
+      "sha256": "f6b979d83284b098d11be0ca3c831de8f15ce98e2f8f3aa0e6bb31cbe6278c85",
+      "rms": 0.0076675492622963505,
+      "peak": 0.2543278932571411
+    },
+    "v3-midi40-baseline-strings.wav": {
+      "sha256": "d17f3ef863eeaa5c0c659c90bc4ee417873072c92acdd5cee725279776a73f5a",
+      "rms": 0.006653660794570618,
+      "peak": 0.3220604658126831
+    },
+    "v3-midi40-coupled-auxiliary-direct.wav": {
+      "sha256": "9802680ec5c4d2f6ec2601104813ecca04da1f08aa09f48af891ba0765e22f44",
+      "rms": 6.244314674711768e-08,
+      "peak": 3.0178480869835766e-07
+    },
+    "v3-midi40-coupled-body.wav": {
+      "sha256": "ca7515c265370b27de8cbc189c20219aa00524b2ef1a03cd037797bd3e91b019",
+      "rms": 0.004523086083151999,
+      "peak": 0.09387880563735962
+    },
+    "v3-midi40-coupled-combined.wav": {
+      "sha256": "20248b16581697187b6c6a60b8a12e00140bfe14188ca9a017ef492b2ba4e077",
+      "rms": 0.007667088878731361,
+      "peak": 0.2543266713619232
+    },
+    "v3-midi40-coupled-network.wav": {
+      "sha256": "a875b5097da88e09097d11f7825f981691aff2530a11e8e852a7e531c4cf87a4",
+      "rms": 0.007667086034736217,
+      "peak": 0.2543264329433441
+    },
+    "v3-midi40-coupled-strings.wav": {
+      "sha256": "8bf2dacfc8cc29ba91bf380508652f18369f753d6072bd3977096a6750b237c3",
+      "rms": 0.006653643568471847,
+      "peak": 0.32206034660339355
+    },
+    "v3-midi40-coupling-off-auxiliary-direct.wav": {
+      "sha256": "d8d08054bd8ec00d4d882c3dd163764c63a4b5c99a12b8ce4fd0a9d5251c0801",
+      "rms": 0.0,
+      "peak": 0.0
+    },
+    "v3-midi40-coupling-off-body.wav": {
+      "sha256": "95076ab031f75de179a763eece7927a50d92755a296f165c2cd68e831097f5c9",
+      "rms": 0.004523866916171031,
+      "peak": 0.09389664977788925
+    },
+    "v3-midi40-coupling-off-combined.wav": {
+      "sha256": "f6b979d83284b098d11be0ca3c831de8f15ce98e2f8f3aa0e6bb31cbe6278c85",
+      "rms": 0.0076675492622963505,
+      "peak": 0.2543278932571411
+    },
+    "v3-midi40-coupling-off-network.wav": {
+      "sha256": "f6b979d83284b098d11be0ca3c831de8f15ce98e2f8f3aa0e6bb31cbe6278c85",
+      "rms": 0.0076675492622963505,
+      "peak": 0.2543278932571411
+    },
+    "v3-midi40-coupling-off-strings.wav": {
+      "sha256": "d17f3ef863eeaa5c0c659c90bc4ee417873072c92acdd5cee725279776a73f5a",
+      "rms": 0.006653660794570618,
+      "peak": 0.3220604658126831
+    },
+    "v3-midi40-network-effect.wav": {
+      "sha256": "a8138080627f84aa5002a7d232c02eb1eab796459d85d6fd474cac42282cca2d",
+      "rms": 1.1901877301132313e-05,
+      "peak": 3.823260703939013e-05
+    },
+    "v3-midi40-total-effect.wav": {
+      "sha256": "54a72644f400404ba3d4e8a54fffdfe8332e4b9d8931298a22ed683fb8e2aae8",
+      "rms": 1.1882832642924846e-05,
+      "peak": 3.817382093984634e-05
+    },
+    "v3-midi93-baseline-auxiliary-direct.wav": {
+      "sha256": "d8d08054bd8ec00d4d882c3dd163764c63a4b5c99a12b8ce4fd0a9d5251c0801",
+      "rms": 0.0,
+      "peak": 0.0
+    },
+    "v3-midi93-baseline-body.wav": {
+      "sha256": "2f6668e89d3879ea290014a9314d697fe4e0e5d75489cf6ff2360e0aa67e9007",
+      "rms": 0.02055315370578081,
+      "peak": 0.4584019184112549
+    },
+    "v3-midi93-baseline-combined.wav": {
+      "sha256": "e3112d0a16b615818641cd987e0c201e321bef6d8b9112369ed78ef1ec7e285e",
+      "rms": 0.02302639134699649,
+      "peak": 0.6548067331314087
+    },
+    "v3-midi93-baseline-network.wav": {
+      "sha256": "e3112d0a16b615818641cd987e0c201e321bef6d8b9112369ed78ef1ec7e285e",
+      "rms": 0.02302639134699649,
+      "peak": 0.6548067331314087
+    },
+    "v3-midi93-baseline-strings.wav": {
+      "sha256": "955927d773c49a3c0e8620eb866e930d93a41be5bc78ff0b2bed3c5249b1e37f",
+      "rms": 0.014051892167428894,
+      "peak": 0.800000011920929
+    },
+    "v3-midi93-coupled-auxiliary-direct.wav": {
+      "sha256": "8b389ea71978ecc83e6c58f975f688949c30945bee8699aecd22dccc95573597",
+      "rms": 1.0583822900409536e-06,
+      "peak": 5.318214334693039e-06
+    },
+    "v3-midi93-coupled-body.wav": {
+      "sha256": "2bdeba21d05296d4466e7f02404583dd0402f2a42d64434068348db9bb947dbd",
+      "rms": 0.02046640209339814,
+      "peak": 0.45809587836265564
+    },
+    "v3-midi93-coupled-combined.wav": {
+      "sha256": "a6cf194395639a8d493afc63e4752483408c9dcd959fd44d37b672ae6aa8fb90",
+      "rms": 0.022950477883028862,
+      "peak": 0.6544474363327026
+    },
+    "v3-midi93-coupled-network.wav": {
+      "sha256": "d34638e723f108705a8c524ad68a49c4615d8adc7f43fb82b269621fbd721ce0",
+      "rms": 0.022950267649675657,
+      "peak": 0.6544454097747803
+    },
+    "v3-midi93-coupled-strings.wav": {
+      "sha256": "ab22be60a61e62a772caf84c8d28395392450a1dbe5d2ac490324bae43d31a87",
+      "rms": 0.014049919473821433,
+      "peak": 0.7999973893165588
+    },
+    "v3-midi93-coupling-off-auxiliary-direct.wav": {
+      "sha256": "d8d08054bd8ec00d4d882c3dd163764c63a4b5c99a12b8ce4fd0a9d5251c0801",
+      "rms": 0.0,
+      "peak": 0.0
+    },
+    "v3-midi93-coupling-off-body.wav": {
+      "sha256": "2f6668e89d3879ea290014a9314d697fe4e0e5d75489cf6ff2360e0aa67e9007",
+      "rms": 0.02055315370578081,
+      "peak": 0.4584019184112549
+    },
+    "v3-midi93-coupling-off-combined.wav": {
+      "sha256": "e3112d0a16b615818641cd987e0c201e321bef6d8b9112369ed78ef1ec7e285e",
+      "rms": 0.02302639134699649,
+      "peak": 0.6548067331314087
+    },
+    "v3-midi93-coupling-off-network.wav": {
+      "sha256": "e3112d0a16b615818641cd987e0c201e321bef6d8b9112369ed78ef1ec7e285e",
+      "rms": 0.02302639134699649,
+      "peak": 0.6548067331314087
+    },
+    "v3-midi93-coupling-off-strings.wav": {
+      "sha256": "955927d773c49a3c0e8620eb866e930d93a41be5bc78ff0b2bed3c5249b1e37f",
+      "rms": 0.014051892167428894,
+      "peak": 0.800000011920929
+    },
+    "v3-midi93-network-effect.wav": {
+      "sha256": "03f74351486c57cf699e728118eddef183dea25fc4fc4a50ce1fdc79d01f5088",
+      "rms": 0.00025691244950961853,
+      "peak": 0.0007712416700087488
+    },
+    "v3-midi93-total-effect.wav": {
+      "sha256": "761f9192aa0382dbcfd12246da89e5a79ca0fc0ce7df639ca3380e18b44c89b3",
+      "rms": 0.0002564917756142811,
+      "peak": 0.0007699807756580412
+    }
+  },
+  "exported_float_stem_reconstruction": {
+    "40": {
+      "network_plus_aux": {
+        "max_abs_error": 2.934582710167888e-08,
+        "rms_error": 3.8410567490301054e-10
+      },
+      "body_plus_strings": {
+        "max_abs_error": 2.2351741790771484e-08,
+        "rms_error": 3.617423746378178e-10
+      }
+    },
+    "93": {
+      "network_plus_aux": {
+        "max_abs_error": 4.845549028686946e-08,
+        "rms_error": 1.1199371158722407e-09
+      },
+      "body_plus_strings": {
+        "max_abs_error": 5.960464477539063e-08,
+        "rms_error": 1.149796024733599e-09
+      }
+    }
+  }
+}

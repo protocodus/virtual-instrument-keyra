@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "experiment_report_sha256": "977a8d152d503366e7b42e06a86df3cee9b54c36f8835b803f583dfea50e20f0",
+  "control_source_sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411",
+  "scope": "Three modal caps against frozen same-f32 control. Engineering judgments below do not claim blind listening or full-range realism. No recordings opened, parameters fitted or canonical changes made.",
+  "workload": [
+    "48kHz C2soft 1.2s",
+    "48kHz C4hard 1.2s",
+    "48kHz C6hard 1.2s",
+    "48kHz authored nocturne first1s"
+  ],
+  "decisions": {
+    "full_f32": {
+      "decision": "control",
+      "reasons": [],
+      "mode_count": 17778,
+      "primary_modes": 12507,
+      "secondary_modes": 5271,
+      "speedup_geomean_four_cases": 1.0,
+      "music_cpu_seconds_per_audio_second": 3.1491745,
+      "bounded_float_physics_eligible": true,
+      "strict_free_conservation_passed": false,
+      "float_10s_energy_loss_fraction": 0.04014446668973415,
+      "free_loss_identical_to_full_control": true,
+      "matched_null_db": {},
+      "max_resolved_harmonic_change_db": 0,
+      "automated_quality_screen_rejected_cases": []
+    },
+    "cap128_32": {
+      "decision": "reject_efficiency_in_this_run",
+      "reasons": [
+        "Four-case speedup below1; music workload slower despite fewer modes."
+      ],
+      "mode_count": 15512,
+      "primary_modes": 11359,
+      "secondary_modes": 4153,
+      "speedup_geomean_four_cases": 0.9819968472152285,
+      "music_cpu_seconds_per_audio_second": 3.61667,
+      "bounded_float_physics_eligible": true,
+      "strict_free_conservation_passed": false,
+      "float_10s_energy_loss_fraction": 0.04014446668973415,
+      "free_loss_identical_to_full_control": true,
+      "matched_null_db": {
+        "C2soft": -54.49831395415207,
+        "C4hard": -97.9632175514439,
+        "C6hard": -98.83138531556183,
+        "music_prefix": -46.71647778605436
+      },
+      "max_resolved_harmonic_change_db": 0.015727371102086038,
+      "automated_quality_screen_rejected_cases": []
+    },
+    "cap64_24": {
+      "decision": "promising_resolution_experiment; no_adoption",
+      "reasons": [
+        "About1.58x speedup with smaller measured bass/music changes; full-range and listening gates remain open."
+      ],
+      "mode_count": 11480,
+      "primary_modes": 8033,
+      "secondary_modes": 3447,
+      "speedup_geomean_four_cases": 1.5753684385687272,
+      "music_cpu_seconds_per_audio_second": 2.0440940000000003,
+      "bounded_float_physics_eligible": true,
+      "strict_free_conservation_passed": false,
+      "float_10s_energy_loss_fraction": 0.04014446668973415,
+      "free_loss_identical_to_full_control": true,
+      "matched_null_db": {
+        "C2soft": -40.71279944310032,
+        "C4hard": -58.71610635299198,
+        "C6hard": -90.00060783127863,
+        "music_prefix": -37.892820986261654
+      },
+      "max_resolved_harmonic_change_db": 0.8080258761039806,
+      "automated_quality_screen_rejected_cases": []
+    },
+    "cap32_16": {
+      "decision": "reject_as_default_at_this_stage; retain_comparison_artifact",
+      "reasons": [
+        "Largest measured bass/music residual, up to2.88dB resolved bass harmonic change; hardly-audible default gate remains unestablished.",
+        "C2 4-12kHz attack energy is largely removed; full-control band is weak but may matter after future attack calibration."
+      ],
+      "mode_count": 7707,
+      "primary_modes": 5110,
+      "secondary_modes": 2597,
+      "speedup_geomean_four_cases": 2.213988474671936,
+      "music_cpu_seconds_per_audio_second": 1.503632,
+      "bounded_float_physics_eligible": true,
+      "strict_free_conservation_passed": false,
+      "float_10s_energy_loss_fraction": 0.04014446668973415,
+      "free_loss_identical_to_full_control": true,
+      "matched_null_db": {
+        "C2soft": -30.72594592425189,
+        "C4hard": -43.24742594055458,
+        "C6hard": -84.54215337365008,
+        "music_prefix": -24.56280263768293
+      },
+      "max_resolved_harmonic_change_db": 2.8796347127657507,
+      "automated_quality_screen_rejected_cases": []
+    }
+  },
+  "limitations": [
+    "A0/C1 and the remaining keyboard extremes are not evaluated here.",
+    "Only short dry excerpts; no blind audition, long-tail or DAW deadline validation.",
+    "The full float control already has measurable numerical decay; every modal cap shares it.",
+    "Root priority is now full-range real-recording model fitting; no additional caps or adoption from this experiment."
+  ],
+  "decision_note": "Post-run conservative engineering judgments; automated triage screens remain unchanged and did not reject these short cases. Passing those screens never established inaudibility.",
+  "attack_band_context": {
+    "C2soft": {
+      "first5ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -0.2246044317986678,
+          "1000-4000Hz": -12.976015722411052,
+          "4000-12000Hz": -52.10578491449428,
+          "12000-20000Hz": -70.91816597125776
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": 0.012266327227426472,
+            "1000-4000Hz": 0.004868633889500392,
+            "4000-12000Hz": -0.0031114754684206155,
+            "12000-20000Hz": -0.6474300253078824
+          },
+          "cap64_24": {
+            "0-1000Hz": -0.03975505455038725,
+            "1000-4000Hz": 0.10570454012255898,
+            "4000-12000Hz": -1.2850079622542419,
+            "12000-20000Hz": -40.44500602464338
+          },
+          "cap32_16": {
+            "0-1000Hz": 0.02029136950106796,
+            "1000-4000Hz": 0.562212716859261,
+            "4000-12000Hz": -33.59885702939587,
+            "12000-20000Hz": -40.598604907692106
+          }
+        }
+      },
+      "5to20ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -0.040898430453816866,
+          "1000-4000Hz": -20.290944308580436,
+          "4000-12000Hz": -46.78458510921529,
+          "12000-20000Hz": -77.38887281996406
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": 0.0007549455927668471,
+            "1000-4000Hz": 0.0005530058025232837,
+            "4000-12000Hz": -0.0015523958944017348,
+            "12000-20000Hz": -0.5457867939418571
+          },
+          "cap64_24": {
+            "0-1000Hz": 0.003073042595894419,
+            "1000-4000Hz": 0.08195492234649693,
+            "4000-12000Hz": -1.2064137949499674,
+            "12000-20000Hz": -52.1221258961978
+          },
+          "cap32_16": {
+            "0-1000Hz": 0.002444140882713118,
+            "1000-4000Hz": -0.6418056939068728,
+            "4000-12000Hz": -57.806491079501555,
+            "12000-20000Hz": -52.61497142267206
+          }
+        }
+      },
+      "20to50ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -0.07446870874953891,
+          "1000-4000Hz": -17.699838413238066,
+          "4000-12000Hz": -47.49460745867452,
+          "12000-20000Hz": -81.85116073859797
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": -8.29653110338336e-05,
+            "1000-4000Hz": -0.003188869801736599,
+            "4000-12000Hz": -0.001261182905622865,
+            "12000-20000Hz": -0.411772374163768
+          },
+          "cap64_24": {
+            "0-1000Hz": -0.0012310642382565525,
+            "1000-4000Hz": 0.09349005184849268,
+            "4000-12000Hz": -0.7947132781521821,
+            "12000-20000Hz": -47.81380728979016
+          },
+          "cap32_16": {
+            "0-1000Hz": -0.005371892668117432,
+            "1000-4000Hz": -0.6030553806154796,
+            "4000-12000Hz": -76.45430872652598,
+            "12000-20000Hz": -49.41908854093928
+          }
+        }
+      }
+    },
+    "C4hard": {
+      "first5ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -1.366425055001641,
+          "1000-4000Hz": -5.692248542029171,
+          "4000-12000Hz": -35.122089292644965,
+          "12000-20000Hz": -78.40736104659098
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": -9.303154586849495e-06,
+            "1000-4000Hz": -3.3497387412658516e-06,
+            "4000-12000Hz": -1.3544917568969604e-05,
+            "12000-20000Hz": -0.000127759857762351
+          },
+          "cap64_24": {
+            "0-1000Hz": 0.00562701259669494,
+            "1000-4000Hz": -0.0013171985507941897,
+            "4000-12000Hz": -0.004134298866614327,
+            "12000-20000Hz": -0.0005292579217025201
+          },
+          "cap32_16": {
+            "0-1000Hz": 0.04313327384623842,
+            "1000-4000Hz": 0.03416802300383713,
+            "4000-12000Hz": -0.07157225752308465,
+            "12000-20000Hz": -35.04270436358474
+          }
+        }
+      },
+      "5to20ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -0.42437823157191223,
+          "1000-4000Hz": -10.323205790161335,
+          "4000-12000Hz": -35.74952959816544,
+          "12000-20000Hz": -78.98974438711778
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": -2.743102755298833e-06,
+            "1000-4000Hz": 4.9165286431324244e-05,
+            "4000-12000Hz": -3.89728012133378e-05,
+            "12000-20000Hz": 9.111932056469234e-06
+          },
+          "cap64_24": {
+            "0-1000Hz": -8.408877464386847e-05,
+            "1000-4000Hz": 0.00022019347593685033,
+            "4000-12000Hz": -0.004542646850420071,
+            "12000-20000Hz": 0.010358338824466781
+          },
+          "cap32_16": {
+            "0-1000Hz": 0.008253170347665323,
+            "1000-4000Hz": 0.04974036397326547,
+            "4000-12000Hz": -0.07900398515840232,
+            "12000-20000Hz": -50.55765927892554
+          }
+        }
+      },
+      "20to50ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -0.5271871083368439,
+          "1000-4000Hz": -9.436514397205917,
+          "4000-12000Hz": -33.402308432440435,
+          "12000-20000Hz": -81.7792403172339
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": -1.145730285404787e-06,
+            "1000-4000Hz": 7.917325988812283e-05,
+            "4000-12000Hz": -3.4922033713458635e-05,
+            "12000-20000Hz": -0.0002331489132542502
+          },
+          "cap64_24": {
+            "0-1000Hz": 3.138123239551216e-05,
+            "1000-4000Hz": 0.00017434870043301685,
+            "4000-12000Hz": -0.0030857002093892293,
+            "12000-20000Hz": 0.010736404966148827
+          },
+          "cap32_16": {
+            "0-1000Hz": 0.0007382284334533879,
+            "1000-4000Hz": 0.059879296271774116,
+            "4000-12000Hz": -0.062216453429485626,
+            "12000-20000Hz": -57.23903179934594
+          }
+        }
+      }
+    },
+    "C6hard": {
+      "first5ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -8.753717713934908,
+          "1000-4000Hz": -0.6281157544068781,
+          "4000-12000Hz": -28.48116831750264,
+          "12000-20000Hz": -80.98344253504827
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": 2.2608399384728757e-05,
+            "1000-4000Hz": 9.617579212106798e-06,
+            "4000-12000Hz": -1.7152294791297463e-05,
+            "12000-20000Hz": 0.00036571725708397666
+          },
+          "cap64_24": {
+            "0-1000Hz": 4.772931057791677e-05,
+            "1000-4000Hz": -8.330008915382746e-06,
+            "4000-12000Hz": -4.521429168139837e-05,
+            "12000-20000Hz": 8.511138686886072e-05
+          },
+          "cap32_16": {
+            "0-1000Hz": 8.201573332984189e-05,
+            "1000-4000Hz": -4.570422450347327e-05,
+            "4000-12000Hz": -7.000895537149006e-05,
+            "12000-20000Hz": -0.0003249130698375902
+          }
+        }
+      },
+      "5to20ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -13.793653235035572,
+          "1000-4000Hz": -0.193873919204629,
+          "4000-12000Hz": -27.186344858561966,
+          "12000-20000Hz": -86.0059534429928
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": 3.48424409934509e-05,
+            "1000-4000Hz": -1.5473787483973828e-05,
+            "4000-12000Hz": -2.1463667852370683e-05,
+            "12000-20000Hz": 0.0003007077510436738
+          },
+          "cap64_24": {
+            "0-1000Hz": 7.509737620794144e-05,
+            "1000-4000Hz": -0.00014033900438793496,
+            "4000-12000Hz": -5.78979402355468e-05,
+            "12000-20000Hz": 9.425112507575556e-05
+          },
+          "cap32_16": {
+            "0-1000Hz": 0.00014366046036898747,
+            "1000-4000Hz": -0.00032518547741173886,
+            "4000-12000Hz": -0.0001212151329294746,
+            "12000-20000Hz": 0.0002803432077126218
+          }
+        }
+      },
+      "20to50ms": {
+        "control_band_db_relative_attack_total": {
+          "0-1000Hz": -25.859278693979167,
+          "1000-4000Hz": -0.017755851063660906,
+          "4000-12000Hz": -28.28133627193976,
+          "12000-20000Hz": -91.20988746390668
+        },
+        "candidate_band_change_db": {
+          "cap128_32": {
+            "0-1000Hz": -0.00012252726791671116,
+            "1000-4000Hz": 1.1009194809728462e-05,
+            "4000-12000Hz": -9.0826500546267e-06,
+            "12000-20000Hz": 2.7093545746352982e-05
+          },
+          "cap64_24": {
+            "0-1000Hz": -0.0004254966970260017,
+            "1000-4000Hz": -4.130147897959575e-05,
+            "4000-12000Hz": -4.136474528179298e-05,
+            "12000-20000Hz": 0.0013466542615634554
+          },
+          "cap32_16": {
+            "0-1000Hz": -0.0008199025730923745,
+            "1000-4000Hz": -0.00015769827498334586,
+            "4000-12000Hz": -0.00011742137150061277,
+            "12000-20000Hz": 0.0013678131605859125
+          }
+        }
+      }
+    }
+  }
+}

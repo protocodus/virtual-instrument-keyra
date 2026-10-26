@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "measurement_version": 2,
+  "date": "2026-10-26",
+  "reason": "The frozen narrow nominal pitch prior omitted a much stronger C8 component and permitted weak/noise peaks to support an unjustified B fit. SFZ root/tuning metadata does not uniquely resolve physical pitch identity. Revision2 retains the weak candidate and exposes ambiguity plus the stronger unassigned component.",
+  "old_feature_version": {
+    "train_features_sha256": "13a4813d3a9d976c9228b9b2a065ae6a0e81dacd32b911ed8453fb6a4faf86ef",
+    "combined_train_features_sha256": "9cb4950714a5dd8395543fefae2549b6893f56c554496a92e8d0810806cc6dac",
+    "quality_sha256": "573770a2fbd9f03f7321973ac99245c916972bda0f153f0d3c7281d354e5641d",
+    "checks_sha256": "455cbe6bbb9c3d9940ab0bed3e6cd32fe8dfcfdc81e4bd7af3a63bc077ce2883",
+    "archive_receipt_sha256": "2f07538261a7af83ae790c271b661d28c3391a2d22c61fe56f31f633e317ce48"
+  },
+  "new_feature_version": {
+    "train_features_sha256": "0a736544aba17f52db23823ed49c026e4a752a2c9b016ae3aec0a005fbf35218",
+    "combined_train_features_sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+    "quality_sha256": "81ee3236793bde5e664d721fb779b0b7ac72f0d7bf7b05e9d134ad4970b177ab",
+    "checks_sha256": "d0b0a99e02f637de8305a41f85881f279085983e0656c93ae42efbdfbc317a16",
+    "extractor_sha256": "e16339fe8990d77cd8cd7db73ff25af4d59045936f3524b859b8dba269fba027",
+    "edge_pitch_helper_sha256": "5f75a2bb871128e98456db69b5b9cc147fca02f079d0e18d24852bb4a80e2be1"
+  },
+  "source_manifest_unchanged_sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647",
+  "split_unchanged_sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428",
+  "metadata_audit_sha256": "b83fb34d233d74507464199c64ba8d5a834e23d21a66721cae2102f96ff88844",
+  "changes": [
+    {
+      "id": "C8v4",
+      "candidate_f1_hz_unchanged": 4276.6872463121135,
+      "previous_B": 0.005361014059758037,
+      "previous_B_identifiable": true,
+      "new_B_is_unmeasured_placeholder": true,
+      "new_B_identifiable": false,
+      "pitch_identity_ambiguous": true,
+      "separately_measured_dominant_component_hz": 4433.88935324979
+    },
+    {
+      "id": "C8v12",
+      "candidate_f1_hz_unchanged": 4276.81975438499,
+      "previous_B": 0.0011813678789820078,
+      "previous_B_identifiable": true,
+      "new_B_is_unmeasured_placeholder": true,
+      "new_B_identifiable": false,
+      "pitch_identity_ambiguous": true,
+      "separately_measured_dominant_component_hz": 4433.832632086339
+    }
+  ],
+  "preserved": [
+    "Original TRAIN10 numeric fields",
+    "GrandExpanded TRAIN26 entire rows",
+    "A0/C1/C7 core feature measurements",
+    "C8 weak candidate f1/H1 power, whole-signal attack/envelope/band powers",
+    "All source bytes and locked train/evaluation roles"
+  ],
+  "model_selection_policy": [
+    "Do not infer a primary-string retune from the strongest component alone.",
+    "C8 f1 is a weak candidate, not a uniquely identified fundamental; C8 B placeholder is not fitting evidence.",
+    "Measure unassigned components at fixed reference frequencies and retain their separate unknown physical identity.",
+    "Previous calibration conclusions using the old C8 interpretation remain historical and need new scoring/refitting."
+  ],
+  "affected_derived_artifacts": [
+    {
+      "path": "out/full-calibration/v2/mechanics/calibration.json",
+      "sha256": "35e9f6e17c72eeb989cbc2dcbe94eecaba0a8660911766fa2edb5d191b2528c5",
+      "status": "Historical; old C8 B/component-based conclusions require re-evaluation with measurement revision2."
+    },
+    {
+      "path": "out/full-calibration/v2/analytic/calibration.json",
+      "sha256": "d1a4e22777bc24a78999b09f47cbbca9c9bfafc769a94d4440b42dd39fff553f",
+      "status": "Historical; old C8 B/component-based conclusions require re-evaluation with measurement revision2."
+    },
+    {
+      "path": "out/full-calibration/v2/c8-joint/calibration.json",
+      "sha256": "ae7e97b11ec4d7dc30aece6f4c2d51487497e84c865177aeb3cd490060f7321b",
+      "status": "Historical; old C8 B/component-based conclusions require re-evaluation with measurement revision2."
+    },
+    {
+      "path": "out/full-calibration/v2/c8-prior-score/score.json",
+      "sha256": "7ccc7aa2fa7e7ef83a29d602b77624fbf79aaf8b617044e8b7f50ace29839e96",
+      "status": "Historical; old C8 B/component-based conclusions require re-evaluation with measurement revision2."
+    },
+    {
+      "path": "out/full-calibration/v2/c8-joint-score/score.json",
+      "sha256": "a022fbbc1120c36d0cd15bc6663758ff4b1145315c389acd4ac992cd0b66a064",
+      "status": "Historical; old C8 B/component-based conclusions require re-evaluation with measurement revision2."
+    }
+  ],
+  "fresh_evaluation_recordings_opened": false
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-26",
+  "platform": "Linux x86_64",
+  "sdk_commit": "3cdf9ca5d1f5b1b21e0a86832aa4abe55607bd96",
+  "sdk_license": "MIT",
+  "sdk_submodules": {
+    "base": "fcf9da0bd27a16f7f03773a3a39822f28f5c8477",
+    "cmake": "054c9143cbb8d47fc4694e473f2ee3b4d951a8f5",
+    "pluginterfaces": "4f547e8e102b47de4a8b8aaf343c73b700786372",
+    "public.sdk": "586dc5e6c8012c3e4b01c79389375cbe96bdb1da"
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "configure": "cmake -S . -B build-vst3 -G Ninja -DCMAKE_BUILD_TYPE=Release -DKEYRA_BUILD_REFERENCE=OFF -DKEYRA_BUILD_PLUGIN=OFF -DKEYRA_BUILD_VST3=ON -DKEYRA_VST3_SDK_DIR=/workspace/keyra-vst3-sdk",
+  "build": "cmake --build build-vst3 --target keyra_vst3 keyra_piano_tests keyra_vst3_host validator -j 4",
+  "test": "ctest --test-dir build-vst3 --output-on-failure -R vst3",
+  "sdk_validator": {
+    "passed": 47,
+    "failed": 0,
+    "result_line": "Result: 47 tests passed, 0 tests failed",
+    "unsupported_rate_probe_messages_hz": [
+      1234.568,
+      1234567.8
+    ],
+    "valid_engine_rate_range_hz": [
+      8000,
+      384000
+    ]
+  },
+  "custom_host_checks": [
+    "Dynamic factory/component/controller lifecycle",
+    "MIDI channel mapping and invalid bus rejection",
+    "32-bit sample processing advertised; 64-bit rejected",
+    "Sample offsets and parameter changes agree with direct core within 1e-7",
+    "Per-channel sustain before note release",
+    "Zero-valued MIDI CC120 clears its channel",
+    "Partial read/write state streams",
+    "Version/header/truncated-state rejection",
+    "Zero-frame parameter flush"
+  ],
+  "limits": "This validates ABI, core DSP and headless VST3 processing on Linux only. Reason Rack Extension is primary and is not validated by VST3 checks. Native Windows workflow has not run. No commercial DAW, macOS, signing, GUI, latency deadline or perceptual quality certification. Source hashes identify the engine revision tested; rerun after DSP changes.",
+  "sha256": {
+    "vst3/KeyraVst3.cpp": "b38cd4a4d1a91c39166b4f153bbc688ea989c592b4065c8e85a84a8c60d05aed",
+    "vst3/host_test.cpp": "b1afc8274c1aa968d397ef7fbab947356a7c42254f8aa73a87f68b8761149363",
+    "vst3/CMakeLists.txt": "daf1b5fb98d53d356c3897a3de2f2dca76785a0c6027fa4b7b691106a643846b",
+    "src/Piano.cpp": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+    "src/LiveCalibration.h": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+    "src/UprightCalibration.h": "21cf33bc990ac09e16e9137b5c2e4491f2fdf2d58292df464dcefa4e96e42dd3",
+    "build-vst3/VST3/Release/Keyra.vst3/Contents/x86_64-linux/Keyra.so": "e5dbe81bbc564f80ceaeb0ffec045bbddd246f895513ff6c88bba21dc0b88262",
+    ".github/workflows/windows-vst3.yml": "ad5a6c15bf3d224f2399f91984e491b814a88fcf357e382018359c414d040926"
+  },
+  "primary_product_target": "Reason Rack Extension; VST3 is an optional secondary integration harness.",
+  "core_dsp_ctest": {
+    "name": "live_piano",
+    "passed": true
+  },
+  "custom_host_ctest": {
+    "name": "vst3_host_state_and_events",
+    "passed": true
+  },
+  "ctest_total": {
+    "passed": 3,
+    "failed": 0
+  },
+  "windows": {
+    "workflow": ".github/workflows/windows-vst3.yml",
+    "target": "Windows x64 / Visual Studio 2022",
+    "workflow_yaml_parsed": true,
+    "native_execution": "not_run",
+    "loader": "LoadLibraryW / GetProcAddress / InitDll / ExitDll implemented; native behavior pending Windows execution",
+    "claims": "No Windows build, DAW or release validation is claimed from the Linux session."
+  },
+  "latest_check": "Final thirteen-anchor default: official validator and dynamic host state/event tests passed on Linux."
+}

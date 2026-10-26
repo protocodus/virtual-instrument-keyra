@@ -1,0 +1,690 @@
+{
+  "schema_version": 1,
+  "training_only": true,
+  "candidate_promoted": false,
+  "evaluation_audio_opened_by_exporter": false,
+  "no_synthesis_or_fitting_run": true,
+  "export_tool_sha256": "22cfe345cc6cebc71b0db1fea840b6da0aa27ecc294b97972d919db752d0eb80",
+  "format": "24-bit FLAC, 48 kHz stereo",
+  "order": [
+    "real",
+    "original full control (hot float, original calibration)",
+    "v4 full candidate (hot float, TRAIN calibration)"
+  ],
+  "seconds_per_section": 3.5,
+  "gap_seconds": 0.25,
+  "alignment": "Each source starts at its frozen benchmark onset; no time stretch, pitch shift or phase alignment.",
+  "fade": {
+    "where": "last 20 ms of every section",
+    "shape": "half cosine from 1 to 0",
+    "frames": 960,
+    "attack_fade": false
+  },
+  "levels": {
+    "model_gain": "Exactly early_gain_db from corresponding frozen TRAIN score; reference gain 0 dB before common gain.",
+    "one_peak_gain_for_all_nine_sections": 0.7927636080521351,
+    "peak_before_common_gain": 1.0091280576887796,
+    "target_sample_peak": 0.8,
+    "independent_peak_normalization": false
+  },
+  "attribution": {
+    "recordings": "Salamander Grand Piano V3 by Alexander Holm",
+    "source": "https://github.com/sfzinstruments/SalamanderGrandPiano/tree/3382bf9496bba2486f5ab0de55a264d1dfc38404",
+    "original_distribution": "https://archive.org/details/SalamanderGrandPianoV3",
+    "license": "Creative Commons Attribution 3.0 Unported",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "modifications": "Selected training recordings onset-trimmed, cropped to 3.5 s, final 20 ms faded, scaled by one common gain, concatenated with model comparisons and 0.25 s silence, converted to PCM24 FLAC. No resampling, EQ, denoising or added room."
+  },
+  "limits": [
+    "Training cases; no generalization or perceptual-parity claim.",
+    "Candidate NOT promoted: historical A3 envelope regression and unresolved strong C8 component.",
+    "Acquisition room and recording-chain properties remain in the real recordings; no room added to any track.",
+    "Layer4/12 MIDI proxies 40/93 are SFZ bin midpoints, not measured recording hammer velocities.",
+    "These single-note full-model renders do not include the separate repeated-strike or key/pedal mechanism adapters.",
+    "No realtime or Reason host qualification implied."
+  ],
+  "inputs": [
+    {
+      "path": "out/full-calibration/v4/evaluation/freeze.json",
+      "sha256": "100cf59663e203c58acfaa88c220d6cc270ee777437b5a7f5c974c205c24c105"
+    },
+    {
+      "path": "tools/fit_full_calibration.py",
+      "sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550"
+    },
+    {
+      "path": "out/full-calibration/v3/control-f32/grand.cpp",
+      "sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411"
+    },
+    {
+      "path": "out/full-calibration/v3/control-f32/render",
+      "sha256": "9d10341175e9d4e569b87ab0dec299aab8e73444d9cd6054b2d4432952db7bab"
+    },
+    {
+      "path": "out/full-calibration/v3/control-f32/calibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/render-manifest.json",
+      "sha256": "4aa4051a3d4ac1265c42d8a9957c32e0041fda36200c6e6b14c32c52b0f98ac2"
+    },
+    {
+      "path": "out/full-calibration/v4/control-score/score.json",
+      "sha256": "0d3dac679a2c54974eb3fa03f9d0d45da9cf01178f0091bc562c1b759160c5d5"
+    },
+    {
+      "path": "References/GrandFullRange/combined_train_features.json",
+      "sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7"
+    },
+    {
+      "path": "References/GrandFullRange/split.json",
+      "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428"
+    },
+    {
+      "path": "Research/GrandPianoV2/tools/fit_calibration.py",
+      "sha256": "906605c9a03bafff4a265a8508dab6c6e51198db881fddc27db69477804d7576"
+    },
+    {
+      "path": "Research/GrandPianoV2/tools/radiation_fit.py",
+      "sha256": "d222d5f00257358d48c398dc4d84f1ba4bbbf4ddaa94b46c2a46f81b723414d7"
+    },
+    {
+      "path": "Research/GrandPianoV2/tools/benchmark.py",
+      "sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda"
+    },
+    {
+      "path": "Research/GrandPianoV2/reference/manifest.json",
+      "sha256": "7f2d494760bba221bcb8a83d3d4c6619fbd988b42b307e39fcf433b53e4b38f7"
+    },
+    {
+      "path": "Research/GrandPianoV2/reference/fetch_reference.py",
+      "sha256": "719a012dfac146eebd3d79e8e40104057752dfba3b31b8940563fc15877a9aa3"
+    },
+    {
+      "path": "References/GrandFullRange/manifest.json",
+      "sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647"
+    },
+    {
+      "path": "tools/extract_full_range_grand.py",
+      "sha256": "e16339fe8990d77cd8cd7db73ff25af4d59045936f3524b859b8dba269fba027"
+    },
+    {
+      "path": "tools/full_range_pitch.py",
+      "sha256": "5f75a2bb871128e98456db69b5b9cc147fca02f079d0e18d24852bb4a80e2be1"
+    },
+    {
+      "path": "tools/fetch_full_range_grand.py",
+      "sha256": "34c993b2ea4bd7f55c312416c0a00dbbe6676f7992a07ca7e966544831db8c14"
+    },
+    {
+      "path": "out/full-calibration/v4/radiation/float-solver/grand.cpp",
+      "sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56"
+    },
+    {
+      "path": "out/full-calibration/v4/radiation/float-solver/render",
+      "sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756"
+    },
+    {
+      "path": "out/full-calibration/v4/radiation/float-solver/calibration.h",
+      "sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/render-manifest.json",
+      "sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba"
+    },
+    {
+      "path": "out/full-calibration/v4/final-score/score.json",
+      "sha256": "79f95f2ea81906e8008593397a6086ca542c2234b4a5d7ad2828fc9637468462"
+    },
+    {
+      "path": "References/GrandFullRange/recordings/A0v4.wav",
+      "sha256": "c3bf928b2f9db331c2624856ff5fe5a10df332f795b130beacfda86162085d43"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/A0v4.wav",
+      "sha256": "997bbf8547d87e6823bf5500485200d42f4568d1a553c6688a8bfd82f29701b6"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/A0v4.events",
+      "sha256": "ff3d5271679a9a3216c1aeaf9203c55ef37d98705b99ac45e17b370919e08f94"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/A0v4.wav",
+      "sha256": "6eaefee208272eb5e4b2339f598d59e49119b0d3ff8fc4de804688702bb57f48"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/A0v4.events",
+      "sha256": "ff3d5271679a9a3216c1aeaf9203c55ef37d98705b99ac45e17b370919e08f94"
+    },
+    {
+      "path": "References/GrandFullRange/recordings/C4v12.wav",
+      "sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/C4v12.wav",
+      "sha256": "984c6f41e5adde8f2f94d1a48471e4e1d475402033af8a0ba5ae2ad1aab2728f"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/C4v12.events",
+      "sha256": "f0f384cabc6724edcfec8005bc810359f3ad77776f8dfbb842ede6ef1ea96a9d"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/C4v12.wav",
+      "sha256": "4f3b2b446eb511cdcaa1e59502662837421f15a7b14766f8809b15f6a3bc8dee"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/C4v12.events",
+      "sha256": "f0f384cabc6724edcfec8005bc810359f3ad77776f8dfbb842ede6ef1ea96a9d"
+    },
+    {
+      "path": "References/GrandFullRange/recordings/C8v12.wav",
+      "sha256": "7165f8a45b4873fe1704231ace9e3f2ed70312a59e2f347d5351b1cd3ef9a33e"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/C8v12.wav",
+      "sha256": "f65f87679029ace6d07ba251e65a1fe22ecd015903fe5d0253ffe2363a6a9175"
+    },
+    {
+      "path": "out/full-calibration/v3/control-renders/C8v12.events",
+      "sha256": "c49e602ebced0c87773335c471226f5d8dafb61f1ee5f562daf7c1804fb7354b"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/C8v12.wav",
+      "sha256": "b59c8e8a258d625bf9716280c7d70f17cb5da8b7865636b5b9047cf6a89e4368"
+    },
+    {
+      "path": "out/full-calibration/v4/final-renders/C8v12.events",
+      "sha256": "c49e602ebced0c87773335c471226f5d8dafb61f1ee5f562daf7c1804fb7354b"
+    }
+  ],
+  "entries": [
+    {
+      "id": "A0v4",
+      "split": "train",
+      "reference_identity": {
+        "id": "A0v4",
+        "historical_feature_wave_sha256": "c3bf928b2f9db331c2624856ff5fe5a10df332f795b130beacfda86162085d43",
+        "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/A0v4.wav",
+        "actual_wave_sha256": "c3bf928b2f9db331c2624856ff5fe5a10df332f795b130beacfda86162085d43",
+        "container_hash_matches_feature": true,
+        "identity_basis": "Exact feature WAV container SHA256."
+      },
+      "file": "A0v4-real-control-candidate.flac",
+      "sha256": "0addc9f7800eeb10a0d5e17fada6443a859d5dccd70bfa85b6a3cbccff720aac",
+      "processed_float_wave_sha256": "4315d17ace131d995b7b8ddd07e13b2d9ad5eea91a3f3035771ae3d110d2eea9",
+      "decoded_pcm24_sha256": "a96252e531de1b146787a052036958e0395d8a650161477702392e7be86e7340",
+      "source_float_to_pcm24_maximum_quantization_error": 1.189691829495132e-07,
+      "frames": 528000,
+      "duration_seconds": 11.0,
+      "tracks": [
+        {
+          "role": "real",
+          "input": "References/GrandFullRange/recordings/A0v4.wav",
+          "input_sha256": "c3bf928b2f9db331c2624856ff5fe5a10df332f795b130beacfda86162085d43",
+          "input_frames": 1189137,
+          "source_onset_frame": 304,
+          "source_onset_seconds": 0.006333333333333333,
+          "onset_measurement": {
+            "threshold_power": 2.6777689404942225e-06,
+            "initial_noise_power": 2.3901760511553977e-07,
+            "first_peak_power": 0.026777689404942222,
+            "threshold_relative_db": -40.0
+          },
+          "available_frames_after_onset": 1188833,
+          "early_gain_db_from_frozen_score": 0.0,
+          "early_gain_linear": 1.0,
+          "synthesis": null,
+          "output_start_frame": 0,
+          "output_start_seconds": 0.0,
+          "output_frames": 168000
+        },
+        {
+          "role": "control",
+          "input": "out/full-calibration/v3/control-renders/A0v4.wav",
+          "input_sha256": "997bbf8547d87e6823bf5500485200d42f4568d1a553c6688a8bfd82f29701b6",
+          "input_frames": 182400,
+          "source_onset_frame": 4765,
+          "source_onset_seconds": 0.09927083333333334,
+          "onset_measurement": {
+            "threshold_power": 1.4436507775574626e-06,
+            "initial_noise_power": 0.0,
+            "first_peak_power": 0.04565224602954674,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 177635,
+          "early_gain_db_from_frozen_score": -0.13981274225720802,
+          "early_gain_linear": 0.9840323201320843,
+          "synthesis": {
+            "source_sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411",
+            "header_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+            "binary_sha256": "9d10341175e9d4e569b87ab0dec299aab8e73444d9cd6054b2d4432952db7bab",
+            "render_manifest_sha256": "4aa4051a3d4ac1265c42d8a9957c32e0041fda36200c6e6b14c32c52b0f98ac2",
+            "events": {
+              "path": "out/full-calibration/v3/control-renders/A0v4.events",
+              "sha256": "ff3d5271679a9a3216c1aeaf9203c55ef37d98705b99ac45e17b370919e08f94",
+              "text": "# Held note; recording acquisition pedal state is undocumented.\n0.100000 on 21 40\n4.150000 off 21 0\n"
+            },
+            "recorded_command": [
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/render",
+              "--events",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/A0v4.events",
+              "--output",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/A0v4.wav",
+              "--sample-rate",
+              "48000",
+              "--duration",
+              "3.8"
+            ],
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 3.8,
+              "wall_seconds": 12.374014219,
+              "realtime_factor": 3.25631953132,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 0.403454839042,
+              "raw_rms": 0.0307452439032,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 18.3079756626,
+              "accumulated_contact_seconds": 0.00289583333333,
+              "contact_solves": 139,
+              "contact_max_relative_residual": 2.64516315699e-13,
+              "final_mechanical_energy_J": 3.17436859764e-05
+            }
+          },
+          "output_start_frame": 180000,
+          "output_start_seconds": 3.75,
+          "output_frames": 168000
+        },
+        {
+          "role": "candidate",
+          "input": "out/full-calibration/v4/final-renders/A0v4.wav",
+          "input_sha256": "6eaefee208272eb5e4b2339f598d59e49119b0d3ff8fc4de804688702bb57f48",
+          "input_frames": 182400,
+          "source_onset_frame": 4765,
+          "source_onset_seconds": 0.09927083333333334,
+          "onset_measurement": {
+            "threshold_power": 2.282846811038767e-06,
+            "initial_noise_power": 0.0,
+            "first_peak_power": 0.07218995472134518,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 177635,
+          "early_gain_db_from_frozen_score": -4.723283175871,
+          "early_gain_linear": 0.5805449361001764,
+          "synthesis": {
+            "source_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+            "header_sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa",
+            "binary_sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756",
+            "render_manifest_sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba",
+            "events": {
+              "path": "out/full-calibration/v4/final-renders/A0v4.events",
+              "sha256": "ff3d5271679a9a3216c1aeaf9203c55ef37d98705b99ac45e17b370919e08f94",
+              "text": "# Held note; recording acquisition pedal state is undocumented.\n0.100000 on 21 40\n4.150000 off 21 0\n"
+            },
+            "recorded_command": [
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/render",
+              "--events",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v4.events",
+              "--output",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v4.wav",
+              "--sample-rate",
+              "48000",
+              "--duration",
+              "3.8"
+            ],
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 3.8,
+              "wall_seconds": 13.645127812,
+              "realtime_factor": 3.59082310842,
+              "string_count": 230,
+              "string_modes": 17849,
+              "board_modes": 475,
+              "raw_peak": 0.428469878289,
+              "raw_rms": 0.0605164135378,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 17.7150560327,
+              "accumulated_contact_seconds": 0.003,
+              "contact_solves": 145,
+              "contact_max_relative_residual": 2.28784672206e-13,
+              "final_mechanical_energy_J": 0.000291016107413
+            }
+          },
+          "output_start_frame": 360000,
+          "output_start_seconds": 7.5,
+          "output_frames": 168000
+        }
+      ]
+    },
+    {
+      "id": "C4v12",
+      "split": "train",
+      "reference_identity": {
+        "id": "C4v12",
+        "historical_feature_wave_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+        "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C4v12.wav",
+        "actual_wave_sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a",
+        "container_hash_matches_feature": false,
+        "decoded_pcm": {
+          "sha256": "f807087aed858ad1e0cbc30ae6f8d0dd8fd12314d5f52a6b6ac4afa6ddee47ad",
+          "encoding": "s24le-interleaved",
+          "sample_rate": 48000,
+          "channels": 2,
+          "frames": 754437,
+          "pcm_bits": 24
+        },
+        "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked."
+      },
+      "file": "C4v12-real-control-candidate.flac",
+      "sha256": "7813e2a55b8330a57d24352103b11736f8b8557616356b51fc6127f814350926",
+      "processed_float_wave_sha256": "f9e2b54c04c53cefa2055ad985c51d18e62606f47becc237f00260ddc5ef8d87",
+      "decoded_pcm24_sha256": "37b65681d07c81e7a125a026423526c0cb24ea6c28add1a0653ea712d85d5cf7",
+      "source_float_to_pcm24_maximum_quantization_error": 1.189691829495132e-07,
+      "frames": 528000,
+      "duration_seconds": 11.0,
+      "tracks": [
+        {
+          "role": "real",
+          "input": "References/GrandFullRange/recordings/C4v12.wav",
+          "input_sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a",
+          "input_frames": 754437,
+          "source_onset_frame": 357,
+          "source_onset_seconds": 0.0074375,
+          "onset_measurement": {
+            "threshold_power": 3.4938204937327166e-06,
+            "initial_noise_power": 1.3732917410654485e-07,
+            "first_peak_power": 0.11048430495969426,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 754080,
+          "early_gain_db_from_frozen_score": 0.0,
+          "early_gain_linear": 1.0,
+          "synthesis": null,
+          "output_start_frame": 0,
+          "output_start_seconds": 0.0,
+          "output_frames": 168000
+        },
+        {
+          "role": "control",
+          "input": "out/full-calibration/v3/control-renders/C4v12.wav",
+          "input_sha256": "984c6f41e5adde8f2f94d1a48471e4e1d475402033af8a0ba5ae2ad1aab2728f",
+          "input_frames": 182400,
+          "source_onset_frame": 4759,
+          "source_onset_seconds": 0.09914583333333334,
+          "onset_measurement": {
+            "threshold_power": 1.6827997974551136e-05,
+            "initial_noise_power": 0.0,
+            "first_peak_power": 0.5321480206028179,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 177641,
+          "early_gain_db_from_frozen_score": -0.6291583243064673,
+          "early_gain_linear": 0.9301266410494958,
+          "synthesis": {
+            "source_sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411",
+            "header_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+            "binary_sha256": "9d10341175e9d4e569b87ab0dec299aab8e73444d9cd6054b2d4432952db7bab",
+            "render_manifest_sha256": "4aa4051a3d4ac1265c42d8a9957c32e0041fda36200c6e6b14c32c52b0f98ac2",
+            "events": {
+              "path": "out/full-calibration/v3/control-renders/C4v12.events",
+              "sha256": "f0f384cabc6724edcfec8005bc810359f3ad77776f8dfbb842ede6ef1ea96a9d",
+              "text": "# Held note; recording acquisition pedal state is undocumented.\n0.100000 on 60 93\n4.150000 off 60 0\n"
+            },
+            "recorded_command": [
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/render",
+              "--events",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.events",
+              "--output",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C4v12.wav",
+              "--sample-rate",
+              "48000",
+              "--duration",
+              "3.8"
+            ],
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 3.8,
+              "wall_seconds": 22.661619307,
+              "realtime_factor": 5.96358402816,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.04681272594,
+              "raw_rms": 0.0699074862019,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 24.8841457548,
+              "accumulated_contact_seconds": 0.00172916666667,
+              "contact_solves": 84,
+              "contact_max_relative_residual": 3.38902049543e-13,
+              "final_mechanical_energy_J": 6.95264183587e-05
+            }
+          },
+          "output_start_frame": 180000,
+          "output_start_seconds": 3.75,
+          "output_frames": 168000
+        },
+        {
+          "role": "candidate",
+          "input": "out/full-calibration/v4/final-renders/C4v12.wav",
+          "input_sha256": "4f3b2b446eb511cdcaa1e59502662837421f15a7b14766f8809b15f6a3bc8dee",
+          "input_frames": 182400,
+          "source_onset_frame": 4761,
+          "source_onset_seconds": 0.0991875,
+          "onset_measurement": {
+            "threshold_power": 2.9443796160262367e-05,
+            "initial_noise_power": 0.0,
+            "first_peak_power": 0.9310945882814918,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 177639,
+          "early_gain_db_from_frozen_score": -4.4259754734151135,
+          "early_gain_linear": 0.6007603011566249,
+          "synthesis": {
+            "source_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+            "header_sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa",
+            "binary_sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756",
+            "render_manifest_sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba",
+            "events": {
+              "path": "out/full-calibration/v4/final-renders/C4v12.events",
+              "sha256": "f0f384cabc6724edcfec8005bc810359f3ad77776f8dfbb842ede6ef1ea96a9d",
+              "text": "# Held note; recording acquisition pedal state is undocumented.\n0.100000 on 60 93\n4.150000 off 60 0\n"
+            },
+            "recorded_command": [
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/render",
+              "--events",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v12.events",
+              "--output",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v12.wav",
+              "--sample-rate",
+              "48000",
+              "--duration",
+              "3.8"
+            ],
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 3.8,
+              "wall_seconds": 22.88677844,
+              "realtime_factor": 6.02283643158,
+              "string_count": 230,
+              "string_modes": 17849,
+              "board_modes": 475,
+              "raw_peak": 1.38044398934,
+              "raw_rms": 0.106681383472,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 24.8841428322,
+              "accumulated_contact_seconds": 0.00172916666667,
+              "contact_solves": 84,
+              "contact_max_relative_residual": 3.02024679677e-13,
+              "final_mechanical_energy_J": 6.86644524396e-05
+            }
+          },
+          "output_start_frame": 360000,
+          "output_start_seconds": 7.5,
+          "output_frames": 168000
+        }
+      ]
+    },
+    {
+      "id": "C8v12",
+      "split": "train",
+      "reference_identity": {
+        "id": "C8v12",
+        "historical_feature_wave_sha256": "7165f8a45b4873fe1704231ace9e3f2ed70312a59e2f347d5351b1cd3ef9a33e",
+        "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C8v12.wav",
+        "actual_wave_sha256": "7165f8a45b4873fe1704231ace9e3f2ed70312a59e2f347d5351b1cd3ef9a33e",
+        "container_hash_matches_feature": true,
+        "identity_basis": "Exact feature WAV container SHA256."
+      },
+      "file": "C8v12-real-control-candidate.flac",
+      "sha256": "80beab85a9102986acacbb4ee29ebbda41a27670468dafe59265d1a4bf8f18b0",
+      "processed_float_wave_sha256": "70fd964b69d93ae4e13c0a00b9d7f688d0fecf02b5b96e41f1ab4402d4175e15",
+      "decoded_pcm24_sha256": "1504891255f108374c3441623a0a3e31ae48e7723ad3a4dd9141be3404c84a1e",
+      "source_float_to_pcm24_maximum_quantization_error": 1.1897554941242561e-07,
+      "frames": 528000,
+      "duration_seconds": 11.0,
+      "tracks": [
+        {
+          "role": "real",
+          "input": "References/GrandFullRange/recordings/C8v12.wav",
+          "input_sha256": "7165f8a45b4873fe1704231ace9e3f2ed70312a59e2f347d5351b1cd3ef9a33e",
+          "input_frames": 172637,
+          "source_onset_frame": 312,
+          "source_onset_seconds": 0.0065,
+          "onset_measurement": {
+            "threshold_power": 1.3001544079746926e-06,
+            "initial_noise_power": 2.4604045556486653e-07,
+            "first_peak_power": 0.013001544079746926,
+            "threshold_relative_db": -40.0
+          },
+          "available_frames_after_onset": 172325,
+          "early_gain_db_from_frozen_score": 0.0,
+          "early_gain_linear": 1.0,
+          "synthesis": null,
+          "output_start_frame": 0,
+          "output_start_seconds": 0.0,
+          "output_frames": 168000
+        },
+        {
+          "role": "control",
+          "input": "out/full-calibration/v3/control-renders/C8v12.wav",
+          "input_sha256": "f65f87679029ace6d07ba251e65a1fe22ecd015903fe5d0253ffe2363a6a9175",
+          "input_frames": 182400,
+          "source_onset_frame": 4756,
+          "source_onset_seconds": 0.09908333333333333,
+          "onset_measurement": {
+            "threshold_power": 3.755013680543681e-09,
+            "initial_noise_power": 0.0,
+            "first_peak_power": 0.00011874395875609925,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 177644,
+          "early_gain_db_from_frozen_score": 31.72848061776413,
+          "early_gain_linear": 38.585490988804274,
+          "synthesis": {
+            "source_sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411",
+            "header_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+            "binary_sha256": "9d10341175e9d4e569b87ab0dec299aab8e73444d9cd6054b2d4432952db7bab",
+            "render_manifest_sha256": "4aa4051a3d4ac1265c42d8a9957c32e0041fda36200c6e6b14c32c52b0f98ac2",
+            "events": {
+              "path": "out/full-calibration/v3/control-renders/C8v12.events",
+              "sha256": "c49e602ebced0c87773335c471226f5d8dafb61f1ee5f562daf7c1804fb7354b",
+              "text": "# Held note; recording acquisition pedal state is undocumented.\n0.100000 on 108 93\n4.150000 off 108 0\n"
+            },
+            "recorded_command": [
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/render",
+              "--events",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C8v12.events",
+              "--output",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/C8v12.wav",
+              "--sample-rate",
+              "48000",
+              "--duration",
+              "3.8"
+            ],
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 3.8,
+              "wall_seconds": 12.131508744,
+              "realtime_factor": 3.19250230105,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 0.0188064028139,
+              "raw_rms": 0.000302286578105,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 63.5683956313,
+              "accumulated_contact_seconds": 0.00102083333333,
+              "contact_solves": 49,
+              "contact_max_relative_residual": 4.97753173583e-13,
+              "final_mechanical_energy_J": 1.17131855334e-15
+            }
+          },
+          "output_start_frame": 180000,
+          "output_start_seconds": 3.75,
+          "output_frames": 168000
+        },
+        {
+          "role": "candidate",
+          "input": "out/full-calibration/v4/final-renders/C8v12.wav",
+          "input_sha256": "b59c8e8a258d625bf9716280c7d70f17cb5da8b7865636b5b9047cf6a89e4368",
+          "input_frames": 182400,
+          "source_onset_frame": 4756,
+          "source_onset_seconds": 0.09908333333333333,
+          "onset_measurement": {
+            "threshold_power": 4.596832151690817e-09,
+            "initial_noise_power": 0.0,
+            "first_peak_power": 0.0001453645962083561,
+            "threshold_relative_db": -45.0
+          },
+          "available_frames_after_onset": 177644,
+          "early_gain_db_from_frozen_score": 31.8448558111691,
+          "early_gain_linear": 39.10594548873986,
+          "synthesis": {
+            "source_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+            "header_sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa",
+            "binary_sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756",
+            "render_manifest_sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba",
+            "events": {
+              "path": "out/full-calibration/v4/final-renders/C8v12.events",
+              "sha256": "c49e602ebced0c87773335c471226f5d8dafb61f1ee5f562daf7c1804fb7354b",
+              "text": "# Held note; recording acquisition pedal state is undocumented.\n0.100000 on 108 93\n4.150000 off 108 0\n"
+            },
+            "recorded_command": [
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/render",
+              "--events",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C8v12.events",
+              "--output",
+              "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C8v12.wav",
+              "--sample-rate",
+              "48000",
+              "--duration",
+              "3.8"
+            ],
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 3.8,
+              "wall_seconds": 11.398258696,
+              "realtime_factor": 2.99954176211,
+              "string_count": 230,
+              "string_modes": 17849,
+              "board_modes": 475,
+              "raw_peak": 0.025804978019,
+              "raw_rms": 0.000297647292333,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 63.5895320077,
+              "accumulated_contact_seconds": 0.00102083333333,
+              "contact_solves": 49,
+              "contact_max_relative_residual": 4.56474800312e-13,
+              "final_mechanical_energy_J": 2.44228797622e-15
+            }
+          },
+          "output_start_frame": 360000,
+          "output_start_seconds": 7.5,
+          "output_frames": 168000
+        }
+      ]
+    }
+  ]
+}

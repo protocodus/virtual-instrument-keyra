@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-10-26T18:19:50.160304+00:00",
+  "frozen_protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-attack-timing/freeze.json",
+    "sha256": "0e962d9c5beebdf4b112fd7941b3601ff8201c95b0f9ea92323712c13591d1ce"
+  },
+  "report": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-attack-timing/report.json",
+    "sha256": "0a6641843ad8d23adbde149f7052e1fd47387008ad56411f8203ccd7c2a55443"
+  },
+  "review_tool": {
+    "path": "/workspace/virtual-instrument-keyra/tools/probe_full_attack_timing_review.py",
+    "sha256": "c2750b1f9e7006d7d2ec8b0e44d3696dfbfbd29656d41e0ba4ab314692024d8e"
+  },
+  "summary": [
+    {
+      "id": "A0v4",
+      "cached": {
+        "real": {
+          "rise_ms": 9.104166666666668,
+          "t10_ms": 11.958333333333332,
+          "t50_ms": 16.895833333333332,
+          "t90_ms": 21.0625,
+          "peak_ms": 21.645833333333332,
+          "first25ms_peak_fraction": 1.0,
+          "first25ms_peak_to90pct_amplitude_db": -0.9151498112135024,
+          "threshold_crossings_ms": {
+            "0.1": 11.958333333333332,
+            "0.5": 16.895833333333332,
+            "0.75": 19.541666666666664,
+            "0.8": 20.041666666666664,
+            "0.85": 20.875,
+            "0.9": 21.0625,
+            "0.95": 21.270833333333332
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            6.645833333333332,
+            10.166666666666666,
+            9.104166666666668,
+            11.916666666666666
+          ],
+          "centroids_250_19000_hz": [
+            646.9435347228699,
+            510.77519590500555,
+            347.8692330981933,
+            463.4781929613479
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": null
+        },
+        "original": {
+          "rise_ms": 19.6875,
+          "t10_ms": 0.0,
+          "t50_ms": 2.8333333333333335,
+          "t90_ms": 19.6875,
+          "peak_ms": 30.604166666666664,
+          "first25ms_peak_fraction": 0.9602802708338888,
+          "first25ms_peak_to90pct_amplitude_db": -0.5631099368390273,
+          "threshold_crossings_ms": {
+            "0.1": 0.0,
+            "0.5": 2.8333333333333335,
+            "0.75": 16.208333333333336,
+            "0.8": 17.020833333333332,
+            "0.85": 17.520833333333332,
+            "0.9": 19.6875,
+            "0.95": 19.958333333333336
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            93.45833333333334,
+            28.520833333333332,
+            19.6875,
+            17.229166666666668
+          ],
+          "centroids_250_19000_hz": [
+            405.86615264089926,
+            726.3005444325046,
+            599.541025701784,
+            654.976013209559
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 14.772071403902734
+        },
+        "analytic": {
+          "rise_ms": 10.270833333333334,
+          "t10_ms": 7.625,
+          "t50_ms": 11.666666666666668,
+          "t90_ms": 17.895833333333332,
+          "peak_ms": 54.29166666666667,
+          "first25ms_peak_fraction": 0.9840713729646292,
+          "first25ms_peak_to90pct_amplitude_db": -0.7756817749743493,
+          "threshold_crossings_ms": {
+            "0.1": 7.625,
+            "0.5": 11.666666666666668,
+            "0.75": 17.1875,
+            "0.8": 17.354166666666668,
+            "0.85": 17.5625,
+            "0.9": 17.895833333333332,
+            "0.95": 19.125
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            10.5625,
+            10.416666666666664,
+            10.270833333333334,
+            11.145833333333334
+          ],
+          "centroids_250_19000_hz": [
+            441.89338183335985,
+            916.487945283374,
+            551.3569262603,
+            522.6554038869409
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 14.067630307786558
+        },
+        "v4": {
+          "rise_ms": 56.166666666666664,
+          "t10_ms": 0.0,
+          "t50_ms": 2.395833333333333,
+          "t90_ms": 56.166666666666664,
+          "peak_ms": 94.5,
+          "first25ms_peak_fraction": 0.8462647135914368,
+          "first25ms_peak_to90pct_amplitude_db": 0.5347255362868679,
+          "threshold_crossings_ms": {
+            "0.1": 0.0,
+            "0.5": 2.395833333333333,
+            "0.75": 19.5625,
+            "0.8": 19.791666666666664,
+            "0.85": 55.95833333333333,
+            "0.9": 56.166666666666664,
+            "0.95": 56.458333333333336
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            20.854166666666668,
+            21.104166666666664,
+            56.166666666666664,
+            53.72916666666667
+          ],
+          "centroids_250_19000_hz": [
+            444.1616302820985,
+            615.5728968435538,
+            411.7094028811742,
+            452.0250073910111
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 7.064922221847083
+        },
+        "confidence": {
+          "rise_ms": 56.166666666666664,
+          "t10_ms": 0.0,
+          "t50_ms": 2.416666666666667,
+          "t90_ms": 56.166666666666664,
+          "peak_ms": 94.5,
+          "first25ms_peak_fraction": 0.8439738717274862,
+          "first25ms_peak_to90pct_amplitude_db": 0.5582701553307897,
+          "threshold_crossings_ms": {
+            "0.1": 0.0,
+            "0.5": 2.416666666666667,
+            "0.75": 19.5625,
+            "0.8": 19.791666666666664,
+            "0.85": 55.97916666666667,
+            "0.9": 56.166666666666664,
+            "0.95": 56.458333333333336
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            20.854166666666668,
+            21.104166666666664,
+            56.166666666666664,
+            53.75
+          ],
+          "centroids_250_19000_hz": [
+            444.1573317692016,
+            615.9391538190154,
+            412.78936629393667,
+            452.8921952257502
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 6.981546838283527
+        }
+      },
+      "short_variants_true_event_axis": [
+        {
+          "variant": "v4",
+          "rise_ms": 56.166666666666664,
+          "detected_onset_ms_after_true_event": -0.7291666666666667,
+          "t50_ms_after_true_event": 1.6666666666666665,
+          "t90_ms_after_true_event": 55.43749999999999,
+          "peak_ms_after_true_event": 93.77083333333333,
+          "peak_force_N": 17.715056032653706,
+          "contact_ms_above_1e_minus4_N": 3.0
+        },
+        {
+          "variant": "hardness-prior",
+          "rise_ms": 56.104166666666664,
+          "detected_onset_ms_after_true_event": -0.75,
+          "t50_ms_after_true_event": 1.3750000000000002,
+          "t90_ms_after_true_event": 55.354166666666664,
+          "peak_ms_after_true_event": 93.75,
+          "peak_force_N": 18.544862513574394,
+          "contact_ms_above_1e_minus4_N": 2.875
+        },
+        {
+          "variant": "analytic-observation",
+          "rise_ms": 10.270833333333334,
+          "detected_onset_ms_after_true_event": 1.5208333333333333,
+          "t50_ms_after_true_event": 13.187500000000002,
+          "t90_ms_after_true_event": 19.416666666666664,
+          "peak_ms_after_true_event": 55.8125,
+          "peak_force_N": 17.715056032653706,
+          "contact_ms_above_1e_minus4_N": 3.0
+        },
+        {
+          "variant": "zero-H-phase-correction",
+          "rise_ms": 56.270833333333336,
+          "detected_onset_ms_after_true_event": -0.6875,
+          "t50_ms_after_true_event": 10.770833333333332,
+          "t90_ms_after_true_event": 55.729166666666664,
+          "peak_ms_after_true_event": 57.8125,
+          "peak_force_N": 17.715056032653706,
+          "contact_ms_above_1e_minus4_N": 3.0
+        },
+        {
+          "variant": "no-sub250-correction",
+          "rise_ms": 56.270833333333336,
+          "detected_onset_ms_after_true_event": -0.7708333333333334,
+          "t50_ms_after_true_event": 12.75,
+          "t90_ms_after_true_event": 55.5,
+          "peak_ms_after_true_event": 93.8125,
+          "peak_force_N": 17.715056032653706,
+          "contact_ms_above_1e_minus4_N": 3.0
+        }
+      ],
+      "v4_5_20ms_coherent_to_incoherent_stem_power_db": -3.1117570934034458
+    },
+    {
+      "id": "A0v12",
+      "cached": {
+        "real": {
+          "rise_ms": 19.041666666666664,
+          "t10_ms": 5.375,
+          "t50_ms": 20.0625,
+          "t90_ms": 24.416666666666668,
+          "peak_ms": 24.979166666666668,
+          "first25ms_peak_fraction": 1.0,
+          "first25ms_peak_to90pct_amplitude_db": -0.9151498112135024,
+          "threshold_crossings_ms": {
+            "0.1": 5.375,
+            "0.5": 20.0625,
+            "0.75": 22.208333333333332,
+            "0.8": 22.916666666666664,
+            "0.85": 24.229166666666668,
+            "0.9": 24.416666666666668,
+            "0.95": 24.625
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            15.875,
+            15.9375,
+            19.041666666666664,
+            18.520833333333332
+          ],
+          "centroids_250_19000_hz": [
+            912.6154151165018,
+            878.7492750109144,
+            477.40383817433525,
+            573.3735060173533
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": null
+        },
+        "original": {
+          "rise_ms": 15.1875,
+          "t10_ms": 0.0,
+          "t50_ms": 3.479166666666667,
+          "t90_ms": 15.1875,
+          "peak_ms": 17.625,
+          "first25ms_peak_fraction": 1.0,
+          "first25ms_peak_to90pct_amplitude_db": -0.9151498112135024,
+          "threshold_crossings_ms": {
+            "0.1": 0.0,
+            "0.5": 3.479166666666667,
+            "0.75": 13.958333333333332,
+            "0.8": 14.333333333333334,
+            "0.85": 15.041666666666666,
+            "0.9": 15.1875,
+            "0.95": 15.708333333333334
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            17.020833333333332,
+            16.1875,
+            15.1875,
+            14.979166666666666
+          ],
+          "centroids_250_19000_hz": [
+            467.1616384841154,
+            1020.7509195209273,
+            768.6211112766053,
+            770.4008494553692
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 12.344216235755622
+        },
+        "analytic": {
+          "rise_ms": 5.687500000000001,
+          "t10_ms": 6.5625,
+          "t50_ms": 9.354166666666666,
+          "t90_ms": 12.25,
+          "peak_ms": 58.333333333333336,
+          "first25ms_peak_fraction": 0.9714074790733738,
+          "first25ms_peak_to90pct_amplitude_db": -0.6631786687282366,
+          "threshold_crossings_ms": {
+            "0.1": 6.5625,
+            "0.5": 9.354166666666666,
+            "0.75": 11.375,
+            "0.8": 11.75,
+            "0.85": 11.895833333333332,
+            "0.9": 12.25,
+            "0.95": 12.604166666666666
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            6.250000000000001,
+            6.208333333333332,
+            5.687500000000001,
+            10.104166666666668
+          ],
+          "centroids_250_19000_hz": [
+            712.2868029681267,
+            1067.8655527429632,
+            821.4545145827475,
+            699.6801581784423
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 11.893255202086577
+        },
+        "v4": {
+          "rise_ms": 56.020833333333336,
+          "t10_ms": 0.0,
+          "t50_ms": 1.7708333333333333,
+          "t90_ms": 56.020833333333336,
+          "peak_ms": 94.45833333333334,
+          "first25ms_peak_fraction": 0.8521844716558155,
+          "first25ms_peak_to90pct_amplitude_db": 0.47417786269318274,
+          "threshold_crossings_ms": {
+            "0.1": 0.0,
+            "0.5": 1.7708333333333333,
+            "0.75": 16.041666666666664,
+            "0.8": 19.5625,
+            "0.85": 20.104166666666664,
+            "0.9": 56.020833333333336,
+            "0.95": 56.25
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            20.8125,
+            21.0,
+            56.020833333333336,
+            17.75
+          ],
+          "centroids_250_19000_hz": [
+            544.371429018515,
+            934.9863758274943,
+            653.1381710258721,
+            621.6310242564547
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 6.207774521213577
+        },
+        "confidence": {
+          "rise_ms": 56.020833333333336,
+          "t10_ms": 0.0,
+          "t50_ms": 1.7916666666666667,
+          "t90_ms": 56.020833333333336,
+          "peak_ms": 94.45833333333334,
+          "first25ms_peak_fraction": 0.8494957838769516,
+          "first25ms_peak_to90pct_amplitude_db": 0.5016256334202,
+          "threshold_crossings_ms": {
+            "0.1": 0.0,
+            "0.5": 1.7916666666666667,
+            "0.75": 16.083333333333336,
+            "0.8": 19.583333333333336,
+            "0.85": 55.83333333333333,
+            "0.9": 56.020833333333336,
+            "0.95": 56.270833333333336
+          },
+          "smoothing_1_2_5_10ms_rise_ms": [
+            20.8125,
+            21.0,
+            56.020833333333336,
+            17.854166666666668
+          ],
+          "centroids_250_19000_hz": [
+            544.3761483749503,
+            938.5731802437048,
+            659.6694325311742,
+            629.2609260156366
+          ],
+          "official_attack_5_100ms_prominent_band_mae_db": 6.138088957635566
+        }
+      },
+      "short_variants_true_event_axis": [
+        {
+          "variant": "v4",
+          "rise_ms": 56.020833333333336,
+          "detected_onset_ms_after_true_event": -0.7916666666666666,
+          "t50_ms_after_true_event": 0.9791666666666666,
+          "t90_ms_after_true_event": 55.229166666666664,
+          "peak_ms_after_true_event": 93.66666666666667,
+          "peak_force_N": 33.516262476871646,
+          "contact_ms_above_1e_minus4_N": 2.75
+        },
+        {
+          "variant": "hardness-prior",
+          "rise_ms": 55.97916666666667,
+          "detected_onset_ms_after_true_event": -0.8125,
+          "t50_ms_after_true_event": 0.8333333333333334,
+          "t90_ms_after_true_event": 55.16666666666667,
+          "peak_ms_after_true_event": 93.625,
+          "peak_force_N": 35.039351820475886,
+          "contact_ms_above_1e_minus4_N": 2.6458333333333335
+        },
+        {
+          "variant": "analytic-observation",
+          "rise_ms": 5.687500000000001,
+          "detected_onset_ms_after_true_event": 1.3958333333333333,
+          "t50_ms_after_true_event": 10.75,
+          "t90_ms_after_true_event": 13.645833333333334,
+          "peak_ms_after_true_event": 59.729166666666664,
+          "peak_force_N": 33.516262476871646,
+          "contact_ms_above_1e_minus4_N": 2.75
+        },
+        {
+          "variant": "zero-H-phase-correction",
+          "rise_ms": 12.583333333333334,
+          "detected_onset_ms_after_true_event": -0.75,
+          "t50_ms_after_true_event": 9.1875,
+          "t90_ms_after_true_event": 11.895833333333332,
+          "peak_ms_after_true_event": 57.729166666666664,
+          "peak_force_N": 33.516262476871646,
+          "contact_ms_above_1e_minus4_N": 2.75
+        },
+        {
+          "variant": "no-sub250-correction",
+          "rise_ms": 22.854166666666664,
+          "detected_onset_ms_after_true_event": -0.8333333333333334,
+          "t50_ms_after_true_event": 0.8958333333333333,
+          "t90_ms_after_true_event": 22.020833333333332,
+          "peak_ms_after_true_event": 93.6875,
+          "peak_force_N": 33.516262476871646,
+          "contact_ms_above_1e_minus4_N": 2.75
+        }
+      ],
+      "v4_5_20ms_coherent_to_incoherent_stem_power_db": -2.7127176114679523
+    }
+  ],
+  "mechanical_checks": [
+    {
+      "id": "A0v4",
+      "variant": "v4",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v12",
+      "variant": "v4",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v4",
+      "variant": "hardness-prior",
+      "complete_force_hammer_trace_exact_to_v4": false,
+      "sampled_mechanical_checksums_exact_to_v4": false
+    },
+    {
+      "id": "A0v12",
+      "variant": "hardness-prior",
+      "complete_force_hammer_trace_exact_to_v4": false,
+      "sampled_mechanical_checksums_exact_to_v4": false
+    },
+    {
+      "id": "A0v4",
+      "variant": "analytic-observation",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v12",
+      "variant": "analytic-observation",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v4",
+      "variant": "zero-H-phase-correction",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v12",
+      "variant": "zero-H-phase-correction",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v4",
+      "variant": "no-sub250-correction",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    },
+    {
+      "id": "A0v12",
+      "variant": "no-sub250-correction",
+      "complete_force_hammer_trace_exact_to_v4": true,
+      "sampled_mechanical_checksums_exact_to_v4": true
+    }
+  ],
+  "verification": {
+    "frozen_input_count": 163,
+    "completed_short_renders": 10,
+    "total_new_audio_seconds": 3.5,
+    "cached_v4_and_analytic_prefix_parity_passed": true,
+    "existing_controlled_pair_physics_exact": true,
+    "plots": [
+      {
+        "path": "/workspace/virtual-instrument-keyra/Validation/full-attack-timing.svg",
+        "sha256": "5adb5c7fff853d65e280808e70c41fcdfcfbb0b701a36eb9e1c97e8bdfadd940"
+      },
+      {
+        "path": "/workspace/virtual-instrument-keyra/Validation/full-attack-timing.png",
+        "sha256": "468d33571a7fc4834e813e0f96cb203917a6c43c28acb1351a5b8ff471548790"
+      }
+    ]
+  },
+  "interpretation": [
+    "The large5ms-envelope t90 change is output-shape/relative-peak weighting, not a56ms hammer-contact delay.",
+    "Restoring hardness has negligible t90 effect. Phase-only or sub250Hz removal is not a consistent remedy across both layers.",
+    "At fixed early-RMS gain,V4 initial0\u20135ms pressure remains excessive relative to the edited recording despite better later spectral agreement.",
+    "The controlled observation pair preserves force/contact/mechanics. The broader original-to-V4 comparison also changes other physical calibration fields.",
+    "Keep official onset/rise measurements unchanged; retain threshold/smoothing sensitivity only as diagnosis,not a replacement score."
+  ],
+  "clarifications": {
+    "state_checksum": "The driver uses the FNV-1a recurrence with a nonstandard offset basis1469598103934665603. Its fnv1a64 field is a sampled state checksum,not standard FNV-1a,not a collision-proof full-state comparison. It covers modalq/p and hammerx/v/active at5frames; complete force/hammer traces and source-only observation changes provide separate evidence.",
+    "band_mask": "The diagnostic texture.reference_prominent_mask uses each windowband power divided by sum of that windowbands. It differs from official fitter masks normalized by early RMS. No masked aggregate from that diagnostic mask is used as officialattackerror; above summaries reuse frozen score masks.",
+    "short_onset_roi": "Short ablations use the detector maximum over available0.35s instead of up to1.5s. Baseline and analytic detected onsets match the full-render onsets exactly. Every ablation has additional timings relative to the known100ms event; no real-recording MIDI event is known.",
+    "contact_geometry": "Immediate modeled force reflects the frozen original near-string launch shortcut. It is not a measured finger-to-hammer latency.",
+    "reference_conditions": "Unknown acoustic/action onset,editing,room,pedal and physical hammer speed constrain interpretation of first0\u20135ms ratios. No real waveform is supplied to synthesis."
+  },
+  "historical_audio_or_feature_access": false,
+  "numeric_fit": false,
+  "default_promoted": false,
+  "review_scope": "Completing-agent numerical/provenance review with a separate read-only agent audit; not an acoustic listening verdict."
+}

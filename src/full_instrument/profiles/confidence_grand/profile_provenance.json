@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "profile_name": "FrozenConfidenceGrand",
+  "build_selector": 1,
+  "default_profile": false,
+  "profile_sha256": "3cdd77c04d5507ff6c20e150bb8503c7accf21486c3bbead590f63dbb99fd90e",
+  "header_sha256": "fdeee2144dc45bd7b56078c146a6444710c038b62610e9be156adbc321908b63",
+  "canonical_renderer_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+  "canonical_control_calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "adapted_double_renderer_sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba",
+  "frozen_hot_float_renderer_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+  "source_builder": {
+    "path": "tools/fit_full_calibration.py",
+    "function": "build_candidate",
+    "function_text_sha256": "8adccc4f229fcf2a247435f1ac054615c05427bddb01a3aa07828c0865ffc2d6",
+    "exact_replacement_sites": 5
+  },
+  "header_builder": {
+    "path": "tools/fit_full_calibration.py",
+    "function": "generate_header",
+    "function_text_sha256": "b0febd24607b8d7ac8a4d028f9e8a6bc73155813eae430c806dfb287d2421856"
+  },
+  "anchor_midis": [
+    21,
+    24,
+    33,
+    36,
+    39,
+    45,
+    48,
+    51,
+    60,
+    63,
+    69,
+    72,
+    75,
+    81,
+    84,
+    96,
+    108
+  ],
+  "topology": {
+    "strings": 230,
+    "string_modes": 17849,
+    "board_modes": 475
+  },
+  "selection": {
+    "scope": "All locked TRAIN34 used for fitting and confidence-rule design; not independent confirmation.",
+    "training_features": {
+      "path": "References/GrandFullRange/combined_train_features.json",
+      "sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7"
+    },
+    "split": {
+      "path": "References/GrandFullRange/split.json",
+      "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428"
+    },
+    "candidate_freeze": {
+      "historical_path": "out/full-confidence-loss/candidate-freeze.json",
+      "sha256": "ee4cf1d05af436cf6b3601be3b84cb358cc62449417b16f57fa7238b2070cffe"
+    },
+    "training_result": {
+      "path": "Validation/full-confidence-loss.json",
+      "sha256": "b123ceede48d60905a4fc308651e9805a12504aa88ac68d5e53b52a3e90148c8"
+    },
+    "historical_regression": {
+      "path": "Validation/full-confidence-loss-historical.json",
+      "sha256": "0c27a5939f9b8b6c60ff2e6392e23b6afd874411c7d204d1bf2421b75ceec4e8",
+      "used_for_numeric_fit": false,
+      "fresh": false
+    },
+    "attack_diagnostic": {
+      "path": "Validation/full-attack-timing.json",
+      "sha256": "0a6641843ad8d23adbde149f7052e1fd47387008ad56411f8203ccd7c2a55443",
+      "numeric_fit": false
+    },
+    "profile_import": "Exact frozen JSON/header bytes; historical absolute paths in JSON are metadata, never generation/runtime dependencies.",
+    "new_fit_acquisition_or_reference_decode": false
+  },
+  "limits": [
+    "Opt-in engineering build profile, not a default calibration promotion or listening approval.",
+    "A0 relative-rise regression, C2 envelope regression and unresolved C8 component remain.",
+    "No new instrument/microphone generalization, realtime or Reason SDK/host qualification."
+  ],
+  "recording_attribution": {
+    "name": "Salamander Grand Piano V3",
+    "author": "Alexander Holm",
+    "license": "CC BY 3.0 Unported",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "pinned_source": "https://github.com/sfzinstruments/SalamanderGrandPiano/tree/3382bf9496bba2486f5ab0de55a264d1dfc38404",
+    "data_use": "Recorded audio measured during fitting; no recorded waveform/IR enters synthesis."
+  }
+}

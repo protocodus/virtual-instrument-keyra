@@ -1,3 +1,12 @@
-# Preserve the frozen study and upstream reference metadata byte for byte,
-# including original CRLF CSV/SFZ files and historical whitespace.
-Research/GrandPianoV2/** -text -whitespace
+# Keep generated numeric/source hashes reproducible on Windows and Unix.
+* text=auto eol=lf
+*.flac -text
+*.mp3 -text
+*.png -text
+*.ttf -text
+*.svg -text -whitespace
+# Upstream reference metadata and frozen figures retain their original bytes.
+Research/** -text -whitespace
+References/**/upstream/** -text -whitespace
+third_party/** -text -whitespace
+src/full_reference/** -text -whitespace

@@ -1,0 +1,731 @@
+{
+  "scope": "Coherent raw float output sensitivity to prospective pedal condition; no alignment, RMS normalization or resampling.",
+  "source_analysis": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/analyze_pressure_delta.py",
+    "sha256": "a6301e58e8e7f9c4181b00a05a6676f94cff6278109838a5ae32980e7d84c55f"
+  },
+  "pedal_report": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/report.json",
+    "sha256": "3232b92058b3b5609d3c7c68394d97a0f7401da0088c309b387bdd94e4a3cf67"
+  },
+  "conditions": [
+    {
+      "pedal_position": 0.5,
+      "cases": [
+        {
+          "id": "A0v4",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v4.wav",
+            "sha256": "6eaefee208272eb5e4b2339f598d59e49119b0d3ff8fc4de804688702bb57f48"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/A0v4.wav",
+            "sha256": "937aee0c5d38e1b7343c710536b88b4958af0208623d99f5f277f3d550e003d7"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -77.98431038534785,
+              "maximum_absolute_difference": 5.1349401473999023e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -80.07665691251317,
+              "maximum_absolute_difference": 5.003809928894043e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -76.7119684436348,
+              "maximum_absolute_difference": 5.1349401473999023e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -77.6356888122029,
+              "maximum_absolute_difference": 3.3661723136901855e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -79.0548320223241,
+              "maximum_absolute_difference": 1.7859041690826416e-05
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 0.000291016107413,
+            "condition": 0.000291016290658,
+            "condition_minus_zero": 1.832450000115518e-10
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "A0v12",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v12.wav",
+            "sha256": "8f809b0e3b849e910eb93f3081afae99193ffc4aa42b12dcb703082577ba51c9"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/A0v12.wav",
+            "sha256": "d225aaba236df7027c7c0a5bc849c3b69b9135460a929b713810cd6b6a9a8385"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -77.86193949337884,
+              "maximum_absolute_difference": 8.881092071533203e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -79.884554512873,
+              "maximum_absolute_difference": 8.654594421386719e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -76.63504742110631,
+              "maximum_absolute_difference": 8.881092071533203e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -77.44755060658517,
+              "maximum_absolute_difference": 5.796551704406738e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -78.87477717734511,
+              "maximum_absolute_difference": 3.2782554626464844e-05
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 0.000801282217669,
+            "condition": 0.000801277911239,
+            "condition_minus_zero": -4.306429999927086e-09
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "C4v4",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v4.wav",
+            "sha256": "36ee41139c7460dabea8031a503fab67e857684d93726dc68d0470972eda572b"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/C4v4.wav",
+            "sha256": "d16e7e2fe514926907f970e86ce26a2b2a877edf7dbe06f397537adb15bf87cd"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -87.46454877259593,
+              "maximum_absolute_difference": 2.0189210772514343e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -89.30334758551541,
+              "maximum_absolute_difference": 2.0189210772514343e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -84.33745087186841,
+              "maximum_absolute_difference": 1.3634562492370605e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -83.98852311557764,
+              "maximum_absolute_difference": 2.7865171432495117e-06
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -82.34821124434964,
+              "maximum_absolute_difference": 1.3671815395355225e-06
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 1.61743975226e-05,
+            "condition": 1.61745738104e-05,
+            "condition_minus_zero": 1.7628780000109533e-10
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "C4v12",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v12.wav",
+            "sha256": "4f3b2b446eb511cdcaa1e59502662837421f15a7b14766f8809b15f6a3bc8dee"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/C4v12.wav",
+            "sha256": "b70adf70e3b15d828c1fb9b060cd9127164daf9094eaf6ed6a01520192c43479"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -85.72779634105375,
+              "maximum_absolute_difference": 5.62518835067749e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -87.39472385452595,
+              "maximum_absolute_difference": 5.62518835067749e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -82.70988069493157,
+              "maximum_absolute_difference": 3.6405399441719055e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -83.12704093589707,
+              "maximum_absolute_difference": 6.7427754402160645e-06
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -81.1240052377614,
+              "maximum_absolute_difference": 4.338100552558899e-06
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 6.86644524396e-05,
+            "condition": 6.86643797534e-05,
+            "condition_minus_zero": -7.268620000864829e-11
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "D#4v4",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#4v4.wav",
+            "sha256": "d31d708f0bfad81a0667a0101915b57de6be252d901a5364ac00b9ef87f36da4"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/D#4v4.wav",
+            "sha256": "b1ae1ddbde875ab75434e64d3ec19a76615ff1f09ecf958d4c018c63b4699303"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -80.75529031966113,
+              "maximum_absolute_difference": 2.999231219291687e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -82.25023909518836,
+              "maximum_absolute_difference": 2.999231219291687e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -78.33991982991145,
+              "maximum_absolute_difference": 2.47955322265625e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -80.19445771841076,
+              "maximum_absolute_difference": 4.289671778678894e-06
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -74.53946568965831,
+              "maximum_absolute_difference": 2.284068614244461e-06
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 1.1171948385e-06,
+            "condition": 1.11719979559e-06,
+            "condition_minus_zero": 4.957090000091418e-12
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "D#4v12",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#4v12.wav",
+            "sha256": "25b0fee1a84c760d3ac5c1efa4853bb0298c55c906b86fedda8fc5fd218d5f8c"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/D#4v12.wav",
+            "sha256": "bf1a6d9b0f59e5c42e2587e8bbc983e45f665e21ea96fa3d567287a8f4e77de5"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -79.21792026228,
+              "maximum_absolute_difference": 7.797777652740479e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -80.7123233098318,
+              "maximum_absolute_difference": 7.797777652740479e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -76.54797736677449,
+              "maximum_absolute_difference": 6.303191184997559e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -79.10289043945944,
+              "maximum_absolute_difference": 9.171664714813232e-06
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -73.34043798272383,
+              "maximum_absolute_difference": 5.595386028289795e-06
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 4.33421976644e-06,
+            "condition": 4.33421045615e-06,
+            "condition_minus_zero": -9.310289999619591e-12
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        }
+      ]
+    },
+    {
+      "pedal_position": 1.0,
+      "cases": [
+        {
+          "id": "A0v4",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v4.wav",
+            "sha256": "6eaefee208272eb5e4b2339f598d59e49119b0d3ff8fc4de804688702bb57f48"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/A0v4.wav",
+            "sha256": "56e94c992809e8508e8495c274a6f506e432400fa59fb9912562aa9f5e4f2d0f"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -69.67381347600056,
+              "maximum_absolute_difference": 0.00012741237878799438
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -75.34457431996513,
+              "maximum_absolute_difference": 9.834766387939453e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -69.5002142031632,
+              "maximum_absolute_difference": 0.00012741237878799438
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -68.9125772910096,
+              "maximum_absolute_difference": 8.117780089378357e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -67.37600412909686,
+              "maximum_absolute_difference": 6.833299994468689e-05
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 0.000291016107413,
+            "condition": 0.000291013122594,
+            "condition_minus_zero": -2.984818999981261e-09
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "A0v12",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v12.wav",
+            "sha256": "8f809b0e3b849e910eb93f3081afae99193ffc4aa42b12dcb703082577ba51c9"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/A0v12.wav",
+            "sha256": "2ae30e1b31b5fc3679fc3a1667d05f7048d86a3db30b0877fa1d0240f49d39e0"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -69.25468882215765,
+              "maximum_absolute_difference": 0.00022360682487487793
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -75.15770320932366,
+              "maximum_absolute_difference": 0.00017240643501281738
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -69.20235624472633,
+              "maximum_absolute_difference": 0.00022360682487487793
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -68.21034036024862,
+              "maximum_absolute_difference": 0.00014970824122428894
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -66.77395774545926,
+              "maximum_absolute_difference": 0.00012106075882911682
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 0.000801282217669,
+            "condition": 0.000801288904906,
+            "condition_minus_zero": 6.6872370000411324e-09
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "C4v4",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v4.wav",
+            "sha256": "36ee41139c7460dabea8031a503fab67e857684d93726dc68d0470972eda572b"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/C4v4.wav",
+            "sha256": "d82ec182a861a72b935ba10954a6e251d9d519b063976cf89c75891233076214"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -76.07661850228405,
+              "maximum_absolute_difference": 4.938244819641113e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -82.78383250819273,
+              "maximum_absolute_difference": 4.5085325837135315e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -72.27986192440514,
+              "maximum_absolute_difference": 4.938244819641113e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -62.68526848532426,
+              "maximum_absolute_difference": 2.7753878384828568e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -64.53072847247094,
+              "maximum_absolute_difference": 9.797513484954834e-06
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 1.61743975226e-05,
+            "condition": 1.61743503786e-05,
+            "condition_minus_zero": -4.714400000076094e-11
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "C4v12",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v12.wav",
+            "sha256": "4f3b2b446eb511cdcaa1e59502662837421f15a7b14766f8809b15f6a3bc8dee"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/C4v12.wav",
+            "sha256": "d1826685937acc8827f410259b655f5b534208afb320ab550c4fd59af8518d44"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -74.86909124627068,
+              "maximum_absolute_difference": 0.00012605264782905579
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -80.8834400869672,
+              "maximum_absolute_difference": 0.00012605264782905579
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -70.70822535920415,
+              "maximum_absolute_difference": 0.0001207590103149414
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -63.52398907008784,
+              "maximum_absolute_difference": 7.03670084476471e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -65.09195003405668,
+              "maximum_absolute_difference": 2.2288411855697632e-05
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 6.86644524396e-05,
+            "condition": 6.86645358646e-05,
+            "condition_minus_zero": 8.342499999462131e-11
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "D#4v4",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#4v4.wav",
+            "sha256": "d31d708f0bfad81a0667a0101915b57de6be252d901a5364ac00b9ef87f36da4"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/D#4v4.wav",
+            "sha256": "44771c5d4d78bc35e513bd1fb83b284996693ddfdf4250e42e164e54c424075c"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -69.96490362471275,
+              "maximum_absolute_difference": 8.088350296020508e-05
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -75.4585843133995,
+              "maximum_absolute_difference": 7.419288158416748e-05
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -66.53353209258374,
+              "maximum_absolute_difference": 8.088350296020508e-05
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -60.863288378274234,
+              "maximum_absolute_difference": 3.3610500395298004e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -56.92818871222209,
+              "maximum_absolute_difference": 1.49519182741642e-05
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 1.1171948385e-06,
+            "condition": 1.11721112623e-06,
+            "condition_minus_zero": 1.628772999999356e-11
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        },
+        {
+          "id": "D#4v12",
+          "baseline_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#4v12.wav",
+            "sha256": "25b0fee1a84c760d3ac5c1efa4853bb0298c55c906b86fedda8fc5fd218d5f8c"
+          },
+          "condition_audio": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/D#4v12.wav",
+            "sha256": "1d71d65959d49a5f54b15a0c8d4fa00f08853f7b00444dda456960bb5aac3be7"
+          },
+          "windows": [
+            {
+              "absolute_seconds": [
+                0.0,
+                3.8
+              ],
+              "null_rms_db_relative": -68.56646903957846,
+              "maximum_absolute_difference": 0.00020590424537658691
+            },
+            {
+              "absolute_seconds": [
+                0.1,
+                0.35
+              ],
+              "null_rms_db_relative": -73.86764900942124,
+              "maximum_absolute_difference": 0.00018545985221862793
+            },
+            {
+              "absolute_seconds": [
+                0.35,
+                0.85
+              ],
+              "null_rms_db_relative": -64.60003049054474,
+              "maximum_absolute_difference": 0.00020590424537658691
+            },
+            {
+              "absolute_seconds": [
+                0.85,
+                1.6
+              ],
+              "null_rms_db_relative": -60.18630370218101,
+              "maximum_absolute_difference": 7.693096995353699e-05
+            },
+            {
+              "absolute_seconds": [
+                1.6,
+                3.6
+              ],
+              "null_rms_db_relative": -56.54488844656565,
+              "maximum_absolute_difference": 3.886222839355469e-05
+            }
+          ],
+          "final_mechanical_energy_J": {
+            "pedal_zero": 4.33421976644e-06,
+            "condition": 4.33424255145e-06,
+            "condition_minus_zero": 2.2785010000031828e-11
+          },
+          "limits": "Final energy includes the whole original network; it is not an isolated sympathetic energy or a perceptual measure."
+        }
+      ]
+    }
+  ]
+}

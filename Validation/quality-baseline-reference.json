@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "command": [
+    "/workspace/virtual-instrument-keyra/build/keyra_reference",
+    "--events",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/passage.events",
+    "--output",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/original-192k.wav",
+    "--sample-rate",
+    "192000",
+    "--duration",
+    "9",
+    "--metrics",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/original-192k.json"
+  ],
+  "receipt_method": "Assembled after the successful recorded synthesis command; preserved source import, current input identities, sidecar and raw WAV checked in the same session. Future cached exports verify all hashes.",
+  "sha256": {
+    "Research/GrandPianoV2/src/grand.cpp": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+    "Research/GrandPianoV2/src/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "out/quality-baseline/passage.events": "2f2cfb1a4d6b99a5796c0aec2b30412552f32b8fafd797c379e841b56f708ca5",
+    "out/quality-baseline/original-192k.wav": "7246e786c99eaba719fce4052d4d7700dccf926178d9d906b9baac5aa0fe139d",
+    "out/quality-baseline/original-192k.json": "339ae9c4d2f99e0144f64ab3a31f144741aa7e9f81a6bc9c6576d869024e0512",
+    "out/quality-baseline/original-renderer-snapshot": "5c1cdf2792c706abec642abd71303b43d32b9edafc4b1b97d29a27a77591bc98"
+  },
+  "binary_path": "out/quality-baseline/original-renderer-snapshot",
+  "binary_note": "Snapshot of the binary used for the recorded render; current build targets may subsequently change."
+}

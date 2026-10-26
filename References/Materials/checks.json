@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "actual_header_probe": {
+    "failures": 0,
+    "woods": [
+      [
+        392,
+        11500000000,
+        470000000,
+        500000000,
+        0.3
+      ],
+      [
+        440,
+        15800000000,
+        850000000,
+        840000000,
+        0.3
+      ]
+    ],
+    "key_densities": [
+      448.00000000000006,
+      414.40000000000003
+    ]
+  },
+  "source_ids_resolved": [
+    "AST44_2023_T1",
+    "BE2013_T1",
+    "CDA_C11000",
+    "NPL_DRY_AIR",
+    "ROHM_PMMA_GS",
+    "UNIDENTIFIED_LID",
+    "UNIDENTIFIED_PLAYER",
+    "USDA2010_T5_3",
+    "YAMAHA_ACTION",
+    "YAMAHA_WOODS"
+  ],
+  "header_sha256": "8287098e8f8f97903e5816df9dba78fe56511d45f23cc8a4c0bdd637705ab371",
+  "sources_sha256": "b8fe2b6b14f9677c5d6a09682662b1c4dd784cd1354dd26a0a169afe185d2e14",
+  "checks": [
+    "Actual C++ header/source data agree",
+    "Positive elastic energy for both soundboards",
+    "Plate thickness has cubic stiffness and linear mass scaling",
+    "Invalid geometry rejected",
+    "Moisture-specific gravity converted to current bulk density",
+    "Winding adds mass without pretending copper is the steel core bending stiffness"
+  ],
+  "limits": "Constitutive/source checks only. No acoustic measurement or assembled instrument/contact identification."
+}

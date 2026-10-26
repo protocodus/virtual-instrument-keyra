@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-10-26T18:03:24.746382+00:00",
+  "training_result": {
+    "path": "/workspace/virtual-instrument-keyra/Validation/full-confidence-loss.json",
+    "sha256": "b123ceede48d60905a4fc308651e9805a12504aa88ac68d5e53b52a3e90148c8"
+  },
+  "historical_result": {
+    "path": "/workspace/virtual-instrument-keyra/Validation/full-confidence-loss-historical.json",
+    "sha256": "0c27a5939f9b8b6c60ff2e6392e23b6afd874411c7d204d1bf2421b75ceec4e8"
+  },
+  "candidate_freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-confidence-loss/candidate-freeze.json",
+    "sha256": "ee4cf1d05af436cf6b3601be3b84cb358cc62449417b16f57fa7238b2070cffe"
+  },
+  "historical_freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-confidence-loss/historical/freeze.json",
+    "sha256": "9ff4a991553d97e57ca047eb1dccfe8c958b19790c64a4ca9a2f1a351c48e7ab"
+  },
+  "recovery_receipt": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-confidence-loss/historical/recovery-runner.json",
+    "sha256": "91697e03bae91e217895441fda11adeb7e0b290d701d15588e87af6c911346ff"
+  },
+  "tools": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/probe_full_confidence_loss.py",
+      "sha256": "fb4f2881d0903b777b582d78c384e687c82bdd25b359ac3ed1db3170a0d3915c"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/evaluate_full_confidence_loss.py",
+      "sha256": "be708cbbdb5b2edfaa0d7ea6fcdb318f0e4c1255c55181f6e00dadf56886a67e"
+    }
+  ],
+  "checks": {
+    "all_training_support_mask_recomputed_exact": true,
+    "supported_anchor_midis": [
+      21,
+      24,
+      33,
+      36,
+      39,
+      45,
+      48,
+      51,
+      60,
+      63,
+      69,
+      72,
+      75,
+      81,
+      84
+    ],
+    "prior_anchor_midis": [
+      96,
+      108
+    ],
+    "unsupported_prompt_arrays_bit_identical_as_json_numbers": true,
+    "all_other_physical_key_fields_exact": true,
+    "supported_prompt_formula_exact": true,
+    "late_positive_and_prompt_not_below_late": true,
+    "candidate_header_reproduces_exact": true,
+    "preserved_pre_recovery_prediction_sidecars": 11,
+    "six_event_chronology_monotone": true,
+    "chronology_utc": [
+      "2026-10-26T17:46:57.019237+00:00",
+      "2026-10-26T17:49:23.911196+00:00",
+      "2026-10-26T17:59:03.002823+00:00",
+      "2026-10-26T18:00:00.980952+00:00",
+      "2026-10-26T18:00:08.082581+00:00",
+      "2026-10-26T18:00:15.277574+00:00"
+    ],
+    "all_16_historical_predictions_and_measurements_complete": true,
+    "frozen_input_output_guard_count": 129,
+    "canonical_calibration_unchanged": {
+      "path": "/workspace/virtual-instrument-keyra/src/full_reference/calibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+    },
+    "research_diff_clean": true
+  },
+  "scope": "Numerical/data-provenance audit by the completing agent; not an independent acoustic/perceptual review.",
+  "historical_data_used_for_numeric_fit": false,
+  "fresh_validation": false,
+  "default_promoted": false,
+  "decision": "Ready for matched listening with every historical regression retained; no canonical change.",
+  "matched_listening": {
+    "manifest": {
+      "path": "/workspace/virtual-instrument-keyra/Audio/full-confidence-loss/manifest.json",
+      "sha256": "d60a48c31fa0f61ee5a504e7e5fb9c378dcfecab251e886cb3227716a299b350"
+    },
+    "input_count": 157,
+    "files": 5,
+    "sections_per_file": 4,
+    "format": "PCM24 FLAC48kHz stereo",
+    "lossless_conversion_verified": true,
+    "maximum_float_to_pcm24_error": 1.1897554941242561e-07,
+    "exporter": {
+      "path": "/workspace/virtual-instrument-keyra/tools/export_full_confidence_listening.py",
+      "sha256": "200709f1caf795d19b697e0741daddc7bafac40896705a4f4fe017a218bc57a7"
+    },
+    "readme": {
+      "path": "/workspace/virtual-instrument-keyra/Audio/full-confidence-loss/README.md",
+      "sha256": "0a6cdd34904f47f34ccc6f333804c7327524b6e6a172e9ef7084c3052b9de1a6"
+    },
+    "no_new_synthesis_fitting_or_acquisition": true
+  },
+  "documentation": {
+    "path": "/workspace/virtual-instrument-keyra/docs/FULL_CONFIDENCE_LOSS.md",
+    "sha256": "360fb4847877355f9a409a26c66aeaf6d42cfe7a7dd4eb7ceea4e04831707baa"
+  }
+}

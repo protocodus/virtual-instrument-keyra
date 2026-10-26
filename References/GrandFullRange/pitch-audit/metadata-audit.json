@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "scope": "Metadata-only C8 source/tuning audit. No recording decoded or measured; no training features modified.",
+  "source_repository": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+  "source_ref": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "git_tree_url": "https://api.github.com/repos/sfzinstruments/SalamanderGrandPiano/git/trees/3382bf9496bba2486f5ab0de55a264d1dfc38404?recursive=1",
+  "resolved_tree_sha": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "audit_date": "2026-10-26",
+  "tuning_tables": [
+    {
+      "local_file": "tune_nat.txt",
+      "source_path": "Data/tune_nat.txt",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Data/tune_nat.txt",
+      "git_blob_sha1": "0d575c74ab95e92711d4f63a957927945f95955a",
+      "sha256": "85d40bf0956baceb99ec739b5270ea2d5957b73845e397a5d99ab10a08297337",
+      "bytes": 539,
+      "TUNE30_cents": 0,
+      "TUNE29_cents": 0
+    },
+    {
+      "local_file": "tune_ret.txt",
+      "source_path": "Data/tune_ret.txt",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Data/tune_ret.txt",
+      "git_blob_sha1": "f6baa326885ce48b9caa3eac79974064aa2dc127",
+      "sha256": "e19f23ad8e94dee71a4deda6b1f8aef85e8f79720a9dbcd165b189cbae8b9d50",
+      "bytes": 576,
+      "TUNE30_cents": -38,
+      "TUNE29_cents": -38
+    }
+  ],
+  "region_mapping": {
+    "source_path": "Data/region.txt",
+    "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Data/region.txt",
+    "git_blob_sha1": "197f15047820af6978b955d5fadf08b197bb7ad1",
+    "sha256": "f6341fe2e2a5417f4e7f3499a7dfdf0a4327a58bd6f12201d63d63ed7d557193",
+    "region_line": "<region> region_label=30 tune=$TUNE30 offset_oncc$OFFSET=$OFF30 ampeg_release=4 lokey=107 hikey=108 pitch_keycenter=108 sample=C8$VEL.$EXT",
+    "scientific_note_label": "C8",
+    "pitch_keycenter_midi": 108,
+    "lokey_midi": 107,
+    "hikey_midi": 108,
+    "sample_template": "C8$VEL.$EXT",
+    "extension": "flac",
+    "tune_reference": "$TUNE30",
+    "natural_tune_cents": 0,
+    "retuned_tune_cents": -38
+  },
+  "sfz_master_mapping": {
+    "source_path": "Salamander Grand Piano V3.sfz",
+    "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Salamander%20Grand%20Piano%20V3.sfz",
+    "git_blob_sha1": "1e657bf0b5410f8a138941b45810a07272fb9265",
+    "sha256": "c8b282f03fdb2d9e6be24a99df0d97a05e7ece718d1a14e0b882c518161f7837",
+    "default_selection": "Natural",
+    "natural_includes": "Data/tune_nat.txt",
+    "retuned_includes": "Data/tune_ret.txt",
+    "key_or_octave_transposition_found_for_C8": false
+  },
+  "c8_upstream_blob_inventory": [
+    {
+      "source_path": "Samples/C8v4.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C8v4.flac",
+      "git_blob_sha1": "5a322f58cd9cbba1463b680b1801ea75bda0c5a7",
+      "bytes": 306364,
+      "recording_bytes_read_for_identity_only": true,
+      "recording_decoded_or_measured_by_this_audit": false
+    },
+    {
+      "source_path": "Samples/C8v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C8v8.flac",
+      "git_blob_sha1": "48ebffd513821de09968fb36560d3d0a384b689c",
+      "bytes": 428472,
+      "recording_bytes_read_for_identity_only": false,
+      "recording_decoded_or_measured_by_this_audit": false
+    },
+    {
+      "source_path": "Samples/C8v12.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C8v12.flac",
+      "git_blob_sha1": "d40f996dd63c232d9aa5a3c684d330f4c8bc0508",
+      "bytes": 401592,
+      "recording_bytes_read_for_identity_only": true,
+      "recording_decoded_or_measured_by_this_audit": false
+    }
+  ],
+  "frequency_ambiguity": {
+    "weak_f1_candidate_hz_approx": 4276.7,
+    "dominant_peak_hz_approx": 4434,
+    "observation_provenance": "Approximate TRAIN4/12 observations reported by parent. This metadata audit did not extract audio features.",
+    "equal_tempered_C8_hz": 4186.009044809578,
+    "metadata_does_not_resolve": [
+      "Whether the weak4276Hz candidate is the physical fundamental",
+      "Whether the dominant4434Hz peak is the physical fundamental or another component",
+      "Whether the source has unusual stretching, recording/library mapping error, or another explanation"
+    ],
+    "interpretation": "The explicit retuned correction is -38cents, not an approximately -100cent correction. A root108/sampleC8 declaration establishes playback mapping, not acoustic identity. Do not use this table alone to select either peak or infer inharmonicity.",
+    "parent_analysis_policy": "Retain the weak in-prior f1 candidate with explicit ambiguity and dominant peak reported separately; mark B unidentifiable rather than accepting the constrained three-peak fit."
+  },
+  "fresh_evaluation_policy": {
+    "C8v8_audio_fetched_by_this_audit": false,
+    "C8v8_audio_opened_by_this_audit": false,
+    "A0v8_audio_opened_by_this_audit": false,
+    "fresh_file_inventory_reads": "Git-tree metadata only."
+  },
+  "limitations": [
+    "SFZ retuning is a playback instruction, not an independent acoustic measurement.",
+    "Upstream metadata inspected here does not explain the reported4434-vs4276Hz relationship.",
+    "The natural raw corpus applies no SFZ retuning, offset or sampler layer mixture.",
+    "Audit records source declarations and ambiguity; it does not validate the parent frequency observations."
+  ],
+  "metadata_only_identity_checks": "Earlier audit stages checked the local TRAIN4/12 FLAC Git-blob bytes and parsed Vorbis metadata (empty comments, reference libFLAC1.1.4); no decoded audio analysis. C8v8 was inspected only as a Git-tree inventory entry."
+}

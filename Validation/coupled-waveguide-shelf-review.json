@@ -1,0 +1,167 @@
+{
+  "schema": "keyra.waveguide-support-review.v1",
+  "created_utc": "2026-10-26T18:01:49.314642+00:00",
+  "scope": "Optional DC-preserving passive shelf and read-only incoming-port query; bounded 48kHz research string, not a piano backend or realism equivalence result.",
+  "header_changed_by_review": false,
+  "algebra": {
+    "filter": "sNew=p*sOld+(1-p)*x; y=g*x+(1-g)*sNew",
+    "allowed": "0<=p<1, 0<=g<=1",
+    "storage": "S=(1-g)*p/(1-p)*s*s",
+    "dissipation": "D=(1-g)*p*(x-sOld)^2+g*(1-g)*(x-sNew)^2",
+    "identity": "x*x-y*y=Snew-Sold+D",
+    "transfer": "H(z)=g+(1-g)*(1-p)/(1-p*z^-1)",
+    "dc": "H(1)=1; the independent two-tap FIR and orthogonal allpass paths also have unit DC gain."
+  },
+  "tests": {
+    "native": {
+      "exit_code": 0,
+      "command": [
+        "g++",
+        "-std=c++17",
+        "-O3",
+        "-DNDEBUG",
+        "-ffp-contract=off",
+        "-Iinclude",
+        "tests/waveguide_string_tests.cpp",
+        "-o",
+        "out/coupled-waveguide/waveguide-support/shelf-tests"
+      ]
+    },
+    "address_undefined_sanitizer": {
+      "exit_code": 0,
+      "command": [
+        "g++",
+        "-std=c++17",
+        "-O1",
+        "-g",
+        "-ffp-contract=off",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-Iinclude",
+        "tests/waveguide_string_tests.cpp",
+        "-o",
+        "out/coupled-waveguide/waveguide-support/shelf-tests-asan"
+      ],
+      "runtime_environment": {
+        "ASAN_OPTIONS": "detect_leaks=1"
+      }
+    },
+    "random_shelf_ports": {
+      "cases": 36,
+      "frames_per_case": 12000,
+      "poles": [
+        0,
+        0.1,
+        0.97,
+        0.9997
+      ],
+      "gains": "0,1,and randomized interior values",
+      "allpass_and_fir": "randomized independent contact and reciprocal bridge paths",
+      "maximum_energy_balance_residual_J": 2.02615701994e-15,
+      "maximum_port_prediction_error": 1.7763568394e-15,
+      "readonly_twin_outputs": "exact",
+      "allocation_count": 0
+    },
+    "constant_force_DC": {
+      "force_N": 1,
+      "frames": 150000,
+      "last_observed_frames": 30000,
+      "maximum_final_contact_velocity_m_s": 2.77555756156e-16,
+      "scalar_loss_creep_positive_control_m_s": 0.00507574976811,
+      "last_displacement_change_m_bound": 1e-09
+    },
+    "two_port_state_transfer": {
+      "complex_frequency_points": 3,
+      "impulse_frames_per_port": 16000,
+      "includes": "contact mobility, bridge reaction, reciprocal cross ports and bridge impedance",
+      "maximum_scaled_error": 6.11380149802e-15
+    },
+    "legacy_default": {
+      "before": {
+        "digest": "82b0df22f2596de4",
+        "header_sha256": "a571d9f92c980c89318194f9a9a24b84b553b644e4ff7b3a71a1aacf966e2ab7",
+        "binary_sha256": "dc93e43ac0133d11093473f3f3ab7b01c301ef5d6fd23402fe5c877d04f92433",
+        "command": [
+          "g++",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++17",
+          "-ffp-contract=off",
+          "-fno-exceptions",
+          "-fno-rtti",
+          "-fno-builtin",
+          "-DWG_HEADER=\"/workspace/virtual-instrument-keyra/out/coupled-waveguide/waveguide-support/before/WaveguideString.h\"",
+          "/workspace/virtual-instrument-keyra/out/coupled-waveguide/waveguide-support/legacy_digest.cpp",
+          "-o",
+          "/workspace/virtual-instrument-keyra/out/coupled-waveguide/waveguide-support/digest-before"
+        ]
+      },
+      "after": {
+        "digest": "82b0df22f2596de4",
+        "header_sha256": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+        "binary_sha256": "513f6cd3b345f91c54f248ab7783792e8015d79c3430f88b62b65a4ef5d0cff3",
+        "command": [
+          "g++",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++17",
+          "-ffp-contract=off",
+          "-fno-exceptions",
+          "-fno-rtti",
+          "-fno-builtin",
+          "-DWG_HEADER=\"/workspace/virtual-instrument-keyra/include/keyra/physics/WaveguideString.h\"",
+          "/workspace/virtual-instrument-keyra/out/coupled-waveguide/waveguide-support/legacy_digest.cpp",
+          "-o",
+          "/workspace/virtual-instrument-keyra/out/coupled-waveguide/waveguide-support/digest-after"
+        ]
+      }
+    },
+    "existing_tests": "8s integer-rail conservation, random allpass/FIR work ledger, repeated-force superposition, transactional invalid prepare, NaN input, allocation checks all pass."
+  },
+  "limits": [
+    "The DC shelf changes low-frequency phase and auxiliary storage; it does not preserve the old lossy pole/decay fit. New coupled tests must use its actual transfer.",
+    "The shelf is a passive numerical realization, not measured piano material damping. Its static compliance need not equal the old modal port.",
+    "Default shelf remains disabled; exact legacy digest covers four deterministic 20000-frame old-path configurations, not every possible floating-point state.",
+    "No callback speed, full-88-key equivalence, or musical quality claim is made."
+  ],
+  "inputs": {
+    "include/keyra/physics/WaveguideString.h": {
+      "sha256": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+      "snapshot": "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/include__keyra__physics__WaveguideString.h"
+    },
+    "tests/waveguide_string_tests.cpp": {
+      "sha256": "9a5c47f2ee7bf0541eaa9ad3a970bb6f78f9ca07afab2a1349ab5faaba2e71e4",
+      "snapshot": "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/tests__waveguide_string_tests.cpp"
+    },
+    "out/coupled-waveguide/waveguide-support/legacy_digest.cpp": {
+      "sha256": "5f8bd83bf510188d14905b5f54819811d3a1af64c89dacfb9041cb5479e256bb",
+      "snapshot": "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/out__coupled-waveguide__waveguide-support__legacy_digest.cpp"
+    },
+    "out/coupled-waveguide/waveguide-support/before/WaveguideString.h": {
+      "sha256": "a571d9f92c980c89318194f9a9a24b84b553b644e4ff7b3a71a1aacf966e2ab7",
+      "snapshot": "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/out__coupled-waveguide__waveguide-support__before__WaveguideString.h"
+    }
+  },
+  "artifacts": {
+    "out/coupled-waveguide/waveguide-support/shelf-tests": {
+      "sha256": "e38f64f754739061ebf7d1c037338626a5c9ed6c5de587d8bdb3a1b87e7c3b46",
+      "size": 87792
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests.log": {
+      "sha256": "7f9344e032cc63743284df2ef20c31fa3e1f1dde0dcecb933673017cff13e392",
+      "size": 531
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests-asan": {
+      "sha256": "bcd77358257bc645b64236bc4711c577254bbcd649d37349dee3e692ed75d600",
+      "size": 415432
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests-asan.log": {
+      "sha256": "7f9344e032cc63743284df2ef20c31fa3e1f1dde0dcecb933673017cff13e392",
+      "size": 531
+    },
+    "out/coupled-waveguide/waveguide-support/legacy-digest.json": {
+      "sha256": "4b0c73db6fd9a756a3d2899139b107b068a73abddb573c92d5f85b0c7f9574d5",
+      "size": 1476
+    }
+  }
+}

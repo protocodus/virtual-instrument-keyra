@@ -1,0 +1,380 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-10-26T18:31:29.322614+00:00",
+  "passed": true,
+  "study_complete": true,
+  "fidelity_pass": false,
+  "adopted": false,
+  "decision": "Do not adopt this fixed geometrically spaced pole observer family. Complex, pole-aligned L/R, attack/envelope and cost diagnostics retain mismatches. High-Q pole shifts inflate pointwise complex/waveform error; no audibility or complete-piano realism conclusion follows from that metric alone. Other compact observers remain possible.",
+  "scope": "C2/C4,48kHz,one first-choir primary string,original authored control calibration,intrinsic held-string damping,fixed bridge. Observe additive rad correction only; existing soundboard pressure remains separate.",
+  "recording_reads": false,
+  "canonical_DSP_or_calibration_changed": false,
+  "Research_changed": false,
+  "models_retained": 50,
+  "initial_invalid_damping_setup_preserved": {
+    "scope_correction": {
+      "path": "out/waveguide-radiation/v1-closed-damper/scope-correction.json",
+      "sha256": "f530da4796da16d85694f8630bd251b1a1c81124f9b928b252dc10cbe4baa8a7"
+    },
+    "frozen_report": {
+      "path": "out/waveguide-radiation/v1-closed-damper/report.json",
+      "sha256": "5cf79d08cc78556fed6a4f885aa02289279ea7ac802d54cc7ca6ab3a892fa0fd"
+    },
+    "not_a_held_key_fidelity_result": true
+  },
+  "frozen_study": {
+    "path": "out/waveguide-radiation/freeze.json",
+    "sha256": "9a49d829cbcfe139bf51a89c2dfe8065a5948b67f74df71cfbfab54c2fa256f5"
+  },
+  "full_fit_report": {
+    "path": "out/waveguide-radiation/report.json",
+    "sha256": "41f79ee974c9a11758482ad0d617c4dac873e0b9447563b14bae426245ec14fc"
+  },
+  "exact_state_transfer_selfchecks": {
+    "path": "out/waveguide-radiation/selfchecks.json",
+    "sha256": "1b6745bd16530c43d67d42f5d0db737e0f5382709b05e0aa183245eebda430a5"
+  },
+  "independent_audit": {
+    "path": "out/waveguide-radiation/independent-audit.json",
+    "sha256": "3bf417ec09f6054f4fe828bfafc3b98713ede41bd0895d6ff7377ff30b180185"
+  },
+  "pole_aligned_diagnostics": {
+    "path": "out/waveguide-radiation/pole-aligned-diagnostics.json",
+    "sha256": "cac57ab26aa7938145851463456c4cec0f965e126d88429183ce212dabff1024"
+  },
+  "pole_diagnostics_audit": {
+    "path": "out/waveguide-radiation/pole-audit.json",
+    "sha256": "1b2f5a77f9bc2c4aa689636d05dd3ef37612bf286c135f5c633d144c554bc052"
+  },
+  "build_receipt": {
+    "path": "out/waveguide-radiation/build-receipt.json",
+    "sha256": "cf2c67f04195f8202f0f427102c80be7ebc352db10e703b58f965a1329dd293a"
+  },
+  "artifact_manifest": {
+    "path": "out/waveguide-radiation/artifact-manifest.json",
+    "sha256": "73d3717bb2279f940fbba0c65198c4f9fd0547b2654b4dad4c50b4add14e7e9b"
+  },
+  "artifact_file_count": 165,
+  "source_sha256": {
+    "tools/probe_waveguide_radiation.cpp": "9f97f79f5a9b12bc5ea4f0ae8f71e7e967ad38321e00778e714cc9126163ad8a",
+    "tools/probe_waveguide_radiation_cost.cpp": "7bba5568be4b920f76916990509e22cb01c39fcdc74b4138ba68a7c800136c43",
+    "tools/fit_waveguide_radiation.py": "a3c59f076585c71c5b082ac4ca390f8e508868f9ffd9d6477ee08592cf9c5591",
+    "include/keyra/physics/WaveguideString.h": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "tests/data/coupled-waveguide/C2-s32.cfg": "97e3329bc2d885d09bd80cd303a99ee3bc6facb862adf5f1b339c57592f9fadd",
+    "tests/data/coupled-waveguide/C4-s32.cfg": "54d172577bc5e5dd5faa4ade7f52525ebb1fb702341af2db81887dfb5b047648",
+    "tools/probe_waveguide_radiation_modes.py": "a19998b67229c771a8a00ae937f2deb4acf2887752d2ac8833246a57b78e2a43",
+    "docs/WAVEGUIDE_RADIATION.md": "872e2937c60f48e5567a1063bc979823c337dfe36d53ed6966d6edac8166939d"
+  },
+  "formula_verification": {
+    "max_relative_global_transfer_error": 3.5081725158942304e-13,
+    "actual_filter_recurrence_vs_Python_all50_models": "Independent audit;2,048sample fixtures,maxrelativeglobalerror1.47e-12.",
+    "max_complex_WG_pole_residual": 1.5824183679967881e-13,
+    "max_two_epsilon_derivative_disagreement": 3.692628962991547e-09
+  },
+  "causality": {
+    "C2_reaction_integer_delay_samples": 238,
+    "C4_reaction_integer_delay_samples": 50,
+    "target_has_same_frame_response": true,
+    "contact_velocity_has_force_feedthrough": true,
+    "delayed_target_cases": "256sampledelayed-reference fits only; no enforced pure runtime delay or host latency setting; pretarget leakage retained."
+  },
+  "fit_policy": {
+    "inputs": [
+      "bridge reaction",
+      "bridge reaction + contact velocity"
+    ],
+    "pairs_per_input": [
+      2,
+      4,
+      8
+    ],
+    "diagnostic_pairs_per_input": 16,
+    "ridge": [
+      0.0001,
+      0.01
+    ],
+    "target_delay_samples": [
+      0,
+      256
+    ],
+    "complex_forward_fit": true,
+    "division_by_observation_zeros": false,
+    "stable_shared_poles": true,
+    "stored_note_IR_or_sample_playback": false,
+    "phase_latency_mono_stereo_and_attack_measured": true
+  },
+  "first20_actual_pole_tuning": [
+    {
+      "key": "C2",
+      "partial_count": 20,
+      "max_abs_cents": 0.5102863106827479,
+      "RMS_cents": 0.26367607412358013,
+      "maximum_expected_100ms_phase_drift_degrees": 14.103896605273803
+    },
+    {
+      "key": "C4",
+      "partial_count": 20,
+      "max_abs_cents": 2.4484026091108735,
+      "RMS_cents": 1.1763909633961251,
+      "maximum_expected_100ms_phase_drift_degrees": 280.6065136715879
+    }
+  ],
+  "selected_zero_target_delay_results": [
+    {
+      "id": "C2-i1-k8-d0-r0.0001",
+      "weighted_complex_relative_error": 0.9374535879922345,
+      "two_ms_force_whole_second_waveform_relative_error": 0.8350698015835301,
+      "two_ms_force_first100ms_band_MAE_db": 9.48284783730926,
+      "pole_aligned_L_R_energy_weighted_gain_MAE_db": 8.222672978971662,
+      "pole_aligned_L_R_energy_weighted_phase_MAE_deg": 36.13948663934144,
+      "pole_aligned_L_R_equal_weight_gain_MAE_db": 7.979313451076742,
+      "pole_aligned_L_R_equal_weight_phase_MAE_deg": 54.27365586927441,
+      "two_ms_force_5ms_RMS_envelope": {
+        "bin_ms": 5,
+        "reference_gate_db_relative_peak": -60,
+        "scored_bins": 200,
+        "MAE_db": 7.7887630652829785,
+        "median_absolute_db": 7.1403850942426805,
+        "maximum_absolute_db": 128.17177774195034,
+        "reference_200_800ms_slope_db_s": -5.072375463156134,
+        "prediction_200_800ms_slope_db_s": -1.046976138462148
+      },
+      "reference_stereo": {
+        "channel_correlation": 0.33098715261761574,
+        "side_mid_db": -2.987098432367221,
+        "left_right_db": 0.11754647948857752
+      },
+      "prediction_stereo": {
+        "channel_correlation": 0.24166372023865307,
+        "side_mid_db": -2.1340795451087238,
+        "left_right_db": -0.7059905078106015
+      },
+      "coefficient": {
+        "path": "out/waveguide-radiation/coefficients/C2-i1-k8-d0-r0.0001.cfg",
+        "sha256": "dcc4e7822038bfb5d1aba9d539bfdf547c79c59e6c607ce81ff29d23ffdb3f66"
+      }
+    },
+    {
+      "id": "C2-i2-k8-d0-r0.0001",
+      "weighted_complex_relative_error": 0.9005527749836697,
+      "two_ms_force_whole_second_waveform_relative_error": 0.5112983430262278,
+      "two_ms_force_first100ms_band_MAE_db": 12.030289673826564,
+      "pole_aligned_L_R_energy_weighted_gain_MAE_db": 5.579739768430578,
+      "pole_aligned_L_R_energy_weighted_phase_MAE_deg": 17.34554156183157,
+      "pole_aligned_L_R_equal_weight_gain_MAE_db": 5.381492087419516,
+      "pole_aligned_L_R_equal_weight_phase_MAE_deg": 26.57448250062586,
+      "two_ms_force_5ms_RMS_envelope": {
+        "bin_ms": 5,
+        "reference_gate_db_relative_peak": -60,
+        "scored_bins": 200,
+        "MAE_db": 3.987135195444098,
+        "median_absolute_db": 3.9086164969219803,
+        "maximum_absolute_db": 6.56610338069934,
+        "reference_200_800ms_slope_db_s": -5.072375463156134,
+        "prediction_200_800ms_slope_db_s": -1.6765473980644778
+      },
+      "reference_stereo": {
+        "channel_correlation": 0.33098715261761574,
+        "side_mid_db": -2.987098432367221,
+        "left_right_db": 0.11754647948857752
+      },
+      "prediction_stereo": {
+        "channel_correlation": 0.23499308954910053,
+        "side_mid_db": -2.0669555530271926,
+        "left_right_db": -0.956765832174017
+      },
+      "coefficient": {
+        "path": "out/waveguide-radiation/coefficients/C2-i2-k8-d0-r0.0001.cfg",
+        "sha256": "d7836a4b229e898634fac390258443b84c28b57122fab1009a6fac57b5f2d6ac"
+      }
+    },
+    {
+      "id": "C2-i2-k16-d0-r0.0001",
+      "weighted_complex_relative_error": 0.8629769293881224,
+      "two_ms_force_whole_second_waveform_relative_error": 0.4499622591121909,
+      "two_ms_force_first100ms_band_MAE_db": 7.274839314016287,
+      "pole_aligned_L_R_energy_weighted_gain_MAE_db": 2.7915585327842427,
+      "pole_aligned_L_R_energy_weighted_phase_MAE_deg": 10.33498059509942,
+      "pole_aligned_L_R_equal_weight_gain_MAE_db": 3.098839676058003,
+      "pole_aligned_L_R_equal_weight_phase_MAE_deg": 17.641033718427764,
+      "two_ms_force_5ms_RMS_envelope": {
+        "bin_ms": 5,
+        "reference_gate_db_relative_peak": -60,
+        "scored_bins": 200,
+        "MAE_db": 4.039756262936435,
+        "median_absolute_db": 4.019908957004176,
+        "maximum_absolute_db": 7.802366792008941,
+        "reference_200_800ms_slope_db_s": -5.072375463156134,
+        "prediction_200_800ms_slope_db_s": -1.8204487897670254
+      },
+      "reference_stereo": {
+        "channel_correlation": 0.33098715261761574,
+        "side_mid_db": -2.987098432367221,
+        "left_right_db": 0.11754647948857752
+      },
+      "prediction_stereo": {
+        "channel_correlation": 0.22848269923996364,
+        "side_mid_db": -2.0157753169484023,
+        "left_right_db": 0.5673555745036005
+      },
+      "coefficient": {
+        "path": "out/waveguide-radiation/coefficients/C2-i2-k16-d0-r0.0001.cfg",
+        "sha256": "e7e247d9e512dce3576c5681e7dc4c84fd9785862a3b842c321caf73f751b213"
+      }
+    },
+    {
+      "id": "C4-i1-k8-d0-r0.0001",
+      "weighted_complex_relative_error": 0.9881530056525598,
+      "two_ms_force_whole_second_waveform_relative_error": 0.8730279869745463,
+      "two_ms_force_first100ms_band_MAE_db": 9.202980428890974,
+      "pole_aligned_L_R_energy_weighted_gain_MAE_db": 5.782190831820869,
+      "pole_aligned_L_R_energy_weighted_phase_MAE_deg": 56.92133457775057,
+      "pole_aligned_L_R_equal_weight_gain_MAE_db": 5.088680954393846,
+      "pole_aligned_L_R_equal_weight_phase_MAE_deg": 55.91084756652759,
+      "two_ms_force_5ms_RMS_envelope": {
+        "bin_ms": 5,
+        "reference_gate_db_relative_peak": -60,
+        "scored_bins": 200,
+        "MAE_db": 2.13423840498178,
+        "median_absolute_db": 2.003653663944207,
+        "maximum_absolute_db": 15.101959108696786,
+        "reference_200_800ms_slope_db_s": -2.5245581652065723,
+        "prediction_200_800ms_slope_db_s": -2.8976133545586498
+      },
+      "reference_stereo": {
+        "channel_correlation": 0.9870363754362419,
+        "side_mid_db": -21.500538166236986,
+        "left_right_db": -0.40914543067153203
+      },
+      "prediction_stereo": {
+        "channel_correlation": 0.9893542301394462,
+        "side_mid_db": -20.15023813695435,
+        "left_right_db": -1.1419550969760124
+      },
+      "coefficient": {
+        "path": "out/waveguide-radiation/coefficients/C4-i1-k8-d0-r0.0001.cfg",
+        "sha256": "00f88970f0f3cc471d4740a01509f29fa84511ab16580823e1ef7b1d493eb4d9"
+      }
+    },
+    {
+      "id": "C4-i2-k8-d0-r0.0001",
+      "weighted_complex_relative_error": 0.9637090474535005,
+      "two_ms_force_whole_second_waveform_relative_error": 0.49574207366189826,
+      "two_ms_force_first100ms_band_MAE_db": 4.6831429964778195,
+      "pole_aligned_L_R_energy_weighted_gain_MAE_db": 5.725219630717297,
+      "pole_aligned_L_R_energy_weighted_phase_MAE_deg": 46.18022919833809,
+      "pole_aligned_L_R_equal_weight_gain_MAE_db": 4.377308697873348,
+      "pole_aligned_L_R_equal_weight_phase_MAE_deg": 42.8913864303209,
+      "two_ms_force_5ms_RMS_envelope": {
+        "bin_ms": 5,
+        "reference_gate_db_relative_peak": -60,
+        "scored_bins": 200,
+        "MAE_db": 1.6875786764117273,
+        "median_absolute_db": 1.7139585296878916,
+        "maximum_absolute_db": 4.616396309946485,
+        "reference_200_800ms_slope_db_s": -2.5245581652065723,
+        "prediction_200_800ms_slope_db_s": -2.994879611213125
+      },
+      "reference_stereo": {
+        "channel_correlation": 0.9870363754362419,
+        "side_mid_db": -21.500538166236986,
+        "left_right_db": -0.40914543067153203
+      },
+      "prediction_stereo": {
+        "channel_correlation": 0.9526334280134344,
+        "side_mid_db": -15.879718297963475,
+        "left_right_db": -0.6881304983030223
+      },
+      "coefficient": {
+        "path": "out/waveguide-radiation/coefficients/C4-i2-k8-d0-r0.0001.cfg",
+        "sha256": "0b273897c9aa9907a1f62a94c44a4f389d5535fd58f9ffd722bbdbd98f46f9b5"
+      }
+    },
+    {
+      "id": "C4-i2-k16-d0-r0.0001",
+      "weighted_complex_relative_error": 0.9627676142872865,
+      "two_ms_force_whole_second_waveform_relative_error": 0.4794654210802938,
+      "two_ms_force_first100ms_band_MAE_db": 2.7883709527703964,
+      "pole_aligned_L_R_energy_weighted_gain_MAE_db": 2.5477989996656976,
+      "pole_aligned_L_R_energy_weighted_phase_MAE_deg": 12.629311868339503,
+      "pole_aligned_L_R_equal_weight_gain_MAE_db": 3.150544347217063,
+      "pole_aligned_L_R_equal_weight_phase_MAE_deg": 24.943665801759607,
+      "two_ms_force_5ms_RMS_envelope": {
+        "bin_ms": 5,
+        "reference_gate_db_relative_peak": -60,
+        "scored_bins": 200,
+        "MAE_db": 1.6840781783726078,
+        "median_absolute_db": 1.7166981854029557,
+        "maximum_absolute_db": 2.6005555662307724,
+        "reference_200_800ms_slope_db_s": -2.5245581652065723,
+        "prediction_200_800ms_slope_db_s": -2.995197954709928
+      },
+      "reference_stereo": {
+        "channel_correlation": 0.9870363754362419,
+        "side_mid_db": -21.500538166236986,
+        "left_right_db": -0.40914543067153203
+      },
+      "prediction_stereo": {
+        "channel_correlation": 0.9888026161967165,
+        "side_mid_db": -21.175635163729826,
+        "left_right_db": -0.777082141764087
+      },
+      "coefficient": {
+        "path": "out/waveguide-radiation/coefficients/C4-i2-k16-d0-r0.0001.cfg",
+        "sha256": "2c2d27f253813bd6dd75e792b57ad2ec94b8cd937840ba59b3d62161d0f6da96"
+      }
+    }
+  ],
+  "observer_only_cost": [
+    {
+      "inputs": 1,
+      "pairs_per_input": 8,
+      "observer_only_CPU_per_audio_second_median": 0.101524,
+      "evidence": {
+        "path": "out/waveguide-radiation/cost-i1-k8.json",
+        "sha256": "8b1afcd06c733e19fe3dfc0df1ddb2b7a87edeb823659cf84b6e6250d2ddcb39"
+      },
+      "scope": "Observer only; C2/C4 mixed88 independent fixed-pole filters, synthesized input, scalar GNU strict FP; no string/board/mechanism/host cost"
+    },
+    {
+      "inputs": 2,
+      "pairs_per_input": 8,
+      "observer_only_CPU_per_audio_second_median": 0.179948,
+      "evidence": {
+        "path": "out/waveguide-radiation/cost-i2-k8.json",
+        "sha256": "32bce420cef5283dc215ee42e58c2c338d33a4f480167a492ebeea8661d60b6b"
+      },
+      "scope": "Observer only; C2/C4 mixed88 independent fixed-pole filters, synthesized input, scalar GNU strict FP; no string/board/mechanism/host cost"
+    },
+    {
+      "inputs": 2,
+      "pairs_per_input": 16,
+      "observer_only_CPU_per_audio_second_median": 0.339002,
+      "evidence": {
+        "path": "out/waveguide-radiation/cost-i2-k16.json",
+        "sha256": "23eeef6911fcb910b430df3ea8ae940653ac085e94de17c35130517dd020a9c8"
+      },
+      "scope": "Observer only; C2/C4 mixed88 independent fixed-pole filters, synthesized input, scalar GNU strict FP; no string/board/mechanism/host cost"
+    }
+  ],
+  "interpretation_limits": [
+    "Pointwise complex-frequency and raw waveform error can grow substantially from small high-Q pole shifts.",
+    "Per-mode residue comparison uses first20 isolated primary modes, fixedbridge and original calibration; additional observer poles and arbitrary bridge excitation are not made equivalent.",
+    "Absolute residue phases are evaluated at corresponding different natural poles; they do not repair pitch or delay.",
+    "Five-ms RMSenvelope metrics retain full signal levels; no peak/gain fitting.",
+    "First choir line primary polarization only, fixed bridge, original authored calibration, C2/C4 only.",
+    "No arbitrary board-input radiation equivalence, secondary polarization, unison or complete-note sound match.",
+    "Fixed-pole residue fitting is one bounded method; poor fits do not prove every compact observer impossible.",
+    "Coefficients are compact numeric stable IIR parameters, never stored note/impulse audio playback.",
+    "Existing board acceleration observation must remain separate; this target is additive string correction only.",
+    "No actual Reason SDK/compiler/host or realtime deadline qualification.",
+    "Aggregate stereo/envelope improvement or spectral magnitude alone does not establish equivalent attack.",
+    "Phase-crossing counts at high frequencies are diagnostics, not a complete complex pole inventory."
+  ],
+  "documentation": {
+    "path": "docs/WAVEGUIDE_RADIATION.md",
+    "sha256": "872e2937c60f48e5567a1063bc979823c337dfe36d53ed6966d6edac8166939d"
+  }
+}

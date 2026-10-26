@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "performance_version": "full-reference-2",
+  "baseline_source": "Research/GrandPianoV2/src/grand.cpp",
+  "baseline_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+  "calibration_source": "Research/GrandPianoV2/src/calibration.h",
+  "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "optimized_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+  "loop_fusion_sha256": "02d5ae237006eb5e5a16fdea53e5cbf68c2b65b608e9738b9947fe9301c67ef7",
+  "layout_experiment_sha256": "d8cd5ee7522936dba072e205e8d72a880187188a5d98afee2236bec7588cbace",
+  "generator_sha256": "4a122de957914b19f5c56122e6a08ab551bca3863fcbee649932a249c8192b35",
+  "validated_variant": "grouped_unison_portable",
+  "validation_reports": [
+    "Validation/reference-optimization.json",
+    "Validation/full-layout-optimization.json",
+    "Validation/full-reference-parity.json",
+    "Validation/full-reference-unison-physics.json"
+  ],
+  "transformations": [
+    "inactive-hammer free/damping loop fusion",
+    "string port-impulse/radiation loop fusion",
+    "contiguous grouped scalar unison rows"
+  ],
+  "portable_layout_adaptation": "Unused GNU vectorStep removed; original direct unisonStep retained; production uses groupedUnisonStep",
+  "topology": {
+    "keys": 88,
+    "strings": 230,
+    "string_modes": 17778,
+    "soundboard_modes": 475
+  },
+  "physics_or_calibration_removed": false
+}

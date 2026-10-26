@@ -1,0 +1,1335 @@
+{
+  "schema": "keyra.coupled-waveguide-damper.v1",
+  "created_utc": "2026-10-26T18:17:22.633553+00:00",
+  "status": "optional bounded contact-damper proxy; not adopted by full piano backend",
+  "scope": {
+    "notes": [
+      36,
+      60
+    ],
+    "sample_rate": 48000,
+    "board_modes": 475,
+    "active_keys": 1,
+    "polarizations": 1,
+    "default_damper_enabled": false,
+    "default_full_backend_changed": false,
+    "Research_changed": false,
+    "fidelity_or_realtime_claim": false
+  },
+  "math": {
+    "mobility": "M=1/(2Z+Rd)",
+    "free_contact_velocity": "vFree=(2Z*u+f)*M",
+    "contact_velocity": "v=vFree+t*FH*M",
+    "string_force": "FString=t*FH+f-Rd*v",
+    "hammer_compliance": "h*h/(2m)+h*sum(t*t*M)",
+    "positive_dissipation": "h*sum(Rd*v*v)",
+    "ledger_identity": "string port work + board work + hammer kinetic change + contact potential change + contact loss + damper loss = external force work",
+    "resistance_control": "Rd=2Z*strength*closure^2; closure target=0 for key down, otherwise 1-pedal; default exponential lift1ms/return10ms",
+    "pedal_convention": "pedal1 sustain depressed/dampers lifted; pedal0 lets dampers return on released keys",
+    "dynamic_storage": "none; control/bypass changes neither mechanical state nor accumulated work"
+  },
+  "tests": {
+    "native": {
+      "exit_code": 0,
+      "compile": [
+        "g++",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-Iinclude",
+        "tests/coupled_waveguide_tests.cpp",
+        "-o",
+        "out/coupled-waveguide-damper/coupled_waveguide_tests"
+      ],
+      "run": [
+        "out/coupled-waveguide-damper/coupled_waveguide_tests",
+        "/workspace/virtual-instrument-keyra/tests/data/coupled-waveguide"
+      ],
+      "log": "out/coupled-waveguide-damper/native-tests.log"
+    },
+    "address_undefined_sanitizer": {
+      "exit_code": 0,
+      "runs": 1,
+      "compile": [
+        "g++",
+        "-O1",
+        "-g",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-Iinclude",
+        "tests/coupled_waveguide_tests.cpp",
+        "-o",
+        "out/coupled-waveguide-damper/coupled_waveguide_tests_asan"
+      ],
+      "run": [
+        "out/coupled-waveguide-damper/coupled_waveguide_tests_asan",
+        "/workspace/virtual-instrument-keyra/tests/data/coupled-waveguide"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1"
+      },
+      "log": "out/coupled-waveguide-damper/asan-tests.log"
+    },
+    "runtime_allocations": 0,
+    "runtime_lock_io_check": "source review of header; no interception claim",
+    "legacy_disabled_pcm": {
+      "scope": "Default damper-disabled output versus preserved prior phase, same source numeric profiles",
+      "wav_pairs": [
+        {
+          "name": "C2-board-source-only.wav",
+          "old_sha256": "87a6446ff35ae4728fa8eb8fa6a8ad1cb7dcf78f9b2f84032d38b13c3edc5b9a",
+          "new_sha256": "87a6446ff35ae4728fa8eb8fa6a8ad1cb7dcf78f9b2f84032d38b13c3edc5b9a",
+          "exact": true
+        },
+        {
+          "name": "C2-connected.wav",
+          "old_sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+          "new_sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+          "exact": true
+        },
+        {
+          "name": "C2-coupling-off.wav",
+          "old_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "new_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "exact": true
+        },
+        {
+          "name": "C2-lossless.wav",
+          "old_sha256": "e7e997a3734dfc314cfde5fe64c61b265eea9a9a3c5ec508eb4a6977f963eec3",
+          "new_sha256": "e7e997a3734dfc314cfde5fe64c61b265eea9a9a3c5ec508eb4a6977f963eec3",
+          "exact": true
+        },
+        {
+          "name": "C2-observer-off.wav",
+          "old_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "new_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "exact": true
+        },
+        {
+          "name": "C2-repeat-10hz.wav",
+          "old_sha256": "ac8253bfc5876f1c812a6956e9a74986c7fabf468c6e91ef6237aad12ebe4da5",
+          "new_sha256": "ac8253bfc5876f1c812a6956e9a74986c7fabf468c6e91ef6237aad12ebe4da5",
+          "exact": true
+        },
+        {
+          "name": "C4-board-source-only.wav",
+          "old_sha256": "246603b2e0fc80f8f61142eee058ddfa3e532d21fd60e7a78b502db8fc286b83",
+          "new_sha256": "246603b2e0fc80f8f61142eee058ddfa3e532d21fd60e7a78b502db8fc286b83",
+          "exact": true
+        },
+        {
+          "name": "C4-connected.wav",
+          "old_sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+          "new_sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+          "exact": true
+        },
+        {
+          "name": "C4-coupling-off.wav",
+          "old_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "new_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "exact": true
+        },
+        {
+          "name": "C4-lossless.wav",
+          "old_sha256": "e2d533b5abfada44bc210d174c84c76f8c1f1550058f741fe22f57b92f287111",
+          "new_sha256": "e2d533b5abfada44bc210d174c84c76f8c1f1550058f741fe22f57b92f287111",
+          "exact": true
+        },
+        {
+          "name": "C4-observer-off.wav",
+          "old_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "new_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+          "exact": true
+        },
+        {
+          "name": "C4-repeat-10hz.wav",
+          "old_sha256": "6e5a384cf5536b68bc203200aacf5a79d6aa10ec5da4b56472c03adc09c3c453",
+          "new_sha256": "6e5a384cf5536b68bc203200aacf5a79d6aa10ec5da4b56472c03adc09c3c453",
+          "exact": true
+        }
+      ]
+    },
+    "zero_resistance_enabled": "Exact mechanical energy and pressure versus disabled in a 12,000-frame regression.",
+    "control_event_continuity": "release, pedal, enable/bypass events preserve stored state and accumulated loss",
+    "dynamic_partial_restrikes": {
+      "launches": 3,
+      "partial_launches": 2,
+      "max_balance_residual_j": 3.33066907388e-16
+    },
+    "independent_external_forces": {
+      "max_balance_residual_j": 2.87991202066e-20,
+      "max_damper_force_work_residual_j": 4.96308367532e-24,
+      "damper_loss_j": 4.59783947664e-06,
+      "hammer_launches": 0
+    }
+  },
+  "metrics": {
+    "maximum_probe_global_balance_residual_j": 2.4202861936828413e-14,
+    "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+    "maximum_damper_force_work_residual_j": 1.0842021724855044e-19,
+    "pedal_ordering": [
+      {
+        "note": "C2",
+        "pedal": [
+          0,
+          0.5,
+          1
+        ],
+        "final_energy_j": [
+          1.2963854909982981e-08,
+          1.7120290801541552e-06,
+          0.00424530597874346
+        ],
+        "tail_energy_integral_j_s": [
+          1.1304681727465436e-05,
+          3.051860422117541e-05,
+          0.006293903069425532
+        ],
+        "damper_loss_j": [
+          0.025422109210176486,
+          0.0250680875217248,
+          0.007840615425318337
+        ],
+        "ordered": true,
+        "observer_off_mechanics": "exact selected energy/work metrics"
+      },
+      {
+        "note": "C4",
+        "pedal": [
+          0,
+          0.5,
+          1
+        ],
+        "final_energy_j": [
+          9.093472098936413e-11,
+          1.7257047101408652e-10,
+          8.698060618647379e-05
+        ],
+        "tail_energy_integral_j_s": [
+          5.383774065391241e-08,
+          1.4570149468241274e-07,
+          0.0006369185683365908
+        ],
+        "damper_loss_j": [
+          0.009155672220647584,
+          0.009098700830874634,
+          0.004745519721898123
+        ],
+        "ordered": true,
+        "observer_off_mechanics": "exact selected energy/work metrics"
+      }
+    ]
+  },
+  "probe": {
+    "compile": [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-Iinclude",
+      "tools/probe_coupled_waveguide.cpp",
+      "-o",
+      "out/coupled-waveguide-damper/probe_coupled_waveguide"
+    ],
+    "run": [
+      "out/coupled-waveguide-damper/probe_coupled_waveguide",
+      "out/coupled-waveguide-damper/render",
+      "tests/data/coupled-waveguide",
+      "--damper"
+    ],
+    "report": {
+      "schema": 1,
+      "sample_rate": 48000,
+      "seconds_per_case": 1,
+      "scope": "One key per case, 1 polarization, identical choir lines, original 475-mode board; raw board-only pressure, no final radiation calibration",
+      "realtime_claim": false,
+      "damper_mode": true,
+      "cases": [
+        {
+          "name": "C2-damper-pedal0",
+          "note": 36,
+          "cpu_seconds": 0.199963,
+          "pressure_peak": 89.1457038515781,
+          "pressure_rms": 10.022128029824115,
+          "max_balance_residual_j": 2.7755575615628914e-15,
+          "maximum_interaction_residual_j": 1.5788694136820158e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.0009746630689934386,
+          "board_loss_j": 0.009470766893934295,
+          "contact_loss_j": 0.009631929258347475,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.025422109210176486,
+          "tail_energy_integral_j_s": 1.1304681727465436e-05,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.006245039458030704,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.0731137757771947e-14,
+          "maximum_string_energy_j": 0.028028258017139845,
+          "maximum_board_energy_j": 0.0031015393264213,
+          "final_energy_j": 1.2963854909982981e-08,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -1.6037217925151262e-08,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-pedal-half",
+          "note": 36,
+          "cpu_seconds": 0.203167,
+          "pressure_peak": 89.1457038515781,
+          "pressure_rms": 10.35747779091335,
+          "max_balance_residual_j": 3.1363800445660672e-15,
+          "maximum_interaction_residual_j": 1.5788694136820158e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.0010688516209834882,
+          "board_loss_j": 0.009728900965170886,
+          "contact_loss_j": 0.009631929258347475,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.0250680875217248,
+          "tail_energy_integral_j_s": 3.051860422117541e-05,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 0.5,
+          "final_damper_target": 0.5,
+          "retired_energy_j": 0.006245039458030704,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.0731137757771947e-14,
+          "maximum_string_energy_j": 0.028028258017139845,
+          "maximum_board_energy_j": 0.0031015393264213,
+          "final_energy_j": 1.7120290801541552e-06,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -3.897076427077277e-07,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-pedal1",
+          "note": 36,
+          "cpu_seconds": 0.202882,
+          "pressure_peak": 89.1457038515781,
+          "pressure_rms": 13.462558502545173,
+          "max_balance_residual_j": 9.901801600875615e-15,
+          "maximum_interaction_residual_j": 1.5788694136820158e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.0038727306354940714,
+          "board_loss_j": 0.019908900097410465,
+          "contact_loss_j": 0.009631929258347475,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.007840615425318337,
+          "tail_energy_integral_j_s": 0.006293903069425532,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 0,
+          "final_damper_target": 0,
+          "retired_energy_j": 0.006245039458030704,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.0731137757771947e-14,
+          "maximum_string_energy_j": 0.028028258017139845,
+          "maximum_board_energy_j": 0.0031015393264213,
+          "final_energy_j": 0.00424530597874346,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.476469063357066e-05,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-load-off",
+          "note": 36,
+          "cpu_seconds": 0.206552,
+          "pressure_peak": 101.18254825762833,
+          "pressure_rms": 15.758608236027584,
+          "max_balance_residual_j": 1.4557799410397365e-14,
+          "maximum_interaction_residual_j": 1.496198998029996e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.005543126442876934,
+          "board_loss_j": 0.02780599845533651,
+          "contact_loss_j": 0.007472095808429308,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0,
+          "tail_energy_integral_j_s": 0.00907931426445039,
+          "maximum_damper_solve_residual_m_s": 2.220446049250313e-16,
+          "maximum_damper_force_work_residual_j": 0,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.004769078334053867,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.4035210539527422e-14,
+          "maximum_string_energy_j": 0.039520267875820074,
+          "maximum_board_energy_j": 0.00437964438044771,
+          "final_energy_j": 0.006154221812652558,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 3.0886281024800214e-05,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-coupling-off",
+          "note": 36,
+          "cpu_seconds": 0.212382,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 3.337607967779377e-15,
+          "maximum_interaction_residual_j": 1.5788694136820158e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.0012233662902901062,
+          "board_loss_j": 0,
+          "contact_loss_j": 0.009631929258347475,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.03464415927709842,
+          "tail_energy_integral_j_s": 3.0276253541654894e-06,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.006245039458030704,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.0731137757771947e-14,
+          "maximum_string_energy_j": 0.028028258017139845,
+          "maximum_board_energy_j": 0,
+          "final_energy_j": 2.6569570852712635e-08,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 4.799979672560168e-09,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-observer-off",
+          "note": 36,
+          "cpu_seconds": 0.165163,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 2.7755575615628914e-15,
+          "maximum_interaction_residual_j": 1.5788694136820158e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.0009746630689934386,
+          "board_loss_j": 0.009470766893934295,
+          "contact_loss_j": 0.009631929258347475,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.025422109210176486,
+          "tail_energy_integral_j_s": 1.1304681727465436e-05,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.006245039458030704,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.0731137757771947e-14,
+          "maximum_string_energy_j": 0.028028258017139845,
+          "maximum_board_energy_j": 0.0031015393264213,
+          "final_energy_j": 1.2963854909982981e-08,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -1.6037217925151262e-08,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-source-off",
+          "note": 36,
+          "cpu_seconds": 0.202991,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 0,
+          "maximum_interaction_residual_j": 0,
+          "launches": 0,
+          "partial_launches": 0,
+          "launch_work_j": 0,
+          "external_work_j": 0,
+          "path_loss_j": 0,
+          "board_loss_j": 0,
+          "contact_loss_j": 0,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0,
+          "tail_energy_integral_j_s": 0,
+          "maximum_damper_solve_residual_m_s": 0,
+          "maximum_damper_force_work_residual_j": 0,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 0,
+          "maximum_string_energy_j": 0,
+          "maximum_board_energy_j": 0,
+          "final_energy_j": 0,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 0,
+          "requests": 0,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-dynamic-pedal",
+          "note": 36,
+          "cpu_seconds": 0.199404,
+          "pressure_peak": 89.1457038515781,
+          "pressure_rms": 12.542980177825056,
+          "max_balance_residual_j": 5.079270337660091e-15,
+          "maximum_interaction_residual_j": 1.5788694136820158e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.0018999768368090893,
+          "board_loss_j": 0.014232912030763692,
+          "contact_loss_j": 0.009631929258347475,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.019733942817879286,
+          "tail_energy_integral_j_s": 0.0010448147391690515,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 0.75,
+          "final_damper_target": 0.75,
+          "retired_energy_j": 0.006245039458030704,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.0731137757771947e-14,
+          "maximum_string_energy_j": 0.028028258017139845,
+          "maximum_board_energy_j": 0.0031015393264213,
+          "final_energy_j": 7.204515092598111e-07,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -2.351135738773228e-07,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-damper-repeat-10hz",
+          "note": 36,
+          "cpu_seconds": 0.199834,
+          "pressure_peak": 120.51440950862235,
+          "pressure_rms": 21.763698310937993,
+          "max_balance_residual_j": 2.4202861936828413e-14,
+          "maximum_interaction_residual_j": 1.929879867024198e-17,
+          "launches": 3,
+          "partial_launches": 2,
+          "launch_work_j": 0.1134794191706735,
+          "external_work_j": 0,
+          "path_loss_j": 0.009634670339238186,
+          "board_loss_j": 0.05512136710087444,
+          "contact_loss_j": 0.019125802265487404,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.007875320255720753,
+          "tail_energy_integral_j_s": 0.01999497014393671,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 1.0842021724855044e-19,
+          "final_damper_closure": 0,
+          "final_damper_target": 0,
+          "retired_energy_j": 0.01046088080394621,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.6985584895993204e-14,
+          "maximum_string_energy_j": 0.05163946922841899,
+          "maximum_board_energy_j": 0.004834511534643332,
+          "final_energy_j": 0.011261378405430683,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0.03269526812228181,
+          "final_contact_displacement_m": -0.000327109030620764,
+          "requests": 3,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-pedal0",
+          "note": 60,
+          "cpu_seconds": 0.203355,
+          "pressure_peak": 117.04001152385933,
+          "pressure_rms": 8.856001021341813,
+          "max_balance_residual_j": 2.1163626406917047e-16,
+          "maximum_interaction_residual_j": 9.710385707323299e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.00044373285077596553,
+          "board_loss_j": 0.003958062295183437,
+          "contact_loss_j": 0.004267086733701211,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.009155672220647584,
+          "tail_energy_integral_j_s": 5.383774065391241e-08,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.009773953576802205,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 7.116573736701511e-15,
+          "maximum_string_energy_j": 0.00929160352281208,
+          "maximum_board_energy_j": 0.001167679723645874,
+          "final_energy_j": 9.093472098936413e-11,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.7713447776450415e-09,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-pedal-half",
+          "note": 60,
+          "cpu_seconds": 0.202708,
+          "pressure_peak": 117.04001152385933,
+          "pressure_rms": 8.884934668909837,
+          "max_balance_residual_j": 3.226585665316861e-16,
+          "maximum_interaction_residual_j": 9.710385707323299e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.0004677224407167172,
+          "board_loss_j": 0.003991044013379783,
+          "contact_loss_j": 0.004267086733701211,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.009098700830874634,
+          "tail_energy_integral_j_s": 1.4570149468241274e-07,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 0.5,
+          "final_damper_target": 0.5,
+          "retired_energy_j": 0.009773953576802205,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 7.116573736701511e-15,
+          "maximum_string_energy_j": 0.00929160352281208,
+          "maximum_board_energy_j": 0.001167679723645874,
+          "final_energy_j": 1.7257047101408652e-10,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 3.879750623545229e-09,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-pedal1",
+          "note": 60,
+          "cpu_seconds": 0.20359,
+          "pressure_peak": 117.04001152385933,
+          "pressure_rms": 11.43329090643659,
+          "max_balance_residual_j": 1.9081958235744878e-16,
+          "maximum_interaction_residual_j": 9.710385707323299e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.001067429357576271,
+          "board_loss_j": 0.007657537771880872,
+          "contact_loss_j": 0.004267086733701211,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.004745519721898123,
+          "tail_energy_integral_j_s": 0.0006369185683365908,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 0,
+          "final_damper_target": 0,
+          "retired_energy_j": 0.009773953576802205,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 7.116573736701511e-15,
+          "maximum_string_energy_j": 0.00929160352281208,
+          "maximum_board_energy_j": 0.001167679723645874,
+          "final_energy_j": 8.698060618647379e-05,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.359386715581231e-06,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-load-off",
+          "note": 60,
+          "cpu_seconds": 0.201661,
+          "pressure_peak": 134.31882703213503,
+          "pressure_rms": 13.200086042218189,
+          "max_balance_residual_j": 2.463307335887066e-16,
+          "maximum_interaction_residual_j": 8.266618048728344e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.0015086990184437737,
+          "board_loss_j": 0.010584610917022392,
+          "contact_loss_j": 0.0034005584771456252,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0,
+          "tail_energy_integral_j_s": 0.0009100161817234487,
+          "maximum_damper_solve_residual_m_s": 2.220446049250313e-16,
+          "maximum_damper_force_work_residual_j": 0,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.011978809604019612,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 5.325875251018591e-15,
+          "maximum_string_energy_j": 0.01288724419726595,
+          "maximum_board_energy_j": 0.0016281146573741952,
+          "final_energy_j": 0.00012582975141378817,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.6559185460527557e-06,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-coupling-off",
+          "note": 60,
+          "cpu_seconds": 0.203709,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 2.4980018054066022e-15,
+          "maximum_interaction_residual_j": 9.710385707323299e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.0006404209361699621,
+          "board_loss_j": 0,
+          "contact_loss_j": 0.004267086733701211,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.012917046521366408,
+          "tail_energy_integral_j_s": 1.15422384643896e-09,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.009773953576802205,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 7.116573736701511e-15,
+          "maximum_string_energy_j": 0.009291603523960537,
+          "maximum_board_energy_j": 0,
+          "final_energy_j": 3.043250230163888e-15,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 1.0242068281297939e-12,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-observer-off",
+          "note": 60,
+          "cpu_seconds": 0.165903,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 2.1163626406917047e-16,
+          "maximum_interaction_residual_j": 9.710385707323299e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.00044373285077596553,
+          "board_loss_j": 0.003958062295183437,
+          "contact_loss_j": 0.004267086733701211,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.009155672220647584,
+          "tail_energy_integral_j_s": 5.383774065391241e-08,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0.009773953576802205,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 7.116573736701511e-15,
+          "maximum_string_energy_j": 0.00929160352281208,
+          "maximum_board_energy_j": 0.001167679723645874,
+          "final_energy_j": 9.093472098936413e-11,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.7713447776450415e-09,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-source-off",
+          "note": 60,
+          "cpu_seconds": 0.19771,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 0,
+          "maximum_interaction_residual_j": 0,
+          "launches": 0,
+          "partial_launches": 0,
+          "launch_work_j": 0,
+          "external_work_j": 0,
+          "path_loss_j": 0,
+          "board_loss_j": 0,
+          "contact_loss_j": 0,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0,
+          "tail_energy_integral_j_s": 0,
+          "maximum_damper_solve_residual_m_s": 0,
+          "maximum_damper_force_work_residual_j": 0,
+          "final_damper_closure": 1,
+          "final_damper_target": 1,
+          "retired_energy_j": 0,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 0,
+          "maximum_string_energy_j": 0,
+          "maximum_board_energy_j": 0,
+          "final_energy_j": 0,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 0,
+          "requests": 0,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-dynamic-pedal",
+          "note": 60,
+          "cpu_seconds": 0.456566,
+          "pressure_peak": 117.04001152385933,
+          "pressure_rms": 10.441060928181516,
+          "max_balance_residual_j": 1.2836953722228372e-16,
+          "maximum_interaction_residual_j": 9.710385707323299e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.000770894301539476,
+          "board_loss_j": 0.005937357053692193,
+          "contact_loss_j": 0.004267086733701211,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.006849216005576126,
+          "tail_energy_integral_j_s": 0.00017514118491448045,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 5.421010862427522e-20,
+          "final_damper_closure": 0.75,
+          "final_damper_target": 0.75,
+          "retired_energy_j": 0.009773953576802205,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 7.116573736701511e-15,
+          "maximum_string_energy_j": 0.00929160352281208,
+          "maximum_board_energy_j": 0.001167679723645874,
+          "final_energy_j": 9.673408994322722e-11,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.8044675719101255e-09,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-damper-repeat-10hz",
+          "note": 60,
+          "cpu_seconds": 0.484063,
+          "pressure_peak": 117.2741946662615,
+          "pressure_rms": 16.746131428646567,
+          "max_balance_residual_j": 7.91033905045424e-16,
+          "maximum_interaction_residual_j": 7.14218181124826e-18,
+          "launches": 3,
+          "partial_launches": 2,
+          "launch_work_j": 0.06057060037582501,
+          "external_work_j": 0,
+          "path_loss_j": 0.003097361865297397,
+          "board_loss_j": 0.02044595320094954,
+          "contact_loss_j": 0.006780145289791279,
+          "minimum_contact_loss_j": 0,
+          "damper_loss_j": 0.004764242680937842,
+          "tail_energy_integral_j_s": 0.0034307251153814088,
+          "maximum_damper_solve_residual_m_s": 4.440892098500626e-16,
+          "maximum_damper_force_work_residual_j": 8.131516293641283e-20,
+          "final_damper_closure": 0,
+          "final_damper_target": 0,
+          "retired_energy_j": 0.025013195106281513,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.7936303859290956e-14,
+          "maximum_string_energy_j": 0.016157174561000635,
+          "maximum_board_energy_j": 0.001943302926483838,
+          "final_energy_j": 0.0004697022325667452,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0.008609188911232687,
+          "final_contact_displacement_m": -1.3097639212912712e-05,
+          "requests": 3,
+          "expired": 0,
+          "cancelled": 0
+        }
+      ]
+    },
+    "wav_checks": [
+      {
+        "name": "C2-damper-pedal0",
+        "wav_sha256": "f9e91a8f363e636b3aea5f31dc1b2ee4ba75ba60ed69c7dc287674fe1c728665",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-pedal-half",
+        "wav_sha256": "f7b18e756557799bf6ff447577c6843e37d1b8ab0c107be8350c070075c072a2",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-pedal1",
+        "wav_sha256": "b5e385feb710d37b13bd31f829cb37e192146e30c9ff07eab581637c347c62bf",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-load-off",
+        "wav_sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-coupling-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-observer-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-source-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-dynamic-pedal",
+        "wav_sha256": "8b0ed852c332b77f96f1cc3ef56039b84150fa4922995eb0ef45393de72a2833",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-damper-repeat-10hz",
+        "wav_sha256": "62b30be5763f317bdb6a415d977e58b95e98befd130ae55b9c1d1d957f902527",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-pedal0",
+        "wav_sha256": "7efd5835a63c1cb728b45e164a8f8ddedf6bab501db1ebe473866f98f253a6c5",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-pedal-half",
+        "wav_sha256": "ae5c787bf4b7f223e273e7fdb9905d5a3453b4867d2d0e20a2eee7943debaf87",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-pedal1",
+        "wav_sha256": "e6b179256606eaf2f1d42ae82eec99861e52030434c14c95a9ad21098d473e82",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-load-off",
+        "wav_sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-coupling-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-observer-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-source-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-dynamic-pedal",
+        "wav_sha256": "5961185b7f727039bf452f0f17916f3a23ca76b0ab9095ff43465ec3d9e2e12f",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-damper-repeat-10hz",
+        "wav_sha256": "6276984d4af1f968e948e19492a1e99a9ce7af279da07a5994e900b9b7d30b49",
+        "shape": [
+          48000,
+          2
+        ],
+        "sample_rate": 48000,
+        "format": "float32 unnormalized board-only pressure",
+        "finite": true
+      }
+    ],
+    "timing_limit": "includes energy scans, one key only; not callback or whole-keyboard qualification"
+  },
+  "prior_proof": {
+    "report": "Validation/coupled-waveguide.json",
+    "sha256": "93dcd347bb1efce439ae345441252a72ab3258f3c526aa14a63e24f4740e1419",
+    "frozen_control_manifest": "out/coupled-waveguide-damper/control/source-manifest.json",
+    "frozen_control_manifest_sha256": "76ec6827080a4b1c2458ee6dc64e2653666614399862562968242849fbac0dcb"
+  },
+  "inputs": {
+    "include/keyra/physics/CoupledWaveguide.h": {
+      "sha256": "87a67b1cb500e5c21996d3d3a029973a82ddfb47bf67ed6fefa25761c67b8755",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/include/keyra/physics/CoupledWaveguide.h"
+    },
+    "include/keyra/physics/WaveguideString.h": {
+      "sha256": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/include/keyra/physics/WaveguideString.h"
+    },
+    "include/keyra/physics/StrikeController.h": {
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/include/keyra/physics/StrikeController.h"
+    },
+    "include/keyra/physics/ContactSolver.h": {
+      "sha256": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/include/keyra/physics/ContactSolver.h"
+    },
+    "tools/coupled_waveguide_support.h": {
+      "sha256": "9d8a9b7b6e476c2e1f78b145a87d62b5d9290a89fbcf35eea3dce658f967c231",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/tools/coupled_waveguide_support.h"
+    },
+    "tools/probe_coupled_waveguide.cpp": {
+      "sha256": "798290967143071e139fb3d24405718e96866b09fc3cd8254218f1182c6f12e6",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/tools/probe_coupled_waveguide.cpp"
+    },
+    "tests/coupled_waveguide_tests.cpp": {
+      "sha256": "21673a4475793657d35050603019b67234c37406a444dd42243f7278b9c2c814",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/tests/coupled_waveguide_tests.cpp"
+    },
+    "tests/data/coupled-waveguide/C2-s32.cfg": {
+      "sha256": "97e3329bc2d885d09bd80cd303a99ee3bc6facb862adf5f1b339c57592f9fadd",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/tests/data/coupled-waveguide/C2-s32.cfg"
+    },
+    "tests/data/coupled-waveguide/C4-s32.cfg": {
+      "sha256": "54d172577bc5e5dd5faa4ade7f52525ebb1fb702341af2db81887dfb5b047648",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/tests/data/coupled-waveguide/C4-s32.cfg"
+    },
+    "tests/data/coupled-waveguide/provenance.json": {
+      "sha256": "d620a1f32922bff9b62a8971e4ca8b262e29f214f52e743796d15ca55b491506",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/tests/data/coupled-waveguide/provenance.json"
+    },
+    "src/full_reference/grand.cpp": {
+      "sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/src/full_reference/grand.cpp"
+    },
+    "src/full_reference/calibration.h": {
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/src/full_reference/calibration.h"
+    },
+    "docs/COUPLED_WAVEGUIDE.md": {
+      "sha256": "08be0e454063498f21cf48ec4084a9428a94ef7d948da49a015c3025d3159785",
+      "snapshot": "out/coupled-waveguide-damper/source-snapshot/docs/COUPLED_WAVEGUIDE.md"
+    }
+  },
+  "artifacts": {
+    "out/coupled-waveguide-damper/asan-tests.log": {
+      "sha256": "f4539df6690ea07581ed2a81f7283d5093df83c86e965d11f8d88f1f168d6576",
+      "bytes": 2076
+    },
+    "out/coupled-waveguide-damper/coupled_waveguide_tests": {
+      "sha256": "64b3789ddba5506ebf523ef0051e7a218d8be9396b4381094e77e5be90a7fd00",
+      "bytes": 377600
+    },
+    "out/coupled-waveguide-damper/coupled_waveguide_tests_asan": {
+      "sha256": "7716db4b6beed83e906d3c0f7a23a5c30d8aff0ff176c81295ecd5f9b29819df",
+      "bytes": 6382040
+    },
+    "out/coupled-waveguide-damper/damper-probe.log": {
+      "sha256": "681c59df72bb19568a5ff9ab4969841b17fb9721af4ffdab634cefe3d4a3f464",
+      "bytes": 64
+    },
+    "out/coupled-waveguide-damper/legacy/C2-board-source-only.wav": {
+      "sha256": "87a6446ff35ae4728fa8eb8fa6a8ad1cb7dcf78f9b2f84032d38b13c3edc5b9a",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C2-connected.wav": {
+      "sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C2-coupling-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C2-lossless.wav": {
+      "sha256": "e7e997a3734dfc314cfde5fe64c61b265eea9a9a3c5ec508eb4a6977f963eec3",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C2-observer-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C2-repeat-10hz.wav": {
+      "sha256": "ac8253bfc5876f1c812a6956e9a74986c7fabf468c6e91ef6237aad12ebe4da5",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C4-board-source-only.wav": {
+      "sha256": "246603b2e0fc80f8f61142eee058ddfa3e532d21fd60e7a78b502db8fc286b83",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C4-connected.wav": {
+      "sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C4-coupling-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C4-lossless.wav": {
+      "sha256": "e2d533b5abfada44bc210d174c84c76f8c1f1550058f741fe22f57b92f287111",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C4-observer-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/C4-repeat-10hz.wav": {
+      "sha256": "6e5a384cf5536b68bc203200aacf5a79d6aa10ec5da4b56472c03adc09c3c453",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/legacy/report.json": {
+      "sha256": "53877d20024414eed9a3ba14177f9849325a77f6f900e085cc9861f77b42a038",
+      "bytes": 12963
+    },
+    "out/coupled-waveguide-damper/legacy-parity.json": {
+      "sha256": "35e152b3d825828fab4f0c79026a740d00ed905ac6cbb3266edb6642e57650fd",
+      "bytes": 3074
+    },
+    "out/coupled-waveguide-damper/legacy-probe.log": {
+      "sha256": "13ed7c83bd16ae446e3a89f1c72e5c5b8fed1ca23942eb1ada8f7c38deda535e",
+      "bytes": 64
+    },
+    "out/coupled-waveguide-damper/native-tests.log": {
+      "sha256": "f4539df6690ea07581ed2a81f7283d5093df83c86e965d11f8d88f1f168d6576",
+      "bytes": 2076
+    },
+    "out/coupled-waveguide-damper/probe_coupled_waveguide": {
+      "sha256": "d902f01e2b0ebfec53fd3e2146309460eb7d746d1f73103be0a71065c907ab8b",
+      "bytes": 365224
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-coupling-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-dynamic-pedal.wav": {
+      "sha256": "8b0ed852c332b77f96f1cc3ef56039b84150fa4922995eb0ef45393de72a2833",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-load-off.wav": {
+      "sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-observer-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-pedal-half.wav": {
+      "sha256": "f7b18e756557799bf6ff447577c6843e37d1b8ab0c107be8350c070075c072a2",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-pedal0.wav": {
+      "sha256": "f9e91a8f363e636b3aea5f31dc1b2ee4ba75ba60ed69c7dc287674fe1c728665",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-pedal1.wav": {
+      "sha256": "b5e385feb710d37b13bd31f829cb37e192146e30c9ff07eab581637c347c62bf",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-repeat-10hz.wav": {
+      "sha256": "62b30be5763f317bdb6a415d977e58b95e98befd130ae55b9c1d1d957f902527",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C2-damper-source-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-coupling-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-dynamic-pedal.wav": {
+      "sha256": "5961185b7f727039bf452f0f17916f3a23ca76b0ab9095ff43465ec3d9e2e12f",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-load-off.wav": {
+      "sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-observer-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-pedal-half.wav": {
+      "sha256": "ae5c787bf4b7f223e273e7fdb9905d5a3453b4867d2d0e20a2eee7943debaf87",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-pedal0.wav": {
+      "sha256": "7efd5835a63c1cb728b45e164a8f8ddedf6bab501db1ebe473866f98f253a6c5",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-pedal1.wav": {
+      "sha256": "e6b179256606eaf2f1d42ae82eec99861e52030434c14c95a9ad21098d473e82",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-repeat-10hz.wav": {
+      "sha256": "6276984d4af1f968e948e19492a1e99a9ce7af279da07a5994e900b9b7d30b49",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/C4-damper-source-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide-damper/render/report.json": {
+      "sha256": "55b59166156377497de7e9237d27abff2cff7f87ba4a37c57c8776f76abf2237",
+      "bytes": 19887
+    }
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "host": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "limits": [
+    "Contact shunt is an authored proxy at the hammer position, not real damper location or geometry, felt dynamics, or measured half-pedal behavior.",
+    "Friction energy is dissipated; damper reaction and noise through the body are absent. Existing bridge coupling remains reciprocal.",
+    "First strike has no pre-roll: the 1 ms opening removes 0.00784 J for C2 and 0.00475 J for C4 even with sustain pedal 1, because the initially closed load opens while the near-string launch omits real hammer travel.",
+    "No unison detuning or common-loss network, secondary polarization, or calibrated direct string radiation. Raw board-only WAV peaks may exceed full scale.",
+    "Bounded C2/C4 at 48 kHz only. No full-keyboard, backend, Reason, calibration, or default integration; no realism, price, or realtime claim."
+  ]
+}

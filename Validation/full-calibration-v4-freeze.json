@@ -1,0 +1,696 @@
+{
+  "schema_version": 1,
+  "frozen_at_utc": "2026-10-26T15:33:47.538298+00:00",
+  "inputs": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/evaluate_full_candidate.py",
+      "sha256": "0eb9dcdbb88c8809e76bddd94cecc9159b36686dc99f15c9d12b9439aa79b5e6"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/fit_full_calibration.py",
+      "sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/extract_full_range_grand.py",
+      "sha256": "e16339fe8990d77cd8cd7db73ff25af4d59045936f3524b859b8dba269fba027"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/full_range_pitch.py",
+      "sha256": "5f75a2bb871128e98456db69b5b9cc147fca02f079d0e18d24852bb4a80e2be1"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/tools/benchmark.py",
+      "sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/reference/fetch_reference.py",
+      "sha256": "719a012dfac146eebd3d79e8e40104057752dfba3b31b8940563fc15877a9aa3"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/fetch_full_range_grand.py",
+      "sha256": "34c993b2ea4bd7f55c312416c0a00dbbe6676f7992a07ca7e966544831db8c14"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/split.json",
+      "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/manifest.json",
+      "sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/manifest.json",
+      "sha256": "e979323f505a004139c778bebd214a6596309c402339dd8f009b6e984ee17fdc"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/calibration.json",
+      "sha256": "a5c3d930063fc66ec4626e032965058f1e18aa85670e1119fc2c168dc462ea47"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/radiation-fit.json",
+      "sha256": "8e89d3e960a3daa0fb68ccf98f0afac33a1a0dde5854c6d06136bc1137ed661d"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/grand.cpp",
+      "sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/render",
+      "sha256": "9d10341175e9d4e569b87ab0dec299aab8e73444d9cd6054b2d4432952db7bab"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/calibration.h",
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/render-manifest.json",
+      "sha256": "4aa4051a3d4ac1265c42d8a9957c32e0041fda36200c6e6b14c32c52b0f98ac2"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/grand.cpp",
+      "sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/render",
+      "sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/calibration.h",
+      "sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/render-manifest.json",
+      "sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/control-score/score.json",
+      "sha256": "0d3dac679a2c54974eb3fa03f9d0d45da9cf01178f0091bc562c1b759160c5d5"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/analytic-score/score.json",
+      "sha256": "da31b251ea7728e3ab5cc200b81dee056719ad2bf07492fa993bd41a54db711d"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-score/score.json",
+      "sha256": "79f95f2ea81906e8008593397a6086ca542c2234b4a5d7ad2828fc9637468462"
+    }
+  ],
+  "producers": {
+    "control": {
+      "source": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/grand.cpp",
+      "binary": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/render",
+      "header": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-f32/calibration.h",
+      "training_manifest": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v3/control-renders/render-manifest.json",
+        "sha256": "4aa4051a3d4ac1265c42d8a9957c32e0041fda36200c6e6b14c32c52b0f98ac2"
+      }
+    },
+    "candidate": {
+      "source": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/grand.cpp",
+      "binary": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/render",
+      "header": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/calibration.h",
+      "training_manifest": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/render-manifest.json",
+        "sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba"
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "A0v8",
+      "note": "A0",
+      "midi": 21,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "reserved_fresh_evaluation",
+      "previously_measured": false,
+      "source_sample": "A0v8.flac",
+      "source_path": "Samples/A0v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A0v8.flac",
+      "git_blob_sha1": "b287d339ba5b1935eaa15a52dd0e58a682961385",
+      "flac_bytes": 2685849,
+      "flac_path": "recordings/A0v8.flac",
+      "wav_path": "recordings/A0v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 1206,
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C1v8",
+      "note": "C1",
+      "midi": 24,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C1v8.flac",
+      "source_path": "Samples/C1v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C1v8.flac",
+      "git_blob_sha1": "0b00306a129aae190d5f67d3711b181693a5572e",
+      "flac_bytes": 2514395,
+      "flac_path": "recordings/C1v8.flac",
+      "wav_path": "recordings/C1v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 1771,
+      "flac_sha256": "67212ec084c1de5e51d2a9b0bc6204fab808ea0e034f71cfbed94a8a8de2fb5a",
+      "wav_sha256": "b101eee7edc15c9b52939035055b176ffec4372226d5867d9545de9e2079677d",
+      "decoded_pcm": {
+        "sha256": "fc07e0fbc3d6429decf3615f803f0ac076898ebc464cd7cb3f31c26567584439",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 1133892,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C1v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C1v8.wav",
+      "duration_seconds": 23.62275,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C2v8",
+      "note": "C2",
+      "midi": 36,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C2v8.flac",
+      "source_path": "Samples/C2v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C2v8.flac",
+      "git_blob_sha1": "377ae98aa10f4e1698b1a0492c24a5817a9293ec",
+      "flac_bytes": 2561685,
+      "flac_path": "recordings/C2v8.flac",
+      "wav_path": "recordings/C2v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 761,
+      "flac_sha256": "2fae21e19a214aeecd527a2235b106f66030df6ff51cfa789a5b4c6feb3d7357",
+      "wav_sha256": "125ba88cee0d68e21992102afb5189072fd771f958746adbf1efd03e16266b3c",
+      "decoded_pcm": {
+        "sha256": "4d96cc5cdd293309846dda8d0ef1dfa31c0139ab3392571c35565f2be81ca92a",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 1071506,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C2v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C2v8.wav",
+      "duration_seconds": 22.323041666666665,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C3v8",
+      "note": "C3",
+      "midi": 48,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C3v8.flac",
+      "source_path": "Samples/C3v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C3v8.flac",
+      "git_blob_sha1": "c2d2a2019e13bf292923667a3db1df8a47ea5cfc",
+      "flac_bytes": 1741485,
+      "flac_path": "recordings/C3v8.flac",
+      "wav_path": "recordings/C3v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 796,
+      "flac_sha256": "b9200830cdef54fe0eb92db928dea161cd26d1faf31c7a08a4f51c97549e05bf",
+      "wav_sha256": "76a3ad5843590fbe400ef0aa683ed901121accd28704b04ac32b4ea72fb72b4f",
+      "decoded_pcm": {
+        "sha256": "7893c47ce3b8b8e2cadaf3c7ef53836d1540bcac324f24a549ed1a76e850a547",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 768077,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C3v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C3v8.wav",
+      "duration_seconds": 16.001604166666667,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C4v8",
+      "note": "C4",
+      "midi": 60,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C4v8.flac",
+      "source_path": "Samples/C4v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C4v8.flac",
+      "git_blob_sha1": "5d1c81dd7ee1d21cbec2fa1f2f605c098cf19679",
+      "flac_bytes": 1774472,
+      "flac_path": "recordings/C4v8.flac",
+      "wav_path": "recordings/C4v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 723,
+      "flac_sha256": "36fb0535a1f21fe1dfc367c361dedda73710144e8c4940b40e97e6e5f8a3c694",
+      "wav_sha256": "8d5df48ffd6f867e58a844b48dfe34c081bc48c326f5bb17284f95e347298522",
+      "decoded_pcm": {
+        "sha256": "e2d78fef9bb0e7b35021defcda11583924559528497506aab05c78d33e8930f2",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 776976,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C4v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C4v8.wav",
+      "duration_seconds": 16.187,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C5v8",
+      "note": "C5",
+      "midi": 72,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C5v8.flac",
+      "source_path": "Samples/C5v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C5v8.flac",
+      "git_blob_sha1": "8f2a4baab012730693c1b173ce463056c22e42d0",
+      "flac_bytes": 1516971,
+      "flac_path": "recordings/C5v8.flac",
+      "wav_path": "recordings/C5v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 498,
+      "flac_sha256": "f663242a552aad54113f186a6dd90c907c81d1f6374887a23179814544f78d79",
+      "wav_sha256": "3980360c8df4785a0aee643a43cdc6809583d87f8465ddb2a0b11a6362793e72",
+      "decoded_pcm": {
+        "sha256": "124b560b79c7d8a65440fa4204da53a5c94e627190ab5ca0e2243c65ced681e6",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 747517,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C5v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C5v8.wav",
+      "duration_seconds": 15.573270833333334,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C6v8",
+      "note": "C6",
+      "midi": 84,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C6v8.flac",
+      "source_path": "Samples/C6v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C6v8.flac",
+      "git_blob_sha1": "4728c69c56c82a98e54cf93a289afd282705317d",
+      "flac_bytes": 695617,
+      "flac_path": "recordings/C6v8.flac",
+      "wav_path": "recordings/C6v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 780,
+      "flac_sha256": "e5d5db275007d4b0e35ce94b00e0b53f6c659707517ee1326bd77eeba119693b",
+      "wav_sha256": "fbf3389747d81c8160408a75f88ba1cb5c283359981170695b402955235212cb",
+      "decoded_pcm": {
+        "sha256": "b8a6a2f1026e27777fdf7f3b81a4b100d711d921a8e249505be024c5178a0b2a",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 299079,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C6v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C6v8.wav",
+      "duration_seconds": 6.2308125,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C7v8",
+      "note": "C7",
+      "midi": 96,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "previously_measured": true,
+      "source_sample": "C7v8.flac",
+      "source_path": "Samples/C7v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C7v8.flac",
+      "git_blob_sha1": "65a6c3d80ffc3a40a3dffbf183972a10e316018e",
+      "flac_bytes": 412115,
+      "flac_path": "recordings/C7v8.flac",
+      "wav_path": "recordings/C7v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 608,
+      "flac_sha256": "fbe68e0670fd7edd46923e983da11a97ca7d2b8826585258b81918f97e268b68",
+      "wav_sha256": "f7f034fc3a2d9276d2df1089bf318d1d9e2bb5539bbcb878c8d214a65fdc4ed1",
+      "decoded_pcm": {
+        "sha256": "9f7c12456cdc774c8901ebb1c728bf6f5fe5380f55dc2461faf1fe368ab2803c",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 195993,
+        "pcm_bits": 24
+      },
+      "reuse_flac_path": "Research/GrandPianoV2/reference/audio/C7v8.flac",
+      "reuse_wav_path": "Research/GrandPianoV2/reference/wav/C7v8.wav",
+      "duration_seconds": 4.0831875,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "C8v8",
+      "note": "C8",
+      "midi": 108,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "reserved_fresh_evaluation",
+      "previously_measured": false,
+      "source_sample": "C8v8.flac",
+      "source_path": "Samples/C8v8.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/C8v8.flac",
+      "git_blob_sha1": "48ebffd513821de09968fb36560d3d0a384b689c",
+      "flac_bytes": 428472,
+      "flac_path": "recordings/C8v8.flac",
+      "wav_path": "recordings/C8v8.wav",
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 708,
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null,
+      "source_manifest": "References/GrandFullRange/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandFullRange"
+    },
+    {
+      "id": "A3v4",
+      "note": "A3",
+      "midi": 57,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A3v4.flac",
+      "source_path": "Samples/A3v4.flac",
+      "git_blob_sha1": "85daca85afedb67bcb43091f237369fd11ab471f",
+      "flac_bytes": 1757672,
+      "flac_path": "recordings/A3v4.flac",
+      "wav_path": "recordings/A3v4.wav",
+      "flac_sha256": "7cfc9b2a18f8728431dfc236ca5c97793d3bdb413fd713eb13198c673982618f",
+      "wav_sha256": "99cfb26805ab192afcee0e3a6c8e9e27b2f0c2a66a761d1ccd4c993277cdb22f",
+      "decoded_pcm": {
+        "sha256": "788fcfe1cad016661f7329cd2bba2a24947926108529b0eba21b95a432f5cb51",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 748017,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        37,
+        43
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 546,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    },
+    {
+      "id": "A3v8",
+      "note": "A3",
+      "midi": 57,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A3v8.flac",
+      "source_path": "Samples/A3v8.flac",
+      "git_blob_sha1": "b4620f98c824e392d397866958d2e0b95db3f7ee",
+      "flac_bytes": 1787465,
+      "flac_path": "recordings/A3v8.flac",
+      "wav_path": "recordings/A3v8.wav",
+      "flac_sha256": "b02ed7c37d6b902552274c92d66911751ee52aac20b28618387e1388b1653ed4",
+      "wav_sha256": "96584d02f0d3e51d676a713f6708c942a4695207495239d9735c493f19c397cf",
+      "decoded_pcm": {
+        "sha256": "ac961d13c0bc255ee2dd895a1776c6a683bc173e0c6ce737047c5b0e12bfb868",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 749610,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 705,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    },
+    {
+      "id": "A3v12",
+      "note": "A3",
+      "midi": 57,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A3v12.flac",
+      "source_path": "Samples/A3v12.flac",
+      "git_blob_sha1": "eeb68a29bca9d50f817cbf667fef6cf52da805d5",
+      "flac_bytes": 1788330,
+      "flac_path": "recordings/A3v12.flac",
+      "wav_path": "recordings/A3v12.wav",
+      "flac_sha256": "d1fbc87c103c7c04ed6620156f6716c3b3862af36e6368e02bbf8886576b739e",
+      "wav_sha256": "52172c761e261116534290c45134c49da3c488fe508877a6de6a69fa8a00d525",
+      "decoded_pcm": {
+        "sha256": "2115724e87155ab9df65128a44b8fd04b8027c99d05939e38888f07f2e2d61cd",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 735165,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        89,
+        96
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 727,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    },
+    {
+      "id": "D#3v8",
+      "note": "D#3",
+      "midi": 51,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%233v8.flac",
+      "source_path": "Samples/D#3v8.flac",
+      "git_blob_sha1": "39c4deeac4149cb57627669f9aa7ffe2e7cf96dc",
+      "flac_bytes": 1770977,
+      "flac_path": "recordings/D#3v8.flac",
+      "wav_path": "recordings/D#3v8.wav",
+      "flac_sha256": "900ad0d774e6cefd44c1081b66d50556b3121bf1d3f255c5329a9117447b9cff",
+      "wav_sha256": "8a78d6658629d9f17a92f99ae0541454fc7aa6a747f94404b2e6643ee3cb65ac",
+      "decoded_pcm": {
+        "sha256": "60f44a094182bb0e5eadeae171b33b7f53c5a52326c0905eb8fddf1d6f6b526d",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 771912,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 781,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    },
+    {
+      "id": "D#4v8",
+      "note": "D#4",
+      "midi": 63,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%234v8.flac",
+      "source_path": "Samples/D#4v8.flac",
+      "git_blob_sha1": "d29ac26013b03f46ec0c787c05e494437cdd0213",
+      "flac_bytes": 1652067,
+      "flac_path": "recordings/D#4v8.flac",
+      "wav_path": "recordings/D#4v8.wav",
+      "flac_sha256": "295179461449c598c44ad712977d47b41c0c25d9c782d349094e748dc06c0dfa",
+      "wav_sha256": "a84de1e7bb8d7e2f5dc06126581f5f69b122ed07544902403d7d4b6ddb0fe502",
+      "decoded_pcm": {
+        "sha256": "678b4c5c1bde6cf54dd1580a372f0b529b7dbf142a7b9d0801e7a6b9bfe8d0e3",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 759551,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 687,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    },
+    {
+      "id": "A4v8",
+      "note": "A4",
+      "midi": 69,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/A4v8.flac",
+      "source_path": "Samples/A4v8.flac",
+      "git_blob_sha1": "f2d55a0077eca5782b8a70ae42bbe3230dc2cc26",
+      "flac_bytes": 1382828,
+      "flac_path": "recordings/A4v8.flac",
+      "wav_path": "recordings/A4v8.wav",
+      "flac_sha256": "59529694455698d7fd212cde8eec4029eaae8e5e6d454bb48bf36428eaa8009b",
+      "wav_sha256": "ca284d9ff71a08ddcef162ec737362bffc985cfae4bd84347475b9da9501a503",
+      "decoded_pcm": {
+        "sha256": "ce0224d74581b59dae7ac02e05b3a87634bd3894459760f076d77483a66ada41",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 639502,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 612,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    },
+    {
+      "id": "D#5v8",
+      "note": "D#5",
+      "midi": 75,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_evaluation",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/D%235v8.flac",
+      "source_path": "Samples/D#5v8.flac",
+      "git_blob_sha1": "2669ad6e47a5d17882db0960d2a05f162b2f0b1a",
+      "flac_bytes": 1276573,
+      "flac_path": "recordings/D#5v8.flac",
+      "wav_path": "recordings/D#5v8.wav",
+      "flac_sha256": "f841ad0506994313f4202fbe3f07d917e60eeb10fb3461df3eae4fb9cd58432a",
+      "wav_sha256": "888ccf9f046d5d4b2c26348eec18483e21b0ca322a292fc3dcea78fe1644f9ce",
+      "decoded_pcm": {
+        "sha256": "809765a03ed1d81fe968f22a93bcaa7caa8a25ddb8eb6e9766403ae3a6dbbc57",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 621479,
+        "pcm_bits": 24
+      },
+      "sfz_velocity_range": [
+        57,
+        64
+      ],
+      "sfz_default_start_offset_frames": 0,
+      "sfz_optional_full_cc98_start_offset_frames": 754,
+      "source_manifest": "References/GrandExpanded/manifest.json",
+      "source_root": "/workspace/virtual-instrument-keyra/References/GrandExpanded"
+    }
+  ],
+  "fresh_ids": [
+    "A0v8",
+    "C8v8"
+  ],
+  "fresh_reference_decoded_at_freeze": false,
+  "prediction_protocol": {
+    "sample_rate": 48000,
+    "duration_seconds": 3.8,
+    "note_on_seconds": 0.1,
+    "note_off_seconds": 4.15,
+    "pedal": 0,
+    "velocity": "Pinned SFZ-bin midpoint; not measured hammer velocity.",
+    "all_predictions_before_first_fresh_decode": true,
+    "features": "Frozen benchmark and censored edge helper; counterpart uses reference window/envelope support.",
+    "gain": "One per-case early0.05\u20130.75s RMS scalar; fixed throughout each note.",
+    "attack": "Report0\u20135ms/sub250Hz diagnostics; primary texture5\u2013100ms strong bands above250Hz.",
+    "components": "Reference-fixed unassigned component bands, including C8 near4434Hz; never move to model peaks.",
+    "comparison_groups": [
+      "fresh two extremes",
+      "historical full-range seven",
+      "historical interpolation seven"
+    ]
+  },
+  "predictions_from_training": {
+    "A0v8": "Expect harmonic error at least2dB and envelope at least1dB below control.",
+    "C8v8": "Expect substantial remaining error and missing4434Hz component; no complete fit expected.",
+    "historical": "Expect lower mean harmonic/envelope/5\u2013100ms attack error; individual regressions remain possible."
+  },
+  "acceptance_limits": {
+    "promotion_authorized": false,
+    "research_generalization": "Lower mean harmonic/envelope and5\u2013100ms attack errors on historical group; fresh cases shown individually.",
+    "severe_regression_reporting": "Every case retained; flag harmonic/envelope regression above2dB.",
+    "C8": "Failure to reproduce observed4434Hz component remains explicit regardless of aggregate gains.",
+    "realtime_or_perceptual_claim": "None; these are recording-agreement metrics on one piano/recording chain."
+  },
+  "training_result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/evaluation/training-result.json",
+    "sha256": "776e2cc604a8fbb602ec347e0d1a1164cef938dd10d360443ea167356b3754e1"
+  }
+}

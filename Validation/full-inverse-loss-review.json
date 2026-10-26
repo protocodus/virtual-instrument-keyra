@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "audited_at_utc": "2026-10-26T17:12:00.071312+00:00",
+  "passed": true,
+  "scope": "Read-only loss experiment audit; no evaluation or pedal-condition data opened.",
+  "source_files": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/probe_full_inverse_loss.py",
+      "sha256": "43189d2f0f90f0e9c1b04efc72a897eaa6fe8dcc820636894be138120a60b1aa"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss/source-snapshot/probe_full_inverse_loss.py",
+      "sha256": "f6817b54baf6f7759228fd6986c8c839459dd79b68ef66ca1746e1351a115a93"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss/freeze.json",
+      "sha256": "ddae981acba9777d20a92d28775dbff444afdfcbb7d1b996b7e58ab045e654a9"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss/report.json",
+      "sha256": "15030962f94f36aa8b358572311afd0a0b122dd6050bf5479f143a30061c80ec"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss-refinement/freeze.json",
+      "sha256": "ba1a83ec9d14ab0692e1eaa8dda64e4e828871316a6db56cbbe59c209db30083"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss-refinement/report.json",
+      "sha256": "598293db3d6e5e7d411eda1080f4f621a55b846966b3b90b3d80620540cd5062"
+    }
+  ],
+  "input_hashes_checked": 45,
+  "profile_banks_checked": 5,
+  "nonloss_key_fields_unchanged": true,
+  "generated_headers_match_numeric_profiles": 5,
+  "raw_manifests_checked": 7,
+  "wav_event_measurement_identity_checks_each": 118,
+  "reference_wave_container_hash_checks": 84,
+  "gate_comparisons_recomputed": 7,
+  "unchanged_gate_limits": true,
+  "initial_negative_banks_retained": 4,
+  "new_loss_predictions": 74,
+  "confirmation_prediction_reuse": {
+    "pilot_reused": 10,
+    "newly_rendered_remaining": 24,
+    "rows_match_original_receipts": true
+  },
+  "aggregation": "Attack errors are mean absolute valid5\u2013100ms/band errors within each case, then equal means across cases; not flat band-cell means.",
+  "gate_failures": {
+    "late-down": [
+      "case_envelope",
+      "case_harmonic",
+      "case_decay"
+    ],
+    "late-up": [
+      "mean_envelope",
+      "case_envelope",
+      "case_harmonic",
+      "mean_decay",
+      "case_decay",
+      "case_tuning"
+    ],
+    "excess-down": [
+      "case_envelope"
+    ],
+    "both-down": [
+      "case_envelope",
+      "mean_harmonic",
+      "case_harmonic",
+      "case_decay",
+      "case_tuning"
+    ],
+    "excess-refined-pilot": [],
+    "all_training": [
+      "case_envelope",
+      "case_harmonic"
+    ],
+    "remaining_training": [
+      "mean_envelope",
+      "case_envelope",
+      "case_harmonic"
+    ]
+  },
+  "phase_prose_only_correction_confirmed": true,
+  "promoted": false,
+  "findings": [],
+  "limits": [
+    "No new DSP/acoustic scoring or perceptual assessment performed.",
+    "The base already fitted TRAIN34; confirmation is conditional TRAIN response, not fresh generalization.",
+    "Original fixed-bank frozen tool is resolved through its exact archived source snapshot after an explanatory-only revision."
+  ]
+}

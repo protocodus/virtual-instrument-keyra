@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "completed_at_utc": "2026-10-26T18:42:19.804748+00:00",
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/freeze.json",
+    "sha256": "adf1d1ff33d16f9a25669976e4579fafaebeb28735ddbeec10f711f1f6d38af9"
+  },
+  "generation": [
+    {
+      "profile": "OriginalControl",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-S",
+        "/workspace/virtual-instrument-keyra/src/full_instrument/generate_prepared_model.py",
+        "--profile",
+        "OriginalControl",
+        "--output-dir",
+        "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl"
+      ],
+      "matches_tracked_model_calibration_and_provenance_exact": true,
+      "stdlib_only_python_S": true,
+      "outputs": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl/PreparedModel.h",
+          "sha256": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl/PreparedCalibration.h",
+          "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl/prepared_model_provenance.json",
+          "sha256": "8cd42fe265cf3168de097915c3e691caae88148c2f16228c655f8b8ddbaa4a96"
+        }
+      ]
+    },
+    {
+      "profile": "FrozenConfidenceGrand",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-S",
+        "/workspace/virtual-instrument-keyra/src/full_instrument/generate_prepared_model.py",
+        "--profile",
+        "FrozenConfidenceGrand",
+        "--output-dir",
+        "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand"
+      ],
+      "matches_tracked_model_calibration_and_provenance_exact": true,
+      "stdlib_only_python_S": true,
+      "outputs": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand/PreparedModel.h",
+          "sha256": "68d04ecff615c89d743467ad19e3a14fb5a381d41f875876b2cbf83d86324386"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand/PreparedCalibration.h",
+          "sha256": "fdeee2144dc45bd7b56078c146a6444710c038b62610e9be156adbc321908b63"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand/prepared_model_provenance.json",
+          "sha256": "4bc7ccc7f2d01b4a353dfdf3c94152fe32c20b71b5749968a373b2725580201d"
+        }
+      ]
+    }
+  ],
+  "invalid_profile_guards_passed": [
+    "wrong_anchor_inventory",
+    "short_array",
+    "nonfinite_radiation",
+    "nonpositive_scalar",
+    "prompt_below_late",
+    "boolean_numeric"
+  ],
+  "source_match_count_guards_passed": true,
+  "candidate_cannot_overwrite_control": true,
+  "original_model_and_calibration_exact": true,
+  "structural_tests": [
+    {
+      "profile": "OriginalControl",
+      "passed": true,
+      "stdout": "Full profile topology, anchor, four-rate finite excitation and allocation-free reset checks passed\n",
+      "binary": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl/profile-tests",
+        "sha256": "f41837f4b450162ee68c10007642c1d5563b2b428abf214894a7f9d4809c42e5"
+      }
+    },
+    {
+      "profile": "FrozenConfidenceGrand",
+      "passed": true,
+      "stdout": "Full profile topology, anchor, four-rate finite excitation and allocation-free reset checks passed\n",
+      "binary": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand/profile-tests",
+        "sha256": "d2b36c55eaed6d759afc5a680483395d54e45b3625138735791db4c5693b700d"
+      }
+    }
+  ],
+  "candidate_cli_parity": [
+    {
+      "rate": 48000,
+      "frames": 8192,
+      "bit_identical_float32": true,
+      "audio_sha256": "ba850359f682ee2d814c42c7d1d21501a06218cbd6d850b00b5214d0152b1fce",
+      "cli_metrics": {
+        "sample_rate": 48000,
+        "duration_seconds": 0.17065625,
+        "wall_seconds": 0.569267437,
+        "realtime_factor": 3.335754987,
+        "string_count": 230,
+        "string_modes": 17849,
+        "board_modes": 475,
+        "raw_peak": 1.54758671759,
+        "raw_rms": 0.426511970578,
+        "nonfinite_samples": 0,
+        "max_hammer_force_N": 63.5895322461,
+        "accumulated_contact_seconds": 0.00745833333333,
+        "contact_solves": 359,
+        "contact_max_relative_residual": 4.39243814216e-13,
+        "final_mechanical_energy_J": 0.00478311342372
+      },
+      "outputs": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/48000/reference.wav",
+          "sha256": "7352e2c7ee968b469b5603e59e3ca0ceb761894d132fbf99ebe7dcb75bea12e1"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/48000/private.f32",
+          "sha256": "ba850359f682ee2d814c42c7d1d21501a06218cbd6d850b00b5214d0152b1fce"
+        }
+      ]
+    },
+    {
+      "rate": 96000,
+      "frames": 8192,
+      "bit_identical_float32": true,
+      "audio_sha256": "d1c7cd9e4f2f4cdccaaf52b2b4d3bf375991556c9e127adeade52385bff74316",
+      "cli_metrics": {
+        "sample_rate": 96000,
+        "duration_seconds": 0.085328125,
+        "wall_seconds": 0.532849581,
+        "realtime_factor": 6.24471217433,
+        "string_count": 230,
+        "string_modes": 17849,
+        "board_modes": 475,
+        "raw_peak": 1.57349991444,
+        "raw_rms": 0.522604332404,
+        "nonfinite_samples": 0,
+        "max_hammer_force_N": 63.7063195609,
+        "accumulated_contact_seconds": 0.00748958333333,
+        "contact_solves": 724,
+        "contact_max_relative_residual": 1.54719138041e-12,
+        "final_mechanical_energy_J": 0.0206168598524
+      },
+      "outputs": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/96000/reference.wav",
+          "sha256": "b651fa64d1fd98eb9ed66d7ba244b7a6449e12e9ae01cd2179939a1ca3f75bdd"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/96000/private.f32",
+          "sha256": "d1c7cd9e4f2f4cdccaaf52b2b4d3bf375991556c9e127adeade52385bff74316"
+        }
+      ]
+    }
+  ],
+  "reference_source": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/reference/grand.cpp",
+    "sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56"
+  },
+  "reference_calibration": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/reference/calibration.h",
+    "sha256": "fdeee2144dc45bd7b56078c146a6444710c038b62610e9be156adbc321908b63"
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "compile_commands": [
+    [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/reference/grand.cpp",
+      "-o",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/reference/render"
+    ],
+    [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-DKEYRA_FULL_FAST_CONTACT=0",
+      "-DKEYRA_FULL_PRESSURE_SIMD=0",
+      "-I/workspace/virtual-instrument-keyra/include",
+      "-DKEYRA_PROFILE_MODEL_HEADER=\"/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl/PreparedModel.h\"",
+      "-DKEYRA_PROFILE_EXPECT_ANCHORS=5",
+      "-DKEYRA_PROFILE_EXPECT_STRING_MODES=17778",
+      "/workspace/virtual-instrument-keyra/tests/full_profile_tests.cpp",
+      "-o",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/OriginalControl/profile-tests"
+    ],
+    [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-DKEYRA_FULL_FAST_CONTACT=0",
+      "-DKEYRA_FULL_PRESSURE_SIMD=0",
+      "-I/workspace/virtual-instrument-keyra/include",
+      "-DKEYRA_PROFILE_MODEL_HEADER=\"/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand/PreparedModel.h\"",
+      "-DKEYRA_PROFILE_EXPECT_ANCHORS=17",
+      "-DKEYRA_PROFILE_EXPECT_STRING_MODES=17849",
+      "/workspace/virtual-instrument-keyra/tests/full_profile_tests.cpp",
+      "-o",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand/profile-tests"
+    ],
+    [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-DKEYRA_FULL_FAST_CONTACT=0",
+      "-DKEYRA_FULL_PRESSURE_SIMD=0",
+      "-I/workspace/virtual-instrument-keyra/include",
+      "-I/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/48000/private.cpp",
+      "-o",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/48000/private"
+    ],
+    [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-DKEYRA_FULL_FAST_CONTACT=0",
+      "-DKEYRA_FULL_PRESSURE_SIMD=0",
+      "-I/workspace/virtual-instrument-keyra/include",
+      "-I/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/FrozenConfidenceGrand",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/96000/private.cpp",
+      "-o",
+      "/workspace/virtual-instrument-keyra/out/full-profile-phase-a/v3/96000/private"
+    ]
+  ],
+  "full_instrument_reason_native_scalar_asan_integration": "Pending Phase B after cache source ownership release.",
+  "numeric_fit_or_acquisition": false,
+  "candidate_promoted": false
+}

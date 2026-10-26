@@ -1,0 +1,34 @@
+{
+  "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+  "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "precision": "hot_f32_biased",
+  "default_control": true,
+  "profile": {
+    "name": "OriginalControl",
+    "selector": 0,
+    "expected_topology": {
+      "strings": 230,
+      "string_modes": 17778,
+      "board_modes": 475
+    },
+    "runtime_audio_or_json_loading": false
+  },
+  "generator_sha256": "eae90644da1b937fcb6c7e04515d5a10d227e8c5ef061ba86ea4dc65986600e7",
+  "precision_transform_source": "tools/probe_full_precision.py:precision,hot_precision",
+  "precision_tool_sha256": "280d77738d50f23b0fbcd14822edb50a1bda22428fafa43e16f45a493426f961",
+  "precision_transform_sha256": "e8261b494d929caaa08182dec6a5836b730afdf7da84514ff93d9cc9689b16b4",
+  "pressure_reduction": {
+    "macro": "KEYRA_FULL_PRESSURE_SIMD",
+    "required_compiler_flag": "-fopenmp-simd",
+    "optimized": "local nonaliasing pointers; pressure-only float reduction, simdlen(4)",
+    "fallback": "original expressions and summation order; macro zero or undefined"
+  },
+  "fast_contact": {
+    "macro": "KEYRA_FULL_FAST_CONTACT",
+    "solver_header": "include/keyra/physics/ContactSolver.h",
+    "solver_sha256": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+    "fallback": "legacy contact method verbatim; macro zero or undefined",
+    "failure_policy": "invalid or unconverged result retires only the hammer; tentative force never applied"
+  },
+  "generated_model_sha256": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36"
+}

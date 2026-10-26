@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-26T17:34:06.135597+00:00",
+  "native": {
+    "schema_version": 1,
+    "passed": true,
+    "maximum_acoustic_balance_residual_j": 4.573977915173222e-20,
+    "maximum_actual_reaction_work_residual_j": 1.0587911840678754e-22,
+    "maximum_unforced_energy_increase_j": 0,
+    "cavity_to_unstruck_strings_maximum_j": 4.837694425917853e-12,
+    "cavity_to_mechanisms_maximum_j": 3.492747595528168e-11,
+    "board_to_cavity_maximum_j": 1.9108908077515815e-09,
+    "mechanisms_to_cavity_maximum_j": 1.7003685516394898e-11,
+    "callback_allocations": 0,
+    "wrapped_callback_mutex_calls": 0,
+    "wrapped_callback_io_calls": 0,
+    "wrapped_io_and_locks_enabled": true,
+    "scope": "Full original solver plus action, mechanisms and reciprocal air research adapter; no host or SDK claim."
+  },
+  "asan_ubsan": {
+    "schema_version": 1,
+    "passed": true,
+    "maximum_acoustic_balance_residual_j": 4.573977915173222e-20,
+    "maximum_actual_reaction_work_residual_j": 1.0587911840678754e-22,
+    "maximum_unforced_energy_increase_j": 0,
+    "cavity_to_unstruck_strings_maximum_j": 4.837694425917853e-12,
+    "cavity_to_mechanisms_maximum_j": 3.492747595528168e-11,
+    "board_to_cavity_maximum_j": 1.9108908077515815e-09,
+    "mechanisms_to_cavity_maximum_j": 1.7003685516394898e-11,
+    "callback_allocations": 0,
+    "wrapped_callback_mutex_calls": 0,
+    "wrapped_callback_io_calls": 0,
+    "wrapped_io_and_locks_enabled": false,
+    "scope": "Full original solver plus action, mechanisms and reciprocal air research adapter; no host or SDK claim."
+  },
+  "exports": {
+    "checked_audio_count": 60,
+    "all_48khz_stereo_float32_finite": true,
+    "maximum_shared_gain_export_peak": 0.800000011920929,
+    "maximum_exported_delta_reconstruction_error": 1.3722711855734815e-08,
+    "coupling_off_vs_load_off_combined_bit_exact": true,
+    "source_off_cavity_nonzero": true,
+    "source_off_vs_load_off_passive_load_raw_proxy_rms": 0.0003801064355415501,
+    "source_off_vs_load_off_passive_load_raw_proxy_peak": 0.001918586239596374
+  },
+  "invariants": {
+    "preserved_full_source_sha_matches_existing_provenance": true,
+    "calibration_equal_to_immutable_research": true,
+    "strike_and_mechanism_adapters_unchanged": true,
+    "acoustic_equations_and_configuration_module_unchanged": true,
+    "research_tree_git_status_clean": true,
+    "no_corpus_changes_or_reserved_audio_io_in_this_task": true
+  },
+  "limits": [
+    "Focused C++ source/frame-path checks and shared-host diagnostic throughput only.",
+    "No DAW/SDK/production real-time or recorded/listening realism claim.",
+    "Reserved audio nonaccess is a workflow record, not a forensic claim."
+  ]
+}

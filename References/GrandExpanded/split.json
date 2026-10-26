@@ -1,0 +1,511 @@
+{
+  "schema_version": 1,
+  "locked_before_new_downloads_and_feature_extraction": true,
+  "locked_date": "2026-10-26",
+  "source_repository": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+  "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "rule": "Fit only the 26 designated C/D#/A anchor cases at source layers4/12. Preserve all A3 layers4/8/12 as fresh pitch validation and D#3v8/D#4v8/A4v8/D#5v8 as fresh velocity validation. Old nontraining cases remain historical regression evidence, not fresh tests. No validation data may enter fit, training cross-validation or model selection.",
+  "anchor_midis": [
+    33,
+    36,
+    39,
+    45,
+    48,
+    51,
+    60,
+    63,
+    69,
+    72,
+    75,
+    81,
+    84
+  ],
+  "training_cases": 26,
+  "new_training_cases": 16,
+  "fresh_validation_cases": 7,
+  "training_ids": [
+    "A1v4",
+    "A1v12",
+    "C2v4",
+    "C2v12",
+    "D#2v4",
+    "D#2v12",
+    "A2v4",
+    "A2v12",
+    "C3v4",
+    "C3v12",
+    "D#3v4",
+    "D#3v12",
+    "C4v4",
+    "C4v12",
+    "D#4v4",
+    "D#4v12",
+    "A4v4",
+    "A4v12",
+    "C5v4",
+    "C5v12",
+    "D#5v4",
+    "D#5v12",
+    "A5v4",
+    "A5v12",
+    "C6v4",
+    "C6v12"
+  ],
+  "fresh_validation_ids": [
+    "A3v4",
+    "A3v8",
+    "A3v12",
+    "D#3v8",
+    "D#4v8",
+    "A4v8",
+    "D#5v8"
+  ],
+  "original_frozen_split_sha256": "d8f7969885ab0a6060a064e6165145473a1e2bb20f291e2818410b6d37db7169",
+  "velocity_caveat": "model_velocity is rounded midpoint of the upstream SFZ playback bin, not a measured recording MIDI value or calibrated physical hammer velocity.",
+  "unknown_acquisition_conditions": [
+    "pedal state",
+    "physical hammer speed",
+    "key release time",
+    "room",
+    "editing/noise-reduction history"
+  ],
+  "samples": [
+    {
+      "id": "A1v4",
+      "midi": 33,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A1v4.flac"
+    },
+    {
+      "id": "A1v12",
+      "midi": 33,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A1v12.flac"
+    },
+    {
+      "id": "C2v4",
+      "midi": 36,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C2v4.flac"
+    },
+    {
+      "id": "C2v12",
+      "midi": 36,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C2v12.flac"
+    },
+    {
+      "id": "D#2v4",
+      "midi": 39,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#2v4.flac"
+    },
+    {
+      "id": "D#2v12",
+      "midi": 39,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#2v12.flac"
+    },
+    {
+      "id": "A2v4",
+      "midi": 45,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A2v4.flac"
+    },
+    {
+      "id": "A2v12",
+      "midi": 45,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A2v12.flac"
+    },
+    {
+      "id": "C3v4",
+      "midi": 48,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C3v4.flac"
+    },
+    {
+      "id": "C3v12",
+      "midi": 48,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C3v12.flac"
+    },
+    {
+      "id": "D#3v4",
+      "midi": 51,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#3v4.flac"
+    },
+    {
+      "id": "D#3v12",
+      "midi": 51,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#3v12.flac"
+    },
+    {
+      "id": "C4v4",
+      "midi": 60,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C4v4.flac"
+    },
+    {
+      "id": "C4v12",
+      "midi": 60,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C4v12.flac"
+    },
+    {
+      "id": "D#4v4",
+      "midi": 63,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#4v4.flac"
+    },
+    {
+      "id": "D#4v12",
+      "midi": 63,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#4v12.flac"
+    },
+    {
+      "id": "A4v4",
+      "midi": 69,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A4v4.flac"
+    },
+    {
+      "id": "A4v12",
+      "midi": 69,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A4v12.flac"
+    },
+    {
+      "id": "C5v4",
+      "midi": 72,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C5v4.flac"
+    },
+    {
+      "id": "C5v12",
+      "midi": 72,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C5v12.flac"
+    },
+    {
+      "id": "D#5v4",
+      "midi": 75,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#5v4.flac"
+    },
+    {
+      "id": "D#5v12",
+      "midi": 75,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "D#5v12.flac"
+    },
+    {
+      "id": "A5v4",
+      "midi": 81,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A5v4.flac"
+    },
+    {
+      "id": "A5v12",
+      "midi": 81,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": false,
+      "source_sample": "A5v12.flac"
+    },
+    {
+      "id": "C6v4",
+      "midi": 84,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C6v4.flac"
+    },
+    {
+      "id": "C6v12",
+      "midi": 84,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "train",
+      "previously_measured": true,
+      "source_sample": "C6v12.flac"
+    },
+    {
+      "id": "A3v4",
+      "midi": 57,
+      "layer": 4,
+      "midi_velocity": 40,
+      "role": "fresh_validation_pitch",
+      "previously_measured": false,
+      "source_sample": "A3v4.flac"
+    },
+    {
+      "id": "A3v8",
+      "midi": 57,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_pitch",
+      "previously_measured": false,
+      "source_sample": "A3v8.flac"
+    },
+    {
+      "id": "A3v12",
+      "midi": 57,
+      "layer": 12,
+      "midi_velocity": 93,
+      "role": "fresh_validation_pitch",
+      "previously_measured": false,
+      "source_sample": "A3v12.flac"
+    },
+    {
+      "id": "D#3v8",
+      "midi": 51,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "previously_measured": false,
+      "source_sample": "D#3v8.flac"
+    },
+    {
+      "id": "D#4v8",
+      "midi": 63,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "previously_measured": false,
+      "source_sample": "D#4v8.flac"
+    },
+    {
+      "id": "A4v8",
+      "midi": 69,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "previously_measured": false,
+      "source_sample": "A4v8.flac"
+    },
+    {
+      "id": "D#5v8",
+      "midi": 75,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "fresh_validation_velocity",
+      "previously_measured": false,
+      "source_sample": "D#5v8.flac"
+    },
+    {
+      "id": "C2v8",
+      "midi": 36,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C2v8.flac"
+    },
+    {
+      "id": "C3v8",
+      "midi": 48,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C3v8.flac"
+    },
+    {
+      "id": "C4v8",
+      "midi": 60,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C4v8.flac"
+    },
+    {
+      "id": "C5v8",
+      "midi": 72,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C5v8.flac"
+    },
+    {
+      "id": "C6v8",
+      "midi": 84,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C6v8.flac"
+    },
+    {
+      "id": "F#2v8",
+      "midi": 42,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_pitch",
+      "source_sample": "F#2v8.flac"
+    },
+    {
+      "id": "F#3v8",
+      "midi": 54,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_pitch",
+      "source_sample": "F#3v8.flac"
+    },
+    {
+      "id": "F#4v8",
+      "midi": 66,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_pitch",
+      "source_sample": "F#4v8.flac"
+    },
+    {
+      "id": "F#5v8",
+      "midi": 78,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_pitch",
+      "source_sample": "F#5v8.flac"
+    },
+    {
+      "id": "C3v6",
+      "midi": 48,
+      "layer": 6,
+      "midi_velocity": 49,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C3v6.flac"
+    },
+    {
+      "id": "C4v6",
+      "midi": 60,
+      "layer": 6,
+      "midi_velocity": 49,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C4v6.flac"
+    },
+    {
+      "id": "C5v6",
+      "midi": 72,
+      "layer": 6,
+      "midi_velocity": 49,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "heldout_velocity",
+      "source_sample": "C5v6.flac"
+    },
+    {
+      "id": "C1v8",
+      "midi": 24,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "edge_extrapolation",
+      "source_sample": "C1v8.flac"
+    },
+    {
+      "id": "C7v8",
+      "midi": 96,
+      "layer": 8,
+      "midi_velocity": 61,
+      "role": "historical_regression",
+      "previously_measured": true,
+      "historical_split": "edge_extrapolation",
+      "source_sample": "C7v8.flac"
+    }
+  ]
+}

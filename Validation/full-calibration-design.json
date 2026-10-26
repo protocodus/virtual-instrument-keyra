@@ -1,0 +1,2254 @@
+{
+  "schema_version": 1,
+  "scope": "Original full coupled model calibration extension; locked TRAIN34 only; no canonical/source/default header change",
+  "status": "Version4 joint radiation candidate computed and frozen on32unambiguousTRAINcases;136full/stemWAVs+34events+allactualinput/source/binary/headerhashes verified before/after fit. C8priorfields exactunchanged. Await finalactual34candidate renders; optimizationhit350iterationcap andisnotclaimedconverged.",
+  "source_invariants": {
+    "preserved_research_grand_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+    "preserved_research_calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "physical_structure": [
+      "88 keys",
+      "230strings",
+      "two string polarizations",
+      "positive common-unison dissipation",
+      "nonlinear discrete-gradient/Hunt-Crossley hammer",
+      "reciprocal3-port string/board coupling",
+      "475board modes",
+      "complex loaded-board radiation phase"
+    ],
+    "pressure_replacement": false,
+    "recorded_waveform_or_IR_embedded": false,
+    "precision_changed_by_fitter": false,
+    "string_mode_count_limit": "Mode caps/cutoffs retained; measured tuning/B can move a mode across the existing frequency cutoff.",
+    "candidate_carrier_not_forced_to_dominant_C8_component": true
+  },
+  "data": {
+    "training_cases": 34,
+    "anchors": 17,
+    "anchor_midis": [
+      21,
+      24,
+      33,
+      36,
+      39,
+      45,
+      48,
+      51,
+      60,
+      63,
+      69,
+      72,
+      75,
+      81,
+      84,
+      96,
+      108
+    ],
+    "source_layers": [
+      4,
+      12
+    ],
+    "training_ids": [
+      "A0v12",
+      "A0v4",
+      "A1v12",
+      "A1v4",
+      "A2v12",
+      "A2v4",
+      "A4v12",
+      "A4v4",
+      "A5v12",
+      "A5v4",
+      "C1v12",
+      "C1v4",
+      "C2v12",
+      "C2v4",
+      "C3v12",
+      "C3v4",
+      "C4v12",
+      "C4v4",
+      "C5v12",
+      "C5v4",
+      "C6v12",
+      "C6v4",
+      "C7v12",
+      "C7v4",
+      "C8v12",
+      "C8v4",
+      "D#2v12",
+      "D#2v4",
+      "D#3v12",
+      "D#3v4",
+      "D#4v12",
+      "D#4v4",
+      "D#5v12",
+      "D#5v4"
+    ],
+    "fresh_evaluation_audio_opened": false,
+    "evaluation_used_for_fitting_or_selection": false,
+    "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+    "inputs": [
+      {
+        "path": "References/GrandFullRange/split.json",
+        "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428"
+      },
+      {
+        "path": "References/GrandFullRange/train_features.json",
+        "sha256": "0a736544aba17f52db23823ed49c026e4a752a2c9b016ae3aec0a005fbf35218"
+      },
+      {
+        "path": "References/GrandFullRange/combined_train_features.json",
+        "sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7"
+      },
+      {
+        "path": "References/GrandFullRange/training-quality.json",
+        "sha256": "81ee3236793bde5e664d721fb779b0b7ac72f0d7bf7b05e9d134ad4970b177ab"
+      },
+      {
+        "path": "References/GrandFullRange/measurement-revision.json",
+        "sha256": "4c46bfd086b87edbfdad44a4ae8d6fb6a9e904e77359a4d52e2138524993f44b"
+      },
+      {
+        "path": "References/GrandExpanded/train_features.json",
+        "sha256": "c571fd7bf5e064ed41960849e8f6a67eca4c60188fda4abe90aeced1762206cf"
+      }
+    ],
+    "measurement_version": 2
+  },
+  "implementation": {
+    "tool": {
+      "path": "tools/fit_full_calibration.py",
+      "sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550"
+    },
+    "documentation": {
+      "path": "docs/FULL_CALIBRATION.md",
+      "sha256": "a73d8a63dc8525d6acd0b32333f42e67c65a3376708dad5bb873bd1ad74e48e3"
+    },
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "commands": [
+      "mechanics",
+      "analytic",
+      "build",
+      "stiffness-proposal",
+      "strike-bank",
+      "score",
+      "radiation",
+      "header"
+    ],
+    "candidate_only_source_transform_count": 5,
+    "candidate_source_transform_details": [
+      {
+        "before": "double cents=std::clamp(lerp(centsA,centsB,cal.t),-25.0,30.0);",
+        "after": "double cents=std::clamp(lerp(centsA,centsB,cal.t),-70.0,70.0);",
+        "reason": "Allow directly observed TRAIN tuning within the frozen pitch extractor search bounds."
+      },
+      {
+        "before": "explicit Cal(int note){lo=std::clamp((note-36)/12,0,3);hi=lo+1;t=(note-piano_calibration::anchors[lo].note)/12.0;}",
+        "after": "explicit Cal(int note){lo=0;hi=1;while(hi+1<(int)piano_calibration::anchors.size()&&note>=piano_calibration::anchors[hi].note){++lo;++hi;}t=(note-piano_calibration::anchors[lo].note)/(double)(piano_calibration::anchors[hi].note-piano_calibration::anchors[lo].note);}",
+        "reason": "Use the sorted measured anchor notes and actual semitone distances."
+      },
+      {
+        "before": "if(n<36)k.B=piano_calibration::anchors[0].B*std::pow(2.0,(36-n)/18.0);",
+        "after": "if(n<piano_calibration::anchors.front().note)k.B=piano_calibration::anchors.front().B*std::pow(2.0,(piano_calibration::anchors.front().note-n)/18.0);",
+        "reason": "Apply bass stiffness extrapolation only outside measured anchors."
+      },
+      {
+        "before": "if(n>84)late*=std::pow(2.0,(n-84)/24.0);",
+        "after": "if(n>piano_calibration::anchors.back().note)late*=std::pow(2.0,(n-piano_calibration::anchors.back().note)/24.0);",
+        "reason": "Apply treble intrinsic-loss extrapolation only outside measured anchors."
+      },
+      {
+        "before": "if(n>84){late*=std::pow(2.0,(n-84)/24.0);fast*=std::pow(2.0,(n-84)/24.0);}",
+        "after": "if(n>piano_calibration::anchors.back().note){late*=std::pow(2.0,(n-piano_calibration::anchors.back().note)/24.0);fast*=std::pow(2.0,(n-piano_calibration::anchors.back().note)/24.0);}",
+        "reason": "Apply treble common-unison loss extrapolation only outside measured anchors."
+      }
+    ],
+    "canonical_source_or_calibration_edited": false,
+    "header_schema": {
+      "partials": 64,
+      "variable_anchors": true,
+      "absolute_radiation_units": "20log10|H|",
+      "two_positive_magnitudes": true
+    }
+  },
+  "parameter_identification_order": [
+    {
+      "stage": 1,
+      "parameters": [
+        "f1",
+        "B"
+      ],
+      "evidence": "Good identifiable>=4peakTRAIN fits; directly observed fundamental allowed without identifiableB. No placeholder B accepted.",
+      "edge_limits": "C7Bunidentified; C8weak4276Hz family +strong4434Hz component have ambiguous physical identity, Bnotidentifiable. Preserve candidatecarrier and inherited positiveboundedBprior; do not infer stiffness from the unassignedcomponent."
+    },
+    {
+      "stage": 2,
+      "parameters": [
+        "sigma_late",
+        "sigma_prompt"
+      ],
+      "evidence": "Reliable negative partial-band amplitude slopes at two training velocities with positive log-field smoothing.",
+      "mapping": "late supplies intrinsic loss/radiative port loss; nonnegative prompt-late supplies passive common-unison damping.",
+      "limits": "Microphone slopes are not unique isolated physical losses; actual coupled renders and full body/envelope remain required."
+    },
+    {
+      "stage": 3,
+      "parameters": [
+        "hardness",
+        "velocity_exponent"
+      ],
+      "evidence": "Bounded actual nonlinear solver probes; earlybands/crest/centroid plus body and unnormalized soft-hard contrast.",
+      "original_workflow_audit": "Original hardness fixed1; velocity exponents authored .69/.70/.86/.74/.78, not inferred by original script from attack rise.",
+      "detune_scale": "Inherited authored field; no new unison tuning identified from weak/noisy late peaks."
+    },
+    {
+      "stage": 4,
+      "parameters": [
+        "radiation_db",
+        "radiation_after_db"
+      ],
+      "evidence": "Actual analytic-observation primary/secondary/transient stereo Gram matrices over exact reference support; bounded positive joint field fit.",
+      "mechanical_state_modified": false,
+      "complex_phase_retained": true,
+      "observation_gain_limits": [
+        0.025,
+        40.0
+      ]
+    }
+  ],
+  "mechanics_diagnostics": [
+    {
+      "midi": 21,
+      "training_ids": [
+        "A0v4",
+        "A0v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -25.52126808594169,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 28,
+        "early": 68
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 24,
+      "training_ids": [
+        "C1v4",
+        "C1v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -24.964878332289196,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 27,
+        "early": 72
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 33,
+      "training_ids": [
+        "A1v4",
+        "A1v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -5.898280201673174,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 20,
+        "early": 62
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 36,
+      "training_ids": [
+        "C2v4",
+        "C2v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -10.411910983521208,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 23,
+        "early": 51
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 39,
+      "training_ids": [
+        "D#2v4",
+        "D#2v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -6.185855383274999,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 28,
+        "early": 37
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 45,
+      "training_ids": [
+        "A2v4",
+        "A2v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -1.2877570169971875,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 15,
+        "early": 36
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 48,
+      "training_ids": [
+        "C3v4",
+        "C3v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -3.675887666012977,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 14,
+        "early": 30
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 51,
+      "training_ids": [
+        "D#3v4",
+        "D#3v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -2.5254436087349927,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 17,
+        "early": 36
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 60,
+      "training_ids": [
+        "C4v4",
+        "C4v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -0.17265401630260938,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 8,
+        "early": 25
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ]
+    },
+    {
+      "midi": 63,
+      "training_ids": [
+        "D#4v4",
+        "D#4v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": -0.1820067133680119,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 6,
+        "early": 24
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42
+      ]
+    },
+    {
+      "midi": 69,
+      "training_ids": [
+        "A4v4",
+        "A4v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": 0.9253536543055393,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 5,
+        "early": 17
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "midi": 72,
+      "training_ids": [
+        "C5v4",
+        "C5v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": 3.2436445585019893,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 4,
+        "early": 15
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    {
+      "midi": 75,
+      "training_ids": [
+        "D#5v4",
+        "D#5v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": 2.4824940612642012,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 4,
+        "early": 11
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    },
+    {
+      "midi": 81,
+      "training_ids": [
+        "A5v4",
+        "A5v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": 3.8106042206435755,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 3,
+        "early": 9
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "midi": 84,
+      "training_ids": [
+        "C6v4",
+        "C6v12"
+      ],
+      "good_pitch_fits": 2,
+      "B_source": "measured",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": 6.360738250801404,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 2,
+        "early": 10
+      },
+      "observed_partial_orders": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "midi": 96,
+      "training_ids": [
+        "C7v4",
+        "C7v12"
+      ],
+      "good_pitch_fits": 0,
+      "B_source": "inherited positive prior",
+      "pitch_identity_ambiguous": false,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [],
+      "unclipped_tuning_cents": 23.659878736920188,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 0,
+        "early": 2
+      },
+      "observed_partial_orders": [
+        1
+      ]
+    },
+    {
+      "midi": 108,
+      "training_ids": [
+        "C8v4",
+        "C8v12"
+      ],
+      "good_pitch_fits": 0,
+      "B_source": "inherited positive prior",
+      "pitch_identity_ambiguous": true,
+      "frequency_interpretation": "Candidate carrier/key-family frequency; no unassigned dominant component is forced into f1.",
+      "unassigned_components_hz": [
+        4433.88935324979,
+        4433.832632086339
+      ],
+      "unclipped_tuning_cents": 37.12875359467456,
+      "tuning_clipped_to_engine_bounds": false,
+      "accepted_loss_observations": {
+        "late": 0,
+        "early": 2
+      },
+      "observed_partial_orders": [
+        1
+      ]
+    }
+  ],
+  "edge_fundamental_window_quality": [
+    {
+      "id": "A0v4",
+      "partial": 1,
+      "window_index": 0,
+      "window_seconds": [
+        0.05,
+        0.25
+      ],
+      "band_hz": [
+        16.80094169995104,
+        37.395644428923276
+      ],
+      "band_to_equal_width_neighbor_bands_db": -1.2607301307655674,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v4",
+      "partial": 1,
+      "window_index": 1,
+      "window_seconds": [
+        0.25,
+        0.75
+      ],
+      "band_hz": [
+        21.098293064437158,
+        33.09829306443716
+      ],
+      "band_to_equal_width_neighbor_bands_db": -6.415694081254371,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v4",
+      "partial": 1,
+      "window_index": 2,
+      "window_seconds": [
+        0.75,
+        1.5
+      ],
+      "band_hz": [
+        23.098293064437158,
+        31.098293064437158
+      ],
+      "band_to_equal_width_neighbor_bands_db": -2.6767116319118567,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v4",
+      "partial": 1,
+      "window_index": 3,
+      "window_seconds": [
+        1.5,
+        3.5
+      ],
+      "band_hz": [
+        25.598293064437158,
+        28.598293064437158
+      ],
+      "band_to_equal_width_neighbor_bands_db": 5.407504877004885,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v12",
+      "partial": 1,
+      "window_index": 0,
+      "window_seconds": [
+        0.05,
+        0.25
+      ],
+      "band_hz": [
+        16.800054716279273,
+        37.39367017494419
+      ],
+      "band_to_equal_width_neighbor_bands_db": -5.032244083290016,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v12",
+      "partial": 1,
+      "window_index": 1,
+      "window_seconds": [
+        0.25,
+        0.75
+      ],
+      "band_hz": [
+        21.09686244561173,
+        33.096862445611734
+      ],
+      "band_to_equal_width_neighbor_bands_db": -10.929072020955786,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v12",
+      "partial": 1,
+      "window_index": 2,
+      "window_seconds": [
+        0.75,
+        1.5
+      ],
+      "band_hz": [
+        23.09686244561173,
+        31.09686244561173
+      ],
+      "band_to_equal_width_neighbor_bands_db": 1.1915437339907144,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "A0v12",
+      "partial": 1,
+      "window_index": 3,
+      "window_seconds": [
+        1.5,
+        3.5
+      ],
+      "band_hz": [
+        25.59686244561173,
+        28.59686244561173
+      ],
+      "band_to_equal_width_neighbor_bands_db": 14.803488993148882,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v4",
+      "partial": 1,
+      "window_index": 0,
+      "window_seconds": [
+        0.05,
+        0.25
+      ],
+      "band_hz": [
+        2106.8704126096545,
+        2136.8704126096545
+      ],
+      "band_to_equal_width_neighbor_bands_db": 23.406713458134185,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v4",
+      "partial": 1,
+      "window_index": 1,
+      "window_seconds": [
+        0.25,
+        0.75
+      ],
+      "band_hz": [
+        2113.382930959216,
+        2130.357894260093
+      ],
+      "band_to_equal_width_neighbor_bands_db": 30.065812084257786,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v4",
+      "partial": 1,
+      "window_index": 2,
+      "window_seconds": [
+        0.75,
+        1.5
+      ],
+      "band_hz": [
+        2113.382930959216,
+        2130.357894260093
+      ],
+      "band_to_equal_width_neighbor_bands_db": 34.2290401425806,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v4",
+      "partial": 1,
+      "window_index": 3,
+      "window_seconds": [
+        1.5,
+        3.5
+      ],
+      "band_hz": [
+        2113.382930959216,
+        2130.357894260093
+      ],
+      "band_to_equal_width_neighbor_bands_db": 28.69879949058653,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v12",
+      "partial": 1,
+      "window_index": 0,
+      "window_seconds": [
+        0.05,
+        0.25
+      ],
+      "band_hz": [
+        2106.7393519792918,
+        2136.7393519792918
+      ],
+      "band_to_equal_width_neighbor_bands_db": 22.862426846732887,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v12",
+      "partial": 1,
+      "window_index": 1,
+      "window_seconds": [
+        0.25,
+        0.75
+      ],
+      "band_hz": [
+        2113.2523945713747,
+        2130.226309387209
+      ],
+      "band_to_equal_width_neighbor_bands_db": 26.618574567587316,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v12",
+      "partial": 1,
+      "window_index": 2,
+      "window_seconds": [
+        0.75,
+        1.5
+      ],
+      "band_hz": [
+        2113.2523945713747,
+        2130.226309387209
+      ],
+      "band_to_equal_width_neighbor_bands_db": 31.628577963291676,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C7v12",
+      "partial": 1,
+      "window_index": 3,
+      "window_seconds": [
+        1.5,
+        3.5
+      ],
+      "band_hz": [
+        2113.2523945713747,
+        2130.226309387209
+      ],
+      "band_to_equal_width_neighbor_bands_db": 38.4517515097966,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v4",
+      "partial": 1,
+      "window_index": 0,
+      "window_seconds": [
+        0.05,
+        0.25
+      ],
+      "band_hz": [
+        4259.580497326865,
+        4293.793995297362
+      ],
+      "band_to_equal_width_neighbor_bands_db": 0.3643874263148364,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v4",
+      "partial": 1,
+      "window_index": 1,
+      "window_seconds": [
+        0.25,
+        0.75
+      ],
+      "band_hz": [
+        4259.580497326865,
+        4293.793995297362
+      ],
+      "band_to_equal_width_neighbor_bands_db": 10.721951633523572,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v4",
+      "partial": 1,
+      "window_index": 2,
+      "window_seconds": [
+        0.75,
+        1.5
+      ],
+      "band_hz": [
+        4259.580497326865,
+        4293.793995297362
+      ],
+      "band_to_equal_width_neighbor_bands_db": 7.157844545224668,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v4",
+      "partial": 1,
+      "window_index": 3,
+      "window_seconds": [
+        1.5,
+        2.8080833333333333
+      ],
+      "band_hz": [
+        4259.580497326865,
+        4293.793995297362
+      ],
+      "band_to_equal_width_neighbor_bands_db": 1.2904721664977723,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v12",
+      "partial": 1,
+      "window_index": 0,
+      "window_seconds": [
+        0.05,
+        0.25
+      ],
+      "band_hz": [
+        4259.71247536745,
+        4293.9270334025305
+      ],
+      "band_to_equal_width_neighbor_bands_db": -0.32784672463933573,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v12",
+      "partial": 1,
+      "window_index": 1,
+      "window_seconds": [
+        0.25,
+        0.75
+      ],
+      "band_hz": [
+        4259.71247536745,
+        4293.9270334025305
+      ],
+      "band_to_equal_width_neighbor_bands_db": 9.922239114738568,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v12",
+      "partial": 1,
+      "window_index": 2,
+      "window_seconds": [
+        0.75,
+        1.5
+      ],
+      "band_hz": [
+        4259.71247536745,
+        4293.9270334025305
+      ],
+      "band_to_equal_width_neighbor_bands_db": 18.675455331310133,
+      "accepted_for_radiation_fit": true,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    },
+    {
+      "id": "C8v12",
+      "partial": 1,
+      "window_index": 3,
+      "window_seconds": [
+        1.5,
+        3.5
+      ],
+      "band_hz": [
+        4259.71247536745,
+        4293.9270334025305
+      ],
+      "band_to_equal_width_neighbor_bands_db": 1.3215292041408735,
+      "accepted_for_radiation_fit": false,
+      "reason": "Require6dB prominence over same-window neighboring bands for an ambiguous edge fundamental; not a measured SNR/noise floor."
+    }
+  ],
+  "quality_gate": {
+    "threshold_db": 6.0,
+    "edge_H1_windows": 24,
+    "excluded_windows": 11,
+    "selection_rule": "Individual exact-Hann-window edgeH1 band power must exceed same-window equal-combined-width neighboring bands by>=6dB; this is not a measuredSNR.",
+    "C8_retained_body_windows_seconds": [
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.75,
+        1.5
+      ]
+    ],
+    "A0_hard_clear_late_H1_retained": true,
+    "full_envelope_and_band_regressions_retained": true,
+    "subfundamental_noise_fitted": false
+  },
+  "candidate_artifacts": {
+    "mechanics": [
+      {
+        "path": "out/full-calibration/v3/mechanics/calibration.json",
+        "sha256": "f8a3a3fe3833693b917b7462c8bc95652213f2486905941dae3cbc40990387d9"
+      },
+      {
+        "path": "out/full-calibration/v3/mechanics/calibration.h",
+        "sha256": "3d73bba0188f52e41097f0516f8e4b806a8fd8fc3151a3a86dca3c36c6dc07e9"
+      },
+      {
+        "path": "out/full-calibration/v3/mechanics/solver/grand.cpp",
+        "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+      },
+      {
+        "path": "out/full-calibration/v3/mechanics/solver/calibration.h",
+        "sha256": "3d73bba0188f52e41097f0516f8e4b806a8fd8fc3151a3a86dca3c36c6dc07e9"
+      },
+      {
+        "path": "out/full-calibration/v3/mechanics/solver/candidate-source.json",
+        "sha256": "3c97b47360d7b602a49655f0fa451daae1a64ded21047ef11b8828c76124b327"
+      }
+    ],
+    "analytic": [
+      {
+        "path": "out/full-calibration/v3/analytic/calibration.json",
+        "sha256": "912138dbea1e7bced4f1881c90d7014339df69fc15786ae8cfbb49150b1b902c"
+      },
+      {
+        "path": "out/full-calibration/v3/analytic/calibration.h",
+        "sha256": "212befb913c2bf033141fccc38a1db1ea70019a9968f67e0d738293a4e86e456"
+      },
+      {
+        "path": "out/full-calibration/v3/analytic/solver/grand.cpp",
+        "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+      },
+      {
+        "path": "out/full-calibration/v3/analytic/solver/calibration.h",
+        "sha256": "212befb913c2bf033141fccc38a1db1ea70019a9968f67e0d738293a4e86e456"
+      },
+      {
+        "path": "out/full-calibration/v3/analytic/solver/candidate-source.json",
+        "sha256": "5a1de677bdead6d37d4867913ce331ad8a0553f9dbe153155f98685de5e0ae90"
+      }
+    ],
+    "v4_analytic": [
+      {
+        "path": "out/full-calibration/v4/analytic/calibration.json",
+        "sha256": "80d2c36dcb0e5561cd78cfe690fefb3a959af9ab5e7de917691509ce30f49c6c"
+      },
+      {
+        "path": "out/full-calibration/v4/analytic/calibration.h",
+        "sha256": "013554501fce1a843ed8120ce58009d48cf22e7bd6617cc264eba827da5337b1"
+      },
+      {
+        "path": "out/full-calibration/v4/analytic/solver/grand.cpp",
+        "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+      },
+      {
+        "path": "out/full-calibration/v4/analytic/solver/calibration.h",
+        "sha256": "013554501fce1a843ed8120ce58009d48cf22e7bd6617cc264eba827da5337b1"
+      },
+      {
+        "path": "out/full-calibration/v4/analytic/solver/candidate-source.json",
+        "sha256": "b94089b6fca87203381fe0a2884d2abf7b6d086246f1b7130fa002b35d86d959"
+      }
+    ],
+    "v4_radiation": [
+      {
+        "path": "out/full-calibration/v4/radiation/calibration.json",
+        "sha256": "a5c3d930063fc66ec4626e032965058f1e18aa85670e1119fc2c168dc462ea47"
+      },
+      {
+        "path": "out/full-calibration/v4/radiation/calibration.h",
+        "sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa"
+      },
+      {
+        "path": "out/full-calibration/v4/radiation/radiation-fit.json",
+        "sha256": "8e89d3e960a3daa0fb68ccf98f0afac33a1a0dde5854c6d06136bc1137ed661d"
+      },
+      {
+        "path": "out/full-calibration/v4/radiation/solver/grand.cpp",
+        "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+      },
+      {
+        "path": "out/full-calibration/v4/radiation/solver/calibration.h",
+        "sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa"
+      },
+      {
+        "path": "out/full-calibration/v4/radiation/solver/candidate-source.json",
+        "sha256": "c681724ae402c233db5f42bd693158ed48a1207e6e8783e43adecaae6cb55919"
+      },
+      {
+        "path": "out/full-calibration/v4/radiation/frozen-manifest.json",
+        "sha256": "53142027ab695b001d8e9ad9da70fc1ea026bae9979f0d01b81890a70c162d5f"
+      }
+    ]
+  },
+  "validation": {
+    "header_reproduction": {
+      "mechanics": {
+        "header_bytes_identical": true,
+        "sha256": "45935c2fbe67e1916ba1bf6eeb22f676f04639e70f5aa1e53e3bd5196c01a529"
+      },
+      "analytic": {
+        "header_bytes_identical": true,
+        "sha256": "05f0cdecc85879d1c67d22fb86e8bd0e5a8ca6046b305a4ff78c3b2ae7ad1074"
+      },
+      "c8-joint": {
+        "header_bytes_identical": true,
+        "sha256": "e0aa326204e8f77adf794185c7d0e6c5026d8f34e4cfce710b3215b2e4191908"
+      }
+    },
+    "original_radiation_algorithm_regression": {
+      "case": "Original TRAIN10 inventory names, generated known phase/detuned three-component stereo signals; no recorded or reserved evaluation audio read",
+      "original_vs_generalized_radiation_max_abs_field_db": 0.0,
+      "original_diagnostics": {
+        "partial_fits": 15,
+        "bound_hits": 0,
+        "median_raw_rmse_db": 0.05214704112532266,
+        "median_regularized_rmse_db": 0.4241930695597914,
+        "median_before_rmse_db": 0.45083753156101597
+      },
+      "generalized_diagnostics": {
+        "partial_fits": 15,
+        "bound_hits": 0,
+        "median_raw_rmse_db": 0.05214704112532266,
+        "median_regularized_rmse_db": 0.4241930695597914,
+        "median_before_rmse_db": 0.45083753156101597
+      },
+      "seconds": 3.20391407399984,
+      "fitter_sha256": "327841dc578c967370caac17e45fc866679102b1233b8163a513062695b17ee7"
+    },
+    "censored_sampled_signal_gram_check": {
+      "case": "Actual sampled3-component stereo waveform vs analytical Gram gain prediction on right-censored4th window",
+      "measurements": 12,
+      "max_abs_power_error_db": 6.750292265873014e-15,
+      "windows_seconds": [
+        [
+          0.05,
+          0.25
+        ],
+        [
+          0.25,
+          0.75
+        ],
+        [
+          0.75,
+          1.5
+        ],
+        [
+          1.5,
+          2.8080833333333333
+        ]
+      ],
+      "no_zero_padding_of_censored_time_support": true
+    },
+    "negative_training_guards": [
+      {
+        "case": "evaluation_layer",
+        "rejected": true,
+        "reason": "Refuse non-training or inconsistent reference row: A0v4"
+      },
+      {
+        "case": "nontraining_role",
+        "rejected": true,
+        "reason": "Refuse non-training or inconsistent reference row: A0v4"
+      },
+      {
+        "case": "inconsistent_midi",
+        "rejected": true,
+        "reason": "Refuse non-training or inconsistent reference row: A0v4"
+      },
+      {
+        "case": "missing_row",
+        "rejected": true,
+        "reason": "Feature inventory must equal the locked training inventory"
+      },
+      {
+        "case": "duplicate_row",
+        "rejected": true,
+        "reason": "Feature inventory must equal the locked training inventory"
+      },
+      {
+        "case": "wrong_split_hash",
+        "rejected": true,
+        "reason": "Feature document and locked split hash disagree"
+      }
+    ],
+    "cpp17_header_compiles": true,
+    "header_sorted_17_anchors_and_positive_passive_losses": true,
+    "final_acoustic_improvement_claimed": false,
+    "separate_frozen_evaluation_required": true,
+    "version3_software_checks": {
+      "fitter_sha256": "355ac867415c62aba90717ecef6cbb77da839a798150c3664bf67247128f3356",
+      "negative_training_guards": [
+        {
+          "case": "evaluation_layer",
+          "rejected": true,
+          "reason": "Refuse non-training or inconsistent reference row: A0v4"
+        },
+        {
+          "case": "nontraining_role",
+          "rejected": true,
+          "reason": "Refuse non-training or inconsistent reference row: A0v4"
+        },
+        {
+          "case": "inconsistent_midi",
+          "rejected": true,
+          "reason": "Refuse non-training or inconsistent reference row: A0v4"
+        },
+        {
+          "case": "missing_row",
+          "rejected": true,
+          "reason": "Feature inventory must equal the locked training inventory"
+        },
+        {
+          "case": "duplicate_row",
+          "rejected": true,
+          "reason": "Feature inventory must equal the locked training inventory"
+        },
+        {
+          "case": "wrong_split_hash",
+          "rejected": true,
+          "reason": "Feature document and locked split hash disagree"
+        },
+        {
+          "case": "reserved_audio_opened",
+          "rejected": true,
+          "reason": "Refuse a training export that opened reserved evaluation audio"
+        }
+      ],
+      "fixed_component_identity": {
+        "case": "C8TRAIN sourceasmodel, fixedreference4434component; ambiguityretained",
+        "component_windows": 8,
+        "max_abs_power_error_db": 0.0,
+        "passed": true
+      },
+      "original_radiation_algorithm_regression": {
+        "case": "Original TRAIN10 inventory names, generated known phase/detuned three-component stereo signals; no recorded or reserved evaluation audio read",
+        "original_vs_generalized_radiation_max_abs_field_db": 0.0,
+        "original_diagnostics": {
+          "partial_fits": 15,
+          "bound_hits": 0,
+          "median_raw_rmse_db": 0.05214704112532266,
+          "median_regularized_rmse_db": 0.4241930695597914,
+          "median_before_rmse_db": 0.45083753156101597
+        },
+        "generalized_diagnostics": {
+          "partial_fits": 15,
+          "bound_hits": 0,
+          "median_raw_rmse_db": 0.05214704112532266,
+          "median_regularized_rmse_db": 0.4241930695597914,
+          "median_before_rmse_db": 0.45083753156101597
+        },
+        "seconds": 3.270327358000941,
+        "fitter_sha256": "355ac867415c62aba90717ecef6cbb77da839a798150c3664bf67247128f3356"
+      },
+      "censored_sampled_signal_gram_check": {
+        "case": "Actual sampled3-component stereo waveform vs analytical Gram gain prediction on right-censored4th window",
+        "measurements": 12,
+        "max_abs_power_error_db": 6.750292265873014e-15,
+        "windows_seconds": [
+          [
+            0.05,
+            0.25
+          ],
+          [
+            0.25,
+            0.75
+          ],
+          [
+            0.75,
+            1.5
+          ],
+          [
+            1.5,
+            2.8080833333333333
+          ]
+        ],
+        "no_zero_padding_of_censored_time_support": true
+      }
+    },
+    "cpp17_version3_header_sorted_positive_passive": true,
+    "full_solver_tests_and_rendered_acoustic_fit_pending_parent": true,
+    "read_only_review": {
+      "reviewed_fitter_sha256": "355ac867415c62aba90717ecef6cbb77da839a798150c3664bf67247128f3356",
+      "passed": [
+        "TRAINinventory34cases/17anchors/layers4and12",
+        "Historicalfeature->FLAC/PCMmanifestlinks",
+        "Fixedreference4434componentbandsoutsidefitter",
+        "Actualphase/transientcross termsretainedinGrammatrices"
+      ],
+      "open_guard_gap": null,
+      "required_before_final_fit": "The hardened CLI now validates actual source/binary/headers/split/reference/guard/events and every WAV against the manifest, then rechecks captured inputs after fitting.",
+      "actual_batch_mismatch_observed": false,
+      "frozen_tool_not_modified": true,
+      "guard_gap_closed_version4": true,
+      "followup": "Frozen c070b3a review passes; C8 excluded from globalgain/Gram/smoothing, prior fields preserved, diagnostic axes/gain correct; no numerical/window/TRAIN leakage issue found."
+    },
+    "version4_guard_checks": {
+      "fitter_sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550",
+      "scope": "Metadata/actual-file binding fixture; not a solver/physical validation",
+      "positive_manifest_receipt": {
+        "manifest": {
+          "path": "/tmp/keyra-full-v4-guard-fixture/manifest.json",
+          "sha256": "15f26cb98e4d9f9ee4c60a73730928a371d80b13370447de9ffbcc73e1d30c52"
+        },
+        "rendered_training_ids": [
+          "C2v12",
+          "C2v4"
+        ],
+        "validated_full_and_stem_wavs": 8,
+        "validated_event_files": 2,
+        "all_inputs_and_outputs_match_actual_files": true
+      },
+      "negative_manifest_cases": [
+        {
+          "case": "wrong_reference_hash",
+          "rejected": true,
+          "reason": "Stem manifest input/source/binary/profile/split/guard hashes differ from actual files"
+        },
+        {
+          "case": "wrong_guard_hash",
+          "rejected": true,
+          "reason": "Stem manifest input/source/binary/profile/split/guard hashes differ from actual files"
+        },
+        {
+          "case": "wrong_engine_hash",
+          "rejected": true,
+          "reason": "Stem manifest input/source/binary/profile/split/guard hashes differ from actual files"
+        },
+        {
+          "case": "wrong_actual_stem_hash",
+          "rejected": true,
+          "reason": "Actual full/stem WAV does not match manifest: /tmp/keyra-full-v4-guard-fixture/renders/C2v4-primary.wav"
+        },
+        {
+          "case": "per_render_input_mismatch",
+          "rejected": true,
+          "reason": "Per-render input identities disagree with the batch: C2v4"
+        },
+        {
+          "case": "duplicate_render_id",
+          "rejected": true,
+          "reason": "Stem manifest must contain each locked TRAIN ID exactly once"
+        },
+        {
+          "case": "incomplete_batch",
+          "rejected": true,
+          "reason": "Radiation requires a complete error-free stem batch"
+        },
+        {
+          "case": "missing_stem",
+          "rejected": true,
+          "reason": "Per-render output inventory must contain full plus exactly three stems: C2v4"
+        },
+        {
+          "case": "wrong_controls_with_matching_event_hash",
+          "rejected": true,
+          "reason": "Rendered controls do not match the locked held-note policy: C2v4"
+        }
+      ],
+      "spurious_band_diagnostic": {
+        "isolated_expected_window_band_flagged": true,
+        "identical_reference_model_no_flags": true,
+        "primary_metrics_unchanged_by_design": true
+      }
+    },
+    "final_joint_input_and_output_hashes_reverified": true,
+    "optimizer_converged": false
+  },
+  "next_command": "Compile/apply approved hotfloat transform to out/full-calibration/v4/radiation/solver/grand.cpp, render and score all34TRAINcases, compare control and candidate with fit32/C8/all34 scopes before selectionfreeze and separateevaluation.",
+  "measurement_history": {
+    "v2_draft": {
+      "candidate_artifacts": {
+        "mechanics": [
+          {
+            "path": "out/full-calibration/v2/mechanics/calibration.json",
+            "sha256": "35e9f6e17c72eeb989cbc2dcbe94eecaba0a8660911766fa2edb5d191b2528c5"
+          },
+          {
+            "path": "out/full-calibration/v2/mechanics/calibration.h",
+            "sha256": "45935c2fbe67e1916ba1bf6eeb22f676f04639e70f5aa1e53e3bd5196c01a529"
+          },
+          {
+            "path": "out/full-calibration/v2/mechanics/solver/grand.cpp",
+            "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+          },
+          {
+            "path": "out/full-calibration/v2/mechanics/solver/calibration.h",
+            "sha256": "45935c2fbe67e1916ba1bf6eeb22f676f04639e70f5aa1e53e3bd5196c01a529"
+          },
+          {
+            "path": "out/full-calibration/v2/mechanics/solver/candidate-source.json",
+            "sha256": "a6253fd685ece4cd3e3db60da6a24c56dd9b22308a32e511dbf84b1a1caa8357"
+          }
+        ],
+        "analytic": [
+          {
+            "path": "out/full-calibration/v2/analytic/calibration.json",
+            "sha256": "d1a4e22777bc24a78999b09f47cbbca9c9bfafc769a94d4440b42dd39fff553f"
+          },
+          {
+            "path": "out/full-calibration/v2/analytic/calibration.h",
+            "sha256": "05f0cdecc85879d1c67d22fb86e8bd0e5a8ca6046b305a4ff78c3b2ae7ad1074"
+          },
+          {
+            "path": "out/full-calibration/v2/analytic/solver/grand.cpp",
+            "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+          },
+          {
+            "path": "out/full-calibration/v2/analytic/solver/calibration.h",
+            "sha256": "05f0cdecc85879d1c67d22fb86e8bd0e5a8ca6046b305a4ff78c3b2ae7ad1074"
+          },
+          {
+            "path": "out/full-calibration/v2/analytic/solver/candidate-source.json",
+            "sha256": "6a69675ad35a8833b0e62d6c5d6fccfbeeb96210942757d63dd0a82a741b3cd9"
+          }
+        ],
+        "c8-joint": [
+          {
+            "path": "out/full-calibration/v2/c8-joint/calibration.json",
+            "sha256": "ae7e97b11ec4d7dc30aece6f4c2d51487497e84c865177aeb3cd490060f7321b"
+          },
+          {
+            "path": "out/full-calibration/v2/c8-joint/calibration.h",
+            "sha256": "e0aa326204e8f77adf794185c7d0e6c5026d8f34e4cfce710b3215b2e4191908"
+          },
+          {
+            "path": "out/full-calibration/v2/c8-joint/solver/grand.cpp",
+            "sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba"
+          },
+          {
+            "path": "out/full-calibration/v2/c8-joint/solver/calibration.h",
+            "sha256": "e0aa326204e8f77adf794185c7d0e6c5026d8f34e4cfce710b3215b2e4191908"
+          },
+          {
+            "path": "out/full-calibration/v2/c8-joint/solver/candidate-source.json",
+            "sha256": "a68cfea527134a5d984a6d3981e5f42b954eb35f7a42dcd4b221a3f1f39bc29f"
+          }
+        ]
+      },
+      "c8_joint_stiffness_proposal": {
+        "midi": 108,
+        "prior_B": 0.025,
+        "proposed_B": 0.004406180763902714,
+        "fundamental_hz_fixed": 4276.7757665678155,
+        "individual_limited_B_fits": [
+          {
+            "id": "C8v4",
+            "B": 0.005361014059758037
+          },
+          {
+            "id": "C8v12",
+            "B": 0.0011813678789820078
+          }
+        ],
+        "method": "One shared bounded B; fixed observed fundamental; robust joint cents fit over both TRAIN velocities; relative peak weights clipped0.2\u20131.",
+        "B_identified_as_unique_physical_material": false,
+        "converged": true,
+        "peak_residuals": [
+          {
+            "id": "C8v4",
+            "n": 1,
+            "observed_hz": 4276.76857237185,
+            "predicted_hz": 4276.7757665678155,
+            "residual_cents": 0.002912204933632778,
+            "weight": 1.0
+          },
+          {
+            "id": "C8v4",
+            "n": 2,
+            "observed_hz": 8620.35568468672,
+            "predicted_hz": 8609.652297771949,
+            "residual_cents": -2.150906751711086,
+            "weight": 0.4801117726844898
+          },
+          {
+            "id": "C8v4",
+            "n": 3,
+            "observed_hz": 13101.793656504979,
+            "predicted_hz": 13053.524879075885,
+            "residual_cents": -6.389877893874744,
+            "weight": 0.4098818794490466
+          },
+          {
+            "id": "C8v12",
+            "n": 1,
+            "observed_hz": 4276.78296076378,
+            "predicted_hz": 4276.7757665678155,
+            "residual_cents": -0.0029122000341495983,
+            "weight": 1.0
+          },
+          {
+            "id": "C8v12",
+            "n": 2,
+            "observed_hz": 8569.974509469934,
+            "predicted_hz": 8609.652297771949,
+            "residual_cents": 7.996874554825941,
+            "weight": 0.31337683486129336
+          },
+          {
+            "id": "C8v12",
+            "n": 3,
+            "observed_hz": 12890.02477801934,
+            "predicted_hz": 13053.524879075885,
+            "residual_cents": 21.821276826300938,
+            "weight": 0.2810503407135437
+          }
+        ],
+        "rms_residual_cents": 9.879061032395008,
+        "limits": "Only three partials per strike; upper peaks disagree across layers and may be weak/nonharmonic. This is one TRAIN proposal for actual-render comparison, not an accepted measurement or a default."
+      },
+      "historical_header_reproduction": {
+        "mechanics": {
+          "header_bytes_identical": true,
+          "sha256": "45935c2fbe67e1916ba1bf6eeb22f676f04639e70f5aa1e53e3bd5196c01a529"
+        },
+        "analytic": {
+          "header_bytes_identical": true,
+          "sha256": "05f0cdecc85879d1c67d22fb86e8bd0e5a8ca6046b305a4ff78c3b2ae7ad1074"
+        },
+        "c8-joint": {
+          "header_bytes_identical": true,
+          "sha256": "e0aa326204e8f77adf794185c7d0e6c5026d8f34e4cfce710b3215b2e4191908"
+        }
+      },
+      "warning": "OldC8three-peak stiffness and singlecomponent/velocity interpretation are not accepted after the broader component/confidence audit. Historical files are preserved."
+    },
+    "wide_scan_invalidation": {
+      "affected": "C8 rows from the original +/-60cent pitch search and every derivedC8v2 B/velocity/quality inference",
+      "independent_train_verification": "Dominant C8early/body peak\u22484405\u20134434Hz (up to+100cents), outside the old search and candidate70centclamp; upper peaks weak/unstable.",
+      "historical_artifacts_preserved": true,
+      "canonical_or_research_changed": false,
+      "fit_paused_pending_corrected_train_features": true,
+      "independent_diagnostic_path": "/tmp/keyra-c8-independent-family.json",
+      "fresh_evaluation_audio_opened": false
+    }
+  },
+  "c8_unassigned_component": {
+    "physical_identity": "unknown",
+    "source_components_retained": true,
+    "forced_string_retune": false,
+    "included_in_radiation_objective": false,
+    "fixed_reference_centers_hz": [
+      4433.88935324979,
+      4433.832632086339
+    ],
+    "prior_v2_model_component_score": {
+      "path": "out/full-calibration/v3/c8-prior-component-score/score.json",
+      "sha256": "4e6655ea8a2145c7c73108ab4a8172bdfbd8e8fec124fccc9a4e2e6f484c7d2f"
+    },
+    "observed_prior_power_errors_db": [
+      {
+        "id": "C8v4",
+        "frequency_hz_fixed_to_reference": 4433.88935324979,
+        "fixed_early_gain_power_error_db": [
+          -85.03515933505027,
+          -86.21649973841804,
+          -76.78438722774753,
+          -98.30177971126471
+        ],
+        "reference_prominent_window_mask": [
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "id": "C8v12",
+        "frequency_hz_fixed_to_reference": 4433.832632086339,
+        "fixed_early_gain_power_error_db": [
+          -87.25622111657728,
+          -87.62322164336123,
+          -76.80801760790777,
+          -100.78476839469778
+        ],
+        "reference_prominent_window_mask": [
+          true,
+          true,
+          false,
+          false
+        ]
+      }
+    ],
+    "cross_key_audit": {
+      "path": "out/full-calibration/c8-component-audit/report.json",
+      "sha256": "423105279baa12bd461e3b9daec0c439025703d0815b2ef482c2a3e657d2baae"
+    },
+    "finding": "No prominent shared4434Hz line among10otherTRAINkeys; supportskey/registerlocalization, not a uniquephysicalpart. Modelmissingcomponent remains explicit; no newpole or pressuregenerator fitted."
+  },
+  "reference_audio_identity": {
+    "all_training_rows_resolved": 34,
+    "historical_container_identity_via_actual_PCM": 10,
+    "receipt": {
+      "path": "out/full-calibration/v3/reference-audio-identities.json",
+      "sha256": "8a7baecebbc2811b6fa9aa4ad8cdf4974c0956309170f5050b5ff456fb28b186"
+    },
+    "rule": "HistoricalfeatureSHA->originalmanifest; sameFLACSHA anddecodedPCM acrossoriginal/authenticatedcurrentTRAINmanifests; currentWAVSHA andactualdecodedPCM bothchecked."
+  },
+  "selected_strike_profile": {
+    "path": "out/full-strike-bank/proposed-profile/calibration.json",
+    "sha256": "2e4b0fd1d87f453f6b6993d0a57fd3fdd9e6bb03177f3ba6908f7473472e0644"
+  },
+  "radiation_fit_mask": {
+    "explicit_flag": "--exclude-ambiguous-anchors",
+    "rendered_cases": 34,
+    "fitted_cases": 32,
+    "excluded_midis": [
+      108
+    ],
+    "excluded_training_ids": [
+      "C8v4",
+      "C8v12"
+    ],
+    "prior_fields_preserved": [
+      "radiation_db",
+      "radiation_after_db"
+    ],
+    "C8_entire_waveform_byte_identical_claim": false,
+    "C8_full_carrier_component_envelope_scored": true
+  },
+  "diagnostic_spurious_model_bands": {
+    "model_normalized_power_above_db": -30.0,
+    "reference_normalized_power_below_db": -50.0,
+    "legacy_primary_metrics_changed": false
+  },
+  "actual_joint_fit": {
+    "scope": {
+      "rendered_cases": 34,
+      "fit_cases": 32,
+      "anchors_fitted": 16,
+      "excluded_midis": [
+        108
+      ]
+    },
+    "fit_diagnostics": {
+      "partial_fits": 254,
+      "bound_hits": 42,
+      "median_raw_rmse_db": 2.3608731824033287,
+      "median_regularized_rmse_db": 3.3325511601547033,
+      "median_before_rmse_db": 5.478764621454221
+    },
+    "joint_refinement": {
+      "method": "analytic-gradient joint log-band-power refinement with smoothness priors",
+      "initial_objective": 10216.227283376635,
+      "final_objective": 8724.697185615601,
+      "iterations": 350,
+      "converged": false,
+      "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    "metric_interpretation": "Median weighted RMSE over perpartial TRAINfit observations using a shared32caseglobalgain; not the preserved legacy harmonicMAE or a finalrender/perceptual score.",
+    "C8_prior_fields_exact": true,
+    "all_mechanical_tuning_strike_loss_fields_unchanged": true,
+    "render_manifest_validation": {
+      "manifest": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/analytic-renders/render-manifest.json",
+        "sha256": "7ff5ed79054781d970a4265fc37adde08c99be888650d5c2b2d4735caf2c5ea6"
+      },
+      "rendered_training_ids": [
+        "A0v12",
+        "A0v4",
+        "A1v12",
+        "A1v4",
+        "A2v12",
+        "A2v4",
+        "A4v12",
+        "A4v4",
+        "A5v12",
+        "A5v4",
+        "C1v12",
+        "C1v4",
+        "C2v12",
+        "C2v4",
+        "C3v12",
+        "C3v4",
+        "C4v12",
+        "C4v4",
+        "C5v12",
+        "C5v4",
+        "C6v12",
+        "C6v4",
+        "C7v12",
+        "C7v4",
+        "C8v12",
+        "C8v4",
+        "D#2v12",
+        "D#2v4",
+        "D#3v12",
+        "D#3v4",
+        "D#4v12",
+        "D#4v4",
+        "D#5v12",
+        "D#5v4"
+      ],
+      "validated_full_and_stem_wavs": 136,
+      "validated_event_files": 34,
+      "all_inputs_and_outputs_match_actual_files": true
+    },
+    "actual_postfit_34render_validation_pending": true,
+    "fresh_evaluation_audio_opened": false
+  }
+}

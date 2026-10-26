@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "scope": "Offline full-API renderer smoke/partition/event/control checks; not callback qualification",
+  "source_sha256": {
+    "CMakeLists.txt": "f0a4960f7e95bf3583ae350e34fe843a1537b48a0648063ddd0ea784d3cb32a7",
+    "tools/render_full.cpp": "bd9b394a1c8c3933743b8ad1b5835adca63e5b6be2706a178424e477b66bbba7",
+    "include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "src/full_instrument/PreparedModel.h": "5c8c92f8a761b46a66f3823765f6348ab0c08b74457d7efc062f0941ab07faf8",
+    "src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "src/full_instrument/FullInstrument.cpp": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199"
+  },
+  "source_snapshot": "/workspace/virtual-instrument-keyra/out/full-render-validation/sources",
+  "binary_sha256": "6b51cf6e0e29abc3d6ca1a20014096a4bfa163fd83856df741f6b226dc237d0f",
+  "event_sha256": "a6487f68360e5ac3424a6eec1b8c24d5291a6cc61d95772060a398c701a8deff",
+  "variants": {
+    "block64": {
+      "command": [
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/keyra_full_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/touching.events",
+        "--seconds",
+        ".35",
+        "--seed",
+        "123456",
+        "--param",
+        "gain=-6",
+        "--output",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/block64.wav",
+        "--report",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/block64.json",
+        "--block",
+        "64"
+      ],
+      "wav_sha256": "94ba409675d6e58a03551648e35393f4ec12d976b9a9e689830af6abcc9c5d81",
+      "report_sha256": "2cd9e6cb41f0c46d169d436bb800f72ebf41dd7f70f9b7b3b1ffce32ff156c3b",
+      "diagnostics": {
+        "engine": "FullInstrument, original control calibration",
+        "sample_rate": 48000,
+        "frames": 16800,
+        "block_frames": 64,
+        "seed": 123456,
+        "pressure_simd": false,
+        "peak": 0.5085902810096741,
+        "rms": 0.13740380251840162,
+        "render_wall_seconds": 1.208683348,
+        "render_process_cpu_seconds": 1.207315,
+        "events_applied": 7,
+        "events_after_render": 0,
+        "events_rejected": 0,
+        "requests": 3,
+        "launches": 3,
+        "deferred_requests": 2,
+        "coalesced": 0,
+        "cancelled": 0,
+        "expired": 0,
+        "fault_flags": 0,
+        "unsafe_launches": 0,
+        "topology": {
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475
+        },
+        "parameters": {
+          "dynamics": 0.5,
+          "humanization": 0.65,
+          "mechanicalLevel": 0.025,
+          "width": 1,
+          "gain_db": -6
+        },
+        "isolation": {
+          "mechanism_body_coupling": true,
+          "direct_mechanism_observation": true,
+          "repetition_controller": true
+        },
+        "limits": "Offline render includes event dispatch and collection; timing is not callback qualification. No automatic gain or room."
+      }
+    },
+    "block17": {
+      "command": [
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/keyra_full_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/touching.events",
+        "--seconds",
+        ".35",
+        "--seed",
+        "123456",
+        "--param",
+        "gain=-6",
+        "--output",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/block17.wav",
+        "--report",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/block17.json",
+        "--block",
+        "17"
+      ],
+      "wav_sha256": "94ba409675d6e58a03551648e35393f4ec12d976b9a9e689830af6abcc9c5d81",
+      "report_sha256": "a69e158f8042e57ba73c00b14ff23b4eb46d785e8ac9f30f03e13a8bf5dad9a1",
+      "diagnostics": {
+        "engine": "FullInstrument, original control calibration",
+        "sample_rate": 48000,
+        "frames": 16800,
+        "block_frames": 17,
+        "seed": 123456,
+        "pressure_simd": false,
+        "peak": 0.5085902810096741,
+        "rms": 0.13740380251840162,
+        "render_wall_seconds": 1.208035243,
+        "render_process_cpu_seconds": 1.206528,
+        "events_applied": 7,
+        "events_after_render": 0,
+        "events_rejected": 0,
+        "requests": 3,
+        "launches": 3,
+        "deferred_requests": 2,
+        "coalesced": 0,
+        "cancelled": 0,
+        "expired": 0,
+        "fault_flags": 0,
+        "unsafe_launches": 0,
+        "topology": {
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475
+        },
+        "parameters": {
+          "dynamics": 0.5,
+          "humanization": 0.65,
+          "mechanicalLevel": 0.025,
+          "width": 1,
+          "gain_db": -6
+        },
+        "isolation": {
+          "mechanism_body_coupling": true,
+          "direct_mechanism_observation": true,
+          "repetition_controller": true
+        },
+        "limits": "Offline render includes event dispatch and collection; timing is not callback qualification. No automatic gain or room."
+      }
+    },
+    "unvaried": {
+      "command": [
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/keyra_full_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/touching.events",
+        "--seconds",
+        ".35",
+        "--seed",
+        "123456",
+        "--param",
+        "gain=-6",
+        "--output",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/unvaried.wav",
+        "--report",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/unvaried.json",
+        "--block",
+        "64",
+        "--param",
+        "humanization=0"
+      ],
+      "wav_sha256": "8cb991753fe4cfd2e533fd9b0c6c3b764bdef65df1f5c6ff4fa011557708b257",
+      "report_sha256": "ff66b9c77d23f5dc9d3b4c6a7c31b937722e00587181e320bbb48afeab911bf3",
+      "diagnostics": {
+        "engine": "FullInstrument, original control calibration",
+        "sample_rate": 48000,
+        "frames": 16800,
+        "block_frames": 64,
+        "seed": 123456,
+        "pressure_simd": false,
+        "peak": 0.5076618790626526,
+        "rms": 0.1373106736112092,
+        "render_wall_seconds": 1.297585808,
+        "render_process_cpu_seconds": 1.297525,
+        "events_applied": 7,
+        "events_after_render": 0,
+        "events_rejected": 0,
+        "requests": 3,
+        "launches": 3,
+        "deferred_requests": 2,
+        "coalesced": 0,
+        "cancelled": 0,
+        "expired": 0,
+        "fault_flags": 0,
+        "unsafe_launches": 0,
+        "topology": {
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475
+        },
+        "parameters": {
+          "dynamics": 0.5,
+          "humanization": 0,
+          "mechanicalLevel": 0.025,
+          "width": 1,
+          "gain_db": -6
+        },
+        "isolation": {
+          "mechanism_body_coupling": true,
+          "direct_mechanism_observation": true,
+          "repetition_controller": true
+        },
+        "limits": "Offline render includes event dispatch and collection; timing is not callback qualification. No automatic gain or room."
+      }
+    },
+    "mechanisms-off": {
+      "command": [
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/keyra_full_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/touching.events",
+        "--seconds",
+        ".35",
+        "--seed",
+        "123456",
+        "--param",
+        "gain=-6",
+        "--output",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/mechanisms-off.wav",
+        "--report",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/mechanisms-off.json",
+        "--block",
+        "64",
+        "--param",
+        "mechanicalLevel=0"
+      ],
+      "wav_sha256": "ba931e9ca6fe22b0d6c5a9a3837f26a17d50960d4506b457a856feb5022833dc",
+      "report_sha256": "4abfd9521b3291bb629574311cf5f514beae65fbb11484a2dff6d6f722ab54d8",
+      "diagnostics": {
+        "engine": "FullInstrument, original control calibration",
+        "sample_rate": 48000,
+        "frames": 16800,
+        "block_frames": 64,
+        "seed": 123456,
+        "pressure_simd": false,
+        "peak": 0.5087800621986389,
+        "rms": 0.13742079565236598,
+        "render_wall_seconds": 1.156519405,
+        "render_process_cpu_seconds": 1.156037,
+        "events_applied": 7,
+        "events_after_render": 0,
+        "events_rejected": 0,
+        "requests": 3,
+        "launches": 3,
+        "deferred_requests": 2,
+        "coalesced": 0,
+        "cancelled": 0,
+        "expired": 0,
+        "fault_flags": 0,
+        "unsafe_launches": 0,
+        "topology": {
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475
+        },
+        "parameters": {
+          "dynamics": 0.5,
+          "humanization": 0.65,
+          "mechanicalLevel": 0,
+          "width": 1,
+          "gain_db": -6
+        },
+        "isolation": {
+          "mechanism_body_coupling": true,
+          "direct_mechanism_observation": true,
+          "repetition_controller": true
+        },
+        "limits": "Offline render includes event dispatch and collection; timing is not callback qualification. No automatic gain or room."
+      }
+    }
+  },
+  "block_partition_audio_identical": true,
+  "humanization_and_mechanisms_change_output": true,
+  "velocity_zero_releases_without_sound": true,
+  "invalid_arguments_rejected": [
+    {
+      "args": [
+        "--block",
+        "0"
+      ],
+      "exit_code": 1
+    },
+    {
+      "args": [
+        "--seed",
+        "-1"
+      ],
+      "exit_code": 1
+    },
+    {
+      "args": [
+        "--param",
+        "gain=nan"
+      ],
+      "exit_code": 1
+    },
+    {
+      "args": [
+        "--rate",
+        "192000"
+      ],
+      "exit_code": 1
+    }
+  ],
+  "seed": 123456,
+  "research_unchanged": true
+}

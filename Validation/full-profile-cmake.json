@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "scope": "New private profile target only; public API/controller and Reason PhaseB pending. FAST contact ON,pressure SIMD OFF.",
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-profile-cmake/freeze.json",
+    "sha256": "cb7fb0c058aa9af75a4f53e367806cefcd9246c0b8862beac252fa5331920534"
+  },
+  "profiles": [
+    {
+      "profile": "OriginalControl",
+      "omitted_profile_cache_option": true,
+      "inherited_conflicting_definition": 1,
+      "passed": true,
+      "binary": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-cmake/default-control/keyra_full_profile_tests",
+        "sha256": "ad5844f39fb583bccc58b42bf4d07e895a96e0468180febad65eac24923d3447"
+      }
+    },
+    {
+      "profile": "FrozenConfidenceGrand",
+      "omitted_profile_cache_option": false,
+      "inherited_conflicting_definition": 0,
+      "passed": true,
+      "binary": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-cmake/candidate/keyra_full_profile_tests",
+        "sha256": "4ab7948adb68c5b400b544595fb238ec42c870adff93b13d266d8bc30cc58da2"
+      }
+    }
+  ],
+  "invalid_profile_configure_rejected": true,
+  "commands": [
+    [
+      "/home/agent/.local/bin/cmake",
+      "-S",
+      "/workspace/virtual-instrument-keyra",
+      "-B",
+      "/workspace/virtual-instrument-keyra/out/full-profile-cmake/default-control",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DKEYRA_BUILD_REFERENCE=OFF",
+      "-DKEYRA_BUILD_FULL_REFERENCE=OFF",
+      "-DKEYRA_BUILD_PHYSICAL=OFF",
+      "-DKEYRA_BUILD_PLUGIN=OFF",
+      "-DKEYRA_BUILD_VST3=OFF",
+      "-DKEYRA_BUILD_FULL_BACKEND=ON",
+      "-DBUILD_TESTING=ON",
+      "-DKEYRA_FULL_PRESSURE_SIMD=OFF",
+      "-DKEYRA_FULL_FAST_CONTACT=ON",
+      "-DCMAKE_CXX_FLAGS=-DKEYRA_FULL_MODEL_PROFILE=1"
+    ],
+    [
+      "/home/agent/.local/bin/cmake",
+      "--build",
+      "/workspace/virtual-instrument-keyra/out/full-profile-cmake/default-control",
+      "--target",
+      "keyra_full_profile_tests",
+      "-j",
+      "2"
+    ],
+    [
+      "/workspace/virtual-instrument-keyra/out/full-profile-cmake/default-control/keyra_full_profile_tests"
+    ],
+    [
+      "/home/agent/.local/bin/cmake",
+      "-S",
+      "/workspace/virtual-instrument-keyra",
+      "-B",
+      "/workspace/virtual-instrument-keyra/out/full-profile-cmake/candidate",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DKEYRA_BUILD_REFERENCE=OFF",
+      "-DKEYRA_BUILD_FULL_REFERENCE=OFF",
+      "-DKEYRA_BUILD_PHYSICAL=OFF",
+      "-DKEYRA_BUILD_PLUGIN=OFF",
+      "-DKEYRA_BUILD_VST3=OFF",
+      "-DKEYRA_BUILD_FULL_BACKEND=ON",
+      "-DBUILD_TESTING=ON",
+      "-DKEYRA_FULL_PRESSURE_SIMD=OFF",
+      "-DKEYRA_FULL_FAST_CONTACT=ON",
+      "-DCMAKE_CXX_FLAGS=-DKEYRA_FULL_MODEL_PROFILE=0",
+      "-DKEYRA_FULL_MODEL_PROFILE=FrozenConfidenceGrand"
+    ],
+    [
+      "/home/agent/.local/bin/cmake",
+      "--build",
+      "/workspace/virtual-instrument-keyra/out/full-profile-cmake/candidate",
+      "--target",
+      "keyra_full_profile_tests",
+      "-j",
+      "2"
+    ],
+    [
+      "/workspace/virtual-instrument-keyra/out/full-profile-cmake/candidate/keyra_full_profile_tests"
+    ]
+  ]
+}

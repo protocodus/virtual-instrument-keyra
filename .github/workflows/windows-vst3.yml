@@ -1,0 +1,74 @@
+name: Windows VST3
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-vst3-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Windows x64 and fetch pinned MIT VST3 SDK
+        run: >-
+          cmake -S . -B build-windows -G "Visual Studio 17 2022" -A x64
+          -DBUILD_TESTING=ON
+          -DKEYRA_BUILD_REFERENCE=OFF
+          -DKEYRA_BUILD_CLAP=OFF
+          -DKEYRA_BUILD_VST3=ON
+          -DSMTG_CREATE_BUNDLE_FOR_WINDOWS=ON
+
+      - name: Build VST3 and validation hosts
+        run: >-
+          cmake --build build-windows --config Release
+          --target keyra_vst3 keyra_piano_tests keyra_vst3_host validator --parallel 2
+
+      - name: Validate DSP, VST3 ABI, state and sample-accurate events
+        run: >-
+          ctest --test-dir build-windows -C Release --output-on-failure
+          -R '^(live_piano|vst3_sdk_validator|vst3_host_state_and_events)$'
+
+      - name: Stage Windows plugin and notices
+        run: |
+          $bundle = 'build-windows/VST3/Release/Keyra.vst3'
+          if (-not (Test-Path -LiteralPath $bundle -PathType Container)) {
+            throw "Expected VST3 bundle is missing: $bundle"
+          }
+          New-Item -ItemType Directory -Path 'dist-windows' -Force | Out-Null
+          Copy-Item -LiteralPath $bundle -Destination 'dist-windows/Keyra.vst3' -Recurse
+          Copy-Item -LiteralPath 'vst3/SDK-LICENSE.txt' -Destination 'dist-windows/SDK-LICENSE.txt'
+          Copy-Item -LiteralPath 'README.md' -Destination 'dist-windows/README.md'
+          Copy-Item -LiteralPath 'vst3/README.md' -Destination 'dist-windows/VST3.md'
+          Copy-Item -LiteralPath 'vst3/WINDOWS.md' -Destination 'dist-windows/WINDOWS.md'
+          Get-ChildItem -LiteralPath 'dist-windows/Keyra.vst3' -Recurse -File |
+            Get-FileHash -Algorithm SHA256 |
+            ForEach-Object { '{0}  {1}' -f $_.Hash.ToLowerInvariant(), $_.Path.Substring((Resolve-Path 'dist-windows').Path.Length + 1) } |
+            Set-Content -LiteralPath 'dist-windows/SHA256SUMS.txt' -Encoding utf8
+
+      - name: Upload tested Windows x64 VST3
+        uses: actions/upload-artifact@v4
+        with:
+          name: Keyra-Windows-x64-VST3
+          path: dist-windows/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload native test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Keyra-Windows-x64-test-log
+          path: build-windows/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+          retention-days: 30

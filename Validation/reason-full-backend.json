@@ -1,0 +1,242 @@
+{
+  "schema_version": 2,
+  "checked_utc": "2026-10-26T16:22:31.402506+00:00",
+  "scope": "Opt-in SDK-free full physical Reason adapter source variant; default preview unchanged",
+  "passed": true,
+  "build_option": "KEYRA_BUILD_EXPERIMENTAL_FULL_MODEL=ON (default OFF)",
+  "compile_definition": "KEYRA_EXPERIMENTAL_FULL_MODEL=1",
+  "canonical_dsp_copied_into_reason_repository": false,
+  "controls": [
+    {
+      "property": "dynamics",
+      "default": 0.5,
+      "core_range": [
+        0,
+        1
+      ]
+    },
+    {
+      "property": "humanization",
+      "default": 0.65,
+      "core_range": [
+        0,
+        1
+      ]
+    },
+    {
+      "property": "mechanicalLevel",
+      "default": 0.025,
+      "core_range": [
+        0,
+        1
+      ]
+    },
+    {
+      "property": "width",
+      "default": 0.5,
+      "mapping": "stereoWidth = 2 * normalized",
+      "core_range": [
+        0,
+        2
+      ]
+    },
+    {
+      "property": "gain",
+      "default": 0.75,
+      "mapping": "gainDb = -60 + 72 * normalized",
+      "core_range": [
+        -60,
+        12
+      ],
+      "wrapper_default_db": -6
+    }
+  ],
+  "physical_topology": {
+    "strings": 230,
+    "string_modes": 17778,
+    "board_modes": 475
+  },
+  "sample_rates": [
+    44100,
+    48000,
+    88200,
+    96000
+  ],
+  "unsupported_numeric_rate_behavior": "Instrument remains unprepared and outputs silence, without advancing the full-model frame clock; no resampler or substituted-rate playback.",
+  "missing_or_nonnumeric_create_parameter": "Existing export default 44100 Hz",
+  "release_tests": [
+    {
+      "name": "keyra_reason_lua_contract",
+      "passed": true,
+      "seconds": 0.04,
+      "validation_epoch": "unchanged preview; passed before controller-only change"
+    },
+    {
+      "name": "keyra_reason_adapter",
+      "passed": true,
+      "seconds": 0.05,
+      "validation_epoch": "unchanged preview; passed before controller-only change"
+    },
+    {
+      "name": "keyra_reason_full_adapter",
+      "passed": true,
+      "seconds": 7.65,
+      "validation_epoch": "final controller and six-group wrapper test"
+    },
+    {
+      "name": "keyra_reason_full_lua_contract",
+      "passed": true,
+      "seconds": 0.04,
+      "validation_epoch": "final controller and six-group wrapper test"
+    },
+    {
+      "name": "keyra_reason_full_scalar_adapter",
+      "passed": true,
+      "seconds": 10.87,
+      "validation_epoch": "final controller and six-group wrapper test"
+    }
+  ],
+  "sanitizer_tests": [
+    {
+      "name": "keyra_reason_full_adapter",
+      "passed": true,
+      "seconds": 95.29,
+      "validation_epoch": "final controller and six-group wrapper test"
+    }
+  ],
+  "sanitizer_environment": {
+    "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "sanitizer_findings": 0,
+  "portable_flags_verified": {
+    "release": {
+      "no_exceptions": true,
+      "no_rtti": true,
+      "no_builtins": true,
+      "contraction_off": true
+    },
+    "sanitizer": {
+      "no_exceptions": true,
+      "no_rtti": true,
+      "no_builtins": true,
+      "contraction_off": true
+    }
+  },
+  "scalar_autovectorization_disabled": true,
+  "coverage": [
+    "Exact sample-offset audio parity with canonical FullInstrument, including initial MOM rollback and control-before-note ordering",
+    "Two active-key requests yield one admitted launch and one cancelled pending request; cancelled request leaves ringing output unchanged",
+    "Thirteen rapid requests coalesce 11 times and admit two safe launches by 4096 frames",
+    "Persistent pedal/strings while disconnected; sample-offset reconnect and pedal release",
+    "Deterministic reset replay, repeated reset-counter idempotence, mono and independent instances",
+    "Malformed notes/controls, legacy frame-index clamping, unsupported 192 kHz silence/no frame advance",
+    "Zero ordinary and nothrow C++ new/new[] calls during RenderBatch; constructor performs no MOM reads",
+    "Touching C4 notes at 0/100/200 ms with sustain, both batch-aligned and shifted 7 samples, safely admit all 3 strikes after finite key lift; each wrapper output matches its same-timestamp canonical reference under 1/3/17/64-frame partitions"
+  ],
+  "ordinary_cpp_audio_allocations": 0,
+  "direct_malloc_and_aligned_allocations_instrumented": false,
+  "default_preview_contract_and_tests_pass": true,
+  "build45_selects_full_variant": false,
+  "sdk_build": false,
+  "actual_lua_host_execution": false,
+  "actual_reason_recon_validation": false,
+  "u45_created": false,
+  "canonical_research_unchanged": true,
+  "limits": [
+    "Authored mock Jukebox facsimile, not an authoritative SDK ABI.",
+    "Full core baseline costs about 3.3\u20133.5 CPU seconds per audio second at 48 kHz on the measured Linux host; this integration remains unqualified for realtime use.",
+    "Large gain/width automation jumps remain unsmoothed in this experimental path.",
+    "Source pinning, genuine SDK builds, panels, actual Reason validation and product package remain pending."
+  ],
+  "input_sha256": {
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/CMakeLists.txt": "003715e0a51aad4a8dfd98f1d92e02e49e95cf049a568e10d4dbabb634ca2fc3",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Keyra.h": "94a380a34d1bc3ca09cfcd71254be326fc9a89f235cfe7ee7fb75a0c68b7074c",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Keyra.cpp": "cdf85ed8015831b6f660ef59bc66cc47c3a7dd76b5f68a30d095f669eeaf1d81",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/JukeboxExports.cpp": "51ad9927e98fcf85030da154fed58fa2baff23692dec22ae65b43dd435e80318",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/FullWrapperHost.cpp": "6c1acd65b7a2d2a4e576bcd62c56cbbbaca824bdab5ee74b21c576b183f2f272",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/full_lua_contract.py": "a25bdfc7cb92d44da8b55a40114fe63a86bea20b3582ddaac9d0fbfa4be4372d",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/mock/Jukebox.h": "02a6ad24709bd61a195a32c660578b3dd53698240ffc2c9f48e8a4690fd23599",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/motherboard_def.lua": "c14a70354f67727a30eaeeb1f0dad2c6542dcf6be6796bc7d160a01eb55bd22d",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/realtime_controller.lua": "88ce8ccc1f17152274887ecdc52125a1019199d38c9c118dd6b0383853746215",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/Resources/English/texts.lua": "8b21adc95c9f5938f2190435d9c5ee9c65bebc9970dced32bbcdb0f867fe8600",
+    "/workspace/virtual-instrument-keyra/include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h": "c5ede1cd6c4e10f091ba961638409d45ea2d3bf81a45eafed9d5e2423c940150",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "/workspace/virtual-instrument-keyra/include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "/workspace/virtual-instrument-keyra/include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27"
+  },
+  "logs": {
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-backend-20261026/release-ctest.log": "910d96e2d92ef5ac944c9b47f0df7b4869dca4a3153fb28ef7d3cf7fe3851332",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-backend-20261026/asan-ctest.log": "6eb56db907a156cebe4a480e9f94c1ea9df27b15a3c6971a7eb6da5697e60d25"
+  },
+  "compile_commands_sha256": {
+    "release": "b727124abda436c7c06efa8b8fd944c2b7f919c08286aba6b9ec58434f9eba4a",
+    "sanitizer": "9eaec41fada0283df26d50ed35db057e7f12bc6bcd9b4df1c2700b87b39dc1d0"
+  },
+  "validation_version": 2,
+  "full_wrapper_test_groups": 6,
+  "final_release_scope": "Focused full native/scalar adapter and full static contract retested. Unchanged preview adapter/contract retain their prior passing evidence.",
+  "touching_repeat_regression": {
+    "controller_sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "relative_note_on_frames": [
+      0,
+      4800,
+      9600
+    ],
+    "same_timestamp_release_press": true,
+    "sustain": 1,
+    "score_offsets_frames": [
+      0,
+      7
+    ],
+    "frames_per_score": 9984,
+    "reference_partition_sizes": [
+      1,
+      3,
+      17,
+      64
+    ],
+    "requests_per_score": 3,
+    "launches_per_score": 3,
+    "deferred_per_score": 2,
+    "expired_per_score": 0,
+    "faults_per_score": 0,
+    "unsafe_launches_per_score": 0,
+    "exact_audio_parity_with_matching_reference": true,
+    "observations": [
+      {
+        "offset_frames": 0,
+        "reference_process_endpoint_upper_bounds_frames": [
+          193,
+          193
+        ],
+        "wrapper_callback_endpoint_upper_bounds_frames": [
+          256,
+          256
+        ]
+      },
+      {
+        "offset_frames": 7,
+        "reference_process_endpoint_upper_bounds_frames": [
+          206,
+          206
+        ],
+        "wrapper_callback_endpoint_upper_bounds_frames": [
+          249,
+          249
+        ]
+      }
+    ],
+    "interpretation": "Reference/process and wrapper/callback endpoints bound launch admission after the authored finite key lift, not audible hammer-contact latency. Shifted and aligned scores are compared only with their own same-timestamp reference, preserving the original absolute 64-sample pedal clock."
+  },
+  "baseline_v1": {
+    "report": "/workspace/virtual-instrument-keyra/Validation/reason-full-backend-v1.json",
+    "sha256": "8fe9afb89e5592ec73a5952e547f3bfd10fc61e71ddfb6a562f1b142a9d3fb2b",
+    "archive": "/workspace/virtual-instrument-keyra/out/reason-full-backend/baseline-v1/archive-receipt.json",
+    "archive_sha256": "46d44f9d8c1fab287ad0fac70d39bd85f3db3662efc90246fb9ad09900cc08e3",
+    "tracked_reason_report": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-backend-20261026/v1-report.json",
+    "tracked_reason_report_sha256": "8fe9afb89e5592ec73a5952e547f3bfd10fc61e71ddfb6a562f1b142a9d3fb2b"
+  }
+}

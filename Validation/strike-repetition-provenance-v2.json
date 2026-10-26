@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "probe_version": 2,
+  "source_sha256": {
+    "include/keyra/physics/StrikeController.h": "be9daa57cfaffdc879a1da885ac62187d3c89b16c6b525d53eaf7ddf66b154fc",
+    "tools/strike_repetition_support.h": "cabf6905d7f47edc8d323745cbb52f183757c2491eee3d2e0a07e3715ef0d036",
+    "tests/strike_repetition_tests.cpp": "fc735da12a8561a40d49131a21e3c2f232bf23417a5fef2b198e794981b4ba38",
+    "tools/probe_strike_repetition.cpp": "26f7bc0196049495033508fdc1da7377f1e72008db232c38e5f044cda2ae2da2",
+    "docs/STRIKE_REPETITION.md": "dfe596e2ad109f9f4c91f4f23e0847d189d6581d0a82ccc7a1fc15657a2a7eea",
+    "tools/mechanism_network_support.h": "8773da536b979df2706bb03fd6f81b70ca7d23548d804c002f5b593abd24529a",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "compiler_flags": [
+    "g++",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-ffp-contract=off",
+    "-Iinclude"
+  ],
+  "binary_sha256": {
+    "tests": "914f381bcc4c1d7f9e1ab7c448b3cf491b3354f296c8a0edad7c376e6534bd6d",
+    "probe": "7888b1e8dc50f88c6bf4236219333b788d86dfce907d6b6a5f2f59557c93f533"
+  },
+  "commands": [
+    [
+      "out/strike-repetition/v2/tests"
+    ],
+    [
+      "out/strike-repetition/v2/probe",
+      "out/strike-repetition/v2/repetitions"
+    ]
+  ],
+  "report_sha256": "1ff9dbc5f00a2b89cfeff0c07f654c71dadce751c330f36537c3765b2de69dd0",
+  "audio": {
+    "repetitions-legacy-reset.wav": {
+      "sha256": "c6283e330527581ab129b0b486dca490f8439948bd3cac97cf9f42dd636d091b",
+      "same_shared_gain": 0.416802848791043
+    },
+    "repetitions-recovery-control.wav": {
+      "sha256": "72ca3186cc6475c26cf06891b5d1419332e21ee9284a44d04b3b5cd817998593",
+      "same_shared_gain": 0.416802848791043
+    },
+    "repetitions-varied-recovery.wav": {
+      "sha256": "1225c97e7b4c407e8e9acd5d9cec408a4f06b9ba01573e71c8e991cd6e07699c",
+      "same_shared_gain": 0.416802848791043
+    },
+    "repetitions-varied-with-mechanisms.wav": {
+      "sha256": "7c85f00f4574211faed8285159c835c952668450dab4443110ca63daf1e9e9d5",
+      "same_shared_gain": 0.416802848791043
+    }
+  },
+  "limits": [
+    "Authored bounded variation, keylift and return proxy; not measured action identification.",
+    "Ready launch uses near-string MIDI shortcut; pending physical launches may be deferred/coalesced/cancelled.",
+    "No retuning or clearing of string states; no canonical full-source or Research edits.",
+    "New hammer KE/retirement ledger is not a complete original-network dissipation ledger.",
+    "All four probe exports share one gain and24Hz highpass; noaddedroom or perceptualqualityclaim."
+  ],
+  "tests": {
+    "native_seven_groups_passed": true,
+    "native_log_sha256": "b9774ee4080b5709074a3d5d06d465241e569224b5e3249d4ff8e53d21d62840",
+    "asan_ubsan_seven_groups_passed": true,
+    "asan_binary_sha256": "bb5c3251c8958940dc9df2bd5b7afe94b4a0e4a3dd84057b4c0d34397f0e5b9a",
+    "asan_log_sha256": "b9774ee4080b5709074a3d5d06d465241e569224b5e3249d4ff8e53d21d62840",
+    "asan_flags": [
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Iinclude"
+    ],
+    "asan_environment": {
+      "ASAN_OPTIONS": "detect_leaks=1",
+      "UBSAN_OPTIONS": "halt_on_error=1"
+    }
+  },
+  "supersedes": {
+    "version": 1,
+    "archive": "out/strike-repetition/v1",
+    "archive_receipt_sha256": "b763cef7cf8533f803f023173de6e51add18f3e09eee2ed74d819a24d332a909",
+    "expected_old_adapter_regression_receipt_sha256": "334e438aa917564ff93a06b6e9829ec18d340dc3438bbdac50b4eb6c4b6fd496",
+    "reason": "Unused hammers now begin at -restDepth rather than on the contact plane, preventing false virgin compression from existing body/string vibration. The controller header is unchanged.",
+    "legacy_and_uncoupled_wavs_byte_identical_to_v1": true,
+    "same_shared_export_gain_as_v1": true
+  }
+}

@@ -1,0 +1,730 @@
+{
+  "schema_version": 1,
+  "platform": "Linux x86_64, GCC 14.2, C++17",
+  "engine_sha256": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+  "research_reference_unchanged": true,
+  "release_ctest": {
+    "passed": 16,
+    "failed": 0,
+    "engine_groups_per_variant": 12,
+    "variants": [
+      "native",
+      "exception-free no-builtin scalar host approximation"
+    ],
+    "physical_components": [
+      "physical_piano",
+      "action",
+      "acoustics",
+      "physical_instrument"
+    ],
+    "full_reference_self_test": true,
+    "mechanism_network": true,
+    "final_changes_retested": "Eleven original tests passed in the complete Release run; five added tests passed in focused runs. Final full API and finite-lift changes passed native/scalar API tests plus the focused CMake strike test; unchanged tests were not repeated.",
+    "full_instrument": true,
+    "full_sdk_portable": true,
+    "strike_repetition": true,
+    "local_resonance": true,
+    "waveguide_string": true,
+    "scope": "Historical aggregate from the documented complete/focused Release runs; later contact, air and coupled-waveguide checks are recorded separately below.",
+    "later_focused_tests": [
+      "contact_solver",
+      "full_acoustic_network",
+      "coupled_waveguide"
+    ]
+  },
+  "asan_ubsan": {
+    "engine_groups": 12,
+    "engine_passed": true,
+    "clap_host_passed": true,
+    "ctests_passed": 6,
+    "ctests_failed": 0,
+    "physical_modules_passed": true,
+    "mechanism_network_passed": true,
+    "mechanism_network_groups": 4,
+    "mechanism_network_scope": "Final full original network adapter and mechanism test instrumented with address/undefined sanitizers; focused retest passed.",
+    "full_backend_passed": true,
+    "strike_repetition_passed": true,
+    "strike_repetition_groups": 8,
+    "strike_repetition_report": {
+      "path": "Validation/strike-repetition-provenance.json",
+      "sha256": "5995b72ded9a0d6fe1e873149f46812ca9dc8c55b10bf3949c7b8b576092ba28"
+    },
+    "full_backend_baseline_report": {
+      "path": "Validation/full-backend-checks.json",
+      "sha256": "a04fc69026f71a15670ae41e21942097b961b87a0f6b3567da23d9e9e9c7f485"
+    },
+    "full_backend_report": {
+      "path": "Validation/full-contact-integration.json",
+      "sha256": "0ed6483e3e3be21cd7c789722092d591475f5c20323fc680855e591420945712"
+    },
+    "full_backend_pressure_report": {
+      "path": "Validation/full-pressure-integration.json",
+      "sha256": "a75d99731c137b5e2e0f528608aeb9c3cbe6c41b7014f72fe0e08e686f5cb8ea"
+    }
+  },
+  "vst3": {
+    "official_validator_passed": 47,
+    "failed": 0,
+    "headless_event_state_test_passed": true,
+    "native_windows_run": false
+  },
+  "reason_prototype": {
+    "ctests_passed": 2,
+    "failed": 0,
+    "asan_ubsan_passed": true,
+    "lua_source_preflight_passed": true,
+    "real_lua_host_execution": false,
+    "sdk_build": false,
+    "host_creation": false,
+    "u45_created": false,
+    "full_model_experiment": {
+      "opt_in_build": "KEYRA_BUILD_EXPERIMENTAL_FULL_MODEL=ON",
+      "enabled_by_default": false,
+      "controls": [
+        "dynamics",
+        "humanization",
+        "mechanicalLevel",
+        "width",
+        "gain"
+      ],
+      "final_native_scalar_lua_contract_passed": true,
+      "final_wrapper_sanitizers_passed": true,
+      "touching_midi_aligned_and_sample_offset_scores_passed": true,
+      "no_runtime_cpp_new_calls_seen": true,
+      "canonical_core_consumed_without_copy": true,
+      "sdk_build": false,
+      "actual_reason_validation": false,
+      "u45_created": false,
+      "baseline_repetition_report": {
+        "path": "Validation/reason-full-backend.json",
+        "sha256": "1da3819d9f974166c4bab3002b8a01470a1d58ca1f795314472e430557dbd727"
+      },
+      "report": {
+        "path": "Validation/reason-full-contact.json",
+        "sha256": "699801d90e3c398bb67152d01008c9b0e113165193c4081708d602a9005f6284"
+      },
+      "pressure_simd_enabled_by_default": false,
+      "baseline_scope": "Earlier repetition/pressure sanitizer validation retained separately; current contact option has focused native/scalar and explicit OFF mock-host checks.",
+      "pressure_report": {
+        "path": "Validation/reason-full-pressure.json",
+        "sha256": "9d787603aa91ea8a39532a56ceb0050b77eccfc4bc1425e8ff48a813e4426968"
+      },
+      "fast_contact_enabled_by_default_within_opt_in_variant": true,
+      "new_contact_wrapper_sanitizer_run": false
+    }
+  },
+  "reference_downloads_verified": {
+    "grand": 24,
+    "upright": 17,
+    "expanded_grand_new_files": 23,
+    "grand_full_range_canonical": 25,
+    "full_range_first_evaluation_after_freeze": 2
+  },
+  "calibration_reproduction": "Original coherent five-anchor header reproduces byte-for-byte; expanded phase-aware thirteen-anchor header matches frozen training candidate; upright unchanged.",
+  "portfolio_checks": {
+    "no_sdk_paths_tracked": "passed",
+    "instrument_source_inventory": "blocked: existing Acustra submodule is not initialized; prototype is outside production Examples inventory."
+  },
+  "limits": "No perceptual panel, real Jukebox SDK compile, Reason/Recon run or production release. Allocation tests intercept C++ new, not every platform allocation API.",
+  "grand_calibration_sha256": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+  "upright_calibration_sha256": "21cf33bc990ac09e16e9137b5c2e4491f2fdf2d58292df464dcefa4e96e42dd3",
+  "grand_training": {
+    "cases": 26,
+    "pitches": 13,
+    "split_sha256": "35fc73788b8e27e6762a1e9664992c6bbc4702858e2b7bb5185885974dac0061",
+    "fresh_validation_cases_at_freeze": 7,
+    "evaluated_after_freeze": true,
+    "scope": "Historical reduced plugin-preview calibration; not the newer full physical candidate."
+  },
+  "fresh_evaluation": {
+    "result_sha256": "9973b60c4a689c2deb20d56f69fc29450dc8f9d4a92894044634cf481cd59757",
+    "harmonic_mean_error_db": {
+      "baseline": 5.832423417282004,
+      "candidate": 2.970386898119633
+    },
+    "limits": "See full report for exact values and every regression; seven same-piano cases, not perceptual parity.",
+    "scope": "Historical seven-case reduced preview evaluation; distinct from v4 full-model evaluation."
+  },
+  "additional_checks": {
+    "phase_power_self_test": {
+      "cases": 27,
+      "passed": true
+    },
+    "materials_cpp_check": true,
+    "interpolation_synthetic_and_training_diagnostic": true,
+    "module_benchmark_scenarios": 18,
+    "fresh_candidate_frozen_before_evaluation": true
+  },
+  "physical_modules": {
+    "module_benchmark_scenarios": 18,
+    "activation_and_finite_checks": true,
+    "all_components_connected_in_default": false,
+    "research_composition": "PhysicalInstrument",
+    "reference": "docs/MODULES.md",
+    "source_hashes": {
+      "tools/benchmark_modules.cpp": "2d4ebf2f465c41ab2440741c668810a5127b31569c84a9177a09922e9f7d32ad",
+      "src/PhysicalPiano.cpp": "d74b5b1a201744f793ccf5bf6aa68a205852b85a8617ada0cfa119f2a7e5a710",
+      "src/PhysicalInstrument.cpp": "eb822cd19b58a120684c76e2a7a57d581f95876fc3b7243b4e428f70e3f6bd31",
+      "src/physics/Action.cpp": "ef212426d68d5de7ec825376b5414742c244db248df699519beee6b21f02e9ec",
+      "src/physics/Acoustics.cpp": "6d660a6f40ede14c95e05e617ba71d26aa60db11bff07379ea7e69f33c6c5898",
+      "include/keyra/PhysicalPiano.h": "607984e3a81643a4ef83c6cef35f808301404d666c8f2b5e9a818d63afb8a42d",
+      "include/keyra/physics/ModalBank.h": "bd34685285084003034d9a6e5eb298ad8449c81cc42d13144d1dfa28f027ef44",
+      "include/keyra/physics/Bridge.h": "0477f8121377f147fff75557e0cb1067ef024585bdc6e0709bab31a743919f98",
+      "src/LiveCalibration.h": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123"
+    },
+    "latest_sanitizer_retest": {
+      "ctests_passed": 4,
+      "ctests_failed": 0,
+      "scope": "physical_piano/action/acoustics/physical_instrument after two-polarization and full-reference-board additions"
+    }
+  },
+  "remaining_default_gaps": [
+    "Full physical attack and struck texture",
+    "A3/interpolated full-envelope mismatch",
+    "C8 missing strong component and ambiguous physical identity",
+    "Close-AB spatial observation mismatch",
+    "Unproven perceptual parity",
+    "Full physical callback budget"
+  ],
+  "goal_release_gaps": [
+    "Controlled pedal/action/acoustic recordings",
+    "Listener assessment of default versus reference",
+    "Licensed Jukebox SDK and real Reason validation",
+    "Real-time deadline and supported-host qualification"
+  ],
+  "full_physical_optimization": {
+    "source_path": "src/full_reference/grand.cpp",
+    "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "parity_report": "Validation/full-reference-parity.json",
+    "parity_report_sha256": "da8524b3b7a8608922491dd5af3b07f30259673cb2ce3a20bbd09804b1816a39",
+    "native_and_scalar_audio_state_parity": true,
+    "realtime_demonstrated": false,
+    "host_integration": "FullInstrument block API added separately; production plugin harnesses still use reduced preview.",
+    "independent_unison_physics_report": "Validation/full-reference-unison-physics.json",
+    "canonical_transformations": [
+      "inactive-hammer free/damping fusion",
+      "bridge impulse/radiation fusion",
+      "portable contiguous unison groups"
+    ]
+  },
+  "sound_quality_direction": {
+    "starting_point": "preserved original full physical model",
+    "target": "acoustic recordings and listening feedback; original also needs realism improvements",
+    "parity_scope": "performance-only edits",
+    "materials_and_ui_secondary": true,
+    "approximation_policy": "Precision/quality tradeoffs accepted when hardly audible; measurements plus musical listening. Preserve a full exact control.",
+    "phenomena_priority": "Whole-instrument completeness and state-linked connected action/pedal/body behavior before extreme subsystem precision.",
+    "module_evidence": "Isolated outputs plus intact-network stems, coupling ablations, transferred energy and network-output deltas."
+  },
+  "mechanism_network": {
+    "source_hashes": {
+      "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "tools/mechanism_network_support.h": "8773da536b979df2706bb03fd6f81b70ca7d23548d804c002f5b593abd24529a",
+      "tests/mechanism_network_tests.cpp": "f1a157d6eaedd0a47c67e30c118ba8ca7fa6aacbad09e50e3ad0ea98a1557b18",
+      "tools/probe_mechanism_network.cpp": "453f4bdc1150a8f1916223d446d04544fd3a370cf17b7d2a9801b0b02f1bcb16",
+      "docs/MECHANISM_NETWORK.md": "dd1e48ac65d3685a3a3965ad5f03455cbd6bc0cfca28cf4127045294920124d8",
+      "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+      "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+    },
+    "isolated_and_with_notes_probes": true,
+    "network_stems_and_coupling_source_ablations": true,
+    "reciprocal_body_reaction": true,
+    "pressure_levels": "authored, uncalibrated",
+    "default_plugin_changed": false,
+    "report": "Validation/mechanism-network-isolated.json"
+  },
+  "precision_candidate": {
+    "source_sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411",
+    "full_original_topology_retained": true,
+    "repeated_music_speedup": 1.6756783060855414,
+    "default_promoted": false,
+    "extra_numerical_loss": true,
+    "audibility_proven": false,
+    "report": "Validation/full-precision-candidate.json"
+  },
+  "full_backend": {
+    "native_scalar_sanitizers_passed": true,
+    "control_calibration_retained": true,
+    "initial_hammer_rest_geometry_fixed": true,
+    "default_plugin_changed": false,
+    "realtime_demonstrated": false,
+    "runtime_cpp_new_calls_in_test": 0,
+    "touching_midi_notes_fixed": true,
+    "source_only_reason_integration": true,
+    "baseline_repetition_report": {
+      "path": "Validation/full-backend-checks.json",
+      "sha256": "a04fc69026f71a15670ae41e21942097b961b87a0f6b3567da23d9e9e9c7f485"
+    },
+    "report": {
+      "path": "Validation/full-mechanism-integration.json",
+      "sha256": "ae23c4fb9fcdf9ba8323cdf25cb88ec014af01ce69e0f1516c526bfaf8b4ab48"
+    },
+    "fallback_exact_cli_parity_rates": [
+      48000,
+      96000
+    ],
+    "pressure_simd_enabled_by_default": false,
+    "optimized_observation_mechanics_exact_in_tested_cases": true,
+    "reason_pressure_report": {
+      "path": "Validation/reason-full-pressure.json",
+      "sha256": "9d787603aa91ea8a39532a56ceb0050b77eccfc4bc1425e8ff48a813e4426968"
+    },
+    "pressure_report": {
+      "path": "Validation/full-pressure-integration.json",
+      "sha256": "a75d99731c137b5e2e0f528608aeb9c3cbe6c41b7014f72fe0e08e686f5cb8ea"
+    },
+    "fast_contact_enabled_by_default": true,
+    "reason_contact_report": {
+      "path": "Validation/reason-full-contact.json",
+      "sha256": "699801d90e3c398bb67152d01008c9b0e113165193c4081708d602a9005f6284"
+    },
+    "exact_float_output_cases_with_fast_contact": 16,
+    "contact_report": {
+      "path": "Validation/full-contact-integration.json",
+      "sha256": "0ed6483e3e3be21cd7c789722092d591475f5c20323fc680855e591420945712"
+    },
+    "mechanism_cache_enabled_by_default": true,
+    "mechanism_cache_review": {
+      "path": "Validation/full-mechanism-cache-review.json",
+      "sha256": "17aa92f74772572c9d43d6404316dfd4439fd7239fa34c7abc6c1801e34301a4"
+    },
+    "reason_cache_report": {
+      "path": "Validation/reason-full-mechanism-cache.json",
+      "sha256": "fd4dbeab0da3477160497318d5106e4d9c2686b532100a94f9c378be5b9a9fbe"
+    },
+    "model_profile_report": {
+      "path": "Validation/full-profile-integration.json",
+      "sha256": "b8fc60a25c97a532c8d10975a9706f5fc58d203555dec28a18e2ecc46b2be501"
+    }
+  },
+  "strike_repetition": {
+    "report": {
+      "path": "Validation/strike-repetition-provenance.json",
+      "sha256": "5995b72ded9a0d6fe1e873149f46812ca9dc8c55b10bf3949c7b8b576092ba28"
+    },
+    "persistent_vibration": true,
+    "active_hammer_not_reset": true,
+    "bounded_seeded_excitation_variation": true,
+    "partial_recovery_proxy": true,
+    "virgin_hammer_rest_geometry_fixed": true,
+    "native_and_sanitizer_groups": 8,
+    "authoring_limits": "Return/lift timing and excitation distributions are effective authored approximations, not measured action geometry.",
+    "listening": "Audio/strike-repetition/manifest.json",
+    "listening_probe_version": 3,
+    "finite_key_lift_for_touching_notes": true,
+    "zero_gap_review": {
+      "path": "Validation/strike-zero-gap-review.json",
+      "sha256": "ac3278a88f1c2e11c5e60b39569332013fdacf81f01661458a7ce59635afe173"
+    },
+    "final_cpp_source_sha256": {
+      "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "tools/strike_repetition_support.h": "cabf6905d7f47edc8d323745cbb52f183757c2491eee3d2e0a07e3715ef0d036",
+      "tests/strike_repetition_tests.cpp": "29a78e66d16645d032e848516bf4dc7c1d52bc6f4cc0ff89a4ae54c2e8545ce7",
+      "tests/full_instrument_tests.cpp": "7fce4176f6612c3a341031169da2560c071bb94a5adf0def71ca4446e7f3f54e"
+    }
+  },
+  "full_physical_calibration": {
+    "scope": "Full physical v4 candidate; not promoted",
+    "training_cases": 34,
+    "training_anchors": 17,
+    "fit_cases": 32,
+    "ambiguous_C8_fitted": false,
+    "training_report": {
+      "path": "Validation/full-calibration-v4-training.json",
+      "sha256": "776e2cc604a8fbb602ec347e0d1a1164cef938dd10d360443ea167356b3754e1"
+    },
+    "evaluation_report": {
+      "path": "Validation/full-calibration-v4-evaluation.json",
+      "sha256": "683bdc1a72b8cbdcc2ec330c922b498f359c4a2b6cf8c4eec3cf07b1368e9260"
+    },
+    "chronology_audit": {
+      "path": "Validation/full-calibration-v4-review.json",
+      "sha256": "20e79464d6acf4e32d389e3cab2d6e488e1144f11785d3c199388bba2064995f"
+    },
+    "predictions_before_fresh_decode": true,
+    "previously_fresh_cases_now_observed": [
+      "A0v8",
+      "C8v8"
+    ],
+    "evaluation_used_for_fitting": false,
+    "promoted": false,
+    "rejection_reasons": [
+      "A0 rise-time error regressed despite better harmonic/envelope agreement",
+      "C8 strong4434Hz component remains missing",
+      "Historical interpolation envelopes including all A3 layers regressed"
+    ],
+    "listening": "Audio/full-calibration-v4/manifest.json"
+  },
+  "full_mic_fit": {
+    "scope": "Tested bounded effective gain/delay field on full-model TRAIN32; conditional cross-validation",
+    "retained": false,
+    "report": {
+      "path": "Validation/full-mic-report.json",
+      "sha256": "74a83f787eb02a7a3220d6872b3b22317652894eac1ff90994d2d538b98f95fc"
+    },
+    "limits": "Negative result for this fitting procedure, not a proof that spatial observation fitting cannot work."
+  },
+  "full_backend_budget": {
+    "report": {
+      "path": "Validation/full-backend-budget.json",
+      "sha256": "adf4857486145a3a2552f25c709cd193fe79841828a973811b56b0e469bad213"
+    },
+    "sample_rate": 48000,
+    "block_frames": 64,
+    "all_measured_native_callbacks_missed_deadline": true,
+    "largest_profiled_stage": "bridge plus fused string radiation (53\u201355%)",
+    "limits": "Bounded shared-host measurement; no Reason or supported-host qualification.",
+    "scope": "Measured baseline before finite key-lift completion fix; historical timing, not a new measurement of the changed controller."
+  },
+  "waveguide_study": {
+    "report": {
+      "path": "Validation/waveguide-hybrid-workload.json",
+      "sha256": "4294275d3e42620ad09d02fdb7617482dd94b455f6c34652a46a522f1608efb7"
+    },
+    "provenance": {
+      "path": "Validation/waveguide-provenance.json",
+      "sha256": "673b18533f54ee20968286b79129345fd82eb999aa30d62cd76cda8e02ce60d5"
+    },
+    "full_solver_changed": false,
+    "treble_replacement_rejected": true,
+    "limits": "Single-polarization string-only experiment; source-count workload excludes contact, board, unisons, secondary polarization and complete observation."
+  },
+  "pressure_simd_candidate": {
+    "report": {
+      "path": "Validation/full-radiation-simd.json",
+      "sha256": "2653bc2c459874e4c6226150abe9e59c9aee12545327bea9836f64fa88772ec9"
+    },
+    "mechanical_checkpoint_comparisons_passed": 135,
+    "median_cpu_reduction_percent_range": [
+      16,
+      22.2
+    ],
+    "retained_as_research_candidate": true,
+    "canonical_source_changed": false,
+    "limits": "Observer reduction order changes; compiler support, scalar fallback and broader listening remain unvalidated. Pointer-only ablation had no consistent material gain.",
+    "scope": "Measured baseline before finite key-lift completion fix; observer experiment on copied sources only."
+  },
+  "pressure_simd_integration": {
+    "report": {
+      "path": "Validation/full-pressure-integration.json",
+      "sha256": "a75d99731c137b5e2e0f528608aeb9c3cbe6c41b7014f72fe0e08e686f5cb8ea"
+    },
+    "enabled_by_default": false,
+    "fallback_exact": true,
+    "mechanical_checkpoint_comparisons_passed": 80,
+    "optimized_observer_numerically_changed": true,
+    "all_timing_pairs_retained": 24,
+    "timing_regressions": 7,
+    "48k_repetition_median_cpu_regression_percent": 12.16,
+    "universal_speedup_demonstrated": false,
+    "source_research_unchanged": true
+  },
+  "fast_contact_integration": {
+    "report": {
+      "path": "Validation/full-contact-integration.json",
+      "sha256": "0ed6483e3e3be21cd7c789722092d591475f5c20323fc680855e591420945712"
+    },
+    "enabled_by_default": true,
+    "pressure_simd_enabled_by_default": false,
+    "same_contact_equation": true,
+    "all_16_tested_float_outputs_identical": true,
+    "dense_strike_peak_speedup_approx": 2.1,
+    "average_timing_regressions_retained": 13,
+    "peak_timing_regressions_retained": 16,
+    "timing_case_pairs": 32,
+    "48k_repetition_average_regression_percent": 22.47,
+    "universal_speedup_demonstrated": false,
+    "realtime_qualified": false,
+    "reason_source_report": {
+      "path": "Validation/reason-full-contact.json",
+      "sha256": "699801d90e3c398bb67152d01008c9b0e113165193c4081708d602a9005f6284"
+    }
+  },
+  "port_velocity_simd_study": {
+    "report": {
+      "path": "Validation/full-port-reduction.json",
+      "sha256": "3c0d31cd259dd15c79a971b78f24e949eb1e98850b304c0b936f13e8c77505ad"
+    },
+    "adopted": false,
+    "dense_p95_regression_retained": true,
+    "passivity_scope": "Independent long-double energy audit establishes bounded numerical stability in tested cases; changed reductions are not exact passivity."
+  },
+  "mechanism_recording_corpus": {
+    "report": {
+      "path": "Validation/mechanism-reference-inventory.json",
+      "sha256": "84485b1e2f67b8534b3c25046a1677cfeed2e31e56f510de679da31df6d6152d"
+    },
+    "available_metadata_files": 161,
+    "training_files": 8,
+    "reserved_unopened_files": 8,
+    "license": "CC BY 3.0",
+    "default_changed": false,
+    "interpretation": "Release/pedal/harmonic library samples with unknown capture state; not isolated hammer/action geometry."
+  },
+  "full_acoustic_research_network": {
+    "report": {
+      "path": "Validation/full-acoustic-network.json",
+      "sha256": "37eacedd945d8349a5aa19d4daf05ea6a477ca922aabd0033f65892d9c761014"
+    },
+    "checks": {
+      "path": "Validation/full-acoustic-network-checks.json",
+      "sha256": "6df0a4057da5a6b077b5dc0c4944dc19b4a7d887ced367c0c613dcc448142a93"
+    },
+    "provenance": {
+      "path": "Validation/full-acoustic-network-provenance.json",
+      "sha256": "79a532715cb0a9b43f58837ee2882355b2fda5d0a05afa19d7199d446cb3be38"
+    },
+    "cmake_staging": {
+      "path": "Validation/full-acoustic-cmake.json",
+      "sha256": "0dca5a043ae6795c99aa60b086e554dc9f1e0f3ed67e15f269eba7ce5a42951c"
+    },
+    "reciprocal_body_string_source_transfer_tested": true,
+    "default_or_public_api_changed": false,
+    "calibrated_piano_air_or_player_realism_demonstrated": false
+  },
+  "full_renderer": {
+    "initial_smoke": {
+      "path": "Validation/full-renderer.json",
+      "sha256": "d1d37764f8b667490ba3c5680a90601d6f810d62d49b2b8f0c56ec7d38b759c7"
+    },
+    "block17_and_64_identical": true,
+    "touching_requests_and_launches": 3,
+    "fast_contact_enabled": true,
+    "pressure_simd_enabled": false,
+    "offline_only": true,
+    "fast_contact_era_smoke": {
+      "path": "Validation/full-renderer-current.json",
+      "sha256": "776cbec39e0ecd27e609d3ceb57650f4d903415f5d6354313a743b12b3f7d942"
+    },
+    "current_default_smoke": {
+      "path": "Validation/full-renderer-profiles.json",
+      "sha256": "656b0ca33fcfa8fa08f64613622dfe72cf79ae878798e7eca84e428c0a468ae1"
+    },
+    "mechanism_cache_enabled": true
+  },
+  "full_musical_listening": {
+    "manifest": {
+      "path": "Audio/full-performance/manifest.json",
+      "sha256": "479d6fda2bcec46effbf6d6a23d11bff0a93079097f214be1deb276717505efd"
+    },
+    "order": [
+      "original_full_control",
+      "connected_action"
+    ],
+    "start_seconds": [
+      0,
+      9.5
+    ],
+    "same_score_and_room": true,
+    "loudness_matched": true,
+    "listener_preference_established": false,
+    "current_contact_optimization_included": false
+  },
+  "coupled_waveguide_cmake": {
+    "path": "Validation/coupled-waveguide-cmake.json",
+    "sha256": "9eb80df94cc3f3bbcd397cd965e968cc46ce3c2548d4fee5205a57f7a2fd35ff"
+  },
+  "confidence_prior_calibration": {
+    "training": {
+      "path": "Validation/full-confidence-loss.json",
+      "sha256": "b123ceede48d60905a4fc308651e9805a12504aa88ac68d5e53b52a3e90148c8"
+    },
+    "historical": {
+      "path": "Validation/full-confidence-loss-historical.json",
+      "sha256": "0c27a5939f9b8b6c60ff2e6392e23b6afd874411c7d204d1bf2421b75ceec4e8"
+    },
+    "review": {
+      "path": "Validation/full-confidence-loss-review.json",
+      "sha256": "2b8423df286011ce5b477147d4ae94e893d8e6520b61fe45c4f6a2fbfe14529f"
+    },
+    "listening": {
+      "path": "Audio/full-confidence-loss/manifest.json",
+      "sha256": "d60a48c31fa0f61ee5a504e7e5fb9c378dcfecab251e886cb3227716a299b350"
+    },
+    "training_cases": 34,
+    "supported_loss_anchors": 15,
+    "prior_loss_anchors": [
+      96,
+      108
+    ],
+    "historical_cases": 16,
+    "fresh_cases": 0,
+    "all_15_training_gates_passed_vs_v4": true,
+    "a3_historical_envelope_improved_at_all_three_layers": true,
+    "default_promoted": false,
+    "remaining_regressions": [
+      "A0 attack rise time",
+      "C2v8 envelope versus original",
+      "C8 strong unassigned component",
+      "A4v12 and Dsharp5v12 training envelopes versus original"
+    ]
+  },
+  "coupled_waveguide_research": {
+    "report": {
+      "path": "Validation/coupled-waveguide.json",
+      "sha256": "93dcd347bb1efce439ae345441252a72ab3258f3c526aa14a63e24f4740e1419"
+    },
+    "shelf_review": {
+      "path": "Validation/coupled-waveguide-shelf-review.json",
+      "sha256": "a6ff5b80cfb4114ecb65a58b61026f094ac9cc497ca939b654d4de43b655753a"
+    },
+    "cmake": {
+      "path": "Validation/coupled-waveguide-cmake.json",
+      "sha256": "9eb80df94cc3f3bbcd397cd965e968cc46ce3c2548d4fee5205a57f7a2fd35ff"
+    },
+    "bounded_notes": [
+      36,
+      60
+    ],
+    "rate": 48000,
+    "native_and_sanitizers_passed": true,
+    "board_modes": 475,
+    "touching_10hz_requests_and_launches": 3,
+    "partial_return_launches": 2,
+    "default_or_api_changed": false,
+    "same_sound_as_full_engine_demonstrated": false,
+    "limitations": [
+      "one polarization",
+      "identical choir lines",
+      "missing common unison loss",
+      "missing damper contact",
+      "missing calibrated direct string radiation",
+      "old scalar-loss fit changes with DC shelf"
+    ]
+  },
+  "coupled_waveguide_damper": {
+    "report": {
+      "path": "Validation/coupled-waveguide-damper.json",
+      "sha256": "a9923ade8022a5f62bdd42573a791aa4d35c66af0151151b869055fe1ca82119"
+    },
+    "cmake": {
+      "path": "Validation/coupled-waveguide-damper-cmake.json",
+      "sha256": "3e3f5034649068438c33813425fe96512d083c341e2051dba4b0f3b1b561d8b4"
+    },
+    "default_disabled": true,
+    "new_diagnostic_cases": 18,
+    "prior_disabled_audio_cases_exact": 12,
+    "native_and_sanitizers_passed": true,
+    "positive_damper_work_ledger": true,
+    "physical_location": "Authored shunt at hammer contact; real damper geometry/body reaction/noise absent.",
+    "canonical_full_instrument_changed": false
+  },
+  "a0_attack_diagnostic": {
+    "report": {
+      "path": "Validation/full-attack-timing.json",
+      "sha256": "0a6641843ad8d23adbde149f7052e1fd47387008ad56411f8203ccd7c2a55443"
+    },
+    "review": {
+      "path": "Validation/full-attack-timing-review.json",
+      "sha256": "f9887a6c298845b0009e8f85c028904da614546d21ca9ffb7767e854e1c0b07c"
+    },
+    "training_only": true,
+    "short_probe_count": 10,
+    "probe_seconds": 0.35,
+    "hammer_delay_explains_rise_regression": false,
+    "observation_weight_and_metric_threshold_explain_large_rise_jump": true,
+    "first_5ms_pressure_mismatch_remains": true,
+    "default_detector_or_calibration_changed": false,
+    "next_fit_requirement": "Coherent early attack guards before50ms; preserve later spectrum/envelope gains, never optimize t90 alone."
+  },
+  "waveguide_radiation_study": {
+    "report": {
+      "path": "Validation/waveguide-radiation.json",
+      "sha256": "53fa3b8cbe8b061dfc8834cabd3cb6681f4cddb229cb0af58509824b8e7b9815"
+    },
+    "compact_iir_fits_retained": 50,
+    "adopted": false,
+    "actual_transfer_formulas_checked_against_impulses": true,
+    "initial_closed_damper_setup_archived_and_corrected": true,
+    "high_q_pole_shift_separated_from_observer_error": true,
+    "two_input_16pair_energy_weighted_lr_errors": {
+      "C2": {
+        "gain_mae_db": 2.79,
+        "phase_mae_degrees": 10.33
+      },
+      "C4": {
+        "gain_mae_db": 2.55,
+        "phase_mae_degrees": 12.63
+      }
+    },
+    "audibility_or_all_iir_impossibility_demonstrated": false
+  },
+  "mechanism_cache_study": {
+    "report": {
+      "path": "Validation/full-mechanism-cache.json",
+      "sha256": "c5e1ce0793786558ace5a001b33837545fb8a861f62e9d39e6853fe7d57e776f"
+    },
+    "scope": "Frozen private full-core study; canonical integration and long-tail followups have separate receipts.",
+    "balanced_timing_pairs": 12,
+    "rates": [
+      48000,
+      96000
+    ],
+    "median_average_cpu_reductions_percent": [
+      18.19,
+      6.84,
+      6.8,
+      16.02
+    ],
+    "all_average_and_p95_cases_improve": true,
+    "cpu_peak_regressions_retained": 4,
+    "output_rms_null_relative_db_range": [
+      -117.1,
+      -109.49
+    ],
+    "exact_output_demonstrated_for_intact_cache": false,
+    "realtime_qualified": false
+  },
+  "mechanism_cache_integration": {
+    "report": {
+      "path": "Validation/full-mechanism-integration.json",
+      "sha256": "ae23c4fb9fcdf9ba8323cdf25cb88ec014af01ce69e0f1516c526bfaf8b4ab48"
+    },
+    "review": {
+      "path": "Validation/full-mechanism-cache-review.json",
+      "sha256": "17aa92f74772572c9d43d6404316dfd4439fd7239fa34c7abc6c1801e34301a4"
+    },
+    "tail": {
+      "path": "Validation/full-mechanism-cache-tail.json",
+      "sha256": "201c84d85b18597cbf6e1cc995dbf88cb8404892671055e5830e2524fe7037f1"
+    },
+    "default_enabled": true,
+    "realtime_qualified": false
+  },
+  "full_build_profiles": {
+    "phase_a": {
+      "path": "Validation/full-profile-phase-a.json",
+      "sha256": "ba2d0d5ffbcf095ab7c8342d6b7b87590c848ec991f55f627219362104af8c75"
+    },
+    "integration": {
+      "path": "Validation/full-profile-integration.json",
+      "sha256": "b8fc60a25c97a532c8d10975a9706f5fc58d203555dec28a18e2ecc46b2be501"
+    },
+    "api_parity": {
+      "path": "Validation/full-profile-api-parity.json",
+      "sha256": "398f7cc1e1f264795810febe01276fff1897d1de2abf9f6c9e1fdea83a2b84a9"
+    },
+    "review": {
+      "path": "Validation/full-profile-review.json",
+      "sha256": "2fa49bb1fbc030182d1ffba1d70aa9f92ca3b05c813c321f9919be6432b79b30"
+    },
+    "reason": {
+      "path": "Validation/reason-full-profiles.json",
+      "sha256": "3e6a4e454121087112bf146c98d3b1dc234d89625bde85f11859b6cff7b0a534"
+    },
+    "default": "OriginalControl",
+    "candidate": "FrozenConfidenceGrand",
+    "candidate_opt_in": true
+  },
+  "main_integration": {
+    "path": "Validation/main-integration.json",
+    "sha256": "bf04c955c5b9e53bf49db780d1f1ac6e4bdbe7c324caa091572af388f913f0d0"
+  },
+  "known_audible_click": {
+    "user_hears_in_both_halves": true,
+    "added_mechanism_layer_excluded_as_shared_cause": true,
+    "fix_applied": false,
+    "status": "Original attack transient under investigation; unfinished diagnostics excluded from publication."
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "audited_at_utc": "2026-10-26T17:22:34.684166+00:00",
+  "status": "passed",
+  "scope": "Read-only TRAIN-only provenance and numerical audit of separate pedal sensitivity study; no renders or fresh full scoring.",
+  "artifacts": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/tools/probe_full_pedal_condition.py",
+      "sha256": "ce5ae1cdae7f037786885a883d41dc50f79e5476ebc1c1ca1b7d1def4c93df61"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/freeze.json",
+      "sha256": "981a26a370106d184f0d50a2d6b5f46c1500397962f7b4884f1f2aecef7ee9e9"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/report.json",
+      "sha256": "3232b92058b3b5609d3c7c68394d97a0f7401da0088c309b387bdd94e4a3cf67"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/analyze_pressure_delta.py",
+      "sha256": "a6301e58e8e7f9c4181b00a05a6676f94cff6278109838a5ae32980e7d84c55f"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pressure-delta.json",
+      "sha256": "7150c1e07558492595a8578c81317a1ea4af4e523a11c272a57db7599097eb62"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-pedal-condition.json",
+      "sha256": "3232b92058b3b5609d3c7c68394d97a0f7401da0088c309b387bdd94e4a3cf67"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-pedal-pressure-delta.json",
+      "sha256": "7150c1e07558492595a8578c81317a1ea4af4e523a11c272a57db7599097eb62"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss-refinement/freeze.json",
+      "sha256": "ba1a83ec9d14ab0692e1eaa8dda64e4e828871316a6db56cbbe59c209db30083"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/out/full-inverse-loss-refinement/report.json",
+      "sha256": "598293db3d6e5e7d411eda1080f4f621a55b846966b3b90b3d80620540cd5062"
+    }
+  ],
+  "fixed_training_ids": [
+    "A0v4",
+    "A0v12",
+    "C4v4",
+    "C4v12",
+    "D#4v4",
+    "D#4v12"
+  ],
+  "reused_zero_pedal_predictions": 6,
+  "new_predictions": 12,
+  "new_pedal_positions": [
+    0.5,
+    1.0
+  ],
+  "unchanged_full_v4_producer": {
+    "source_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+    "calibration_sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa",
+    "engine_sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756",
+    "reference_features_sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+    "split_sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428",
+    "training_guard_sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550"
+  },
+  "checks": {
+    "freeze_input_hash_checks": 28,
+    "exact_reference_container_identities": 4,
+    "decoded_reference_pcm_identities": 2,
+    "event_hash_checks": 18,
+    "wav_hash_checks": 18,
+    "cached_feature_score_binding_checks": 18,
+    "cached_primary_metric_recomputations": 108,
+    "score_provenance_input_checks": 24,
+    "score_provenance_audio_checks": 24,
+    "new_render_sidecar_checks": 12,
+    "report_record_hash_checks": 5,
+    "reported_case_metrics_recomputed": 84,
+    "stereo_case_channel_window_sets_recomputed": 36,
+    "reported_aggregate_metrics_recomputed": 14,
+    "velocity_contrasts_recomputed": 6,
+    "pressure_record_hash_checks": 2,
+    "pressure_audio_record_checks": 24,
+    "raw_null_windows_recomputed": 60,
+    "network_energy_changes_recomputed": 12,
+    "loss_isolation_hash_checks": 1
+  },
+  "event_policy": {
+    "pedal_seconds": 0.0,
+    "note_on_seconds": 0.1,
+    "note_off_seconds": 4.15,
+    "render_duration_seconds": 3.8
+  },
+  "profile_or_default_changed": false,
+  "acquisition_state_identified": false,
+  "pedal_results_used_in_loss_selection": false,
+  "metrics": [
+    {
+      "pedal_position": 0.5,
+      "mean_envelope_change_db": -6.17333568298702e-05,
+      "maximum_envelope_case_regression_db": 0.0001382132974803163,
+      "mean_attack_band_change_db": -0.0002535704679001993
+    },
+    {
+      "pedal_position": 1.0,
+      "mean_envelope_change_db": -0.0012855697371424817,
+      "maximum_envelope_case_regression_db": 0.0002001856611242303,
+      "mean_attack_band_change_db": -0.00041629273612087125
+    }
+  ],
+  "raw_null": [
+    {
+      "pedal_position": 0.5,
+      "id": "A0v4",
+      "whole_render_null_rms_db_relative": -77.98431038534785
+    },
+    {
+      "pedal_position": 0.5,
+      "id": "A0v12",
+      "whole_render_null_rms_db_relative": -77.86193949337884
+    },
+    {
+      "pedal_position": 0.5,
+      "id": "C4v4",
+      "whole_render_null_rms_db_relative": -87.46454877259593
+    },
+    {
+      "pedal_position": 0.5,
+      "id": "C4v12",
+      "whole_render_null_rms_db_relative": -85.72779634105375
+    },
+    {
+      "pedal_position": 0.5,
+      "id": "D#4v4",
+      "whole_render_null_rms_db_relative": -80.75529031966113
+    },
+    {
+      "pedal_position": 0.5,
+      "id": "D#4v12",
+      "whole_render_null_rms_db_relative": -79.21792026228
+    },
+    {
+      "pedal_position": 1.0,
+      "id": "A0v4",
+      "whole_render_null_rms_db_relative": -69.67381347600056
+    },
+    {
+      "pedal_position": 1.0,
+      "id": "A0v12",
+      "whole_render_null_rms_db_relative": -69.25468882215765
+    },
+    {
+      "pedal_position": 1.0,
+      "id": "C4v4",
+      "whole_render_null_rms_db_relative": -76.07661850228405
+    },
+    {
+      "pedal_position": 1.0,
+      "id": "C4v12",
+      "whole_render_null_rms_db_relative": -74.86909124627068
+    },
+    {
+      "pedal_position": 1.0,
+      "id": "D#4v4",
+      "whole_render_null_rms_db_relative": -69.96490362471275
+    },
+    {
+      "pedal_position": 1.0,
+      "id": "D#4v12",
+      "whole_render_null_rms_db_relative": -68.56646903957846
+    }
+  ],
+  "aggregation": "Equal means across all six case metrics; attack uses each case mean absolute valid 5\u2013100ms band errors excluding sub250Hz, then mean across cases. Signed changes, signed velocity errors and worst case regressions independently recomputed.",
+  "stereo": "Pearson L/R correlation and R/L power ratio independently recomputed over all four onset-relative windows for all six TRAIN references, baseline and both conditions.",
+  "raw_null_method": "Raw model float WAVs on their existing common sample clock: condition minus baseline, no alignment, normalization or resampling; all60 windows plus signed final whole-network energy changes independently recomputed.",
+  "loss_isolation": {
+    "fifth_freeze_pins_initial_loss_only": true,
+    "loss_confirmation_mtime_utc": "2026-10-26T17:04:36.491952+00:00",
+    "pedal_score_mtimes_utc": {
+      "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-half/score/score.json": "2026-10-26T17:06:43.764960+00:00",
+      "/workspace/virtual-instrument-keyra/out/full-pedal-condition/pedal-down/score/score.json": "2026-10-26T17:07:54.655255+00:00"
+    },
+    "all_pedal_score_mtimes_follow_loss_confirmation": true,
+    "existing_loss_audit_sha256": "ef17831e45513c509f4d74aab82819b09ba6357bded61fb8e311b27bf2ac3571"
+  },
+  "findings": [],
+  "limitations": [
+    "Current artifact hashes and filesystem times corroborate separation and ordering; timestamps cannot prove when a process or person first read a file or establish an immutable execution history.",
+    "Cached primary metrics independently recomputed from bound TRAIN and model feature data; no full spectral feature re-extraction or perceptual listening.",
+    "Final mechanical energy is whole-network energy, not isolated sympathetic energy or a perceptual score.",
+    "This six-case condition sensitivity study does not identify recording acquisition pedal state or establish a production default."
+  ],
+  "evaluation_files_or_audio_opened": false,
+  "heavy_work_or_rerenders_performed": false,
+  "source_or_existing_receipt_edits": false
+}

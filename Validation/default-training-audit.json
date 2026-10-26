@@ -1,0 +1,1646 @@
+{
+  "schema_version": 1,
+  "training_ids": [
+    "C2v12",
+    "C2v4",
+    "C3v12",
+    "C3v4",
+    "C4v12",
+    "C4v4",
+    "C5v12",
+    "C5v4",
+    "C6v12",
+    "C6v4"
+  ],
+  "heldout_cases_used": false,
+  "reference_features_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+  "reference_manifest_sha256": "7f2d494760bba221bcb8a83d3d4c6619fbd988b42b307e39fcf433b53e4b38f7",
+  "engine_sha256": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+  "calibration_sha256": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+  "renderer_sha256": "e331b20e64737ca216cb3e4ba9d9c4cf8921f4ffaa5d0f2be003616802424b77",
+  "configuration": "Default grand, tone/dynamics defaults, close AB, no authored mechanical noise/room/resonance; output gain -6dB.",
+  "analysis": {
+    "existing_full_envelope_metric": "Unchanged preserved benchmark, fixed early RMS gain.",
+    "harmonic_power": "Sum of existing fitted-partial integration bands; not a new realism score.",
+    "subfundamental": "0 to0.8 times measured fundamental, separately reported.",
+    "power_windows": "Hann-squared weighted power, mean stereo power, no mono cancellation."
+  },
+  "cases": [
+    {
+      "id": "C2v12",
+      "split": "train",
+      "midi": 36,
+      "midi_velocity": 93,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "6fdee8b21af461d199f4d4dca1375f5100c4c8def1e092b8c23d71e42f09372c",
+      "model_sha256": "2c15aed1d19500f2f5bd79528105a710b5aad102fb249d99d482a3034a36be6f",
+      "existing_full_comparison": {
+        "id": "C2v12",
+        "split": "train",
+        "midi": 36,
+        "layer": 12,
+        "early_gain_db": 5.268618924960214,
+        "f1_error_cents": 0.214930735527031,
+        "absolute_f1_error_cents": 0.214930735527031,
+        "reference_f1_hz": 65.014200768152,
+        "model_f1_hz": 65.02227270818483,
+        "reference_B": 0.00011385705387554913,
+        "model_B": 0.00011463164508748231,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 4.903935505535633,
+        "log_band_mae_by_window_db": [
+          4.204999798031296,
+          3.7138272749482746,
+          5.854586225958268,
+          6.162908074410609
+        ],
+        "harmonic_level_mae_db": 1.1489332427523988,
+        "partial_tuning_mae_cents": 0.23988219941349104,
+        "partial_decay_slope_mae_db_per_second": 1.7542164366508821,
+        "partial_decay_pairs": 11,
+        "envelope_mae_db": 1.728251924387809,
+        "attack_rise10_90_error_ms": 25.854166666666668,
+        "reference_sha256": "a50bf007825a6a391af4675efabb18b0be0e54427eed6a98a36f0663d91d8872",
+        "model_sha256": "2c15aed1d19500f2f5bd79528105a710b5aad102fb249d99d482a3034a36be6f"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.02757477691401103,
+          "harmonic_power": 0.02744723519340426,
+          "harmonic_fraction": 0.9953746961941162,
+          "subfundamental_power": 3.06684038167163e-05,
+          "subfundamental_fraction": 0.0011121904598667257,
+          "sub_31_25_hz_power": 1.1884075402135334e-05,
+          "sub_31_25_hz_fraction": 0.0004309763026984604,
+          "48_52_hz_power": 1.3864108553069426e-06,
+          "48_52_hz_fraction": 5.027822562736647e-05,
+          "model_minus_reference_harmonic_power_db": -0.014265253017690507,
+          "subfundamental_peak_frequencies_hz": [
+            43.9453125,
+            20.5078125,
+            8.7890625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.004220407953065403,
+          "harmonic_power": 0.004175050624030189,
+          "harmonic_fraction": 0.9892528567049378,
+          "subfundamental_power": 4.579225763846706e-06,
+          "subfundamental_fraction": 0.0010850196982783815,
+          "sub_31_25_hz_power": 4.188348565743919e-06,
+          "sub_31_25_hz_fraction": 0.0009924037231286613,
+          "48_52_hz_power": 2.7936552773581574e-07,
+          "48_52_hz_fraction": 6.619396296343925e-05,
+          "model_minus_reference_harmonic_power_db": -1.042077333682213,
+          "subfundamental_peak_frequencies_hz": [
+            12.451171875,
+            49.8046875,
+            20.5078125,
+            24.169921875,
+            42.48046875,
+            37.353515625,
+            32.2265625,
+            30.029296875
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 0.0005639373154899831,
+          "harmonic_power": 0.0005242080340968172,
+          "harmonic_fraction": 0.9295501817278279,
+          "subfundamental_power": 1.3920379199326949e-06,
+          "subfundamental_fraction": 0.002468426688032175,
+          "sub_31_25_hz_power": 1.1644731095274497e-06,
+          "sub_31_25_hz_fraction": 0.00206489813236722,
+          "48_52_hz_power": 2.233567741592375e-07,
+          "48_52_hz_fraction": 0.0003960666691566092,
+          "model_minus_reference_harmonic_power_db": -0.5098314457000531,
+          "subfundamental_peak_frequencies_hz": [
+            12.0849609375,
+            6.591796875,
+            50.1708984375,
+            24.90234375,
+            18.6767578125,
+            16.845703125,
+            21.240234375,
+            28.564453125
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 0.00023289553117326452,
+          "harmonic_power": 0.00022287157136995924,
+          "harmonic_fraction": 0.9569594154391572,
+          "subfundamental_power": 8.072547666675939e-07,
+          "subfundamental_fraction": 0.0034661668371259134,
+          "sub_31_25_hz_power": 5.633913072428896e-07,
+          "sub_31_25_hz_fraction": 0.0024190730685328178,
+          "48_52_hz_power": 2.408867874101815e-07,
+          "48_52_hz_fraction": 0.0010343126216147609,
+          "model_minus_reference_harmonic_power_db": -1.4414793028025605,
+          "subfundamental_peak_frequencies_hz": [
+            49.98779296875,
+            6.40869140625,
+            7.87353515625,
+            17.02880859375,
+            10.80322265625,
+            8.97216796875,
+            9.8876953125,
+            24.90234375
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          20.281895833333333,
+          22.281895833333333
+        ],
+        "sub_31_25_hz_fraction": 0.3644825620331735,
+        "48_52_hz_fraction": 0.07634189476325746,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.0030833333333333333,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C2v4",
+      "split": "train",
+      "midi": 36,
+      "midi_velocity": 40,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "36c79cd4976815a90be797f0ec6883056c6b0d022be699b95dbd871973f5c048",
+      "model_sha256": "28e2666a5c6cf200d82614f463da08ac10e640651ee2e6d304ff59ec72a37bb6",
+      "existing_full_comparison": {
+        "id": "C2v4",
+        "split": "train",
+        "midi": 36,
+        "layer": 4,
+        "early_gain_db": 5.461109485676934,
+        "f1_error_cents": 0.21430642187932603,
+        "absolute_f1_error_cents": 0.21430642187932603,
+        "reference_f1_hz": 65.01421446843138,
+        "model_f1_hz": 65.02226296198178,
+        "reference_B": 0.00011463315516257127,
+        "model_B": 0.00011461714319727929,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 4.131976120190953,
+        "log_band_mae_by_window_db": [
+          3.928519500985327,
+          3.276646416838613,
+          5.337746075000207,
+          4.096518418890894
+        ],
+        "harmonic_level_mae_db": 1.174963584996193,
+        "partial_tuning_mae_cents": 0.21379065072484943,
+        "partial_decay_slope_mae_db_per_second": 1.6544206219397686,
+        "partial_decay_pairs": 10,
+        "envelope_mae_db": 1.7637660589431743,
+        "attack_rise10_90_error_ms": 24.270833333333336,
+        "reference_sha256": "6f100bd76c132c26b7b4dca012903da14497711c6ead4ca8b8545f019e7f9f14",
+        "model_sha256": "28e2666a5c6cf200d82614f463da08ac10e640651ee2e6d304ff59ec72a37bb6"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.0076195918429127485,
+          "harmonic_power": 0.007602669948152507,
+          "harmonic_fraction": 0.9977791599459516,
+          "subfundamental_power": 9.454598617161728e-06,
+          "subfundamental_fraction": 0.0012408274369651157,
+          "sub_31_25_hz_power": 4.711934049301547e-06,
+          "sub_31_25_hz_fraction": 0.0006183971722427998,
+          "48_52_hz_power": 7.033837973456726e-07,
+          "48_52_hz_fraction": 9.231252957465361e-05,
+          "model_minus_reference_harmonic_power_db": -0.041093221776697636,
+          "subfundamental_peak_frequencies_hz": [
+            43.9453125,
+            14.6484375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.0010635857864130442,
+          "harmonic_power": 0.0010608341563479945,
+          "harmonic_fraction": 0.9974128743537185,
+          "subfundamental_power": 1.5522731050879202e-06,
+          "subfundamental_fraction": 0.0014594714642840235,
+          "sub_31_25_hz_power": 1.349171239386303e-06,
+          "sub_31_25_hz_fraction": 0.0012685119118941964,
+          "48_52_hz_power": 1.7409443410839002e-07,
+          "48_52_hz_fraction": 0.00016368631128056495,
+          "model_minus_reference_harmonic_power_db": -0.3982981271202103,
+          "subfundamental_peak_frequencies_hz": [
+            5.126953125,
+            12.451171875,
+            50.537109375,
+            16.845703125,
+            21.240234375,
+            42.48046875,
+            28.564453125,
+            45.41015625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 0.00013340988544255608,
+          "harmonic_power": 0.00013173735550522426,
+          "harmonic_fraction": 0.9874632233452297,
+          "subfundamental_power": 8.009980731288339e-07,
+          "subfundamental_fraction": 0.006004038384949588,
+          "sub_31_25_hz_power": 5.70915749204292e-07,
+          "sub_31_25_hz_fraction": 0.004279411134417908,
+          "48_52_hz_power": 2.269117919995897e-07,
+          "48_52_hz_fraction": 0.0017008619057490599,
+          "model_minus_reference_harmonic_power_db": -0.11183391199782602,
+          "subfundamental_peak_frequencies_hz": [
+            5.859375,
+            50.1708984375,
+            12.0849609375,
+            15.0146484375,
+            25.2685546875,
+            20.8740234375,
+            28.9306640625,
+            46.5087890625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 4.488974158542819e-05,
+          "harmonic_power": 4.345527757288407e-05,
+          "harmonic_fraction": 0.9680447255457187,
+          "subfundamental_power": 1.1912145784692747e-06,
+          "subfundamental_fraction": 0.026536454352322648,
+          "sub_31_25_hz_power": 9.438693260229346e-07,
+          "sub_31_25_hz_fraction": 0.02102639250499333,
+          "48_52_hz_power": 2.4168183298662356e-07,
+          "48_52_hz_fraction": 0.005383898958889902,
+          "model_minus_reference_harmonic_power_db": -1.1378749748368517,
+          "subfundamental_peak_frequencies_hz": [
+            49.98779296875,
+            5.31005859375,
+            6.591796875,
+            8.056640625,
+            9.8876953125,
+            11.53564453125,
+            15.0146484375,
+            12.8173828125
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          17.7095625,
+          19.7095625
+        ],
+        "sub_31_25_hz_fraction": 0.6818851284816889,
+        "48_52_hz_fraction": 0.08156022937615989,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.008541666666666666,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C3v12",
+      "split": "train",
+      "midi": 48,
+      "midi_velocity": 93,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "2ee3c48a5150b505202c808118ca6ab87d2ae0ea807f18f1722f4a9dfcad6001",
+      "model_sha256": "08d1c9584d7396569f73804069896fdaa5543c8150d23c1ae8ff9995fbcabd3d",
+      "existing_full_comparison": {
+        "id": "C3v12",
+        "split": "train",
+        "midi": 48,
+        "layer": 12,
+        "early_gain_db": 5.82822800211888,
+        "f1_error_cents": 0.188852417840088,
+        "absolute_f1_error_cents": 0.188852417840088,
+        "reference_f1_hz": 130.5361741198493,
+        "model_f1_hz": 130.55041449176858,
+        "reference_B": 8.998103048126795e-05,
+        "model_B": 9.255851496366598e-05,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 5.378214740188912,
+        "log_band_mae_by_window_db": [
+          8.240628004480381,
+          5.194554892624814,
+          3.9104067694155575,
+          2.8013494266802623
+        ],
+        "harmonic_level_mae_db": 0.9441121665834628,
+        "partial_tuning_mae_cents": 0.27200719800355183,
+        "partial_decay_slope_mae_db_per_second": 1.572967565395182,
+        "partial_decay_pairs": 16,
+        "envelope_mae_db": 1.127638281135613,
+        "attack_rise10_90_error_ms": 6.541666666666668,
+        "reference_sha256": "17e82bb739a424d6b78a34e1517516f537960a5a9e231eba848c15cd4c5197f9",
+        "model_sha256": "08d1c9584d7396569f73804069896fdaa5543c8150d23c1ae8ff9995fbcabd3d"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.01833376041460967,
+          "harmonic_power": 0.018294983619844062,
+          "harmonic_fraction": 0.9978849513744759,
+          "subfundamental_power": 1.8944415184368416e-05,
+          "subfundamental_fraction": 0.0010333076660733566,
+          "sub_31_25_hz_power": 6.745739069849301e-06,
+          "sub_31_25_hz_fraction": 0.0003679408325023058,
+          "48_52_hz_power": 9.674041586793358e-07,
+          "48_52_hz_fraction": 5.2766270355995155e-05,
+          "model_minus_reference_harmonic_power_db": 0.08285521897846308,
+          "subfundamental_peak_frequencies_hz": [
+            43.9453125,
+            17.578125,
+            102.5390625,
+            27.83203125,
+            83.49609375,
+            68.84765625,
+            58.59375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.003669231030776502,
+          "harmonic_power": 0.00366658504299313,
+          "harmonic_fraction": 0.9992788713054103,
+          "subfundamental_power": 1.6161332074434943e-06,
+          "subfundamental_fraction": 0.00044045555973112974,
+          "sub_31_25_hz_power": 1.0297427639610532e-06,
+          "sub_31_25_hz_fraction": 0.0002806426619975286,
+          "48_52_hz_power": 2.0652849783500176e-07,
+          "48_52_hz_fraction": 5.628658868920966e-05,
+          "model_minus_reference_harmonic_power_db": -0.2917415808985444,
+          "subfundamental_peak_frequencies_hz": [
+            5.859375,
+            49.8046875,
+            16.845703125,
+            21.97265625,
+            99.609375,
+            11.71875,
+            83.49609375,
+            87.890625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 0.0010534758628827794,
+          "harmonic_power": 0.001052036433449152,
+          "harmonic_fraction": 0.9986336379557016,
+          "subfundamental_power": 7.492856436433673e-07,
+          "subfundamental_fraction": 0.0007112508886468343,
+          "sub_31_25_hz_power": 4.714399729066431e-07,
+          "sub_31_25_hz_fraction": 0.0004475090408019157,
+          "48_52_hz_power": 1.2818953390801735e-07,
+          "48_52_hz_fraction": 0.00012168245939421304,
+          "model_minus_reference_harmonic_power_db": 0.11318375275022446,
+          "subfundamental_peak_frequencies_hz": [
+            7.6904296875,
+            49.8046875,
+            16.11328125,
+            99.9755859375,
+            84.5947265625,
+            11.71875,
+            21.97265625,
+            29.6630859375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 0.0001831026096405743,
+          "harmonic_power": 0.00018252860145210996,
+          "harmonic_fraction": 0.9968651009966973,
+          "subfundamental_power": 4.851087359346175e-07,
+          "subfundamental_fraction": 0.0026493818787557064,
+          "sub_31_25_hz_power": 2.876429624417456e-07,
+          "sub_31_25_hz_fraction": 0.0015709386283810005,
+          "48_52_hz_power": 1.1553324070996833e-07,
+          "48_52_hz_fraction": 0.0006309753909939192,
+          "model_minus_reference_harmonic_power_db": -0.15767799339230198,
+          "subfundamental_peak_frequencies_hz": [
+            49.98779296875,
+            7.6904296875,
+            99.9755859375,
+            5.4931640625,
+            10.25390625,
+            6.591796875,
+            11.71875,
+            17.9443359375
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          13.799979166666667,
+          15.799979166666667
+        ],
+        "sub_31_25_hz_fraction": 0.349283129246442,
+        "48_52_hz_fraction": 0.07882586598005363,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.009604166666666667,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C3v4",
+      "split": "train",
+      "midi": 48,
+      "midi_velocity": 40,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "9a35672fe713b73c5e6c02861e8ab7c03826a33b5be63d0623046282b797e002",
+      "model_sha256": "8ef277a099d8fa3801560311ddbc939c3b9ee66fa8f53a7c108c2557bd38fd00",
+      "existing_full_comparison": {
+        "id": "C3v4",
+        "split": "train",
+        "midi": 48,
+        "layer": 4,
+        "early_gain_db": 5.76277402067308,
+        "f1_error_cents": 0.211722324486623,
+        "absolute_f1_error_cents": 0.211722324486623,
+        "reference_f1_hz": 130.53447722932643,
+        "model_f1_hz": 130.55044199906635,
+        "reference_B": 9.355492507668998e-05,
+        "model_B": 9.267586406201876e-05,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 6.991568925618532,
+        "log_band_mae_by_window_db": [
+          8.226768092315012,
+          6.028205415391917,
+          7.618450253379346,
+          5.688301833155245
+        ],
+        "harmonic_level_mae_db": 0.7420887389348567,
+        "partial_tuning_mae_cents": 0.18336557205838888,
+        "partial_decay_slope_mae_db_per_second": 1.578922645266549,
+        "partial_decay_pairs": 13,
+        "envelope_mae_db": 1.2439909923625514,
+        "attack_rise10_90_error_ms": 14.416666666666664,
+        "reference_sha256": "4a3ffe497dd0884f64437feddf106c20d4db93bcf00520a4cf4ff57e155da647",
+        "model_sha256": "8ef277a099d8fa3801560311ddbc939c3b9ee66fa8f53a7c108c2557bd38fd00"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.005075501873298296,
+          "harmonic_power": 0.005063123569213103,
+          "harmonic_fraction": 0.9975611664828036,
+          "subfundamental_power": 8.352673545047885e-06,
+          "subfundamental_fraction": 0.0016456842601104058,
+          "sub_31_25_hz_power": 6.16395024430581e-06,
+          "sub_31_25_hz_fraction": 0.0012144513780467173,
+          "48_52_hz_power": 2.460431582440713e-07,
+          "48_52_hz_fraction": 4.847661657627979e-05,
+          "model_minus_reference_harmonic_power_db": -0.013089535684330317,
+          "subfundamental_peak_frequencies_hz": [
+            16.11328125,
+            8.7890625,
+            43.9453125,
+            102.5390625,
+            84.9609375,
+            92.28515625,
+            61.5234375,
+            74.70703125
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.0008799430985024601,
+          "harmonic_power": 0.0008783135983689149,
+          "harmonic_fraction": 0.9981481755623536,
+          "subfundamental_power": 1.3210475622608174e-06,
+          "subfundamental_fraction": 0.00150128748609888,
+          "sub_31_25_hz_power": 1.055027900382391e-06,
+          "sub_31_25_hz_fraction": 0.0011989728678796399,
+          "48_52_hz_power": 1.5493616170166415e-07,
+          "48_52_hz_fraction": 0.0001760752052778683,
+          "model_minus_reference_harmonic_power_db": -0.3007366696224547,
+          "subfundamental_peak_frequencies_hz": [
+            11.71875,
+            5.859375,
+            16.845703125,
+            49.8046875,
+            87.158203125,
+            100.341796875,
+            21.240234375,
+            79.1015625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 0.00025765919436840747,
+          "harmonic_power": 0.0002569467438280527,
+          "harmonic_fraction": 0.9972349112473894,
+          "subfundamental_power": 6.420984073896045e-07,
+          "subfundamental_fraction": 0.0024920453895059392,
+          "sub_31_25_hz_power": 4.437514822531473e-07,
+          "sub_31_25_hz_fraction": 0.0017222419845754097,
+          "48_52_hz_power": 1.4201812472900052e-07,
+          "48_52_hz_fraction": 0.0005511859379872915,
+          "model_minus_reference_harmonic_power_db": 0.028317978532731998,
+          "subfundamental_peak_frequencies_hz": [
+            49.8046875,
+            5.4931640625,
+            16.4794921875,
+            21.6064453125,
+            85.3271484375,
+            10.986328125,
+            99.9755859375,
+            81.298828125
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 4.231813410877946e-05,
+          "harmonic_power": 4.1611765925536365e-05,
+          "harmonic_fraction": 0.9833081444132824,
+          "subfundamental_power": 6.671842234577641e-07,
+          "subfundamental_fraction": 0.01576591779171445,
+          "sub_31_25_hz_power": 5.105603780346071e-07,
+          "sub_31_25_hz_fraction": 0.012064813082783926,
+          "48_52_hz_power": 1.2364954146796813e-07,
+          "48_52_hz_fraction": 0.0029219043814674097,
+          "model_minus_reference_harmonic_power_db": -0.17433137579279318,
+          "subfundamental_peak_frequencies_hz": [
+            5.67626953125,
+            49.98779296875,
+            6.77490234375,
+            8.23974609375,
+            99.9755859375,
+            9.70458984375,
+            11.90185546875,
+            10.986328125
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          13.857541666666666,
+          15.857541666666666
+        ],
+        "sub_31_25_hz_fraction": 0.6361554020091422,
+        "48_52_hz_fraction": 0.12205017229099013,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.0077083333333333335,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C4v12",
+      "split": "train",
+      "midi": 60,
+      "midi_velocity": 93,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a",
+      "model_sha256": "07c51c2968c643fbd10caedd8bb51bbb924d79d2483d3b7e7c48efa604f21701",
+      "existing_full_comparison": {
+        "id": "C4v12",
+        "split": "train",
+        "midi": 60,
+        "layer": 12,
+        "early_gain_db": 5.412895392356618,
+        "f1_error_cents": 0.2907310411296369,
+        "absolute_f1_error_cents": 0.2907310411296369,
+        "reference_f1_hz": 261.59507910215393,
+        "model_f1_hz": 261.639013194177,
+        "reference_B": 0.00028179848323789684,
+        "model_B": 0.0002798498508892876,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 6.6846157162097875,
+        "log_band_mae_by_window_db": [
+          12.354157797953217,
+          5.444195951357862,
+          0.6715326443724108,
+          0.6484666901241228
+        ],
+        "harmonic_level_mae_db": 0.7469425979282854,
+        "partial_tuning_mae_cents": 0.2286509992227904,
+        "partial_decay_slope_mae_db_per_second": 0.9632985678285079,
+        "partial_decay_pairs": 13,
+        "envelope_mae_db": 1.4497794965228392,
+        "attack_rise10_90_error_ms": 2.4999999999999987,
+        "reference_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+        "model_sha256": "07c51c2968c643fbd10caedd8bb51bbb924d79d2483d3b7e7c48efa604f21701"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.034716127318722236,
+          "harmonic_power": 0.03464723453675484,
+          "harmonic_fraction": 0.9980155395406031,
+          "subfundamental_power": 5.242259107740976e-05,
+          "subfundamental_fraction": 0.0015100356844566162,
+          "sub_31_25_hz_power": 2.515031165517434e-05,
+          "sub_31_25_hz_fraction": 0.0007244561417889173,
+          "48_52_hz_power": 2.2109141031235655e-06,
+          "48_52_hz_fraction": 6.36855050917857e-05,
+          "model_minus_reference_harmonic_power_db": 0.3857553720348231,
+          "subfundamental_peak_frequencies_hz": [
+            19.04296875,
+            30.76171875,
+            84.9609375,
+            51.26953125,
+            93.75,
+            196.2890625,
+            133.30078125,
+            5.859375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.0070824678002543,
+          "harmonic_power": 0.007076621154854162,
+          "harmonic_fraction": 0.9991744903662072,
+          "subfundamental_power": 4.341410551859376e-06,
+          "subfundamental_fraction": 0.0006129799208834378,
+          "sub_31_25_hz_power": 3.5237772500830714e-06,
+          "sub_31_25_hz_fraction": 0.000497535230581147,
+          "48_52_hz_power": 2.2856167006080693e-07,
+          "48_52_hz_fraction": 3.2271473236009675e-05,
+          "model_minus_reference_harmonic_power_db": -2.1359474747905467,
+          "subfundamental_peak_frequencies_hz": [
+            5.859375,
+            16.11328125,
+            20.5078125,
+            49.8046875,
+            79.833984375,
+            87.890625,
+            100.341796875,
+            83.49609375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 0.00024075199216671992,
+          "harmonic_power": 0.00023886817093549662,
+          "harmonic_fraction": 0.9921752621265175,
+          "subfundamental_power": 1.810129779878661e-06,
+          "subfundamental_fraction": 0.007518649227314191,
+          "sub_31_25_hz_power": 1.5299534973307036e-06,
+          "sub_31_25_hz_fraction": 0.006354894443702947,
+          "48_52_hz_power": 1.2012674697978766e-07,
+          "48_52_hz_fraction": 0.000498964705955996,
+          "model_minus_reference_harmonic_power_db": 0.10631197044463414,
+          "subfundamental_peak_frequencies_hz": [
+            5.126953125,
+            16.4794921875,
+            50.1708984375,
+            8.4228515625,
+            99.9755859375,
+            21.6064453125,
+            80.9326171875,
+            84.228515625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 7.320763466227231e-05,
+          "harmonic_power": 7.144893842429896e-05,
+          "harmonic_fraction": 0.9759766007181256,
+          "subfundamental_power": 1.751806385387203e-06,
+          "subfundamental_fraction": 0.023929285428613903,
+          "sub_31_25_hz_power": 1.495221186632012e-06,
+          "sub_31_25_hz_fraction": 0.020424388706586322,
+          "48_52_hz_power": 1.49348498481064e-07,
+          "48_52_hz_fraction": 0.002040067257602997,
+          "model_minus_reference_harmonic_power_db": -0.9773444406847867,
+          "subfundamental_peak_frequencies_hz": [
+            12.0849609375,
+            5.4931640625,
+            9.1552734375,
+            49.98779296875,
+            6.40869140625,
+            16.845703125,
+            99.9755859375,
+            10.07080078125
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          13.71,
+          15.71
+        ],
+        "sub_31_25_hz_fraction": 0.9241894833660987,
+        "48_52_hz_fraction": 0.02385758429006503,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.0074375,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C4v4",
+      "split": "train",
+      "midi": 60,
+      "midi_velocity": 40,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "b25c65964c4d4e118fc9a7d67d68156fde483db5415339ab759a58dffa4abf51",
+      "model_sha256": "656f99f3144e9ff49b5d8ac76444c83e6b86d63c87edba798a2147819236d859",
+      "existing_full_comparison": {
+        "id": "C4v4",
+        "split": "train",
+        "midi": 60,
+        "layer": 4,
+        "early_gain_db": 5.490300342137317,
+        "f1_error_cents": 0.23553948767848537,
+        "absolute_f1_error_cents": 0.23553948767848537,
+        "reference_f1_hz": 261.6038708567966,
+        "model_f1_hz": 261.63946525467577,
+        "reference_B": 0.00028024742855009923,
+        "model_B": 0.000279978501815307,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 10.695847044768938,
+        "log_band_mae_by_window_db": [
+          13.78427632484016,
+          9.983537023952499,
+          9.157164829797114,
+          7.616638508016102
+        ],
+        "harmonic_level_mae_db": 0.8674010118899637,
+        "partial_tuning_mae_cents": 0.226971547533566,
+        "partial_decay_slope_mae_db_per_second": 1.227238693798371,
+        "partial_decay_pairs": 7,
+        "envelope_mae_db": 1.3288476249688346,
+        "attack_rise10_90_error_ms": 2.604166666666666,
+        "reference_sha256": "7b62800efbcb1bb8dc312dd9a8a2f7b6f0ab3b0613b41d5aa4aabd0ab7afcd0b",
+        "model_sha256": "656f99f3144e9ff49b5d8ac76444c83e6b86d63c87edba798a2147819236d859"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.005676422694857271,
+          "harmonic_power": 0.005665244127853706,
+          "harmonic_fraction": 0.9980307021509,
+          "subfundamental_power": 8.692096544985098e-06,
+          "subfundamental_fraction": 0.0015312630880818599,
+          "sub_31_25_hz_power": 4.275588371978431e-06,
+          "sub_31_25_hz_fraction": 0.000753218814351516,
+          "48_52_hz_power": 1.7384590121710666e-07,
+          "48_52_hz_fraction": 3.0625961201692695e-05,
+          "model_minus_reference_harmonic_power_db": 0.4277459347486546,
+          "subfundamental_peak_frequencies_hz": [
+            14.6484375,
+            196.2890625,
+            84.9609375,
+            124.51171875,
+            51.26953125,
+            102.5390625,
+            161.1328125,
+            183.10546875
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.0011249484319306652,
+          "harmonic_power": 0.0011236702078644355,
+          "harmonic_fraction": 0.9988637487462105,
+          "subfundamental_power": 1.0040228787056196e-06,
+          "subfundamental_fraction": 0.0008925056920009123,
+          "sub_31_25_hz_power": 5.749932169905391e-07,
+          "sub_31_25_hz_fraction": 0.0005111285110231418,
+          "48_52_hz_power": 1.292070444385574e-07,
+          "48_52_hz_fraction": 0.00011485597096820604,
+          "model_minus_reference_harmonic_power_db": -2.0316568607232344,
+          "subfundamental_peak_frequencies_hz": [
+            12.451171875,
+            49.8046875,
+            81.298828125,
+            16.845703125,
+            21.240234375,
+            7.32421875,
+            99.609375,
+            24.90234375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 4.027803130257337e-05,
+          "harmonic_power": 3.9471577171414844e-05,
+          "harmonic_fraction": 0.9799778165645598,
+          "subfundamental_power": 7.907136924019201e-07,
+          "subfundamental_fraction": 0.019631388795097373,
+          "sub_31_25_hz_power": 4.1682909839401656e-07,
+          "sub_31_25_hz_fraction": 0.010348795234373466,
+          "48_52_hz_power": 1.7860735362373864e-07,
+          "48_52_hz_fraction": 0.004434361557594981,
+          "model_minus_reference_harmonic_power_db": 0.2571943599134582,
+          "subfundamental_peak_frequencies_hz": [
+            49.8046875,
+            7.6904296875,
+            5.859375,
+            84.5947265625,
+            12.0849609375,
+            16.845703125,
+            99.9755859375,
+            144.6533203125
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 1.5862414207718087e-05,
+          "harmonic_power": 1.4821527546711296e-05,
+          "harmonic_fraction": 0.9343803126449483,
+          "subfundamental_power": 1.0363446950794303e-06,
+          "subfundamental_fraction": 0.06533335225700901,
+          "sub_31_25_hz_power": 8.033688662992624e-07,
+          "sub_31_25_hz_fraction": 0.05064606533275191,
+          "48_52_hz_power": 1.5678013706962955e-07,
+          "48_52_hz_fraction": 0.009883750040605162,
+          "model_minus_reference_harmonic_power_db": -0.9468975236517395,
+          "subfundamental_peak_frequencies_hz": [
+            5.4931640625,
+            6.2255859375,
+            49.98779296875,
+            11.3525390625,
+            99.9755859375,
+            14.09912109375,
+            16.845703125,
+            12.451171875
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          13.719854166666666,
+          15.719854166666666
+        ],
+        "sub_31_25_hz_fraction": 0.8409993444079945,
+        "48_52_hz_fraction": 0.02994103243865248,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.01075,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C5v12",
+      "split": "train",
+      "midi": 72,
+      "midi_velocity": 93,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "a505db5f171788b45021c62187c8b2057cdefd6c103588c5270ecca0e554a638",
+      "model_sha256": "a12d20b3c1e0b672af28d46795128c3c0c6a6b594ca45f1c1f06f2dfba0d999f",
+      "existing_full_comparison": {
+        "id": "C5v12",
+        "split": "train",
+        "midi": 72,
+        "layer": 12,
+        "early_gain_db": 5.888951968841157,
+        "f1_error_cents": 0.1987673743170832,
+        "absolute_f1_error_cents": 0.1987673743170832,
+        "reference_f1_hz": 524.2462083114409,
+        "model_f1_hz": 524.3064018043513,
+        "reference_B": 0.0008335053191012837,
+        "model_B": 0.0008358959235036798,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 11.248064792304724,
+        "log_band_mae_by_window_db": [
+          18.681496079179674,
+          8.269459752505538,
+          0.3529434270329759,
+          0.1823907395140528
+        ],
+        "harmonic_level_mae_db": 0.22405823989610343,
+        "partial_tuning_mae_cents": 0.2594345785053204,
+        "partial_decay_slope_mae_db_per_second": 1.7161519438476494,
+        "partial_decay_pairs": 7,
+        "envelope_mae_db": 2.439399316293887,
+        "attack_rise10_90_error_ms": 9.041666666666666,
+        "reference_sha256": "5ee4d9866caf2fab6e164f3f53fcbd7136b27c41042a1dda6b252cf60cb4ed33",
+        "model_sha256": "a12d20b3c1e0b672af28d46795128c3c0c6a6b594ca45f1c1f06f2dfba0d999f"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.018312420881686917,
+          "harmonic_power": 0.018274593203177154,
+          "harmonic_fraction": 0.9979343157983229,
+          "subfundamental_power": 1.7683780796836447e-05,
+          "subfundamental_fraction": 0.000965671382887495,
+          "sub_31_25_hz_power": 3.990918288384732e-06,
+          "sub_31_25_hz_fraction": 0.00021793504606350516,
+          "48_52_hz_power": 1.6338701755631084e-06,
+          "48_52_hz_fraction": 8.92219650323261e-05,
+          "model_minus_reference_harmonic_power_db": 0.12225032306929065,
+          "subfundamental_peak_frequencies_hz": [
+            48.33984375,
+            19.04296875,
+            87.890625,
+            30.76171875,
+            101.07421875,
+            123.046875,
+            150.87890625,
+            70.3125
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.0015400422430663428,
+          "harmonic_power": 0.0015384489047741195,
+          "harmonic_fraction": 0.9989653931251582,
+          "subfundamental_power": 9.099789845998901e-07,
+          "subfundamental_fraction": 0.0005908792363955237,
+          "sub_31_25_hz_power": 5.280264086021772e-07,
+          "sub_31_25_hz_fraction": 0.00034286488632340103,
+          "48_52_hz_power": 8.362701182875624e-08,
+          "48_52_hz_fraction": 5.43017649062979e-05,
+          "model_minus_reference_harmonic_power_db": -0.35217669585905803,
+          "subfundamental_peak_frequencies_hz": [
+            12.451171875,
+            16.11328125,
+            50.537109375,
+            20.5078125,
+            87.158203125,
+            7.32421875,
+            79.833984375,
+            94.482421875
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 5.855814188578159e-05,
+          "harmonic_power": 5.812157580863246e-05,
+          "harmonic_fraction": 0.9925447416347216,
+          "subfundamental_power": 4.288893007506556e-07,
+          "subfundamental_fraction": 0.007324161712426083,
+          "sub_31_25_hz_power": 3.4871873822764184e-07,
+          "sub_31_25_hz_fraction": 0.005955085441539833,
+          "48_52_hz_power": 2.989494489311699e-08,
+          "48_52_hz_fraction": 0.0005105173069088747,
+          "model_minus_reference_harmonic_power_db": 0.12225137047493781,
+          "subfundamental_peak_frequencies_hz": [
+            16.11328125,
+            5.126953125,
+            8.056640625,
+            49.8046875,
+            99.9755859375,
+            82.763671875,
+            85.693359375,
+            12.8173828125
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 2.3126636497795813e-05,
+          "harmonic_power": 2.2853286602949313e-05,
+          "harmonic_fraction": 0.9881803004568972,
+          "subfundamental_power": 2.7221901200325997e-07,
+          "subfundamental_fraction": 0.011770799961732654,
+          "sub_31_25_hz_power": 2.0778277389491384e-07,
+          "sub_31_25_hz_fraction": 0.008984565218323793,
+          "48_52_hz_power": 3.733805820486867e-08,
+          "48_52_hz_fraction": 0.001614504478782608,
+          "model_minus_reference_harmonic_power_db": -0.21402242173378205,
+          "subfundamental_peak_frequencies_hz": [
+            49.98779296875,
+            5.31005859375,
+            6.77490234375,
+            99.79248046875,
+            16.4794921875,
+            8.7890625,
+            9.8876953125,
+            144.6533203125
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          13.507729166666667,
+          15.507729166666667
+        ],
+        "sub_31_25_hz_fraction": 0.7677407490053741,
+        "48_52_hz_fraction": 0.11842356882900118,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.007270833333333333,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C5v4",
+      "split": "train",
+      "midi": 72,
+      "midi_velocity": 40,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "41c9862627542aec425a1c53c164c9d4617a1e3f8be97687d4ef14a3dae1432a",
+      "model_sha256": "6e74b26a393ef3fdf76c4fb6f143b793fdc1e59435e52db6c7b08b7a1738589b",
+      "existing_full_comparison": {
+        "id": "C5v4",
+        "split": "train",
+        "midi": 72,
+        "layer": 4,
+        "early_gain_db": 5.8303019901673,
+        "f1_error_cents": 0.30184322006052206,
+        "absolute_f1_error_cents": 0.30184322006052206,
+        "reference_f1_hz": 524.2186201754068,
+        "model_f1_hz": 524.3100264362726,
+        "reference_B": 0.0008383168784740936,
+        "model_B": 0.0008349951089309893,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 12.533352691940657,
+        "log_band_mae_by_window_db": [
+          17.792276882859717,
+          9.944296464682647,
+          4.903777600027258,
+          8.402031860526838
+        ],
+        "harmonic_level_mae_db": 0.3275048448155036,
+        "partial_tuning_mae_cents": 0.2339243576311192,
+        "partial_decay_slope_mae_db_per_second": 1.5121798546445977,
+        "partial_decay_pairs": 5,
+        "envelope_mae_db": 2.5089740162680747,
+        "attack_rise10_90_error_ms": 9.791666666666666,
+        "reference_sha256": "33886387891ae3c20c6f8248e4e00ec742b0f52f394cc2375a6d815c7153ef3d",
+        "model_sha256": "6e74b26a393ef3fdf76c4fb6f143b793fdc1e59435e52db6c7b08b7a1738589b"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.0035235249170404515,
+          "harmonic_power": 0.003516575735430154,
+          "harmonic_fraction": 0.9980277756582081,
+          "subfundamental_power": 2.8762545368457032e-06,
+          "subfundamental_fraction": 0.0008163003255449046,
+          "sub_31_25_hz_power": 1.170930050568451e-06,
+          "sub_31_25_hz_fraction": 0.00033231780053707174,
+          "48_52_hz_power": 1.4182067496717178e-07,
+          "48_52_hz_fraction": 4.024965859650926e-05,
+          "model_minus_reference_harmonic_power_db": 0.12584910282983153,
+          "subfundamental_peak_frequencies_hz": [
+            20.5078125,
+            46.875,
+            93.75,
+            294.43359375,
+            196.2890625,
+            118.65234375,
+            152.34375,
+            128.90625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.0003123569296479168,
+          "harmonic_power": 0.00031165220426319234,
+          "harmonic_fraction": 0.9977438458448198,
+          "subfundamental_power": 5.878464791021783e-07,
+          "subfundamental_fraction": 0.001881970346439211,
+          "sub_31_25_hz_power": 4.1614975551333626e-07,
+          "sub_31_25_hz_fraction": 0.0013322891731021075,
+          "48_52_hz_power": 3.3688745048885997e-08,
+          "48_52_hz_fraction": 0.00010785336213561629,
+          "model_minus_reference_harmonic_power_db": -0.48923034685195593,
+          "subfundamental_peak_frequencies_hz": [
+            5.126953125,
+            12.451171875,
+            49.8046875,
+            81.298828125,
+            21.240234375,
+            16.845703125,
+            100.341796875,
+            89.35546875
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 1.1864971762863083e-05,
+          "harmonic_power": 1.1240919531141257e-05,
+          "harmonic_fraction": 0.9474038165286591,
+          "subfundamental_power": 6.218449315679313e-07,
+          "subfundamental_fraction": 0.052410148460216535,
+          "sub_31_25_hz_power": 5.577099755237379e-07,
+          "sub_31_25_hz_fraction": 0.04700474528471692,
+          "48_52_hz_power": 3.2389520716781945e-08,
+          "48_52_hz_fraction": 0.002729843893784891,
+          "model_minus_reference_harmonic_power_db": 0.10781278810469296,
+          "subfundamental_peak_frequencies_hz": [
+            5.126953125,
+            50.1708984375,
+            9.521484375,
+            25.2685546875,
+            20.8740234375,
+            12.451171875,
+            144.287109375,
+            80.9326171875
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 5.1976346797484384e-06,
+          "harmonic_power": 4.905840528496349e-06,
+          "harmonic_fraction": 0.9438602038752342,
+          "subfundamental_power": 2.9112198967090567e-07,
+          "subfundamental_fraction": 0.05601047545823204,
+          "sub_31_25_hz_power": 2.280199354338219e-07,
+          "sub_31_25_hz_fraction": 0.043869942672626984,
+          "48_52_hz_power": 4.257372956700161e-08,
+          "48_52_hz_fraction": 0.00819098151181763,
+          "model_minus_reference_harmonic_power_db": -0.3262883829533964,
+          "subfundamental_peak_frequencies_hz": [
+            6.04248046875,
+            49.98779296875,
+            7.50732421875,
+            11.3525390625,
+            9.70458984375,
+            99.79248046875,
+            16.845703125,
+            144.6533203125
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          13.325458333333334,
+          15.325458333333334
+        ],
+        "sub_31_25_hz_fraction": 0.7962830580073988,
+        "48_52_hz_fraction": 0.11965368840856606,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.0086875,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C6v12",
+      "split": "train",
+      "midi": 84,
+      "midi_velocity": 93,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "1d2d99da7dab09066cd67940ccd21f381a6b3399fafda3c9b1f3cc4a45281100",
+      "model_sha256": "9b1449c4d496471565a07cb458c0805435dd9ec932cec0c819887c7f67b248c7",
+      "existing_full_comparison": {
+        "id": "C6v12",
+        "split": "train",
+        "midi": 84,
+        "layer": 12,
+        "early_gain_db": 6.415539688509325,
+        "f1_error_cents": 0.28061703829853435,
+        "absolute_f1_error_cents": 0.28061703829853435,
+        "reference_f1_hz": 1050.3441445113315,
+        "model_f1_hz": 1050.514409388084,
+        "reference_B": 0.0027334517040405568,
+        "model_B": 0.0027117308733323442,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 23.724871593939643,
+        "log_band_mae_by_window_db": [
+          31.393984994184976,
+          20.689142349424728,
+          15.608617325720676,
+          19.65365242220584
+        ],
+        "harmonic_level_mae_db": 0.6572126872564193,
+        "partial_tuning_mae_cents": 0.1847810734968768,
+        "partial_decay_slope_mae_db_per_second": 4.164163317802319,
+        "partial_decay_pairs": 4,
+        "envelope_mae_db": 8.075498548917292,
+        "attack_rise10_90_error_ms": 0.6250000000000006,
+        "reference_sha256": "34c58d8e124895ac7d8bc6dbb1412da8d8b1c8cc3b78d52dff3e6a883bc69969",
+        "model_sha256": "9b1449c4d496471565a07cb458c0805435dd9ec932cec0c819887c7f67b248c7"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.005138920966450198,
+          "harmonic_power": 0.004961642546025177,
+          "harmonic_fraction": 0.9655027929827302,
+          "subfundamental_power": 0.00014407561592346763,
+          "subfundamental_fraction": 0.028036161066510905,
+          "sub_31_25_hz_power": 2.6013189300737415e-05,
+          "sub_31_25_hz_fraction": 0.005061994428512586,
+          "48_52_hz_power": 9.412670519481834e-06,
+          "48_52_hz_fraction": 0.0018316433704532735,
+          "model_minus_reference_harmonic_power_db": 0.6535857110225912,
+          "subfundamental_peak_frequencies_hz": [
+            46.875,
+            124.51171875,
+            17.578125,
+            29.296875,
+            87.890625,
+            304.6875,
+            150.87890625,
+            106.93359375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 0.00040479392338909855,
+          "harmonic_power": 0.00039550065661273,
+          "harmonic_fraction": 0.9770419805253954,
+          "subfundamental_power": 7.47729868870021e-06,
+          "subfundamental_fraction": 0.018471864958093342,
+          "sub_31_25_hz_power": 4.277564236955438e-06,
+          "sub_31_25_hz_fraction": 0.01056726395777372,
+          "48_52_hz_power": 4.138498766087849e-07,
+          "48_52_hz_fraction": 0.001022371761769214,
+          "model_minus_reference_harmonic_power_db": 0.65583059382615,
+          "subfundamental_peak_frequencies_hz": [
+            16.11328125,
+            5.126953125,
+            126.708984375,
+            49.072265625,
+            121.58203125,
+            20.5078125,
+            83.49609375,
+            43.212890625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 1.5885211336450813e-05,
+          "harmonic_power": 1.365205254706631e-05,
+          "harmonic_fraction": 0.8594190066417177,
+          "subfundamental_power": 2.194975058706941e-06,
+          "subfundamental_fraction": 0.13817726514410716,
+          "sub_31_25_hz_power": 1.5572135411658696e-06,
+          "sub_31_25_hz_fraction": 0.09802913591666407,
+          "48_52_hz_power": 3.2178519328171046e-07,
+          "48_52_hz_fraction": 0.02025690351020574,
+          "model_minus_reference_harmonic_power_db": 0.6321260928113488,
+          "subfundamental_peak_frequencies_hz": [
+            16.4794921875,
+            49.8046875,
+            5.4931640625,
+            99.9755859375,
+            9.8876953125,
+            12.451171875,
+            82.3974609375,
+            24.90234375
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 1.971061932372205e-06,
+          "harmonic_power": 1.4184773071994543e-07,
+          "harmonic_fraction": 0.07196513127785356,
+          "subfundamental_power": 1.8272850444585134e-06,
+          "subfundamental_fraction": 0.927056128702839,
+          "sub_31_25_hz_power": 1.4095384472730119e-06,
+          "sub_31_25_hz_fraction": 0.7151162650564762,
+          "48_52_hz_power": 2.5523524406544447e-07,
+          "48_52_hz_fraction": 0.12949123509186986,
+          "model_minus_reference_harmonic_power_db": 0.6208540867774162,
+          "subfundamental_peak_frequencies_hz": [
+            5.4931640625,
+            49.98779296875,
+            6.591796875,
+            15.380859375,
+            7.32421875,
+            13.916015625,
+            16.845703125,
+            99.9755859375
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          4.247270833333333,
+          6.247270833333333
+        ],
+        "sub_31_25_hz_fraction": 0.7654969863048504,
+        "48_52_hz_fraction": 0.15039128165836194,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.007770833333333334,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    },
+    {
+      "id": "C6v4",
+      "split": "train",
+      "midi": 84,
+      "midi_velocity": 40,
+      "reference_pcm_verified": true,
+      "reference_container_sha256": "f7795b27c5f2c078c41651dde88e2f765f7762caa5770a4d50ae41fce806c9cb",
+      "model_sha256": "dbdaacf333316d67880b4a3b63d31582dc8c94a8552e1155276bfb0906f79fda",
+      "existing_full_comparison": {
+        "id": "C6v4",
+        "split": "train",
+        "midi": 84,
+        "layer": 4,
+        "early_gain_db": 6.7365526214473785,
+        "f1_error_cents": 0.23429753337989612,
+        "absolute_f1_error_cents": 0.23429753337989612,
+        "reference_f1_hz": 1050.3644434995263,
+        "model_f1_hz": 1050.5066047815537,
+        "reference_B": 0.0026868413857541935,
+        "model_B": 0.002711973637180096,
+        "pitch_fit_confidence": {
+          "reference": "good",
+          "model": "good"
+        },
+        "log_band_mae_db": 30.184279728111935,
+        "log_band_mae_by_window_db": [
+          35.37424589326043,
+          26.842863726573757,
+          29.588424746115756,
+          27.26174321703157
+        ],
+        "harmonic_level_mae_db": 0.9755855050010792,
+        "partial_tuning_mae_cents": 0.37075215062764866,
+        "partial_decay_slope_mae_db_per_second": 1.5404440357549483,
+        "partial_decay_pairs": 2,
+        "envelope_mae_db": 12.123901585911826,
+        "attack_rise10_90_error_ms": 1.7083333333333326,
+        "reference_sha256": "82ba4e56e4844e951ee2b2d1ad3b47672165e458626f4d699ecf7075164e0aed",
+        "model_sha256": "dbdaacf333316d67880b4a3b63d31582dc8c94a8552e1155276bfb0906f79fda"
+      },
+      "windows": [
+        {
+          "seconds_after_onset": [
+            0.05,
+            0.25
+          ],
+          "total_hann_power": 0.00032007152954163695,
+          "harmonic_power": 0.0002910386485978832,
+          "harmonic_fraction": 0.9092925228765874,
+          "subfundamental_power": 2.660501154366332e-05,
+          "subfundamental_fraction": 0.08312208081038451,
+          "sub_31_25_hz_power": 1.2236511548332905e-05,
+          "sub_31_25_hz_fraction": 0.03823055292001878,
+          "48_52_hz_power": 6.772404060916156e-07,
+          "48_52_hz_fraction": 0.00211590330155721,
+          "model_minus_reference_harmonic_power_db": 0.9722027067876191,
+          "subfundamental_peak_frequencies_hz": [
+            11.71875,
+            7.32421875,
+            21.97265625,
+            121.58203125,
+            48.33984375,
+            102.5390625,
+            149.4140625,
+            303.22265625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.25,
+            0.75
+          ],
+          "total_hann_power": 3.479744725537944e-05,
+          "harmonic_power": 2.961864596390637e-05,
+          "harmonic_fraction": 0.851172953766818,
+          "subfundamental_power": 5.100142187367712e-06,
+          "subfundamental_fraction": 0.14656656133243412,
+          "sub_31_25_hz_power": 3.829437591335497e-06,
+          "sub_31_25_hz_fraction": 0.11004938273865744,
+          "48_52_hz_power": 3.1791001464930413e-07,
+          "48_52_hz_fraction": 0.009136015418491869,
+          "model_minus_reference_harmonic_power_db": 0.9725026181000028,
+          "subfundamental_peak_frequencies_hz": [
+            12.451171875,
+            49.8046875,
+            16.845703125,
+            122.314453125,
+            111.328125,
+            84.228515625,
+            24.169921875,
+            19.775390625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            0.75,
+            1.5
+          ],
+          "total_hann_power": 2.90709268453183e-06,
+          "harmonic_power": 9.139533552650304e-07,
+          "harmonic_fraction": 0.31438741534730846,
+          "subfundamental_power": 1.9888397106643802e-06,
+          "subfundamental_fraction": 0.6841335748415159,
+          "sub_31_25_hz_power": 1.4045244068603298e-06,
+          "sub_31_25_hz_fraction": 0.4831371267705281,
+          "48_52_hz_power": 2.755371699490044e-07,
+          "48_52_hz_fraction": 0.09478100626618927,
+          "model_minus_reference_harmonic_power_db": 0.961503498628917,
+          "subfundamental_peak_frequencies_hz": [
+            5.4931640625,
+            11.71875,
+            49.8046875,
+            9.1552734375,
+            16.11328125,
+            83.1298828125,
+            99.9755859375,
+            87.890625
+          ]
+        },
+        {
+          "seconds_after_onset": [
+            1.5,
+            3.5
+          ],
+          "total_hann_power": 1.5095275540929908e-06,
+          "harmonic_power": 1.6544706325789203e-08,
+          "harmonic_fraction": 0.010960188358887025,
+          "subfundamental_power": 1.4920347835336572e-06,
+          "subfundamental_fraction": 0.9884117580285944,
+          "sub_31_25_hz_power": 1.0717325893873416e-06,
+          "sub_31_25_hz_fraction": 0.7099788185259718,
+          "48_52_hz_power": 2.8011211306116793e-07,
+          "48_52_hz_fraction": 0.18556276916023243,
+          "model_minus_reference_harmonic_power_db": 0.9491243206886646,
+          "subfundamental_peak_frequencies_hz": [
+            49.98779296875,
+            6.04248046875,
+            5.126953125,
+            7.32421875,
+            12.451171875,
+            99.79248046875,
+            8.4228515625,
+            20.69091796875
+          ]
+        }
+      ],
+      "final_two_seconds": {
+        "seconds_after_onset": [
+          3.4436458333333335,
+          5.443645833333333
+        ],
+        "sub_31_25_hz_fraction": 0.8346011840513439,
+        "48_52_hz_fraction": 0.1065803817353911,
+        "note": "Final library fades/editing may attenuate both piano and background; this is not an independently measured noise floor."
+      },
+      "pre_onset_duration_seconds": 0.004583333333333333,
+      "pre_onset_sufficient_for_50_hz_identification": false,
+      "interpretation_limit": "Subfundamental energy can include body/room response or acquisition noise. Spectra and velocity scaling do not prove its cause; do not synthesize hum or subsonic noise to improve a score."
+    }
+  ],
+  "late_velocity_scaling": [
+    {
+      "midi": 36,
+      "late_harmonic_hard_minus_soft_db": 7.1001214675229365,
+      "late_subfundamental_hard_minus_soft_db": -1.6897938169971514,
+      "late_subsonic_hard_minus_soft_db": -2.2410173074222364,
+      "late_50_hz_hard_minus_soft_db": -0.014310264054638405
+    },
+    {
+      "midi": 48,
+      "late_harmonic_hard_minus_soft_db": 6.4211477938508565,
+      "late_subfundamental_hard_minus_soft_db": -1.3840667266793147,
+      "late_subsonic_hard_minus_soft_db": -2.491933555009847,
+      "late_50_hz_hard_minus_soft_db": -0.29485554714400963
+    },
+    {
+      "midi": 60,
+      "late_harmonic_hard_minus_soft_db": 6.8310281499048875,
+      "late_subfundamental_hard_minus_soft_db": 2.279818763804312,
+      "late_subsonic_hard_minus_soft_db": 2.697904450738893,
+      "late_50_hz_hard_minus_soft_db": -0.2109017915067784
+    },
+    {
+      "midi": 72,
+      "late_harmonic_hard_minus_soft_db": 6.6823523942726695,
+      "late_subfundamental_hard_minus_soft_db": -0.2915655735441985,
+      "late_subsonic_hard_minus_soft_db": -0.4036327856950714,
+      "late_50_hz_hard_minus_soft_db": -0.5698996877128907
+    },
+    {
+      "midi": 84,
+      "late_harmonic_hard_minus_soft_db": 9.331633296558392,
+      "late_subfundamental_hard_minus_soft_db": 0.8802735183986016,
+      "late_subsonic_hard_minus_soft_db": 1.1899048940410004,
+      "late_50_hz_hard_minus_soft_db": -0.40391246109423956
+    }
+  ],
+  "limits": "Training diagnostics only. Retains complete full-envelope error. Below-fundamental/subsonic/mains evidence cannot uniquely identify room/body response or recording contamination. Does not normalize, filter, alter, denoise or fit the recordings."
+}

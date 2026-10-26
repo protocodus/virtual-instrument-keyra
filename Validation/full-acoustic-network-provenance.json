@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "scope": "Research-only reciprocal air/lid/player-load composition on preserved full piano + existing strike/mechanism adapter. No default/API/controller/module-equation changes.",
+  "source_sha256": {
+    "tools/full_acoustic_network_support.h": "e00ebed65641b2099c8f9420057a58115ae8f2589849d96358f7622e1a4f0201",
+    "tools/probe_full_acoustic_network.cpp": "94067c86f169d5224755514ff2fa8c5f72b8626f68a83ed75577d41c81b931d7",
+    "tests/full_acoustic_network_tests.cpp": "58091d99f73580d758665944dbe3e06fa857cf0e783fa6460268cd8bcf65213e",
+    "docs/FULL_ACOUSTIC_NETWORK.md": "7854b174ae782ef90eab5233e46bf8f663a7cfcdd6f6ba8ba04abff245f5eeb2",
+    "tools/strike_repetition_support.h": "cabf6905d7f47edc8d323745cbb52f183757c2491eee3d2e0a07e3715ef0d036",
+    "tools/mechanism_network_support.h": "8773da536b979df2706bb03fd6f81b70ca7d23548d804c002f5b593abd24529a",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "include/keyra/physics/Acoustics.h": "192e0552066f1712dea1d6ef3b869e01f4fd33dfa05bdb04948e63a4c2a2d4de",
+    "src/physics/Acoustics.cpp": "6d660a6f40ede14c95e05e617ba71d26aa60db11bff07379ea7e69f33c6c5898",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "Research/GrandPianoV2/src/grand.cpp": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+    "Research/GrandPianoV2/src/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+  },
+  "binaries_sha256": {
+    "probe": "34fa85bddff51d936655cf6adc3a11d7bc513ff7265aeaa34fcd8e5782c344bd",
+    "tests": "6e0ab0059939312958165f55f0c926ccaa6f18ce06a7466ccd79c561cddb5ba9",
+    "tests-asan": "1ffab809bac20aacb9205f9ccb3bab118526e71c434809ef496474509a9733b4"
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "native_build": [
+    "g++",
+    "-std=c++17",
+    "-O3",
+    "-ffp-contract=off",
+    "-Iinclude",
+    "-DKEYRA_ACOUSTIC_RT_WRAP",
+    "tests/full_acoustic_network_tests.cpp",
+    "src/physics/Acoustics.cpp",
+    "-Wl,--wrap=pthread_mutex_lock,--wrap=pthread_mutex_unlock,--wrap=read,--wrap=write,--wrap=open,--wrap=fopen,--wrap=fread,--wrap=fwrite",
+    "-o",
+    "out/full-acoustic-network/tests"
+  ],
+  "sanitizer_build": [
+    "g++",
+    "-std=c++17",
+    "-O1",
+    "-g",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-ffp-contract=off",
+    "-Iinclude",
+    "tests/full_acoustic_network_tests.cpp",
+    "src/physics/Acoustics.cpp",
+    "-o",
+    "out/full-acoustic-network/tests-asan"
+  ],
+  "sanitizer_environment": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1"
+  },
+  "probe_build": [
+    "g++",
+    "-std=c++17",
+    "-O3",
+    "-ffp-contract=off",
+    "-Iinclude",
+    "tools/probe_full_acoustic_network.cpp",
+    "src/physics/Acoustics.cpp",
+    "-o",
+    "out/full-acoustic-network/probe"
+  ],
+  "probe_command": [
+    "out/full-acoustic-network/probe",
+    "out/full-acoustic-network/render"
+  ],
+  "export_check_command": [
+    "python3",
+    "out/full-acoustic-network/validate_exports.py"
+  ],
+  "export_check_script_sha256": "9137f944be9a40fe2b1284194a28fc57799309884f81e7bca627723185419f24",
+  "reports_sha256": {
+    "Validation/full-acoustic-network.json": "37eacedd945d8349a5aa19d4daf05ea6a477ca922aabd0033f65892d9c761014",
+    "Validation/full-acoustic-network-checks.json": "6df0a4057da5a6b077b5dc0c4944dc19b4a7d887ced367c0c613dcc448142a93",
+    "out/full-acoustic-network/native-tests.json": "0c9533143306fdaf106d548fced6021fbaba907d82df6718335001e3f5783123",
+    "out/full-acoustic-network/asan-tests.json": "c393fe79c3b19c26cf23d301f94b08d60faf81652268fba5d646ba8283c80484",
+    "out/full-acoustic-network/export-checks.json": "9a914db58da3ea3b81044e78560cf506fd9db9211a82b86ab33fd833f557c145"
+  },
+  "audio_files": {
+    "lid-0-player-0-combined.wav": {
+      "sha256": "896cf5050512876f45adc642f18359793fb8127d679e5755b84058dfba6d363e",
+      "bytes": 276524
+    },
+    "lid-0-player-0-acoustic-reaction-proxy.wav": {
+      "sha256": "c4bff02a9a86610a22be2b4b8eeeaab4fb105354517839a3f192dd3444b4338a",
+      "bytes": 276524
+    },
+    "lid-0-player-0-mechanism-direct-proxy.wav": {
+      "sha256": "bd4122a2f7eaa88852be412520cd68c39e22042351ee6ab83bd56488f701cf5c",
+      "bytes": 276524
+    },
+    "lid-0-player-0-cavity-pressure-pa.wav": {
+      "sha256": "a7084cc48398a4a928b11be3104d041ff2cf44882700c313b66e1cf7c2ad6afb",
+      "bytes": 276524
+    },
+    "lid-0-player-1-combined.wav": {
+      "sha256": "e4391e61597c955602ba514df167dbb346e7a3ec721826d968f24589342ee61a",
+      "bytes": 276524
+    },
+    "lid-0-player-1-acoustic-reaction-proxy.wav": {
+      "sha256": "6495d1d43c0634b13696448b96dd276ca6f7be36ba27f5711f2ade6e5cf40bc5",
+      "bytes": 276524
+    },
+    "lid-0-player-1-mechanism-direct-proxy.wav": {
+      "sha256": "f142282275aa7c5eccab1c69ab0a338a7c461ea54ae10707767ea3f57f252f79",
+      "bytes": 276524
+    },
+    "lid-0-player-1-cavity-pressure-pa.wav": {
+      "sha256": "17e850211e78ca87264416ed19094b02d73ae96bcfb3e4074d4dc58206eb69e5",
+      "bytes": 276524
+    },
+    "lid-0-player-2-combined.wav": {
+      "sha256": "901d1cf39d1af5f842edc7ef96ef6a26fe4c339462ad1bded9942beb4f5a536d",
+      "bytes": 276524
+    },
+    "lid-0-player-2-acoustic-reaction-proxy.wav": {
+      "sha256": "bd6dd459776decccd47f23a9aa3c0d2f7cd02686628ba6ba3ec1f0dd7772b9df",
+      "bytes": 276524
+    },
+    "lid-0-player-2-mechanism-direct-proxy.wav": {
+      "sha256": "542b752c9c3f507bb4703e77711d38669fe7fdd8197bc6523fab4617083aa2ef",
+      "bytes": 276524
+    },
+    "lid-0-player-2-cavity-pressure-pa.wav": {
+      "sha256": "3934762cad13bbe58fbac3babf6baef2915ff046f495a9f6aeabddedaf2a1620",
+      "bytes": 276524
+    },
+    "lid-1-player-0-combined.wav": {
+      "sha256": "b5955269a99fb124053411792c3102de39f6e2dfd6ddb63344184ed105401cd6",
+      "bytes": 276524
+    },
+    "lid-1-player-0-acoustic-reaction-proxy.wav": {
+      "sha256": "c3ccb9888146f5ab8b689b2fc483f86106ffadf033904185413f0ab624adb9ec",
+      "bytes": 276524
+    },
+    "lid-1-player-0-mechanism-direct-proxy.wav": {
+      "sha256": "421b10b90cfd40d16a2447fb451b972929c2f9c19f0d79a594ecb245c331784b",
+      "bytes": 276524
+    },
+    "lid-1-player-0-cavity-pressure-pa.wav": {
+      "sha256": "5df45bbf0e2d55790d3a884a79ecdc638a0ce5a1e60d7dd129bc44f5697a5e1d",
+      "bytes": 276524
+    },
+    "lid-1-player-1-combined.wav": {
+      "sha256": "5050484799f533b0bb0d5af58c6bb4538c222cf3828465da815104ce5c9005e9",
+      "bytes": 276524
+    },
+    "lid-1-player-1-acoustic-reaction-proxy.wav": {
+      "sha256": "81b65804c39ba7628363e03a31ca3eff3ad32efbbd69c258a4008789fc45dd6c",
+      "bytes": 276524
+    },
+    "lid-1-player-1-mechanism-direct-proxy.wav": {
+      "sha256": "0d6a1753a6d2bc653c05a16eadf72f0785a01c9621e233e7a3f295202127b36a",
+      "bytes": 276524
+    },
+    "lid-1-player-1-cavity-pressure-pa.wav": {
+      "sha256": "8f5c1ac12bd8606557df74fa3c2ce730bd180c7d30c1c73c90adbb2514a00fa4",
+      "bytes": 276524
+    },
+    "lid-1-player-2-combined.wav": {
+      "sha256": "c50810ecc6f30c554f26ccf115cad288dc750e058a5462bfc30f6a97f09d6b07",
+      "bytes": 276524
+    },
+    "lid-1-player-2-acoustic-reaction-proxy.wav": {
+      "sha256": "1a1558826b5b7f9d7a7828ee9ccf22dd146829f57308eb367cf6321e19b888f7",
+      "bytes": 276524
+    },
+    "lid-1-player-2-mechanism-direct-proxy.wav": {
+      "sha256": "d968e33b7d84935d842ae4c7fabdd9dbd93da5c21a32a8689c8f00db5dabd798",
+      "bytes": 276524
+    },
+    "lid-1-player-2-cavity-pressure-pa.wav": {
+      "sha256": "fafb5094cde7089d99e1bc808a1668b6cf803d3643407a9d9c38eebbfe8d6143",
+      "bytes": 276524
+    },
+    "lid-2-player-0-combined.wav": {
+      "sha256": "53f51de4d2d006ef1d0f677929a5cb1475d6d7d1b9d3881ba8b5d696f65f742d",
+      "bytes": 276524
+    },
+    "lid-2-player-0-acoustic-reaction-proxy.wav": {
+      "sha256": "d4655ba935e0a9e1e1f9342c768005d63d027ca611ff72488371cb2436f31509",
+      "bytes": 276524
+    },
+    "lid-2-player-0-mechanism-direct-proxy.wav": {
+      "sha256": "1c5db4a31689f8c6d4b0373e49c8cdc3046c213540a05fe8711b69fcc37e153f",
+      "bytes": 276524
+    },
+    "lid-2-player-0-cavity-pressure-pa.wav": {
+      "sha256": "1895e1558b6f36328115f72da32dbcdfecdb0b1e245800c87ced0564ec845a65",
+      "bytes": 276524
+    },
+    "lid-2-player-1-combined.wav": {
+      "sha256": "71f6ca73a5c00267a1d409624397ef6093616163473adde6d63117c1ad985817",
+      "bytes": 276524
+    },
+    "lid-2-player-1-acoustic-reaction-proxy.wav": {
+      "sha256": "be21750b35e897cf350b8ecbc43dcc44f22a1cc8812e99b68a42c2e6eb1c0deb",
+      "bytes": 276524
+    },
+    "lid-2-player-1-mechanism-direct-proxy.wav": {
+      "sha256": "27a58cf47e2ee072ffea39fcbcbfdda53e78ea5009fc7fb2a8ab10ebcfe62fd5",
+      "bytes": 276524
+    },
+    "lid-2-player-1-cavity-pressure-pa.wav": {
+      "sha256": "07b9003d1f7147ae1e43db2a72e851ad7a064356c8f720c1856fea346d86ff8d",
+      "bytes": 276524
+    },
+    "lid-2-player-2-combined.wav": {
+      "sha256": "0bd29097e3935a3c4e2996d9bcbee7ff46442b7493a01f4f4ad0b00a61ce2116",
+      "bytes": 276524
+    },
+    "lid-2-player-2-acoustic-reaction-proxy.wav": {
+      "sha256": "6c362c82bc5702216a81d18203bc54d3d7c1cc8a36acf62328b19f18dca21d2f",
+      "bytes": 276524
+    },
+    "lid-2-player-2-mechanism-direct-proxy.wav": {
+      "sha256": "ebf7da8d2653996c08887c21e57b6798375e73f32cda6dec496b4edcdfd77f0f",
+      "bytes": 276524
+    },
+    "lid-2-player-2-cavity-pressure-pa.wav": {
+      "sha256": "ddfb64a5d791cb217603edc603e65f727f785c9680c5cd912be536cc4e77fac8",
+      "bytes": 276524
+    },
+    "source-off-combined.wav": {
+      "sha256": "66d1c49dc5345cb18b3e532ed9f089da175e0b2590206c13248129501c66ca86",
+      "bytes": 276524
+    },
+    "source-off-acoustic-reaction-proxy.wav": {
+      "sha256": "2b949d5113e4c58e8cece2b57ec8f45fcf6be6f762fa054fdd7c595433680c41",
+      "bytes": 276524
+    },
+    "source-off-mechanism-direct-proxy.wav": {
+      "sha256": "497c5f040403772ceff5e63f3fe61d0f57fe074aa4e1629e0648e74c3def5285",
+      "bytes": 276524
+    },
+    "source-off-cavity-pressure-pa.wav": {
+      "sha256": "f7aed496f46df22c5770ce014fddc85a09da655b85429965178f3c6f682bdaac",
+      "bytes": 276524
+    },
+    "coupling-off-combined.wav": {
+      "sha256": "d731ea9c60540117db7fcc5110ea34a9664bf4fd23f8be9e001b8b0836ef1e9d",
+      "bytes": 276524
+    },
+    "coupling-off-acoustic-reaction-proxy.wav": {
+      "sha256": "84d20843f8f2ff0226ab803fa53808e39d9339fc6d9ec2f0d1d8bee1d51d6921",
+      "bytes": 276524
+    },
+    "coupling-off-mechanism-direct-proxy.wav": {
+      "sha256": "fb2a33edf42c2bc6d79f9b375192712744c81a245bac47561f4b630db9a90495",
+      "bytes": 276524
+    },
+    "coupling-off-cavity-pressure-pa.wav": {
+      "sha256": "4406d0f7e58b7a8bd0b15affa8b0697de2542c0122709858759b8dbca4621897",
+      "bytes": 276524
+    },
+    "load-off-combined.wav": {
+      "sha256": "d731ea9c60540117db7fcc5110ea34a9664bf4fd23f8be9e001b8b0836ef1e9d",
+      "bytes": 276524
+    },
+    "load-off-acoustic-reaction-proxy.wav": {
+      "sha256": "84d20843f8f2ff0226ab803fa53808e39d9339fc6d9ec2f0d1d8bee1d51d6921",
+      "bytes": 276524
+    },
+    "load-off-mechanism-direct-proxy.wav": {
+      "sha256": "fb2a33edf42c2bc6d79f9b375192712744c81a245bac47561f4b630db9a90495",
+      "bytes": 276524
+    },
+    "load-off-cavity-pressure-pa.wav": {
+      "sha256": "84d20843f8f2ff0226ab803fa53808e39d9339fc6d9ec2f0d1d8bee1d51d6921",
+      "bytes": 276524
+    },
+    "lid-0-player-0-minus-lid-1-player-0.wav": {
+      "sha256": "3d426561b6575fdbca71448656ef042af428f4fa53ea785da641263767927338",
+      "bytes": 276524
+    },
+    "lid-0-player-1-minus-lid-1-player-0.wav": {
+      "sha256": "c7ff4953c4c7a047ff327560237b699f237fdce8abce1e26608b7c6cc375ffac",
+      "bytes": 276524
+    },
+    "lid-0-player-2-minus-lid-1-player-0.wav": {
+      "sha256": "fb4956ff6c2b1d06f7bfd6fd1af0806b0e64409ac9373576602764a309fc0464",
+      "bytes": 276524
+    },
+    "lid-1-player-0-minus-lid-1-player-0.wav": {
+      "sha256": "84d20843f8f2ff0226ab803fa53808e39d9339fc6d9ec2f0d1d8bee1d51d6921",
+      "bytes": 276524
+    },
+    "lid-1-player-1-minus-lid-1-player-0.wav": {
+      "sha256": "b2af6d8fac4baff4fa2c6484ec9c7a9c437a49c9fc349bcef6cdb48ca83da852",
+      "bytes": 276524
+    },
+    "lid-1-player-2-minus-lid-1-player-0.wav": {
+      "sha256": "12b3c9cd11d057408d85cd402d970073b0a6d9660bb747538237d9c32d336d1e",
+      "bytes": 276524
+    },
+    "lid-2-player-0-minus-lid-1-player-0.wav": {
+      "sha256": "ffde310bc76bb42aa221f8121351fed42ae9b84e3b361dc55883f9120758063b",
+      "bytes": 276524
+    },
+    "lid-2-player-1-minus-lid-1-player-0.wav": {
+      "sha256": "e302189982279521036d9b49e67fab716cba9e87c5779f8476441cbe3b9deff8",
+      "bytes": 276524
+    },
+    "lid-2-player-2-minus-lid-1-player-0.wav": {
+      "sha256": "b2a9132a1f2621d9d9514bcdf2c49c88d8bce2a39fedd4ae1aeab0df0ed595b7",
+      "bytes": 276524
+    },
+    "source-off-minus-lid-1-player-0.wav": {
+      "sha256": "b64ad4271558283003b571b1db4e314d3767e3a9095a9d39f43d2280ac01429e",
+      "bytes": 276524
+    },
+    "coupling-off-minus-lid-1-player-0.wav": {
+      "sha256": "822cc9008bf798bfbc7631690375d7a5e29de3082e58026a6f5d4452631c1023",
+      "bytes": 276524
+    },
+    "load-off-minus-lid-1-player-0.wav": {
+      "sha256": "822cc9008bf798bfbc7631690375d7a5e29de3082e58026a6f5d4452631c1023",
+      "bytes": 276524
+    }
+  },
+  "reserved_corpus_split_sha256": "71455bf0383f58563527520a14a5a9456169820dbee04fa20c4411943ae0895c",
+  "corpus_action": "none; no recording acquisition, decode, listening, spectral extraction or fitting in this task",
+  "limits": [
+    "Research-only first-order composition after complete original mechanics; no original source, calibration, controller or production API changes.",
+    "Physical cavity pressure and original proxy pressure units are not calibrated to each other; cavity stem is diagnostic and direct air mix gain is zero. Sharing export gain does not make their levels physically comparable.",
+    "Source-off removes only the injected cavity pressure event; passive air can still be excited by strings, board and mechanisms. Coupling-off retains cavity source and losses. Load-off removes the entire air module.",
+    "Mechanism gain, cavity geometry, board moving area, resistance and player proximity/loss budget are authored. No fit to ambiguous library pedal low frequencies or material claims.",
+    "Lid 0/0.5/1 are separately prepared static aperture geometries; not live lid motion. One cavity/aperture mode is not a three-dimensional air field, lid plate, room or anatomical player.",
+    "Same notes, pedal events, seed, gains and room-none path across targets; only stated source/coupling/load ablations differ.",
+    "No recording/listening validation, production quality, SDK or host real-time guarantee. Reserved mechanism corpus remains unopened."
+  ]
+}

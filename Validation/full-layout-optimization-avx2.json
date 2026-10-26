@@ -1,0 +1,361 @@
+{
+  "schema_version": 1,
+  "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+  "base_source_sha256": "02d5ae237006eb5e5a16fdea53e5cbf68c2b65b608e9738b9947fe9301c67ef7",
+  "tool_sha256": "e07acd3a367b31db4aef9fbc11cdeb730c833465e65c180e9f94dee560d828a8",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "flags": [
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-ffp-contract=off",
+    "-mavx2"
+  ],
+  "audio_seconds": 0.35,
+  "sample_rate": 48000,
+  "variants": {
+    "original": {
+      "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+      "compiled_sha256": "aed9a2e3a4019f192e8bcad47912e7d434fdb25b22c3491062095abb38d87eca",
+      "binary_sha256": "d5d149ebd8bebb64dafed94639b1b94be8b5c9843f23ac586349b4de31fb9334",
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.260418112,
+          "realtime_factor": 6.45833746286,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.258888,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.00158307,
+          "realtime_factor": 5.71880877143,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.001581,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.274334037,
+          "realtime_factor": 6.49809724857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.274265,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        }
+      ],
+      "median_process_cpu_seconds": 2.258888,
+      "speedup_vs_original": 1.0,
+      "speedup_vs_passing_base": 0.9052653340935896
+    },
+    "impulse_radiation": {
+      "source_sha256": "02d5ae237006eb5e5a16fdea53e5cbf68c2b65b608e9738b9947fe9301c67ef7",
+      "compiled_sha256": "8f56e9b0dbbe44433234a95297aeb59ecd936610f461420372fe24de7100d912",
+      "binary_sha256": "c381407076d0ae2530f2fd96bf72c34037189a483f459f8da59a111446251c8b",
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.046146657,
+          "realtime_factor": 5.84613330571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.044893,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.243489901,
+          "realtime_factor": 6.40997114571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.242912,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.936676786,
+          "realtime_factor": 5.53336224571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.93668,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        }
+      ],
+      "median_process_cpu_seconds": 2.044893,
+      "speedup_vs_original": 1.10464850728131,
+      "speedup_vs_passing_base": 1.0
+    },
+    "grouped_unison": {
+      "source_sha256": "d8cd5ee7522936dba072e205e8d72a880187188a5d98afee2236bec7588cbace",
+      "compiled_sha256": "7f126dfbec245bb237d8ff0851a5353609792b2ee09562400520e87c9ce90f2d",
+      "binary_sha256": "42c21f69265a67295d9ea3093c7495e18a6e06e11ef2e17464309b137e3dedb6",
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.591516191,
+          "realtime_factor": 4.54718911714,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.590326,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.601845529,
+          "realtime_factor": 4.57670151143,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.601842,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.794096,
+          "realtime_factor": 5.12598857143,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.793875,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        }
+      ],
+      "median_process_cpu_seconds": 1.601842,
+      "speedup_vs_original": 1.4101815285152965,
+      "speedup_vs_passing_base": 1.2765884525440088
+    },
+    "explicit_vector_unison": {
+      "source_sha256": "ac4d6adf19901351b114fbd18d48b5aef56e547a4cc6cd971d4bf8dbb2bbe8ed",
+      "compiled_sha256": "b0869aaf33b285fe90ab2422e3ff90ba5956332cc90d4e94e16029956a6801ad",
+      "binary_sha256": "98c8b2a27e32ae4f41dffb862101216b13d4cc5fab86a89b5f969e20ca2c47c4",
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.356126251,
+          "realtime_factor": 6.73178928857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.355605,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.681297466,
+          "realtime_factor": 4.80370704571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.681206,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.726182911,
+          "realtime_factor": 4.93195117429,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.726113,
+          "hashes": {
+            "audio": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+            "state": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+          }
+        }
+      ],
+      "median_process_cpu_seconds": 1.726113,
+      "speedup_vs_original": 1.3086559222947742,
+      "speedup_vs_passing_base": 1.1846808407097333
+    }
+  },
+  "limits": "Exact topology and per-row arithmetic; local shared-host process CPU evidence only, no Jukebox/Reason certification. No modal truncation, altered coefficients, skipped operators or quality reductions.",
+  "passing_base_stage_profile": {
+    "frames": 16800,
+    "controls": 0.030837174,
+    "oscillators": 0.5350786,
+    "unisons": 0.4637226,
+    "bridge": 1.01764002,
+    "radiation": 0.018004515
+  },
+  "all_audio_and_double_state_bytes_identical": true
+}

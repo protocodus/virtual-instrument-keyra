@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "selection_policy": "1-3 documented representative choices per part, not a measured market-share ranking. Unknown contact and assembly data are not filled by arbitrary material constants.",
+  "sources": {
+    "BE2013_T1": {
+      "title": "Vibroacoustics of the piano soundboard: Reduced models, mobility synthesis, and acoustical radiation regime",
+      "authors": [
+        "Xavier Boutillon",
+        "Kerem Ege"
+      ],
+      "year": 2013,
+      "url": "https://arxiv.org/abs/1305.3057v1",
+      "document_url": "https://arxiv.org/pdf/1305.3057v1",
+      "doi": "10.1016/j.jsv.2013.03.015",
+      "location": "Table 1, PDF page 8; material axes paragraph below table",
+      "evidence": "Published piano-model material inputs tracing Sitka to Berthaut, Norway and maple to Haines; no common specimen moisture condition reported in table.",
+      "conditions": "Bulk material values used by this paper. Not identified properties of Keyra references or a finished crowned/ribbed soundboard.",
+      "values": {
+        "sitka_spruce": {
+          "density_kg_m3": 392,
+          "E_L_Pa": 11500000000.0,
+          "E_R_Pa": 470000000.0,
+          "G_LR_Pa": 500000000.0,
+          "nu_LR": 0.3
+        },
+        "norway_spruce": {
+          "density_kg_m3": 440,
+          "E_L_Pa": 15800000000.0,
+          "E_R_Pa": 850000000.0,
+          "G_LR_Pa": 840000000.0,
+          "nu_LR": 0.3
+        },
+        "maple_bridge": {
+          "density_kg_m3": 660,
+          "E_L_Pa": 10000000000.0,
+          "E_R_Pa": 2200000000.0,
+          "G_LR_Pa": 2000000000.0,
+          "nu_LR": 0.3
+        }
+      },
+      "download_sha256": "6440dc4e3928b67928c9db06a03c93fa0837da721445fa6b25993bdfc16d5896",
+      "redistribution": "Paper not bundled. Only bibliographic metadata and factual numerical inputs are recorded.",
+      "accessed_date": "2026-10-26"
+    },
+    "USDA2010_T5_3": {
+      "title": "Wood Handbook: Wood as an Engineering Material, FPL-GTR-190",
+      "publisher": "USDA Forest Service, Forest Products Laboratory",
+      "year": 2010,
+      "url": "https://www.fpl.fs.usda.gov/documnts/fplgtr/fpl_gtr190.pdf",
+      "catalog_url": "https://research.fs.usda.gov/fpl/wood-handbook",
+      "location": "Table 5-3a, metric rows Basswood American and Spruce Sitka, 12% moisture; specific-gravity footnote b",
+      "evidence": "Clear-specimen handbook averages. Bending modulus includes shear deflection; not an axial modulus or measured assembled key.",
+      "conditions": "12% moisture content; specific gravity uses oven-dry mass and volume at 12% moisture.",
+      "values": {
+        "sitka_spruce_key": {
+          "specific_gravity_12_percent": 0.4,
+          "moisture_mass_fraction": 0.12,
+          "bending_modulus_Pa": 10800000000.0
+        },
+        "american_basswood_key": {
+          "specific_gravity_12_percent": 0.37,
+          "moisture_mass_fraction": 0.12,
+          "bending_modulus_Pa": 10100000000.0
+        }
+      },
+      "derivation": "Density at MC = SG_MC * 1000 kg/m3 * (1+MC). Thus 448 and 414.4 kg/m3; SG*1000 alone would be oven-dry mass per current specimen volume.",
+      "retrieval": "Official indexed table excerpt verified; direct full-PDF download returned HTTP403, so no downloaded-byte hash claimed.",
+      "redistribution": "US federal publication; full book not bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "AST44_2023_T1": {
+      "title": "Vibration analysis of piano strings involving dynamics of hammer shanks",
+      "authors": [
+        "Nao Sato",
+        "Toshiya Samejima"
+      ],
+      "year": 2023,
+      "url": "https://www.jstage.jst.go.jp/article/ast/44/3/44_E2256/_article",
+      "document_url": "https://www.jstage.jst.go.jp/article/ast/44/3/44_E2256/_pdf",
+      "doi": "10.1250/ast.44.230",
+      "location": "Table 1, string material properties",
+      "evidence": "Published piano-string calculation inputs; do not call these a measured Keyra wire specimen.",
+      "conditions": "Paper model values; wire temper and moisture do not determine wound-string slip losses.",
+      "values": {
+        "density_kg_m3": 7850,
+        "E_Pa": 200000000000.0,
+        "nu": 0.3
+      },
+      "download_sha256": "24d75afbe11a5d884dc90fd1ac471b871338a91c33a790a5239c56e8170122ff",
+      "redistribution": "Paper not bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "CDA_C11000": {
+      "title": "C11000 alloy physical properties",
+      "publisher": "Copper Development Association",
+      "url": "https://alloys.copper.org/alloy/C11000",
+      "location": "Physical properties: specific gravity, modulus of elasticity in tension, modulus of rigidity",
+      "conditions": "Density at 68 F (20 C); typical bulk C11000 values, not measured piano winding grade.",
+      "values": {
+        "density_kg_m3": 8910,
+        "E_ksi": 17000,
+        "G_ksi": 6400
+      },
+      "derivations": {
+        "E_Pa": "17000 * 6894757.293168 = 117210873983.856 Pa",
+        "nu": "E/(2G)-1 = 0.328125 under an isotropic approximation"
+      },
+      "retrieval": "Official indexed data verified; direct page fetch returned403.",
+      "redistribution": "No page text or images bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "ROHM_PMMA_GS": {
+      "title": "PLEXIGLAS mechanical properties FAQ / Soundstop XT technical information",
+      "publisher": "Roehm / POLYVANTIS",
+      "url": "https://www.plexiglas.de/en/contact",
+      "document_url": "https://www.plexiglas.de/files/plexiglas-content/pdf/technische-informationen/232-32-PLEXIGLAS-Soundstop-XT_EN.pdf",
+      "location": "FAQ mechanical properties of GS; same bulk values corroborated by official XT technical table",
+      "values": {
+        "density_kg_m3": 1190,
+        "E_Pa": 3300000000.0,
+        "nu": 0.37
+      },
+      "conditions": "Typical PMMA sheet material, not an identified piano-keytop formulation. No skin friction/contact stiffness is inferred.",
+      "redistribution": "No brochure or image bundled.",
+      "accessed_date": "2026-10-26",
+      "download_sha256": "60fc210bf2ce219b64bea27a279d4e1a83adc34dbb5e06f20999796ba8bae1c7"
+    },
+    "YAMAHA_WOODS": {
+      "title": "A Brief Guide to Piano Tonewoods",
+      "publisher": "Yamaha Corporation of America",
+      "year": 2022,
+      "url": "https://hub.yamaha.com/pianos/p-acoustic/a-brief-guide-to-piano-tonewoods/",
+      "location": "Soundboard, Bridge, Rim, Keys and Hammers sections",
+      "evidence": "Construction evidence supports spruce soundboards; maple/maple-beech bridges; maple or beech rims; spruce and basswood key sticks. This is not a frequency-of-use survey or material-property measurement.",
+      "redistribution": "No article text or images bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "YAMAHA_ACTION": {
+      "title": "Making the Keyboard and Action",
+      "publisher": "Yamaha Corporation",
+      "url": "https://www.yamaha.com/en/musical_instrument_guide/piano/manufacturing/manufacturing002.html",
+      "location": "Keys; Hammer Felt of 100% Wool",
+      "evidence": "Documents acrylic keytops, felt-lined bushings and wool hammerfelt. Numerical contact properties remain unmeasured.",
+      "redistribution": "No article text or images bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "YAMAHA_STRINGS": {
+      "title": "YUS Series features / Stringing and Mounting the Keyboard and Action",
+      "publisher": "Yamaha Corporation",
+      "url": "https://usa.yamaha.com/products/musical_instruments/pianos/upright_pianos/yus_series/features.html",
+      "additional_url": "https://www.yamaha.com/en/musical_instrument_guide/piano/manufacturing/manufacturing003.html",
+      "evidence": "Construction evidence for steel piano strings and copper-wound bass strings. Exact winding grade and geometry are not supplied.",
+      "redistribution": "No article text or images bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "FELT_HYSTERESIS1995": {
+      "title": "Hysteretic model of the grand piano hammer felt",
+      "author": "Anatoli Stulov",
+      "year": 1995,
+      "url": "https://doi.org/10.1121/1.411912",
+      "additional_url": "https://www.ioc.ee/res/piano.html",
+      "evidence": "Experimental force-compression behavior requires history dependence. Material name alone does not specify stiffness/exponent/relaxation.",
+      "redistribution": "No paper bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "FELT_EXPERIMENT1984": {
+      "title": "Dynamic compression characteristics of piano hammer felt",
+      "authors": [
+        "Takeshi Yanagisawa",
+        "Kijuro Nakamura"
+      ],
+      "year": 1984,
+      "url": "https://doi.org/10.20697/jasj.40.11_725",
+      "evidence": "Simultaneous hammer/string displacement and striking force measurement. Loading/unloading are not interchangeable fixed stiffness laws.",
+      "redistribution": "No paper bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "NPL_DRY_AIR": {
+      "title": "Speed of Sound Toilet Roll Report",
+      "publisher": "National Physical Laboratory",
+      "url": "https://www.npl.co.uk/getattachment/19d0d4d3-5bd9-47d9-b392-01be4c8e453d/Speed-of-Sound-Toilet-Roll-Report.pdf?lang=en-GB",
+      "location": "Temperature and humidity discussion",
+      "evidence": "Dry ideal-gas sound-speed approximation c approximately 20.047 sqrt(T_K). Humidity changes sound speed; humid-air attenuation is outside that approximation.",
+      "model_constants": {
+        "R_dry_J_kg_K": 287.05,
+        "gamma_dry": 1.4
+      },
+      "redistribution": "Report not bundled.",
+      "accessed_date": "2026-10-26",
+      "download_sha256": "ffb5607457764aa9dc2d2f39f026c8ca051af5a703b7b5210de3003d1e8bfdb9"
+    },
+    "UNSW_HELMHOLTZ": {
+      "title": "Helmholtz Resonance",
+      "publisher": "UNSW Music Acoustics",
+      "url": "https://www.phys.unsw.edu.au/jw/Helmholtz.html",
+      "location": "Effective length complications; guitar openings",
+      "evidence": "A circular thin aperture with two flanged ends has an approximate1.7r end correction. Other geometries and flexible bodies require different modeling.",
+      "redistribution": "No text/images/audio bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "HAMBRIC2007_EQ7": {
+      "title": "Structural Acoustics Tutorial, Part2: Sound-Structure Interaction",
+      "authors": [
+        "Stephen A. Hambric",
+        "John B. Fahnline"
+      ],
+      "year": 2007,
+      "url": "https://hambricacoustics.com/StructuralAcousticsTutorialPart2AcousticsTodayrev1.pdf",
+      "location": "Equation7, low-frequency circular baffled-piston resistance",
+      "evidence": "Low-ka force/velocity resistance rho*c*A*(ka)^2/2; converting to pressure/volume-velocity divides by A squared. Not an arbitrary open piano lid model.",
+      "redistribution": "Tutorial not bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "PLAYER_POSTURE2021": {
+      "title": "Effect of body posture on sound absorption by human subjects",
+      "authors": [
+        "Mostafa Sabbagh",
+        "Ahmed Elkhateeb"
+      ],
+      "year": 2021,
+      "url": "https://doi.org/10.1016/j.apacoust.2021.108317",
+      "evidence": "Room-scale measurements establish posture/clothing dependence. They do not provide the complex nearfield impedance of a pianist at Keyra microphone positions.",
+      "redistribution": "No paper bundled.",
+      "accessed_date": "2026-10-26"
+    },
+    "UNIDENTIFIED_LID": {
+      "status": "unidentified",
+      "url": null,
+      "missing": "Piano-specific lid species/laminate layup, thickness, mobility and radiation/reflectivity.",
+      "accessed_date": "2026-10-26"
+    },
+    "UNIDENTIFIED_PLAYER": {
+      "status": "unidentified",
+      "url": null,
+      "missing": "Seated pianist/clothing/position-dependent nearfield impedance.",
+      "accessed_date": "2026-10-26"
+    }
+  }
+}

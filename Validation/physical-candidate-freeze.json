@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "command": [
+    "/workspace/virtual-instrument-keyra/build/keyra_physical_render",
+    "--events",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/passage.events",
+    "--output",
+    "/workspace/virtual-instrument-keyra/out/physical-candidate/passage-48k.wav",
+    "--rate",
+    "48000",
+    "--seconds",
+    "9",
+    "--resonance",
+    "0.5",
+    "--report",
+    "/workspace/virtual-instrument-keyra/out/physical-candidate/passage-48k.json",
+    "--stem-prefix",
+    "/workspace/virtual-instrument-keyra/out/physical-candidate/passage"
+  ],
+  "receipt_method": "Inputs hashed before/after successful renderer execution.",
+  "sha256": {
+    "tools/render_physical.cpp": "51c1e5f84deb774bd63a3f53045de76c9c5ed87dc29d7b04ca9835de7ad75893",
+    "src/PhysicalPiano.cpp": "d74b5b1a201744f793ccf5bf6aa68a205852b85a8617ada0cfa119f2a7e5a710",
+    "include/keyra/PhysicalPiano.h": "607984e3a81643a4ef83c6cef35f808301404d666c8f2b5e9a818d63afb8a42d",
+    "include/keyra/physics/ModalBank.h": "bd34685285084003034d9a6e5eb298ad8449c81cc42d13144d1dfa28f027ef44",
+    "include/keyra/physics/Bridge.h": "0477f8121377f147fff75557e0cb1067ef024585bdc6e0709bab31a743919f98",
+    "include/keyra/physics/Action.h": "a4f017c081a1e20b7a9f775a36751d6215708f9fdcbc9db974c6cfdc1d8ce3f7",
+    "include/keyra/physics/Materials.h": "8287098e8f8f97903e5816df9dba78fe56511d45f23cc8a4c0bdd637705ab371",
+    "include/keyra/AnchorLookup.h": "52c3db59f8074ff12fc9f0664cf66202149fa002c5d180ad0401dd89b816ffb6",
+    "src/physics/Action.cpp": "ef212426d68d5de7ec825376b5414742c244db248df699519beee6b21f02e9ec",
+    "src/LiveCalibration.h": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+    "build/keyra_physical_render": "656b1bdb9fff765ffb9202e89ac2f72ee8c47ea8c0cb595267398872f7efcafe",
+    "out/quality-baseline/passage.events": "2f2cfb1a4d6b99a5796c0aec2b30412552f32b8fafd797c379e841b56f708ca5",
+    "out/physical-candidate/passage-48k.wav": "efb3e0581a8d446a1aae84dc02524267583321f0441f768a71cc09ef7b754a7e",
+    "out/physical-candidate/passage-48k.json": "c8c4c3fea261d5a03f58c26d17bd549b08c1c106aea79129ab83e5bfd68a6b04",
+    "out/physical-candidate/passage-primary.wav": "73e37e4d1c931cd2204fd8ad2387a9bc69160c3fef812d9508b83622be794934",
+    "out/physical-candidate/passage-secondary.wav": "a89ee3c4e17f6804d5ca799eecc1348767d86cfc97dbdec9cdd9ee096400724d",
+    "out/physical-candidate/passage-board.wav": "68e97b62c08738fd1fe33c8e80f0645a07545106283ba690de93ddec0309ed85"
+  }
+}

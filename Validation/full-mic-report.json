@@ -1,0 +1,2305 @@
+{
+  "schema_version": 1,
+  "training_ids": [
+    "A0v12",
+    "A0v4",
+    "A1v12",
+    "A1v4",
+    "A2v12",
+    "A2v4",
+    "A4v12",
+    "A4v4",
+    "A5v12",
+    "A5v4",
+    "C1v12",
+    "C1v4",
+    "C2v12",
+    "C2v4",
+    "C3v12",
+    "C3v4",
+    "C4v12",
+    "C4v4",
+    "C5v12",
+    "C5v4",
+    "C6v12",
+    "C6v4",
+    "C7v12",
+    "C7v4",
+    "D#2v12",
+    "D#2v4",
+    "D#3v12",
+    "D#3v4",
+    "D#4v12",
+    "D#4v4",
+    "D#5v12",
+    "D#5v4"
+  ],
+  "excluded_ambiguous_C8_ids": [
+    "C8v4",
+    "C8v12"
+  ],
+  "reserved_audio_or_features_used": false,
+  "input_identities": {
+    "features": {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/combined_train_features.json",
+      "sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7"
+    },
+    "split": {
+      "path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/split.json",
+      "sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428"
+    },
+    "pcm_guard": {
+      "path": "/workspace/virtual-instrument-keyra/tools/fit_full_calibration.py",
+      "sha256": "c070b3a9f8f68b1e9aa18c8958d703225e5506ade5943ee1cd5ec0a3e1678550"
+    },
+    "analysis": {
+      "path": "/workspace/virtual-instrument-keyra/tools/probe_full_mic_field.py",
+      "sha256": "35ea1049973d98d88fa2a7afe1fb8e4f1dbdd86eaf2740c6738eacf790e3e756"
+    }
+  },
+  "model_identity": {
+    "source": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/grand.cpp",
+    "source_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+    "header": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/calibration.h",
+    "header_sha256": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa",
+    "binary": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/radiation/float-solver/render",
+    "binary_sha256": "39a25f06e978726e0f6b22ccb67ec1f4ffd98b689aa217cb79cd2655a21e1756",
+    "manifest_sha256": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba"
+  },
+  "reference_pcm_and_model_receipts": [
+    {
+      "id": "A0v4",
+      "historical_feature_wave_sha256": "c3bf928b2f9db331c2624856ff5fe5a10df332f795b130beacfda86162085d43",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/A0v4.wav",
+      "actual_wave_sha256": "c3bf928b2f9db331c2624856ff5fe5a10df332f795b130beacfda86162085d43",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v4.wav",
+      "model_wave_sha256": "6eaefee208272eb5e4b2339f598d59e49119b0d3ff8fc4de804688702bb57f48",
+      "model_sidecar_sha256": "1f0f9b3ea1ad8604ddd8668701ffd8cea68756931bd859ab824e4828cb078dbb",
+      "reference_common_onset_seconds": 0.006333333333333333,
+      "model_common_onset_seconds": 0.09927083333333334
+    },
+    {
+      "id": "A0v12",
+      "historical_feature_wave_sha256": "65d306d7c4fd6b9cfe3c580748fc6784108735d270a2b15aa7a159820a09a803",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/A0v12.wav",
+      "actual_wave_sha256": "65d306d7c4fd6b9cfe3c580748fc6784108735d270a2b15aa7a159820a09a803",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A0v12.wav",
+      "model_wave_sha256": "8f809b0e3b849e910eb93f3081afae99193ffc4aa42b12dcb703082577ba51c9",
+      "model_sidecar_sha256": "3e2ae1c9f82c9e994c58e640582ed0cf207c79cf18ae795ff07abfa263c1a62f",
+      "reference_common_onset_seconds": 0.005645833333333333,
+      "model_common_onset_seconds": 0.09920833333333333
+    },
+    {
+      "id": "C1v4",
+      "historical_feature_wave_sha256": "5cd695560a38721763bd2c0a8b15143bab9a6277a678fec811e74d1e84d9b90f",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C1v4.wav",
+      "actual_wave_sha256": "5cd695560a38721763bd2c0a8b15143bab9a6277a678fec811e74d1e84d9b90f",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C1v4.wav",
+      "model_wave_sha256": "67aa4d2f1d7a0d89e366cad1bfcac22566e48b70b83643b988064ab6b8115b18",
+      "model_sidecar_sha256": "6f416f65501153842c332ae0bd637b02084ab06893904ca334729ce1b0b6a4cc",
+      "reference_common_onset_seconds": 0.028583333333333332,
+      "model_common_onset_seconds": 0.09925
+    },
+    {
+      "id": "C1v12",
+      "historical_feature_wave_sha256": "fad63f6089c215a4ed3e1ab48f9e3fe09b9b686c1e6ac9803504859078c95950",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C1v12.wav",
+      "actual_wave_sha256": "fad63f6089c215a4ed3e1ab48f9e3fe09b9b686c1e6ac9803504859078c95950",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C1v12.wav",
+      "model_wave_sha256": "098e059892b0b532c0960482158afdf912b0d4530fa75bd36ceff015d5c0a0ab",
+      "model_sidecar_sha256": "ebc6ad77be7dadc91fc4fb60e622a1c9c857c8baf09a1961d08191571638e590",
+      "reference_common_onset_seconds": 0.007125,
+      "model_common_onset_seconds": 0.0991875
+    },
+    {
+      "id": "A1v4",
+      "historical_feature_wave_sha256": "09c85c5c04af17ad23274587bbb03c585f9f9605cf7264bf6a07af61ae471e36",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A1v4.wav",
+      "actual_wave_sha256": "09c85c5c04af17ad23274587bbb03c585f9f9605cf7264bf6a07af61ae471e36",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A1v4.wav",
+      "model_wave_sha256": "160f80dba4907cce4dace575fccec940c13c3a7a044b7f381a1e93155217e815",
+      "model_sidecar_sha256": "93bd1d25e32f5c62f174280e415154fa8e7dc37f813d0fea2d2b45c45707cf72",
+      "reference_common_onset_seconds": 0.0020625,
+      "model_common_onset_seconds": 0.09922916666666666
+    },
+    {
+      "id": "A1v12",
+      "historical_feature_wave_sha256": "84eb9ee0b568c799a566cbd38431c3f5cdb4cc9393d11a3b997ce0b29713c2b8",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A1v12.wav",
+      "actual_wave_sha256": "84eb9ee0b568c799a566cbd38431c3f5cdb4cc9393d11a3b997ce0b29713c2b8",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A1v12.wav",
+      "model_wave_sha256": "6383bb4deaf7dd76d5fee32778eaab239162a9fe34d20e2cf43fb3c3011d0c92",
+      "model_sidecar_sha256": "d5fbc4919f62359068b15d4a1a0fbabe4901dd2b4fbcf3f94e035dbc310a1576",
+      "reference_common_onset_seconds": 0.0031875,
+      "model_common_onset_seconds": 0.09916666666666667
+    },
+    {
+      "id": "C2v4",
+      "historical_feature_wave_sha256": "6f100bd76c132c26b7b4dca012903da14497711c6ead4ca8b8545f019e7f9f14",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C2v4.wav",
+      "actual_wave_sha256": "36c79cd4976815a90be797f0ec6883056c6b0d022be699b95dbd871973f5c048",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "afb17d6ba2eda3c5ddc0c8ec37406eeca2225b67f419c05b25c8bcde77f691f2",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 946469,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C2v4.wav",
+      "model_wave_sha256": "5d3323d20d90717e7aaefaedd5627d770f28b2a38fd412342929620917924953",
+      "model_sidecar_sha256": "80a77b12777fc12f93b0b0b2698e817109a2ccf7ef715c96b02d3a0cd7c2e066",
+      "reference_common_onset_seconds": 0.008541666666666666,
+      "model_common_onset_seconds": 0.09933333333333333
+    },
+    {
+      "id": "C2v12",
+      "historical_feature_wave_sha256": "a50bf007825a6a391af4675efabb18b0be0e54427eed6a98a36f0663d91d8872",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C2v12.wav",
+      "actual_wave_sha256": "6fdee8b21af461d199f4d4dca1375f5100c4c8def1e092b8c23d71e42f09372c",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "6edd9b5d02ef8f9d553c028b493ce0516f560c52f8cb2c77beb3963fb00074ad",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 1069679,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C2v12.wav",
+      "model_wave_sha256": "b1ec7b480cb0ee9b1af941c5abaf114b6ca21bcaa217796d3b45b3a6731d3617",
+      "model_sidecar_sha256": "808c29cf43b4bca32f862511306bbeb6eb98e5a568c81495b7d587cc885e37aa",
+      "reference_common_onset_seconds": 0.0030833333333333333,
+      "model_common_onset_seconds": 0.09927083333333334
+    },
+    {
+      "id": "D#2v4",
+      "historical_feature_wave_sha256": "189921f32e206edc7235e3ac0f36369aaeafe28629a458db08524feda5d19140",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#2v4.wav",
+      "actual_wave_sha256": "189921f32e206edc7235e3ac0f36369aaeafe28629a458db08524feda5d19140",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#2v4.wav",
+      "model_wave_sha256": "269087c511fb8901c37ebcc8990d71eb326c0ecdc9e3c26793079fabed1f1992",
+      "model_sidecar_sha256": "c227ce9089f3a9803372a39c57e76c8bbde7b6801679c4b60b21f2f9dfb1bca2",
+      "reference_common_onset_seconds": 0.0033333333333333335,
+      "model_common_onset_seconds": 0.09922916666666666
+    },
+    {
+      "id": "D#2v12",
+      "historical_feature_wave_sha256": "f882a3ad57bd130f902885baf471b98c7009fee9d4c60b102cc00fefeadb2537",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#2v12.wav",
+      "actual_wave_sha256": "f882a3ad57bd130f902885baf471b98c7009fee9d4c60b102cc00fefeadb2537",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#2v12.wav",
+      "model_wave_sha256": "53442526ee0e702ee6931a4578d2713428b9c3d4bda132ebb8028192d4f8a537",
+      "model_sidecar_sha256": "17b6ce4204c08a45a42abedf3fcae45e9e81d5cfe2aaab98d8ddb339f8ea8f8d",
+      "reference_common_onset_seconds": 0.004333333333333333,
+      "model_common_onset_seconds": 0.0991875
+    },
+    {
+      "id": "A2v4",
+      "historical_feature_wave_sha256": "7da5754791a94849275cff7df6f7836f2651c96653e277185b5eb1f8bb9560d8",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A2v4.wav",
+      "actual_wave_sha256": "7da5754791a94849275cff7df6f7836f2651c96653e277185b5eb1f8bb9560d8",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A2v4.wav",
+      "model_wave_sha256": "df0b9051055e1e549838d60fa2d102ce26e7ea3dc0cb982825d84065f88bbe82",
+      "model_sidecar_sha256": "16767e43ee3743abe26c5163eace3afbae3c96de670aa5e836bcb84cb8d16043",
+      "reference_common_onset_seconds": 0.007833333333333333,
+      "model_common_onset_seconds": 0.09929166666666667
+    },
+    {
+      "id": "A2v12",
+      "historical_feature_wave_sha256": "be7cc834d31d1ce05899397fc736fd24f256dbb4f5cfb7247f47cf85e8d20c51",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A2v12.wav",
+      "actual_wave_sha256": "be7cc834d31d1ce05899397fc736fd24f256dbb4f5cfb7247f47cf85e8d20c51",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A2v12.wav",
+      "model_wave_sha256": "acecfc6677d613df7cf318423caba28471724ae690f14b4e7a034028216c89b9",
+      "model_sidecar_sha256": "afec2bdada500fd4071a27de933433bf85b4f3dc7024eeacb9744ffb47618ac9",
+      "reference_common_onset_seconds": 0.005604166666666667,
+      "model_common_onset_seconds": 0.09925
+    },
+    {
+      "id": "C3v4",
+      "historical_feature_wave_sha256": "4a3ffe497dd0884f64437feddf106c20d4db93bcf00520a4cf4ff57e155da647",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C3v4.wav",
+      "actual_wave_sha256": "9a35672fe713b73c5e6c02861e8ab7c03826a33b5be63d0623046282b797e002",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "fcbac9461d12246266d5aa3248a0867151c2a2832e96906958c6568e336db69b",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 761532,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C3v4.wav",
+      "model_wave_sha256": "832bed9a01fe2e7bfe0d6d895099304e8f803c1923e4a07112ba6ebb8edf9e38",
+      "model_sidecar_sha256": "9f9eeca0180ce3d59a7b94f94c436b48e1e7e78ae4d62fc6326f6e5a7ed660c8",
+      "reference_common_onset_seconds": 0.0077083333333333335,
+      "model_common_onset_seconds": 0.0991875
+    },
+    {
+      "id": "C3v12",
+      "historical_feature_wave_sha256": "17e82bb739a424d6b78a34e1517516f537960a5a9e231eba848c15cd4c5197f9",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C3v12.wav",
+      "actual_wave_sha256": "2ee3c48a5150b505202c808118ca6ab87d2ae0ea807f18f1722f4a9dfcad6001",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "0807785b753bdeef8adc5a197382c237fe37bcbb8d89f3b4f9e6c1db1941fcfa",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 758860,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C3v12.wav",
+      "model_wave_sha256": "e45eb90a7e691e89aa2a544dd605b6785c20e1b2a87791822cd2b160a3798e09",
+      "model_sidecar_sha256": "7e4cea83756623a18ffcd87745490d40496b2644ba5fc61fae16d4f5dd4b72f5",
+      "reference_common_onset_seconds": 0.009604166666666667,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "D#3v4",
+      "historical_feature_wave_sha256": "9972e6708929c4f4d39e4b690f152e83a691d3411c36d8bb4fc5350c5cbe38b9",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#3v4.wav",
+      "actual_wave_sha256": "9972e6708929c4f4d39e4b690f152e83a691d3411c36d8bb4fc5350c5cbe38b9",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#3v4.wav",
+      "model_wave_sha256": "0051d993a9112811b1cf0e83515436bdbdf88d2b48984d8bf72864bd206dd668",
+      "model_sidecar_sha256": "82cce105308991763a16c6660c11e9b52d10b3c89f1901a8ba897ab862274011",
+      "reference_common_onset_seconds": 0.009645833333333333,
+      "model_common_onset_seconds": 0.09920833333333333
+    },
+    {
+      "id": "D#3v12",
+      "historical_feature_wave_sha256": "6558337707f54bdd77d6e4f77aad9d1e59377c2d807bec69db77ff88dcde41df",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#3v12.wav",
+      "actual_wave_sha256": "6558337707f54bdd77d6e4f77aad9d1e59377c2d807bec69db77ff88dcde41df",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#3v12.wav",
+      "model_wave_sha256": "00e0a0b3d0b1fb20d63fe9fd892087bce4a8077e53bb508610c4e07c5dea0591",
+      "model_sidecar_sha256": "818787bc191620ce38292a996b5ab787d6083bc5da0f9ac9f2ff2db42aee48d8",
+      "reference_common_onset_seconds": 0.009895833333333333,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "C4v4",
+      "historical_feature_wave_sha256": "7b62800efbcb1bb8dc312dd9a8a2f7b6f0ab3b0613b41d5aa4aabd0ab7afcd0b",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C4v4.wav",
+      "actual_wave_sha256": "b25c65964c4d4e118fc9a7d67d68156fde483db5415339ab759a58dffa4abf51",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "85b3b02650428cd56321c9a825939d485027bf044e2fef68c6f5c8e6a754952f",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 755069,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v4.wav",
+      "model_wave_sha256": "36ee41139c7460dabea8031a503fab67e857684d93726dc68d0470972eda572b",
+      "model_sidecar_sha256": "f1dafaf156070a8e0d245d1006c5753e840fb5d0d25ce9f98b8ee7f000f75e96",
+      "reference_common_onset_seconds": 0.01075,
+      "model_common_onset_seconds": 0.09922916666666666
+    },
+    {
+      "id": "C4v12",
+      "historical_feature_wave_sha256": "965e1ac10c79830165b711ee9fbd1c9fef63339823a79b5bd0ceef015af8a301",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C4v12.wav",
+      "actual_wave_sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "f807087aed858ad1e0cbc30ae6f8d0dd8fd12314d5f52a6b6ac4afa6ddee47ad",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 754437,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C4v12.wav",
+      "model_wave_sha256": "4f3b2b446eb511cdcaa1e59502662837421f15a7b14766f8809b15f6a3bc8dee",
+      "model_sidecar_sha256": "52f64ff857ee76d922121e18854ef5c4b032c5e40cb0ac5e2c232c804c6faa22",
+      "reference_common_onset_seconds": 0.0074375,
+      "model_common_onset_seconds": 0.0991875
+    },
+    {
+      "id": "D#4v4",
+      "historical_feature_wave_sha256": "39fce098db49de9797453735ba7d0e224702d7413e6eca7a7b798fc38f666722",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#4v4.wav",
+      "actual_wave_sha256": "39fce098db49de9797453735ba7d0e224702d7413e6eca7a7b798fc38f666722",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#4v4.wav",
+      "model_wave_sha256": "d31d708f0bfad81a0667a0101915b57de6be252d901a5364ac00b9ef87f36da4",
+      "model_sidecar_sha256": "74e017c55d2317ff19523fd20e9ed1516ed0672e088539cdcf2ffd2d063cf41c",
+      "reference_common_onset_seconds": 0.0123125,
+      "model_common_onset_seconds": 0.0991875
+    },
+    {
+      "id": "D#4v12",
+      "historical_feature_wave_sha256": "274f99ac2c1eed43c65b6ca6ca964f342c342feed4d14508cb257fa2535188ff",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#4v12.wav",
+      "actual_wave_sha256": "274f99ac2c1eed43c65b6ca6ca964f342c342feed4d14508cb257fa2535188ff",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#4v12.wav",
+      "model_wave_sha256": "25b0fee1a84c760d3ac5c1efa4853bb0298c55c906b86fedda8fc5fd218d5f8c",
+      "model_sidecar_sha256": "b4a0cdbbfa224f6703dac8cb85db3351443edee9218e8ff4522ad33de592e330",
+      "reference_common_onset_seconds": 0.009479166666666667,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "A4v4",
+      "historical_feature_wave_sha256": "9c8a92b8865a32c132fe89f9230d6094e3c4f11e1779746f810f986cf7fa7ff9",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A4v4.wav",
+      "actual_wave_sha256": "9c8a92b8865a32c132fe89f9230d6094e3c4f11e1779746f810f986cf7fa7ff9",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A4v4.wav",
+      "model_wave_sha256": "fad90d0284d6b6822a750523e0e971452ae7f649db950eefffa4671717b30adb",
+      "model_sidecar_sha256": "110539fd67f9a8fc90e808fce9da66f658337b286f93573cc286e03682997751",
+      "reference_common_onset_seconds": 0.0085625,
+      "model_common_onset_seconds": 0.09916666666666667
+    },
+    {
+      "id": "A4v12",
+      "historical_feature_wave_sha256": "3a1de38c485e43e33af4729ff32b651ac82936f75118ce85f04c5af78c386750",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A4v12.wav",
+      "actual_wave_sha256": "3a1de38c485e43e33af4729ff32b651ac82936f75118ce85f04c5af78c386750",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A4v12.wav",
+      "model_wave_sha256": "1a1ed4ebf761327cf27c185973138831ff886b542d62fa765727b248471bec76",
+      "model_sidecar_sha256": "907c2e0b12753c5d66d26e6e4aeab1eb6ecbc0dbf719787c246e18d8655eb1d8",
+      "reference_common_onset_seconds": 0.0094375,
+      "model_common_onset_seconds": 0.099125
+    },
+    {
+      "id": "C5v4",
+      "historical_feature_wave_sha256": "33886387891ae3c20c6f8248e4e00ec742b0f52f394cc2375a6d815c7153ef3d",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C5v4.wav",
+      "actual_wave_sha256": "41c9862627542aec425a1c53c164c9d4617a1e3f8be97687d4ef14a3dae1432a",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "9c5129f25251af44aa8fc552cba236d8a4ede3f82a89ecb411d6ed9c17a320ec",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 736039,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C5v4.wav",
+      "model_wave_sha256": "5dac94b4593c7fdd6e9d43724aac70ca9a6f3cc43e497da0d47efa2643c69f4f",
+      "model_sidecar_sha256": "03a91898a8ef4be567a47d6f36e80afc156ab79c0edbf176994e82a7852336b2",
+      "reference_common_onset_seconds": 0.0086875,
+      "model_common_onset_seconds": 0.09920833333333333
+    },
+    {
+      "id": "C5v12",
+      "historical_feature_wave_sha256": "5ee4d9866caf2fab6e164f3f53fcbd7136b27c41042a1dda6b252cf60cb4ed33",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C5v12.wav",
+      "actual_wave_sha256": "a505db5f171788b45021c62187c8b2057cdefd6c103588c5270ecca0e554a638",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "c9bc88a2ae2af01a8b60f8b65ed440f041a39106a5553ecea67ed234c068c969",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 744720,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C5v12.wav",
+      "model_wave_sha256": "f426dc87f9577ed0559d8e21852d1f2b742bdb77e6b2cc88b75e6210ae1ac966",
+      "model_sidecar_sha256": "36a74e0fd0363118b9a6c11aff84d9f31c1e444f399f4c97860195eec155fc55",
+      "reference_common_onset_seconds": 0.007270833333333333,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "D#5v4",
+      "historical_feature_wave_sha256": "3266c8e013868547d3de3277913c88c936f687ef46ef3020149041a72397f8cc",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#5v4.wav",
+      "actual_wave_sha256": "3266c8e013868547d3de3277913c88c936f687ef46ef3020149041a72397f8cc",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#5v4.wav",
+      "model_wave_sha256": "3394e25ddd20721bae10593edc9d81d6842795d84dd51d31ca37c61bb666eb80",
+      "model_sidecar_sha256": "89afbc7dd4a895274fb4c1ef900721d1bc363a749bd081ae69062e5f2754ba12",
+      "reference_common_onset_seconds": 0.0088125,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "D#5v12",
+      "historical_feature_wave_sha256": "9fc0b2765b668fec01d2e15fdca89378b5d1a9dcf1fdd845ec84dd3786894bd9",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/D#5v12.wav",
+      "actual_wave_sha256": "9fc0b2765b668fec01d2e15fdca89378b5d1a9dcf1fdd845ec84dd3786894bd9",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/D#5v12.wav",
+      "model_wave_sha256": "c9dbabe522c3fbbb8736dbf6238ef6965aeab8c2ec457bd5338e45aa59942200",
+      "model_sidecar_sha256": "ce86119e4173c4f37fc87353bca446596ce19e950263fe1cb59db36821ada0e8",
+      "reference_common_onset_seconds": 0.009020833333333334,
+      "model_common_onset_seconds": 0.09910416666666666
+    },
+    {
+      "id": "A5v4",
+      "historical_feature_wave_sha256": "b8869f5c30590142cebbe9074e0d912896e14bb9ae7bda24d14c75a465f1819a",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A5v4.wav",
+      "actual_wave_sha256": "b8869f5c30590142cebbe9074e0d912896e14bb9ae7bda24d14c75a465f1819a",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A5v4.wav",
+      "model_wave_sha256": "4c134f902d305206d25fc0a220b1763a74b73c07f95d8a14a580f5300c367ff2",
+      "model_sidecar_sha256": "a66c2a3f9b2dfae6b23297692ff42e8c42f0439d19bd88323a9af8496840549b",
+      "reference_common_onset_seconds": 0.003416666666666667,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "A5v12",
+      "historical_feature_wave_sha256": "a28e52d067e76267586198870ff4cdfb52cac939320c4bda6d46c3fdf37fdbd4",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandExpanded/recordings/A5v12.wav",
+      "actual_wave_sha256": "a28e52d067e76267586198870ff4cdfb52cac939320c4bda6d46c3fdf37fdbd4",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/A5v12.wav",
+      "model_wave_sha256": "ed2ecfdb80b2ad1ea8bcf681c1d1e7eaff1e60170cf7f7a4b16d5cd82691e15b",
+      "model_sidecar_sha256": "329dd73ea914fc62e09d78a02b6510220c4a8511afd5848d3c26635199833fa9",
+      "reference_common_onset_seconds": 0.008916666666666666,
+      "model_common_onset_seconds": 0.099125
+    },
+    {
+      "id": "C6v4",
+      "historical_feature_wave_sha256": "82ba4e56e4844e951ee2b2d1ad3b47672165e458626f4d699ecf7075164e0aed",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C6v4.wav",
+      "actual_wave_sha256": "f7795b27c5f2c078c41651dde88e2f765f7762caa5770a4d50ae41fce806c9cb",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "acd51ee873365dc9b2dc3f44649bd1993f9f5d8ea469c92a2bea8825209edc7a",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 261515,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C6v4.wav",
+      "model_wave_sha256": "7897ddb899e306d4dad7f56bc6e9d93aec05c1b4d910a984a95c7da70333f06a",
+      "model_sidecar_sha256": "64683e9101236c420aed4025937a0abcc5912bf26e46f7cdad267ef24554c12d",
+      "reference_common_onset_seconds": 0.004583333333333333,
+      "model_common_onset_seconds": 0.09914583333333334
+    },
+    {
+      "id": "C6v12",
+      "historical_feature_wave_sha256": "34c58d8e124895ac7d8bc6dbb1412da8d8b1c8cc3b78d52dff3e6a883bc69969",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C6v12.wav",
+      "actual_wave_sha256": "1d2d99da7dab09066cd67940ccd21f381a6b3399fafda3c9b1f3cc4a45281100",
+      "container_hash_matches_feature": false,
+      "decoded_pcm": {
+        "sha256": "20fe66c60c9e741b687e7a8ef6d488638c51318b3d09ad3d494c45292bda3847",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 300242,
+        "pcm_bits": 24
+      },
+      "identity_basis": "Historical manifest links feature WAV hash to the same FLAC and decoded PCM as authenticated current TRAIN manifest; actual decoded PCM checked.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C6v12.wav",
+      "model_wave_sha256": "9a88e8bc4c20746872f1683bb34daac8eaa0c930a1128c9721bde4a9c9b53101",
+      "model_sidecar_sha256": "d2e942822fea9fae31a25229481e879132894f1fb3b9937692e648716278a5b8",
+      "reference_common_onset_seconds": 0.007770833333333334,
+      "model_common_onset_seconds": 0.09910416666666666
+    },
+    {
+      "id": "C7v4",
+      "historical_feature_wave_sha256": "f5bf5684545e0d6a815cc127d3125ca0d680447d19139857ce5355727321dd7b",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C7v4.wav",
+      "actual_wave_sha256": "f5bf5684545e0d6a815cc127d3125ca0d680447d19139857ce5355727321dd7b",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C7v4.wav",
+      "model_wave_sha256": "d4e8fc8abdbbd36c847bdf058e0e1837e231e3629ca0d59127b13330f6e0fca8",
+      "model_sidecar_sha256": "8fc3e4eebe788398541e23f6cbdb9984ab3b8e72d1368879e43c92b2f5b7d4aa",
+      "reference_common_onset_seconds": 0.004541666666666667,
+      "model_common_onset_seconds": 0.09920833333333333
+    },
+    {
+      "id": "C7v12",
+      "historical_feature_wave_sha256": "24112b685a003d2a56dd50a21279a6254c57f003b210579d89c12e432f260bf2",
+      "actual_wave_path": "/workspace/virtual-instrument-keyra/References/GrandFullRange/recordings/C7v12.wav",
+      "actual_wave_sha256": "24112b685a003d2a56dd50a21279a6254c57f003b210579d89c12e432f260bf2",
+      "container_hash_matches_feature": true,
+      "identity_basis": "Exact feature WAV container SHA256.",
+      "model_wave_path": "/workspace/virtual-instrument-keyra/out/full-calibration/v4/final-renders/C7v12.wav",
+      "model_wave_sha256": "519930c7e381ff108d458a2fe60cfd5c020d8d298d166c37ab1f9185ca35d05e",
+      "model_sidecar_sha256": "489bbbf7e63cd5808a6b1a2941eba9c6ca3dad60737d1813ad20a61441e8440b",
+      "reference_common_onset_seconds": 0.007083333333333333,
+      "model_common_onset_seconds": 0.09916666666666667
+    }
+  ],
+  "known_signal_checks": {
+    "passed": true,
+    "known_gain_endpoint_error_db": 9.992007221626409e-16,
+    "known_delay_endpoint_error_ms": 4.838462963618895e-12,
+    "maximum_moment_vs_per_bin_error": 1.4804419193986215e-15,
+    "common_channel_shift_cross_spectrum_error": 1.1102230246251565e-16,
+    "omitted_pitch_target_poison_parameter_difference": 0.0,
+    "full_keyboard_endpoint_bounds_passed": true,
+    "phase_convention": "C=ZL*conj(ZR); positiveR-minus-L delay multiplies C by exp(+i2pi f tau)."
+  },
+  "gates": {
+    "relative_power_min": 0.0001,
+    "band_to_local_noise_min_db": 10.0,
+    "coherence_squared_min": 0.5,
+    "minimum_channel_power_fraction": 0.02,
+    "maximum_frequency_hz": 12000.0,
+    "minimum_frequency_hz": 25.0,
+    "minimum_neighbor_spacing_times_window": 4.0,
+    "moment_absolute_error_max": 1e-07
+  },
+  "rejections": {
+    "A0v4": {
+      "accepted": 62,
+      "rejected": {
+        "quiet": 120,
+        "local_noise": 8,
+        "weak_channel": 2
+      }
+    },
+    "A0v12": {
+      "accepted": 64,
+      "rejected": {
+        "quiet": 110,
+        "local_noise": 15,
+        "weak_channel": 3
+      }
+    },
+    "C1v4": {
+      "accepted": 58,
+      "rejected": {
+        "local_noise": 5,
+        "weak_channel": 8,
+        "quiet": 121
+      }
+    },
+    "C1v12": {
+      "accepted": 60,
+      "rejected": {
+        "quiet": 115,
+        "local_noise": 9,
+        "weak_channel": 8
+      }
+    },
+    "A1v4": {
+      "accepted": 62,
+      "rejected": {
+        "local_noise": 2,
+        "low_band_coherence": 2,
+        "quiet": 126
+      }
+    },
+    "A1v12": {
+      "accepted": 74,
+      "rejected": {
+        "local_noise": 5,
+        "low_band_coherence": 3,
+        "quiet": 110
+      }
+    },
+    "C2v4": {
+      "accepted": 53,
+      "rejected": {
+        "weak_channel": 9,
+        "quiet": 130
+      }
+    },
+    "C2v12": {
+      "accepted": 67,
+      "rejected": {
+        "weak_channel": 11,
+        "quiet": 111,
+        "local_noise": 1,
+        "low_band_coherence": 2
+      }
+    },
+    "D#2v4": {
+      "accepted": 54,
+      "rejected": {
+        "weak_channel": 3,
+        "quiet": 131,
+        "local_noise": 1,
+        "low_band_coherence": 3
+      }
+    },
+    "D#2v12": {
+      "accepted": 57,
+      "rejected": {
+        "weak_channel": 3,
+        "low_band_coherence": 6,
+        "local_noise": 2,
+        "quiet": 124
+      }
+    },
+    "A2v4": {
+      "accepted": 37,
+      "rejected": {
+        "weak_channel": 4,
+        "quiet": 150,
+        "low_band_coherence": 1
+      }
+    },
+    "A2v12": {
+      "accepted": 50,
+      "rejected": {
+        "weak_channel": 4,
+        "quiet": 137,
+        "low_band_coherence": 1
+      }
+    },
+    "C3v4": {
+      "accepted": 34,
+      "rejected": {
+        "weak_channel": 3,
+        "quiet": 154,
+        "low_band_coherence": 1
+      }
+    },
+    "C3v12": {
+      "accepted": 47,
+      "rejected": {
+        "weak_channel": 3,
+        "quiet": 140,
+        "low_band_coherence": 2
+      }
+    },
+    "D#3v4": {
+      "accepted": 34,
+      "rejected": {
+        "quiet": 156,
+        "weak_channel": 1,
+        "low_band_coherence": 1
+      }
+    },
+    "D#3v12": {
+      "accepted": 42,
+      "rejected": {
+        "weak_channel": 3,
+        "quiet": 145,
+        "low_band_coherence": 2
+      }
+    },
+    "C4v4": {
+      "accepted": 20,
+      "rejected": {
+        "weak_channel": 2,
+        "quiet": 130,
+        "frequency_or_resolution": 40
+      }
+    },
+    "C4v12": {
+      "accepted": 31,
+      "rejected": {
+        "weak_channel": 3,
+        "quiet": 118,
+        "frequency_or_resolution": 40
+      }
+    },
+    "D#4v4": {
+      "accepted": 19,
+      "rejected": {
+        "weak_channel": 2,
+        "quiet": 107,
+        "frequency_or_resolution": 40
+      }
+    },
+    "D#4v12": {
+      "accepted": 25,
+      "rejected": {
+        "weak_channel": 2,
+        "quiet": 101,
+        "frequency_or_resolution": 40
+      }
+    },
+    "A4v4": {
+      "accepted": 15,
+      "rejected": {
+        "quiet": 76,
+        "frequency_or_resolution": 28,
+        "low_band_coherence": 1
+      }
+    },
+    "A4v12": {
+      "accepted": 18,
+      "rejected": {
+        "quiet": 72,
+        "frequency_or_resolution": 28,
+        "low_band_coherence": 2
+      }
+    },
+    "C5v4": {
+      "accepted": 11,
+      "rejected": {
+        "low_band_coherence": 2,
+        "quiet": 63,
+        "frequency_or_resolution": 24
+      }
+    },
+    "C5v12": {
+      "accepted": 15,
+      "rejected": {
+        "low_band_coherence": 3,
+        "quiet": 58,
+        "frequency_or_resolution": 24
+      }
+    },
+    "D#5v4": {
+      "accepted": 11,
+      "rejected": {
+        "quiet": 51,
+        "frequency_or_resolution": 20,
+        "weak_channel": 1,
+        "low_band_coherence": 1
+      }
+    },
+    "D#5v12": {
+      "accepted": 12,
+      "rejected": {
+        "low_band_coherence": 4,
+        "quiet": 48,
+        "frequency_or_resolution": 20
+      }
+    },
+    "A5v4": {
+      "accepted": 6,
+      "rejected": {
+        "quiet": 37,
+        "frequency_or_resolution": 16,
+        "low_band_coherence": 1
+      }
+    },
+    "A5v12": {
+      "accepted": 8,
+      "rejected": {
+        "low_band_coherence": 4,
+        "quiet": 32,
+        "frequency_or_resolution": 16
+      }
+    },
+    "C6v4": {
+      "accepted": 7,
+      "rejected": {
+        "quiet": 33,
+        "frequency_or_resolution": 12
+      }
+    },
+    "C6v12": {
+      "accepted": 9,
+      "rejected": {
+        "quiet": 31,
+        "frequency_or_resolution": 12
+      }
+    },
+    "C7v4": {
+      "accepted": 3,
+      "rejected": {
+        "quiet": 1
+      }
+    },
+    "C7v12": {
+      "accepted": 2,
+      "rejected": {
+        "low_band_coherence": 1,
+        "quiet": 1
+      }
+    }
+  },
+  "observations": 1067,
+  "parameters": "RelativeR/Lgain in dB and R-minus-L differentialdelay in ms each affine between MIDI21/108, bounded at endpoints to\u00b16dB/\u00b12ms. No per-case gain/phase fit.",
+  "estimator": "Single Hann complex band-integrated covariance; delay applied per frequency bin before integration. Band coherence is descriptive spectral concentration, not an independent-realization statistical coherence estimate.",
+  "delay_optimizer": "Balance-first procedure: gain endpoints fit weightedR/LdB balance, then are fixed while delay minimizes bounded circular covariance. This is not a joint four-parameter covariance optimum. Differential-evolution seed20261026 plus zero/multiple local starts; no phase unwrapping.8th-order centered moments accelerate fitting; exact per-bin projections score every fold.",
+  "validation_scope": "Conditional leave-one-pitch-out correction test: both velocities/all windows of target pitch excluded from gain/delay fitting. Target band masks/covariances are evaluation-only. Fixed full physical base was already calibrated on allTRAIN pitches; not end-to-end unseen-pitch validation.",
+  "alignment": "Each file uses one sharedL/R onset index only. Neither independent channel onset nor ref/model carrier phase enters the phase target.",
+  "weighting": "Equal pitch totals; equal velocity totals and available-window totals within each pitch, with capped reference partial-power weights inside a window.",
+  "summary": {
+    "actual_full_model": {
+      "observations": 1067,
+      "weighted_covariance_frobenius_error": 0.7883871405890679,
+      "weighted_absolute_balance_error_db": 5.262350223405073,
+      "weighted_absolute_cross_phase_error_degrees": 72.81326862939763,
+      "weighted_absolute_band_coherence_squared_error": 0.05447363346743891,
+      "weighted_absolute_model_power_change_db": 5.868893203468408e-17
+    },
+    "rank_one_keyboard_pan_diagnostic": {
+      "observations": 1067,
+      "weighted_covariance_frobenius_error": 0.7458405389311168,
+      "weighted_absolute_balance_error_db": 5.433701298054237,
+      "weighted_absolute_cross_phase_error_degrees": 71.29676580581943,
+      "weighted_absolute_band_coherence_squared_error": 0.05594110178873094,
+      "weighted_absolute_model_power_change_db": 0.0
+    },
+    "gain_only": {
+      "observations": 1067,
+      "weighted_covariance_frobenius_error": 0.7867655402329143,
+      "weighted_absolute_balance_error_db": 5.198768164154195,
+      "weighted_absolute_cross_phase_error_degrees": 72.81326862939763,
+      "weighted_absolute_band_coherence_squared_error": 0.05447363346743887,
+      "weighted_absolute_model_power_change_db": 0.21539897570094096,
+      "pitch_covariance_wins_out_of16": 10
+    },
+    "gain_delay": {
+      "observations": 1067,
+      "weighted_covariance_frobenius_error": 0.8105112211760455,
+      "weighted_absolute_balance_error_db": 5.198768164154195,
+      "weighted_absolute_cross_phase_error_degrees": 74.58140422779925,
+      "weighted_absolute_band_coherence_squared_error": 0.05429244463247565,
+      "weighted_absolute_model_power_change_db": 0.21539897570094096,
+      "pitch_covariance_wins_out_of16": 8
+    }
+  },
+  "folds": [
+    {
+      "omitted_midi": 21,
+      "omitted_ids": [
+        "A0v12",
+        "A0v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 126,
+        "weighted_covariance_frobenius_error": 0.9345394451681808,
+        "weighted_absolute_balance_error_db": 5.935237204560943,
+        "weighted_absolute_cross_phase_error_degrees": 80.07599175886503,
+        "weighted_absolute_band_coherence_squared_error": 0.0014623245574080408,
+        "weighted_absolute_model_power_change_db": 4.727374849410505e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -1.9786294497766808,
+            1.899157432066899
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7113966520760939,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 126,
+            "weighted_covariance_frobenius_error": 0.8796474997779726,
+            "weighted_absolute_balance_error_db": 4.719507473126748,
+            "weighted_absolute_cross_phase_error_degrees": 80.07599175886503,
+            "weighted_absolute_band_coherence_squared_error": 0.0014623245574080551,
+            "weighted_absolute_model_power_change_db": 0.31104875389077064
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -1.9786294497766808,
+            1.899157432066899
+          ],
+          "delay_endpoints_ms": [
+            -0.3736710715995863,
+            0.2416195830464533
+          ],
+          "objective": 0.6390769124178224,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.3736710715995863,
+                0.2416195830464533
+              ],
+              "objective": 0.6390769124178224
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.37367089907852596,
+                0.24161954209719824
+              ],
+              "objective": 0.6390769124178239
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 126,
+            "weighted_covariance_frobenius_error": 0.8165467926812263,
+            "weighted_absolute_balance_error_db": 4.719507473126748,
+            "weighted_absolute_cross_phase_error_degrees": 71.56933024049604,
+            "weighted_absolute_band_coherence_squared_error": 0.0014975691503387675,
+            "weighted_absolute_model_power_change_db": 0.31104875389077064
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 24,
+      "omitted_ids": [
+        "C1v12",
+        "C1v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 118,
+        "weighted_covariance_frobenius_error": 1.097720121374072,
+        "weighted_absolute_balance_error_db": 5.48300528735432,
+        "weighted_absolute_cross_phase_error_degrees": 112.71987665842329,
+        "weighted_absolute_band_coherence_squared_error": 0.0026668759535413834,
+        "weighted_absolute_model_power_change_db": 1.3295195026164814e-16
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.437457355523422,
+            2.2702401981769635
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.6850194389913792,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 118,
+            "weighted_covariance_frobenius_error": 1.0488225844365604,
+            "weighted_absolute_balance_error_db": 4.397717503766458,
+            "weighted_absolute_cross_phase_error_degrees": 112.71987665842329,
+            "weighted_absolute_band_coherence_squared_error": 0.002666875953541378,
+            "weighted_absolute_model_power_change_db": 0.38141606442604425
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.437457355523422,
+            2.2702401981769635
+          ],
+          "delay_endpoints_ms": [
+            -0.34099768219575854,
+            0.23408867519081936
+          ],
+          "objective": 0.6141189422076537,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.34099768219575854,
+                0.23408867519081936
+              ],
+              "objective": 0.6141189422076537
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.34099768479107406,
+                0.23408867184142335
+              ],
+              "objective": 0.6141189422076537
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 118,
+            "weighted_covariance_frobenius_error": 0.9881751011039367,
+            "weighted_absolute_balance_error_db": 4.397717503766458,
+            "weighted_absolute_cross_phase_error_degrees": 101.77192325775371,
+            "weighted_absolute_band_coherence_squared_error": 0.002640557950189543,
+            "weighted_absolute_model_power_change_db": 0.38141606442604425
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 33,
+      "omitted_ids": [
+        "A1v12",
+        "A1v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 136,
+        "weighted_covariance_frobenius_error": 0.9039640501451649,
+        "weighted_absolute_balance_error_db": 6.686961411273177,
+        "weighted_absolute_cross_phase_error_degrees": 76.5303192191468,
+        "weighted_absolute_band_coherence_squared_error": 0.0109718869789588,
+        "weighted_absolute_model_power_change_db": 6.494890454766406e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.4884222154927533,
+            2.32634361952026
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7098899600839138,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 136,
+            "weighted_covariance_frobenius_error": 0.8672858256316334,
+            "weighted_absolute_balance_error_db": 5.615173381614066,
+            "weighted_absolute_cross_phase_error_degrees": 76.5303192191468,
+            "weighted_absolute_band_coherence_squared_error": 0.010971886978958888,
+            "weighted_absolute_model_power_change_db": 0.19812006125312545
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.4884222154927533,
+            2.32634361952026
+          ],
+          "delay_endpoints_ms": [
+            -1.360012402628599,
+            2.0
+          ],
+          "objective": 0.6058011526588921,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.360012402628599,
+                2.0
+              ],
+              "objective": 0.6058011526588921
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.43947340442694743,
+                0.25688870585176454
+              ],
+              "objective": 0.6310937628648305
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 136,
+            "weighted_covariance_frobenius_error": 0.8949952839826814,
+            "weighted_absolute_balance_error_db": 5.615173381614066,
+            "weighted_absolute_cross_phase_error_degrees": 70.69035798222512,
+            "weighted_absolute_band_coherence_squared_error": 0.010972623079303065,
+            "weighted_absolute_model_power_change_db": 0.19812006125312545
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 36,
+      "omitted_ids": [
+        "C2v12",
+        "C2v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 120,
+        "weighted_covariance_frobenius_error": 0.9073779371674113,
+        "weighted_absolute_balance_error_db": 6.2001591644941865,
+        "weighted_absolute_cross_phase_error_degrees": 91.63674086897962,
+        "weighted_absolute_band_coherence_squared_error": 0.026633743070988963,
+        "weighted_absolute_model_power_change_db": 5.56133681611659e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.989290884478248,
+            2.5779489838682084
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.698644380452319,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 120,
+            "weighted_covariance_frobenius_error": 0.8759858634131431,
+            "weighted_absolute_balance_error_db": 6.403641124785739,
+            "weighted_absolute_cross_phase_error_degrees": 91.63674086897962,
+            "weighted_absolute_band_coherence_squared_error": 0.026633743070988848,
+            "weighted_absolute_model_power_change_db": 0.49253990482254456
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.989290884478248,
+            2.5779489838682084
+          ],
+          "delay_endpoints_ms": [
+            -0.3231792908572388,
+            0.230601193170191
+          ],
+          "objective": 0.6274877949508865,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.3231792908572388,
+                0.230601193170191
+              ],
+              "objective": 0.6274877949508865
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.32317924869670245,
+                0.23060118282582298
+              ],
+              "objective": 0.6274877949508869
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 120,
+            "weighted_covariance_frobenius_error": 0.8357629005216547,
+            "weighted_absolute_balance_error_db": 6.403641124785739,
+            "weighted_absolute_cross_phase_error_degrees": 79.09231390334216,
+            "weighted_absolute_band_coherence_squared_error": 0.026600697459013972,
+            "weighted_absolute_model_power_change_db": 0.49253990482254456
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 39,
+      "omitted_ids": [
+        "D#2v12",
+        "D#2v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 111,
+        "weighted_covariance_frobenius_error": 0.7322399235600734,
+        "weighted_absolute_balance_error_db": 3.8317862607834887,
+        "weighted_absolute_cross_phase_error_degrees": 63.13591091895299,
+        "weighted_absolute_band_coherence_squared_error": 0.011895134452140741,
+        "weighted_absolute_model_power_change_db": 6.47591830632339e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.4199001904541766,
+            2.3175963017916956
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7222740144815382,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 111,
+            "weighted_covariance_frobenius_error": 0.6977062525958485,
+            "weighted_absolute_balance_error_db": 3.1192736307145625,
+            "weighted_absolute_cross_phase_error_degrees": 63.13591091895299,
+            "weighted_absolute_band_coherence_squared_error": 0.011895134452140767,
+            "weighted_absolute_model_power_change_db": 0.13534783187138186
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.4199001904541766,
+            2.3175963017916956
+          ],
+          "delay_endpoints_ms": [
+            -0.39612449908907776,
+            0.24714240601187057
+          ],
+          "objective": 0.645741776833728,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.39612449908907776,
+                0.24714240601187057
+              ],
+              "objective": 0.645741776833728
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.3961244737855586,
+                0.24714239554603967
+              ],
+              "objective": 0.6457417768337285
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 111,
+            "weighted_covariance_frobenius_error": 0.6895545902090751,
+            "weighted_absolute_balance_error_db": 3.1192736307145625,
+            "weighted_absolute_cross_phase_error_degrees": 61.534707295246925,
+            "weighted_absolute_band_coherence_squared_error": 0.011884730758503765,
+            "weighted_absolute_model_power_change_db": 0.13534783187138186
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 45,
+      "omitted_ids": [
+        "A2v12",
+        "A2v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 87,
+        "weighted_covariance_frobenius_error": 0.47006640672936123,
+        "weighted_absolute_balance_error_db": 3.540927020633744,
+        "weighted_absolute_cross_phase_error_degrees": 32.72236355263134,
+        "weighted_absolute_band_coherence_squared_error": 0.003742971635876394,
+        "weighted_absolute_model_power_change_db": 2.6488434525905672e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.354800477337114,
+            2.354696472914041
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7473444033947683,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 87,
+            "weighted_covariance_frobenius_error": 0.42593296319172946,
+            "weighted_absolute_balance_error_db": 2.8571887090965995,
+            "weighted_absolute_cross_phase_error_degrees": 32.72236355263134,
+            "weighted_absolute_band_coherence_squared_error": 0.0037429716358764174,
+            "weighted_absolute_model_power_change_db": 0.07653034025622507
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.354800477337114,
+            2.354696472914041
+          ],
+          "delay_endpoints_ms": [
+            -1.3847510335269198,
+            2.0
+          ],
+          "objective": 0.6315433967764649,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.3847510335269198,
+                2.0
+              ],
+              "objective": 0.6315433967764649
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.4954414419679908,
+                0.2688900463951848
+              ],
+              "objective": 0.6585144793237498
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 87,
+            "weighted_covariance_frobenius_error": 0.6444364407357768,
+            "weighted_absolute_balance_error_db": 2.8571887090965995,
+            "weighted_absolute_cross_phase_error_degrees": 56.852313269894864,
+            "weighted_absolute_band_coherence_squared_error": 0.003743633468094937,
+            "weighted_absolute_model_power_change_db": 0.07653034025622507
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 48,
+      "omitted_ids": [
+        "C3v12",
+        "C3v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 81,
+        "weighted_covariance_frobenius_error": 0.7783133686482114,
+        "weighted_absolute_balance_error_db": 6.967992818555442,
+        "weighted_absolute_cross_phase_error_degrees": 83.76603385599087,
+        "weighted_absolute_band_coherence_squared_error": 0.030080128936631395,
+        "weighted_absolute_model_power_change_db": 8.55511557358848e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.073304481216932,
+            2.418476050847739
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7162249711976623,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 81,
+            "weighted_covariance_frobenius_error": 0.7491685826374807,
+            "weighted_absolute_balance_error_db": 6.501414585978364,
+            "weighted_absolute_cross_phase_error_degrees": 83.76603385599087,
+            "weighted_absolute_band_coherence_squared_error": 0.030080128936631235,
+            "weighted_absolute_model_power_change_db": 0.08701026604938786
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.073304481216932,
+            2.418476050847739
+          ],
+          "delay_endpoints_ms": [
+            -1.3716557976943742,
+            2.0
+          ],
+          "objective": 0.6135611010211021,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.3716557976943742,
+                2.0
+              ],
+              "objective": 0.6135611010211021
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.43949665662254134,
+                0.25669128174813727
+              ],
+              "objective": 0.6370595494762491
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 81,
+            "weighted_covariance_frobenius_error": 0.81700876491128,
+            "weighted_absolute_balance_error_db": 6.501414585978364,
+            "weighted_absolute_cross_phase_error_degrees": 89.05697055698629,
+            "weighted_absolute_band_coherence_squared_error": 0.030094886087907315,
+            "weighted_absolute_model_power_change_db": 0.08701026604938786
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 51,
+      "omitted_ids": [
+        "D#3v12",
+        "D#3v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 76,
+        "weighted_covariance_frobenius_error": 0.6563692919402,
+        "weighted_absolute_balance_error_db": 5.9270586850277995,
+        "weighted_absolute_cross_phase_error_degrees": 40.70668817222281,
+        "weighted_absolute_band_coherence_squared_error": 0.005767122241396924,
+        "weighted_absolute_model_power_change_db": 4.7995598298107854e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -3.1431261402032624,
+            2.2045581540272132
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7217646816809572,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 76,
+            "weighted_covariance_frobenius_error": 0.6980727116034817,
+            "weighted_absolute_balance_error_db": 6.897406675404332,
+            "weighted_absolute_cross_phase_error_degrees": 40.70668817222281,
+            "weighted_absolute_band_coherence_squared_error": 0.005767122241396995,
+            "weighted_absolute_model_power_change_db": 0.22042811525796627
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -3.1431261402032624,
+            2.2045581540272132
+          ],
+          "delay_endpoints_ms": [
+            -0.42261186136250833,
+            0.2529056401790243
+          ],
+          "objective": 0.6471013907869664,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.42261186136250833,
+                0.2529056401790243
+              ],
+              "objective": 0.6471013907869664
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.4226118115614979,
+                0.2529056269005206
+              ],
+              "objective": 0.6471013907869674
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 76,
+            "weighted_covariance_frobenius_error": 0.6421432580601121,
+            "weighted_absolute_balance_error_db": 6.897406675404332,
+            "weighted_absolute_cross_phase_error_degrees": 36.98193167896915,
+            "weighted_absolute_band_coherence_squared_error": 0.005768700294519407,
+            "weighted_absolute_model_power_change_db": 0.22042811525796627
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 60,
+      "omitted_ids": [
+        "C4v12",
+        "C4v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 51,
+        "weighted_covariance_frobenius_error": 0.6138421899430805,
+        "weighted_absolute_balance_error_db": 5.132300695929862,
+        "weighted_absolute_cross_phase_error_degrees": 49.52916793734481,
+        "weighted_absolute_band_coherence_squared_error": 0.032587856220303794,
+        "weighted_absolute_model_power_change_db": 3.101360926788042e-18
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.796152935246767,
+            1.9600397702289436
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7263460281528771,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 51,
+            "weighted_covariance_frobenius_error": 0.6450534941811847,
+            "weighted_absolute_balance_error_db": 5.6897690429618635,
+            "weighted_absolute_cross_phase_error_degrees": 49.52916793734481,
+            "weighted_absolute_band_coherence_squared_error": 0.03258785622030375,
+            "weighted_absolute_model_power_change_db": 0.07130270298273299
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.796152935246767,
+            1.9600397702289436
+          ],
+          "delay_endpoints_ms": [
+            -1.1243027873641074,
+            -0.7473429537646387
+          ],
+          "objective": 0.6373102228916895,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.1243027873641074,
+                -0.7473429537646387
+              ],
+              "objective": 0.6373102228916895
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.4698767826769808,
+                0.262214094939751
+              ],
+              "objective": 0.6465129181145335
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 51,
+            "weighted_covariance_frobenius_error": 1.2382071702197532,
+            "weighted_absolute_balance_error_db": 5.6897690429618635,
+            "weighted_absolute_cross_phase_error_degrees": 134.98904047436085,
+            "weighted_absolute_band_coherence_squared_error": 0.03247241730364165,
+            "weighted_absolute_model_power_change_db": 0.07130270298273299
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 63,
+      "omitted_ids": [
+        "D#4v12",
+        "D#4v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 44,
+        "weighted_covariance_frobenius_error": 0.8741868167487857,
+        "weighted_absolute_balance_error_db": 3.5124586472854946,
+        "weighted_absolute_cross_phase_error_degrees": 87.01019162766457,
+        "weighted_absolute_band_coherence_squared_error": 0.028614603932998302,
+        "weighted_absolute_model_power_change_db": 7.193460953870493e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.6257790563487284,
+            2.2440957345750987
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7036371067764373,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 44,
+            "weighted_covariance_frobenius_error": 0.8751654646720415,
+            "weighted_absolute_balance_error_db": 3.5175175896605384,
+            "weighted_absolute_cross_phase_error_degrees": 87.01019162766457,
+            "weighted_absolute_band_coherence_squared_error": 0.02861460393299832,
+            "weighted_absolute_model_power_change_db": 0.01928766342576722
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.6257790563487284,
+            2.2440957345750987
+          ],
+          "delay_endpoints_ms": [
+            -0.5320810522662268,
+            0.27340435073951225
+          ],
+          "objective": 0.6165631915875469,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.5320810522662268,
+                0.27340435073951225
+              ],
+              "objective": 0.6165631915875469
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.532081021564135,
+                0.27340434094580135
+              ],
+              "objective": 0.616563191587547
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 44,
+            "weighted_covariance_frobenius_error": 0.934956358885212,
+            "weighted_absolute_balance_error_db": 3.5175175896605384,
+            "weighted_absolute_cross_phase_error_degrees": 92.40911416482939,
+            "weighted_absolute_band_coherence_squared_error": 0.028608862137329792,
+            "weighted_absolute_model_power_change_db": 0.01928766342576722
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 69,
+      "omitted_ids": [
+        "A4v12",
+        "A4v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 33,
+        "weighted_covariance_frobenius_error": 1.2063486249520974,
+        "weighted_absolute_balance_error_db": 4.141169636343386,
+        "weighted_absolute_cross_phase_error_degrees": 137.77125971294328,
+        "weighted_absolute_band_coherence_squared_error": 0.023001872418926518,
+        "weighted_absolute_model_power_change_db": 0.0
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.5919851345433864,
+            2.107110372678935
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.6628930818339387,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 33,
+            "weighted_covariance_frobenius_error": 1.2063396532172777,
+            "weighted_absolute_balance_error_db": 4.141167969184761,
+            "weighted_absolute_cross_phase_error_degrees": 137.77125971294328,
+            "weighted_absolute_band_coherence_squared_error": 0.023001872418926584,
+            "weighted_absolute_model_power_change_db": 6.869171639522882e-05
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.5919851345433864,
+            2.107110372678935
+          ],
+          "delay_endpoints_ms": [
+            -0.3562203303782145,
+            0.24183978471942028
+          ],
+          "objective": 0.5867320673921387,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.3562203303782145,
+                0.24183978471942028
+              ],
+              "objective": 0.5867320673921387
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.35622043802353515,
+                0.24183981029915452
+              ],
+              "objective": 0.5867320673921397
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 33,
+            "weighted_covariance_frobenius_error": 1.1996015383488712,
+            "weighted_absolute_balance_error_db": 4.141167969184761,
+            "weighted_absolute_cross_phase_error_degrees": 135.54590200281248,
+            "weighted_absolute_band_coherence_squared_error": 0.02300103125024942,
+            "weighted_absolute_model_power_change_db": 6.869171639522882e-05
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 72,
+      "omitted_ids": [
+        "C5v12",
+        "C5v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 26,
+        "weighted_covariance_frobenius_error": 0.4935700216777138,
+        "weighted_absolute_balance_error_db": 5.028927573464658,
+        "weighted_absolute_cross_phase_error_degrees": 53.0598420191512,
+        "weighted_absolute_band_coherence_squared_error": 0.031896857521777386,
+        "weighted_absolute_model_power_change_db": 1.1661798579797237e-16
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.6274867213615853,
+            2.9704847826875302
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7402291932899853,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 26,
+            "weighted_covariance_frobenius_error": 0.4977198713015412,
+            "weighted_absolute_balance_error_db": 5.28427164571332,
+            "weighted_absolute_cross_phase_error_degrees": 53.0598420191512,
+            "weighted_absolute_band_coherence_squared_error": 0.031896857521777275,
+            "weighted_absolute_model_power_change_db": 0.2692254903666223
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.6274867213615853,
+            2.9704847826875302
+          ],
+          "delay_endpoints_ms": [
+            -1.314650033676296,
+            2.0
+          ],
+          "objective": 0.6272196188120157,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.314650033676296,
+                2.0
+              ],
+              "objective": 0.6272196188120157
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.4289443157295228,
+                0.25366466272323573
+              ],
+              "objective": 0.6599910735253529
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 26,
+            "weighted_covariance_frobenius_error": 0.6547241938281299,
+            "weighted_absolute_balance_error_db": 5.28427164571332,
+            "weighted_absolute_cross_phase_error_degrees": 85.87496949678464,
+            "weighted_absolute_band_coherence_squared_error": 0.0318572532445737,
+            "weighted_absolute_model_power_change_db": 0.2692254903666223
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 75,
+      "omitted_ids": [
+        "D#5v12",
+        "D#5v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 23,
+        "weighted_covariance_frobenius_error": 0.5346494990280755,
+        "weighted_absolute_balance_error_db": 5.444824199100329,
+        "weighted_absolute_cross_phase_error_degrees": 41.74358152426782,
+        "weighted_absolute_band_coherence_squared_error": 0.04905301281538108,
+        "weighted_absolute_model_power_change_db": 5.4329563882960495e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.503921449946046,
+            1.7505325290273592
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7400116576417565,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 23,
+            "weighted_covariance_frobenius_error": 0.529021286435064,
+            "weighted_absolute_balance_error_db": 5.331019917023196,
+            "weighted_absolute_cross_phase_error_degrees": 41.74358152426782,
+            "weighted_absolute_band_coherence_squared_error": 0.049053012815381096,
+            "weighted_absolute_model_power_change_db": 0.03336780238562437
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.503921449946046,
+            1.7505325290273592
+          ],
+          "delay_endpoints_ms": [
+            -0.38368911655204735,
+            0.24802121635821822
+          ],
+          "objective": 0.6627190770679344,
+          "bound_hit": false,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -0.38368911655204735,
+                0.24802121635821822
+              ],
+              "objective": 0.6627190770679344
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.3836890300793881,
+                0.24802119697866065
+              ],
+              "objective": 0.6627190770679346
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 23,
+            "weighted_covariance_frobenius_error": 0.5393982592717599,
+            "weighted_absolute_balance_error_db": 5.331019917023196,
+            "weighted_absolute_cross_phase_error_degrees": 43.60873489672262,
+            "weighted_absolute_band_coherence_squared_error": 0.04905148089638496,
+            "weighted_absolute_model_power_change_db": 0.03336780238562437
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 81,
+      "omitted_ids": [
+        "A5v12",
+        "A5v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 14,
+        "weighted_covariance_frobenius_error": 0.7685824218183576,
+        "weighted_absolute_balance_error_db": 5.525411006051173,
+        "weighted_absolute_cross_phase_error_degrees": 61.245593636490334,
+        "weighted_absolute_band_coherence_squared_error": 0.19831060496303046,
+        "weighted_absolute_model_power_change_db": 0.0
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.3086282996650396,
+            1.1602659019320294
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.720656169047615,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 14,
+            "weighted_covariance_frobenius_error": 0.7649559387267499,
+            "weighted_absolute_balance_error_db": 5.452518958449836,
+            "weighted_absolute_cross_phase_error_degrees": 61.245593636490334,
+            "weighted_absolute_band_coherence_squared_error": 0.19831060496303052,
+            "weighted_absolute_model_power_change_db": 0.007566993429093633
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.3086282996650396,
+            1.1602659019320294
+          ],
+          "delay_endpoints_ms": [
+            -1.39953428230878,
+            2.0
+          ],
+          "objective": 0.6103248551138928,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.39953428230878,
+                2.0
+              ],
+              "objective": 0.6103248551138928
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.42870232280402065,
+                0.25386216989396343
+              ],
+              "objective": 0.6458476931167682
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 14,
+            "weighted_covariance_frobenius_error": 0.8915270288493782,
+            "weighted_absolute_balance_error_db": 5.452518958449836,
+            "weighted_absolute_cross_phase_error_degrees": 86.42063037631088,
+            "weighted_absolute_band_coherence_squared_error": 0.19703380402406814,
+            "weighted_absolute_model_power_change_db": 0.007566993429093633
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 84,
+      "omitted_ids": [
+        "C6v12",
+        "C6v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 16,
+        "weighted_covariance_frobenius_error": 0.7361825232000263,
+        "weighted_absolute_balance_error_db": 7.689254351701487,
+        "weighted_absolute_cross_phase_error_degrees": 42.42330089198245,
+        "weighted_absolute_band_coherence_squared_error": 0.14224472877497119,
+        "weighted_absolute_model_power_change_db": 8.709642710803017e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -3.185700996116281,
+            4.642833070671379
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.7079505438422199,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 16,
+            "weighted_covariance_frobenius_error": 0.8449467689314184,
+            "weighted_absolute_balance_error_db": 9.721386349375198,
+            "weighted_absolute_cross_phase_error_degrees": 42.42330089198245,
+            "weighted_absolute_band_coherence_squared_error": 0.14224472877497124,
+            "weighted_absolute_model_power_change_db": 0.5955075877720897
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -3.185700996116281,
+            4.642833070671379
+          ],
+          "delay_endpoints_ms": [
+            -1.3341670744137228,
+            2.0
+          ],
+          "objective": 0.6113789518574906,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.3341670744137228,
+                2.0
+              ],
+              "objective": 0.6113789518574906
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.4510930545760407,
+                0.25006160924792087
+              ],
+              "objective": 0.6331491147213784
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 16,
+            "weighted_covariance_frobenius_error": 0.7733122313782845,
+            "weighted_absolute_balance_error_db": 9.721386349375198,
+            "weighted_absolute_cross_phase_error_degrees": 25.871134700771808,
+            "weighted_absolute_band_coherence_squared_error": 0.1421573020799669,
+            "weighted_absolute_model_power_change_db": 0.5955075877720897
+          }
+        }
+      }
+    },
+    {
+      "omitted_midi": 96,
+      "omitted_ids": [
+        "C7v12",
+        "C7v4"
+      ],
+      "baseline_omitted_pitch_metrics": {
+        "observations": 5,
+        "weighted_covariance_frobenius_error": 0.9062416073242725,
+        "weighted_absolute_balance_error_db": 3.1501296119217015,
+        "weighted_absolute_cross_phase_error_degrees": 110.93543571530483,
+        "weighted_absolute_band_coherence_squared_error": 0.2726484110046911,
+        "weighted_absolute_model_power_change_db": 8.036062221277393e-17
+      },
+      "models": {
+        "gain_only": {
+          "gain_endpoints_db": [
+            -2.8531170136600985,
+            3.1095564677069
+          ],
+          "delay_endpoints_ms": [
+            0.0,
+            0.0
+          ],
+          "objective": 0.6942539091104662,
+          "bound_hit": false,
+          "delay_minima": [],
+          "omitted_pitch_metrics": {
+            "observations": 5,
+            "weighted_covariance_frobenius_error": 0.9824238829735028,
+            "weighted_absolute_balance_error_db": 3.531316069611541,
+            "weighted_absolute_cross_phase_error_degrees": 110.93543571530485,
+            "weighted_absolute_band_coherence_squared_error": 0.2726484110046908,
+            "weighted_absolute_model_power_change_db": 0.5476153413092842
+          }
+        },
+        "gain_delay": {
+          "gain_endpoints_db": [
+            -2.8531170136600985,
+            3.1095564677069
+          ],
+          "delay_endpoints_ms": [
+            -1.3996201901028922,
+            2.0
+          ],
+          "objective": 0.6475110710542211,
+          "bound_hit": true,
+          "delay_minima": [
+            {
+              "delay_endpoints_ms": [
+                -1.3996201901028922,
+                2.0
+              ],
+              "objective": 0.6475110710542211
+            },
+            {
+              "delay_endpoints_ms": [
+                -0.5364517373109239,
+                0.3430085953120888
+              ],
+              "objective": 0.6700836815645336
+            }
+          ],
+          "omitted_pitch_metrics": {
+            "observations": 5,
+            "weighted_covariance_frobenius_error": 0.40782962582959564,
+            "weighted_absolute_balance_error_db": 3.531316069611541,
+            "weighted_absolute_cross_phase_error_degrees": 21.033093347281422,
+            "weighted_absolute_band_coherence_squared_error": 0.27129356493552526,
+            "weighted_absolute_model_power_change_db": 0.5476153413092842
+          }
+        }
+      }
+    }
+  ],
+  "full_training_fits": {
+    "gain_only": {
+      "gain_endpoints_db": [
+        -2.58777969830666,
+        2.382769935034797
+      ],
+      "delay_endpoints_ms": [
+        0.0,
+        0.0
+      ],
+      "objective": 0.7140499858256089,
+      "bound_hit": false,
+      "delay_minima": []
+    },
+    "gain_delay": {
+      "gain_endpoints_db": [
+        -2.58777969830666,
+        2.382769935034797
+      ],
+      "delay_endpoints_ms": [
+        -1.3576395575211104,
+        2.0
+      ],
+      "objective": 0.6200933158813924,
+      "bound_hit": true,
+      "delay_minima": [
+        {
+          "delay_endpoints_ms": [
+            -1.3576395575211104,
+            2.0
+          ],
+          "objective": 0.6200933158813924
+        },
+        {
+          "delay_endpoints_ms": [
+            -0.4205337044304004,
+            0.25256106705262865
+          ],
+          "objective": 0.640258690094021
+        }
+      ]
+    }
+  },
+  "maximum_moment_vs_exact_projection_error": 1.6289840881391848e-15,
+  "maximum_moment_taylor_remainder_bound_over_full_delay_box": 3.8389510922310367e-13,
+  "pre_gain_moment_taylor_remainder_bound": 1.924033277945669e-13,
+  "window_and_velocity_slices": {
+    "window": {
+      "0": {
+        "actual_full_model": {
+          "observations": 391,
+          "weighted_covariance_frobenius_error": 0.7888067731754933,
+          "weighted_absolute_balance_error_db": 5.514032016102742,
+          "weighted_absolute_cross_phase_error_degrees": 69.06208915692092,
+          "weighted_absolute_band_coherence_squared_error": 0.03294513155587403,
+          "weighted_absolute_model_power_change_db": 7.995791662074843e-17
+        },
+        "gain_only": {
+          "observations": 391,
+          "weighted_covariance_frobenius_error": 0.7890615195244708,
+          "weighted_absolute_balance_error_db": 5.258142165320369,
+          "weighted_absolute_cross_phase_error_degrees": 69.06208915692092,
+          "weighted_absolute_band_coherence_squared_error": 0.032945131555874044,
+          "weighted_absolute_model_power_change_db": 0.23708645955582616
+        },
+        "gain_delay": {
+          "observations": 391,
+          "weighted_covariance_frobenius_error": 0.8202575183523838,
+          "weighted_absolute_balance_error_db": 5.258142165320369,
+          "weighted_absolute_cross_phase_error_degrees": 78.04128944184802,
+          "weighted_absolute_band_coherence_squared_error": 0.03257907844644554,
+          "weighted_absolute_model_power_change_db": 0.23708645955582616
+        }
+      },
+      "1": {
+        "actual_full_model": {
+          "observations": 310,
+          "weighted_covariance_frobenius_error": 0.7167317044564908,
+          "weighted_absolute_balance_error_db": 5.298294467477177,
+          "weighted_absolute_cross_phase_error_degrees": 63.35293889194294,
+          "weighted_absolute_band_coherence_squared_error": 0.06911802662189503,
+          "weighted_absolute_model_power_change_db": 4.118131478522718e-17
+        },
+        "gain_only": {
+          "observations": 310,
+          "weighted_covariance_frobenius_error": 0.7250604810225262,
+          "weighted_absolute_balance_error_db": 5.666344934839553,
+          "weighted_absolute_cross_phase_error_degrees": 63.35293889194294,
+          "weighted_absolute_band_coherence_squared_error": 0.06911802662189498,
+          "weighted_absolute_model_power_change_db": 0.2484720062738085
+        },
+        "gain_delay": {
+          "observations": 310,
+          "weighted_covariance_frobenius_error": 0.7672300933287941,
+          "weighted_absolute_balance_error_db": 5.666344934839553,
+          "weighted_absolute_cross_phase_error_degrees": 69.09549515670771,
+          "weighted_absolute_band_coherence_squared_error": 0.06888055338695143,
+          "weighted_absolute_model_power_change_db": 0.2484720062738085
+        }
+      },
+      "2": {
+        "actual_full_model": {
+          "observations": 224,
+          "weighted_covariance_frobenius_error": 0.8669144338835818,
+          "weighted_absolute_balance_error_db": 5.182048946831051,
+          "weighted_absolute_cross_phase_error_degrees": 82.84867043729452,
+          "weighted_absolute_band_coherence_squared_error": 0.07787218146925606,
+          "weighted_absolute_model_power_change_db": 6.951536705382207e-17
+        },
+        "gain_only": {
+          "observations": 224,
+          "weighted_covariance_frobenius_error": 0.8619925896304956,
+          "weighted_absolute_balance_error_db": 5.1112061206421116,
+          "weighted_absolute_cross_phase_error_degrees": 82.84867043729452,
+          "weighted_absolute_band_coherence_squared_error": 0.07787218146925609,
+          "weighted_absolute_model_power_change_db": 0.1991846386721054
+        },
+        "gain_delay": {
+          "observations": 224,
+          "weighted_covariance_frobenius_error": 0.8212866672771613,
+          "weighted_absolute_balance_error_db": 5.1112061206421116,
+          "weighted_absolute_cross_phase_error_degrees": 70.26113079052439,
+          "weighted_absolute_band_coherence_squared_error": 0.07779749340029626,
+          "weighted_absolute_model_power_change_db": 0.1991846386721054
+        }
+      },
+      "3": {
+        "actual_full_model": {
+          "observations": 142,
+          "weighted_covariance_frobenius_error": 0.7849320827580274,
+          "weighted_absolute_balance_error_db": 4.992766791805002,
+          "weighted_absolute_cross_phase_error_degrees": 77.59538558318697,
+          "weighted_absolute_band_coherence_squared_error": 0.035207016748993646,
+          "weighted_absolute_model_power_change_db": 4.094096867015381e-17
+        },
+        "gain_only": {
+          "observations": 142,
+          "weighted_covariance_frobenius_error": 0.7722237061597571,
+          "weighted_absolute_balance_error_db": 4.6335532100796835,
+          "weighted_absolute_cross_phase_error_degrees": 77.59538558318698,
+          "weighted_absolute_band_coherence_squared_error": 0.03520701674899359,
+          "weighted_absolute_model_power_change_db": 0.16518240416684862
+        },
+        "gain_delay": {
+          "observations": 142,
+          "weighted_covariance_frobenius_error": 0.8402503481796983,
+          "weighted_absolute_balance_error_db": 4.6335532100796835,
+          "weighted_absolute_cross_phase_error_degrees": 82.33136695238046,
+          "weighted_absolute_band_coherence_squared_error": 0.03520493580496333,
+          "weighted_absolute_model_power_change_db": 0.16518240416684862
+        }
+      }
+    },
+    "layer": {
+      "4": {
+        "actual_full_model": {
+          "observations": 486,
+          "weighted_covariance_frobenius_error": 0.7767801577731666,
+          "weighted_absolute_balance_error_db": 5.246363904913713,
+          "weighted_absolute_cross_phase_error_degrees": 71.34017813453995,
+          "weighted_absolute_band_coherence_squared_error": 0.06160163068991197,
+          "weighted_absolute_model_power_change_db": 6.575711215925678e-17
+        },
+        "gain_only": {
+          "observations": 486,
+          "weighted_covariance_frobenius_error": 0.7762954910604867,
+          "weighted_absolute_balance_error_db": 5.238048915948527,
+          "weighted_absolute_cross_phase_error_degrees": 71.34017813453995,
+          "weighted_absolute_band_coherence_squared_error": 0.06160163068991195,
+          "weighted_absolute_model_power_change_db": 0.21501453288508662
+        },
+        "gain_delay": {
+          "observations": 486,
+          "weighted_covariance_frobenius_error": 0.8063818497914679,
+          "weighted_absolute_balance_error_db": 5.238048915948527,
+          "weighted_absolute_cross_phase_error_degrees": 73.99864888722458,
+          "weighted_absolute_band_coherence_squared_error": 0.061431229738816505,
+          "weighted_absolute_model_power_change_db": 0.21501453288508662
+        }
+      },
+      "12": {
+        "actual_full_model": {
+          "observations": 581,
+          "weighted_covariance_frobenius_error": 0.7999941234049686,
+          "weighted_absolute_balance_error_db": 5.278336541896433,
+          "weighted_absolute_cross_phase_error_degrees": 74.2863591242553,
+          "weighted_absolute_band_coherence_squared_error": 0.04734563624496582,
+          "weighted_absolute_model_power_change_db": 5.1620751910111374e-17
+        },
+        "gain_only": {
+          "observations": 581,
+          "weighted_covariance_frobenius_error": 0.7972355894053419,
+          "weighted_absolute_balance_error_db": 5.15948741235986,
+          "weighted_absolute_cross_phase_error_degrees": 74.2863591242553,
+          "weighted_absolute_band_coherence_squared_error": 0.047345636244965794,
+          "weighted_absolute_model_power_change_db": 0.21578341851679525
+        },
+        "gain_delay": {
+          "observations": 581,
+          "weighted_covariance_frobenius_error": 0.8146405925606227,
+          "weighted_absolute_balance_error_db": 5.15948741235986,
+          "weighted_absolute_cross_phase_error_degrees": 75.16415956837392,
+          "weighted_absolute_band_coherence_squared_error": 0.04715365952613479,
+          "weighted_absolute_model_power_change_db": 0.21578341851679525
+        }
+      }
+    }
+  },
+  "delay_fit_diagnostics": {
+    "fold_bound_hits": 7,
+    "full_training_bound_hit": true,
+    "fold_delay_endpoint_ranges_ms": [
+      [
+        -1.3996201901028922,
+        -0.3231792908572388
+      ],
+      [
+        -0.7473429537646387,
+        2.0
+      ]
+    ]
+  },
+  "retained_research_candidates": [],
+  "decision": "Reject the tested balance-first gain/delay procedure: no tested candidate meets the predefined conditionalCV covariance/balance/coherence gates. This does not exhaust possible affine-field objectives.",
+  "retention_gate": "At least2% covariance improvement and0.25dB balance improvement; at least10/16 pitch covariance wins; no >.005 mean band-coherence-error regression. Training research gate, not a perceptual or production acceptance score.",
+  "limits": "Known capture usesAKGC414AB roughly12cm above strings; spacing/orientation/room unknown. Effective observation fit is not recovered microphone geometry. Source dynamics, amplitudes and recordings remain unchanged; gain changes projected stereo power and that change is reported. No new default or full-field microphone claim.",
+  "artifact_sha256": {
+    "observations.npz": "e4e212400ba64f018ad94a18a331d2e32b25a6b4505538990a24d46263895df9",
+    "measurements.json": "7b85bde85f1c32275d444d57ab04e382919ab30ae9629f8a741c981a94088d14",
+    "model-source.cpp": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+    "model-calibration.h": "b2fa23f922d61fa8c5a1c299a693be2c635cce0efa311210fb670342eb41acfa",
+    "model-render-manifest.json": "b6dbeb33cd61b565367fe87f0e723b6a97b9118caa2097c2c0bbc625d1ae82ba"
+  }
+}

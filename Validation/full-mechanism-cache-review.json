@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-10-26T18:50:18.632149+00:00",
+  "passed": true,
+  "assessment": "No mathematical, source-lifetime or selected-branch blocker found for the authorized reciprocal mechanism/body cache integration at the frozen source hashes. It intentionally changes mechanical floating-point rounding; numerical tests and explicit OFF remain required evidence. No audibility, universal passivity, SDK or realtime claim.",
+  "review_mode": "Read-only source/receipt review, independent small signed-impulse algebra checks, compile-only operand type assertions and reanalysis of existing arrays. No core edits, audio synthesis reruns, extra timing trials, guard retuning or calibration changes.",
+  "source_scope": {
+    "audited_runtime_sha256": {
+      "src/full_instrument/FullInstrument.cpp": "98fe82de085d18c3d22ca32e5d38afa8621553152d851a3502df90c590b626c0",
+      "src/full_instrument/MechanismBodyCache.h": "506404361fd99eaaacfbf68a3e5c70db25e12ef26935a1da8043e08df498b2a3",
+      "src/full_instrument/PreparedModel.h": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36",
+      "src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "include/keyra/physics/ContactSolver.h": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+      "tests/full_instrument_tests.cpp": "2e199cc5230eb87082619377ef676323034bd4df7cc2f18bf5fce0de2db97dbd",
+      "tools/render_full.cpp": "e47c6339887a931ed0a168689b3642214e7861a26f6fc5e0ea84834a8a4c5c98"
+    },
+    "canonical_matrix_source_release": {
+      "path": "out/full-mechanism-integration/source-release.json",
+      "sha256": "25379eee3d96c5b086046b94fe44ccd9d942a75c2dff38919e0fe755d235128a"
+    },
+    "later_profile_selector_plumbing": "The cache matrices precede SelectedModel wrapper changes. Historical snapshots are intentionally reviewed; later default-selector equivalence is a separate integration. No requirement that the live FullInstrument.cpp still has this historical hash.",
+    "default_prepared_model_preserved_sha256": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36",
+    "default_calibration_preserved_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+  },
+  "source_findings": {
+    "sequential_sources_preserved": [
+      1,
+      1,
+      1,
+      0
+    ],
+    "both_ports_updated_after_each_signed_impulse": true,
+    "fresh_begin_after_original_network_step": true,
+    "all_per_frame_accumulators_cleared_on_begin_and_reset": true,
+    "owned_coefficients_no_cached_model_pointer_or_alias": true,
+    "coefficients_rebuilt_for_each_successful_prepare": true,
+    "reset_keeps_only_valid_immutable_coefficients": true,
+    "invalid_public_config_rejection_before_model_mutation": true,
+    "board_position_and_saved_bridge_force_unchanged": true,
+    "actual_rounded_delta_p_observation": true,
+    "mechanism_J_over_dt_observed_once": true,
+    "zero_impulse_applied_guard_skips_board_write": true,
+    "no_module_or_reverse_loading_removed": true,
+    "cache_OFF_full_API_reconstructs_original_source_byte_for_byte": true,
+    "render_reset_event_sidechannel": "No allocation, lock, I/O, exception or RTTI introduced by cache stage. Private prepare may allocate; existing ordinary/nothrow C++ traps and strict compile flags verified. Direct malloc/aligned APIs are not comprehensively intercepted."
+  },
+  "numeric_interpretation": {
+    "exact_real_equivalence": "Sequential v\u2190v+G[:,g]J with G=B^T B retains cross-port feedback and telescopes all four body work terms to ideal board kinetic energy change.",
+    "mechanical_changes_include": [
+      "One float board write replaces per-source float writes.",
+      "Projected Gram feedback omits intermediate float perturbations.",
+      "Precomputed double port/w and observer coefficients reassociate double multiplication/division.",
+      "Port impulse accumulation and observer reductions change double operation order."
+    ],
+    "actual_operand_types": {
+      "board_q_p": "float",
+      "board_w_sigma_force": "double",
+      "board_port_mic_elements": "double",
+      "cached_port_over_w_expression": "double",
+      "cached_damping_observer_expression": "double",
+      "legacy_acceleration_observer_expression": "double"
+    },
+    "no_float_coefficient_product_bug": "Compile-only assertions in frozen, default and alternate prepared models show w,sigma,port,mic are double; float q/p promote in original acceleration expressions. No DSP cast change made.",
+    "local_energy_perturbation": "For uActual=uIdeal+e, \u0394Eround=uIdeal\u00b7e+.5||e||\u00b2, |\u0394Eround|\u2264||uIdeal||||e||+.5||e||\u00b2. This is local and depends on actual e; it is not a whole-network bound.",
+    "positive_roundoff_energy_possible": true,
+    "source_impulse_rounding_and_observer_rounding_are_separate": "Actual \u0394p accounts for final float quantization. Precomputed/reassociated observer arithmetic still has its own double roundoff; algebraic identity is not bit-exact implementation identity.",
+    "observer_contract_normalization": "Original cache-contract maxScaled uses max(1,|delta|,|after|,|before|). For sub-unit signals it is an absolute model-sample scale, not signal-relative error. Recorded max absolute residual3.1974e-14 and max scaled1.4234e-15 have distinct meanings.",
+    "geometry_and_units": "Energy/work are nominal authored mass-normalized model units; return depth is an action proxy. Audio dB reference1 is float sample magnitude1, not Pa or SPL."
+  },
+  "independent_math": {
+    "path": "out/full-mechanism-cache-review/math-audit.json",
+    "sha256": "210c031700fa1ff9a4ea9c836949aea7f4dcf2712059ed34e478f37b79ae358a"
+  },
+  "operand_type_evidence": {
+    "path": "out/full-mechanism-cache-review/operand-type-review.json",
+    "sha256": "19eb12316f78f4cbefe47dbbcc62840eeb71015d26b7dcefa9936828129be0f5"
+  },
+  "frozen_study_reanalysis": {
+    "evidence": {
+      "path": "out/full-mechanism-cache-review/study-inventory-review.json",
+      "sha256": "d0a14da28b1cafef0f3d61ce1405570cf82c69856a51138f371ce76960a38aa7"
+    },
+    "artifacts_verified": 475,
+    "paired_timing_comparisons": 12,
+    "average_and_p95_regressions": 0,
+    "CPU_peak_regressions": 4,
+    "wall_peak_regressions": 4,
+    "worst_CPU_peak_rise_percent": 66.85832566697331,
+    "failed_continuous_controller_guards_retained": 3,
+    "discrete_snapshot_fields": [
+      "down",
+      "pending",
+      "hasLaunched",
+      "random",
+      "requests",
+      "launches",
+      "pendingId"
+    ],
+    "uncaptured_internal_fields": [
+      "lastActive",
+      "releasedSinceLaunch",
+      "retiredBeforeSeparation",
+      "invalidObservations"
+    ],
+    "continuous_error_scope": "Measured depth/recovery deltas and unchanged sampled admissions do not establish a-priori propagation or universal admission identity.",
+    "scope_erratum_numeric_evidence_unchanged": {
+      "path": "out/full-mechanism-cache-review/scope-erratum-review.json",
+      "sha256": "511de33edf263fe9a91d5dca8ae5427c4aaf41c46bad1d0cb98b2726ce5a00bf"
+    }
+  },
+  "canonical_integration": {
+    "evidence": {
+      "path": "out/full-mechanism-cache-review/canonical-integration-review.json",
+      "sha256": "ab08d6d9f9450271e52eda04824da8691742625700bec5171e0741e3fa5294f9"
+    },
+    "test_entries": [
+      {
+        "variant": "on",
+        "name": "full_instrument",
+        "seconds": 13.3284,
+        "passed": true
+      },
+      {
+        "variant": "on",
+        "name": "full_sdk_portable",
+        "seconds": 13.1256,
+        "passed": true
+      },
+      {
+        "variant": "off",
+        "name": "full_instrument",
+        "seconds": 11.4468,
+        "passed": true
+      },
+      {
+        "variant": "off",
+        "name": "full_sdk_portable",
+        "seconds": 11.3273,
+        "passed": true
+      },
+      {
+        "variant": "asan",
+        "name": "full_instrument",
+        "seconds": 117.934,
+        "passed": true
+      }
+    ],
+    "default_ON_explicit_OFF_native_scalar_macro_override_checks": true,
+    "actual_CLI_cells": 8,
+    "actual_CLI_output_byte_identical_to_own_frozen_study_arm": true,
+    "ASAN_environment": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+      "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+    },
+    "reprepare_reset_failed_validation_coverage": "mechanismReprepareAndReset:48\u219296\u219248, freshinstanceaudioequality, failedNaNparameterpreparethencontinuationequality, disable/reset/reenable/silence/retrigger.",
+    "resource_exhaustion_fault_injected": false
+  },
+  "long_tail": {
+    "evidence": {
+      "path": "out/full-mechanism-cache-review/tail-review.json",
+      "sha256": "c551d6aef4db7bf215651ed77b021750a537f1aa407d26979488c3e933674577"
+    },
+    "scope": "One4s48k C4 case,mechanicalLevel.2,independent double-promoted energy scans every256frames after last external event at0.08s.",
+    "sampled_unforced_energy_never_rises_in_both_arms": true,
+    "maximum_total_energy_difference_J": 3.685303798239836e-11,
+    "scan_limit": "Every256frame scan can miss intervening maxima; not a universal passivity proof.",
+    "late_relative_null_absolute_level_also_retained": true
+  },
+  "Reason_adapter": {
+    "evidence": {
+      "path": "out/full-mechanism-cache-review/reason-review.json",
+      "sha256": "e9ec00be75078d8327dea41492ad53d52255bc6fffb17a266f216160251beb1f"
+    },
+    "default_ON_explicit_OFF_native_scalar_flags_verified": true,
+    "generic_header_followup_scope": {
+      "header_sha256": "506404361fd99eaaacfbf68a3e5c70db25e12ef26935a1da8043e08df498b2a3",
+      "before_after_native_scalar_smoke_outputs_equal": true,
+      "full_two_setting_matrix_after_generic_change_rerun": false,
+      "separate_canonical_generic_helper_full_API_matrix_and_sanitizer_passed": true
+    },
+    "new_actual_SDK_or_Reason_host_run": false,
+    "new_wrapper_sanitizer_run": false,
+    "no_copied_DSP_or_default_preview_change": true
+  },
+  "author_reports_frozen_for_review": [
+    {
+      "path": "out/full-mechanism-cache-review/frozen-author-reports/full-mechanism-cache-v1.json",
+      "sha256": "7c0c3eb889c6df17f79fdcdf9c2c7e0e9865cf8c10a266fdd2c8207ec52a6b12"
+    },
+    {
+      "path": "out/full-mechanism-cache-review/frozen-author-reports/full-mechanism-cache.json",
+      "sha256": "c5e1ce0793786558ace5a001b33837545fb8a861f62e9d39e6853fe7d57e776f"
+    },
+    {
+      "path": "out/full-mechanism-cache-review/frozen-author-reports/full-mechanism-cache-tail.json",
+      "sha256": "201c84d85b18597cbf6e1cc995dbf88cb8404892671055e5830e2524fe7037f1"
+    },
+    {
+      "path": "out/full-mechanism-cache-review/frozen-author-reports/full-mechanism-integration.json",
+      "sha256": "ae23c4fb9fcdf9ba8323cdf25cb88ec014af01ce69e0f1516c526bfaf8b4ab48"
+    },
+    {
+      "path": "out/full-mechanism-cache-review/frozen-author-reports/reason-full-mechanism-cache.json",
+      "sha256": "fd4dbeab0da3477160497318d5106e4d9c2686b532100a94f9c378be5b9a9fbe"
+    }
+  ],
+  "review_notes": {
+    "path": "out/full-mechanism-cache-review/review-notes.md",
+    "sha256": "a0ea35eefa876faf695c1ff8937e47b8bf8b106e54d9e2391c01f0c708885d03"
+  },
+  "material_limits": [
+    "No exact-double or exact-float mechanical/observer identity claim.",
+    "No universal bound on nonlinear trajectories, all possible strike admissions or audibility.",
+    "Snapshot assertions cover seven discrete controller fields and public admission diagnostics, not all internal controller state.",
+    "Full Reason two-setting matrix used first header form; generic version had rebuild+active smoke, while canonical generic version had full matrix+sanitizers.",
+    "No actual Jukebox SDK/compiler, Reason host, package or realtime deadline qualification.",
+    "No new precision, calibration, mode-count or mechanism-removal change authorized by this review."
+  ]
+}

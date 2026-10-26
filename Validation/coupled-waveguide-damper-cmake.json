@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "scope": "Focused existing CMake target rebuild after optional passive damper addition. Prior default branch byte parity and sanitizer receipts are separate.",
+  "passed": true,
+  "ctest_command": [
+    "ctest",
+    "--test-dir",
+    "build",
+    "-R",
+    "^coupled_waveguide$",
+    "--output-on-failure"
+  ],
+  "test_seconds": 9.21,
+  "built_targets": [
+    "keyra_coupled_waveguide_tests",
+    "keyra_coupled_waveguide_probe"
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "3811de285d0e1a0e286405a45a1a4a3f5e2a27a0d0f68e3fff2e95c2521f6d9f",
+    "include/keyra/physics/CoupledWaveguide.h": "87a67b1cb500e5c21996d3d3a029973a82ddfb47bf67ed6fefa25761c67b8755",
+    "tests/coupled_waveguide_tests.cpp": "21673a4475793657d35050603019b67234c37406a444dd42243f7278b9c2c814",
+    "tools/probe_coupled_waveguide.cpp": "798290967143071e139fb3d24405718e96866b09fc3cd8254218f1182c6f12e6",
+    "tools/coupled_waveguide_support.h": "9d8a9b7b6e476c2e1f78b145a87d62b5d9290a89fbcf35eea3dce658f967c231"
+  },
+  "test_log": {
+    "path": "out/coupled-waveguide-damper/cmake/LastTest.log",
+    "sha256": "f67f55188946f62ade6f5d77cc2cb68746d9eeaa7d07158efa9cf74f99039660"
+  },
+  "damper_report": {
+    "path": "Validation/coupled-waveguide-damper.json",
+    "sha256": "a9923ade8022a5f62bdd42573a791aa4d35c66af0151151b869055fe1ca82119"
+  },
+  "new_sanitizer_run": false
+}

@@ -1,0 +1,615 @@
+{
+  "source": "References/GrandFullRange/combined_train_features.json",
+  "source_sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+  "training_ids": [
+    "C2v4",
+    "C4v4",
+    "C6v4"
+  ],
+  "reserved_audio_opened": false,
+  "cases": [
+    {
+      "id": "C2v4",
+      "f1_hz": 65.01421446843138,
+      "B": 0.00011463315516257127,
+      "impedance_kg_s": 4.545533348683935,
+      "length_m": 1.9,
+      "mu_kg_m": 0.018399999999999996,
+      "left": {
+        "delay": 73,
+        "allpass": [
+          -0.7463212963362936,
+          -0.7948039510436511
+        ],
+        "gain": 0.9990223520711323,
+        "mix": 0.0428719051603559,
+        "fit_fraction": 0.12
+      },
+      "right": {
+        "delay": 269,
+        "allpass": [
+          -0.7578126302431766,
+          -0.7578126302431766,
+          -0.7578126302431766,
+          -0.7906045109145926,
+          -0.7906045109145926,
+          -0.7906045109145926,
+          -0.7906045109145926
+        ],
+        "gain": 0.9990223520711323,
+        "mix": 0.0428719051603559,
+        "fit_fraction": 0.44
+      },
+      "integer_roundtrip_samples": 611,
+      "allpass_roundtrip_sections": 16,
+      "lossless_max_abs_cents": 1.4209471035036958,
+      "lossless_rms_cents": 0.5554249113469601,
+      "partials": [
+        {
+          "n": 1,
+          "target_hz": 65.01421446843138,
+          "lossless_hz": 64.99305904152655,
+          "lossy_phase_hz": 64.98174118037268,
+          "lossless_cents": -0.5634299484119245,
+          "lossy_phase_cents": -0.8649324951866468,
+          "target_sigma_per_second": 0.17940444771999559
+        },
+        {
+          "n": 2,
+          "target_hz": 130.05078280626722,
+          "lossless_hz": 130.01204565003115,
+          "lossy_phase_hz": 129.9893926121833,
+          "lossless_cents": -0.5157452507454712,
+          "lossy_phase_cents": -0.8174182783897255,
+          "target_sigma_per_second": 0.18340178977428426
+        },
+        {
+          "n": 3,
+          "target_hz": 195.13204607887826,
+          "lossless_hz": 195.0826205377544,
+          "lossy_phase_hz": 195.04859795795085,
+          "lossless_cents": -0.4385646541002519,
+          "lossy_phase_cents": -0.7405197192161729,
+          "target_sigma_per_second": 0.18807896036644545
+        },
+        {
+          "n": 4,
+          "target_hz": 260.28031977434927,
+          "lossless_hz": 260.22991709262374,
+          "lossy_phase_hz": 260.18447407955284,
+          "lossless_cents": -0.3352819324571282,
+          "lossy_phase_cents": -0.637627498048655,
+          "target_sigma_per_second": 0.19326454666148835
+        },
+        {
+          "n": 5,
+          "target_hz": 325.51788109163215,
+          "lossless_hz": 325.478293409072,
+          "lossy_phase_hz": 325.42136331136413,
+          "lossless_cents": -0.21055590413808123,
+          "lossy_phase_cents": -0.5133962046431494,
+          "target_sigma_per_second": 0.1988683962482901
+        },
+        {
+          "n": 6,
+          "target_hz": 390.86695632041074,
+          "lossless_hz": 390.851102412117,
+          "lossy_phase_hz": 390.78260380432124,
+          "lossless_cents": -0.0702218032349029,
+          "lossy_phase_cents": -0.3736558068866304,
+          "target_sigma_per_second": 0.20483416846718705
+        },
+        {
+          "n": 7,
+          "target_hz": 456.3497083425172,
+          "lossless_hz": 456.3704849261867,
+          "lossy_phase_hz": 456.29032278667273,
+          "lossless_cents": 0.07881742804284968,
+          "lossy_phase_cents": -0.22530306131451305,
+          "target_sigma_per_second": 0.21112333153070204
+        },
+        {
+          "n": 8,
+          "target_hz": 521.9882242841169,
+          "lossless_hz": 522.057189618484,
+          "lossy_phase_hz": 521.965256666801,
+          "lossless_cents": 0.2287163635709869,
+          "lossy_phase_cents": -0.07617642328924888,
+          "target_sigma_per_second": 0.2177080536035951
+        },
+        {
+          "n": 9,
+          "target_hz": 587.8045033471153,
+          "lossless_hz": 587.9304227585269,
+          "lossy_phase_hz": 587.8266009167662,
+          "lossless_cents": 0.37082503626839813,
+          "lossy_phase_cents": 0.0650817502992172,
+          "target_sigma_per_second": 0.22456750839771017
+        },
+        {
+          "n": 10,
+          "target_hz": 653.8204448473375,
+          "lossless_hz": 654.0077295364285,
+          "lossy_phase_hz": 653.8918914778602,
+          "lossless_cents": 0.4958352162619814,
+          "lossy_phase_cents": 0.18917132788199653,
+          "target_sigma_per_second": 0.23168574490302465
+        },
+        {
+          "n": 11,
+          "target_hz": 720.0578364859998,
+          "lossless_hz": 720.3049077555157,
+          "lossy_phase_hz": 720.1769185034808,
+          "lossless_cents": 0.5939312166153443,
+          "lossy_phase_cents": 0.2862850560301,
+          "target_sigma_per_second": 0.2390503636876845
+        },
+        {
+          "n": 12,
+          "target_hz": 786.5383428798308,
+          "lossless_hz": 786.8359535336612,
+          "lossy_phase_hz": 786.6956720754523,
+          "lossless_cents": 0.6549410456182854,
+          "lossy_phase_cents": 0.34625956302878436,
+          "target_sigma_per_second": 0.24665164641906215
+        },
+        {
+          "n": 13,
+          "target_hz": 853.2834943739449,
+          "lossless_hz": 853.6130378008181,
+          "lossy_phase_hz": 853.4603186835934,
+          "lossless_cents": 0.6684843487388102,
+          "lossy_phase_cents": 0.3587231596441242,
+          "target_sigma_per_second": 0.25448195730741413
+        },
+        {
+          "n": 14,
+          "target_hz": 920.3146761601874,
+          "lossless_hz": 920.6465115546766,
+          "lossy_phase_hz": 920.4812064340107,
+          "lossless_cents": 0.6241139071051994,
+          "lossy_phase_cents": 0.3132372076183641,
+          "target_sigma_per_second": 0.2625353163796053
+        },
+        {
+          "n": 15,
+          "target_hz": 987.6531177222264,
+          "lossless_hz": 987.9449372049419,
+          "lossy_phase_hz": 987.7668963207619,
+          "lossless_cents": 0.5114479912272478,
+          "lossy_phase_cents": 0.19942835716675625,
+          "target_sigma_per_second": 0.2708070860070817
+        },
+        {
+          "n": 16,
+          "target_hz": 1055.3198826271157,
+          "lossless_hz": 1055.515142870048,
+          "lossy_phase_hz": 1055.3242164292558,
+          "lossless_cents": 0.3202914276810249,
+          "lossy_phase_cents": 0.007109512996874109,
+          "target_sigma_per_second": 0.279293734738124
+        },
+        {
+          "n": 17,
+          "target_hz": 1123.3358586814604,
+          "lossless_hz": 1123.362296194122,
+          "lossy_phase_hz": 1123.1583356439237,
+          "lossless_cents": 0.040743810640781704,
+          "lossy_phase_cents": -0.27361203825363317,
+          "target_sigma_per_second": 0.28799265547840763
+        },
+        {
+          "n": 18,
+          "target_hz": 1191.7217484686494,
+          "lossless_hz": 1191.4899941168865,
+          "lossy_phase_hz": 1191.2728532975134,
+          "lossless_cents": -0.336706150684548,
+          "lossy_phase_cents": -0.6522403477948203,
+          "target_sigma_per_second": 0.2969020228606792
+        },
+        {
+          "n": 19,
+          "target_hz": 1260.4980602819212,
+          "lossless_hz": 1259.9003650379675,
+          "lossy_phase_hz": 1259.6699012078648,
+          "lossless_cents": -0.8211006373436083,
+          "lossy_phase_cents": -1.1378108606780704,
+          "target_sigma_per_second": 0.3060206795002629
+        },
+        {
+          "n": 20,
+          "target_hz": 1329.6850994663023,
+          "lossless_hz": 1328.5941799478317,
+          "lossy_phase_hz": 1328.3502546784216,
+          "lossless_cents": -1.4209471035036958,
+          "lossy_phase_cents": -1.7388248336611676,
+          "target_sigma_per_second": 0.3153480439560021
+        }
+      ]
+    },
+    {
+      "id": "C4v4",
+      "f1_hz": 261.6038708567966,
+      "B": 0.00028024742855009923,
+      "impedance_kg_s": 2.0433631355586828,
+      "length_m": 0.62,
+      "mu_kg_m": 0.006299999999999999,
+      "left": {
+        "delay": 17,
+        "allpass": [
+          -0.17272768577495543,
+          -0.5694828285794354
+        ],
+        "gain": 0.9995738392745139,
+        "mix": 0.0041698516215938975,
+        "fit_fraction": 0.12
+      },
+      "right": {
+        "delay": 61,
+        "allpass": [
+          -0.41608819293858534,
+          -0.41608819293858534,
+          -0.41608819293858534,
+          -0.5169247020338607,
+          -0.5169247020338607,
+          -0.5169247020338607,
+          -0.5169247020338607
+        ],
+        "gain": 0.9995738392745139,
+        "mix": 0.0041698516215938975,
+        "fit_fraction": 0.44
+      },
+      "integer_roundtrip_samples": 139,
+      "allpass_roundtrip_sections": 16,
+      "lossless_max_abs_cents": 5.9540744906554215,
+      "lossless_rms_cents": 2.2440592149036735,
+      "partials": [
+        {
+          "n": 1,
+          "target_hz": 261.6038708567966,
+          "lossless_hz": 261.29237901414365,
+          "lossy_phase_hz": 261.2745840507685,
+          "lossless_cents": -2.062609352922813,
+          "lossy_phase_cents": -2.1805167167108586,
+          "target_sigma_per_second": 0.2804223304084829
+        },
+        {
+          "n": 2,
+          "target_hz": 523.4275753459495,
+          "lossless_hz": 522.8658993879054,
+          "lossy_phase_hz": 522.830253687666,
+          "lossless_cents": -1.8587378398087937,
+          "lossy_phase_cents": -1.9767664847449995,
+          "target_sigma_per_second": 0.3049033322507126
+        },
+        {
+          "n": 3,
+          "target_hz": 785.6906395562728,
+          "lossless_hz": 784.9961452739058,
+          "lossy_phase_hz": 784.9425397616889,
+          "lossless_cents": -1.5309637013339783,
+          "lossy_phase_cents": -1.6491895771447196,
+          "target_sigma_per_second": 0.33360139049382814
+        },
+        {
+          "n": 4,
+          "target_hz": 1048.6119762935116,
+          "lossless_hz": 1047.9478538181854,
+          "lossy_phase_hz": 1047.8761309198142,
+          "lossless_cents": -1.0967981585624778,
+          "lossy_phase_cents": -1.2152900974950183,
+          "target_sigma_per_second": 0.3654927919590237
+        },
+        {
+          "n": 5,
+          "target_hz": 1312.4095829262176,
+          "lossless_hz": 1311.9701356235698,
+          "lossy_phase_hz": 1311.8800961314525,
+          "lossless_cents": -0.5797835845532587,
+          "lossy_phase_cents": -0.6986009108539151,
+          "target_sigma_per_second": 0.4000528233513934
+        },
+        {
+          "n": 6,
+          "target_hz": 1577.3002445536517,
+          "lossless_hz": 1577.2924029389444,
+          "lossy_phase_hz": 1577.1838145737358,
+          "lossless_cents": -0.008606924505241255,
+          "lossy_phase_cents": -0.12779747297868607,
+          "target_sigma_per_second": 0.4369653790324114
+        },
+        {
+          "n": 7,
+          "target_hz": 1843.499244166384,
+          "lossless_hz": 1844.1211440191914,
+          "lossy_phase_hz": 1843.993751255145,
+          "lossless_cents": 0.5839289824658916,
+          "lossy_phase_cents": 0.464330381515522,
+          "target_sigma_per_second": 0.4760248521990284
+        },
+        {
+          "n": 8,
+          "target_hz": 2111.220081384493,
+          "lossless_hz": 2112.6376168117704,
+          "lossy_phase_hz": 2112.4911515053236,
+          "lossless_cents": 1.1620115377667168,
+          "lossy_phase_cents": 1.0419840832046496,
+          "target_sigma_per_second": 0.5170924501875231
+        },
+        {
+          "n": 9,
+          "target_hz": 2380.674201254527,
+          "lossless_hz": 2382.996472114713,
+          "lossy_phase_hz": 2382.830664481967,
+          "lossless_cents": 1.687939817196537,
+          "lossy_phase_cents": 1.567477277832866,
+          "target_sigma_per_second": 0.560073422370982
+        },
+        {
+          "n": 10,
+          "target_hz": 2652.070734466705,
+          "lossless_hz": 2655.325261078583,
+          "lossy_phase_hz": 2655.139850602344,
+          "lossless_cents": 2.1232061805898033,
+          "lossy_phase_cents": 2.0023169842955557,
+          "target_sigma_per_second": 0.6049038778738913
+        },
+        {
+          "n": 11,
+          "target_hz": 2925.616250220683,
+          "lossless_hz": 2929.7247386906483,
+          "lossy_phase_hz": 2929.5194845937044,
+          "lossless_cents": 2.4294934522707483,
+          "lossy_phase_cents": 2.3082003748895614,
+          "target_sigma_per_second": 0.6515425546133411
+        },
+        {
+          "n": 12,
+          "target_hz": 3201.514522824174,
+          "lossless_hz": 3206.269845238671,
+          "lossy_phase_hz": 3206.0445362289333,
+          "lossless_cents": 2.569555127550115,
+          "lossy_phase_cents": 2.447894645491482,
+          "target_sigma_per_second": 0.6999653747316494
+        },
+        {
+          "n": 13,
+          "target_hz": 3479.966312956438,
+          "lossless_hz": 3485.0112315512647,
+          "lossy_phase_hz": 3484.7656946185925,
+          "lossless_cents": 2.5079582289360385,
+          "lossy_phase_cents": 2.3859796052803754,
+          "target_sigma_per_second": 0.7501616748399251
+        },
+        {
+          "n": 14,
+          "target_hz": 3761.169164371025,
+          "lossless_hz": 3765.977189525617,
+          "lossy_phase_hz": 3765.7112976432845,
+          "lossless_cents": 2.2116795920043617,
+          "lossy_phase_cents": 2.0894437663883605,
+          "target_sigma_per_second": 0.8021314969358241
+        },
+        {
+          "n": 15,
+          "target_hz": 4045.3172166518757,
+          "lossless_hz": 4049.175854772108,
+          "lossy_phase_hz": 4048.8895334229883,
+          "lossless_cents": 1.6505557899270689,
+          "lossy_phase_cents": 1.5281341385779055,
+          "target_sigma_per_second": 0.8558835803242865
+        },
+        {
+          "n": 16,
+          "target_hz": 4332.60103447653,
+          "lossless_hz": 4334.597560510739,
+          "lossy_phase_hz": 4334.290793016417,
+          "lossless_cents": 0.7975942569047894,
+          "lossy_phase_cents": 0.6750672823078615,
+          "target_sigma_per_second": 0.9114338336312408
+        },
+        {
+          "n": 17,
+          "target_hz": 4623.207453682458,
+          "lossless_hz": 4622.217238584371,
+          "lossy_phase_hz": 4621.8900702625,
+          "lossless_cents": -0.37084161243505476,
+          "lossy_phase_cents": -0.4933856115282492,
+          "target_sigma_per_second": 0.9688041457375803
+        },
+        {
+          "n": 18,
+          "target_hz": 4917.319444279522,
+          "lossless_hz": 4911.996782345505,
+          "lossy_phase_hz": 4911.649323556749,
+          "lossless_cents": -1.874957374464984,
+          "lossy_phase_cents": -1.997423611442457,
+          "target_sigma_per_second": 1.0280214423323657
+        },
+        {
+          "n": 19,
+          "target_hz": 5215.11599040548,
+          "lossless_hz": 5203.887305399488,
+          "lossy_phase_hz": 5203.519733571034,
+          "lossless_cents": -3.731544905554144,
+          "lossy_phase_cents": -3.853833360839579,
+          "target_sigma_per_second": 1.0891169246140158
+        },
+        {
+          "n": 20,
+          "target_hz": 5516.771987084022,
+          "lossless_hz": 5497.831248383263,
+          "lossy_phase_hz": 5497.443809107491,
+          "lossless_cents": -5.9540744906554215,
+          "lossy_phase_cents": -6.076081091296696,
+          "target_sigma_per_second": 1.1521254458601047
+        }
+      ]
+    },
+    {
+      "id": "C6v4",
+      "f1_hz": 1050.3644434995263,
+      "B": 0.0026868413857541935,
+      "impedance_kg_s": 1.9915688796430098,
+      "length_m": 0.17124802420154578,
+      "mu_kg_m": 0.005543479071260098,
+      "left": {
+        "delay": 2,
+        "allpass": [
+          -0.2886781440426723,
+          -0.28867811228759416
+        ],
+        "gain": 0.9997827108698375,
+        "mix": 0.000494974249778672,
+        "fit_fraction": 0.12
+      },
+      "right": {
+        "delay": 9,
+        "allpass": [
+          -0.0281790820095749,
+          -0.0281790820095749,
+          -0.0281790820095749,
+          -0.3387422579566249,
+          -0.3387422579566249,
+          -0.3387422579566249,
+          -0.3387422579566249
+        ],
+        "gain": 0.9997827108698375,
+        "mix": 0.000494974249778672,
+        "fit_fraction": 0.44
+      },
+      "integer_roundtrip_samples": 20,
+      "allpass_roundtrip_sections": 16,
+      "lossless_max_abs_cents": 33.09507804105783,
+      "lossless_rms_cents": 14.646577179164153,
+      "partials": [
+        {
+          "n": 1,
+          "target_hz": 1050.3644434995263,
+          "lossless_hz": 1041.7418846581918,
+          "lossy_phase_hz": 1041.7082856842092,
+          "lossless_cents": -14.270548087608226,
+          "lossy_phase_cents": -14.326385936389567,
+          "target_sigma_per_second": 0.5659510271213564
+        },
+        {
+          "n": 2,
+          "target_hz": 2109.155785914849,
+          "lossless_hz": 2095.6381797982126,
+          "lossy_phase_hz": 2095.5700713917536,
+          "lossless_cents": -11.131209178204188,
+          "lossy_phase_cents": -11.187475335948305,
+          "target_sigma_per_second": 0.7170059901103522
+        },
+        {
+          "n": 3,
+          "target_hz": 3184.6894374534318,
+          "lossless_hz": 3173.070602914318,
+          "lossy_phase_hz": 3172.966402694099,
+          "lossless_cents": -6.327682778211584,
+          "lossy_phase_cents": -6.384535572804457,
+          "target_sigma_per_second": 0.8972108297943172
+        },
+        {
+          "n": 4,
+          "target_hz": 4285.06392932535,
+          "lossless_hz": 4283.918464226707,
+          "lossy_phase_hz": 4283.776385567345,
+          "lossless_cents": -0.46284800260331066,
+          "lossy_phase_cents": -0.5202663437252093,
+          "target_sigma_per_second": 1.1023972004585907
+        },
+        {
+          "n": 5,
+          "target_hz": 5418.067020025867,
+          "lossless_hz": 5435.941452845301,
+          "lossy_phase_hz": 5435.760164722401,
+          "lossless_cents": 5.70201410030593,
+          "lossy_phase_cents": 5.644276649054377,
+          "target_sigma_per_second": 1.3316233981035555
+        },
+        {
+          "n": 6,
+          "target_hz": 6591.097429985392,
+          "lossless_hz": 6634.3689154554,
+          "lossy_phase_hz": 6634.148310006038,
+          "lossless_cents": 11.328649494255144,
+          "lossy_phase_cents": 11.271081695398344,
+          "target_sigma_per_second": 1.5853441285395136
+        },
+        {
+          "n": 7,
+          "target_hz": 7811.104734354368,
+          "lossless_hz": 7881.776368335676,
+          "lossy_phase_hz": 7881.51830476637,
+          "lossless_cents": 15.59305335629768,
+          "lossy_phase_cents": 15.53636870409647,
+          "target_sigma_per_second": 1.8647673520682764
+        },
+        {
+          "n": 8,
+          "target_hz": 9084.548271410471,
+          "lossless_hz": 9178.267810902107,
+          "lossy_phase_hz": 9177.976687676624,
+          "lossless_cents": 17.768550193206636,
+          "lossy_phase_cents": 17.713636734136873,
+          "target_sigma_per_second": 2.171552764921825
+        },
+        {
+          "n": 9,
+          "target_hz": 10417.374419398986,
+          "lossless_hz": 10521.899477965488,
+          "lossy_phase_hz": 10521.582513531566,
+          "lossless_cents": 17.284156492479756,
+          "lossy_phase_cents": 17.232003562597317,
+          "target_sigma_per_second": 2.5076453066896143
+        },
+        {
+          "n": 10,
+          "target_hz": 11815.01042319033,
+          "lossless_hz": 11909.223681106447,
+          "lossy_phase_hz": 11908.89084431777,
+          "lossless_cents": 13.75016421388504,
+          "lossy_phase_cents": 13.701779327603234,
+          "target_sigma_per_second": 2.8751733557859156
+        },
+        {
+          "n": 11,
+          "target_hz": 13282.372189980244,
+          "lossless_hz": 13335.827181436256,
+          "lossy_phase_hz": 13335.490778444468,
+          "lossless_cents": 6.953379859877602,
+          "lossy_phase_cents": 6.909708053745113,
+          "target_sigma_per_second": 3.2763823958551805
+        },
+        {
+          "n": 12,
+          "target_hz": 14823.883114671526,
+          "lossless_hz": 14796.777310546211,
+          "lossy_phase_hz": 14796.451283744504,
+          "lossless_cents": -3.168498166769219,
+          "lossy_phase_cents": -3.2066439674714258,
+          "target_sigma_per_second": 3.713590156206957
+        },
+        {
+          "n": 13,
+          "target_hz": 16443.5009770553,
+          "lossless_hz": 16286.940867882384,
+          "lossy_phase_hz": 16286.639889260392,
+          "lossless_cents": -16.56221203480577,
+          "lossy_phase_cents": -16.59420510565262,
+          "target_sigma_per_second": 4.189155717159962
+        },
+        {
+          "n": 14,
+          "target_hz": 18144.750181877152,
+          "lossless_hz": 17801.1810460406,
+          "lossy_phase_hz": 17800.919497872233,
+          "lossless_cents": -33.09507804105783,
+          "lossy_phase_cents": -33.12051480392506,
+          "target_sigma_per_second": 4.7054581565479285
+        }
+      ]
+    }
+  ]
+}

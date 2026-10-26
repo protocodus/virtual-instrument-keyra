@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "source_sha256": {
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "tools/mechanism_network_support.h": "8773da536b979df2706bb03fd6f81b70ca7d23548d804c002f5b593abd24529a",
+    "tests/mechanism_network_tests.cpp": "f1a157d6eaedd0a47c67e30c118ba8ca7fa6aacbad09e50e3ad0ea98a1557b18",
+    "tools/probe_mechanism_network.cpp": "453f4bdc1150a8f1916223d446d04544fd3a370cf17b7d2a9801b0b02f1bcb16",
+    "docs/MECHANISM_NETWORK.md": "dd1e48ac65d3685a3a3965ad5f03455cbd6bc0cfca28cf4127045294920124d8",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+  },
+  "binary_sha256": {
+    "probe": "128e004f67138cee5a19fd155eaeaec97d84b548aec3b766943dd45261680fbf",
+    "tests": "6bfad5f8e47c2e1a80c8daa4d1f62840513e87499fe991e8433adfa6744286de"
+  },
+  "compiler_flags": [
+    "g++",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-ffp-contract=off",
+    "-Iinclude"
+  ],
+  "probe_commands": [
+    [
+      "out/mechanism-network/probe",
+      "out/mechanism-network/isolated"
+    ],
+    [
+      "out/mechanism-network/probe",
+      "out/mechanism-network/with-notes",
+      "--notes"
+    ]
+  ],
+  "limits": [
+    "Authored effective mechanism parameters/pressure observations, not measured or listener-approved quality.",
+    "All stems and ablations share one gain within each bundle; bundle gains differ.",
+    "The report reconstruction error is pre-filter double precision; exported float WAV errors are separately measured here.",
+    "Includes original full solver unchanged; no plugin default or actual Reason integration."
+  ],
+  "bundles": {
+    "isolated": {
+      "report_sha256": "6ebc89af68d6cffcaf96767cfd4510b6bab9857e3173d344f124626fdac11f83",
+      "shared_gain": 1.25515652502603,
+      "body_reaction_direct_difference_raw_rms": 7.84852233027313e-06,
+      "audio": {
+        "isolated-coupling-off-body.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-coupling-off-combined.wav": {
+          "sha256": "69c3d538ec6c1326f32292f31bf73c41879e450c998bf4d2a0712fe7508a5450",
+          "rms": 0.00010764248323245151,
+          "peak": 0.0029887387063354254
+        },
+        "isolated-coupling-off-direct.wav": {
+          "sha256": "69c3d538ec6c1326f32292f31bf73c41879e450c998bf4d2a0712fe7508a5450",
+          "rms": 0.00010764248323245151,
+          "peak": 0.0029887387063354254
+        },
+        "isolated-coupling-off-key-press-direct.wav": {
+          "sha256": "acbc175ec308d3a72b05e1ea622649a540e4d9b3a8d5fe83a361428f2db53a8e",
+          "rms": 5.800083004950486e-05,
+          "peak": 0.00270072347484529
+        },
+        "isolated-coupling-off-key-release-direct.wav": {
+          "sha256": "ea26c827f63294282192de90d8205a2c747e59a5c7895596afb5205277dd419f",
+          "rms": 1.534991904874086e-05,
+          "peak": 0.0008900267421267927
+        },
+        "isolated-coupling-off-keybed-direct.wav": {
+          "sha256": "5ef00d9fd371fbe7e480791cb7636ede2a4c27e91c8629008337bca11d2b601f",
+          "rms": 7.091907059685723e-05,
+          "peak": 0.002981326775625348
+        },
+        "isolated-coupling-off-network-delta.wav": {
+          "sha256": "34f475bf240daf0c12d5098f9fdce603f21390112fa416acdb8380aaccd6e623",
+          "rms": 0.04035521129352569,
+          "peak": 0.7987164855003357
+        },
+        "isolated-coupling-off-network.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-coupling-off-pedal-direct.wav": {
+          "sha256": "bd1e6631da3d49849cfa347d25cd220776fea20436e39f2cd248eedf88e3768b",
+          "rms": 5.436521911268896e-05,
+          "peak": 0.0008080022525973618
+        },
+        "isolated-coupling-off-strings.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-intact-body.wav": {
+          "sha256": "c933179e65f48352f7cfbe999380c01d1539eb8b771d3ae3795a11690dee0197",
+          "rms": 0.04035618322553059,
+          "peak": 0.7987063527107239
+        },
+        "isolated-intact-combined.wav": {
+          "sha256": "ca20fc2ddde21dc96b72f6f5f39126bea263183fbe8b41a3b9ac2881bcf124c5",
+          "rms": 0.04034996044076055,
+          "peak": 0.800000011920929
+        },
+        "isolated-intact-direct.wav": {
+          "sha256": "4c5249854f6f24bc3667f32736907020920180f5adb7ce2bdd535f66c0b2554f",
+          "rms": 0.00010201556770944574,
+          "peak": 0.0029818471521139145
+        },
+        "isolated-intact-key-press-direct.wav": {
+          "sha256": "95412e106ebe52de4e70c46f4aeae2c9f977466bf9783393d66bd234d9067eb7",
+          "rms": 5.6462217087913146e-05,
+          "peak": 0.0026965923607349396
+        },
+        "isolated-intact-key-release-direct.wav": {
+          "sha256": "31879c35a7bc109aefa63aed1d8ef8e7ec02bb611207074655420e290f07add2",
+          "rms": 1.5068412126915182e-05,
+          "peak": 0.0008885416900739074
+        },
+        "isolated-intact-keybed-direct.wav": {
+          "sha256": "9ed0adb0e23f9bf9581bfc85c29c417aa627cb1c3673334e8794533b15989c7e",
+          "rms": 6.820171293917308e-05,
+          "peak": 0.0029762601479887962
+        },
+        "isolated-intact-network.wav": {
+          "sha256": "34f475bf240daf0c12d5098f9fdce603f21390112fa416acdb8380aaccd6e623",
+          "rms": 0.04035521129352569,
+          "peak": 0.7987164855003357
+        },
+        "isolated-intact-pedal-direct.wav": {
+          "sha256": "8ee658f95b010363fbc0807d191dd3a158750f883a88607756c6cc0469f54a0d",
+          "rms": 4.835630467991674e-05,
+          "peak": 0.0008074536453932524
+        },
+        "isolated-intact-strings.wav": {
+          "sha256": "f64e71f86696b71abcd2922e9a71962861cc9ac135343d72fdcd9ea64681cc03",
+          "rms": 4.750224887093416e-06,
+          "peak": 3.2727137295296416e-05
+        },
+        "isolated-source-off-body.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-combined.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-delta.wav": {
+          "sha256": "ca20fc2ddde21dc96b72f6f5f39126bea263183fbe8b41a3b9ac2881bcf124c5",
+          "rms": 0.04034996044076055,
+          "peak": 0.800000011920929
+        },
+        "isolated-source-off-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-key-press-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-key-release-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-keybed-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-network.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-pedal-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "isolated-source-off-strings.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        }
+      },
+      "intact_exported_float_reconstruction": {
+        "direct_plus_network": {
+          "maximum_absolute_error": 7.943890523165464e-08,
+          "rms_error": 2.0936281886843187e-09
+        },
+        "body_plus_strings": {
+          "maximum_absolute_error": 7.80075879447395e-08,
+          "rms_error": 2.0057893437804262e-09
+        }
+      }
+    },
+    "with-notes": {
+      "report_sha256": "2dcbc0bf737875cc9293dd2150b6060fded05aa00e883bda7534a9d8108e1079",
+      "shared_gain": 0.610562259935611,
+      "body_reaction_direct_difference_raw_rms": 7.8464190517511e-06,
+      "audio": {
+        "with-notes-coupling-off-body.wav": {
+          "sha256": "0d5a2e9578f277640af0445f1422fc23caf2116b9cc05de85ab3e55bbec2ea8f",
+          "rms": 0.13363458209511245,
+          "peak": 0.7469524145126343
+        },
+        "with-notes-coupling-off-combined.wav": {
+          "sha256": "de4eff561bb2e207dbf770712c3e313b4cad85060fbb7744638da928299b3532",
+          "rms": 0.08564152334623065,
+          "peak": 0.5417116284370422
+        },
+        "with-notes-coupling-off-direct.wav": {
+          "sha256": "6ce8bd621887fc1878a819c34da79d53d4e506e2b51c5f4138c4e0908f10e5c2",
+          "rms": 5.236194570984746e-05,
+          "peak": 0.0014538513496518135
+        },
+        "with-notes-coupling-off-key-press-direct.wav": {
+          "sha256": "ee27947627b5acecfea328db99fb561971eba046170849be490d19220fb36e94",
+          "rms": 2.8214104910801723e-05,
+          "peak": 0.0013137483038008213
+        },
+        "with-notes-coupling-off-key-release-direct.wav": {
+          "sha256": "2aaac29318e9dc59629f75d89a05462183a4f364392d0cb70164e5d8c9b248f3",
+          "rms": 7.466862596172947e-06,
+          "peak": 0.00043294738861732185
+        },
+        "with-notes-coupling-off-keybed-direct.wav": {
+          "sha256": "4fda24a14e8cdc31c967ca6343ae74ee924873095b7cae6a3648387e9f85d1be",
+          "rms": 3.44980940991132e-05,
+          "peak": 0.0014502459671348333
+        },
+        "with-notes-coupling-off-network-delta.wav": {
+          "sha256": "fd126f6220f494fe1eae739a37da2f34f60b3a6686ff8d140e02230252b3d451",
+          "rms": 0.019682206940940992,
+          "peak": 0.3882700204849243
+        },
+        "with-notes-coupling-off-network.wav": {
+          "sha256": "92d18ee993308868de818d69fc4e1efba0c653056576d530089ca6d913902c18",
+          "rms": 0.0856428251116558,
+          "peak": 0.5422940850257874
+        },
+        "with-notes-coupling-off-pedal-direct.wav": {
+          "sha256": "d39e0e0cb5a160fa137756f2bccaebddfb680658e2604e138a0f4e3248c0aef1",
+          "rms": 2.6445586931696192e-05,
+          "peak": 0.0003930471430066973
+        },
+        "with-notes-coupling-off-strings.wav": {
+          "sha256": "93d30560005708530f8d3c3d1a73ed9507cded20516ba968ba3aa5c47902a88d",
+          "rms": 0.10740071997346651,
+          "peak": 0.5848445296287537
+        },
+        "with-notes-intact-body.wav": {
+          "sha256": "235f87f206f8f7e6348a21b00bfe1890857c4a8b00254eb5ac1c9ff1542175da",
+          "rms": 0.13401741818855012,
+          "peak": 0.800000011920929
+        },
+        "with-notes-intact-combined.wav": {
+          "sha256": "a9ff6c56c54de71846db02d049fbbaf7565f607968765c65c4614b3c41a999d9",
+          "rms": 0.08769918601163813,
+          "peak": 0.5889025330543518
+        },
+        "with-notes-intact-direct.wav": {
+          "sha256": "70ddf6931e6d8c5361403dee4d05424b907eb0ec618a7c8e4ee309821c700778",
+          "rms": 4.962631862820416e-05,
+          "peak": 0.0014504914870485663
+        },
+        "with-notes-intact-key-press-direct.wav": {
+          "sha256": "0f94b4ab3af3cd2363925b2800e5a294df75f469aeae8016a4857eeb23f58568",
+          "rms": 2.7465821322416184e-05,
+          "peak": 0.001311738626100123
+        },
+        "with-notes-intact-key-release-direct.wav": {
+          "sha256": "568e9018ca41fa9bd1226a14b7573f22f0c4c9c5ba37b10d0734d68766523c26",
+          "rms": 7.330231034231531e-06,
+          "peak": 0.00043223114334978163
+        },
+        "with-notes-intact-keybed-direct.wav": {
+          "sha256": "d75fcfeaa8ba59356b1f9fa63e900007a88f3519c5a16bd505392d13552a3beb",
+          "rms": 3.317780757962633e-05,
+          "peak": 0.0014477740041911602
+        },
+        "with-notes-intact-network.wav": {
+          "sha256": "cedacb53898face4aa1cfb32b8b2207709660ecc0b5ed4e7c2a39b39d9ab1137",
+          "rms": 0.08770100121378017,
+          "peak": 0.5889177322387695
+        },
+        "with-notes-intact-pedal-direct.wav": {
+          "sha256": "edfa8675d36a91ca7e87d443f5670d240ca58f466ad5c8147e3879c614a555f8",
+          "rms": 2.3522118304775843e-05,
+          "peak": 0.000392776943044737
+        },
+        "with-notes-intact-strings.wav": {
+          "sha256": "6759a31057f7f0e737a9f18557219ccdc9749bdc700a80f1a18feabb70564dc3",
+          "rms": 0.1074005680207943,
+          "peak": 0.5848422646522522
+        },
+        "with-notes-source-off-body.wav": {
+          "sha256": "0d5a2e9578f277640af0445f1422fc23caf2116b9cc05de85ab3e55bbec2ea8f",
+          "rms": 0.13363458209511245,
+          "peak": 0.7469524145126343
+        },
+        "with-notes-source-off-combined.wav": {
+          "sha256": "92d18ee993308868de818d69fc4e1efba0c653056576d530089ca6d913902c18",
+          "rms": 0.0856428251116558,
+          "peak": 0.5422940850257874
+        },
+        "with-notes-source-off-delta.wav": {
+          "sha256": "dc2161e514eb54af711bcd3255a9ac4f83a6b6b9a2f38f20ce36abb3b5e16833",
+          "rms": 0.019679665686123494,
+          "peak": 0.38889437913894653
+        },
+        "with-notes-source-off-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "with-notes-source-off-key-press-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "with-notes-source-off-key-release-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "with-notes-source-off-keybed-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "with-notes-source-off-network.wav": {
+          "sha256": "92d18ee993308868de818d69fc4e1efba0c653056576d530089ca6d913902c18",
+          "rms": 0.0856428251116558,
+          "peak": 0.5422940850257874
+        },
+        "with-notes-source-off-pedal-direct.wav": {
+          "sha256": "51e4ac07e94a94c49a7d2d862046191a368210d0f1cf868e6c338cdd34258f8e",
+          "rms": 0.0,
+          "peak": 0.0
+        },
+        "with-notes-source-off-strings.wav": {
+          "sha256": "93d30560005708530f8d3c3d1a73ed9507cded20516ba968ba3aa5c47902a88d",
+          "rms": 0.10740071997346651,
+          "peak": 0.5848445296287537
+        }
+      },
+      "intact_exported_float_reconstruction": {
+        "direct_plus_network": {
+          "maximum_absolute_error": 6.12286470413892e-08,
+          "rms_error": 4.4446894265220406e-09
+        },
+        "body_plus_strings": {
+          "maximum_absolute_error": 8.940696716308594e-08,
+          "rms_error": 6.93418611840865e-09
+        }
+      }
+    }
+  }
+}

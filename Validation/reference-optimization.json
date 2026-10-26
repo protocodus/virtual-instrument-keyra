@@ -1,0 +1,1253 @@
+{
+  "schema_version": 1,
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-ffp-contract=off"
+  ],
+  "reference_source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+  "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "tool_sha256": "4b4f5522023ecead8adbe663120ebc29f17a9a5613d3f7ab9acad5f3686fd10b",
+  "sample_rate": 48000,
+  "audio_seconds": 0.35,
+  "events_sha256": "e99889d6766ca05e27e3b4d81dedfea44d99eaa9c0ddd56c3ff35361b68f5023",
+  "repeats": 3,
+  "variants": {
+    "baseline": {
+      "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+      "compiled_source_sha256": "aed9a2e3a4019f192e8bcad47912e7d434fdb25b22c3491062095abb38d87eca",
+      "binary_sha256": "5c1d1331c1cc4a8c0fe18c385a288a1d4a9d28065a76931eb5ca7d0e9d19bacb",
+      "source_diff": "",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.1034586,
+          "realtime_factor": 6.00988171429,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.099911,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.134426483,
+          "realtime_factor": 6.09836138,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.134368,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.059127443,
+          "realtime_factor": 5.88322126571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.058988,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "median_process_cpu_seconds": 2.099911,
+      "median_wall_seconds": 2.1034586,
+      "process_cpu_reduction_fraction": 0.0
+    },
+    "free_damping_fusion": {
+      "source_sha256": "5fdf8c7ee7237e2b68b9262b82d3281484a9db67eb6a1402f7b1836104ec208b",
+      "compiled_source_sha256": "ecb61d9c171a69b0dd925265a29168f81c51dff711fba1f17029940249d13e73",
+      "binary_sha256": "89269f901bc58e8bf44ace1e3e0a941f2018afd4787fd86ddf98f506257aff74",
+      "source_diff": "--- frozen/grand.cpp\n+++ free_damping_fusion/grand.cpp\n@@ -83,6 +83,16 @@\n     const double *__restrict yc=c.data(),*__restrict ys=s.data(),*__restrict yd=damp.data();\n     for(size_t i=0;i<size();++i){\n       double v=yp[i]*yd[i],y=yq[i];yq[i]=yc[i]*y+ys[i]*v;yp[i]=yc[i]*v-ys[i]*y;\n+    }\n+  }\n+  // Exact-order free/damping fusion only while this key has no active hammer.\n+  void freeDampedStep(){\n+    double *__restrict yq=q.data(),*__restrict yp=p.data();\n+    const double *__restrict yc=c.data(),*__restrict ys=s.data(),*__restrict yd=damp.data();\n+    for(size_t i=0;i<size();++i){\n+      double v=yp[i]*yd[i],y=yq[i];\n+      yq[i]=yc[i]*y+ys[i]*v;\n+      double rotated=yc[i]*v-ys[i]*y;yp[i]=rotated*yd[i];\n     }\n   }\n   void finishDamping(){\n@@ -374,6 +384,7 @@\n   }\n   void oscillators(){\n     for(auto &k:keys){\n+      if(!k.hammerActive){for(int i:k.strings)strings[i].m.freeDampedStep();continue;}\n       double y0=0;\n       if(k.hammerActive)for(int i:k.strings)y0+=strings[i].m.displacement();\n       for(int i:k.strings)strings[i].m.freeStep();\n",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.003822453,
+          "realtime_factor": 5.72520700857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.003212,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.95701871,
+          "realtime_factor": 5.59148202857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.95329,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.256149288,
+          "realtime_factor": 6.44614082286,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.253298,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "median_process_cpu_seconds": 2.003212,
+      "median_wall_seconds": 2.003822453,
+      "process_cpu_reduction_fraction": 0.04604909446162242
+    },
+    "profile": {
+      "source_sha256": "29d59eab643aef325033f7f6ef34399dcd7176c7f27df01496b7f051b979aad8",
+      "compiled_source_sha256": "6fb90a8ae4282b4876378eedf60985226a969437c46925a66df799c982e69314",
+      "binary_sha256": "11bbeab8a54b64bc8a50fde005310b3cb1be48ba5c5d6f6599904fb1bda72096",
+      "source_diff": "--- frozen/grand.cpp\n+++ profile/grand.cpp\n@@ -20,6 +20,11 @@\n #include \"calibration.h\"\n \n namespace grand {\n+struct StageProfile {double controls=0,oscillators=0,unisons=0,bridge=0,radiation=0;uint64_t frames=0;};\n+StageProfile stageProfile;\n+using ProfileClock=std::chrono::steady_clock;\n+double profileSeconds(ProfileClock::time_point a,ProfileClock::time_point b){return std::chrono::duration<double>(b-a).count();}\n+\n constexpr double pi=3.14159265358979323846;\n double lerp(double a,double b,double t){return a+(b-a)*t;}\n double loglerp(double a,double b,double t){return std::exp(lerp(std::log(a),std::log(b),t));}\n@@ -418,10 +423,14 @@\n     for(auto &z:board){double force=0;for(int g=0;g<3;++g)force-=z.port[g]*total[g];z.force=force;z.p+=step*force/z.w;}\n   }\n   std::array<double,2> step(uint64_t frame){\n+    auto profile0=ProfileClock::now();\n     if(frame%64==0){pedal+=(1-std::exp(-64*dt/.012))*(pedalTarget-pedal);setDamping();}\n+    auto profile1=ProfileClock::now();stageProfile.controls+=profileSeconds(profile0,profile1);\n     // The adjacent bridge half steps coalesce into one full step between\n     // oscillator steps (zero initial velocity makes the first half a no-op).\n-    oscillators();unisonStep();bridgeStep(dt);\n+    oscillators();auto profile2=ProfileClock::now();stageProfile.oscillators+=profileSeconds(profile1,profile2);\n+    unisonStep();auto profile3=ProfileClock::now();stageProfile.unisons+=profileSeconds(profile2,profile3);\n+    bridgeStep(dt);auto profile4=ProfileClock::now();stageProfile.bridge+=profileSeconds(profile3,profile4);\n     std::array<double,2> out{};\n     // Radiated pressure proxy: soundboard acceleration observed at two points.\n     for(auto &z:board){double acc=-z.w*z.w*z.q-2*z.sigma*z.w*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n@@ -432,6 +441,7 @@\n         lastStems[pol][0]+=l+m.radQL[j]*m.q[j]+m.radPL[j]*m.p[j];lastStems[pol][1]+=r+m.radQR[j]*m.q[j]+m.radPR[j]*m.p[j];}}\n       for(int ch=0;ch<2;++ch)lastStems[2][ch]=out[ch]-baseTotal[ch];}\n     if(opt.calibrated&&piano_calibration::radiationEnabled)for(auto &st:strings){auto r=st.m.radiation();out[0]+=r[0];out[1]+=r[1];}\n+    auto profile5=ProfileClock::now();stageProfile.radiation+=profileSeconds(profile4,profile5);++stageProfile.frames;\n     return out;\n   }\n   double energy()const{\n@@ -529,6 +539,7 @@\n   wav(output,audio,opt.sampleRate);double wall=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();\n   if(opt.captureStems){const char *names[]={\"-primary.wav\",\"-secondary.wav\",\"-transient.wav\"};for(int s=0;s<3;++s)wav(stemPrefix+names[s],stems[s],opt.sampleRate);}\n   std::ostringstream report;report<<std::setprecision(12)<<\"{\\\"sample_rate\\\":\"<<opt.sampleRate<<\",\\\"duration_seconds\\\":\"<<duration<<\",\\\"wall_seconds\\\":\"<<wall<<\",\\\"realtime_factor\\\":\"<<wall/duration<<\",\\\"string_count\\\":\"<<p.strings.size()<<\",\\\"string_modes\\\":\"<<p.modeCount()<<\",\\\"board_modes\\\":\"<<p.board.size()<<\",\\\"raw_peak\\\":\"<<peak<<\",\\\"raw_rms\\\":\"<<std::sqrt(sumSquare/(frames*2))<<\",\\\"nonfinite_samples\\\":\"<<nonfinite<<\",\\\"max_hammer_force_N\\\":\"<<p.maxForce<<\",\\\"accumulated_contact_seconds\\\":\"<<p.contactTime<<\",\\\"contact_solves\\\":\"<<p.forceSolves<<\",\\\"contact_max_relative_residual\\\":\"<<p.maxContactResidual<<\",\\\"final_mechanical_energy_J\\\":\"<<p.energy()<<\"}\";\n+  std::cerr<<\"PROFILE \"<<std::setprecision(12)<<\"{\\\"frames\\\":\"<<stageProfile.frames<<\",\\\"controls\\\":\"<<stageProfile.controls<<\",\\\"oscillators\\\":\"<<stageProfile.oscillators<<\",\\\"unisons\\\":\"<<stageProfile.unisons<<\",\\\"bridge\\\":\"<<stageProfile.bridge<<\",\\\"radiation\\\":\"<<stageProfile.radiation<<\"}\\n\";\n   if(!metrics.empty()){std::ofstream f(metrics);f<<report.str()<<'\\n';}std::cout<<report.str()<<'\\n';return 0;\n  }catch(const std::exception &e){std::cerr<<\"grand: \"<<e.what()<<'\\n';return 1;}\n }\n",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.129382542,
+          "realtime_factor": 6.08395012,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.128513,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "median_process_cpu_seconds": 2.128513,
+      "median_wall_seconds": 2.129382542,
+      "process_cpu_reduction_fraction": -0.013620577253035782
+    },
+    "invariant_cache": {
+      "source_sha256": "963c92f10a5c8ec95ce450fbf96565956293ef50312c4c31c52542bb556d2e69",
+      "compiled_source_sha256": "dfbe1b978f737e6226745adfbffea59a6c8a59e43614c1e480ca15b884e08fa2",
+      "binary_sha256": "0c13629a983436f091894f728601e7babe1db8756be1dd0d75d588606783da37",
+      "source_diff": "--- frozen/grand.cpp\n+++ invariant_cache/grand.cpp\n@@ -111,6 +111,13 @@\n   Modes m;\n   int note=60,unison=0,group=0;\n   double resistance=.85,compliance=0,velocity=0,force=0;\n+  // Candidate invariant caches: identical operations, memoized only while the\n+  // source resistance/compliance/step/bridge factor remain bitwise unchanged.\n+  double bridgeR=0,bridgeDen=1,bridgeRatio=0;\n+  double bridgeCachedStep=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedScale=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedResistance=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedCompliance=std::numeric_limits<double>::quiet_NaN();\n };\n struct Key {\n   std::vector<int> strings;\n@@ -124,6 +131,8 @@\n   double q=0,p=0,w=0,c=0,s=0,damp=1,sigma=0,force=0;\n   Vec3 port{};\n   std::array<double,2> mic{};\n+  Vec3 portOmega{};\n+  double accelerationQ=0,accelerationP=0;\n };\n struct Options {\n   int sampleRate=192000;\n@@ -146,6 +155,9 @@\n   std::vector<BoardMode> board;\n   std::vector<UnisonPort> unisonPorts;\n   Mat3 boardGram{};\n+  Mat3 bridgeCachedInput{},bridgeCachedLU{},bridgeCachedFactors{};\n+  std::array<int,3> bridgeCachedPivots{};\n+  bool bridgeCachedLUValid=false;\n   double maxForce=0,contactTime=0,maxContactResidual=0;\n   uint64_t forceSolves=0;\n   double maxEnergy=0;\n@@ -277,6 +289,9 @@\n         double x=ch?.63:.37,y=ch?.60:.39;\n         z.mic[ch]=radiation*(.58*std::sin(pi*v.m*x)*std::sin(pi*v.n*y)+.42*(v.m%2&&v.n%2?1.0:0.0));\n       }\n+      for(int g=0;g<3;++g)z.portOmega[g]=z.port[g]*z.w;\n+      z.accelerationQ=-z.w*z.w;\n+      z.accelerationP=2*z.sigma*z.w;\n       board.push_back(z);\n     }\n     for(auto &z:board)for(int a=0;a<3;++a)for(int b=0;b<3;++b)boardGram[a][b]+=z.port[a]*z.port[b];\n@@ -395,24 +410,55 @@\n   // All string ports couple to the same board; the three-dimensional Schur\n   // complement solves the full junction simultaneously. For R>=0 it cannot\n   // add mechanical energy. All 88 keys remain present, including unstruck ones.\n-  void bridgeStep(double step){\n+  Vec3 bridgeSolveCached(Mat3 a,Vec3 b){\n+    if(!bridgeCachedLUValid||a!=bridgeCachedInput){\n+      bridgeCachedInput=a;bridgeCachedFactors={};\n+      for(int k=0;k<3;++k){\n+        int pivot=k;for(int j=k+1;j<3;++j)if(std::abs(a[j][k])>std::abs(a[pivot][k]))pivot=j;\n+        if(std::abs(a[pivot][k])<1e-20)throw std::runtime_error(\"singular bridge\");\n+        bridgeCachedPivots[k]=pivot;std::swap(a[k],a[pivot]);\n+        for(int j=k+1;j<3;++j){double r=a[j][k]/a[k][k];bridgeCachedFactors[k][j]=r;\n+          for(int l=k;l<3;++l)a[j][l]-=r*a[k][l];}\n+      }\n+      bridgeCachedLU=a;bridgeCachedLUValid=true;\n+    }\n+    for(int k=0;k<3;++k){std::swap(b[k],b[bridgeCachedPivots[k]]);\n+      for(int j=k+1;j<3;++j)b[j]-=bridgeCachedFactors[k][j]*b[k];}\n+    Vec3 x{};for(int k=2;k>=0;--k){double y=b[k];\n+      for(int j=k+1;j<3;++j)y-=bridgeCachedLU[k][j]*x[j];\n+      x[k]=y/bridgeCachedLU[k][k];}\n+    return x;\n+  }\n+  void bridgeStep(double step,bool useInvariantCache=false){\n     if(opt.bridge<=0){for(auto &z:board)z.force=0;return;}\n     Vec3 boardV{},sum{},beta{};\n-    for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=z.port[g]*z.w*z.p;\n+    for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=(useInvariantCache?z.portOmega[g]:z.port[g]*z.w)*z.p;\n     for(auto &st:strings){\n       auto &k=keys[st.note-21];\n       if(!opt.sympathetic&&!k.everStruck){st.velocity=0;st.force=0;continue;}\n-      double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n+      double r,den,ratio;\n+      if(useInvariantCache){\n+        if(st.bridgeCachedStep!=step||st.bridgeCachedScale!=opt.bridge||\n+           st.bridgeCachedResistance!=st.resistance||st.bridgeCachedCompliance!=st.compliance){\n+          st.bridgeR=st.resistance*opt.bridge;\n+          st.bridgeDen=1+.5*step*st.bridgeR*st.compliance;\n+          st.bridgeRatio=st.bridgeR/st.bridgeDen;\n+          st.bridgeCachedStep=step;st.bridgeCachedScale=opt.bridge;\n+          st.bridgeCachedResistance=st.resistance;st.bridgeCachedCompliance=st.compliance;\n+        }\n+        r=st.bridgeR;den=st.bridgeDen;ratio=st.bridgeRatio;\n+      }else{r=st.resistance*opt.bridge;den=1+.5*step*r*st.compliance;ratio=r/den;}\n       st.velocity=st.m.portVelocity();\n       st.force=-r*(st.velocity-boardV[st.group])/den;\n-      sum[st.group]+=st.force;beta[st.group]+=r/den;\n+      sum[st.group]+=st.force;beta[st.group]+=ratio;\n     }\n     Mat3 mat{};for(int g=0;g<3;++g)for(int h=0;h<3;++h)mat[g][h]=(g==h?1:0)+.5*step*beta[g]*boardGram[g][h];\n-    Vec3 total=solve3(mat,sum),correction{};\n+    Vec3 total=useInvariantCache?bridgeSolveCached(mat,sum):solve3(mat,sum);Vec3 correction{};\n     for(int g=0;g<3;++g)for(int h=0;h<3;++h)correction[g]+=.5*step*boardGram[g][h]*total[h];\n     for(auto &st:strings){\n       auto &k=keys[st.note-21];if(!opt.sympathetic&&!k.everStruck)continue;\n-      double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n+      double r=useInvariantCache?st.bridgeR:st.resistance*opt.bridge;\n+      double den=useInvariantCache?st.bridgeDen:1+.5*step*r*st.compliance;\n       st.force-=r*correction[st.group]/den;st.m.portImpulse(step*st.force);\n     }\n     for(auto &z:board){double force=0;for(int g=0;g<3;++g)force-=z.port[g]*total[g];z.force=force;z.p+=step*force/z.w;}\n@@ -421,10 +467,10 @@\n     if(frame%64==0){pedal+=(1-std::exp(-64*dt/.012))*(pedalTarget-pedal);setDamping();}\n     // The adjacent bridge half steps coalesce into one full step between\n     // oscillator steps (zero initial velocity makes the first half a no-op).\n-    oscillators();unisonStep();bridgeStep(dt);\n+    oscillators();unisonStep();bridgeStep(dt,true);\n     std::array<double,2> out{};\n     // Radiated pressure proxy: soundboard acceleration observed at two points.\n-    for(auto &z:board){double acc=-z.w*z.w*z.q-2*z.sigma*z.w*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n+    for(auto &z:board){double acc=z.accelerationQ*z.q-z.accelerationP*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n     if(opt.captureStems){lastStems={};std::array<double,2> baseTotal{};\n       for(auto &st:strings){auto &m=st.m;for(size_t j=0;j<m.size();++j){int pol=m.polarization[j];\n         double l=m.baseQL[j]*m.q[j]+m.basePL[j]*m.p[j],r=m.baseQR[j]*m.q[j]+m.basePR[j]*m.p[j];\n",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.093418428,
+          "realtime_factor": 5.98119550857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.091226,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.037339362,
+          "realtime_factor": 5.82096960571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.037168,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.094566813,
+          "realtime_factor": 5.98447660857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.093321,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "median_process_cpu_seconds": 2.091226,
+      "median_wall_seconds": 2.093418428,
+      "process_cpu_reduction_fraction": 0.004135889568653295
+    },
+    "combined": {
+      "source_sha256": "692c4f0c6c1c9a0b7b88894a5510f192c4028a785db565acf5e9042e473edeca",
+      "compiled_source_sha256": "46dee5714870468ee316b3bfb2f593e765f150944a6102601bd54a3317a65797",
+      "binary_sha256": "6caabe7f5ace8c0c77c531720c068bfb7715168afa25530c095ceda6b49d7619",
+      "source_diff": "--- frozen/grand.cpp\n+++ combined/grand.cpp\n@@ -85,6 +85,15 @@\n       double v=yp[i]*yd[i],y=yq[i];yq[i]=yc[i]*y+ys[i]*v;yp[i]=yc[i]*v-ys[i]*y;\n     }\n   }\n+  void freeDampedStep(){\n+    double *__restrict yq=q.data(),*__restrict yp=p.data();\n+    const double *__restrict yc=c.data(),*__restrict ys=s.data(),*__restrict yd=damp.data();\n+    for(size_t i=0;i<size();++i){\n+      double v=yp[i]*yd[i],y=yq[i];\n+      yq[i]=yc[i]*y+ys[i]*v;\n+      double rotated=yc[i]*v-ys[i]*y;yp[i]=rotated*yd[i];\n+    }\n+  }\n   void finishDamping(){\n     double *__restrict yp=p.data();const double *__restrict yd=damp.data();\n     for(size_t i=0;i<size();++i)yp[i]*=yd[i];\n@@ -111,6 +120,13 @@\n   Modes m;\n   int note=60,unison=0,group=0;\n   double resistance=.85,compliance=0,velocity=0,force=0;\n+  // Candidate invariant caches: identical operations, memoized only while the\n+  // source resistance/compliance/step/bridge factor remain bitwise unchanged.\n+  double bridgeR=0,bridgeDen=1,bridgeRatio=0;\n+  double bridgeCachedStep=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedScale=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedResistance=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedCompliance=std::numeric_limits<double>::quiet_NaN();\n };\n struct Key {\n   std::vector<int> strings;\n@@ -124,6 +140,8 @@\n   double q=0,p=0,w=0,c=0,s=0,damp=1,sigma=0,force=0;\n   Vec3 port{};\n   std::array<double,2> mic{};\n+  Vec3 portOmega{};\n+  double accelerationQ=0,accelerationP=0;\n };\n struct Options {\n   int sampleRate=192000;\n@@ -146,6 +164,9 @@\n   std::vector<BoardMode> board;\n   std::vector<UnisonPort> unisonPorts;\n   Mat3 boardGram{};\n+  Mat3 bridgeCachedInput{},bridgeCachedLU{},bridgeCachedFactors{};\n+  std::array<int,3> bridgeCachedPivots{};\n+  bool bridgeCachedLUValid=false;\n   double maxForce=0,contactTime=0,maxContactResidual=0;\n   uint64_t forceSolves=0;\n   double maxEnergy=0;\n@@ -277,6 +298,9 @@\n         double x=ch?.63:.37,y=ch?.60:.39;\n         z.mic[ch]=radiation*(.58*std::sin(pi*v.m*x)*std::sin(pi*v.n*y)+.42*(v.m%2&&v.n%2?1.0:0.0));\n       }\n+      for(int g=0;g<3;++g)z.portOmega[g]=z.port[g]*z.w;\n+      z.accelerationQ=-z.w*z.w;\n+      z.accelerationP=2*z.sigma*z.w;\n       board.push_back(z);\n     }\n     for(auto &z:board)for(int a=0;a<3;++a)for(int b=0;b<3;++b)boardGram[a][b]+=z.port[a]*z.port[b];\n@@ -374,6 +398,7 @@\n   }\n   void oscillators(){\n     for(auto &k:keys){\n+      if(!k.hammerActive){for(int i:k.strings)strings[i].m.freeDampedStep();continue;}\n       double y0=0;\n       if(k.hammerActive)for(int i:k.strings)y0+=strings[i].m.displacement();\n       for(int i:k.strings)strings[i].m.freeStep();\n@@ -395,24 +420,55 @@\n   // All string ports couple to the same board; the three-dimensional Schur\n   // complement solves the full junction simultaneously. For R>=0 it cannot\n   // add mechanical energy. All 88 keys remain present, including unstruck ones.\n-  void bridgeStep(double step){\n+  Vec3 bridgeSolveCached(Mat3 a,Vec3 b){\n+    if(!bridgeCachedLUValid||a!=bridgeCachedInput){\n+      bridgeCachedInput=a;bridgeCachedFactors={};\n+      for(int k=0;k<3;++k){\n+        int pivot=k;for(int j=k+1;j<3;++j)if(std::abs(a[j][k])>std::abs(a[pivot][k]))pivot=j;\n+        if(std::abs(a[pivot][k])<1e-20)throw std::runtime_error(\"singular bridge\");\n+        bridgeCachedPivots[k]=pivot;std::swap(a[k],a[pivot]);\n+        for(int j=k+1;j<3;++j){double r=a[j][k]/a[k][k];bridgeCachedFactors[k][j]=r;\n+          for(int l=k;l<3;++l)a[j][l]-=r*a[k][l];}\n+      }\n+      bridgeCachedLU=a;bridgeCachedLUValid=true;\n+    }\n+    for(int k=0;k<3;++k){std::swap(b[k],b[bridgeCachedPivots[k]]);\n+      for(int j=k+1;j<3;++j)b[j]-=bridgeCachedFactors[k][j]*b[k];}\n+    Vec3 x{};for(int k=2;k>=0;--k){double y=b[k];\n+      for(int j=k+1;j<3;++j)y-=bridgeCachedLU[k][j]*x[j];\n+      x[k]=y/bridgeCachedLU[k][k];}\n+    return x;\n+  }\n+  void bridgeStep(double step,bool useInvariantCache=false){\n     if(opt.bridge<=0){for(auto &z:board)z.force=0;return;}\n     Vec3 boardV{},sum{},beta{};\n-    for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=z.port[g]*z.w*z.p;\n+    for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=(useInvariantCache?z.portOmega[g]:z.port[g]*z.w)*z.p;\n     for(auto &st:strings){\n       auto &k=keys[st.note-21];\n       if(!opt.sympathetic&&!k.everStruck){st.velocity=0;st.force=0;continue;}\n-      double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n+      double r,den,ratio;\n+      if(useInvariantCache){\n+        if(st.bridgeCachedStep!=step||st.bridgeCachedScale!=opt.bridge||\n+           st.bridgeCachedResistance!=st.resistance||st.bridgeCachedCompliance!=st.compliance){\n+          st.bridgeR=st.resistance*opt.bridge;\n+          st.bridgeDen=1+.5*step*st.bridgeR*st.compliance;\n+          st.bridgeRatio=st.bridgeR/st.bridgeDen;\n+          st.bridgeCachedStep=step;st.bridgeCachedScale=opt.bridge;\n+          st.bridgeCachedResistance=st.resistance;st.bridgeCachedCompliance=st.compliance;\n+        }\n+        r=st.bridgeR;den=st.bridgeDen;ratio=st.bridgeRatio;\n+      }else{r=st.resistance*opt.bridge;den=1+.5*step*r*st.compliance;ratio=r/den;}\n       st.velocity=st.m.portVelocity();\n       st.force=-r*(st.velocity-boardV[st.group])/den;\n-      sum[st.group]+=st.force;beta[st.group]+=r/den;\n+      sum[st.group]+=st.force;beta[st.group]+=ratio;\n     }\n     Mat3 mat{};for(int g=0;g<3;++g)for(int h=0;h<3;++h)mat[g][h]=(g==h?1:0)+.5*step*beta[g]*boardGram[g][h];\n-    Vec3 total=solve3(mat,sum),correction{};\n+    Vec3 total=useInvariantCache?bridgeSolveCached(mat,sum):solve3(mat,sum);Vec3 correction{};\n     for(int g=0;g<3;++g)for(int h=0;h<3;++h)correction[g]+=.5*step*boardGram[g][h]*total[h];\n     for(auto &st:strings){\n       auto &k=keys[st.note-21];if(!opt.sympathetic&&!k.everStruck)continue;\n-      double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n+      double r=useInvariantCache?st.bridgeR:st.resistance*opt.bridge;\n+      double den=useInvariantCache?st.bridgeDen:1+.5*step*r*st.compliance;\n       st.force-=r*correction[st.group]/den;st.m.portImpulse(step*st.force);\n     }\n     for(auto &z:board){double force=0;for(int g=0;g<3;++g)force-=z.port[g]*total[g];z.force=force;z.p+=step*force/z.w;}\n@@ -421,10 +477,10 @@\n     if(frame%64==0){pedal+=(1-std::exp(-64*dt/.012))*(pedalTarget-pedal);setDamping();}\n     // The adjacent bridge half steps coalesce into one full step between\n     // oscillator steps (zero initial velocity makes the first half a no-op).\n-    oscillators();unisonStep();bridgeStep(dt);\n+    oscillators();unisonStep();bridgeStep(dt,true);\n     std::array<double,2> out{};\n     // Radiated pressure proxy: soundboard acceleration observed at two points.\n-    for(auto &z:board){double acc=-z.w*z.w*z.q-2*z.sigma*z.w*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n+    for(auto &z:board){double acc=z.accelerationQ*z.q-z.accelerationP*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n     if(opt.captureStems){lastStems={};std::array<double,2> baseTotal{};\n       for(auto &st:strings){auto &m=st.m;for(size_t j=0;j<m.size();++j){int pol=m.polarization[j];\n         double l=m.baseQL[j]*m.q[j]+m.basePL[j]*m.p[j],r=m.baseQR[j]*m.q[j]+m.basePR[j]*m.p[j];\n",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.054302926,
+          "realtime_factor": 5.86943693143,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.05374,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.026470953,
+          "realtime_factor": 5.78991700857,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.026453,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.137010932,
+          "realtime_factor": 6.10574552,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.135312,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "median_process_cpu_seconds": 2.05374,
+      "median_wall_seconds": 2.054302926,
+      "process_cpu_reduction_fraction": 0.02198712231137423
+    },
+    "hot_key": {
+      "source_sha256": "fa6089a1f82761e841f573fdbadc803852ce3503e3869f24b26ab025f710d317",
+      "compiled_source_sha256": "018183cf3e2bb78bc6053c610970b6569e220a37fc0ca8ad8e69b41e29dd5dd6",
+      "binary_sha256": "995bd18acb982cc0bc2d2a047d187e8739f5924cc3d3de3164f425b7368324a8",
+      "source_diff": "--- frozen/grand.cpp\n+++ hot_key/grand.cpp\n@@ -85,6 +85,15 @@\n       double v=yp[i]*yd[i],y=yq[i];yq[i]=yc[i]*y+ys[i]*v;yp[i]=yc[i]*v-ys[i]*y;\n     }\n   }\n+  void freeDampedStep(){\n+    double *__restrict yq=q.data(),*__restrict yp=p.data();\n+    const double *__restrict yc=c.data(),*__restrict ys=s.data(),*__restrict yd=damp.data();\n+    for(size_t i=0;i<size();++i){\n+      double v=yp[i]*yd[i],y=yq[i];\n+      yq[i]=yc[i]*y+ys[i]*v;\n+      double rotated=yc[i]*v-ys[i]*y;yp[i]=rotated*yd[i];\n+    }\n+  }\n   void finishDamping(){\n     double *__restrict yp=p.data();const double *__restrict yd=damp.data();\n     for(size_t i=0;i<size();++i)yp[i]*=yd[i];\n@@ -111,9 +120,17 @@\n   Modes m;\n   int note=60,unison=0,group=0;\n   double resistance=.85,compliance=0,velocity=0,force=0;\n+  // Candidate invariant caches: identical operations, memoized only while the\n+  // source resistance/compliance/step/bridge factor remain bitwise unchanged.\n+  double bridgeR=0,bridgeDen=1,bridgeRatio=0;\n+  double bridgeCachedStep=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedScale=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedResistance=std::numeric_limits<double>::quiet_NaN();\n+  double bridgeCachedCompliance=std::numeric_limits<double>::quiet_NaN();\n };\n struct Key {\n   std::vector<int> strings;\n+  size_t unisonBegin=0,unisonEnd=0;\n   double f0=0,B=0,length=0,mu=0,mass=.008,K=1e9,power=2.5;\n   double hammerX=0,hammerV=0,age=0,maxForce=0,contactSeconds=0,contactCompliance=0,velocityExponent=1.55;\n   bool down=false,hammerActive=false,everStruck=false;\n@@ -124,6 +141,8 @@\n   double q=0,p=0,w=0,c=0,s=0,damp=1,sigma=0,force=0;\n   Vec3 port{};\n   std::array<double,2> mic{};\n+  Vec3 portOmega{};\n+  double accelerationQ=0,accelerationP=0;\n };\n struct Options {\n   int sampleRate=192000;\n@@ -146,6 +165,9 @@\n   std::vector<BoardMode> board;\n   std::vector<UnisonPort> unisonPorts;\n   Mat3 boardGram{};\n+  Mat3 bridgeCachedInput{},bridgeCachedLU{},bridgeCachedFactors{};\n+  std::array<int,3> bridgeCachedPivots{};\n+  bool bridgeCachedLUValid=false;\n   double maxForce=0,contactTime=0,maxContactResidual=0;\n   uint64_t forceSolves=0;\n   double maxEnergy=0;\n@@ -229,6 +251,7 @@\n         k.strings.push_back((int)strings.size());strings.push_back(std::move(st));\n       }\n       k.contactCompliance+=dt*dt/(2*k.mass);\n+      k.unisonBegin=unisonPorts.size();\n       if(opt.calibrated){\n         int countModes=(int)strings[k.strings.front()].m.size();\n         for(int j=0;j<countModes;++j){\n@@ -248,6 +271,7 @@\n           unisonPorts.push_back(std::move(port));\n         }\n       }\n+      k.unisonEnd=unisonPorts.size();\n     }\n     // Reduced orthotropic plate, with rib/boundary corrections and three\n     // spatial bridge ports. Modes are analytic and intentionally not a 3-D FE fit.\n@@ -277,6 +301,9 @@\n         double x=ch?.63:.37,y=ch?.60:.39;\n         z.mic[ch]=radiation*(.58*std::sin(pi*v.m*x)*std::sin(pi*v.n*y)+.42*(v.m%2&&v.n%2?1.0:0.0));\n       }\n+      for(int g=0;g<3;++g)z.portOmega[g]=z.port[g]*z.w;\n+      z.accelerationQ=-z.w*z.w;\n+      z.accelerationP=2*z.sigma*z.w;\n       board.push_back(z);\n     }\n     for(auto &z:board)for(int a=0;a<3;++a)for(int b=0;b<3;++b)boardGram[a][b]+=z.port[a]*z.port[b];\n@@ -320,8 +347,8 @@\n       }\n     }\n   }\n-  void unisonStep(){\n-    for(auto &u:unisonPorts){\n+  void unisonRange(size_t first,size_t end){\n+    for(size_t index=first;index<end;++index){auto &u=unisonPorts[index];\n       double sum=u.omega[0]* *u.velocityState[0];\n       if(u.count>1)sum+=u.omega[1]* *u.velocityState[1];\n       if(u.count>2)sum+=u.omega[2]* *u.velocityState[2];\n@@ -330,6 +357,12 @@\n       if(u.count>1)*u.velocityState[1]-=impulse*u.inverseOmega[1];\n       if(u.count>2)*u.velocityState[2]-=impulse*u.inverseOmega[2];\n     }\n+  }\n+\n+  void unisonStep(){unisonRange(0,unisonPorts.size());}\n+  void finishKeyPorts(Key &k){\n+    unisonRange(k.unisonBegin,k.unisonEnd);\n+    if(opt.sympathetic||k.everStruck)for(int i:k.strings)strings[i].velocity=strings[i].m.portVelocity();\n   }\n \n   void noteOn(int n,double vel){\n@@ -372,8 +405,9 @@\n     double f=.5*(lo+hi);maxContactResidual=std::max(maxContactResidual,std::abs(residual(f))/(1+f));++forceSolves;\n     return f;\n   }\n-  void oscillators(){\n+  void oscillators(bool fuseKeyPorts=false){\n     for(auto &k:keys){\n+      if(!k.hammerActive){for(int i:k.strings)strings[i].m.freeDampedStep();if(fuseKeyPorts)finishKeyPorts(k);continue;}\n       double y0=0;\n       if(k.hammerActive)for(int i:k.strings)y0+=strings[i].m.displacement();\n       for(int i:k.strings)strings[i].m.freeStep();\n@@ -388,6 +422,7 @@\n         if((k.hammerV<0&&k.hammerX<yf-.002)||k.age>.040)k.hammerActive=false;\n       }\n       for(int i:k.strings)strings[i].m.finishDamping();\n+      if(fuseKeyPorts)finishKeyPorts(k);\n     }\n     for(auto &z:board){double v=z.p*z.damp,y=z.q;z.q=z.c*y+z.s*v;z.p=(z.c*v-z.s*y)*z.damp;}\n   }\n@@ -395,24 +430,55 @@\n   // All string ports couple to the same board; the three-dimensional Schur\n   // complement solves the full junction simultaneously. For R>=0 it cannot\n   // add mechanical energy. All 88 keys remain present, including unstruck ones.\n-  void bridgeStep(double step){\n+  Vec3 bridgeSolveCached(Mat3 a,Vec3 b){\n+    if(!bridgeCachedLUValid||a!=bridgeCachedInput){\n+      bridgeCachedInput=a;bridgeCachedFactors={};\n+      for(int k=0;k<3;++k){\n+        int pivot=k;for(int j=k+1;j<3;++j)if(std::abs(a[j][k])>std::abs(a[pivot][k]))pivot=j;\n+        if(std::abs(a[pivot][k])<1e-20)throw std::runtime_error(\"singular bridge\");\n+        bridgeCachedPivots[k]=pivot;std::swap(a[k],a[pivot]);\n+        for(int j=k+1;j<3;++j){double r=a[j][k]/a[k][k];bridgeCachedFactors[k][j]=r;\n+          for(int l=k;l<3;++l)a[j][l]-=r*a[k][l];}\n+      }\n+      bridgeCachedLU=a;bridgeCachedLUValid=true;\n+    }\n+    for(int k=0;k<3;++k){std::swap(b[k],b[bridgeCachedPivots[k]]);\n+      for(int j=k+1;j<3;++j)b[j]-=bridgeCachedFactors[k][j]*b[k];}\n+    Vec3 x{};for(int k=2;k>=0;--k){double y=b[k];\n+      for(int j=k+1;j<3;++j)y-=bridgeCachedLU[k][j]*x[j];\n+      x[k]=y/bridgeCachedLU[k][k];}\n+    return x;\n+  }\n+  void bridgeStep(double step,bool useInvariantCache=false,bool useVelocityCache=false){\n     if(opt.bridge<=0){for(auto &z:board)z.force=0;return;}\n     Vec3 boardV{},sum{},beta{};\n-    for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=z.port[g]*z.w*z.p;\n+    for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=(useInvariantCache?z.portOmega[g]:z.port[g]*z.w)*z.p;\n     for(auto &st:strings){\n       auto &k=keys[st.note-21];\n       if(!opt.sympathetic&&!k.everStruck){st.velocity=0;st.force=0;continue;}\n-      double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n-      st.velocity=st.m.portVelocity();\n+      double r,den,ratio;\n+      if(useInvariantCache){\n+        if(st.bridgeCachedStep!=step||st.bridgeCachedScale!=opt.bridge||\n+           st.bridgeCachedResistance!=st.resistance||st.bridgeCachedCompliance!=st.compliance){\n+          st.bridgeR=st.resistance*opt.bridge;\n+          st.bridgeDen=1+.5*step*st.bridgeR*st.compliance;\n+          st.bridgeRatio=st.bridgeR/st.bridgeDen;\n+          st.bridgeCachedStep=step;st.bridgeCachedScale=opt.bridge;\n+          st.bridgeCachedResistance=st.resistance;st.bridgeCachedCompliance=st.compliance;\n+        }\n+        r=st.bridgeR;den=st.bridgeDen;ratio=st.bridgeRatio;\n+      }else{r=st.resistance*opt.bridge;den=1+.5*step*r*st.compliance;ratio=r/den;}\n+      if(!useVelocityCache)st.velocity=st.m.portVelocity();\n       st.force=-r*(st.velocity-boardV[st.group])/den;\n-      sum[st.group]+=st.force;beta[st.group]+=r/den;\n+      sum[st.group]+=st.force;beta[st.group]+=ratio;\n     }\n     Mat3 mat{};for(int g=0;g<3;++g)for(int h=0;h<3;++h)mat[g][h]=(g==h?1:0)+.5*step*beta[g]*boardGram[g][h];\n-    Vec3 total=solve3(mat,sum),correction{};\n+    Vec3 total=useInvariantCache?bridgeSolveCached(mat,sum):solve3(mat,sum);Vec3 correction{};\n     for(int g=0;g<3;++g)for(int h=0;h<3;++h)correction[g]+=.5*step*boardGram[g][h]*total[h];\n     for(auto &st:strings){\n       auto &k=keys[st.note-21];if(!opt.sympathetic&&!k.everStruck)continue;\n-      double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n+      double r=useInvariantCache?st.bridgeR:st.resistance*opt.bridge;\n+      double den=useInvariantCache?st.bridgeDen:1+.5*step*r*st.compliance;\n       st.force-=r*correction[st.group]/den;st.m.portImpulse(step*st.force);\n     }\n     for(auto &z:board){double force=0;for(int g=0;g<3;++g)force-=z.port[g]*total[g];z.force=force;z.p+=step*force/z.w;}\n@@ -421,10 +487,10 @@\n     if(frame%64==0){pedal+=(1-std::exp(-64*dt/.012))*(pedalTarget-pedal);setDamping();}\n     // The adjacent bridge half steps coalesce into one full step between\n     // oscillator steps (zero initial velocity makes the first half a no-op).\n-    oscillators();unisonStep();bridgeStep(dt);\n+    oscillators(true);bridgeStep(dt,true,true);\n     std::array<double,2> out{};\n     // Radiated pressure proxy: soundboard acceleration observed at two points.\n-    for(auto &z:board){double acc=-z.w*z.w*z.q-2*z.sigma*z.w*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n+    for(auto &z:board){double acc=z.accelerationQ*z.q-z.accelerationP*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n     if(opt.captureStems){lastStems={};std::array<double,2> baseTotal{};\n       for(auto &st:strings){auto &m=st.m;for(size_t j=0;j<m.size();++j){int pol=m.polarization[j];\n         double l=m.baseQL[j]*m.q[j]+m.basePL[j]*m.p[j],r=m.baseQR[j]*m.q[j]+m.basePR[j]*m.p[j];\n",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.039893666,
+          "realtime_factor": 5.82826761714,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.037003,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.052690915,
+          "realtime_factor": 5.86483118571,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.052495,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 3.053443579,
+          "realtime_factor": 8.72412451143,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 3.047634,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "median_process_cpu_seconds": 2.052495,
+      "median_wall_seconds": 2.052690915,
+      "process_cpu_reduction_fraction": 0.022580004581146618
+    },
+    "impulse_radiation": {
+      "source_sha256": "02d5ae237006eb5e5a16fdea53e5cbf68c2b65b608e9738b9947fe9301c67ef7",
+      "compiled_source_sha256": "8f56e9b0dbbe44433234a95297aeb59ecd936610f461420372fe24de7100d912",
+      "binary_sha256": "dc028cdbb9a2c47e24920c3d9e98f1de7c33003f1e0dce66c86c0c68db8e76c7",
+      "source_diff": "--- frozen/grand.cpp\n+++ impulse_radiation/grand.cpp\n@@ -85,6 +85,16 @@\n       double v=yp[i]*yd[i],y=yq[i];yq[i]=yc[i]*y+ys[i]*v;yp[i]=yc[i]*v-ys[i]*y;\n     }\n   }\n+  // Exact-order free/damping fusion only while this key has no active hammer.\n+  void freeDampedStep(){\n+    double *__restrict yq=q.data(),*__restrict yp=p.data();\n+    const double *__restrict yc=c.data(),*__restrict ys=s.data(),*__restrict yd=damp.data();\n+    for(size_t i=0;i<size();++i){\n+      double v=yp[i]*yd[i],y=yq[i];\n+      yq[i]=yc[i]*y+ys[i]*v;\n+      double rotated=yc[i]*v-ys[i]*y;yp[i]=rotated*yd[i];\n+    }\n+  }\n   void finishDamping(){\n     double *__restrict yp=p.data();const double *__restrict yd=damp.data();\n     for(size_t i=0;i<size();++i)yp[i]*=yd[i];\n@@ -97,6 +107,21 @@\n   void portImpulse(double impulse){\n     double *__restrict yp=p.data();const double *__restrict bi=portInverse.data();\n     for(size_t i=0;i<size();++i)yp[i]+=bi[i]*impulse;\n+  }\n+  // Update and observe one string while its q/p state is hot. The reduction\n+  // order within the string is unchanged, and callers add cached strings in\n+  // the original order after the board's acceleration observation.\n+  std::array<double,2> portImpulseRadiation(double impulse){\n+#pragma clang fp reassociate(on)\n+    double *__restrict yp=p.data();\n+    const double *__restrict bi=portInverse.data();\n+    double l=0,r=0;\n+    for(size_t i=0;i<size();++i){\n+      yp[i]+=bi[i]*impulse;\n+      l+=radQL[i]*q[i]+radPL[i]*yp[i];\n+      r+=radQR[i]*q[i]+radPR[i]*yp[i];\n+    }\n+    return {l,r};\n   }\n   std::array<double,2> radiation()const{\n #pragma clang fp reassociate(on)\n@@ -111,6 +136,7 @@\n   Modes m;\n   int note=60,unison=0,group=0;\n   double resistance=.85,compliance=0,velocity=0,force=0;\n+  std::array<double,2> cachedRadiation{};\n };\n struct Key {\n   std::vector<int> strings;\n@@ -374,6 +400,7 @@\n   }\n   void oscillators(){\n     for(auto &k:keys){\n+      if(!k.hammerActive){for(int i:k.strings)strings[i].m.freeDampedStep();continue;}\n       double y0=0;\n       if(k.hammerActive)for(int i:k.strings)y0+=strings[i].m.displacement();\n       for(int i:k.strings)strings[i].m.freeStep();\n@@ -395,7 +422,7 @@\n   // All string ports couple to the same board; the three-dimensional Schur\n   // complement solves the full junction simultaneously. For R>=0 it cannot\n   // add mechanical energy. All 88 keys remain present, including unstruck ones.\n-  void bridgeStep(double step){\n+  void bridgeStep(double step,bool cacheRadiation=false){\n     if(opt.bridge<=0){for(auto &z:board)z.force=0;return;}\n     Vec3 boardV{},sum{},beta{};\n     for(auto &z:board)for(int g=0;g<3;++g)boardV[g]+=z.port[g]*z.w*z.p;\n@@ -411,9 +438,15 @@\n     Vec3 total=solve3(mat,sum),correction{};\n     for(int g=0;g<3;++g)for(int h=0;h<3;++h)correction[g]+=.5*step*boardGram[g][h]*total[h];\n     for(auto &st:strings){\n-      auto &k=keys[st.note-21];if(!opt.sympathetic&&!k.everStruck)continue;\n+      auto &k=keys[st.note-21];\n+      if(!opt.sympathetic&&!k.everStruck){\n+        if(cacheRadiation)st.cachedRadiation=st.m.radiation();\n+        continue;\n+      }\n       double r=st.resistance*opt.bridge,den=1+.5*step*r*st.compliance;\n-      st.force-=r*correction[st.group]/den;st.m.portImpulse(step*st.force);\n+      st.force-=r*correction[st.group]/den;\n+      if(cacheRadiation)st.cachedRadiation=st.m.portImpulseRadiation(step*st.force);\n+      else st.m.portImpulse(step*st.force);\n     }\n     for(auto &z:board){double force=0;for(int g=0;g<3;++g)force-=z.port[g]*total[g];z.force=force;z.p+=step*force/z.w;}\n   }\n@@ -421,7 +454,8 @@\n     if(frame%64==0){pedal+=(1-std::exp(-64*dt/.012))*(pedalTarget-pedal);setDamping();}\n     // The adjacent bridge half steps coalesce into one full step between\n     // oscillator steps (zero initial velocity makes the first half a no-op).\n-    oscillators();unisonStep();bridgeStep(dt);\n+    bool cachedRadiation=opt.calibrated&&piano_calibration::radiationEnabled&&opt.bridge>0;\n+    oscillators();unisonStep();bridgeStep(dt,cachedRadiation);\n     std::array<double,2> out{};\n     // Radiated pressure proxy: soundboard acceleration observed at two points.\n     for(auto &z:board){double acc=-z.w*z.w*z.q-2*z.sigma*z.w*z.p+z.force;for(int ch=0;ch<2;++ch)out[ch]+=acc*z.mic[ch];}\n@@ -431,7 +465,7 @@\n         baseTotal[0]+=l;baseTotal[1]+=r;\n         lastStems[pol][0]+=l+m.radQL[j]*m.q[j]+m.radPL[j]*m.p[j];lastStems[pol][1]+=r+m.radQR[j]*m.q[j]+m.radPR[j]*m.p[j];}}\n       for(int ch=0;ch<2;++ch)lastStems[2][ch]=out[ch]-baseTotal[ch];}\n-    if(opt.calibrated&&piano_calibration::radiationEnabled)for(auto &st:strings){auto r=st.m.radiation();out[0]+=r[0];out[1]+=r[1];}\n+    if(opt.calibrated&&piano_calibration::radiationEnabled)for(auto &st:strings){auto r=cachedRadiation?st.cachedRadiation:st.m.radiation();out[0]+=r[0];out[1]+=r[1];}\n     return out;\n   }\n   double energy()const{\n",
+      "runs": [
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 1.978097409,
+          "realtime_factor": 5.65170688286,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 1.97787,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.101203644,
+          "realtime_factor": 6.00343898286,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.098441,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        },
+        {
+          "sample_rate": 48000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 2.002688288,
+          "realtime_factor": 5.72196653714,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.38449798492,
+          "raw_rms": 0.304157889208,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.4280974695,
+          "accumulated_contact_seconds": 0.0103958333333,
+          "contact_solves": 504,
+          "contact_max_relative_residual": 5.2417772308e-13,
+          "final_mechanical_energy_J": 0.00236367999773,
+          "process_cpu_seconds": 2.002708,
+          "wav_sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45",
+          "final_state_sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941",
+          "byte_identical_to_baseline": true,
+          "double_state_byte_identical_to_baseline": true
+        }
+      ],
+      "physical_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "median_process_cpu_seconds": 2.002708,
+      "median_wall_seconds": 2.002688288,
+      "process_cpu_reduction_fraction": 0.046289104633482014
+    }
+  },
+  "limits": "Full preserved topology. Identical compiler flags and float-WAV byte comparison. Process CPU timing reduces scheduling noise but remains shared-host evidence, not real-time/SDK/DAW certification. No physics or modal truncation is authorized by this probe.",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "baseline_stage_profile": {
+    "seconds": {
+      "frames": 16800,
+      "controls": 0.026941262,
+      "oscillators": 0.610240682,
+      "unisons": 0.418778904,
+      "bridge": 0.444219284,
+      "radiation": 0.626153214
+    },
+    "fractions": {
+      "controls": 0.012670290879217581,
+      "oscillators": 0.2869920105179971,
+      "unisons": 0.1969488484897231,
+      "bridge": 0.20891328485049304,
+      "radiation": 0.29447556526256913
+    }
+  },
+  "extra_parity_cases": {
+    "96k_stems": {
+      "sample_rate": 96000,
+      "variants": {
+        "baseline": {
+          "hashes": {
+            "audio": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4",
+            "state": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f",
+            "primary": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc",
+            "secondary": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3",
+            "transient": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 96000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 6.68179007,
+            "realtime_factor": 19.0908287714,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.39790992141,
+            "raw_rms": 0.304510241894,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4956387865,
+            "accumulated_contact_seconds": 0.0103854166667,
+            "contact_solves": 1003,
+            "contact_max_relative_residual": 5.70943020505e-13,
+            "final_mechanical_energy_J": 0.00242676429215,
+            "process_cpu_seconds": 6.680796
+          }
+        },
+        "free_damping_fusion": {
+          "hashes": {
+            "audio": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4",
+            "state": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f",
+            "primary": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc",
+            "secondary": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3",
+            "transient": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 96000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 6.50607215,
+            "realtime_factor": 18.5887775714,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.39790992141,
+            "raw_rms": 0.304510241894,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4956387865,
+            "accumulated_contact_seconds": 0.0103854166667,
+            "contact_solves": 1003,
+            "contact_max_relative_residual": 5.70943020505e-13,
+            "final_mechanical_energy_J": 0.00242676429215,
+            "process_cpu_seconds": 6.498912
+          }
+        },
+        "invariant_cache": {
+          "hashes": {
+            "audio": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4",
+            "state": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f",
+            "primary": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc",
+            "secondary": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3",
+            "transient": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 96000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 6.683414113,
+            "realtime_factor": 19.0954688943,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.39790992141,
+            "raw_rms": 0.304510241894,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4956387865,
+            "accumulated_contact_seconds": 0.0103854166667,
+            "contact_solves": 1003,
+            "contact_max_relative_residual": 5.70943020505e-13,
+            "final_mechanical_energy_J": 0.00242676429215,
+            "process_cpu_seconds": 6.682525
+          }
+        },
+        "combined": {
+          "hashes": {
+            "audio": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4",
+            "state": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f",
+            "primary": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc",
+            "secondary": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3",
+            "transient": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 96000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 6.554261092,
+            "realtime_factor": 18.7264602629,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.39790992141,
+            "raw_rms": 0.304510241894,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4956387865,
+            "accumulated_contact_seconds": 0.0103854166667,
+            "contact_solves": 1003,
+            "contact_max_relative_residual": 5.70943020505e-13,
+            "final_mechanical_energy_J": 0.00242676429215,
+            "process_cpu_seconds": 6.553909
+          }
+        },
+        "hot_key": {
+          "hashes": {
+            "audio": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4",
+            "state": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f",
+            "primary": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc",
+            "secondary": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3",
+            "transient": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 96000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 6.632151366,
+            "realtime_factor": 18.9490039029,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.39790992141,
+            "raw_rms": 0.304510241894,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4956387865,
+            "accumulated_contact_seconds": 0.0103854166667,
+            "contact_solves": 1003,
+            "contact_max_relative_residual": 5.70943020505e-13,
+            "final_mechanical_energy_J": 0.00242676429215,
+            "process_cpu_seconds": 6.631655
+          }
+        },
+        "impulse_radiation": {
+          "hashes": {
+            "audio": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4",
+            "state": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f",
+            "primary": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc",
+            "secondary": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3",
+            "transient": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 96000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 6.627447041,
+            "realtime_factor": 18.9355629743,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.39790992141,
+            "raw_rms": 0.304510241894,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4956387865,
+            "accumulated_contact_seconds": 0.0103854166667,
+            "contact_solves": 1003,
+            "contact_max_relative_residual": 5.70943020505e-13,
+            "final_mechanical_energy_J": 0.00242676429215,
+            "process_cpu_seconds": 6.626733
+          }
+        }
+      }
+    },
+    "no_sympathetic": {
+      "sample_rate": 48000,
+      "variants": {
+        "baseline": {
+          "hashes": {
+            "audio": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9",
+            "state": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.586026793,
+            "realtime_factor": 4.53150512286,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.5867499656,
+            "raw_rms": 0.357181791372,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4281160408,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 4.74701970084e-13,
+            "final_mechanical_energy_J": 0.00236373855147,
+            "process_cpu_seconds": 1.585896
+          }
+        },
+        "free_damping_fusion": {
+          "hashes": {
+            "audio": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9",
+            "state": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.532914832,
+            "realtime_factor": 4.37975666286,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.5867499656,
+            "raw_rms": 0.357181791372,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4281160408,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 4.74701970084e-13,
+            "final_mechanical_energy_J": 0.00236373855147,
+            "process_cpu_seconds": 1.532879
+          }
+        },
+        "invariant_cache": {
+          "hashes": {
+            "audio": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9",
+            "state": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.752309092,
+            "realtime_factor": 5.00659740571,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.5867499656,
+            "raw_rms": 0.357181791372,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4281160408,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 4.74701970084e-13,
+            "final_mechanical_energy_J": 0.00236373855147,
+            "process_cpu_seconds": 1.752099
+          }
+        },
+        "combined": {
+          "hashes": {
+            "audio": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9",
+            "state": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.957501156,
+            "realtime_factor": 5.59286044571,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.5867499656,
+            "raw_rms": 0.357181791372,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4281160408,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 4.74701970084e-13,
+            "final_mechanical_energy_J": 0.00236373855147,
+            "process_cpu_seconds": 1.957132
+          }
+        },
+        "hot_key": {
+          "hashes": {
+            "audio": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9",
+            "state": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.646542718,
+            "realtime_factor": 4.70440776571,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.5867499656,
+            "raw_rms": 0.357181791372,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4281160408,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 4.74701970084e-13,
+            "final_mechanical_energy_J": 0.00236373855147,
+            "process_cpu_seconds": 1.646377
+          }
+        },
+        "impulse_radiation": {
+          "hashes": {
+            "audio": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9",
+            "state": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.540643673,
+            "realtime_factor": 4.40183906571,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.5867499656,
+            "raw_rms": 0.357181791372,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4281160408,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 4.74701970084e-13,
+            "final_mechanical_energy_J": 0.00236373855147,
+            "process_cpu_seconds": 1.540482
+          }
+        }
+      }
+    },
+    "bridge_zero": {
+      "sample_rate": 48000,
+      "variants": {
+        "baseline": {
+          "hashes": {
+            "audio": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16",
+            "state": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.542000408,
+            "realtime_factor": 4.40571545143,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0,
+            "raw_rms": 0,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4280850572,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 5.93366158098e-13,
+            "final_mechanical_energy_J": 0.00241239915662,
+            "process_cpu_seconds": 1.541804
+          }
+        },
+        "free_damping_fusion": {
+          "hashes": {
+            "audio": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16",
+            "state": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.465291651,
+            "realtime_factor": 4.18654757429,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0,
+            "raw_rms": 0,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4280850572,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 5.93366158098e-13,
+            "final_mechanical_energy_J": 0.00241239915662,
+            "process_cpu_seconds": 1.464707
+          }
+        },
+        "invariant_cache": {
+          "hashes": {
+            "audio": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16",
+            "state": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.519840017,
+            "realtime_factor": 4.34240004857,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0,
+            "raw_rms": 0,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4280850572,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 5.93366158098e-13,
+            "final_mechanical_energy_J": 0.00241239915662,
+            "process_cpu_seconds": 1.519804
+          }
+        },
+        "combined": {
+          "hashes": {
+            "audio": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16",
+            "state": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.479445585,
+            "realtime_factor": 4.22698738571,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0,
+            "raw_rms": 0,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4280850572,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 5.93366158098e-13,
+            "final_mechanical_energy_J": 0.00241239915662,
+            "process_cpu_seconds": 1.479341
+          }
+        },
+        "hot_key": {
+          "hashes": {
+            "audio": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16",
+            "state": "052fa0d0df97df4ddf3dfefa9eeed3cb4395160a4499f04bc59c145057bcc9b7"
+          },
+          "all_bytes_identical": false,
+          "changed_files": [
+            "state"
+          ],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.839330222,
+            "realtime_factor": 5.25522920571,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0,
+            "raw_rms": 0,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4280850572,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 5.93366158098e-13,
+            "final_mechanical_energy_J": 0.00241239915662,
+            "process_cpu_seconds": 1.837925
+          }
+        },
+        "impulse_radiation": {
+          "hashes": {
+            "audio": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16",
+            "state": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 1.558343184,
+            "realtime_factor": 4.45240909714,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0,
+            "raw_rms": 0,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.4280850572,
+            "accumulated_contact_seconds": 0.0103958333333,
+            "contact_solves": 504,
+            "contact_max_relative_residual": 5.93366158098e-13,
+            "final_mechanical_energy_J": 0.00241239915662,
+            "process_cpu_seconds": 1.558203
+          }
+        }
+      }
+    },
+    "uncalibrated": {
+      "sample_rate": 48000,
+      "variants": {
+        "baseline": {
+          "hashes": {
+            "audio": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890",
+            "state": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 0.818746599,
+            "realtime_factor": 2.33927599714,
+            "string_count": 230,
+            "string_modes": 18425,
+            "board_modes": 475,
+            "raw_peak": 2.92742955793,
+            "raw_rms": 0.770017307304,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.3827502776,
+            "accumulated_contact_seconds": 0.0112291666667,
+            "contact_solves": 543,
+            "contact_max_relative_residual": 5.93383574294e-13,
+            "final_mechanical_energy_J": 0.00145342727458,
+            "process_cpu_seconds": 0.818151
+          }
+        },
+        "free_damping_fusion": {
+          "hashes": {
+            "audio": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890",
+            "state": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 0.77904981,
+            "realtime_factor": 2.2258566,
+            "string_count": 230,
+            "string_modes": 18425,
+            "board_modes": 475,
+            "raw_peak": 2.92742955793,
+            "raw_rms": 0.770017307304,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.3827502776,
+            "accumulated_contact_seconds": 0.0112291666667,
+            "contact_solves": 543,
+            "contact_max_relative_residual": 5.93383574294e-13,
+            "final_mechanical_energy_J": 0.00145342727458,
+            "process_cpu_seconds": 0.778982
+          }
+        },
+        "invariant_cache": {
+          "hashes": {
+            "audio": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890",
+            "state": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 0.828797307,
+            "realtime_factor": 2.36799230571,
+            "string_count": 230,
+            "string_modes": 18425,
+            "board_modes": 475,
+            "raw_peak": 2.92742955793,
+            "raw_rms": 0.770017307304,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.3827502776,
+            "accumulated_contact_seconds": 0.0112291666667,
+            "contact_solves": 543,
+            "contact_max_relative_residual": 5.93383574294e-13,
+            "final_mechanical_energy_J": 0.00145342727458,
+            "process_cpu_seconds": 0.828787
+          }
+        },
+        "combined": {
+          "hashes": {
+            "audio": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890",
+            "state": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 0.750690378,
+            "realtime_factor": 2.14482965143,
+            "string_count": 230,
+            "string_modes": 18425,
+            "board_modes": 475,
+            "raw_peak": 2.92742955793,
+            "raw_rms": 0.770017307304,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.3827502776,
+            "accumulated_contact_seconds": 0.0112291666667,
+            "contact_solves": 543,
+            "contact_max_relative_residual": 5.93383574294e-13,
+            "final_mechanical_energy_J": 0.00145342727458,
+            "process_cpu_seconds": 0.750595
+          }
+        },
+        "hot_key": {
+          "hashes": {
+            "audio": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890",
+            "state": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 0.807495373,
+            "realtime_factor": 2.30712963714,
+            "string_count": 230,
+            "string_modes": 18425,
+            "board_modes": 475,
+            "raw_peak": 2.92742955793,
+            "raw_rms": 0.770017307304,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.3827502776,
+            "accumulated_contact_seconds": 0.0112291666667,
+            "contact_solves": 543,
+            "contact_max_relative_residual": 5.93383574294e-13,
+            "final_mechanical_energy_J": 0.00145342727458,
+            "process_cpu_seconds": 0.807503
+          }
+        },
+        "impulse_radiation": {
+          "hashes": {
+            "audio": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890",
+            "state": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+          },
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 0.755748961,
+            "realtime_factor": 2.15928274571,
+            "string_count": 230,
+            "string_modes": 18425,
+            "board_modes": 475,
+            "raw_peak": 2.92742955793,
+            "raw_rms": 0.770017307304,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.3827502776,
+            "accumulated_contact_seconds": 0.0112291666667,
+            "contact_solves": 543,
+            "contact_max_relative_residual": 5.93383574294e-13,
+            "final_mechanical_energy_J": 0.00145342727458,
+            "process_cpu_seconds": 0.754491
+          }
+        }
+      }
+    }
+  },
+  "parity_failures": [
+    {
+      "case": "bridge_zero",
+      "variant": "hot_key",
+      "changed_files": [
+        "state"
+      ]
+    }
+  ],
+  "all_audio_byte_identical": true,
+  "all_final_double_states_byte_identical": false
+}

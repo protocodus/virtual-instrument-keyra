@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "scope": "CMake staging check of the separately validated full acoustic research adapter; no default/API change.",
+  "configure_command": [
+    "cmake",
+    "-S",
+    ".",
+    "-B",
+    "build",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DKEYRA_FULL_FAST_CONTACT=ON",
+    "-DKEYRA_FULL_PRESSURE_SIMD=OFF"
+  ],
+  "built_targets": [
+    "keyra_full_acoustic_network_tests",
+    "keyra_full_acoustic_probe"
+  ],
+  "ctest_command": [
+    "ctest",
+    "--test-dir",
+    "build",
+    "-R",
+    "^full_acoustic_network$",
+    "--output-on-failure"
+  ],
+  "passed": true,
+  "test_seconds": 15.31,
+  "native_linux_link_wrappers_enabled": true,
+  "new_sanitizer_run": false,
+  "source_sha256": {
+    "CMakeLists.txt": "05abb0d958ac8f03a1a260621c16de8bdc255d4c2a049c89014b23c96afd8219",
+    "tests/full_acoustic_network_tests.cpp": "58091d99f73580d758665944dbe3e06fa857cf0e783fa6460268cd8bcf65213e",
+    "tools/probe_full_acoustic_network.cpp": "94067c86f169d5224755514ff2fa8c5f72b8626f68a83ed75577d41c81b931d7",
+    "tools/full_acoustic_network_support.h": "e00ebed65641b2099c8f9420057a58115ae8f2589849d96358f7622e1a4f0201",
+    "src/physics/Acoustics.cpp": "6d660a6f40ede14c95e05e617ba71d26aa60db11bff07379ea7e69f33c6c5898"
+  },
+  "test_log": {
+    "path": "out/full-acoustic-network/cmake/LastTest.log",
+    "sha256": "1815615d460332753b47c8446a92f47b8cb55a11c5cd2fa3414ddc78d6ebd5d5"
+  },
+  "existing_checks": {
+    "path": "Validation/full-acoustic-network-checks.json",
+    "sha256": "6df0a4057da5a6b077b5dc0c4944dc19b4a7d887ced367c0c613dcc448142a93"
+  }
+}

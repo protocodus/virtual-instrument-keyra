@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-26T17:03:53.546651+00:00",
+  "passed": true,
+  "scope": "Authenticated TRAIN-only real piano mechanism recording evidence; no fitting or default DSP change",
+  "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "license": "CC BY 3.0, Alexander Holm / Salamander Grand Piano V3",
+  "available_audio_files_metadata_only": 161,
+  "selected_source_files": 16,
+  "training_files_acquired_and_measured": 8,
+  "reserved_source_files_unopened": 8,
+  "training_ids": [
+    "key-release-A0",
+    "key-release-C4",
+    "key-release-C8",
+    "pedal-D1",
+    "pedal-U1",
+    "string-release-L-C4",
+    "string-release-S-C2",
+    "string-release-V3-C6"
+  ],
+  "reserved_ids": [
+    "key-release-C1",
+    "key-release-C3",
+    "key-release-C6",
+    "pedal-D2",
+    "pedal-U2",
+    "string-release-L-C6",
+    "string-release-S-C4",
+    "string-release-V3-C2"
+  ],
+  "train_eval_share_source_blob": false,
+  "split": {
+    "path": "References/Mechanisms/split.json",
+    "sha256": "71455bf0383f58563527520a14a5a9456169820dbee04fa20c4411943ae0895c"
+  },
+  "split_lock": {
+    "path": "References/Mechanisms/split-lock.json",
+    "sha256": "484a1508c3f4e06660995b7096013a172815317f49571d4f8d39c1cd351ef43a"
+  },
+  "locked_before_acquisition": {
+    "lock_utc": "2026-10-26T16:33:32.239954+00:00",
+    "all_observed_local_audio_mtimes_after_lock": true,
+    "note": "Observed local acquisition chronology plus ordered tool execution; filesystem times are not a forensic recording date."
+  },
+  "manifest": {
+    "path": "References/Mechanisms/manifest.json",
+    "sha256": "55be4ef0a118bafd9ae1350567d3dcde23ae87e1ffaa9e3235003750cbc37eaa"
+  },
+  "source_verification": {
+    "path": "References/Mechanisms/verification.json",
+    "sha256": "9e89d89d0c3002bcb0119508208002d59298c06fa13fd00b9e35cd66d5175507"
+  },
+  "features": {
+    "path": "References/Mechanisms/train_features.json",
+    "sha256": "fc6da513a2d7c83d8d9440986aeeebf46beca6d66002e906b7a2e4d7c775e34b"
+  },
+  "analysis_receipt": {
+    "path": "References/Mechanisms/analysis-receipt.json",
+    "sha256": "a1fd014d3cd678072733efa2eb0fb9798833bc7f6a0d9ffce84fa1593bb2ef4b"
+  },
+  "source_formats": {
+    "sample_rate": 48000,
+    "channels": 2,
+    "bits_per_raw_sample": 24,
+    "decoded_encoding": "s24le-interleaved"
+  },
+  "actual_loaded_measurement_pcm_bound_to_source": true,
+  "source_pcm_verified_independently_from_flac_and_wav": true,
+  "synthetic_guards": {
+    "checks": 10,
+    "passed": true,
+    "receipt": {
+      "path": "Validation/mechanism-reference-guards.json",
+      "sha256": "e8cd777ebe750fdb5af31e4f93da9a628b8fbb69702ba4d3c0312996939af7ae"
+    },
+    "tool": {
+      "path": "tools/check_mechanism_reference_guards.py",
+      "sha256": "58a8da23b2dc208e1619965997ea3a204fe33713fc5998763f16b2dd00b5abc2"
+    },
+    "real_or_reserved_audio_opened": false
+  },
+  "independent_review": {
+    "path": "Validation/mechanism-reference-review.json",
+    "sha256": "e728b2dfaf8d23bd99516d7a3e64bc54fe2abf6fb19dbb9c82a7fe6ee78e61ef"
+  },
+  "figure": {
+    "path": "References/Mechanisms/figures/training-summary.svg",
+    "sha256": "ef0f2710f9da0a9f778a4a1411065c5a585416f1d41a0c8cac96806a4c2e61fc"
+  },
+  "figure_visually_reviewed": true,
+  "figure_replot_reproduced_svg_hash": true,
+  "descriptive_training_summary": [
+    {
+      "id": "key-release-A0",
+      "duration_seconds": 0.45625,
+      "available_seconds_after_onset": 0.43325,
+      "detected_onset_seconds": 0.023,
+      "peak_envelope_time_seconds_after_onset": 0.2375,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.2556875,
+      "early_sub20hz_spectral_power_fraction": 3.876098109344089e-05,
+      "early_stereo": {
+        "right_minus_left_db": -0.9067569224464267,
+        "correlation": -0.22195126602390713,
+        "channel_rms": [
+          0.09782849248940267,
+          0.08813075995861107
+        ]
+      },
+      "free_source_coverage": {
+        "preset": "key_release",
+        "nominal_mode_frequencies_hz": [
+          1206.0,
+          1800.0,
+          3258.0
+        ],
+        "recorded_early_power_fraction_near_free_source_modes": 0.04269005741069862,
+        "half_bandwidth_rule": "max(native FFT spacing,5% center frequency)",
+        "recorded_early_power_fraction_below_lowest_free_source_mode": 0.9882576650843441,
+        "interpretation": "Descriptive free-source frequency coverage only; the connected body/string network can supply other frequencies and decay. This is not a whole-model error or fit objective."
+      }
+    },
+    {
+      "id": "key-release-C4",
+      "duration_seconds": 0.45625,
+      "available_seconds_after_onset": 0.41725,
+      "detected_onset_seconds": 0.039,
+      "peak_envelope_time_seconds_after_onset": 0.1025,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.14989583333333334,
+      "early_sub20hz_spectral_power_fraction": 1.7597604957335359e-06,
+      "early_stereo": {
+        "right_minus_left_db": 0.35019350259880877,
+        "correlation": -0.026589422065759483,
+        "channel_rms": [
+          0.1773805866183978,
+          0.18467825485050438
+        ]
+      },
+      "free_source_coverage": {
+        "preset": "key_release",
+        "nominal_mode_frequencies_hz": [
+          1206.0,
+          1800.0,
+          3258.0
+        ],
+        "recorded_early_power_fraction_near_free_source_modes": 0.0004249374555674472,
+        "half_bandwidth_rule": "max(native FFT spacing,5% center frequency)",
+        "recorded_early_power_fraction_below_lowest_free_source_mode": 0.9991677348243659,
+        "interpretation": "Descriptive free-source frequency coverage only; the connected body/string network can supply other frequencies and decay. This is not a whole-model error or fit objective."
+      }
+    },
+    {
+      "id": "key-release-C8",
+      "duration_seconds": 0.45625,
+      "available_seconds_after_onset": 0.43525,
+      "detected_onset_seconds": 0.021,
+      "peak_envelope_time_seconds_after_onset": 0.2325,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.29564583333333333,
+      "early_sub20hz_spectral_power_fraction": 6.0675366952379416e-05,
+      "early_stereo": {
+        "right_minus_left_db": -1.8034150723403877,
+        "correlation": -0.375714646432842,
+        "channel_rms": [
+          0.08606493888871657,
+          0.06992870909329059
+        ]
+      },
+      "free_source_coverage": {
+        "preset": "key_release",
+        "nominal_mode_frequencies_hz": [
+          1206.0,
+          1800.0,
+          3258.0
+        ],
+        "recorded_early_power_fraction_near_free_source_modes": 0.0014312543146596417,
+        "half_bandwidth_rule": "max(native FFT spacing,5% center frequency)",
+        "recorded_early_power_fraction_below_lowest_free_source_mode": 0.9976663531307615,
+        "interpretation": "Descriptive free-source frequency coverage only; the connected body/string network can supply other frequencies and decay. This is not a whole-model error or fit objective."
+      }
+    },
+    {
+      "id": "pedal-D1",
+      "duration_seconds": 6.3778958333333335,
+      "available_seconds_after_onset": 6.3698958333333335,
+      "detected_onset_seconds": 0.008,
+      "peak_envelope_time_seconds_after_onset": 0.0275,
+      "recorded_90_percent_energy_time_after_onset_seconds": 3.5691041666666665,
+      "early_sub20hz_spectral_power_fraction": 0.33368012654800333,
+      "early_stereo": {
+        "right_minus_left_db": -1.702823682984235,
+        "correlation": 0.7794510422535802,
+        "channel_rms": [
+          0.03044723193840145,
+          0.025026875400171514
+        ]
+      },
+      "free_source_coverage": {
+        "preset": "pedal",
+        "nominal_mode_frequencies_hz": [
+          90.45,
+          135.0,
+          244.35
+        ],
+        "recorded_early_power_fraction_near_free_source_modes": 0.1641844865880222,
+        "half_bandwidth_rule": "max(native FFT spacing,5% center frequency)",
+        "recorded_early_power_fraction_below_lowest_free_source_mode": 0.8556250227900369,
+        "interpretation": "Descriptive free-source frequency coverage only; the connected body/string network can supply other frequencies and decay. This is not a whole-model error or fit objective."
+      }
+    },
+    {
+      "id": "pedal-U1",
+      "duration_seconds": 0.6985208333333334,
+      "available_seconds_after_onset": 0.6975208333333334,
+      "detected_onset_seconds": 0.001,
+      "peak_envelope_time_seconds_after_onset": 0.1425,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.27539583333333334,
+      "early_sub20hz_spectral_power_fraction": 0.37968477907027115,
+      "early_stereo": {
+        "right_minus_left_db": -3.3323527598187668,
+        "correlation": 0.40765827699919444,
+        "channel_rms": [
+          0.010348639081473543,
+          0.007051241720520786
+        ]
+      },
+      "free_source_coverage": {
+        "preset": "pedal",
+        "nominal_mode_frequencies_hz": [
+          90.45,
+          135.0,
+          244.35
+        ],
+        "recorded_early_power_fraction_near_free_source_modes": 0.158310299879985,
+        "half_bandwidth_rule": "max(native FFT spacing,5% center frequency)",
+        "recorded_early_power_fraction_below_lowest_free_source_mode": 0.33465481704988714,
+        "interpretation": "Descriptive free-source frequency coverage only; the connected body/string network can supply other frequencies and decay. This is not a whole-model error or fit objective."
+      }
+    },
+    {
+      "id": "string-release-S-C2",
+      "duration_seconds": 2.017,
+      "available_seconds_after_onset": 2.016,
+      "detected_onset_seconds": 0.001,
+      "peak_envelope_time_seconds_after_onset": 0.0975,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.3017916666666667,
+      "early_sub20hz_spectral_power_fraction": 5.626788315543561e-07,
+      "early_stereo": {
+        "right_minus_left_db": 0.3869777257716884,
+        "correlation": -0.181319465749798,
+        "channel_rms": [
+          0.0019184591796954156,
+          0.0020058638390961013
+        ]
+      },
+      "free_source_coverage": null
+    },
+    {
+      "id": "string-release-L-C4",
+      "duration_seconds": 2.8387083333333334,
+      "available_seconds_after_onset": 2.8387083333333334,
+      "detected_onset_seconds": 0.0,
+      "peak_envelope_time_seconds_after_onset": 0.1325,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.21839583333333334,
+      "early_sub20hz_spectral_power_fraction": 1.9899439802661732e-07,
+      "early_stereo": {
+        "right_minus_left_db": -1.845771550830788,
+        "correlation": 0.0603773210395329,
+        "channel_rms": [
+          0.006326965191704045,
+          0.005115721195747177
+        ]
+      },
+      "free_source_coverage": null
+    },
+    {
+      "id": "string-release-V3-C6",
+      "duration_seconds": 2.1413333333333333,
+      "available_seconds_after_onset": 2.1373333333333333,
+      "detected_onset_seconds": 0.004,
+      "peak_envelope_time_seconds_after_onset": 0.1425,
+      "recorded_90_percent_energy_time_after_onset_seconds": 0.8419791666666666,
+      "early_sub20hz_spectral_power_fraction": 1.2335976553752383e-05,
+      "early_stereo": {
+        "right_minus_left_db": -2.1745950744361964,
+        "correlation": 0.5068255707727262,
+        "channel_rms": [
+          0.0003690347082973442,
+          0.00028730121355015895
+        ]
+      },
+      "free_source_coverage": null
+    }
+  ],
+  "unavailable_isolated_measurements": [
+    "finger/key contact",
+    "keybed contact",
+    "hammer strike",
+    "hammer return",
+    "physical impulse work",
+    "unique source/body separation",
+    "material species"
+  ],
+  "interpretation_limits": [
+    "rel files are key-release noise, despite upstream hammer label.",
+    "S/L release-resonance families can mix with additionalV3 family; individual files do not reconstruct whole release.",
+    "Free source coverage excludes the connected body/string network and is not a whole-model score.",
+    "Pedal-down/up tail differences and sub20Hz components have unknown event/capture/editing contributions.",
+    "Current full-core24Hz output high-pass must be treated consistently in future model/reference comparisons."
+  ],
+  "no_default_or_dsp_parameter_change": true,
+  "no_runtime_waveform_embedding": true,
+  "research_unchanged": true,
+  "documentation": [
+    {
+      "path": "References/Mechanisms/README.md",
+      "sha256": "c31f5beb44124e5471ca01c38f354c5ffc8afd409ad2fe930d94c85918cbc041"
+    },
+    {
+      "path": "docs/MECHANISM_REFERENCES.md",
+      "sha256": "2908fd767b4b76ed22f41133a13d4d4197da0c4febe5aa5f6a2e8a7817843186"
+    }
+  ],
+  "tools": [
+    {
+      "path": "tools/fetch_mechanism_references.py",
+      "sha256": "93a09954192c9492a8817c3ec19362cf24a7f442c2b97768f779ca56e3d582cf"
+    },
+    {
+      "path": "tools/analyze_mechanism_references.py",
+      "sha256": "40291fafab6cc6eaabcb92553da0741f9a22018df25b3d3e17bd79f8c4c5c4c9"
+    }
+  ],
+  "source_git_blob_sha1_verified": true,
+  "source_flac_sha256_verified": true,
+  "decoded_pcm_verified": true
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "passed": true,
+  "scope": "Independent read-only logic and synthetic review; no real or reserved audio opened",
+  "inputs": {
+    "tools/fetch_mechanism_references.py": "93a09954192c9492a8817c3ec19362cf24a7f442c2b97768f779ca56e3d582cf",
+    "tools/analyze_mechanism_references.py": "40291fafab6cc6eaabcb92553da0741f9a22018df25b3d3e17bd79f8c4c5c4c9",
+    "References/Mechanisms/manifest.json": "55be4ef0a118bafd9ae1350567d3dcde23ae87e1ffaa9e3235003750cbc37eaa",
+    "References/Mechanisms/split.json": "71455bf0383f58563527520a14a5a9456169820dbee04fa20c4411943ae0895c",
+    "References/Mechanisms/split-lock.json": "484a1508c3f4e06660995b7096013a172815317f49571d4f8d39c1cd351ef43a"
+  },
+  "checks": {
+    "stereo_power_parseval_even_odd_lengths": true,
+    "opposite_channel_phase_preserves_power": true,
+    "current_locked_metadata_valid": true,
+    "synthetic_short_window_censoring_without_padding": true,
+    "reserved_describe_rejected_before_audio_access": true,
+    "valid_flac_with_wrong_source_pcm_rejected": true,
+    "post_preflight_wav_replacement_now_rejected": true,
+    "replacement_after_snapshot_cannot_change_measurement": true,
+    "changed_loaded_array_now_rejected": true,
+    "reserved_file_presence_guard_metadata_only": true
+  },
+  "old_finding": {
+    "severity": "data-provenance race",
+    "issue": "describe verifies WAV PCM before wavfile.read but never binds the actual loaded measurement array to that PCM identity. Concurrent replacement is measured successfully while decoded_pcm still claims the old source.",
+    "synthetic_proof": "At the second WAV read, correct opposite-phase stereo was replaced with an in-phase fixture. Returned measured correlation changed\u22121\u2192+1 while decoded_pcm retained the old identity.",
+    "recommended_fix": "Hash loaded PCM24 array bytes and compare to pinned source PCM before feature extraction; optionally recheck source files afterward."
+  },
+  "old_finding_resolved": true,
+  "previous_review_sha256": "4f309cc76e2586b967f0f7b709c22e4ca27db43070a2f94d3b620ea73c961b75",
+  "previous_review_path": "out/mechanism-metadata-final-review-before-array-fix.json",
+  "resolution": "WAV bytes are snapshotted and container-hashed; the actual loaded PCM24 array, rate, channels and frames are authenticated before features. Returned identity describes that loaded array.",
+  "remaining_defects_found": [],
+  "formula_review": {
+    "fft": "One-sided Hann-window stereo-power normalization passes Parseval; it is window-weighted power, not unweighted integrated event energy.",
+    "censoring": "Requested windows stop at real sample support; short support flagged, no time padding.",
+    "preset": "Nominal free-source coverage explicitly excludes the connected body/string response."
+  },
+  "files_modified_outside_out": false,
+  "reserved_audio_opened": false
+}

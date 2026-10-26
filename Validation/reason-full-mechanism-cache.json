@@ -1,0 +1,568 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-10-26T18:37:14.598245+00:00",
+  "scope": "Mechanism/body projection cache in SDK-free experimental full Reason adapter",
+  "passed": true,
+  "option": {
+    "name": "KEYRA_RACK_FULL_MECHANISM_CACHE",
+    "default": true,
+    "requires": "KEYRA_BUILD_EXPERIMENTAL_FULL_MODEL=ON",
+    "native_and_scalar_select_same_option": true,
+    "compiler_extension_required": false,
+    "target_macro": "KEYRA_FULL_MECHANISM_CACHE",
+    "explicit_off_retains_original_calculation": true,
+    "fast_contact_default": true,
+    "pressure_simd_default": false
+  },
+  "compile_guard_checks": {
+    "default": [
+      {
+        "target": "native",
+        "effective_macros": {
+          "KEYRA_FULL_MECHANISM_CACHE": "1",
+          "KEYRA_FULL_FAST_CONTACT": "1",
+          "KEYRA_FULL_PRESSURE_SIMD": "0"
+        },
+        "strict_flags": true,
+        "scalar_vectorization_disabled": false,
+        "command": "/usr/bin/c++  -I/workspace/virtual-instrument-keyra/include -I/workspace/virtual-instrument-keyra/src/full_instrument -DKEYRA_FULL_MECHANISM_CACHE=0 -DKEYRA_FULL_FAST_CONTACT=0 -DKEYRA_FULL_PRESSURE_SIMD=1 -O3 -DNDEBUG -UKEYRA_FULL_MECHANISM_CACHE -DKEYRA_FULL_MECHANISM_CACHE=1 -Wall -Wextra -Wpedantic -fno-exceptions -fno-rtti -fno-builtin -ffp-contract=off -UKEYRA_FULL_PRESSURE_SIMD -DKEYRA_FULL_PRESSURE_SIMD=0 -UKEYRA_FULL_FAST_CONTACT -DKEYRA_FULL_FAST_CONTACT=1 -o CMakeFiles/keyra_rack_full_native_core.dir/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp.o -c /workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp"
+      },
+      {
+        "target": "scalar",
+        "effective_macros": {
+          "KEYRA_FULL_MECHANISM_CACHE": "1",
+          "KEYRA_FULL_FAST_CONTACT": "1",
+          "KEYRA_FULL_PRESSURE_SIMD": "0"
+        },
+        "strict_flags": true,
+        "scalar_vectorization_disabled": true,
+        "command": "/usr/bin/c++  -I/workspace/virtual-instrument-keyra/include -I/workspace/virtual-instrument-keyra/src/full_instrument -DKEYRA_FULL_MECHANISM_CACHE=0 -DKEYRA_FULL_FAST_CONTACT=0 -DKEYRA_FULL_PRESSURE_SIMD=1 -O3 -DNDEBUG -UKEYRA_FULL_MECHANISM_CACHE -DKEYRA_FULL_MECHANISM_CACHE=1 -fno-exceptions -fno-rtti -fno-builtin -ffp-contract=off -UKEYRA_FULL_PRESSURE_SIMD -DKEYRA_FULL_PRESSURE_SIMD=0 -UKEYRA_FULL_FAST_CONTACT -DKEYRA_FULL_FAST_CONTACT=1 -fno-tree-vectorize -o CMakeFiles/keyra_rack_full_scalar_core.dir/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp.o -c /workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp"
+      }
+    ],
+    "off": [
+      {
+        "target": "native",
+        "effective_macros": {
+          "KEYRA_FULL_MECHANISM_CACHE": "0",
+          "KEYRA_FULL_FAST_CONTACT": "1",
+          "KEYRA_FULL_PRESSURE_SIMD": "0"
+        },
+        "strict_flags": true,
+        "scalar_vectorization_disabled": false,
+        "command": "/usr/bin/c++  -I/workspace/virtual-instrument-keyra/include -I/workspace/virtual-instrument-keyra/src/full_instrument -DKEYRA_FULL_MECHANISM_CACHE=1 -DKEYRA_FULL_FAST_CONTACT=0 -DKEYRA_FULL_PRESSURE_SIMD=1 -O3 -DNDEBUG -UKEYRA_FULL_MECHANISM_CACHE -DKEYRA_FULL_MECHANISM_CACHE=0 -Wall -Wextra -Wpedantic -fno-exceptions -fno-rtti -fno-builtin -ffp-contract=off -UKEYRA_FULL_PRESSURE_SIMD -DKEYRA_FULL_PRESSURE_SIMD=0 -UKEYRA_FULL_FAST_CONTACT -DKEYRA_FULL_FAST_CONTACT=1 -o CMakeFiles/keyra_rack_full_native_core.dir/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp.o -c /workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp"
+      },
+      {
+        "target": "scalar",
+        "effective_macros": {
+          "KEYRA_FULL_MECHANISM_CACHE": "0",
+          "KEYRA_FULL_FAST_CONTACT": "1",
+          "KEYRA_FULL_PRESSURE_SIMD": "0"
+        },
+        "strict_flags": true,
+        "scalar_vectorization_disabled": true,
+        "command": "/usr/bin/c++  -I/workspace/virtual-instrument-keyra/include -I/workspace/virtual-instrument-keyra/src/full_instrument -DKEYRA_FULL_MECHANISM_CACHE=1 -DKEYRA_FULL_FAST_CONTACT=0 -DKEYRA_FULL_PRESSURE_SIMD=1 -O3 -DNDEBUG -UKEYRA_FULL_MECHANISM_CACHE -DKEYRA_FULL_MECHANISM_CACHE=0 -fno-exceptions -fno-rtti -fno-builtin -ffp-contract=off -UKEYRA_FULL_PRESSURE_SIMD -DKEYRA_FULL_PRESSURE_SIMD=0 -UKEYRA_FULL_FAST_CONTACT -DKEYRA_FULL_FAST_CONTACT=1 -fno-tree-vectorize -o CMakeFiles/keyra_rack_full_scalar_core.dir/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp.o -c /workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp"
+      }
+    ]
+  },
+  "compile_commands": {
+    "default": {
+      "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/compile_commands.json",
+      "sha256": "0276df3bce6153c3fbb4a547db3110d33f0665866f46b885e3319fe3f206d915"
+    },
+    "off": {
+      "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/off/compile_commands.json",
+      "sha256": "ee844652e363fd9ee0399e70043908ec7ac3f55afa84ede24258a3bac97c61eb"
+    }
+  },
+  "conflicting_global_macros": {
+    "default": {
+      "KEYRA_FULL_MECHANISM_CACHE": 0,
+      "KEYRA_FULL_FAST_CONTACT": 0,
+      "KEYRA_FULL_PRESSURE_SIMD": 1
+    },
+    "off": {
+      "KEYRA_FULL_MECHANISM_CACHE": 1,
+      "KEYRA_FULL_FAST_CONTACT": 0,
+      "KEYRA_FULL_PRESSURE_SIMD": 1
+    },
+    "effective_target_overrides_verified": true
+  },
+  "release_tests": {
+    "default": [
+      {
+        "name": "keyra_reason_full_adapter",
+        "passed": true,
+        "seconds": 8.9
+      },
+      {
+        "name": "keyra_reason_full_lua_contract",
+        "passed": true,
+        "seconds": 0.05
+      },
+      {
+        "name": "keyra_reason_full_scalar_adapter",
+        "passed": true,
+        "seconds": 9.56
+      }
+    ],
+    "off": [
+      {
+        "name": "keyra_reason_full_adapter",
+        "passed": true,
+        "seconds": 10.55
+      },
+      {
+        "name": "keyra_reason_full_lua_contract",
+        "passed": true,
+        "seconds": 0.04
+      },
+      {
+        "name": "keyra_reason_full_scalar_adapter",
+        "passed": true,
+        "seconds": 11.11
+      }
+    ]
+  },
+  "commands": [
+    {
+      "name": "default-configure",
+      "args": [
+        "/home/agent/.local/bin/cmake",
+        "-S",
+        "/workspace/reason-rack-extensions/Prototypes/Keyra",
+        "-B",
+        "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DKEYRA_INSTRUMENT_DIR=/workspace/virtual-instrument-keyra",
+        "-DKEYRA_BUILD_EXPERIMENTAL_FULL_MODEL=ON",
+        "-DCMAKE_CXX_FLAGS=-DKEYRA_FULL_MECHANISM_CACHE=0 -DKEYRA_FULL_FAST_CONTACT=0 -DKEYRA_FULL_PRESSURE_SIMD=1"
+      ],
+      "exit_code": 0,
+      "seconds": 0.5501633329986362,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-configure.log",
+      "log_sha256": "bd80adf64da3dd66c2e1615a5249319049781e71db8e509fbf27d4e893ca854b"
+    },
+    {
+      "name": "default-build",
+      "args": [
+        "/home/agent/.local/bin/cmake",
+        "--build",
+        "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default",
+        "-j2",
+        "--target",
+        "keyra_rack_full_host",
+        "keyra_rack_full_scalar_host"
+      ],
+      "exit_code": 0,
+      "seconds": 13.467547888998524,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-build.log",
+      "log_sha256": "90ff67c2c93198ab242552b5ca0dbecf2c8e4edbb1b2bb2a9c48d6e4c0e05ccb"
+    },
+    {
+      "name": "default-ctest",
+      "args": [
+        "/home/agent/.local/bin/ctest",
+        "--test-dir",
+        "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default",
+        "--output-on-failure",
+        "-R",
+        "^keyra_reason_full_(adapter|scalar_adapter|lua_contract)$"
+      ],
+      "exit_code": 0,
+      "seconds": 18.667649475999497,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-ctest.log",
+      "log_sha256": "dbee6b8afc199a54c558b28f3f809d06a9e7e36a0b1c513ae11b42c626df65db"
+    },
+    {
+      "name": "off-configure",
+      "args": [
+        "/home/agent/.local/bin/cmake",
+        "-S",
+        "/workspace/reason-rack-extensions/Prototypes/Keyra",
+        "-B",
+        "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/off",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DKEYRA_INSTRUMENT_DIR=/workspace/virtual-instrument-keyra",
+        "-DKEYRA_BUILD_EXPERIMENTAL_FULL_MODEL=ON",
+        "-DCMAKE_CXX_FLAGS=-DKEYRA_FULL_MECHANISM_CACHE=1 -DKEYRA_FULL_FAST_CONTACT=0 -DKEYRA_FULL_PRESSURE_SIMD=1",
+        "-DKEYRA_RACK_FULL_MECHANISM_CACHE=OFF"
+      ],
+      "exit_code": 0,
+      "seconds": 0.5613148960001126,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-configure.log",
+      "log_sha256": "d9d39f58de4b70b6e37cc6e68bf541fce8ce7b912c995e1e959725dbbcd47d06"
+    },
+    {
+      "name": "off-build",
+      "args": [
+        "/home/agent/.local/bin/cmake",
+        "--build",
+        "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/off",
+        "-j2",
+        "--target",
+        "keyra_rack_full_host",
+        "keyra_rack_full_scalar_host"
+      ],
+      "exit_code": 0,
+      "seconds": 13.296335538998392,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-build.log",
+      "log_sha256": "014c90e71ed8afe0373d8a7f7f90e2e46e3a7d70b02b59d25688d96f8ad06b72"
+    },
+    {
+      "name": "off-ctest",
+      "args": [
+        "/home/agent/.local/bin/ctest",
+        "--test-dir",
+        "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/off",
+        "--output-on-failure",
+        "-R",
+        "^keyra_reason_full_(adapter|scalar_adapter|lua_contract)$"
+      ],
+      "exit_code": 0,
+      "seconds": 21.818537274000846,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-ctest.log",
+      "log_sha256": "da9f1ee056ea441e6ce9b19690c496cef313c87e7b41174fdf17c93b31e0161c"
+    }
+  ],
+  "wrapper_groups_per_full_variant": 6,
+  "ordinary_and_nothrow_cpp_audio_allocations": 0,
+  "direct_malloc_or_aligned_api_allocations_intercepted": false,
+  "parity_scope": "Each full wrapper output exactly matches its canonical FullInstrument reference compiled with the same selected cache setting. Cross-setting equivalence belongs to separate canonical core validation.",
+  "topology": {
+    "strings": 230,
+    "string_modes": 17778,
+    "board_modes": 475
+  },
+  "touching_repeats": {
+    "press_frames": [
+      0,
+      4800,
+      9600
+    ],
+    "offsets": [
+      0,
+      7
+    ],
+    "canonical_partition_sizes": [
+      1,
+      3,
+      17,
+      64
+    ],
+    "requests": 3,
+    "safe_launches": 3,
+    "expired": 0,
+    "faults": 0,
+    "limits": "Finite-lift action proxy; no measured audible latency or action geometry."
+  },
+  "input_sha256": {
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/CMakeLists.txt": "7dfda637e0b22e13311bafee869eac9259c4e72b6144015a41399ffa5a57aab1",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/README.md": "13a4c47bd169bc1e0f39111229c11830584f69d32746ca693b1962dd4a641dbf",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/Resources/English/texts.lua": "8b21adc95c9f5938f2190435d9c5ee9c65bebc9970dced32bbcdb0f867fe8600",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/motherboard_def.lua": "c14a70354f67727a30eaeeb1f0dad2c6542dcf6be6796bc7d160a01eb55bd22d",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/realtime_controller.lua": "88ce8ccc1f17152274887ecdc52125a1019199d38c9c118dd6b0383853746215",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/JukeboxExports.cpp": "51ad9927e98fcf85030da154fed58fa2baff23692dec22ae65b43dd435e80318",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Keyra.cpp": "cdf85ed8015831b6f660ef59bc66cc47c3a7dd76b5f68a30d095f669eeaf1d81",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Keyra.h": "94a380a34d1bc3ca09cfcd71254be326fc9a89f235cfe7ee7fb75a0c68b7074c",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/README.md": "653431964e371738ffc6c9160379a415b920ed1e44113eb6f4b7ce8351aa1d33",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/build45.py": "04441f35c4fab247608940c4cbdae31dd1c3797e6be9298dae86b515d7b0a6cb",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/FullWrapperHost.cpp": "6c1acd65b7a2d2a4e576bcd62c56cbbbaca824bdab5ee74b21c576b183f2f272",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/full_lua_contract.py": "a25bdfc7cb92d44da8b55a40114fe63a86bea20b3582ddaac9d0fbfa4be4372d",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/lua_contract.py": "6d8479a27ac91f62a0ec70d5cdccced5889a5601e59af426ceeb29194c936032",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/mock/Jukebox.h": "02a6ad24709bd61a195a32c660578b3dd53698240ffc2c9f48e8a4690fd23599",
+    "/workspace/virtual-instrument-keyra/include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "/workspace/virtual-instrument-keyra/include/keyra/Parameters.h": "9e1e92f4d9619ae42ed858acac5ba664c59f3ef2295b08e201ed86be0d795ad3",
+    "/workspace/virtual-instrument-keyra/include/keyra/Piano.h": "f00fd8423faca88c3e66072938f92a58dd6985d3a3d5df15e8dc7a6470d1a4a8",
+    "/workspace/virtual-instrument-keyra/include/keyra/physics/ContactSolver.h": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+    "/workspace/virtual-instrument-keyra/include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "/workspace/virtual-instrument-keyra/include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "/workspace/virtual-instrument-keyra/src/Piano.cpp": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp": "98fe82de085d18c3d22ca32e5d38afa8621553152d851a3502df90c590b626c0",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/MechanismBodyCache.h": "698e51afd6b14c43e4c8b5a12be8f2ef205cc3295cb7291a1a8e8c867cd417d5",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36"
+  },
+  "source_snapshot_manifest": {
+    "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/source-inputs.json",
+    "sha256": "e5faa749b691f5485272e67ff32b1b13682617833b36a0f3060322828e94a4ba"
+  },
+  "runtime_source_inputs_unchanged_after_tests": true,
+  "binary_snapshots": {
+    "default": {
+      "keyra_rack_full_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/default-keyra_rack_full_host",
+        "sha256": "3ee32b3182f88e694694471c82b9d92836e1817ba413a1d86b3b15fad1ba7417"
+      },
+      "keyra_rack_full_scalar_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/default-keyra_rack_full_scalar_host",
+        "sha256": "10ab30447e3acc2277024d185cbadd90667dc2a0a22aa5a050fed2f523d3516a"
+      }
+    },
+    "off": {
+      "keyra_rack_full_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/off-keyra_rack_full_host",
+        "sha256": "2c791668c33cc74badd538edd4123d3c2b39cc9dee4f486f175cd28deaf15856"
+      },
+      "keyra_rack_full_scalar_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/off-keyra_rack_full_scalar_host",
+        "sha256": "230efd5afbf43ddcafcb4ecfed2fa62c5a540cee1e6a357acc7cd065eb7be6f2"
+      }
+    }
+  },
+  "link_checks": {
+    "default": {
+      "keyra_rack_full_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_host.dir/link.txt",
+        "sha256": "6e693be9fc52ca7959b719035762eacfee4fbff01e93985f645f650704e60d9c",
+        "openmp_runtime_linked": false
+      },
+      "keyra_rack_full_scalar_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_scalar_host.dir/link.txt",
+        "sha256": "ada1b02cc8f8a9b4d7994327a3d79e87c1e2e66e02d1e2b097450d9a882daf10",
+        "openmp_runtime_linked": false
+      }
+    },
+    "off": {
+      "keyra_rack_full_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/off/CMakeFiles/keyra_rack_full_host.dir/link.txt",
+        "sha256": "3ea5850b80479451a5dba6139df1be374722c17a25cb38d7997b6767aae69589",
+        "openmp_runtime_linked": false
+      },
+      "keyra_rack_full_scalar_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/off/CMakeFiles/keyra_rack_full_scalar_host.dir/link.txt",
+        "sha256": "7fe591849a8fc21afbd1938437c43a4842ac6b000808faa5b116fdf609ba250f",
+        "openmp_runtime_linked": false
+      }
+    }
+  },
+  "logs": {
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-LastTest.log": "14fe377cc6e8380cedaaffbe99c990f44df2ab144cc93fa4c5ca911eec5ced99",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-build.log": "90ff67c2c93198ab242552b5ca0dbecf2c8e4edbb1b2bb2a9c48d6e4c0e05ccb",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-configure.log": "bd80adf64da3dd66c2e1615a5249319049781e71db8e509fbf27d4e893ca854b",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/default-ctest.log": "dbee6b8afc199a54c558b28f3f809d06a9e7e36a0b1c513ae11b42c626df65db",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-LastTest.log": "96e943555c3964dfe7a5a57e5ff3b3ed2ff026a99b8c3f210860c4a17f4fa2b2",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-build.log": "014c90e71ed8afe0373d8a7f7f90e2e46e3a7d70b02b59d25688d96f8ad06b72",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-configure.log": "d9d39f58de4b70b6e37cc6e68bf541fce8ce7b912c995e1e959725dbbcd47d06",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/off-ctest.log": "da9f1ee056ea441e6ce9b19690c496cef313c87e7b41174fdf17c93b31e0161c",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-rebuild.log": "1ceabcc149fe1915ea5d8c0653db2c6682b1d67712b604c08d7865f8302840bc",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-after-native.log": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-after-scalar.log": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-before-native.log": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-before-scalar.log": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+    "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-build.log": "154ae5ef0b1f9feb2b9f1d8bfe0a05ba7f4391126b5d2f89d78ce4b062bd5124"
+  },
+  "new_adapter_sanitizer_run": false,
+  "sanitizer_scope": "Existing wrapper sanitizer receipts retain their frozen source scope; no wrapper state or callback routing change was made here. Canonical cache sanitizer validation is separate.",
+  "default_preview_and_build45_changed": false,
+  "new_dsp_copy_in_reason_repository": false,
+  "sdk_compiler_support_verified": false,
+  "sdk_build": false,
+  "reason_recon_execution": false,
+  "package_created": false,
+  "realtime_qualification": false,
+  "performance_claim_from_mock_test_times": false,
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "host": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "limits": [
+    "Linux GCC SDK-free authored mock only; MSVC flag forms are present but not executed. No SDK ABI or actual Reason support claim.",
+    "No samples, excitation change, device control, new runtime dependency, global fast math or FMA added.",
+    "Cache mechanical/numerical equivalence and whole-core performance belong to canonical validation. Wrapper tests verify event routing and audio parity against the selected canonical API.",
+    "All admitted repeats preserve ringing strings; impossible requests may defer, coalesce, cancel or expire."
+  ],
+  "post_template_header_validation": {
+    "checked_utc": "2026-10-26T18:43:42.658892+00:00",
+    "change": "Removed private cache header dependency on default PreparedModel and templated prepare/begin/finish over Model; arithmetic unchanged.",
+    "old_full_matrix_receipt": {
+      "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/pre-template-canonical-report.json",
+      "sha256": "2c3435df857a3a683e1c227a33342642d1e20c07bbe30ab5dc282a6280924af0",
+      "header_sha256": "698e51afd6b14c43e4c8b5a12be8f2ef205cc3295cb7291a1a8e8c867cd417d5"
+    },
+    "current_header": {
+      "path": "/workspace/virtual-instrument-keyra/src/full_instrument/MechanismBodyCache.h",
+      "sha256": "506404361fd99eaaacfbf68a3e5c70db25e12ef26935a1da8043e08df498b2a3",
+      "snapshot": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-source-snapshot/src/full_instrument/MechanismBodyCache.h"
+    },
+    "other_24_frozen_inputs_unchanged": true,
+    "rebuild": {
+      "command": [
+        "/home/agent/.local/bin/cmake",
+        "--build",
+        "out/reason-full-mechanism-cache/default",
+        "-j2",
+        "--target",
+        "keyra_rack_full_host",
+        "keyra_rack_full_scalar_host"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-rebuild.log",
+      "log_sha256": "1ceabcc149fe1915ea5d8c0653db2c6682b1d67712b604c08d7865f8302840bc"
+    },
+    "scope": "Both cache-enabled native/scalar targets recompiled, then short mechanism-active old/new library smoke. The complete two-setting six-test matrix was not rerun after this type-only header change.",
+    "smoke_source": {
+      "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke.cpp",
+      "sha256": "6549ea17cdb4b7e2d0f2c52071fa85a02f635caef82b0b62dc6ce52de9328432"
+    },
+    "smoke_cases": "Existing pedal/reconnect sample-offset case, plus32 batches with default mechanical level, sustained note, release, repeat and pedal change. Every sample exactly matches its selected canonical API.",
+    "smoke_cpp_compile": [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-ffp-contract=off",
+      "-DKEYRA_EXPERIMENTAL_FULL_MODEL=1",
+      "-I/workspace/reason-rack-extensions/Prototypes/Keyra",
+      "-I/workspace/reason-rack-extensions/Prototypes/Keyra/tests/mock",
+      "-Iinclude",
+      "-c",
+      "out/reason-full-mechanism-cache/template-smoke.cpp",
+      "-o",
+      "out/reason-full-mechanism-cache/template-smoke.o"
+    ],
+    "smoke_build_log": {
+      "path": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-build.log",
+      "sha256": "154ae5ef0b1f9feb2b9f1d8bfe0a05ba7f4391126b5d2f89d78ce4b062bd5124"
+    },
+    "smoke_results": {
+      "template-smoke-before-native": {
+        "link_command": [
+          "g++",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_host.dir/Keyra.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_host.dir/JukeboxExports.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/pre-template-libkeyra_rack_full_native_core.a",
+          "-o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-before-native"
+        ],
+        "run": [
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-before-native"
+        ],
+        "exit_code": 0,
+        "stdout": "Mechanism-active wrapper/header smoke: hash=f407de31ef8ebb7b; exact canonical output; zero ordinary C++ render allocations\n",
+        "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-before-native.log",
+        "log_sha256": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+        "binary_sha256": "aca2e9cef09d73f369afe33b534644777f9e7a8a74a2a27a6c47d6a52995c660",
+        "core_library_sha256": "833620bab9d40d3c8ff629598a5e5b4bc5edf700a9df52063b709474615dffb4"
+      },
+      "template-smoke-after-native": {
+        "link_command": [
+          "g++",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_host.dir/Keyra.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_host.dir/JukeboxExports.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/libkeyra_rack_full_native_core.a",
+          "-o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-after-native"
+        ],
+        "run": [
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-after-native"
+        ],
+        "exit_code": 0,
+        "stdout": "Mechanism-active wrapper/header smoke: hash=f407de31ef8ebb7b; exact canonical output; zero ordinary C++ render allocations\n",
+        "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-after-native.log",
+        "log_sha256": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+        "binary_sha256": "4fb38bc0c3041d907589e6d23b60dce1e8113d0779c916e86869427ca5236a08",
+        "core_library_sha256": "13cf9e32b6b076507f2c03afdf68501a4a639b5e1dff110565c4724eafc1a2cc"
+      },
+      "template-smoke-before-scalar": {
+        "link_command": [
+          "g++",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_scalar_host.dir/Keyra.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_scalar_host.dir/JukeboxExports.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/pre-template-libkeyra_rack_full_scalar_core.a",
+          "-o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-before-scalar"
+        ],
+        "run": [
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-before-scalar"
+        ],
+        "exit_code": 0,
+        "stdout": "Mechanism-active wrapper/header smoke: hash=f407de31ef8ebb7b; exact canonical output; zero ordinary C++ render allocations\n",
+        "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-before-scalar.log",
+        "log_sha256": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+        "binary_sha256": "4b377097844da77ed62c1920568d5fb03b422a55f5bf00d1ece7eb4a97f6eeb5",
+        "core_library_sha256": "d0ce200fa8cc4ecc7bfdbd573caf5fc2bf6a10ff39b1687d13e65f2560602a63"
+      },
+      "template-smoke-after-scalar": {
+        "link_command": [
+          "g++",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_scalar_host.dir/Keyra.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/CMakeFiles/keyra_rack_full_scalar_host.dir/JukeboxExports.cpp.o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/default/libkeyra_rack_full_scalar_core.a",
+          "-o",
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-after-scalar"
+        ],
+        "run": [
+          "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/template-smoke-after-scalar"
+        ],
+        "exit_code": 0,
+        "stdout": "Mechanism-active wrapper/header smoke: hash=f407de31ef8ebb7b; exact canonical output; zero ordinary C++ render allocations\n",
+        "log": "/workspace/reason-rack-extensions/Prototypes/Keyra/Docs/validation/full-mechanism-cache-20261026/template-smoke-after-scalar.log",
+        "log_sha256": "a2f98fe90ce39799b18651110e9a42cea4eaa67070310cbd87e511eb0da7ba17",
+        "binary_sha256": "cca43cb083bc2883f7d973cf20ad903abb19666d53ed801d7b141a2e277e5b6d",
+        "core_library_sha256": "42ed86a6435df95d4766e0d13ba0f22c9eef2d5cac51c03a2fcb90ad3681f2cc"
+      }
+    },
+    "before_after_output_hash": "f407de31ef8ebb7b",
+    "native_scalar_before_after_output_exact": true,
+    "ordinary_cpp_audio_allocations": 0,
+    "current_wrapper_binaries": {
+      "keyra_rack_full_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/post-template-default-keyra_rack_full_host",
+        "sha256": "b16232bc76ebdde48c2ee03ad2804e6226e227d9407b7e553b5dd46f8a0fe854"
+      },
+      "keyra_rack_full_scalar_host": {
+        "path": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/post-template-default-keyra_rack_full_scalar_host",
+        "sha256": "c4d426879a1a8c24eda2f14c206733291b0aaeef178ab0a8363a46187a875c13"
+      }
+    },
+    "current_runtime_input_sha256": {
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/CMakeLists.txt": "7dfda637e0b22e13311bafee869eac9259c4e72b6144015a41399ffa5a57aab1",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/README.md": "13a4c47bd169bc1e0f39111229c11830584f69d32746ca693b1962dd4a641dbf",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/Resources/English/texts.lua": "8b21adc95c9f5938f2190435d9c5ee9c65bebc9970dced32bbcdb0f867fe8600",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/motherboard_def.lua": "c14a70354f67727a30eaeeb1f0dad2c6542dcf6be6796bc7d160a01eb55bd22d",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/FullModel/realtime_controller.lua": "88ce8ccc1f17152274887ecdc52125a1019199d38c9c118dd6b0383853746215",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/JukeboxExports.cpp": "51ad9927e98fcf85030da154fed58fa2baff23692dec22ae65b43dd435e80318",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/Keyra.cpp": "cdf85ed8015831b6f660ef59bc66cc47c3a7dd76b5f68a30d095f669eeaf1d81",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/Keyra.h": "94a380a34d1bc3ca09cfcd71254be326fc9a89f235cfe7ee7fb75a0c68b7074c",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/README.md": "653431964e371738ffc6c9160379a415b920ed1e44113eb6f4b7ce8351aa1d33",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/build45.py": "04441f35c4fab247608940c4cbdae31dd1c3797e6be9298dae86b515d7b0a6cb",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/FullWrapperHost.cpp": "6c1acd65b7a2d2a4e576bcd62c56cbbbaca824bdab5ee74b21c576b183f2f272",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/full_lua_contract.py": "a25bdfc7cb92d44da8b55a40114fe63a86bea20b3582ddaac9d0fbfa4be4372d",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/lua_contract.py": "6d8479a27ac91f62a0ec70d5cdccced5889a5601e59af426ceeb29194c936032",
+      "/workspace/reason-rack-extensions/Prototypes/Keyra/tests/mock/Jukebox.h": "02a6ad24709bd61a195a32c660578b3dd53698240ffc2c9f48e8a4690fd23599",
+      "/workspace/virtual-instrument-keyra/include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+      "/workspace/virtual-instrument-keyra/include/keyra/Parameters.h": "9e1e92f4d9619ae42ed858acac5ba664c59f3ef2295b08e201ed86be0d795ad3",
+      "/workspace/virtual-instrument-keyra/include/keyra/Piano.h": "f00fd8423faca88c3e66072938f92a58dd6985d3a3d5df15e8dc7a6470d1a4a8",
+      "/workspace/virtual-instrument-keyra/include/keyra/physics/ContactSolver.h": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+      "/workspace/virtual-instrument-keyra/include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+      "/workspace/virtual-instrument-keyra/include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "/workspace/virtual-instrument-keyra/src/Piano.cpp": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+      "/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp": "98fe82de085d18c3d22ca32e5d38afa8621553152d851a3502df90c590b626c0",
+      "/workspace/virtual-instrument-keyra/src/full_instrument/MechanismBodyCache.h": "506404361fd99eaaacfbf68a3e5c70db25e12ef26935a1da8043e08df498b2a3",
+      "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36"
+    },
+    "new_sanitizer_run": false
+  },
+  "canonical_cache_research_receipts": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-mechanism-cache.json",
+      "frozen_snapshot": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/canonical-full-mechanism-cache.json",
+      "sha256": "c5e1ce0793786558ace5a001b33837545fb8a861f62e9d39e6853fe7d57e776f",
+      "limits": "Separate canonical research physics/performance/tail evidence, not genuine Reason or SDK qualification. Actual API integration checks are recorded separately by their owner."
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-mechanism-cache-tail.json",
+      "frozen_snapshot": "/workspace/virtual-instrument-keyra/out/reason-full-mechanism-cache/frozen/canonical-full-mechanism-cache-tail.json",
+      "sha256": "201c84d85b18597cbf6e1cc995dbf88cb8404892671055e5830e2524fe7037f1",
+      "limits": "Separate canonical research physics/performance/tail evidence, not genuine Reason or SDK qualification. Actual API integration checks are recorded separately by their owner."
+    }
+  ]
+}

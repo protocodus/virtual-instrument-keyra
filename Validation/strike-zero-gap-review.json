@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-26T16:14:46.287644+00:00",
+  "finding": "Touching same-key MIDI with explicit zero/short release permanently froze pendingLift below action reset threshold despite a fully returned hammer.",
+  "decision": "Fix playability by completing a finite minimum effective key lift while the new press is pending; retain all hammer/contact/separation/recovery gates.",
+  "original_results": [
+    {
+      "scope": "controller",
+      "release_gap_frames": 0,
+      "explicit_off": true,
+      "launch_frames": [
+        0
+      ],
+      "requests": 3,
+      "launches": 1,
+      "cancelled": 1,
+      "expired": 1,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 1,
+      "explicit_off": true,
+      "launch_frames": [
+        0
+      ],
+      "requests": 3,
+      "launches": 1,
+      "cancelled": 1,
+      "expired": 1,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.0011567378697882047,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 48,
+      "explicit_off": true,
+      "launch_frames": [
+        0
+      ],
+      "requests": 3,
+      "launches": 1,
+      "cancelled": 1,
+      "expired": 1,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.0540405310932336,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 240,
+      "explicit_off": true,
+      "launch_frames": [
+        0,
+        4800,
+        9600
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.2425348716030299,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 0,
+      "explicit_off": false,
+      "launch_frames": [
+        0,
+        4800,
+        9600
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.35,
+      "pending": false
+    },
+    {
+      "scope": "public_api",
+      "sustain": 1,
+      "release_gap_frames": 0,
+      "event_acceptance": [
+        {
+          "frame": 0,
+          "accepted": true,
+          "launches_so_far": 1
+        },
+        {
+          "frame": 4800,
+          "accepted": true,
+          "launches_so_far": 1
+        },
+        {
+          "frame": 9600,
+          "accepted": true,
+          "launches_so_far": 1
+        }
+      ],
+      "requests": 3,
+      "launches": 1,
+      "cancelled": 1,
+      "expired": 1,
+      "faults": 0,
+      "unsafe": 0,
+      "finite": true,
+      "audio_energy": 1403.2934480483718
+    },
+    {
+      "scope": "public_api",
+      "sustain": 1,
+      "release_gap_frames": 240,
+      "event_acceptance": [
+        {
+          "frame": 0,
+          "accepted": true,
+          "launches_so_far": 1
+        },
+        {
+          "frame": 4800,
+          "accepted": true,
+          "launches_so_far": 2
+        },
+        {
+          "frame": 9600,
+          "accepted": true,
+          "launches_so_far": 3
+        }
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "faults": 0,
+      "unsafe": 0,
+      "finite": true,
+      "audio_energy": 2631.834455553709
+    }
+  ],
+  "proposal_results": [
+    {
+      "scope": "controller",
+      "release_gap_frames": 0,
+      "explicit_off": true,
+      "launch_frames": [
+        0,
+        4992,
+        9792
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.2001888403608985,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 1,
+      "explicit_off": true,
+      "launch_frames": [
+        0,
+        4991,
+        9791
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.2001888403608985,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 48,
+      "explicit_off": true,
+      "launch_frames": [
+        0,
+        4944,
+        9744
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.2001888403608985,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 240,
+      "explicit_off": true,
+      "launch_frames": [
+        0,
+        4800,
+        9600
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.2425348716030299,
+      "pending": false
+    },
+    {
+      "scope": "controller",
+      "release_gap_frames": 0,
+      "explicit_off": false,
+      "launch_frames": [
+        0,
+        4800,
+        9600
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "recovery": 1,
+      "key_lift": 0,
+      "pending_lift": 0.35,
+      "pending": false
+    },
+    {
+      "scope": "public_api",
+      "sustain": 1,
+      "release_gap_frames": 0,
+      "event_acceptance": [
+        {
+          "frame": 0,
+          "accepted": true,
+          "launches_so_far": 1
+        },
+        {
+          "frame": 4800,
+          "accepted": true,
+          "launches_so_far": 1
+        },
+        {
+          "frame": 9600,
+          "accepted": true,
+          "launches_so_far": 2
+        }
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "faults": 0,
+      "unsafe": 0,
+      "finite": true,
+      "audio_energy": 2426.9864624494608
+    },
+    {
+      "scope": "public_api",
+      "sustain": 1,
+      "release_gap_frames": 240,
+      "event_acceptance": [
+        {
+          "frame": 0,
+          "accepted": true,
+          "launches_so_far": 1
+        },
+        {
+          "frame": 4800,
+          "accepted": true,
+          "launches_so_far": 2
+        },
+        {
+          "frame": 9600,
+          "accepted": true,
+          "launches_so_far": 3
+        }
+      ],
+      "requests": 3,
+      "launches": 3,
+      "cancelled": 0,
+      "expired": 0,
+      "faults": 0,
+      "unsafe": 0,
+      "finite": true,
+      "audio_energy": 2631.834455553709
+    }
+  ],
+  "semantics": {
+    "new_state_or_allocation": false,
+    "key_lift_time_constant_seconds": 0.018,
+    "minimum_effective_key_lift": 0.2,
+    "zero_gap_controller_delay_frames": 192,
+    "sample_rate": 48000,
+    "instantaneous_full_lift": false,
+    "changes_external_hammer_or_strings_while_pending": false,
+    "other_gates_preserved": true,
+    "note_off_cancels_during_lift": true,
+    "latest_request_coalescing_preserved": true,
+    "measured_proposal_and_final_code_tokens_equal": true
+  },
+  "before_source_sha256": {
+    "include/keyra/physics/StrikeController.h": "be9daa57cfaffdc879a1da885ac62187d3c89b16c6b525d53eaf7ddf66b154fc",
+    "tests/strike_repetition_tests.cpp": "fc735da12a8561a40d49131a21e3c2f232bf23417a5fef2b198e794981b4ba38",
+    "tests/full_instrument_tests.cpp": "8d81889897de70539880767da570ebd178718a7dfc0b0ba4d366c6c3e93508aa",
+    "docs/STRIKE_REPETITION.md": "dfe596e2ad109f9f4c91f4f23e0847d189d6581d0a82ccc7a1fc15657a2a7eea",
+    "docs/FULL_BACKEND.md": "c6e9120d682b2f3c0b7c241ca37385d852552bd581673fe0bf0987d0fed7f911"
+  },
+  "final_source_sha256": {
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "tests/strike_repetition_tests.cpp": "29a78e66d16645d032e848516bf4dc7c1d52bc6f4cc0ff89a4ae54c2e8545ce7",
+    "tests/full_instrument_tests.cpp": "7fce4176f6612c3a341031169da2560c071bb94a5adf0def71ca4446e7f3f54e",
+    "docs/STRIKE_REPETITION.md": "5f24398fd42ef492c86fb7a31b91f0dbe03e092d30730deafa013abc45033c7f",
+    "docs/FULL_BACKEND.md": "3b3d002e892ea9fac786eb971d0cee97e1a334b3e43a7d8027cd812fb2c6f094"
+  },
+  "tests": [
+    {
+      "scope": "research",
+      "variant": "native",
+      "groups": 8,
+      "passed": true,
+      "binary": "out/zero-gap-review/research-tests",
+      "binary_sha256": "c12027b482d0a734bd483e78b072634d043b2f9486be5f5c448738b682a240c6",
+      "log": "out/zero-gap-review/research-tests.log",
+      "log_sha256": "d8add6c3acd37e856ab4eee6aba260c860ae8bbb91bcc3cd69d349c28398fed1",
+      "compile": [
+        "g++",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-Iinclude",
+        "tests/strike_repetition_tests.cpp",
+        "-o",
+        "out/zero-gap-review/research-tests"
+      ]
+    },
+    {
+      "scope": "research",
+      "variant": "asan+ubsan",
+      "groups": 8,
+      "passed": true,
+      "binary": "out/zero-gap-review/research-tests-asan",
+      "binary_sha256": "a91338e4ee184af4a610a21e1748ba0956241d4d53f1e2ac74fd1ab2486cf152",
+      "log": "out/zero-gap-review/research-tests-asan.log",
+      "log_sha256": "d8add6c3acd37e856ab4eee6aba260c860ae8bbb91bcc3cd69d349c28398fed1",
+      "compile": [
+        "g++",
+        "-O1",
+        "-g",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-Iinclude",
+        "tests/strike_repetition_tests.cpp",
+        "-o",
+        "out/zero-gap-review/research-tests-asan"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      }
+    }
+  ],
+  "coverage": [
+    "Zero-gap10Hz touching notes",
+    "One-frame,1ms,and5ms explicit gaps",
+    "Finite defer before minimum lift",
+    "Cancellation during lift without ghost launch",
+    "Coalescing to latest request",
+    "No active-hammer launch",
+    "Partial recovery weakens/preserves position",
+    "Existing active-contact/string-persistence, allocation and seed/partition checks"
+  ],
+  "api_final_tests_added": "touchingNotesAndPartition: three C4 notes at0/100/200ms, sustain,250ms output, all3launches, no immediate repeat, no cancellation/expiry/fault, same seeded audio for full vsfragmented blocks; full native/scalar/sanitizer revalidation delegated.",
+  "artifacts": {
+    "out/zero-gap-review/reproduce.cpp": "0bcf42b281895bb307dca9985673374c19a8d05f2e678ae7bb09cb117998fab8",
+    "out/zero-gap-review/reproduce": "bab130e0d52b121c8c9d4402a8e64296e76cd6ff1495caf01fea27198353238b",
+    "out/zero-gap-review/results.jsonl": "e3a9257711cff1fea3840b979444d8928b6af01d6969c1e38c458de44c0058ca",
+    "out/zero-gap-review/proposed-reproduce": "7e5e093e353fe7c5c71eec7bd5c70005702cdaebd86f8dc8c98b34f25e43503b",
+    "out/zero-gap-review/proposed-results.jsonl": "bf47f82069d8255d7bcd70d3f677c3975c7aeec3e8ac075cfb929d2e65350010",
+    "out/zero-gap-review/proposed-change.patch": "d3de45bab58cb6c358b196b14fc5efad2dd08b155717eebd55f816c7f753d014",
+    "out/zero-gap-review/final-change.patch": "649650f47f742a815164469f1ca63282b13025b36193b18d4da64c16cdedbf8d"
+  },
+  "limits": [
+    "Return/lift timing remains an authored MIDI-action proxy, not measured geometry.",
+    "No production or real Reason host claim.",
+    "Existing probe/listening artifacts will be regenerated separately after this source freeze."
+  ],
+  "research_unchanged": true
+}

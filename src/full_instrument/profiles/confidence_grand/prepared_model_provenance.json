@@ -1,0 +1,89 @@
+{
+  "source_sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba",
+  "calibration_sha256": "fdeee2144dc45bd7b56078c146a6444710c038b62610e9be156adbc321908b63",
+  "precision": "hot_f32_biased",
+  "default_control": false,
+  "profile": {
+    "name": "FrozenConfidenceGrand",
+    "selector": 1,
+    "numeric_profile_sha256": "3cdd77c04d5507ff6c20e150bb8503c7accf21486c3bbead590f63dbb99fd90e",
+    "profile_provenance_sha256": "0454a73c1b182d542fe0b1cb8a72e5ed03f76bbb79ab8b4f194ded1393186d4c",
+    "canonical_source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "adapted_double_source_sha256": "aeab17da971bc0136635af0d0a83134936ae23d39c5f3b3f0cdbdf0fbd7240ba",
+    "frozen_hot_source_sha256": "8d6abcd41d89a32b54366106c54ebb62a9b52de21dc21402a7c179c55af88e56",
+    "candidate_builder_function_sha256": "8adccc4f229fcf2a247435f1ac054615c05427bddb01a3aa07828c0865ffc2d6",
+    "header_builder_function_sha256": "b0febd24607b8d7ac8a4d028f9e8a6bc73155813eae430c806dfb287d2421856",
+    "source_adaptations": [
+      {
+        "before": "double cents=std::clamp(lerp(centsA,centsB,cal.t),-25.0,30.0);",
+        "after": "double cents=std::clamp(lerp(centsA,centsB,cal.t),-70.0,70.0);",
+        "reason": "Allow directly observed TRAIN tuning within the frozen pitch extractor search bounds."
+      },
+      {
+        "before": "explicit Cal(int note){lo=std::clamp((note-36)/12,0,3);hi=lo+1;t=(note-piano_calibration::anchors[lo].note)/12.0;}",
+        "after": "explicit Cal(int note){lo=0;hi=1;while(hi+1<(int)piano_calibration::anchors.size()&&note>=piano_calibration::anchors[hi].note){++lo;++hi;}t=(note-piano_calibration::anchors[lo].note)/(double)(piano_calibration::anchors[hi].note-piano_calibration::anchors[lo].note);}",
+        "reason": "Use the sorted measured anchor notes and actual semitone distances."
+      },
+      {
+        "before": "if(n<36)k.B=piano_calibration::anchors[0].B*std::pow(2.0,(36-n)/18.0);",
+        "after": "if(n<piano_calibration::anchors.front().note)k.B=piano_calibration::anchors.front().B*std::pow(2.0,(piano_calibration::anchors.front().note-n)/18.0);",
+        "reason": "Apply bass stiffness extrapolation only outside measured anchors."
+      },
+      {
+        "before": "if(n>84)late*=std::pow(2.0,(n-84)/24.0);",
+        "after": "if(n>piano_calibration::anchors.back().note)late*=std::pow(2.0,(n-piano_calibration::anchors.back().note)/24.0);",
+        "reason": "Apply treble intrinsic-loss extrapolation only outside measured anchors."
+      },
+      {
+        "before": "if(n>84){late*=std::pow(2.0,(n-84)/24.0);fast*=std::pow(2.0,(n-84)/24.0);}",
+        "after": "if(n>piano_calibration::anchors.back().note){late*=std::pow(2.0,(n-piano_calibration::anchors.back().note)/24.0);fast*=std::pow(2.0,(n-piano_calibration::anchors.back().note)/24.0);}",
+        "reason": "Apply treble common-unison loss extrapolation only outside measured anchors."
+      }
+    ],
+    "anchor_midis": [
+      21,
+      24,
+      33,
+      36,
+      39,
+      45,
+      48,
+      51,
+      60,
+      63,
+      69,
+      72,
+      75,
+      81,
+      84,
+      96,
+      108
+    ],
+    "expected_topology": {
+      "strings": 230,
+      "string_modes": 17849,
+      "board_modes": 475
+    },
+    "runtime_audio_or_json_loading": false,
+    "new_fit_or_acquisition": false,
+    "default_promoted": false
+  },
+  "generator_sha256": "eae90644da1b937fcb6c7e04515d5a10d227e8c5ef061ba86ea4dc65986600e7",
+  "precision_transform_source": "tools/probe_full_precision.py:precision,hot_precision",
+  "precision_tool_sha256": "280d77738d50f23b0fbcd14822edb50a1bda22428fafa43e16f45a493426f961",
+  "precision_transform_sha256": "e8261b494d929caaa08182dec6a5836b730afdf7da84514ff93d9cc9689b16b4",
+  "pressure_reduction": {
+    "macro": "KEYRA_FULL_PRESSURE_SIMD",
+    "required_compiler_flag": "-fopenmp-simd",
+    "optimized": "local nonaliasing pointers; pressure-only float reduction, simdlen(4)",
+    "fallback": "original expressions and summation order; macro zero or undefined"
+  },
+  "fast_contact": {
+    "macro": "KEYRA_FULL_FAST_CONTACT",
+    "solver_header": "include/keyra/physics/ContactSolver.h",
+    "solver_sha256": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+    "fallback": "legacy contact method verbatim; macro zero or undefined",
+    "failure_policy": "invalid or unconverged result retires only the hammer; tentative force never applied"
+  },
+  "generated_model_sha256": "68d04ecff615c89d743467ad19e3a14fb5a381d41f875876b2cbf83d86324386"
+}

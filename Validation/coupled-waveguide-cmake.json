@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "scope": "Focused native CMake staging of coupled one-key C2/C4 research network and existing standalone waveguide regression; no default/core replacement or host claim.",
+  "built_targets": [
+    "keyra_coupled_waveguide_tests",
+    "keyra_coupled_waveguide_probe",
+    "keyra_waveguide_string_tests"
+  ],
+  "ctest_command": [
+    "ctest",
+    "--test-dir",
+    "build",
+    "-R",
+    "^(waveguide_string|coupled_waveguide)$",
+    "--output-on-failure"
+  ],
+  "passed": true,
+  "tests": [
+    {
+      "name": "waveguide_string",
+      "seconds": 0.21
+    },
+    {
+      "name": "coupled_waveguide",
+      "seconds": 4.46
+    }
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "3811de285d0e1a0e286405a45a1a4a3f5e2a27a0d0f68e3fff2e95c2521f6d9f",
+    "include/keyra/physics/WaveguideString.h": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+    "include/keyra/physics/CoupledWaveguide.h": "7ca54a4342b860a27632d8a8fdc74c1bf20984cae662d4e061d84566781ef7e9",
+    "tools/coupled_waveguide_support.h": "9d8a9b7b6e476c2e1f78b145a87d62b5d9290a89fbcf35eea3dce658f967c231",
+    "tests/coupled_waveguide_tests.cpp": "faa1a6dd98b2821b224d5a1cf8fbabdb459c87b30879213525b8cd715ac532cf",
+    "tests/waveguide_string_tests.cpp": "9a5c47f2ee7bf0541eaa9ad3a970bb6f78f9ca07afab2a1349ab5faaba2e71e4",
+    "tests/data/coupled-waveguide/C2-s32.cfg": "97e3329bc2d885d09bd80cd303a99ee3bc6facb862adf5f1b339c57592f9fadd",
+    "tests/data/coupled-waveguide/C4-s32.cfg": "54d172577bc5e5dd5faa4ade7f52525ebb1fb702341af2db81887dfb5b047648"
+  },
+  "tracked_numeric_fixtures": true,
+  "ignored_out_configuration_dependency": false,
+  "test_log": {
+    "path": "out/coupled-waveguide/cmake/LastTest.log",
+    "sha256": "3e2d3965fb69696118cf28882deb1680662d3c47ab341b03db317ddff7079188"
+  },
+  "new_sanitizer_run": false
+}

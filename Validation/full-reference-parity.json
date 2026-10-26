@@ -1,0 +1,1256 @@
+{
+  "passed": true,
+  "schema_version": 1,
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "duration_seconds": 0.35,
+  "tool_sha256": "1e8fd12b88c21eed359a74d8ef11c751a0695ad7b622f827b7e1c0722a542123",
+  "events_path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/mixed.events",
+  "events_sha256": "9f14b89b9a19b976301290b7c94a4ae9b904ba81b8c1d3c2ec7a4eb5d4fdab84",
+  "ignored_timing_metrics": [
+    "process_cpu_seconds",
+    "realtime_factor",
+    "wall_seconds"
+  ],
+  "root_build": {
+    "executables": {
+      "baseline": {
+        "path": "/workspace/virtual-instrument-keyra/build/keyra_reference",
+        "sha256": "5c1cdf2792c706abec642abd71303b43d32b9edafc4b1b97d29a27a77591bc98"
+      },
+      "optimized": {
+        "path": "/workspace/virtual-instrument-keyra/build/keyra_full_reference",
+        "sha256": "127007eea1936ab93e3337af7fe10f1af8b122a896f2b223e2937d2dc9961415"
+      }
+    },
+    "physical_self_tests": {
+      "baseline": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "optimized": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      }
+    },
+    "cases": {
+      "mixed": {
+        "all_bytes_identical": true,
+        "changed_files": [],
+        "deterministic_metrics_identical": true,
+        "changed_metrics": [],
+        "variants": {
+          "baseline": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 2.121488984,
+              "realtime_factor": 6.06139709714,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.38449798492,
+              "raw_rms": 0.304157889208,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4280974695,
+              "accumulated_contact_seconds": 0.0103958333333,
+              "contact_solves": 504,
+              "contact_max_relative_residual": 5.2417772308e-13,
+              "final_mechanical_energy_J": 0.00236367999773
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/mixed-baseline.wav",
+                "bytes": 134444,
+                "sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45"
+              }
+            }
+          },
+          "optimized": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 1.732101107,
+              "realtime_factor": 4.94886030571,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.38449798492,
+              "raw_rms": 0.304157889208,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4280974695,
+              "accumulated_contact_seconds": 0.0103958333333,
+              "contact_solves": 504,
+              "contact_max_relative_residual": 5.2417772308e-13,
+              "final_mechanical_energy_J": 0.00236367999773
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/mixed-optimized.wav",
+                "bytes": 134444,
+                "sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45"
+              }
+            }
+          }
+        }
+      },
+      "96k_stems": {
+        "all_bytes_identical": true,
+        "changed_files": [],
+        "deterministic_metrics_identical": true,
+        "changed_metrics": [],
+        "variants": {
+          "baseline": {
+            "metrics": {
+              "sample_rate": 96000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 7.598425493,
+              "realtime_factor": 21.7097871229,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.39790992141,
+              "raw_rms": 0.304510241894,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4956387865,
+              "accumulated_contact_seconds": 0.0103854166667,
+              "contact_solves": 1003,
+              "contact_max_relative_residual": 5.70943020505e-13,
+              "final_mechanical_energy_J": 0.00242676429215
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-baseline.wav",
+                "bytes": 268844,
+                "sha256": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4"
+              },
+              "primary": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-baseline-primary.wav",
+                "bytes": 268844,
+                "sha256": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc"
+              },
+              "secondary": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-baseline-secondary.wav",
+                "bytes": 268844,
+                "sha256": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3"
+              },
+              "transient": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-baseline-transient.wav",
+                "bytes": 268844,
+                "sha256": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+              }
+            }
+          },
+          "optimized": {
+            "metrics": {
+              "sample_rate": 96000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 6.50751336,
+              "realtime_factor": 18.5928953143,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.39790992141,
+              "raw_rms": 0.304510241894,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4956387865,
+              "accumulated_contact_seconds": 0.0103854166667,
+              "contact_solves": 1003,
+              "contact_max_relative_residual": 5.70943020505e-13,
+              "final_mechanical_energy_J": 0.00242676429215
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-optimized.wav",
+                "bytes": 268844,
+                "sha256": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4"
+              },
+              "primary": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-optimized-primary.wav",
+                "bytes": 268844,
+                "sha256": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc"
+              },
+              "secondary": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-optimized-secondary.wav",
+                "bytes": 268844,
+                "sha256": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3"
+              },
+              "transient": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/96k_stems-optimized-transient.wav",
+                "bytes": 268844,
+                "sha256": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+              }
+            }
+          }
+        }
+      },
+      "no_sympathetic": {
+        "all_bytes_identical": true,
+        "changed_files": [],
+        "deterministic_metrics_identical": true,
+        "changed_metrics": [],
+        "variants": {
+          "baseline": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 1.632022737,
+              "realtime_factor": 4.66292210571,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.5867499656,
+              "raw_rms": 0.357181791372,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4281160408,
+              "accumulated_contact_seconds": 0.0103958333333,
+              "contact_solves": 504,
+              "contact_max_relative_residual": 4.74701970084e-13,
+              "final_mechanical_energy_J": 0.00236373855147
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/no_sympathetic-baseline.wav",
+                "bytes": 134444,
+                "sha256": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9"
+              }
+            }
+          },
+          "optimized": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 1.520174085,
+              "realtime_factor": 4.34335452857,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 1.5867499656,
+              "raw_rms": 0.357181791372,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4281160408,
+              "accumulated_contact_seconds": 0.0103958333333,
+              "contact_solves": 504,
+              "contact_max_relative_residual": 4.74701970084e-13,
+              "final_mechanical_energy_J": 0.00236373855147
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/no_sympathetic-optimized.wav",
+                "bytes": 134444,
+                "sha256": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9"
+              }
+            }
+          }
+        }
+      },
+      "bridge_zero": {
+        "all_bytes_identical": true,
+        "changed_files": [],
+        "deterministic_metrics_identical": true,
+        "changed_metrics": [],
+        "variants": {
+          "baseline": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 1.577474154,
+              "realtime_factor": 4.50706901143,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 0,
+              "raw_rms": 0,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4280850572,
+              "accumulated_contact_seconds": 0.0103958333333,
+              "contact_solves": 504,
+              "contact_max_relative_residual": 5.93366158098e-13,
+              "final_mechanical_energy_J": 0.00241239915662
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/bridge_zero-baseline.wav",
+                "bytes": 134444,
+                "sha256": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16"
+              }
+            }
+          },
+          "optimized": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 1.211271137,
+              "realtime_factor": 3.46077467714,
+              "string_count": 230,
+              "string_modes": 17778,
+              "board_modes": 475,
+              "raw_peak": 0,
+              "raw_rms": 0,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.4280850572,
+              "accumulated_contact_seconds": 0.0103958333333,
+              "contact_solves": 504,
+              "contact_max_relative_residual": 5.93366158098e-13,
+              "final_mechanical_energy_J": 0.00241239915662
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/bridge_zero-optimized.wav",
+                "bytes": 134444,
+                "sha256": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16"
+              }
+            }
+          }
+        }
+      },
+      "uncalibrated": {
+        "all_bytes_identical": true,
+        "changed_files": [],
+        "deterministic_metrics_identical": true,
+        "changed_metrics": [],
+        "variants": {
+          "baseline": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 0.8566353,
+              "realtime_factor": 2.44752942857,
+              "string_count": 230,
+              "string_modes": 18425,
+              "board_modes": 475,
+              "raw_peak": 2.92742955793,
+              "raw_rms": 0.770017307304,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.3827502776,
+              "accumulated_contact_seconds": 0.0112291666667,
+              "contact_solves": 543,
+              "contact_max_relative_residual": 5.93383574294e-13,
+              "final_mechanical_energy_J": 0.00145342727458
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/uncalibrated-baseline.wav",
+                "bytes": 134444,
+                "sha256": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890"
+              }
+            }
+          },
+          "optimized": {
+            "metrics": {
+              "sample_rate": 48000,
+              "duration_seconds": 0.35,
+              "wall_seconds": 0.823771977,
+              "realtime_factor": 2.35363422,
+              "string_count": 230,
+              "string_modes": 18425,
+              "board_modes": 475,
+              "raw_peak": 2.92742955793,
+              "raw_rms": 0.770017307304,
+              "nonfinite_samples": 0,
+              "max_hammer_force_N": 62.3827502776,
+              "accumulated_contact_seconds": 0.0112291666667,
+              "contact_solves": 543,
+              "contact_max_relative_residual": 5.93383574294e-13,
+              "final_mechanical_energy_J": 0.00145342727458
+            },
+            "files": {
+              "audio": {
+                "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/uncalibrated-optimized.wav",
+                "bytes": 134444,
+                "sha256": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "state_probes": {
+    "native": {
+      "flags": [
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-ffp-contract=off"
+      ],
+      "variants": {
+        "baseline": {
+          "source_path": "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/src/grand.cpp",
+          "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+          "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+          "instrumented_source_sha256": "aed9a2e3a4019f192e8bcad47912e7d434fdb25b22c3491062095abb38d87eca",
+          "binary_sha256": "7fa96832b9237d9e03b336dbc6b7e2910c9bf1fa12e7842d7d13479cef6c5803"
+        },
+        "optimized": {
+          "source_path": "/workspace/virtual-instrument-keyra/src/full_reference/grand.cpp",
+          "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+          "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+          "instrumented_source_sha256": "2852d7047eae02d282a0c8d6bf105c45784a0396d0b1518a02677a2b0df0bd78",
+          "binary_sha256": "349a703e003e00e2c1f1e0fb2cff759fd6105da51d9ffc573476b1f59073af83"
+        }
+      },
+      "cases": {
+        "mixed": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 2.09221196,
+                "realtime_factor": 5.97774845714,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.38449798492,
+                "raw_rms": 0.304157889208,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280974695,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.2417772308e-13,
+                "final_mechanical_energy_J": 0.00236367999773,
+                "process_cpu_seconds": 2.092083
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/mixed-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/mixed-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.850146446,
+                "realtime_factor": 5.28613270286,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.38449798492,
+                "raw_rms": 0.304157889208,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280974695,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.2417772308e-13,
+                "final_mechanical_energy_J": 0.00236367999773,
+                "process_cpu_seconds": 1.849821
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/mixed-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/mixed-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "96k_stems": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 96000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 7.171826656,
+                "realtime_factor": 20.4909333029,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.39790992141,
+                "raw_rms": 0.304510241894,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4956387865,
+                "accumulated_contact_seconds": 0.0103854166667,
+                "contact_solves": 1003,
+                "contact_max_relative_residual": 5.70943020505e-13,
+                "final_mechanical_energy_J": 0.00242676429215,
+                "process_cpu_seconds": 7.16356
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-baseline.wav",
+                  "bytes": 268844,
+                  "sha256": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4"
+                },
+                "primary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-baseline-primary.wav",
+                  "bytes": 268844,
+                  "sha256": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc"
+                },
+                "secondary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-baseline-secondary.wav",
+                  "bytes": 268844,
+                  "sha256": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3"
+                },
+                "transient": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-baseline-transient.wav",
+                  "bytes": 268844,
+                  "sha256": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 96000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 6.286870184,
+                "realtime_factor": 17.96248624,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.39790992141,
+                "raw_rms": 0.304510241894,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4956387865,
+                "accumulated_contact_seconds": 0.0103854166667,
+                "contact_solves": 1003,
+                "contact_max_relative_residual": 5.70943020505e-13,
+                "final_mechanical_energy_J": 0.00242676429215,
+                "process_cpu_seconds": 6.285718
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-optimized.wav",
+                  "bytes": 268844,
+                  "sha256": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4"
+                },
+                "primary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-optimized-primary.wav",
+                  "bytes": 268844,
+                  "sha256": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc"
+                },
+                "secondary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-optimized-secondary.wav",
+                  "bytes": 268844,
+                  "sha256": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3"
+                },
+                "transient": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-optimized-transient.wav",
+                  "bytes": 268844,
+                  "sha256": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/96k_stems-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "no_sympathetic": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.631614189,
+                "realtime_factor": 4.66175482571,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.5867499656,
+                "raw_rms": 0.357181791372,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4281160408,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 4.74701970084e-13,
+                "final_mechanical_energy_J": 0.00236373855147,
+                "process_cpu_seconds": 1.631576
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/no_sympathetic-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/no_sympathetic-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.261050183,
+                "realtime_factor": 3.60300052286,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.5867499656,
+                "raw_rms": 0.357181791372,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4281160408,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 4.74701970084e-13,
+                "final_mechanical_energy_J": 0.00236373855147,
+                "process_cpu_seconds": 1.261056
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/no_sympathetic-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/no_sympathetic-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "bridge_zero": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.534980918,
+                "realtime_factor": 4.38565976571,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 0,
+                "raw_rms": 0,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280850572,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.93366158098e-13,
+                "final_mechanical_energy_J": 0.00241239915662,
+                "process_cpu_seconds": 1.534992
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/bridge_zero-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/bridge_zero-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.214015596,
+                "realtime_factor": 3.46861598857,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 0,
+                "raw_rms": 0,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280850572,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.93366158098e-13,
+                "final_mechanical_energy_J": 0.00241239915662,
+                "process_cpu_seconds": 1.214088
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/bridge_zero-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/bridge_zero-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "uncalibrated": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 0.881961713,
+                "realtime_factor": 2.51989060857,
+                "string_count": 230,
+                "string_modes": 18425,
+                "board_modes": 475,
+                "raw_peak": 2.92742955793,
+                "raw_rms": 0.770017307304,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.3827502776,
+                "accumulated_contact_seconds": 0.0112291666667,
+                "contact_solves": 543,
+                "contact_max_relative_residual": 5.93383574294e-13,
+                "final_mechanical_energy_J": 0.00145342727458,
+                "process_cpu_seconds": 0.881861
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/uncalibrated-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/uncalibrated-baseline.wav.state",
+                  "bytes": 463312,
+                  "sha256": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 0.843681825,
+                "realtime_factor": 2.4105195,
+                "string_count": 230,
+                "string_modes": 18425,
+                "board_modes": 475,
+                "raw_peak": 2.92742955793,
+                "raw_rms": 0.770017307304,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.3827502776,
+                "accumulated_contact_seconds": 0.0112291666667,
+                "contact_solves": 543,
+                "contact_max_relative_residual": 5.93383574294e-13,
+                "final_mechanical_energy_J": 0.00145342727458,
+                "process_cpu_seconds": 0.843661
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/uncalibrated-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/native/uncalibrated-optimized.wav.state",
+                  "bytes": 463312,
+                  "sha256": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        }
+      }
+    },
+    "scalar_no_builtin": {
+      "flags": [
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-fno-builtin",
+        "-fno-tree-vectorize"
+      ],
+      "variants": {
+        "baseline": {
+          "source_path": "/workspace/virtual-instrument-keyra/Research/GrandPianoV2/src/grand.cpp",
+          "source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+          "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+          "instrumented_source_sha256": "aed9a2e3a4019f192e8bcad47912e7d434fdb25b22c3491062095abb38d87eca",
+          "binary_sha256": "a3b8ecd62451b0eeb2f110256ded43f12a7e7f3f2bec967e3d2782fe828a6ed9"
+        },
+        "optimized": {
+          "source_path": "/workspace/virtual-instrument-keyra/src/full_reference/grand.cpp",
+          "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+          "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+          "instrumented_source_sha256": "2852d7047eae02d282a0c8d6bf105c45784a0396d0b1518a02677a2b0df0bd78",
+          "binary_sha256": "7d73545288600fe527597739504f1bfab8dd578c7160401c5122c1ecf51c2701"
+        }
+      },
+      "cases": {
+        "mixed": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 2.5234988,
+                "realtime_factor": 7.20999657143,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.38449798492,
+                "raw_rms": 0.304157889208,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280974695,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.2417772308e-13,
+                "final_mechanical_energy_J": 0.00236367999773,
+                "process_cpu_seconds": 2.522572
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/mixed-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/mixed-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 2.129178938,
+                "realtime_factor": 6.08336839429,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.38449798492,
+                "raw_rms": 0.304157889208,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280974695,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.2417772308e-13,
+                "final_mechanical_energy_J": 0.00236367999773,
+                "process_cpu_seconds": 2.129156
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/mixed-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "99bdf766a6ab59f1583e29e36c65374584127023e287a127c12bc084b4d2ec45"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/mixed-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "3d3dae09b51827cfef0dc11ac382323592b5e4c22656757d705d5b11c8cde941"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "96k_stems": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 96000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 7.518973242,
+                "realtime_factor": 21.4827806914,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.39790992141,
+                "raw_rms": 0.304510241894,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4956387865,
+                "accumulated_contact_seconds": 0.0103854166667,
+                "contact_solves": 1003,
+                "contact_max_relative_residual": 5.70943020505e-13,
+                "final_mechanical_energy_J": 0.00242676429215,
+                "process_cpu_seconds": 7.517638
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-baseline.wav",
+                  "bytes": 268844,
+                  "sha256": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4"
+                },
+                "primary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-baseline-primary.wav",
+                  "bytes": 268844,
+                  "sha256": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc"
+                },
+                "secondary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-baseline-secondary.wav",
+                  "bytes": 268844,
+                  "sha256": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3"
+                },
+                "transient": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-baseline-transient.wav",
+                  "bytes": 268844,
+                  "sha256": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 96000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 6.92987634,
+                "realtime_factor": 19.7996466857,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.39790992141,
+                "raw_rms": 0.304510241894,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4956387865,
+                "accumulated_contact_seconds": 0.0103854166667,
+                "contact_solves": 1003,
+                "contact_max_relative_residual": 5.70943020505e-13,
+                "final_mechanical_energy_J": 0.00242676429215,
+                "process_cpu_seconds": 6.928254
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-optimized.wav",
+                  "bytes": 268844,
+                  "sha256": "f0b8ef5194d131291319c796167d7abb1b4b8dcb5b10fe1fcf9267f3618108b4"
+                },
+                "primary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-optimized-primary.wav",
+                  "bytes": 268844,
+                  "sha256": "8995d4b3287b85523d9e1d8129781d258d183b96209d8554680e53605289f9bc"
+                },
+                "secondary": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-optimized-secondary.wav",
+                  "bytes": 268844,
+                  "sha256": "085103043e170648a6673eeba2d22fd369544b9955c83dac370e9f0b2b9e74c3"
+                },
+                "transient": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-optimized-transient.wav",
+                  "bytes": 268844,
+                  "sha256": "81fe523480d2def981fbb74e45ba9ba21375bbd179b19a12d3e7ca513322018d"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/96k_stems-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "61c406932859fb161d720424ca094aa8a5baf2208ced2707f5d70c38dd3eb40f"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "no_sympathetic": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 2.0947166,
+                "realtime_factor": 5.98490457143,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.5867499656,
+                "raw_rms": 0.357181791372,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4281160408,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 4.74701970084e-13,
+                "final_mechanical_energy_J": 0.00236373855147,
+                "process_cpu_seconds": 2.094437
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/no_sympathetic-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/no_sympathetic-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.544444957,
+                "realtime_factor": 4.41269987714,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 1.5867499656,
+                "raw_rms": 0.357181791372,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4281160408,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 4.74701970084e-13,
+                "final_mechanical_energy_J": 0.00236373855147,
+                "process_cpu_seconds": 1.54432
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/no_sympathetic-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "1a12f3b205305a9170511a1d1089f8f18771a769e3700c1c37214bc7f7eb5eb9"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/no_sympathetic-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "294b1a353b74b826fce233b610b9ace46aa71f360ad4ae366961cf927cfcb8d8"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "bridge_zero": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.94274785,
+                "realtime_factor": 5.55070814286,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 0,
+                "raw_rms": 0,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280850572,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.93366158098e-13,
+                "final_mechanical_energy_J": 0.00241239915662,
+                "process_cpu_seconds": 1.942721
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/bridge_zero-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/bridge_zero-baseline.wav.state",
+                  "bytes": 447784,
+                  "sha256": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 2.026049322,
+                "realtime_factor": 5.78871234857,
+                "string_count": 230,
+                "string_modes": 17778,
+                "board_modes": 475,
+                "raw_peak": 0,
+                "raw_rms": 0,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.4280850572,
+                "accumulated_contact_seconds": 0.0103958333333,
+                "contact_solves": 504,
+                "contact_max_relative_residual": 5.93366158098e-13,
+                "final_mechanical_energy_J": 0.00241239915662,
+                "process_cpu_seconds": 2.025862
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/bridge_zero-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "2dcf369c4311a46590af85c89e87d89f236ae25c1f7157411865a47be8a08d16"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/bridge_zero-optimized.wav.state",
+                  "bytes": 447784,
+                  "sha256": "dd63f47d040dd303ad00b816bf2b5045caf554ec555c05e591ad85e026d08601"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        },
+        "uncalibrated": {
+          "all_bytes_identical": true,
+          "changed_files": [],
+          "deterministic_metrics_identical": true,
+          "changed_metrics": [],
+          "variants": {
+            "baseline": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.118200892,
+                "realtime_factor": 3.19485969143,
+                "string_count": 230,
+                "string_modes": 18425,
+                "board_modes": 475,
+                "raw_peak": 2.92742955793,
+                "raw_rms": 0.770017307304,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.3827502776,
+                "accumulated_contact_seconds": 0.0112291666667,
+                "contact_solves": 543,
+                "contact_max_relative_residual": 5.93383574294e-13,
+                "final_mechanical_energy_J": 0.00145342727458,
+                "process_cpu_seconds": 1.118195
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/uncalibrated-baseline.wav",
+                  "bytes": 134444,
+                  "sha256": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/uncalibrated-baseline.wav.state",
+                  "bytes": 463312,
+                  "sha256": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+                }
+              }
+            },
+            "optimized": {
+              "metrics": {
+                "sample_rate": 48000,
+                "duration_seconds": 0.35,
+                "wall_seconds": 1.098213747,
+                "realtime_factor": 3.13775356286,
+                "string_count": 230,
+                "string_modes": 18425,
+                "board_modes": 475,
+                "raw_peak": 2.92742955793,
+                "raw_rms": 0.770017307304,
+                "nonfinite_samples": 0,
+                "max_hammer_force_N": 62.3827502776,
+                "accumulated_contact_seconds": 0.0112291666667,
+                "contact_solves": 543,
+                "contact_max_relative_residual": 5.93383574294e-13,
+                "final_mechanical_energy_J": 0.00145342727458,
+                "process_cpu_seconds": 1.09809
+              },
+              "files": {
+                "audio": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/uncalibrated-optimized.wav",
+                  "bytes": 134444,
+                  "sha256": "2fb55b9cf68dd7eec536217dcdfe933ec2dbbab80a3af9836f54a3cb239eb890"
+                },
+                "state": {
+                  "path": "/workspace/virtual-instrument-keyra/out/full-reference-parity/scalar_no_builtin/uncalibrated-optimized.wav.state",
+                  "bytes": 463312,
+                  "sha256": "c632dc7d7a0e1475500166c04471a62db0e76c16deed62d7bcd25c9c475efa4b"
+                }
+              }
+            }
+          },
+          "root_build_output_identical": {
+            "baseline": true,
+            "optimized": true
+          }
+        }
+      }
+    }
+  },
+  "failures": [],
+  "limits": "Finite mixed-event regression coverage, not perceptual realism or Reason-host certification. Root-built CLI output/metrics are tested directly. Double-state proof uses separately instrumented source copies, not the internal state of those root-built binaries. Scalar probes approximate GNU host restrictions; they are not Jukebox SDK builds.",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "state_probe_transform_sha256": "4b4f5522023ecead8adbe663120ebc29f17a9a5613d3f7ab9acad5f3686fd10b",
+  "root_build_audio_and_metrics_identical": true,
+  "canonical_double_state_identical": true
+}

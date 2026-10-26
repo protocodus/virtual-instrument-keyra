@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-O3",
+    "-std=c++17",
+    "-fno-exceptions",
+    "-fno-rtti",
+    "-fno-builtin",
+    "-fno-tree-vectorize",
+    "-ffp-contract=off"
+  ],
+  "harness_sha256": "82004d4ffe63d3cd8c051219e61eb6f20b3cce3bcd93ec27ea5574bce466548b",
+  "limits": "Scalar host compiler approximation. Byte parity is verified for the stated event/control stream; timing is not Reason-host certification.",
+  "stream": {
+    "sample_rates": [
+      44100,
+      48000,
+      88200,
+      96000
+    ],
+    "events_per_rate": 120,
+    "frames_per_event": 257,
+    "channels": 2,
+    "encoding": "native float32, left/right block planes"
+  },
+  "variants": {
+    "baseline": {
+      "source_sha256": "60a3aa26c6bfd623b3dc2c14c355d30d73a2e07e8c3d5c2280f573896e9ce431",
+      "binary_sha256": "ccd9e20625b0a3d22368e76eed58338aff2ea85b2bd3db6b5ab5872f8b30182c",
+      "stream_sha256": "86708878616e1510a1e505d773e826e3e45623fb345325ccf0c469f5df0eccc7",
+      "stream_bytes": 986880,
+      "attack_diagnostic": {
+        "schema_version": 1,
+        "scenario": "Simultaneous fresh note attacks and one 64-frame render; reset excluded from timing",
+        "timing_is_diagnostic_not_a_test_gate": true,
+        "iterations_per_case": 400,
+        "cases": [
+          {
+            "sample_rate": 48000,
+            "notes": 10,
+            "frames": 64,
+            "deadline_us": 1333.333333,
+            "mean_us": 147.977605,
+            "median_us": 139.061,
+            "p95_us": 168.868,
+            "maximum_us": 482.323,
+            "deadline_exceedances": 0,
+            "output_checksum": 51.50951296
+          },
+          {
+            "sample_rate": 48000,
+            "notes": 32,
+            "frames": 64,
+            "deadline_us": 1333.333333,
+            "mean_us": 620.850685,
+            "median_us": 564.157,
+            "p95_us": 846.901,
+            "maximum_us": 3743.109,
+            "deadline_exceedances": 5,
+            "output_checksum": 344.9650884
+          },
+          {
+            "sample_rate": 48000,
+            "notes": 64,
+            "frames": 64,
+            "deadline_us": 1333.333333,
+            "mean_us": 929.7239825,
+            "median_us": 881.294,
+            "p95_us": 1179.021,
+            "maximum_us": 2927.562,
+            "deadline_exceedances": 7,
+            "output_checksum": 448.9831066
+          },
+          {
+            "sample_rate": 96000,
+            "notes": 10,
+            "frames": 64,
+            "deadline_us": 666.6666667,
+            "mean_us": 158.3630525,
+            "median_us": 138.701,
+            "p95_us": 209.177,
+            "maximum_us": 2288.339,
+            "deadline_exceedances": 2,
+            "output_checksum": 20.29468909
+          },
+          {
+            "sample_rate": 96000,
+            "notes": 32,
+            "frames": 64,
+            "deadline_us": 666.6666667,
+            "mean_us": 576.370245,
+            "median_us": 558.037,
+            "p95_us": 678.271,
+            "maximum_us": 1268.61,
+            "deadline_exceedances": 21,
+            "output_checksum": 98.35291654
+          },
+          {
+            "sample_rate": 96000,
+            "notes": 64,
+            "frames": 64,
+            "deadline_us": 666.6666667,
+            "mean_us": 938.9948875,
+            "median_us": 886.371,
+            "p95_us": 1151.553,
+            "maximum_us": 2776.067,
+            "deadline_exceedances": 400,
+            "output_checksum": 134.9280131
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "source_sha256": "85969c48fac427b3fd02eaf0edd7e82b710abb5e118425022877b01ac1ec3c75",
+      "binary_sha256": "fd858c9cb292b6bcfc8aa7536403c3282f62c7ae621a1e7444544d8172dbcf73",
+      "stream_sha256": "86708878616e1510a1e505d773e826e3e45623fb345325ccf0c469f5df0eccc7",
+      "stream_bytes": 986880,
+      "attack_diagnostic": {
+        "schema_version": 1,
+        "scenario": "Simultaneous fresh note attacks and one 64-frame render; reset excluded from timing",
+        "timing_is_diagnostic_not_a_test_gate": true,
+        "iterations_per_case": 400,
+        "cases": [
+          {
+            "sample_rate": 48000,
+            "notes": 10,
+            "frames": 64,
+            "deadline_us": 1333.333333,
+            "mean_us": 130.4868175,
+            "median_us": 114.701,
+            "p95_us": 198.817,
+            "maximum_us": 1698.91,
+            "deadline_exceedances": 1,
+            "output_checksum": 51.50951296
+          },
+          {
+            "sample_rate": 48000,
+            "notes": 32,
+            "frames": 64,
+            "deadline_us": 1333.333333,
+            "mean_us": 469.669465,
+            "median_us": 454.361,
+            "p95_us": 542.878,
+            "maximum_us": 1975.851,
+            "deadline_exceedances": 1,
+            "output_checksum": 344.9650884
+          },
+          {
+            "sample_rate": 48000,
+            "notes": 64,
+            "frames": 64,
+            "deadline_us": 1333.333333,
+            "mean_us": 763.6810575,
+            "median_us": 718.897,
+            "p95_us": 927.626,
+            "maximum_us": 4293.286,
+            "deadline_exceedances": 4,
+            "output_checksum": 448.9831066
+          },
+          {
+            "sample_rate": 96000,
+            "notes": 10,
+            "frames": 64,
+            "deadline_us": 666.6666667,
+            "mean_us": 124.789155,
+            "median_us": 114.495,
+            "p95_us": 148.505,
+            "maximum_us": 487.441,
+            "deadline_exceedances": 0,
+            "output_checksum": 20.29468909
+          },
+          {
+            "sample_rate": 96000,
+            "notes": 32,
+            "frames": 64,
+            "deadline_us": 666.6666667,
+            "mean_us": 474.81313,
+            "median_us": 451.996,
+            "p95_us": 587.805,
+            "maximum_us": 2293.712,
+            "deadline_exceedances": 11,
+            "output_checksum": 98.35291654
+          },
+          {
+            "sample_rate": 96000,
+            "notes": 64,
+            "frames": 64,
+            "deadline_us": 666.6666667,
+            "mean_us": 947.0794175,
+            "median_us": 719.946,
+            "p95_us": 2777.584,
+            "maximum_us": 6781.296,
+            "deadline_exceedances": 400,
+            "output_checksum": 134.9280131
+          }
+        ]
+      }
+    }
+  },
+  "byte_identical_output": true,
+  "timing_comparison": [
+    {
+      "sample_rate": 48000,
+      "notes": 10,
+      "baseline_median_us": 139.061,
+      "candidate_median_us": 114.701,
+      "median_reduction_fraction": 0.17517492323512707
+    },
+    {
+      "sample_rate": 48000,
+      "notes": 32,
+      "baseline_median_us": 564.157,
+      "candidate_median_us": 454.361,
+      "median_reduction_fraction": 0.19461958284661907
+    },
+    {
+      "sample_rate": 48000,
+      "notes": 64,
+      "baseline_median_us": 881.294,
+      "candidate_median_us": 718.897,
+      "median_reduction_fraction": 0.18427108320265417
+    },
+    {
+      "sample_rate": 96000,
+      "notes": 10,
+      "baseline_median_us": 138.701,
+      "candidate_median_us": 114.495,
+      "median_reduction_fraction": 0.17451928969509944
+    },
+    {
+      "sample_rate": 96000,
+      "notes": 32,
+      "baseline_median_us": 558.037,
+      "candidate_median_us": 451.996,
+      "median_reduction_fraction": 0.1900250341823213
+    },
+    {
+      "sample_rate": 96000,
+      "notes": 64,
+      "baseline_median_us": 886.371,
+      "candidate_median_us": 719.946,
+      "median_reduction_fraction": 0.1877599786094084
+    }
+  ],
+  "calibration_sha256": {
+    "LiveCalibration.h": "53a0aff1bcb369ec6a60fa20de0aabb213d1d5b02951691c6d14bd3066c59d02",
+    "UprightCalibration.h": "21cf33bc990ac09e16e9137b5c2e4491f2fdf2d58292df464dcefa4e96e42dd3"
+  },
+  "source_diff": "--- baseline/Piano.cpp\n+++ candidate/Piano.cpp\n@@ -59,11 +59,16 @@\n   std::array<double,64> ampSoft{},ampHard{},lateAmpSoft{},lateAmpHard{};\n   std::array<double,64> decaySoft{},decayHard{},lateDecaySoft{},lateDecayHard{};\n   std::array<double,64> energySoft{},energyHard{};\n+  // Source-loss logs are invariant between strikes. Store the same libm\n+  // results used by logmix so the no-builtin Rack path need not recompute\n+  // four logarithms for every partial in every note-on event.\n+  std::array<double,64> logDecaySoft{},logDecayHard{},logLateDecaySoft{},logLateDecayHard{};\n };\n } // namespace\n \n struct Piano::Impl {\n   double sampleRate=48000;\n+  std::array<double,64> partialLog{};\n   std::array<double,10> values{};\n   std::array<float,10> smooth{};\n   std::array<float,6> micWeight{};\n@@ -90,6 +95,7 @@\n   }\n \n   void buildBasis() {\n+    for(unsigned j=0;j<64;++j)partialLog[j]=std::log1p((j+1.)*.7);\n     for(unsigned family=0;family<2;++family){\n       const auto& anchors=family?upright_calibration::anchors:calibration::anchors;\n       for(int note=21;note<=108;++note){\n@@ -120,6 +126,10 @@\n           b.decayHard[j]=logmix(a.decayHard[j],z.decayHard[j],u);\n           b.lateDecaySoft[j]=logmix(a.decayLateSoft[j],z.decayLateSoft[j],u);\n           b.lateDecayHard[j]=logmix(a.decayLateHard[j],z.decayLateHard[j],u);\n+          b.logDecaySoft[j]=std::log(std::max(b.decaySoft[j],1.e-12));\n+          b.logDecayHard[j]=std::log(std::max(b.decayHard[j],1.e-12));\n+          b.logLateDecaySoft[j]=std::log(std::max(b.lateDecaySoft[j],1.e-12));\n+          b.logLateDecayHard[j]=std::log(std::max(b.lateDecayHard[j],1.e-12));\n           b.energySoft[j]=branchEnergy(b.ampSoft[j],b.lateAmpSoft[j],b.decaySoft[j],b.lateDecaySoft[j]);\n           b.energyHard[j]=branchEnergy(b.ampHard[j],b.lateAmpHard[j],b.decayHard[j],b.lateDecayHard[j]);\n         }\n@@ -385,21 +395,22 @@\n   v.noiseEnvelope=static_cast<float>(.075*speed);\n   v.noiseDecay=static_cast<float>(std::exp(-1/(.006*p.sampleRate)));\n   double softEnergy=0,hardEnergy=0,currentEnergy=0;\n+  const double lateRatio=std::pow(2.,(note<32?.04:detune)/1200.);\n   for(unsigned j=0;j<64;++j){\n     double partial=j+1.;double hz=b.f1*partial*std::sqrt((1+B*partial*partial)/(1+B));\n     if(hz>=p.sampleRate*.44||hz>19000)break;\n-    double shade=std::exp(std::clamp((spectral*.70-soften)*std::log1p(partial*.7),-5.,2.));\n+    double shade=std::exp(std::clamp((spectral*.70-soften)*p.partialLog[j],-5.,2.));\n     if(material)shade*=std::exp(.12*std::sin(std::log(std::max(hz,20.))*2.7+material*1.7));\n     double fast=mix(b.ampSoft[j],b.ampHard[j],u);\n     double late=mix(b.lateAmpSoft[j],b.lateAmpHard[j],u);\n-    double sigma=std::clamp(logmix(b.decaySoft[j],b.decayHard[j],std::clamp(u,0.,1.))*decayScale,.03,100.);\n-    double lateSigma=std::clamp(logmix(b.lateDecaySoft[j],b.lateDecayHard[j],std::clamp(u,0.,1.))*decayScale,.03,40.);\n+    double sigma=std::clamp(std::exp(mix(b.logDecaySoft[j],b.logDecayHard[j],std::clamp(u,0.,1.)))*decayScale,.03,100.);\n+    double lateSigma=std::clamp(std::exp(mix(b.logLateDecaySoft[j],b.logLateDecayHard[j],std::clamp(u,0.,1.)))*decayScale,.03,40.);\n     softEnergy+=b.energySoft[j];hardEnergy+=b.energyHard[j];\n     currentEnergy+=branchEnergy(fast,late,sigma,lateSigma);\n     double phase=2*pi*hz/p.sampleRate;\n     // The second polarization/aftersound is a lightly detuned branch. Keep the\n     // lowest wound single strings closer than multi-string choirs.\n-    double latePhase=phase*std::pow(2.,(note<32?.04:detune)/1200.);\n+    double latePhase=phase*lateRatio;\n     double damping=std::exp(-sigma/p.sampleRate),lateDamping=std::exp(-lateSigma/p.sampleRate);\n     auto& m=v.modes[v.count++];\n     m.fastI=static_cast<float>(fast*shade);m.lateI=static_cast<float>(late*shade);\n",
+  "added_prepared_cache_payload_bytes": 360960,
+  "engine_regression_groups_passed": 12
+}

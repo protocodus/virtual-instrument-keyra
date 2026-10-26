@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "scope": "Integration with newer main preserving existing native frontend and adding full physical build paths; post-merge native CMake/CTest checks, no new SDK or realtime claim.",
+  "upstream_main": "4a2646aa66a7f995eea32026b70be1d431fdab1a",
+  "preserved_upstream_source_tools_tests_ci": true,
+  "retained_renderer": "keyra_render",
+  "additional_preview_renderer": "keyra_preview_render",
+  "physical_renderer": "keyra_full_render",
+  "retained_juce_flag": "KEYRA_BUILD_PLUGIN",
+  "clap_flag": "KEYRA_BUILD_CLAP",
+  "native_ctests_passed": 9,
+  "native_ctests_failed": 0,
+  "ctest_seconds": 42.17,
+  "source_sha256": {
+    "CMakeLists.txt": "a05969cd480d11e22d2e63304b5dce8d86e7418a8e37d7cdaa1ede90cc7b88e6",
+    "CLAUDE.md": "7037e6404ecfdf21a058eb1bfe0f54c068702313f6f605ff90fddb57cdcbbc46",
+    "src/full_instrument/FullInstrument.cpp": "b5e70ee79dff7573c02bb7dd051eda87518ff783e35491ba485117cb795a8f0f",
+    "src/full_instrument/SelectedModel.h": "cbd3b19bb182c89d206d1e88a194bd092957d02a7e13f057979264355e5156b9",
+    "src/full_instrument/MechanismBodyCache.h": "506404361fd99eaaacfbf68a3e5c70db25e12ef26935a1da8043e08df498b2a3",
+    "tools/render_full.cpp": "38497cbd57a02fde9ccc86aa9fd76f961bb8e78eba22921288f1bd856e113ccc",
+    "tools/render_preview.cpp": "1dc9877d12a8c268c3065a9c3586e4f20a6473369cd1e0fb84ec667ad659be74",
+    "Source/DSP/KeyraEngine.cpp": "3d6d2dcad4f024376814ca3011080345e96cb5b7def65787fa6c51d3569215ec",
+    "Source/DSP/KeyraEngine.h": "c9b334901eee8b5c5150d5676d60340fb1907df7cbf1256eed1e800ea8e6611a",
+    "Tools/render.cpp": "74db147ace36668dc50e1ee8da8ebf4cef28ad85ad3588014f3e166ccaa3d479"
+  },
+  "test_log": {
+    "path": "out/main-publish-check/LastTest.log",
+    "sha256": "ad83578e066e2bd6e60ea855ddc4bb571c9069c9442f006535f74f744e85fc00"
+  },
+  "earlier_profile_renderer_receipt": "Validation/full-renderer-profiles.json",
+  "research_unchanged": true
+}

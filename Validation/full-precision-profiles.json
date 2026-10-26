@@ -1,0 +1,1727 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded precision tradeoff in the complete original working model; no surrogate, mode removal or recording fitting.",
+  "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+  "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "tool_sha256": "d5118b671af4826f1460316011fffa1eb8603350ba7c0bd12524cff477c400a7",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-ffp-contract=off"
+  ],
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "variants": {
+    "baseline": {
+      "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+      "compiled_source_sha256": "d5d488107caf153d6b3abaa409f229a2022934f0a3cb7aec5aa447115072cd2a",
+      "binary_sha256": "81dcba68218b5850df07bc21a1e9a0ec7efae7b6d533b0540ea159599a6670ba",
+      "original_strict_self_test_exit_code": 0,
+      "original_strict_self_test": {
+        "passed": true,
+        "conservative_contact_relative_energy_error": 3.94018088221e-15,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497714881,
+        "contact_max_relative_residual": 3.35553230617e-13
+      },
+      "runs": [
+        {
+          "case": "C2soft",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.435401508,
+          "realtime_factor": 5.36283459,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.373943999076,
+          "raw_rms": 0.0534658986809,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 19.0209622159,
+          "accumulated_contact_seconds": 0.00314583333333,
+          "contact_solves": 152,
+          "contact_max_relative_residual": 2.48643221058e-13,
+          "final_mechanical_energy_J": 5.7310913598e-17,
+          "process_cpu_seconds": 6.4316
+        },
+        {
+          "case": "C4hard",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.233004734,
+          "realtime_factor": 5.19417061167,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.04682506919,
+          "raw_rms": 0.122602973856,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 24.8841267881,
+          "accumulated_contact_seconds": 0.00172916666667,
+          "contact_solves": 84,
+          "contact_max_relative_residual": 3.43814548888e-13,
+          "final_mechanical_energy_J": 8.74476865773e-17,
+          "process_cpu_seconds": 6.231002
+        },
+        {
+          "case": "C6hard",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.068147291,
+          "realtime_factor": 5.05678940917,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.802244025235,
+          "raw_rms": 0.0442245759952,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 46.6487507125,
+          "accumulated_contact_seconds": 0.00120833333333,
+          "contact_solves": 58,
+          "contact_max_relative_residual": 4.10326456851e-13,
+          "final_mechanical_energy_J": 7.49612693604e-16,
+          "process_cpu_seconds": 6.068047
+        },
+        {
+          "case": "music_prefix",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1,
+          "wall_seconds": 5.137695632,
+          "realtime_factor": 5.137695632,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.78144688839,
+          "raw_rms": 0.115032537474,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 30.5783606452,
+          "accumulated_contact_seconds": 0.006125,
+          "contact_solves": 298,
+          "contact_max_relative_residual": 9.93797233377e-13,
+          "final_mechanical_energy_J": 0.00297396794955,
+          "process_cpu_seconds": 5.137598
+        },
+        {
+          "case": "music_prefix",
+          "repeat": 1,
+          "sample_rate": 48000,
+          "duration_seconds": 1,
+          "wall_seconds": 5.679580375,
+          "realtime_factor": 5.679580375,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.78144688839,
+          "raw_rms": 0.115032537474,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 30.5783606452,
+          "accumulated_contact_seconds": 0.006125,
+          "contact_solves": 298,
+          "contact_max_relative_residual": 9.93797233377e-13,
+          "final_mechanical_energy_J": 0.00297396794955,
+          "process_cpu_seconds": 5.679248
+        },
+        {
+          "case": "mixed192k",
+          "repeat": 0,
+          "sample_rate": 192000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 7.337706078,
+          "realtime_factor": 20.9648745086,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.40154232641,
+          "raw_rms": 0.304713147532,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.5053559913,
+          "accumulated_contact_seconds": 0.0103645833333,
+          "contact_solves": 2003,
+          "contact_max_relative_residual": 2.82089845465e-12,
+          "final_mechanical_energy_J": 0.00245822890648,
+          "process_cpu_seconds": 7.337606
+        }
+      ],
+      "precision_physics": {
+        "passed": true,
+        "topology": {
+          "passed": true,
+          "keys": 88,
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "unison_ports": 6168,
+          "unison_groups": 89
+        },
+        "contact": {
+          "passed": true,
+          "finite_states": true,
+          "nonnegative_energy": true,
+          "steps": 446,
+          "initial_energy_J": 0.033460134982479135,
+          "max_relative_energy_error": 4.147558823382314e-15,
+          "minimum_energy_ratio": 0.9999999999999962,
+          "max_relative_residual": 3.3555323061657647e-13,
+          "energy_error_tolerance": 5e-05,
+          "residual_tolerance": 1e-08
+        },
+        "bridge": {
+          "passed": true,
+          "finite_states": true,
+          "nonnegative_energy": true,
+          "steps": 200,
+          "initial_energy_J": 9.304352278265659e-07,
+          "max_relative_step_energy_increase": 0,
+          "max_energy_ratio": 1,
+          "final_energy_ratio": 0.9964977148812441,
+          "step_increase_tolerance": 5e-07,
+          "final_increase_tolerance": 5e-06
+        },
+        "free_oscillator": {
+          "passed": true,
+          "finite_states": true,
+          "sample_rate": 48000,
+          "duration_seconds": 10,
+          "steps_per_case": 480000,
+          "max_relative_energy_drift": 5.0628168324351464e-11,
+          "max_rotation_norm_excess": 0,
+          "max_abs_rotation_norm_error": 0,
+          "energy_drift_tolerance": 0.001,
+          "cases": [
+            {
+              "frequency_hz": 65,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 4.798828001639777e-12,
+              "final_energy_ratio": 1.0000000000047973,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 65,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 4.798828001639777e-12,
+              "final_energy_ratio": 1.0000000000047973,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 261.6,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 5.0628168324351464e-11,
+              "final_energy_ratio": 1.0000000000506282,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 261.6,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 5.0628168324351464e-11,
+              "final_energy_ratio": 1.0000000000506282,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 4186,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 5.439204642243567e-12,
+              "final_energy_ratio": 1.0000000000054379,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 4186,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 5.439204642243567e-12,
+              "final_energy_ratio": 1.0000000000054379,
+              "rotation_norm_minus_one": 0
+            }
+          ]
+        }
+      },
+      "music_prefix_median_process_cpu_seconds": 5.408423,
+      "music_prefix_cpu_seconds_per_audio_second": 5.408423,
+      "music_prefix_speedup": 1.0
+    },
+    "state_f32": {
+      "source_sha256": "ee133eedfac7bcafcad4baaadb0cb65c362365e7a549991931e33500f5c915be",
+      "compiled_source_sha256": "e6c7a92ecf1e6d6470e1ac52f3a44079934a86d2f2667a4509183107a40e0b95",
+      "binary_sha256": "a429c6de16fde11597d17fd3cfa5e4a040c50abf64b81647adeea9d6aea52340",
+      "original_strict_self_test_exit_code": 1,
+      "original_strict_self_test": {
+        "passed": false,
+        "conservative_contact_relative_energy_error": 2.33863867959e-07,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.99649773561,
+        "contact_max_relative_residual": 2.62541352836e-13
+      },
+      "runs": [
+        {
+          "case": "C2soft",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 7.415804167,
+          "realtime_factor": 6.17983680583,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.373943919712,
+          "raw_rms": 0.0534658579908,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 19.0209619139,
+          "accumulated_contact_seconds": 0.00314583333333,
+          "contact_solves": 152,
+          "contact_max_relative_residual": 2.61143648204e-13,
+          "final_mechanical_energy_J": 5.73115437383e-17,
+          "process_cpu_seconds": 7.405781
+        },
+        {
+          "case": "C4hard",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.831759739,
+          "realtime_factor": 5.69313311583,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.04682530633,
+          "raw_rms": 0.122602986827,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 24.8841262723,
+          "accumulated_contact_seconds": 0.00172916666667,
+          "contact_solves": 84,
+          "contact_max_relative_residual": 3.80513599033e-13,
+          "final_mechanical_energy_J": 8.74462049071e-17,
+          "process_cpu_seconds": 6.828468
+        },
+        {
+          "case": "C6hard",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 7.360022331,
+          "realtime_factor": 6.1333519425,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.802243973915,
+          "raw_rms": 0.0442245727326,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 46.6487499827,
+          "accumulated_contact_seconds": 0.00120833333333,
+          "contact_solves": 58,
+          "contact_max_relative_residual": 4.2692105462e-13,
+          "final_mechanical_energy_J": 7.49619854512e-16,
+          "process_cpu_seconds": 7.352197
+        },
+        {
+          "case": "music_prefix",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1,
+          "wall_seconds": 6.489622042,
+          "realtime_factor": 6.489622042,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.781447168529,
+          "raw_rms": 0.115032611948,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 30.5783614045,
+          "accumulated_contact_seconds": 0.006125,
+          "contact_solves": 298,
+          "contact_max_relative_residual": 3.4229007695e-12,
+          "final_mechanical_energy_J": 0.00297399823094,
+          "process_cpu_seconds": 6.487701
+        },
+        {
+          "case": "music_prefix",
+          "repeat": 1,
+          "sample_rate": 48000,
+          "duration_seconds": 1,
+          "wall_seconds": 6.159825139,
+          "realtime_factor": 6.159825139,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.781447168529,
+          "raw_rms": 0.115032611948,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 30.5783614045,
+          "accumulated_contact_seconds": 0.006125,
+          "contact_solves": 298,
+          "contact_max_relative_residual": 3.4229007695e-12,
+          "final_mechanical_energy_J": 0.00297399823094,
+          "process_cpu_seconds": 6.15917
+        },
+        {
+          "case": "mixed192k",
+          "repeat": 0,
+          "sample_rate": 192000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 8.952118481,
+          "realtime_factor": 25.5774813743,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.40154080621,
+          "raw_rms": 0.304713237692,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.5053582124,
+          "accumulated_contact_seconds": 0.0103645833333,
+          "contact_solves": 2003,
+          "contact_max_relative_residual": 3.41253620461e-12,
+          "final_mechanical_energy_J": 0.00245820857822,
+          "process_cpu_seconds": 8.943093
+        }
+      ],
+      "precision_physics": {
+        "passed": true,
+        "topology": {
+          "passed": true,
+          "keys": 88,
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "unison_ports": 6168,
+          "unison_groups": 89
+        },
+        "contact": {
+          "passed": true,
+          "finite_states": true,
+          "nonnegative_energy": true,
+          "steps": 446,
+          "initial_energy_J": 0.033460134982479135,
+          "max_relative_energy_error": 2.3386386754391017e-07,
+          "minimum_energy_ratio": 0.9999999711240533,
+          "max_relative_residual": 2.6254135283567983e-13,
+          "energy_error_tolerance": 5e-05,
+          "residual_tolerance": 1e-08
+        },
+        "bridge": {
+          "passed": true,
+          "finite_states": true,
+          "nonnegative_energy": true,
+          "steps": 200,
+          "initial_energy_J": 9.304352273681448e-07,
+          "max_relative_step_energy_increase": 0,
+          "max_energy_ratio": 1,
+          "final_energy_ratio": 0.9964977356476513,
+          "step_increase_tolerance": 5e-07,
+          "final_increase_tolerance": 5e-06
+        },
+        "free_oscillator": {
+          "passed": true,
+          "finite_states": true,
+          "sample_rate": 48000,
+          "duration_seconds": 10,
+          "steps_per_case": 480000,
+          "max_relative_energy_drift": 6.406076172127406e-05,
+          "max_rotation_norm_excess": 0,
+          "max_abs_rotation_norm_error": 0,
+          "energy_drift_tolerance": 0.001,
+          "cases": [
+            {
+              "frequency_hz": 65,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 6.406076172127406e-05,
+              "final_energy_ratio": 0.999994865381572,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 65,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 6.406076172127406e-05,
+              "final_energy_ratio": 0.999994865381572,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 261.6,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 6.960218138285512e-06,
+              "final_energy_ratio": 1.0000042096990633,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 261.6,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 6.960218138285512e-06,
+              "final_energy_ratio": 1.0000042096990633,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 4186,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 8.405354412155397e-06,
+              "final_energy_ratio": 0.9999977035911746,
+              "rotation_norm_minus_one": 0
+            },
+            {
+              "frequency_hz": 4186,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 8.405354412155397e-06,
+              "final_energy_ratio": 0.9999977035911746,
+              "rotation_norm_minus_one": 0
+            }
+          ]
+        }
+      },
+      "music_prefix_median_process_cpu_seconds": 6.3234355,
+      "music_prefix_cpu_seconds_per_audio_second": 6.3234355,
+      "music_prefix_speedup": 0.8552981998472191
+    },
+    "modal_f32": {
+      "source_sha256": "66871bc26e08d873e60e9e9905cc96a9d6b7054c49c6acd3607fd9bc6cd0e6dd",
+      "compiled_source_sha256": "70747aceaaf1de78a6fd4fe4eb951edbdf5fe7a8dc92da41f0ff14c9d2f96216",
+      "binary_sha256": "c343bd2b3038c1588dde61b1bcb2f7afbde1192096b258a30ed2e10751b5a74c",
+      "original_strict_self_test_exit_code": 1,
+      "original_strict_self_test": {
+        "passed": false,
+        "conservative_contact_relative_energy_error": 2.02629709049e-06,
+        "bridge_max_relative_energy_increase": 0,
+        "bridge_energy_remaining_ratio": 0.996497735893,
+        "contact_max_relative_residual": 9.59276004132e-13
+      },
+      "runs": [
+        {
+          "case": "C2soft",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.674392723,
+          "realtime_factor": 5.56199393583,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.373948059276,
+          "raw_rms": 0.0534687219448,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 19.0209604324,
+          "accumulated_contact_seconds": 0.00314583333333,
+          "contact_solves": 152,
+          "contact_max_relative_residual": 2.4961793499e-13,
+          "final_mechanical_energy_J": 5.73454682695e-17,
+          "process_cpu_seconds": 6.671861
+        },
+        {
+          "case": "C4hard",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.936658817,
+          "realtime_factor": 5.78054901417,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.04682212997,
+          "raw_rms": 0.122594656027,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 24.8841260579,
+          "accumulated_contact_seconds": 0.00172916666667,
+          "contact_solves": 84,
+          "contact_max_relative_residual": 3.60991314603e-13,
+          "final_mechanical_energy_J": 8.76370319214e-17,
+          "process_cpu_seconds": 6.931947
+        },
+        {
+          "case": "C6hard",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1.2,
+          "wall_seconds": 6.398147012,
+          "realtime_factor": 5.33178917667,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.802243833603,
+          "raw_rms": 0.0442226438958,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 46.6487497107,
+          "accumulated_contact_seconds": 0.00120833333333,
+          "contact_solves": 58,
+          "contact_max_relative_residual": 3.92970873987e-13,
+          "final_mechanical_energy_J": 7.49583690414e-16,
+          "process_cpu_seconds": 6.394665
+        },
+        {
+          "case": "music_prefix",
+          "repeat": 0,
+          "sample_rate": 48000,
+          "duration_seconds": 1,
+          "wall_seconds": 5.310885672,
+          "realtime_factor": 5.310885672,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.781441459104,
+          "raw_rms": 0.115033322522,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 30.5783620272,
+          "accumulated_contact_seconds": 0.006125,
+          "contact_solves": 298,
+          "contact_max_relative_residual": 9.22049144452e-13,
+          "final_mechanical_energy_J": 0.00297460499073,
+          "process_cpu_seconds": 5.310688
+        },
+        {
+          "case": "music_prefix",
+          "repeat": 1,
+          "sample_rate": 48000,
+          "duration_seconds": 1,
+          "wall_seconds": 5.643996046,
+          "realtime_factor": 5.643996046,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 0.781441459104,
+          "raw_rms": 0.115033322522,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 30.5783620272,
+          "accumulated_contact_seconds": 0.006125,
+          "contact_solves": 298,
+          "contact_max_relative_residual": 9.22049144452e-13,
+          "final_mechanical_energy_J": 0.00297460499073,
+          "process_cpu_seconds": 5.643931
+        },
+        {
+          "case": "mixed192k",
+          "repeat": 0,
+          "sample_rate": 192000,
+          "duration_seconds": 0.35,
+          "wall_seconds": 7.478782363,
+          "realtime_factor": 21.3679496086,
+          "string_count": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "raw_peak": 1.40176412953,
+          "raw_rms": 0.304767228895,
+          "nonfinite_samples": 0,
+          "max_hammer_force_N": 62.5053598407,
+          "accumulated_contact_seconds": 0.0103645833333,
+          "contact_solves": 2003,
+          "contact_max_relative_residual": 2.63304448815e-12,
+          "final_mechanical_energy_J": 0.00245818128689,
+          "process_cpu_seconds": 7.475741
+        }
+      ],
+      "precision_physics": {
+        "passed": false,
+        "topology": {
+          "passed": true,
+          "keys": 88,
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475,
+          "unison_ports": 6168,
+          "unison_groups": 89
+        },
+        "contact": {
+          "passed": true,
+          "finite_states": true,
+          "nonnegative_energy": true,
+          "steps": 446,
+          "initial_energy_J": 0.033460134982479135,
+          "max_relative_energy_error": 2.026297090284679e-06,
+          "minimum_energy_ratio": 0.9999999995334308,
+          "max_relative_residual": 9.59276004132201e-13,
+          "energy_error_tolerance": 5e-05,
+          "residual_tolerance": 1e-08
+        },
+        "bridge": {
+          "passed": true,
+          "finite_states": true,
+          "nonnegative_energy": true,
+          "steps": 200,
+          "initial_energy_J": 9.304352278126137e-07,
+          "max_relative_step_energy_increase": 0,
+          "max_energy_ratio": 1,
+          "final_energy_ratio": 0.9964977359321335,
+          "step_increase_tolerance": 5e-07,
+          "final_increase_tolerance": 5e-06
+        },
+        "free_oscillator": {
+          "passed": false,
+          "finite_states": true,
+          "sample_rate": 48000,
+          "duration_seconds": 10,
+          "steps_per_case": 480000,
+          "max_relative_energy_drift": 0.023335933537829257,
+          "max_rotation_norm_excess": 3.37614669554398e-08,
+          "max_abs_rotation_norm_error": 4.9316781769448426e-08,
+          "energy_drift_tolerance": 0.001,
+          "cases": [
+            {
+              "frequency_hz": 65,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 0.01630004848327804,
+              "final_energy_ratio": 1.0162999787764893,
+              "rotation_norm_minus_one": 3.37614669554398e-08
+            },
+            {
+              "frequency_hz": 65,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 0.01630004848327804,
+              "final_energy_ratio": 1.0162999787764893,
+              "rotation_norm_minus_one": 3.37614669554398e-08
+            },
+            {
+              "frequency_hz": 261.6,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 0.023335933537829257,
+              "final_energy_ratio": 0.9766640664621707,
+              "rotation_norm_minus_one": -4.9316781769448426e-08
+            },
+            {
+              "frequency_hz": 261.6,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 0.023335933537829257,
+              "final_energy_ratio": 0.9766640664621707,
+              "rotation_norm_minus_one": -4.9316781769448426e-08
+            },
+            {
+              "frequency_hz": 4186,
+              "start": "q",
+              "finite_states": true,
+              "max_relative_energy_drift": 0.004869012001749606,
+              "final_energy_ratio": 0.9951317825345923,
+              "rotation_norm_minus_one": -1.0325656774057279e-08
+            },
+            {
+              "frequency_hz": 4186,
+              "start": "p",
+              "finite_states": true,
+              "max_relative_energy_drift": 0.004869012001749606,
+              "final_energy_ratio": 0.9951317825345923,
+              "rotation_norm_minus_one": -1.0325656774057279e-08
+            }
+          ]
+        }
+      },
+      "music_prefix_median_process_cpu_seconds": 5.4773095000000005,
+      "music_prefix_cpu_seconds_per_audio_second": 5.4773095000000005,
+      "music_prefix_speedup": 0.9874232960543857
+    }
+  },
+  "cases": {
+    "C2soft": {
+      "events_sha256": "58aee2ee266f25795ea768e485014cae267a3399dd3d8d4ec9e09aa9ab8ad66c",
+      "sample_rate": 48000,
+      "duration_seconds": 1.2,
+      "variants": {
+        "baseline": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.435401508,
+            "realtime_factor": 5.36283459,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.373943999076,
+            "raw_rms": 0.0534658986809,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 19.0209622159,
+            "accumulated_contact_seconds": 0.00314583333333,
+            "contact_solves": 152,
+            "contact_max_relative_residual": 2.48643221058e-13,
+            "final_mechanical_energy_J": 5.7310913598e-17,
+            "process_cpu_seconds": 6.4316
+          },
+          "audio_sha256": "b22d4af2ccaed06ab934e0426dc6543dac8a1071e2834167f313a1c097396cde",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/baseline-C2soft-0.wav"
+        },
+        "state_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 7.415804167,
+            "realtime_factor": 6.17983680583,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.373943919712,
+            "raw_rms": 0.0534658579908,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 19.0209619139,
+            "accumulated_contact_seconds": 0.00314583333333,
+            "contact_solves": 152,
+            "contact_max_relative_residual": 2.61143648204e-13,
+            "final_mechanical_energy_J": 5.73115437383e-17,
+            "process_cpu_seconds": 7.405781
+          },
+          "audio_sha256": "6ea9f5bc9302272c3a340e68e852a40f9355263cfcf3a778530ec326eea704db",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/state_f32-C2soft-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -110.38274322325377,
+            "level_matched_null_rms_db": -110.667074893667,
+            "rms_change_db": -6.616536413290579e-06,
+            "maximum_absolute_sample_difference": 8.66129994392395e-07,
+            "candidate_level_match_gain": 1.0000007617571958,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": -0.2447690599361259,
+                  "right_minus_left_db": -3.4572890908543656
+                },
+                "candidate": {
+                  "correlation": -0.24476904294131938,
+                  "right_minus_left_db": -3.457278449996041
+                },
+                "correlation_change": 1.6994806534276208e-08,
+                "balance_change_db": 1.0640858324695301e-05
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": -0.0915621860311398,
+                  "right_minus_left_db": -3.648744158096098
+                },
+                "candidate": {
+                  "correlation": -0.09156149007609339,
+                  "right_minus_left_db": -3.6487382267443453
+                },
+                "correlation_change": 6.959550464119557e-07,
+                "balance_change_db": 5.931351752863634e-06
+              }
+            },
+            "dominant_fundamental_peak": {
+              "baseline_hz": 65.01746448600191,
+              "candidate_hz": 65.01746507986309,
+              "difference_cents": 1.5812869543680153e-05,
+              "limits": "Relative dominant-peak estimator on a 0.4s window; unresolved unison beating and short-window bias remain."
+            },
+            "held_note_decay_slope_db_per_second": {
+              "baseline": -15.829064450292206,
+              "candidate": -15.829089393196703,
+              "change": -2.494290449739367e-05,
+              "limits": "Short whole-signal energy slope, not an independently fitted modal T60."
+            },
+            "attack_windows": {
+              "first5ms": {
+                "energy_change_db": 4.168371272707635e-07,
+                "band_power_change_db": {
+                  "0-1000Hz": 1.7432715926913468e-07,
+                  "1000-4000Hz": 2.3372820478081166e-07,
+                  "4000-12000Hz": 0.00010653876012771606,
+                  "12000-20000Hz": 3.2050810221183447e-07
+                }
+              },
+              "5to20ms": {
+                "energy_change_db": 3.757516160000262e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": 6.959106591912898e-06,
+                  "1000-4000Hz": -6.583811008850478e-06,
+                  "4000-12000Hz": 3.4088616640698048e-06,
+                  "12000-20000Hz": 0.0003476615623928236
+                }
+              },
+              "20to50ms": {
+                "energy_change_db": -1.4352235159554692e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": -4.91511410603549e-08,
+                  "1000-4000Hz": -2.19102942468847e-06,
+                  "4000-12000Hz": -1.6052885641808599e-06,
+                  "12000-20000Hz": 0.0010371048806979291
+                }
+              }
+            }
+          }
+        },
+        "modal_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.674392723,
+            "realtime_factor": 5.56199393583,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.373948059276,
+            "raw_rms": 0.0534687219448,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 19.0209604324,
+            "accumulated_contact_seconds": 0.00314583333333,
+            "contact_solves": 152,
+            "contact_max_relative_residual": 2.4961793499e-13,
+            "final_mechanical_energy_J": 5.73454682695e-17,
+            "process_cpu_seconds": 6.671861
+          },
+          "audio_sha256": "94ea5abc2afb090fb091e464c0394bd752fea64223dfff9f5babf4645cd24aaf",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/modal_f32-C2soft-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -74.21525842939974,
+            "level_matched_null_rms_db": -74.54749744451283,
+            "rms_change_db": 0.00045864406556104967,
+            "maximum_absolute_sample_difference": 5.480367690324783e-05,
+            "candidate_level_match_gain": 0.9999471980446548,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": -0.2447690599361259,
+                  "right_minus_left_db": -3.4572890908543656
+                },
+                "candidate": {
+                  "correlation": -0.24475862065833778,
+                  "right_minus_left_db": -3.4574201355292074
+                },
+                "correlation_change": 1.043927778812681e-05,
+                "balance_change_db": -0.00013104467484170712
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": -0.0915621860311398,
+                  "right_minus_left_db": -3.648744158096098
+                },
+                "candidate": {
+                  "correlation": -0.09157968626100295,
+                  "right_minus_left_db": -3.6495573285880525
+                },
+                "correlation_change": -1.7500229863146033e-05,
+                "balance_change_db": -0.0008131704919542848
+              }
+            },
+            "dominant_fundamental_peak": {
+              "baseline_hz": 65.01746448600191,
+              "candidate_hz": 65.01746225262562,
+              "difference_cents": -5.9468593233516015e-05,
+              "limits": "Relative dominant-peak estimator on a 0.4s window; unresolved unison beating and short-window bias remain."
+            },
+            "held_note_decay_slope_db_per_second": {
+              "baseline": -15.829064450292206,
+              "candidate": -15.827623852448937,
+              "change": 0.001440597843268776,
+              "limits": "Short whole-signal energy slope, not an independently fitted modal T60."
+            },
+            "attack_windows": {
+              "first5ms": {
+                "energy_change_db": -9.275310567846842e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": -1.084915414594075e-05,
+                  "1000-4000Hz": 3.1484510617267346e-05,
+                  "4000-12000Hz": 2.7157535167483826e-05,
+                  "12000-20000Hz": -0.0002548679647292526
+                }
+              },
+              "5to20ms": {
+                "energy_change_db": 5.370678184366759e-05,
+                "band_power_change_db": {
+                  "0-1000Hz": 4.2176848843239755e-05,
+                  "1000-4000Hz": 3.2281148905118506e-05,
+                  "4000-12000Hz": 2.6633843752658552e-06,
+                  "12000-20000Hz": -0.00023678504838709245
+                }
+              },
+              "20to50ms": {
+                "energy_change_db": 0.0001285492991034219,
+                "band_power_change_db": {
+                  "0-1000Hz": 0.00015606292682732647,
+                  "1000-4000Hz": 0.00014238079164369602,
+                  "4000-12000Hz": -0.00013449530851820943,
+                  "12000-20000Hz": 0.00021298253276328988
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "C4hard": {
+      "events_sha256": "c3b43a8b96b8da834fb10f9649d5a2c8d53374f54dc53154908267d59dfd9ff3",
+      "sample_rate": 48000,
+      "duration_seconds": 1.2,
+      "variants": {
+        "baseline": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.233004734,
+            "realtime_factor": 5.19417061167,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.04682506919,
+            "raw_rms": 0.122602973856,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 24.8841267881,
+            "accumulated_contact_seconds": 0.00172916666667,
+            "contact_solves": 84,
+            "contact_max_relative_residual": 3.43814548888e-13,
+            "final_mechanical_energy_J": 8.74476865773e-17,
+            "process_cpu_seconds": 6.231002
+          },
+          "audio_sha256": "8e0255fc5840330552ba57952a7f15b089fe12ec3322b2f88706943d2293337c",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/baseline-C4hard-0.wav"
+        },
+        "state_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.831759739,
+            "realtime_factor": 5.69313311583,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.04682530633,
+            "raw_rms": 0.122602986827,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 24.8841262723,
+            "accumulated_contact_seconds": 0.00172916666667,
+            "contact_solves": 84,
+            "contact_max_relative_residual": 3.80513599033e-13,
+            "final_mechanical_energy_J": 8.74462049071e-17,
+            "process_cpu_seconds": 6.828468
+          },
+          "audio_sha256": "720d337f841a35303a443e3680f22b866780a5ed5ada2547138f4367ed6bd462",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/state_f32-C4hard-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -113.74323830257927,
+            "level_matched_null_rms_db": -113.75484278118321,
+            "rms_change_db": 9.220922374121199e-07,
+            "maximum_absolute_sample_difference": 1.1920928955078125e-06,
+            "candidate_level_match_gain": 0.9999998938402136,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": 0.917155193789317,
+                  "right_minus_left_db": -0.33245380518586154
+                },
+                "candidate": {
+                  "correlation": 0.917155219730318,
+                  "right_minus_left_db": -0.33245367283364136
+                },
+                "correlation_change": 2.594100101394048e-08,
+                "balance_change_db": 1.323522201834848e-07
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": 0.9568657753527159,
+                  "right_minus_left_db": -0.3854949766544046
+                },
+                "candidate": {
+                  "correlation": 0.956865791789567,
+                  "right_minus_left_db": -0.38549924903770794
+                },
+                "correlation_change": 1.6436851102419325e-08,
+                "balance_change_db": -4.272383303360883e-06
+              }
+            },
+            "dominant_fundamental_peak": {
+              "baseline_hz": 261.62832710189247,
+              "candidate_hz": 261.62832687038923,
+              "difference_cents": -1.5318918169877707e-06,
+              "limits": "Relative dominant-peak estimator on a 0.4s window; unresolved unison beating and short-window bias remain."
+            },
+            "held_note_decay_slope_db_per_second": {
+              "baseline": -24.015425252538435,
+              "candidate": -24.01536607088073,
+              "change": 5.918165770424366e-05,
+              "limits": "Short whole-signal energy slope, not an independently fitted modal T60."
+            },
+            "attack_windows": {
+              "first5ms": {
+                "energy_change_db": 3.7847420825694193e-07,
+                "band_power_change_db": {
+                  "0-1000Hz": 7.957969006733833e-07,
+                  "1000-4000Hz": 2.9477325894191747e-07,
+                  "4000-12000Hz": 1.65874268702337e-05,
+                  "12000-20000Hz": 0.0006447414079128759
+                }
+              },
+              "5to20ms": {
+                "energy_change_db": 2.176550549978819e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": 2.931152833029431e-06,
+                  "1000-4000Hz": 4.258795305432358e-07,
+                  "4000-12000Hz": 1.9597367167292747e-05,
+                  "12000-20000Hz": 0.00027638255935276006
+                }
+              },
+              "20to50ms": {
+                "energy_change_db": 2.8837415390122007e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": 4.007895995766981e-06,
+                  "1000-4000Hz": -6.539098392513251e-06,
+                  "4000-12000Hz": 1.599446971587636e-05,
+                  "12000-20000Hz": 0.0005734382095344582
+                }
+              }
+            }
+          }
+        },
+        "modal_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.936658817,
+            "realtime_factor": 5.78054901417,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.04682212997,
+            "raw_rms": 0.122594656027,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 24.8841260579,
+            "accumulated_contact_seconds": 0.00172916666667,
+            "contact_solves": 84,
+            "contact_max_relative_residual": 3.60991314603e-13,
+            "final_mechanical_energy_J": 8.76370319214e-17,
+            "process_cpu_seconds": 6.931947
+          },
+          "audio_sha256": "0ccd5f68faf812a46cc5fe3cc03a7a6d40446e9bd17ea60dc4c0da45fb240ceb",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/modal_f32-C4hard-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -72.22431555871336,
+            "level_matched_null_rms_db": -72.57113834924327,
+            "rms_change_db": -0.0005893037236328123,
+            "maximum_absolute_sample_difference": 0.00011572614312171936,
+            "candidate_level_match_gain": 1.0000678484000627,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": 0.917155193789317,
+                  "right_minus_left_db": -0.33245380518586154
+                },
+                "candidate": {
+                  "correlation": 0.9171438597502793,
+                  "right_minus_left_db": -0.332852976550233
+                },
+                "correlation_change": -1.1334039037635968e-05,
+                "balance_change_db": -0.0003991713643714534
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": 0.9568657753527159,
+                  "right_minus_left_db": -0.3854949766544046
+                },
+                "candidate": {
+                  "correlation": 0.9568556659189525,
+                  "right_minus_left_db": -0.38657341729088823
+                },
+                "correlation_change": -1.0109433763338949e-05,
+                "balance_change_db": -0.0010784406364836574
+              }
+            },
+            "dominant_fundamental_peak": {
+              "baseline_hz": 261.62832710189247,
+              "candidate_hz": 261.6282560827501,
+              "difference_cents": -0.00046994442618525584,
+              "limits": "Relative dominant-peak estimator on a 0.4s window; unresolved unison beating and short-window bias remain."
+            },
+            "held_note_decay_slope_db_per_second": {
+              "baseline": -24.015425252538435,
+              "candidate": -24.020157895518295,
+              "change": -0.004732642979860202,
+              "limits": "Short whole-signal energy slope, not an independently fitted modal T60."
+            },
+            "attack_windows": {
+              "first5ms": {
+                "energy_change_db": 6.028952751236685e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": 8.07302637976343e-06,
+                  "1000-4000Hz": 1.0940664053421223e-05,
+                  "4000-12000Hz": 8.948193943182325e-06,
+                  "12000-20000Hz": -0.00027086107022124967
+                }
+              },
+              "5to20ms": {
+                "energy_change_db": -2.5500875376916322e-05,
+                "band_power_change_db": {
+                  "0-1000Hz": -2.3857956773970346e-05,
+                  "1000-4000Hz": 5.840323940693685e-05,
+                  "4000-12000Hz": -1.532028489826208e-05,
+                  "12000-20000Hz": -0.00016440648146630343
+                }
+              },
+              "20to50ms": {
+                "energy_change_db": -0.00013708257472947222,
+                "band_power_change_db": {
+                  "0-1000Hz": -0.00020164329712820262,
+                  "1000-4000Hz": 0.00014844705481084608,
+                  "4000-12000Hz": -7.50484226987455e-05,
+                  "12000-20000Hz": -0.00013760254007296507
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "C6hard": {
+      "events_sha256": "867bf98c07b41aba9c1f9aa4d4dbf97d96b6d00b4659b0b4f7374dcc41dfbec2",
+      "sample_rate": 48000,
+      "duration_seconds": 1.2,
+      "variants": {
+        "baseline": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.068147291,
+            "realtime_factor": 5.05678940917,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.802244025235,
+            "raw_rms": 0.0442245759952,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 46.6487507125,
+            "accumulated_contact_seconds": 0.00120833333333,
+            "contact_solves": 58,
+            "contact_max_relative_residual": 4.10326456851e-13,
+            "final_mechanical_energy_J": 7.49612693604e-16,
+            "process_cpu_seconds": 6.068047
+          },
+          "audio_sha256": "7dd9c39ae74caaeee460eed0d2cd538e5734b23766cce8292b980912aa200f9a",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/baseline-C6hard-0.wav"
+        },
+        "state_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 7.360022331,
+            "realtime_factor": 6.1333519425,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.802243973915,
+            "raw_rms": 0.0442245727326,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 46.6487499827,
+            "accumulated_contact_seconds": 0.00120833333333,
+            "contact_solves": 58,
+            "contact_max_relative_residual": 4.2692105462e-13,
+            "final_mechanical_energy_J": 7.49619854512e-16,
+            "process_cpu_seconds": 7.352197
+          },
+          "audio_sha256": "dce96395e3350def16384c8a217426f30c1f5386a3f311e3c253241865764c3a",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/state_f32-C6hard-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -112.1919775135823,
+            "level_matched_null_rms_db": -112.19592663046254,
+            "rms_change_db": -6.43416576967716e-07,
+            "maximum_absolute_sample_difference": 6.109476089477539e-07,
+            "candidate_level_match_gain": 1.0000000740760737,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": -0.4950718462739673,
+                  "right_minus_left_db": 2.9686472312236605
+                },
+                "candidate": {
+                  "correlation": -0.4950716775575726,
+                  "right_minus_left_db": 2.9686487458992463
+                },
+                "correlation_change": 1.6871639468840627e-07,
+                "balance_change_db": 1.514675585845282e-06
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": -0.4477295144942293,
+                  "right_minus_left_db": 1.54996120743625
+                },
+                "candidate": {
+                  "correlation": -0.44772947496013493,
+                  "right_minus_left_db": 1.5499680082309928
+                },
+                "correlation_change": 3.953409438706146e-08,
+                "balance_change_db": 6.800794742689575e-06
+              }
+            },
+            "dominant_fundamental_peak": {
+              "baseline_hz": 1052.5109601828613,
+              "candidate_hz": 1052.5109587131697,
+              "difference_cents": -2.4174381351867503e-06,
+              "limits": "Relative dominant-peak estimator on a 0.4s window; unresolved unison beating and short-window bias remain."
+            },
+            "held_note_decay_slope_db_per_second": {
+              "baseline": -16.1568410162272,
+              "candidate": -16.15666059458394,
+              "change": 0.0001804216432610417,
+              "limits": "Short whole-signal energy slope, not an independently fitted modal T60."
+            },
+            "attack_windows": {
+              "first5ms": {
+                "energy_change_db": 2.25463190762154e-07,
+                "band_power_change_db": {
+                  "0-1000Hz": 1.196404986331004e-06,
+                  "1000-4000Hz": 7.366786720819353e-07,
+                  "4000-12000Hz": 1.8393384101282137e-05,
+                  "12000-20000Hz": 0.0013816218986659043
+                }
+              },
+              "5to20ms": {
+                "energy_change_db": -1.015464116228304e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": -9.76898073064786e-06,
+                  "1000-4000Hz": -1.705591980637758e-06,
+                  "4000-12000Hz": 1.2711492954235793e-05,
+                  "12000-20000Hz": 0.0007713406475157331
+                }
+              },
+              "20to50ms": {
+                "energy_change_db": -2.7280749761432994e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": 7.688464177939905e-06,
+                  "1000-4000Hz": -3.957925928809152e-06,
+                  "4000-12000Hz": -2.6012987711495422e-05,
+                  "12000-20000Hz": 0.0004286362444144463
+                }
+              }
+            }
+          }
+        },
+        "modal_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1.2,
+            "wall_seconds": 6.398147012,
+            "realtime_factor": 5.33178917667,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.802243833603,
+            "raw_rms": 0.0442226438958,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 46.6487497107,
+            "accumulated_contact_seconds": 0.00120833333333,
+            "contact_solves": 58,
+            "contact_max_relative_residual": 3.92970873987e-13,
+            "final_mechanical_energy_J": 7.49583690414e-16,
+            "process_cpu_seconds": 6.394665
+          },
+          "audio_sha256": "69468368ce619dc6e817de14d2759ca32a04c3c6303da7a66eba52d6cbdd1759",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/modal_f32-C6hard-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -78.62225287835774,
+            "level_matched_null_rms_db": -79.27194857118732,
+            "rms_change_db": -0.0003794834380645343,
+            "maximum_absolute_sample_difference": 2.4141743779182434e-05,
+            "candidate_level_match_gain": 1.0000436905997827,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": -0.4950718462739673,
+                  "right_minus_left_db": 2.9686472312236605
+                },
+                "candidate": {
+                  "correlation": -0.49508198802642017,
+                  "right_minus_left_db": 2.9685771884283763
+                },
+                "correlation_change": -1.0141752452896835e-05,
+                "balance_change_db": -7.004279528421975e-05
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": -0.4477295144942293,
+                  "right_minus_left_db": 1.54996120743625
+                },
+                "candidate": {
+                  "correlation": -0.44775631763009205,
+                  "right_minus_left_db": 1.548752604290935
+                },
+                "correlation_change": -2.6803135862729643e-05,
+                "balance_change_db": -0.0012086031453151236
+              }
+            },
+            "dominant_fundamental_peak": {
+              "baseline_hz": 1052.5109601828613,
+              "candidate_hz": 1052.5110173188386,
+              "difference_cents": 9.398072867730927e-05,
+              "limits": "Relative dominant-peak estimator on a 0.4s window; unresolved unison beating and short-window bias remain."
+            },
+            "held_note_decay_slope_db_per_second": {
+              "baseline": -16.1568410162272,
+              "candidate": -16.15902716330696,
+              "change": -0.0021861470797581717,
+              "limits": "Short whole-signal energy slope, not an independently fitted modal T60."
+            },
+            "attack_windows": {
+              "first5ms": {
+                "energy_change_db": -5.981265117430595e-06,
+                "band_power_change_db": {
+                  "0-1000Hz": -3.120851521274036e-06,
+                  "1000-4000Hz": -3.182060699544847e-06,
+                  "4000-12000Hz": 1.985529071817666e-05,
+                  "12000-20000Hz": 0.00040768822570575613
+                }
+              },
+              "5to20ms": {
+                "energy_change_db": -4.635799721850841e-05,
+                "band_power_change_db": {
+                  "0-1000Hz": 1.3815548871284466e-05,
+                  "1000-4000Hz": -5.048623668265789e-05,
+                  "4000-12000Hz": 0.0001325536450385555,
+                  "12000-20000Hz": -0.00012183325380681536
+                }
+              },
+              "20to50ms": {
+                "energy_change_db": -0.00016727323303807656,
+                "band_power_change_db": {
+                  "0-1000Hz": 1.8612761130261197e-06,
+                  "1000-4000Hz": -0.0001812653169313056,
+                  "4000-12000Hz": 0.0002864966000493312,
+                  "12000-20000Hz": -0.0044790452828244055
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "music_prefix": {
+      "events_sha256": "dcb1cde1ae01907b827e106c7c1ea12be7825e2432f2a7615897a7aac6a0ecee",
+      "sample_rate": 48000,
+      "duration_seconds": 1.0,
+      "variants": {
+        "baseline": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1,
+            "wall_seconds": 5.137695632,
+            "realtime_factor": 5.137695632,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.78144688839,
+            "raw_rms": 0.115032537474,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 30.5783606452,
+            "accumulated_contact_seconds": 0.006125,
+            "contact_solves": 298,
+            "contact_max_relative_residual": 9.93797233377e-13,
+            "final_mechanical_energy_J": 0.00297396794955,
+            "process_cpu_seconds": 5.137598
+          },
+          "audio_sha256": "091e33e8f36c5a6e48f7955c264b1c12be15e5bdc8ddb8f72453138c406e7352",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/baseline-music_prefix-0.wav"
+        },
+        "state_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1,
+            "wall_seconds": 6.489622042,
+            "realtime_factor": 6.489622042,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.781447168529,
+            "raw_rms": 0.115032611948,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 30.5783614045,
+            "accumulated_contact_seconds": 0.006125,
+            "contact_solves": 298,
+            "contact_max_relative_residual": 3.4229007695e-12,
+            "final_mechanical_energy_J": 0.00297399823094,
+            "process_cpu_seconds": 6.487701
+          },
+          "audio_sha256": "dcf67c447d4285dd98d8737cad4965974a27d322fe1c23bab31021424628d9be",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/state_f32-music_prefix-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -112.40596577076687,
+            "level_matched_null_rms_db": -112.73483498758202,
+            "rms_change_db": 5.622943204675806e-06,
+            "maximum_absolute_sample_difference": 1.4677643775939941e-06,
+            "candidate_level_match_gain": 0.9999993526349495,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": -0.5176442383344951,
+                  "right_minus_left_db": 5.6002393821646015
+                },
+                "candidate": {
+                  "correlation": -0.5176441816186096,
+                  "right_minus_left_db": 5.600236848653136
+                },
+                "correlation_change": 5.671588554356788e-08,
+                "balance_change_db": -2.5335114655078428e-06
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": -0.6080787434789307,
+                  "right_minus_left_db": 6.010399397668676
+                },
+                "candidate": {
+                  "correlation": -0.608078803303064,
+                  "right_minus_left_db": 6.010396090232357
+                },
+                "correlation_change": -5.982413331384606e-08,
+                "balance_change_db": -3.307436319488488e-06
+              }
+            }
+          }
+        },
+        "modal_f32": {
+          "metrics": {
+            "sample_rate": 48000,
+            "duration_seconds": 1,
+            "wall_seconds": 5.310885672,
+            "realtime_factor": 5.310885672,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 0.781441459104,
+            "raw_rms": 0.115033322522,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 30.5783620272,
+            "accumulated_contact_seconds": 0.006125,
+            "contact_solves": 298,
+            "contact_max_relative_residual": 9.22049144452e-13,
+            "final_mechanical_energy_J": 0.00297460499073,
+            "process_cpu_seconds": 5.310688
+          },
+          "audio_sha256": "a64d551431949c3713f422e46cf15a96d9ede98b7fcb07648fead42d5aba955a",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/modal_f32-music_prefix-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -76.73092060201124,
+            "level_matched_null_rms_db": -76.74048853946961,
+            "rms_change_db": 5.927502054871142e-05,
+            "maximum_absolute_sample_difference": 8.104369044303894e-05,
+            "candidate_level_match_gain": 0.9999931757343502,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": -0.5176442383344951,
+                  "right_minus_left_db": 5.6002393821646015
+                },
+                "candidate": {
+                  "correlation": -0.51764487355577,
+                  "right_minus_left_db": 5.60022955804381
+                },
+                "correlation_change": -6.352212749138886e-07,
+                "balance_change_db": -9.824120791535051e-06
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": -0.6080787434789307,
+                  "right_minus_left_db": 6.010399397668676
+                },
+                "candidate": {
+                  "correlation": -0.60807125736652,
+                  "right_minus_left_db": 6.010446907168316
+                },
+                "correlation_change": 7.486112410637347e-06,
+                "balance_change_db": 4.750949964016371e-05
+              }
+            }
+          }
+        }
+      }
+    },
+    "mixed192k": {
+      "events_sha256": "ac73e48f06a6f14e918d7cf943940864ffb2f0573c38ea18ff59e7ec71ae14d7",
+      "sample_rate": 192000,
+      "duration_seconds": 0.35,
+      "variants": {
+        "baseline": {
+          "metrics": {
+            "sample_rate": 192000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 7.337706078,
+            "realtime_factor": 20.9648745086,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.40154232641,
+            "raw_rms": 0.304713147532,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.5053559913,
+            "accumulated_contact_seconds": 0.0103645833333,
+            "contact_solves": 2003,
+            "contact_max_relative_residual": 2.82089845465e-12,
+            "final_mechanical_energy_J": 0.00245822890648,
+            "process_cpu_seconds": 7.337606
+          },
+          "audio_sha256": "d9fa6393686733a994a955826ad30222d31313b7034cbad4f9856f065431b38b",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/baseline-mixed192k-0.wav"
+        },
+        "state_f32": {
+          "metrics": {
+            "sample_rate": 192000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 8.952118481,
+            "realtime_factor": 25.5774813743,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.40154080621,
+            "raw_rms": 0.304713237692,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.5053582124,
+            "accumulated_contact_seconds": 0.0103645833333,
+            "contact_solves": 2003,
+            "contact_max_relative_residual": 3.41253620461e-12,
+            "final_mechanical_energy_J": 0.00245820857822,
+            "process_cpu_seconds": 8.943093
+          },
+          "audio_sha256": "e03dea18d15aff73bc5dead49f8750284c7e19b790b5cd32fec43a959cd7e238",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/state_f32-mixed192k-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -106.9099202099413,
+            "level_matched_null_rms_db": -106.92861222850397,
+            "rms_change_db": 2.5690476212939723e-06,
+            "maximum_absolute_sample_difference": 6.094574928283691e-06,
+            "candidate_level_match_gain": 0.999999704227506,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": 0.6408979502176743,
+                  "right_minus_left_db": 0.7111555265052185
+                },
+                "candidate": {
+                  "correlation": 0.6408989747069865,
+                  "right_minus_left_db": 0.7111633643742283
+                },
+                "correlation_change": 1.0244893122735022e-06,
+                "balance_change_db": 7.837869009819087e-06
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": 0.9270387162024235,
+                  "right_minus_left_db": 0.33176434122565324
+                },
+                "candidate": {
+                  "correlation": 0.9270387616314858,
+                  "right_minus_left_db": 0.33176653637611997
+                },
+                "correlation_change": 4.542906228977017e-08,
+                "balance_change_db": 2.195150466732798e-06
+              }
+            }
+          }
+        },
+        "modal_f32": {
+          "metrics": {
+            "sample_rate": 192000,
+            "duration_seconds": 0.35,
+            "wall_seconds": 7.478782363,
+            "realtime_factor": 21.3679496086,
+            "string_count": 230,
+            "string_modes": 17778,
+            "board_modes": 475,
+            "raw_peak": 1.40176412953,
+            "raw_rms": 0.304767228895,
+            "nonfinite_samples": 0,
+            "max_hammer_force_N": 62.5053598407,
+            "accumulated_contact_seconds": 0.0103645833333,
+            "contact_solves": 2003,
+            "contact_max_relative_residual": 2.63304448815e-12,
+            "final_mechanical_energy_J": 0.00245818128689,
+            "process_cpu_seconds": 7.475741
+          },
+          "audio_sha256": "1f3341be3c203e13a5eba65e3e2dd6aea61ad77af7610d2b1f82bb21b6dd5204",
+          "audio_file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/modal_f32-mixed192k-0.wav",
+          "difference": {
+            "finite": true,
+            "null_rms_db_relative_reference": -69.79089144100934,
+            "level_matched_null_rms_db": -71.3418838465357,
+            "rms_change_db": 0.001541459088750573,
+            "maximum_absolute_sample_difference": 0.000338822603225708,
+            "candidate_level_match_gain": 0.999822548710382,
+            "stereo_windows": {
+              "early": {
+                "baseline": {
+                  "correlation": 0.6408979502176743,
+                  "right_minus_left_db": 0.7111555265052185
+                },
+                "candidate": {
+                  "correlation": 0.6410075987148255,
+                  "right_minus_left_db": 0.7114704790136622
+                },
+                "correlation_change": 0.00010964849715122682,
+                "balance_change_db": 0.00031495250844371103
+              },
+              "sustain": {
+                "baseline": {
+                  "correlation": 0.9270387162024235,
+                  "right_minus_left_db": 0.33176434122565324
+                },
+                "candidate": {
+                  "correlation": 0.9270699459235274,
+                  "right_minus_left_db": 0.33179682013147116
+                },
+                "correlation_change": 3.1229721103920305e-05,
+                "balance_change_db": 3.247890581792312e-05
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "precision_profiles": {
+    "baseline": "All original double state/coefficients/arithmetic.",
+    "state_f32": "String/board q,p states float. String coefficients, oscillator intermediates, scalar reductions, board coefficients, hammer/contact and bridge solve remain double.",
+    "modal_f32": "Additionally all string-bank coefficients and cached unison factors float, float free-oscillator arithmetic. Reductions explicitly use double products/accumulators; board coefficients, hammer/contact and bridge solve remain double."
+  },
+  "limits": "Local shared-host CPU and short synthesized-note comparisons only. No new recording, native plugin, blind listening or inaudibility claim. Numerical errors are measured, not automatically classified as audible/inaudible.",
+  "listening_exports": {
+    "baseline": {
+      "file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/listening-baseline.wav",
+      "sha256": "0124522331fdb16c08d5533c6af62f908f76d6c1fe74c91800cb14be9da81dcf",
+      "whole_file_rms_gain": 0.965844034600942,
+      "shared_peak_gain": 0.7856113733954174,
+      "order": [
+        "C2 soft note/release",
+        "C4 hard note/release",
+        "C6 hard note/release",
+        "first1s original nocturne"
+      ],
+      "gap_seconds": 0.2,
+      "limits": "Dry same-rate48kHz source comparison, complete-file RMS matched; sample-peak ceiling only. These are not blind listening results."
+    },
+    "state_f32": {
+      "file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/listening-state_f32.wav",
+      "sha256": "5e3a235a1c316bc821f233a25e03b9b6780249b5354a7f9344786ff96f7ce187",
+      "whole_file_rms_gain": 0.9658438340098188,
+      "shared_peak_gain": 0.7856113733954174,
+      "order": [
+        "C2 soft note/release",
+        "C4 hard note/release",
+        "C6 hard note/release",
+        "first1s original nocturne"
+      ],
+      "gap_seconds": 0.2,
+      "limits": "Dry same-rate48kHz source comparison, complete-file RMS matched; sample-peak ceiling only. These are not blind listening results."
+    },
+    "modal_f32": {
+      "file": "/workspace/virtual-instrument-keyra/out/full-precision-optimization/listening-modal_f32.wav",
+      "sha256": "8f71bde4128cff800e3ad59448c26ae7ba652e832428e071525e27e7bfc21de1",
+      "whole_file_rms_gain": 0.9658715347933722,
+      "shared_peak_gain": 0.7856113733954174,
+      "order": [
+        "C2 soft note/release",
+        "C4 hard note/release",
+        "C6 hard note/release",
+        "first1s original nocturne"
+      ],
+      "gap_seconds": 0.2,
+      "limits": "Dry same-rate48kHz source comparison, complete-file RMS matched; sample-peak ceiling only. These are not blind listening results."
+    }
+  },
+  "canonical_source_unchanged": true,
+  "physics_template_sha256": "d6b4df0d669128420f7daeb4011f65097b67d70013935363c4d941cb5030ea64"
+}

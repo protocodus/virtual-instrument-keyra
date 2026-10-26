@@ -1,0 +1,610 @@
+{
+  "schema_version": 1,
+  "dataset_title": "Salamander Grand V3 key-release, pedal action and string-release mechanism evidence",
+  "recording_author": "Alexander Holm",
+  "distribution_maintainer": "kinwie / sfzinstruments",
+  "instrument": "Yamaha C5 acoustic grand piano",
+  "source_repository": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+  "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "original_distribution": "https://archive.org/details/SalamanderGrandPianoV3",
+  "license": "Creative Commons Attribution3.0 Unported",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/",
+  "license_copy": "upstream/LICENSE-CC-BY-3.0.txt",
+  "capture": {
+    "sample_rate": 48000,
+    "bits": 24,
+    "channels": 2,
+    "microphones": "Two AKG C414 in AB configuration approximately12cm above strings",
+    "physical_event_force_or_velocity": null,
+    "room": null,
+    "editing_and_denoising_history": null,
+    "event_geometry": null
+  },
+  "split_sha256": "71455bf0383f58563527520a14a5a9456169820dbee04fa20c4411943ae0895c",
+  "split_lock_sha256": "484a1508c3f4e06660995b7096013a172815317f49571d4f8d39c1cd351ef43a",
+  "inventory_sha256": "a7bfe397df0c60152e19eaef392bedcaa7556b421dc63a2ac3f0e5a6f2751b0a",
+  "upstream_text_files": {
+    "upstream/README.md": "be275b843d10a22e614e5f52bd414fe2cbdcbfd6165894b1dcca738e8cbf391a",
+    "upstream/LICENSE-CC-BY-3.0.txt": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+    "upstream/Salamander-Grand-Piano-V3.sfz": "c8b282f03fdb2d9e6be24a99df0d97a05e7ece718d1a14e0b882c518161f7837",
+    "upstream/hammer.txt": "8258e15e6058f88a3a3b1ef9a587411dd327c01b11486183caad3b8f1fe96297",
+    "upstream/pedal.txt": "ac027c0c658d9a74f74644013f141e7d8c524a35dab38d44ddb9b8a8c8b790c5",
+    "upstream/str_res.txt": "1dc2c4d84668140eab1f206f0116aec5deefc818ae48d04374277d09a680f8f8"
+  },
+  "initial_training_acquisition_verified": true,
+  "reserved_policy": "No reserved file may be acquired or decoded by this fetch/analysis tool. First evaluation requires a separate candidate/protocol/prediction freeze and evaluator.",
+  "interpretation": "rel files are upstream-labelled key-release noises, not isolated hammer strikes; release-resonance and pedal files retain mixed piano/body/room/capture contributions. Playback gain/veltrack/rt_decay are not physical acquisition measurements.",
+  "modifications": {
+    "flac": "None; original pinned bytes.",
+    "wav": "Lossless signedPCM24 decode at original48k stereo; no gain/trim/retune/resample/denoise/EQ/padding/loop.",
+    "runtime": "No recorded waveform, sample bank or impulse response is embedded in the instrument."
+  },
+  "samples": [
+    {
+      "id": "key-release-A0",
+      "kind": "key_release",
+      "note": "A0",
+      "midi": 21,
+      "family": "rel",
+      "source_sample": "rel1.flac",
+      "role": "train",
+      "source_trigger": "note release",
+      "source_region": "key=21 sample=rel1.$EXT",
+      "playback": {
+        "amp_veltrack": 82,
+        "volume_db": -37,
+        "rt_decay": 2
+      },
+      "source_path": "Samples/rel1.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/rel1.flac",
+      "git_blob_sha1": "942a88601dcba2f5badb94d1c226fce95b5c1366",
+      "flac_bytes": 65800,
+      "flac_path": "recordings/rel1.flac",
+      "wav_path": "recordings/rel1.wav",
+      "flac_sha256": "327ce163e169dd9881806716a804772e0e9b156788714a43240242448d96c787",
+      "wav_sha256": "7f2b8acbe93a6d7ca0cfc4759a6a836720b9fb217aa885372ee7b2f1b6561d01",
+      "decoded_pcm": {
+        "sha256": "72816d1bc2fc7bcd6563afb1b2ac32ead8033be8892e8a307606e5380d6a2fa1",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 21900,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 0.45625,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "72816d1bc2fc7bcd6563afb1b2ac32ead8033be8892e8a307606e5380d6a2fa1"
+    },
+    {
+      "id": "key-release-C4",
+      "kind": "key_release",
+      "note": "C4",
+      "midi": 60,
+      "family": "rel",
+      "source_sample": "rel40.flac",
+      "role": "train",
+      "source_trigger": "note release",
+      "source_region": "key=60 sample=rel40.$EXT",
+      "playback": {
+        "amp_veltrack": 82,
+        "volume_db": -37,
+        "rt_decay": 2
+      },
+      "source_path": "Samples/rel40.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/rel40.flac",
+      "git_blob_sha1": "4c8946aaada7b4a9a15ef4cd080b4dd78ec40a0f",
+      "flac_bytes": 63966,
+      "flac_path": "recordings/rel40.flac",
+      "wav_path": "recordings/rel40.wav",
+      "flac_sha256": "d0a86cfa6578475e97a66d6a717ded7a2f24877e7c9fdc67e71181c9272332bd",
+      "wav_sha256": "8ce1fb05b61365ca1e4409f977c996bc9c4f53654d81d5114227fdcabaf66546",
+      "decoded_pcm": {
+        "sha256": "835cc90a81e0a0d908e9a9a3c53acb2579c6d554957b0d4b0c9d8be2b7d56df3",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 21900,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 0.45625,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "835cc90a81e0a0d908e9a9a3c53acb2579c6d554957b0d4b0c9d8be2b7d56df3"
+    },
+    {
+      "id": "key-release-C8",
+      "kind": "key_release",
+      "note": "C8",
+      "midi": 108,
+      "family": "rel",
+      "source_sample": "rel88.flac",
+      "role": "train",
+      "source_trigger": "note release",
+      "source_region": "key=108 sample=rel88.$EXT",
+      "playback": {
+        "amp_veltrack": 82,
+        "volume_db": -37,
+        "rt_decay": 2
+      },
+      "source_path": "Samples/rel88.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/rel88.flac",
+      "git_blob_sha1": "8a6c4e628b8d7d5796423a8a758f627146479641",
+      "flac_bytes": 63299,
+      "flac_path": "recordings/rel88.flac",
+      "wav_path": "recordings/rel88.wav",
+      "flac_sha256": "ee4f483f5e2da6fa405642054897eb4b93878e2db8ec7c193b4225d765cf32df",
+      "wav_sha256": "822a0eb0d4420cdc64ac955c050a6d7cdbd025aeccf106d966e2f207e6af78bd",
+      "decoded_pcm": {
+        "sha256": "197862e3f0397b9e5697acc622d4a4c99d31965287f65ab27be83ef9434cea21",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 21900,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 0.45625,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "197862e3f0397b9e5697acc622d4a4c99d31965287f65ab27be83ef9434cea21"
+    },
+    {
+      "id": "key-release-C1",
+      "kind": "key_release",
+      "note": "C1",
+      "midi": 24,
+      "family": "rel",
+      "source_sample": "rel4.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "note release",
+      "source_region": "key=24 sample=rel4.$EXT",
+      "playback": {
+        "amp_veltrack": 82,
+        "volume_db": -37,
+        "rt_decay": 2
+      },
+      "source_path": "Samples/rel4.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/rel4.flac",
+      "git_blob_sha1": "39208169c2a11e072ca31e7eaabee61678387053",
+      "flac_bytes": 65645,
+      "flac_path": "recordings/rel4.flac",
+      "wav_path": "recordings/rel4.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "key-release-C3",
+      "kind": "key_release",
+      "note": "C3",
+      "midi": 48,
+      "family": "rel",
+      "source_sample": "rel28.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "note release",
+      "source_region": "key=48 sample=rel28.$EXT",
+      "playback": {
+        "amp_veltrack": 82,
+        "volume_db": -37,
+        "rt_decay": 2
+      },
+      "source_path": "Samples/rel28.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/rel28.flac",
+      "git_blob_sha1": "4a9b2167e81a0ad42e3fad35411da45bd8629ded",
+      "flac_bytes": 62755,
+      "flac_path": "recordings/rel28.flac",
+      "wav_path": "recordings/rel28.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "key-release-C6",
+      "kind": "key_release",
+      "note": "C6",
+      "midi": 84,
+      "family": "rel",
+      "source_sample": "rel64.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "note release",
+      "source_region": "key=84 sample=rel64.$EXT",
+      "playback": {
+        "amp_veltrack": 82,
+        "volume_db": -37,
+        "rt_decay": 2
+      },
+      "source_path": "Samples/rel64.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/rel64.flac",
+      "git_blob_sha1": "d59eeb08d25475503496ad854073dd3284084d3b",
+      "flac_bytes": 61812,
+      "flac_path": "recordings/rel64.flac",
+      "wav_path": "recordings/rel64.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "pedal-D1",
+      "kind": "pedal_down",
+      "note": null,
+      "midi": null,
+      "family": "pedalD",
+      "source_sample": "pedalD1.flac",
+      "role": "train",
+      "source_trigger": "CC64 endpoint127",
+      "source_region": "sample=pedalD1.$EXT",
+      "playback": {
+        "volume_db": -20,
+        "random_range": [
+          0,
+          0.5
+        ],
+        "polyphony": 1,
+        "off_time_seconds": 0.1
+      },
+      "source_path": "Samples/pedalD1.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/pedalD1.flac",
+      "git_blob_sha1": "098828eb035e42354de3b0710556bbcb0f29fc27",
+      "flac_bytes": 824409,
+      "flac_path": "recordings/pedalD1.flac",
+      "wav_path": "recordings/pedalD1.wav",
+      "flac_sha256": "cbd65f1156cdca61cfd0e68dfa1e843fb20f5878b50e81bb5390a65a25305556",
+      "wav_sha256": "006eca324d42fc75591b6c85cbef3d95b7ec0e8b784fcc5a4abe6a450ab88ef6",
+      "decoded_pcm": {
+        "sha256": "5a881e360ac834726a77b09f266cff592eac1ce2b12b50c61c9f93919198de83",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 306139,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 6.3778958333333335,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "5a881e360ac834726a77b09f266cff592eac1ce2b12b50c61c9f93919198de83"
+    },
+    {
+      "id": "pedal-D2",
+      "kind": "pedal_down",
+      "note": null,
+      "midi": null,
+      "family": "pedalD",
+      "source_sample": "pedalD2.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "CC64 endpoint127",
+      "source_region": "sample=pedalD2.$EXT",
+      "playback": {
+        "volume_db": -20,
+        "random_range": [
+          0.5,
+          1
+        ],
+        "polyphony": 1,
+        "off_time_seconds": 0.1
+      },
+      "source_path": "Samples/pedalD2.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/pedalD2.flac",
+      "git_blob_sha1": "467291af801c900897054dbe91a3ebee64fb98ad",
+      "flac_bytes": 832915,
+      "flac_path": "recordings/pedalD2.flac",
+      "wav_path": "recordings/pedalD2.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "pedal-U1",
+      "kind": "pedal_up",
+      "note": null,
+      "midi": null,
+      "family": "pedalU",
+      "source_sample": "pedalU1.flac",
+      "role": "train",
+      "source_trigger": "CC64 endpoint0",
+      "source_region": "sample=pedalU1.$EXT",
+      "playback": {
+        "volume_db": -19,
+        "random_range": [
+          0,
+          0.5
+        ],
+        "polyphony": 1,
+        "off_time_seconds": 0.1
+      },
+      "source_path": "Samples/pedalU1.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/pedalU1.flac",
+      "git_blob_sha1": "b7c0e6228151fcc148837b5aa7a55f0007193618",
+      "flac_bytes": 77855,
+      "flac_path": "recordings/pedalU1.flac",
+      "wav_path": "recordings/pedalU1.wav",
+      "flac_sha256": "ff8805226a3c07cbce67e2638a99cdcad4ca8e67aa999a8b47aaa41645a21cf9",
+      "wav_sha256": "30cd38d892eb86e6a3a6c6d9c487536dfc5f06479c7b2e7eb97b77dbd7bf1b9d",
+      "decoded_pcm": {
+        "sha256": "c744ca2165a0bfc39423900df62f2b5fe6e92c84cd361abccca720f94309cd4b",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 33529,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 0.6985208333333334,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "c744ca2165a0bfc39423900df62f2b5fe6e92c84cd361abccca720f94309cd4b"
+    },
+    {
+      "id": "pedal-U2",
+      "kind": "pedal_up",
+      "note": null,
+      "midi": null,
+      "family": "pedalU",
+      "source_sample": "pedalU2.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "CC64 endpoint0",
+      "source_region": "sample=pedalU2.$EXT",
+      "playback": {
+        "volume_db": -19,
+        "random_range": [
+          0.5,
+          1
+        ],
+        "polyphony": 1,
+        "off_time_seconds": 0.1
+      },
+      "source_path": "Samples/pedalU2.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/pedalU2.flac",
+      "git_blob_sha1": "50d0bf224f14fa36ca9e62f7f769879fc21c28cd",
+      "flac_bytes": 67694,
+      "flac_path": "recordings/pedalU2.flac",
+      "wav_path": "recordings/pedalU2.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "string-release-S-C2",
+      "kind": "string_release",
+      "note": "C2",
+      "midi": 36,
+      "family": "harmS",
+      "source_sample": "harmSC2.flac",
+      "role": "train",
+      "source_trigger": "note release",
+      "source_region": "pitch_keycenter=36 sample=harmSC2.$EXT",
+      "playback": {
+        "amp_veltrack": 95,
+        "rt_decay": 7,
+        "velocity_range": [
+          0,
+          44
+        ],
+        "volume_db": 0,
+        "additional_parallel_layer": false
+      },
+      "source_path": "Samples/harmSC2.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/harmSC2.flac",
+      "git_blob_sha1": "afbf9ca70cf71f5843bcd5f47c0e12ac9bcd45bc",
+      "flac_bytes": 184590,
+      "flac_path": "recordings/harmSC2.flac",
+      "wav_path": "recordings/harmSC2.wav",
+      "flac_sha256": "de17563a53319c909da42409fecea564ec2d230d0e1d4c27863eed08c944ac9f",
+      "wav_sha256": "b1a04b7b1a4fe3de770c87e50870ba494425b9e7915e4048b08d468fefa9ed08",
+      "decoded_pcm": {
+        "sha256": "6f22d57a9a6de8e467b6e01b3d4558b906c907920677149f469716a8d96a2df4",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 96816,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 2.017,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "6f22d57a9a6de8e467b6e01b3d4558b906c907920677149f469716a8d96a2df4"
+    },
+    {
+      "id": "string-release-L-C4",
+      "kind": "string_release",
+      "note": "C4",
+      "midi": 60,
+      "family": "harmL",
+      "source_sample": "harmLC4.flac",
+      "role": "train",
+      "source_trigger": "note release",
+      "source_region": "pitch_keycenter=60 sample=harmLC4.$EXT",
+      "playback": {
+        "amp_veltrack": 90,
+        "rt_decay": 9,
+        "velocity_range": [
+          45,
+          127
+        ],
+        "volume_db": -4,
+        "additional_parallel_layer": false
+      },
+      "source_path": "Samples/harmLC4.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/harmLC4.flac",
+      "git_blob_sha1": "90bec8c9ab6de7ddefda97bcd0ec975102558e5b",
+      "flac_bytes": 259274,
+      "flac_path": "recordings/harmLC4.flac",
+      "wav_path": "recordings/harmLC4.wav",
+      "flac_sha256": "92c6b1db832090bdbb4590c00fcbb143ebd17b8c1995539381822dc32f5728a0",
+      "wav_sha256": "af0af0468a6095340effdee2299d58b161a7d4ccdeb076fe7f0090fdbfc4c6a1",
+      "decoded_pcm": {
+        "sha256": "4a86ef1eba19ad5ddbbcebd6c804f68dd7130e26c1556f809f6f8257f2d0651c",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 136258,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 2.8387083333333334,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "4a86ef1eba19ad5ddbbcebd6c804f68dd7130e26c1556f809f6f8257f2d0651c"
+    },
+    {
+      "id": "string-release-V3-C6",
+      "kind": "string_release",
+      "note": "C6",
+      "midi": 84,
+      "family": "harmV3",
+      "source_sample": "harmV3C6.flac",
+      "role": "train",
+      "source_trigger": "note release",
+      "source_region": "pitch_keycenter=84 sample=harmV3C6.$EXT",
+      "playback": {
+        "amp_veltrack": 96,
+        "rt_decay": 2,
+        "velocity_range": [
+          0,
+          127
+        ],
+        "volume_db": 0,
+        "additional_parallel_layer": true
+      },
+      "source_path": "Samples/harmV3C6.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/harmV3C6.flac",
+      "git_blob_sha1": "f4abfcc0e9d35d36ab762d22e692170ff5a6d094",
+      "flac_bytes": 169923,
+      "flac_path": "recordings/harmV3C6.flac",
+      "wav_path": "recordings/harmV3C6.wav",
+      "flac_sha256": "dca505944576f7eb70d92d7707a7021106bee46f5c0f5f7d28d0c91cdcc91257",
+      "wav_sha256": "a36d027176a75583859ca5f764563203fa5ee1b34db11fdb56473457bd00a3c5",
+      "decoded_pcm": {
+        "sha256": "a545aaa8e4f6e48af2b1cedb717c9f7f93d97e1b4e101a8373770df0dfce7461",
+        "encoding": "s24le-interleaved",
+        "sample_rate": 48000,
+        "channels": 2,
+        "frames": 102784,
+        "pcm_bits": 24
+      },
+      "duration_seconds": 2.1413333333333333,
+      "source_format": {
+        "sample_rate": 48000,
+        "channels": 2,
+        "bits_per_raw_sample": 24,
+        "sample_fmt": "s32"
+      },
+      "source_decoded_pcm_sha256": "a545aaa8e4f6e48af2b1cedb717c9f7f93d97e1b4e101a8373770df0dfce7461"
+    },
+    {
+      "id": "string-release-S-C4",
+      "kind": "string_release",
+      "note": "C4",
+      "midi": 60,
+      "family": "harmS",
+      "source_sample": "harmSC4.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "note release",
+      "source_region": "pitch_keycenter=60 sample=harmSC4.$EXT",
+      "playback": {
+        "amp_veltrack": 90,
+        "rt_decay": 7,
+        "velocity_range": [
+          0,
+          44
+        ],
+        "volume_db": 0,
+        "additional_parallel_layer": false
+      },
+      "source_path": "Samples/harmSC4.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/harmSC4.flac",
+      "git_blob_sha1": "d747d3e9b31d220a836713af65d2b34d381bf9ce",
+      "flac_bytes": 171481,
+      "flac_path": "recordings/harmSC4.flac",
+      "wav_path": "recordings/harmSC4.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "string-release-L-C6",
+      "kind": "string_release",
+      "note": "C6",
+      "midi": 84,
+      "family": "harmL",
+      "source_sample": "harmLC6.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "note release",
+      "source_region": "pitch_keycenter=84 sample=harmLC6.$EXT",
+      "playback": {
+        "amp_veltrack": 90,
+        "rt_decay": 9,
+        "velocity_range": [
+          45,
+          127
+        ],
+        "volume_db": -4,
+        "additional_parallel_layer": false
+      },
+      "source_path": "Samples/harmLC6.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/harmLC6.flac",
+      "git_blob_sha1": "2b904f704134661924fc1ca1210f81f367bb7101",
+      "flac_bytes": 250074,
+      "flac_path": "recordings/harmLC6.flac",
+      "wav_path": "recordings/harmLC6.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    },
+    {
+      "id": "string-release-V3-C2",
+      "kind": "string_release",
+      "note": "C2",
+      "midi": 36,
+      "family": "harmV3",
+      "source_sample": "harmV3C2.flac",
+      "role": "reserved_fresh_evaluation",
+      "source_trigger": "note release",
+      "source_region": "pitch_keycenter=36 sample=harmV3C2.$EXT",
+      "playback": {
+        "amp_veltrack": 96,
+        "rt_decay": 2,
+        "velocity_range": [
+          0,
+          127
+        ],
+        "volume_db": 0,
+        "additional_parallel_layer": true
+      },
+      "source_path": "Samples/harmV3C2.flac",
+      "source_url": "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/3382bf9496bba2486f5ab0de55a264d1dfc38404/Samples/harmV3C2.flac",
+      "git_blob_sha1": "98e15aae25d112295aae2dc8616a83fe7abe73bc",
+      "flac_bytes": 173135,
+      "flac_path": "recordings/harmV3C2.flac",
+      "wav_path": "recordings/harmV3C2.wav",
+      "flac_sha256": null,
+      "wav_sha256": null,
+      "decoded_pcm": null
+    }
+  ]
+}

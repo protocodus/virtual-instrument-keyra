@@ -1,0 +1,981 @@
+{
+  "schema_version": 1,
+  "training_ids": [
+    "C2v12",
+    "C2v4",
+    "C3v12",
+    "C3v4",
+    "C4v12",
+    "C4v4",
+    "C5v12",
+    "C5v4",
+    "C6v12",
+    "C6v4"
+  ],
+  "cases": [
+    {
+      "id": "C2v12",
+      "midi": 36,
+      "velocity": 93,
+      "old_parameter_seconds": 0.05335416666666667,
+      "candidate_parameter_seconds": 0.1500225981735945,
+      "fit": {
+        "target_rise_seconds": 0.05335416666666667,
+        "predicted_rise_seconds": 0.05825,
+        "absolute_error_seconds": 0.004895833333333335,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": true,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.05335416666666667,
+        "t10_seconds": 0.007,
+        "t90_seconds": 0.06035416666666667,
+        "onset_seconds": 0.0030833333333333333,
+        "peak_time_seconds": 0.063875,
+        "early_rms": 0.10661676743177168,
+        "early_energy": [
+          0.011926239945578777,
+          0.02177533589994324
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 25.937500000000004,
+        "first20ms_energy_error_db": 5.17684171364234,
+        "first50ms_energy_error_db": 4.285636883285127,
+        "peak_time_error_ms": -32.895833333333336,
+        "first20ms_band_mae_db": 7.0599114811826125,
+        "first50ms_band_mae_db": 6.031053696014378,
+        "first150ms_envelope_mae_db": 3.4365789280674623
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 4.895833333333336,
+        "first20ms_energy_error_db": -0.9637072875805373,
+        "first50ms_energy_error_db": -0.39891512337799484,
+        "peak_time_error_ms": 29.04166666666666,
+        "first20ms_band_mae_db": 8.23263279044763,
+        "first50ms_band_mae_db": 6.432061714395647,
+        "first150ms_envelope_mae_db": 2.60969861463519
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    },
+    {
+      "id": "C2v4",
+      "midi": 36,
+      "velocity": 40,
+      "old_parameter_seconds": 0.05254166666666667,
+      "candidate_parameter_seconds": 0.15561111328375515,
+      "fit": {
+        "target_rise_seconds": 0.05254166666666667,
+        "predicted_rise_seconds": 0.05254166666666667,
+        "absolute_error_seconds": 0.0,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": true,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.05254166666666667,
+        "t10_seconds": 0.008541666666666666,
+        "t90_seconds": 0.06108333333333334,
+        "onset_seconds": 0.008541666666666666,
+        "peak_time_seconds": 0.06477083333333333,
+        "early_rms": 0.05575017073238326,
+        "early_energy": [
+          0.0026763764163424187,
+          0.005551714904831237
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 24.229166666666668,
+        "first20ms_energy_error_db": 3.253077249196101,
+        "first50ms_energy_error_db": 2.8430682341135576,
+        "peak_time_error_ms": -18.104166666666664,
+        "first20ms_band_mae_db": 7.530435104106643,
+        "first50ms_band_mae_db": 6.694593277783384,
+        "first150ms_envelope_mae_db": 3.4908730059676167
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.0,
+        "first20ms_energy_error_db": -3.076147350517406,
+        "first50ms_energy_error_db": -1.9040837232899759,
+        "peak_time_error_ms": 42.979166666666664,
+        "first20ms_band_mae_db": 7.065722409238714,
+        "first50ms_band_mae_db": 6.931824080169659,
+        "first150ms_envelope_mae_db": 3.5526091551949643
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    },
+    {
+      "id": "C3v12",
+      "midi": 48,
+      "velocity": 93,
+      "old_parameter_seconds": 0.028291666666666666,
+      "candidate_parameter_seconds": 0.06729914494702181,
+      "fit": {
+        "target_rise_seconds": 0.028291666666666666,
+        "predicted_rise_seconds": 0.027666666666666666,
+        "absolute_error_seconds": 0.0006250000000000006,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.028291666666666666,
+        "t10_seconds": 0.004416666666666667,
+        "t90_seconds": 0.03270833333333333,
+        "onset_seconds": 0.009604166666666667,
+        "peak_time_seconds": 0.041,
+        "early_rms": 0.09417098162666389,
+        "early_energy": [
+          0.015337864317933032,
+          0.029686656544288148
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 6.562499999999999,
+        "first20ms_energy_error_db": 2.3253106354595947,
+        "first50ms_energy_error_db": 1.817596842445537,
+        "peak_time_error_ms": -9.625000000000002,
+        "first20ms_band_mae_db": 9.342045920885058,
+        "first50ms_band_mae_db": 7.846692998508743,
+        "first150ms_envelope_mae_db": 1.8987155705327574
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.6250000000000006,
+        "first20ms_energy_error_db": -2.673983930717168,
+        "first50ms_energy_error_db": -1.1807057842288684,
+        "peak_time_error_ms": 13.541666666666668,
+        "first20ms_band_mae_db": 10.542106106981745,
+        "first50ms_band_mae_db": 8.451443110847013,
+        "first150ms_envelope_mae_db": 1.4706483533795178
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.02083333333333104
+    },
+    {
+      "id": "C3v4",
+      "midi": 48,
+      "velocity": 40,
+      "old_parameter_seconds": 0.035124999999999997,
+      "candidate_parameter_seconds": 0.08769732526463012,
+      "fit": {
+        "target_rise_seconds": 0.035124999999999997,
+        "predicted_rise_seconds": 0.035125,
+        "absolute_error_seconds": 6.938893903907228e-18,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.035125,
+        "t10_seconds": 0.003125,
+        "t90_seconds": 0.03825,
+        "onset_seconds": 0.0077083333333333335,
+        "peak_time_seconds": 0.03939583333333333,
+        "early_rms": 0.04832968339975049,
+        "early_energy": [
+          0.003916444516043982,
+          0.008548281919401797
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 14.416666666666671,
+        "first20ms_energy_error_db": 1.0596980274705896,
+        "first50ms_energy_error_db": 0.9075585355833214,
+        "peak_time_error_ms": -0.37500000000000033,
+        "first20ms_band_mae_db": 3.8388892673672608,
+        "first50ms_band_mae_db": 3.7129531424279727,
+        "first150ms_envelope_mae_db": 1.175327400703006
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.0,
+        "first20ms_energy_error_db": -4.370005575895402,
+        "first50ms_energy_error_db": -2.552029440795694,
+        "peak_time_error_ms": 30.020833333333336,
+        "first20ms_band_mae_db": 4.788738960248079,
+        "first50ms_band_mae_db": 3.9401143797739877,
+        "first150ms_envelope_mae_db": 1.6578708557505146
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    },
+    {
+      "id": "C4v12",
+      "midi": 60,
+      "velocity": 93,
+      "old_parameter_seconds": 0.012041666666666666,
+      "candidate_parameter_seconds": 0.017104732333765582,
+      "fit": {
+        "target_rise_seconds": 0.012041666666666666,
+        "predicted_rise_seconds": 0.012625,
+        "absolute_error_seconds": 0.000583333333333335,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.012041666666666668,
+        "t10_seconds": 0.004625,
+        "t90_seconds": 0.016666666666666666,
+        "onset_seconds": 0.0074375,
+        "peak_time_seconds": 0.051083333333333335,
+        "early_rms": 0.12801955643870852,
+        "early_energy": [
+          0.0237132114411604,
+          0.04008592436591131
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 2.479166666666668,
+        "first20ms_energy_error_db": 7.959347816987165,
+        "first50ms_energy_error_db": 5.505465613662381,
+        "peak_time_error_ms": -36.833333333333336,
+        "first20ms_band_mae_db": 6.912485342098067,
+        "first50ms_band_mae_db": 4.776418191265834,
+        "first150ms_envelope_mae_db": 3.671544490566103
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.5833333333333333,
+        "first20ms_energy_error_db": 6.8188629674584025,
+        "first50ms_energy_error_db": 4.9613063447713595,
+        "peak_time_error_ms": -33.0,
+        "first20ms_band_mae_db": 6.24953102005967,
+        "first50ms_band_mae_db": 4.40844082925714,
+        "first150ms_envelope_mae_db": 3.447078284716553
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    },
+    {
+      "id": "C4v4",
+      "midi": 60,
+      "velocity": 40,
+      "old_parameter_seconds": 0.011791666666666667,
+      "candidate_parameter_seconds": 0.020245952408378114,
+      "fit": {
+        "target_rise_seconds": 0.011791666666666667,
+        "predicted_rise_seconds": 0.012270833333333333,
+        "absolute_error_seconds": 0.00047916666666666594,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.011791666666666667,
+        "t10_seconds": 0.00175,
+        "t90_seconds": 0.013541666666666667,
+        "onset_seconds": 0.01075,
+        "peak_time_seconds": 0.0443125,
+        "early_rms": 0.05154879066135101,
+        "early_energy": [
+          0.004912044241229707,
+          0.007112063898000966
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 2.6250000000000004,
+        "first20ms_energy_error_db": 5.875461679721815,
+        "first50ms_energy_error_db": 4.311679991091286,
+        "peak_time_error_ms": -30.08333333333333,
+        "first20ms_band_mae_db": 8.35929723522581,
+        "first50ms_band_mae_db": 6.591362318289181,
+        "first150ms_envelope_mae_db": 2.3817041959485405
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.47916666666666596,
+        "first20ms_energy_error_db": 4.024489391432224,
+        "first50ms_energy_error_db": 3.4532390199931267,
+        "peak_time_error_ms": -22.45833333333333,
+        "first20ms_band_mae_db": 6.189904878671683,
+        "first50ms_band_mae_db": 5.929256707909534,
+        "first150ms_envelope_mae_db": 2.0104139068712445
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    },
+    {
+      "id": "C5v12",
+      "midi": 72,
+      "velocity": 93,
+      "old_parameter_seconds": 0.022229166666666668,
+      "candidate_parameter_seconds": 0.06443718678419319,
+      "fit": {
+        "target_rise_seconds": 0.022229166666666668,
+        "predicted_rise_seconds": 0.0225,
+        "absolute_error_seconds": 0.00027083333333333126,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.022229166666666668,
+        "t10_seconds": 0.006958333333333334,
+        "t90_seconds": 0.0291875,
+        "onset_seconds": 0.007270833333333333,
+        "peak_time_seconds": 0.0330625,
+        "early_rms": 0.08757469280990463,
+        "early_energy": [
+          0.0052838106722744435,
+          0.02556384656331969
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 9.041666666666668,
+        "first20ms_energy_error_db": 9.844525998825826,
+        "first50ms_energy_error_db": 3.9778985770319437,
+        "peak_time_error_ms": -11.020833333333334,
+        "first20ms_band_mae_db": 17.172372773683687,
+        "first50ms_band_mae_db": 21.45420093156171,
+        "first150ms_envelope_mae_db": 3.2642792979809814
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.27083333333333126,
+        "first20ms_energy_error_db": 4.074991234697966,
+        "first50ms_energy_error_db": 0.4922157894517972,
+        "peak_time_error_ms": 13.624999999999998,
+        "first20ms_band_mae_db": 13.81277715113707,
+        "first50ms_band_mae_db": 19.855865188719505,
+        "first150ms_envelope_mae_db": 1.94680942762245
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    },
+    {
+      "id": "C5v4",
+      "midi": 72,
+      "velocity": 40,
+      "old_parameter_seconds": 0.022125,
+      "candidate_parameter_seconds": 0.06526716575479158,
+      "fit": {
+        "target_rise_seconds": 0.022125,
+        "predicted_rise_seconds": 0.021854166666666668,
+        "absolute_error_seconds": 0.00027083333333333126,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.022125,
+        "t10_seconds": 0.0009375,
+        "t90_seconds": 0.0230625,
+        "onset_seconds": 0.0086875,
+        "peak_time_seconds": 0.0269375,
+        "early_rms": 0.038215321825908415,
+        "early_energy": [
+          0.0023487737769845697,
+          0.005901384941216111
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 10.708333333333332,
+        "first20ms_energy_error_db": 6.357917655028025,
+        "first50ms_energy_error_db": 3.084445185371293,
+        "peak_time_error_ms": -6.749999999999999,
+        "first20ms_band_mae_db": 15.91232668365502,
+        "first50ms_band_mae_db": 22.371960619691563,
+        "first150ms_envelope_mae_db": 1.7284437408963214
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.27083333333333126,
+        "first20ms_energy_error_db": 0.4194071189138449,
+        "first50ms_energy_error_db": -0.5766765520100675,
+        "peak_time_error_ms": 17.9375,
+        "first20ms_band_mae_db": 13.93334815534174,
+        "first50ms_band_mae_db": 21.56590611094522,
+        "first150ms_envelope_mae_db": 0.7190921197966956
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.33333333333333304
+    },
+    {
+      "id": "C6v12",
+      "midi": 84,
+      "velocity": 93,
+      "old_parameter_seconds": 0.009916666666666667,
+      "candidate_parameter_seconds": 0.00998255211427288,
+      "fit": {
+        "target_rise_seconds": 0.009916666666666667,
+        "predicted_rise_seconds": 0.009729166666666667,
+        "absolute_error_seconds": 0.00018750000000000017,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.009916666666666667,
+        "t10_seconds": 0.0020416666666666665,
+        "t90_seconds": 0.011958333333333333,
+        "onset_seconds": 0.007770833333333334,
+        "peak_time_seconds": 0.01425,
+        "early_rms": 0.04769661913317062,
+        "early_energy": [
+          0.029845188331725492,
+          0.029300985997786716
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 0.22916666666666746,
+        "first20ms_energy_error_db": -4.276966032537038,
+        "first50ms_energy_error_db": -3.4363783980896483,
+        "peak_time_error_ms": 4.020833333333333,
+        "first20ms_band_mae_db": 22.20424633715137,
+        "first50ms_band_mae_db": 29.945693930959635,
+        "first150ms_envelope_mae_db": 2.2099582803189843
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.18750000000000017,
+        "first20ms_energy_error_db": -4.291426579479745,
+        "first50ms_energy_error_db": -3.441705920245311,
+        "peak_time_error_ms": 4.020833333333333,
+        "first20ms_band_mae_db": 22.221400886398964,
+        "first50ms_band_mae_db": 29.94902156425998,
+        "first150ms_envelope_mae_db": 2.2113492013888694
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.020833333333332774
+    },
+    {
+      "id": "C6v4",
+      "midi": 84,
+      "velocity": 40,
+      "old_parameter_seconds": 0.003145833333333334,
+      "candidate_parameter_seconds": 0.001016107364920894,
+      "fit": {
+        "target_rise_seconds": 0.003145833333333334,
+        "predicted_rise_seconds": 0.0032916666666666667,
+        "absolute_error_seconds": 0.00014583333333333288,
+        "search_bounds_seconds": [
+          0.001,
+          0.2
+        ],
+        "requires_above_live_90ms_limit": false,
+        "at_search_bound": false
+      },
+      "reference": {
+        "rise_seconds": 0.0031458333333333334,
+        "t10_seconds": 0.008645833333333333,
+        "t90_seconds": 0.011791666666666667,
+        "onset_seconds": 0.004583333333333333,
+        "peak_time_seconds": 0.01375,
+        "early_rms": 0.012137975980605781,
+        "early_energy": [
+          0.001440532249320592,
+          0.0017538906189617709
+        ]
+      },
+      "analytic_baseline": {
+        "rise_error_ms": 1.708333333333333,
+        "first20ms_energy_error_db": -2.4830077520917686,
+        "first50ms_energy_error_db": -3.3422844479383667,
+        "peak_time_error_ms": -4.0,
+        "first20ms_band_mae_db": 17.781443997680093,
+        "first50ms_band_mae_db": 30.429833493778027,
+        "first150ms_envelope_mae_db": 3.382019675201138
+      },
+      "analytic_candidate": {
+        "rise_error_ms": 0.14583333333333331,
+        "first20ms_energy_error_db": -2.10505915859671,
+        "first50ms_energy_error_db": -3.186954478240096,
+        "peak_time_error_ms": -8.729166666666666,
+        "first20ms_band_mae_db": 14.817988718567312,
+        "first50ms_band_mae_db": 30.033688982868036,
+        "first150ms_envelope_mae_db": 3.4649292120271515
+      },
+      "analytic_vs_native_baseline_rise_error_ms": 0.0
+    }
+  ],
+  "calibration_sha256": "5313ee88e35f7f3c37454fb57e22fbedc72e200a234506ec92cbf5f191ceb222",
+  "feature_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+  "method": "Analytic modal source plus live exponential ramp and7Hz DC rejection; same onset and5ms RMS/first150ms10-90 metric. Scalar rise fit only; transient witnesses are held apart from optimization.",
+  "limits": "Candidate only, no default change. RMS rise is not hammer contact duration. First20/50ms energy and spectral errors can reveal smearing concealed by a scalar rise fit. Native float recurrence verification required after any candidate header is generated.",
+  "decision": {
+    "adopted_as_default": false,
+    "status": "rejected broad scalar-rise fit; isolated alternatives retained as evidence only",
+    "reasons": [
+      "C2 requires roughly150-156ms ramp parameters beyond the90ms live limit.",
+      "C2 soft and C3 soft worsen early envelope or first20ms energy despite improved scalar rise.",
+      "Native C3 hard prediction differs from analytic candidate by6.83ms, showing threshold/phase sensitivity of scalar rise fitting.",
+      "No canonical header or Piano attack behavior was changed; no held-out cases entered this experiment."
+    ]
+  },
+  "native_verification": {
+    "cases": [
+      {
+        "variant": "baseline",
+        "id": "C2v12",
+        "parameter_seconds": 0.05335416666666667,
+        "measured_rise_seconds": 0.027416666666666666,
+        "comparisons": {
+          "rise_error_ms": 25.937500000000004,
+          "first20ms_energy_error_db": 5.154677173253665,
+          "first50ms_energy_error_db": 4.274088584029217,
+          "peak_time_error_ms": -32.895833333333336,
+          "first20ms_band_mae_db": 7.051198476151542,
+          "first50ms_band_mae_db": 6.0264985561177875,
+          "first150ms_envelope_mae_db": 3.431316930242104
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C2v4",
+        "parameter_seconds": 0.05254166666666667,
+        "measured_rise_seconds": 0.0283125,
+        "comparisons": {
+          "rise_error_ms": 24.229166666666668,
+          "first20ms_energy_error_db": 3.231232460804976,
+          "first50ms_energy_error_db": 2.83248369470996,
+          "peak_time_error_ms": -18.104166666666664,
+          "first20ms_band_mae_db": 7.521550220691477,
+          "first50ms_band_mae_db": 6.689877390057177,
+          "first150ms_envelope_mae_db": 3.4866980614112033
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C3v12",
+        "parameter_seconds": 0.028291666666666666,
+        "measured_rise_seconds": 0.02175,
+        "comparisons": {
+          "rise_error_ms": 6.541666666666668,
+          "first20ms_energy_error_db": 2.30126504310106,
+          "first50ms_energy_error_db": 1.8054484647544369,
+          "peak_time_error_ms": -9.625000000000002,
+          "first20ms_band_mae_db": 9.248420084458676,
+          "first50ms_band_mae_db": 7.8451314683214,
+          "first150ms_envelope_mae_db": 1.893512974815152
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C3v4",
+        "parameter_seconds": 0.035124999999999997,
+        "measured_rise_seconds": 0.020708333333333332,
+        "comparisons": {
+          "rise_error_ms": 14.416666666666671,
+          "first20ms_energy_error_db": 1.0361465895872544,
+          "first50ms_energy_error_db": 0.8962683224685142,
+          "peak_time_error_ms": -0.37500000000000033,
+          "first20ms_band_mae_db": 3.8294410293995647,
+          "first50ms_band_mae_db": 3.708028241582673,
+          "first150ms_envelope_mae_db": 1.1699185140606931
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C4v12",
+        "parameter_seconds": 0.012041666666666666,
+        "measured_rise_seconds": 0.0095625,
+        "comparisons": {
+          "rise_error_ms": 2.479166666666668,
+          "first20ms_energy_error_db": 7.9359103212033775,
+          "first50ms_energy_error_db": 5.491361637760957,
+          "peak_time_error_ms": -36.833333333333336,
+          "first20ms_band_mae_db": 6.899911659508805,
+          "first50ms_band_mae_db": 4.764327663666546,
+          "first150ms_envelope_mae_db": 3.666860569827689
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C4v4",
+        "parameter_seconds": 0.011791666666666667,
+        "measured_rise_seconds": 0.009166666666666667,
+        "comparisons": {
+          "rise_error_ms": 2.6250000000000004,
+          "first20ms_energy_error_db": 5.848810038357795,
+          "first50ms_energy_error_db": 4.294879796830293,
+          "peak_time_error_ms": -30.08333333333333,
+          "first20ms_band_mae_db": 8.330376710952828,
+          "first50ms_band_mae_db": 6.576111647921246,
+          "first150ms_envelope_mae_db": 2.3750776415599044
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C5v12",
+        "parameter_seconds": 0.022229166666666668,
+        "measured_rise_seconds": 0.0131875,
+        "comparisons": {
+          "rise_error_ms": 9.041666666666668,
+          "first20ms_energy_error_db": 9.819858987617417,
+          "first50ms_energy_error_db": 3.9635065836277295,
+          "peak_time_error_ms": -11.020833333333334,
+          "first20ms_band_mae_db": 17.13912017954497,
+          "first50ms_band_mae_db": 21.426486550679947,
+          "first150ms_envelope_mae_db": 3.2583649263070673
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C5v4",
+        "parameter_seconds": 0.022125,
+        "measured_rise_seconds": 0.01175,
+        "comparisons": {
+          "rise_error_ms": 10.374999999999998,
+          "first20ms_energy_error_db": 6.333476840095624,
+          "first50ms_energy_error_db": 3.06996647226002,
+          "peak_time_error_ms": -6.749999999999999,
+          "first20ms_band_mae_db": 15.879735934308775,
+          "first50ms_band_mae_db": 22.344597552565528,
+          "first150ms_envelope_mae_db": 1.7227281632608522
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C6v12",
+        "parameter_seconds": 0.009916666666666667,
+        "measured_rise_seconds": 0.009708333333333333,
+        "comparisons": {
+          "rise_error_ms": 0.20833333333333467,
+          "first20ms_energy_error_db": -4.305367570319964,
+          "first50ms_energy_error_db": -3.450979171115844,
+          "peak_time_error_ms": 4.041666666666667,
+          "first20ms_band_mae_db": 21.90381051180092,
+          "first50ms_band_mae_db": 29.954853945540837,
+          "first150ms_envelope_mae_db": 2.212524123943116
+        }
+      },
+      {
+        "variant": "baseline",
+        "id": "C6v4",
+        "parameter_seconds": 0.003145833333333334,
+        "measured_rise_seconds": 0.004854166666666666,
+        "comparisons": {
+          "rise_error_ms": 1.708333333333333,
+          "first20ms_energy_error_db": -2.510156650406013,
+          "first50ms_energy_error_db": -3.3580930299967617,
+          "peak_time_error_ms": -4.0,
+          "first20ms_band_mae_db": 17.665239830932684,
+          "first50ms_band_mae_db": 30.442938047420526,
+          "first150ms_envelope_mae_db": 3.382950355494106
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C2v12",
+        "parameter_seconds": 0.1500225981735945,
+        "measured_rise_seconds": 0.05825,
+        "comparisons": {
+          "rise_error_ms": 4.895833333333336,
+          "first20ms_energy_error_db": -0.9695951012485876,
+          "first50ms_energy_error_db": -0.4089298688385262,
+          "peak_time_error_ms": 29.02083333333333,
+          "first20ms_band_mae_db": 8.215181201999856,
+          "first50ms_band_mae_db": 6.4324378893450875,
+          "first150ms_envelope_mae_db": 2.6155374767772495
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C2v4",
+        "parameter_seconds": 0.15561111328375515,
+        "measured_rise_seconds": 0.05254166666666667,
+        "comparisons": {
+          "rise_error_ms": 0.0,
+          "first20ms_energy_error_db": -3.0978869024810383,
+          "first50ms_energy_error_db": -1.9136205474029022,
+          "peak_time_error_ms": 42.979166666666664,
+          "first20ms_band_mae_db": 7.072559825959661,
+          "first50ms_band_mae_db": 6.9354463612925885,
+          "first150ms_envelope_mae_db": 3.554050283348487
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C3v12",
+        "parameter_seconds": 0.06729914494702181,
+        "measured_rise_seconds": 0.0345,
+        "comparisons": {
+          "rise_error_ms": 6.208333333333337,
+          "first20ms_energy_error_db": -2.6974885831744504,
+          "first50ms_energy_error_db": -1.1910817658087587,
+          "peak_time_error_ms": 13.541666666666668,
+          "first20ms_band_mae_db": 10.284428273645812,
+          "first50ms_band_mae_db": 8.454778264777683,
+          "first150ms_envelope_mae_db": 1.4723752965965504
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C3v4",
+        "parameter_seconds": 0.08769732526463012,
+        "measured_rise_seconds": 0.035166666666666666,
+        "comparisons": {
+          "rise_error_ms": 0.04166666666666208,
+          "first20ms_energy_error_db": -4.393232796403291,
+          "first50ms_energy_error_db": -2.562006456397508,
+          "peak_time_error_ms": 30.020833333333336,
+          "first20ms_band_mae_db": 4.816214379084235,
+          "first50ms_band_mae_db": 3.9438124760172912,
+          "first150ms_envelope_mae_db": 1.6623623609285592
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C4v12",
+        "parameter_seconds": 0.017104732333765582,
+        "measured_rise_seconds": 0.012625,
+        "comparisons": {
+          "rise_error_ms": 0.5833333333333333,
+          "first20ms_energy_error_db": 6.7961363845967675,
+          "first50ms_energy_error_db": 4.948389609314136,
+          "peak_time_error_ms": -33.0,
+          "first20ms_band_mae_db": 6.237154928285173,
+          "first50ms_band_mae_db": 4.396691773701711,
+          "first150ms_envelope_mae_db": 3.4424110873211657
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C4v4",
+        "parameter_seconds": 0.020245952408378114,
+        "measured_rise_seconds": 0.012270833333333333,
+        "comparisons": {
+          "rise_error_ms": 0.47916666666666596,
+          "first20ms_energy_error_db": 3.99887864957782,
+          "first50ms_energy_error_db": 3.4382341628082287,
+          "peak_time_error_ms": -22.45833333333333,
+          "first20ms_band_mae_db": 6.161448835245797,
+          "first50ms_band_mae_db": 5.914540832910959,
+          "first150ms_envelope_mae_db": 2.0037974202010704
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C5v12",
+        "parameter_seconds": 0.06443718678419319,
+        "measured_rise_seconds": 0.0225,
+        "comparisons": {
+          "rise_error_ms": 0.27083333333333126,
+          "first20ms_energy_error_db": 4.051316938785004,
+          "first50ms_energy_error_db": 0.48062228424717235,
+          "peak_time_error_ms": 13.624999999999998,
+          "first20ms_band_mae_db": 13.765237564734267,
+          "first50ms_band_mae_db": 19.842324843251888,
+          "first150ms_envelope_mae_db": 1.9430894319613832
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C5v4",
+        "parameter_seconds": 0.06526716575479158,
+        "measured_rise_seconds": 0.021833333333333333,
+        "comparisons": {
+          "rise_error_ms": 0.29166666666666574,
+          "first20ms_energy_error_db": 0.39597784356218196,
+          "first50ms_energy_error_db": -0.5882221568102216,
+          "peak_time_error_ms": 17.9375,
+          "first20ms_band_mae_db": 13.90117717100781,
+          "first50ms_band_mae_db": 21.54995830622636,
+          "first150ms_envelope_mae_db": 0.7198708675684765
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C6v12",
+        "parameter_seconds": 0.00998255211427288,
+        "measured_rise_seconds": 0.010541666666666666,
+        "comparisons": {
+          "rise_error_ms": 0.6249999999999988,
+          "first20ms_energy_error_db": -4.31982339637475,
+          "first50ms_energy_error_db": -3.4562912899848994,
+          "peak_time_error_ms": 4.999999999999999,
+          "first20ms_band_mae_db": 21.922408872986747,
+          "first50ms_band_mae_db": 29.95818916140506,
+          "first150ms_envelope_mae_db": 2.2139299514614694
+        }
+      },
+      {
+        "variant": "full-candidate",
+        "id": "C6v4",
+        "parameter_seconds": 0.001016107364920894,
+        "measured_rise_seconds": 0.0033125,
+        "comparisons": {
+          "rise_error_ms": 0.16666666666666652,
+          "first20ms_energy_error_db": -2.133343231543625,
+          "first50ms_energy_error_db": -3.2036071324961095,
+          "peak_time_error_ms": -7.791666666666666,
+          "first20ms_band_mae_db": 14.874902197770616,
+          "first50ms_band_mae_db": 29.934717176804885,
+          "first150ms_envelope_mae_db": 3.465841242490253
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C2v12",
+        "parameter_seconds": 0.05335416666666667,
+        "measured_rise_seconds": 0.027416666666666666,
+        "comparisons": {
+          "rise_error_ms": 25.937500000000004,
+          "first20ms_energy_error_db": 5.154677173253665,
+          "first50ms_energy_error_db": 4.274088584029217,
+          "peak_time_error_ms": -32.895833333333336,
+          "first20ms_band_mae_db": 7.051198476151542,
+          "first50ms_band_mae_db": 6.0264985561177875,
+          "first150ms_envelope_mae_db": 3.431316930242104
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C2v4",
+        "parameter_seconds": 0.05254166666666667,
+        "measured_rise_seconds": 0.0283125,
+        "comparisons": {
+          "rise_error_ms": 24.229166666666668,
+          "first20ms_energy_error_db": 3.231232460804976,
+          "first50ms_energy_error_db": 2.83248369470996,
+          "peak_time_error_ms": -18.104166666666664,
+          "first20ms_band_mae_db": 7.521550220691477,
+          "first50ms_band_mae_db": 6.689877390057177,
+          "first150ms_envelope_mae_db": 3.4866980614112033
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C3v12",
+        "parameter_seconds": 0.028291666666666666,
+        "measured_rise_seconds": 0.02175,
+        "comparisons": {
+          "rise_error_ms": 6.541666666666668,
+          "first20ms_energy_error_db": 2.30126504310106,
+          "first50ms_energy_error_db": 1.8054484647544369,
+          "peak_time_error_ms": -9.625000000000002,
+          "first20ms_band_mae_db": 9.248420084458676,
+          "first50ms_band_mae_db": 7.8451314683214,
+          "first150ms_envelope_mae_db": 1.893512974815152
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C3v4",
+        "parameter_seconds": 0.035124999999999997,
+        "measured_rise_seconds": 0.020708333333333332,
+        "comparisons": {
+          "rise_error_ms": 14.416666666666671,
+          "first20ms_energy_error_db": 1.0361465895872544,
+          "first50ms_energy_error_db": 0.8962683224685142,
+          "peak_time_error_ms": -0.37500000000000033,
+          "first20ms_band_mae_db": 3.8294410293995647,
+          "first50ms_band_mae_db": 3.708028241582673,
+          "first150ms_envelope_mae_db": 1.1699185140606931
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C4v12",
+        "parameter_seconds": 0.017104732333765582,
+        "measured_rise_seconds": 0.012625,
+        "comparisons": {
+          "rise_error_ms": 0.5833333333333333,
+          "first20ms_energy_error_db": 6.7961363845967675,
+          "first50ms_energy_error_db": 4.948389609314136,
+          "peak_time_error_ms": -33.0,
+          "first20ms_band_mae_db": 6.237154928285173,
+          "first50ms_band_mae_db": 4.396691773701711,
+          "first150ms_envelope_mae_db": 3.4424110873211657
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C4v4",
+        "parameter_seconds": 0.020245952408378114,
+        "measured_rise_seconds": 0.012270833333333333,
+        "comparisons": {
+          "rise_error_ms": 0.47916666666666596,
+          "first20ms_energy_error_db": 3.99887864957782,
+          "first50ms_energy_error_db": 3.4382341628082287,
+          "peak_time_error_ms": -22.45833333333333,
+          "first20ms_band_mae_db": 6.161448835245797,
+          "first50ms_band_mae_db": 5.914540832910959,
+          "first150ms_envelope_mae_db": 2.0037974202010704
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C5v12",
+        "parameter_seconds": 0.06443718678419319,
+        "measured_rise_seconds": 0.0225,
+        "comparisons": {
+          "rise_error_ms": 0.27083333333333126,
+          "first20ms_energy_error_db": 4.051316938785004,
+          "first50ms_energy_error_db": 0.48062228424717235,
+          "peak_time_error_ms": 13.624999999999998,
+          "first20ms_band_mae_db": 13.765237564734267,
+          "first50ms_band_mae_db": 19.842324843251888,
+          "first150ms_envelope_mae_db": 1.9430894319613832
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C5v4",
+        "parameter_seconds": 0.06526716575479158,
+        "measured_rise_seconds": 0.021833333333333333,
+        "comparisons": {
+          "rise_error_ms": 0.29166666666666574,
+          "first20ms_energy_error_db": 0.39597784356218196,
+          "first50ms_energy_error_db": -0.5882221568102216,
+          "peak_time_error_ms": 17.9375,
+          "first20ms_band_mae_db": 13.90117717100781,
+          "first50ms_band_mae_db": 21.54995830622636,
+          "first150ms_envelope_mae_db": 0.7198708675684765
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C6v12",
+        "parameter_seconds": 0.009916666666666667,
+        "measured_rise_seconds": 0.009708333333333333,
+        "comparisons": {
+          "rise_error_ms": 0.20833333333333467,
+          "first20ms_energy_error_db": -4.305367570319964,
+          "first50ms_energy_error_db": -3.450979171115844,
+          "peak_time_error_ms": 4.041666666666667,
+          "first20ms_band_mae_db": 21.90381051180092,
+          "first50ms_band_mae_db": 29.954853945540837,
+          "first150ms_envelope_mae_db": 2.212524123943116
+        }
+      },
+      {
+        "variant": "guarded-candidate",
+        "id": "C6v4",
+        "parameter_seconds": 0.003145833333333334,
+        "measured_rise_seconds": 0.004854166666666666,
+        "comparisons": {
+          "rise_error_ms": 1.708333333333333,
+          "first20ms_energy_error_db": -2.510156650406013,
+          "first50ms_energy_error_db": -3.3580930299967617,
+          "peak_time_error_ms": -4.0,
+          "first20ms_band_mae_db": 17.665239830932684,
+          "first50ms_band_mae_db": 30.442938047420526,
+          "first150ms_envelope_mae_db": 3.382950355494106
+        }
+      }
+    ],
+    "sample_rate": 48000,
+    "seconds": 0.95,
+    "source_snapshot_sha256": "85969c48fac427b3fd02eaf0edd7e82b710abb5e118425022877b01ac1ec3c75",
+    "baseline_header_snapshot_sha256": "53a0aff1bcb369ec6a60fa20de0aabb213d1d5b02951691c6d14bd3066c59d02",
+    "configuration": "One note at50ms, source velocities40/93, noise/distance/resonance targets0; same renderer and source snapshot for all variants. Full-candidate scratch build permits up to200ms attacks; guarded candidate changes onlyC4/C5 within90ms.",
+    "limits": "A historical training-only probe snapshot, not current default validation. All native binaries/headers were generated under /tmp. No held-out or new recording generalization claim."
+  }
+}

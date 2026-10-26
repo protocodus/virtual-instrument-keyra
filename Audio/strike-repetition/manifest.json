@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "probe_version": 3,
+  "supersedes": "Version 2 could leave short explicit release/repress requests unready. Version 3 schedules finite authored key lift while preserving hammer/string state. Previous source snapshots, producer binaries, reports, audio and hashes are preserved under out/strike-repetition/v1 and v2.",
+  "producer_manifest_sha256": "5995b72ded9a0d6fe1e873149f46812ca9dc8c55b10bf3949c7b8b576092ba28",
+  "producer_receipt_sha256": "b2ff5a2a91cbb6de8594839a95fa65235b40f74bd42b9f2ac8f6a26a51abf975",
+  "documentation_at_render": {
+    "original_path": "docs/STRIKE_REPETITION.md",
+    "snapshot": "out/strike-repetition/v3/source-at-render/docs/STRIKE_REPETITION.md",
+    "sha256": "5f24398fd42ef492c86fb7a31b91f0dbe03e092d30730deafa013abc45033c7f",
+    "scope": "Documentation snapshot at actual compile/render time; not a compiled DSP input. Later documentation may describe v3 paths without changing the audio producer identity."
+  },
+  "documentation_after_render": {
+    "original_path": "docs/STRIKE_REPETITION.md",
+    "snapshot": "out/strike-repetition/v3/documentation-after-render.md",
+    "sha256": "2dda00fc034476aecf9cc634711798829b5b63891826ebcd340f6d757d07980f",
+    "scope": "Root updated prose after the probe render to describe v3 paths, eight tests and actual six-launch sequence; compiled DSP inputs are unchanged."
+  },
+  "producer_report_sha256": "bf6d85e81ecbb71f49df7d17c19c876713823b627e5211f018d373966052ae7f",
+  "source_sha256": {
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "tools/strike_repetition_support.h": "cabf6905d7f47edc8d323745cbb52f183757c2491eee3d2e0a07e3715ef0d036",
+    "tests/strike_repetition_tests.cpp": "29a78e66d16645d032e848516bf4dc7c1d52bc6f4cc0ff89a4ae54c2e8545ce7",
+    "tools/probe_strike_repetition.cpp": "26f7bc0196049495033508fdc1da7377f1e72008db232c38e5f044cda2ae2da2",
+    "tools/mechanism_network_support.h": "8773da536b979df2706bb03fd6f81b70ca7d23548d804c002f5b593abd24529a",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+  },
+  "producer_binary_sha256": "67567544e00237f157693db385ec982f86ea5775d54c1794700635b755a69495",
+  "export_tool_sha256": "4cc47228c5ddc347010bf1d7fc3ebe11eff8eba2af5b4bf583dfd94b624151ce",
+  "format": "24-bit FLAC, 48 kHz stereo, 28800 frames per file",
+  "conversion": "Lossless FLAC of 24-bit PCM converted from frozen float WAV; no additional gain, EQ, fades or room.",
+  "same_input_events": true,
+  "key_midi": 60,
+  "requested_velocity": 80,
+  "seed": 123456,
+  "shared_export_gain_already_in_source": 0.416802848791043,
+  "events": [
+    {
+      "seconds": 0,
+      "kind": "p",
+      "value": 1
+    },
+    {
+      "seconds": 0.01,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.0105,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.011,
+      "kind": "o",
+      "value": 0
+    },
+    {
+      "seconds": 0.015,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.016,
+      "kind": "o",
+      "value": 0
+    },
+    {
+      "seconds": 0.03,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.04,
+      "kind": "o",
+      "value": 0
+    },
+    {
+      "seconds": 0.11,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.15,
+      "kind": "o",
+      "value": 0
+    },
+    {
+      "seconds": 0.25,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.29,
+      "kind": "o",
+      "value": 0
+    },
+    {
+      "seconds": 0.32,
+      "kind": "p",
+      "value": 0.5
+    },
+    {
+      "seconds": 0.35,
+      "kind": "n",
+      "value": 80
+    },
+    {
+      "seconds": 0.39,
+      "kind": "o",
+      "value": 0
+    },
+    {
+      "seconds": 0.48,
+      "kind": "p",
+      "value": 0
+    }
+  ],
+  "event_legend": {
+    "n": "note-on, MIDI key 60",
+    "o": "note-off, MIDI key 60",
+    "p": "normalized sustain position"
+  },
+  "interpretation": "Same requested events; state-dependent admitted launch times/counts can differ. Mechanism coupling affects the network and is not solely an observation-layer addition.",
+  "limits": [
+    "Authored bounded variation, keylift and return proxy; not measured action identification.",
+    "Ready launch uses near-string MIDI shortcut; pending physical launches may be deferred/coalesced/cancelled.",
+    "No retuning or clearing of string states; no canonical full-source or Research edits.",
+    "New hammer KE/retirement ledger is not a complete original-network dissipation ledger.",
+    "All four probe exports share one gain and24Hz highpass; noaddedroom or perceptualqualityclaim.",
+    "Finite minimum key lift is an authored MIDI scheduling proxy at the existing18ms release time constant; it does not reconstruct jack/backcheck geometry."
+  ],
+  "entries": [
+    {
+      "name": "legacy-reset",
+      "file": "strike-repetition/repetitions-legacy-reset.flac",
+      "sha256": "d88d1704098effd8a636da993fdb994ff6d81593deb731c3d3c69b088bf07067",
+      "source_sha256": "c6283e330527581ab129b0b486dca490f8439948bd3cac97cf9f42dd636d091b",
+      "decoded_pcm24_sha256": "0f5cabe13cbebe591cd70b47e11762d731510f3b71ad030275733600a5ddd17f",
+      "source_to_flac_maximum_quantization_error": 1.1889642337337136e-07,
+      "requests": 0,
+      "launches": 0,
+      "coalesced": 0,
+      "cancelled": 0,
+      "legacy_active_resets": 1,
+      "launch_events": []
+    },
+    {
+      "name": "recovery-control",
+      "file": "strike-repetition/repetitions-recovery-control.flac",
+      "sha256": "18d0a8bc8f4cd26623552cbbb872b14b156a992e835290215d7b194b55f04775",
+      "source_sha256": "d47e47531210c255e2847fe6684bae3fd0285d8f5e633c6a4bc5664229d94dc2",
+      "decoded_pcm24_sha256": "4805bb56a4471c6a8a95e329aec4ef6686c0911ab5244d909e04c20d5687d955",
+      "source_to_flac_maximum_quantization_error": 1.1886004358530045e-07,
+      "requests": 7,
+      "launches": 6,
+      "coalesced": 0,
+      "cancelled": 1,
+      "legacy_active_resets": 0,
+      "launch_events": [
+        {
+          "seconds": 0.01,
+          "request_id": 1,
+          "hammer_velocity_after_frame": 3.98331223065871,
+          "hardness": 366388032.350543,
+          "recovery": 1,
+          "key_lift": 1,
+          "velocity_factor": 1,
+          "recovery_velocity_factor": 1,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.015,
+          "request_id": 3,
+          "hammer_velocity_after_frame": 2.29263222444436,
+          "hardness": 366388032.350543,
+          "recovery": 0.322749814751717,
+          "key_lift": 0.200188840360899,
+          "velocity_factor": 1,
+          "recovery_velocity_factor": 0.575554293068709,
+          "preserved_separated_position": true
+        },
+        {
+          "seconds": 0.03,
+          "request_id": 4,
+          "hammer_velocity_after_frame": 3.1003480057949,
+          "hardness": 366388032.350543,
+          "recovery": 0.665741089624979,
+          "key_lift": 0.540574175964067,
+          "velocity_factor": 1,
+          "recovery_velocity_factor": 0.778327455104462,
+          "preserved_separated_position": true
+        },
+        {
+          "seconds": 0.11,
+          "request_id": 5,
+          "hammer_velocity_after_frame": 3.96165719580958,
+          "hardness": 366388032.350543,
+          "recovery": 0.997791822302639,
+          "key_lift": 0.979531924285648,
+          "velocity_factor": 1,
+          "recovery_velocity_factor": 0.994559793038012,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.25,
+          "request_id": 6,
+          "hammer_velocity_after_frame": 3.97967730132744,
+          "hardness": 366388032.350543,
+          "recovery": 0.99993156402557,
+          "key_lift": 0.996134079860527,
+          "velocity_factor": 1,
+          "recovery_velocity_factor": 0.999096027075693,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.35,
+          "request_id": 7,
+          "hammer_velocity_after_frame": 3.94816401054725,
+          "hardness": 366388032.350543,
+          "recovery": 0.998075586522877,
+          "key_lift": 0.964326006652746,
+          "velocity_factor": 1,
+          "recovery_velocity_factor": 0.991170554944425,
+          "preserved_separated_position": false
+        }
+      ]
+    },
+    {
+      "name": "varied-recovery",
+      "file": "strike-repetition/repetitions-varied-recovery.flac",
+      "sha256": "8d086383c187c03593525a44c432a900b899e4f311c73e2a1457754a800d52ef",
+      "source_sha256": "c80a4d54035a8be67dc906f4dc6cca319cf6daca3d4d95a697e2ed7a67cfb932",
+      "decoded_pcm24_sha256": "02a6d5142af4e2568cd683d186b0529e7315145047e11a6dacb66d09a0c1e23e",
+      "source_to_flac_maximum_quantization_error": 1.1886004358530045e-07,
+      "requests": 7,
+      "launches": 6,
+      "coalesced": 0,
+      "cancelled": 1,
+      "legacy_active_resets": 0,
+      "launch_events": [
+        {
+          "seconds": 0.01,
+          "request_id": 1,
+          "hammer_velocity_after_frame": 3.9864666734674,
+          "hardness": 368124964.045362,
+          "recovery": 1,
+          "key_lift": 1,
+          "velocity_factor": 1.00079197325946,
+          "recovery_velocity_factor": 1,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.015,
+          "request_id": 3,
+          "hammer_velocity_after_frame": 2.2892688215594,
+          "hardness": 368667715.69188,
+          "recovery": 0.320490465501797,
+          "key_lift": 0.200188840360899,
+          "velocity_factor": 1.00021199652605,
+          "recovery_velocity_factor": 0.574588116266845,
+          "preserved_separated_position": true
+        },
+        {
+          "seconds": 0.03,
+          "request_id": 4,
+          "hammer_velocity_after_frame": 3.09716306825327,
+          "hardness": 369297822.20992,
+          "recovery": 0.666770986033376,
+          "key_lift": 0.540574175964067,
+          "velocity_factor": 0.998498255039723,
+          "recovery_velocity_factor": 0.778697296593978,
+          "preserved_separated_position": true
+        },
+        {
+          "seconds": 0.11,
+          "request_id": 5,
+          "hammer_velocity_after_frame": 3.96287358386157,
+          "hardness": 368190147.288308,
+          "recovery": 0.997790270726658,
+          "key_lift": 0.979531924285648,
+          "velocity_factor": 1.0003075603419,
+          "recovery_velocity_factor": 0.994559253014187,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.25,
+          "request_id": 6,
+          "hammer_velocity_after_frame": 3.9746174204055,
+          "hardness": 368306387.923753,
+          "recovery": 0.999931443999614,
+          "key_lift": 0.996134079860527,
+          "velocity_factor": 0.998728710207056,
+          "recovery_velocity_factor": 0.999095985117986,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.35,
+          "request_id": 7,
+          "hammer_velocity_after_frame": 3.94127826678419,
+          "hardness": 366407549.765071,
+          "recovery": 0.998077166028742,
+          "key_lift": 0.964326006652746,
+          "velocity_factor": 0.998255395791605,
+          "recovery_velocity_factor": 0.991171101850655,
+          "preserved_separated_position": false
+        }
+      ]
+    },
+    {
+      "name": "varied-with-mechanisms",
+      "file": "strike-repetition/repetitions-varied-with-mechanisms.flac",
+      "sha256": "706b78c150ab00077898541ee76f302deadadf4d0f02b7e4e3d516b9f10331a1",
+      "source_sha256": "1121838ed0d2a3d9968341aa9cb5fa5a2783daddb05e6335dad36e10caac67b1",
+      "decoded_pcm24_sha256": "d13c6df9fc95adc78a8d9bb16ce7b41d03ddb3ebd3808a6e4a68a311363f1c5b",
+      "source_to_flac_maximum_quantization_error": 1.1894735507667065e-07,
+      "requests": 7,
+      "launches": 6,
+      "coalesced": 0,
+      "cancelled": 1,
+      "legacy_active_resets": 0,
+      "launch_events": [
+        {
+          "seconds": 0.01,
+          "request_id": 1,
+          "hammer_velocity_after_frame": 3.98646667347488,
+          "hardness": 368124964.045362,
+          "recovery": 1,
+          "key_lift": 1,
+          "velocity_factor": 1.00079197325946,
+          "recovery_velocity_factor": 1,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.015,
+          "request_id": 3,
+          "hammer_velocity_after_frame": 2.28926887957397,
+          "hardness": 368667715.69188,
+          "recovery": 0.320490499492514,
+          "key_lift": 0.200188840360899,
+          "velocity_factor": 1.00021199652605,
+          "recovery_velocity_factor": 0.574588130828037,
+          "preserved_separated_position": true
+        },
+        {
+          "seconds": 0.03,
+          "request_id": 4,
+          "hammer_velocity_after_frame": 3.09716309077386,
+          "hardness": 369297822.20992,
+          "recovery": 0.666771001806946,
+          "key_lift": 0.540574175964067,
+          "velocity_factor": 0.998498255039723,
+          "recovery_velocity_factor": 0.778697302256166,
+          "preserved_separated_position": true
+        },
+        {
+          "seconds": 0.11,
+          "request_id": 5,
+          "hammer_velocity_after_frame": 3.96287358394461,
+          "hardness": 368190147.288308,
+          "recovery": 0.997790270820138,
+          "key_lift": 0.979531924285648,
+          "velocity_factor": 1.0003075603419,
+          "recovery_velocity_factor": 0.994559253046723,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.25,
+          "request_id": 6,
+          "hammer_velocity_after_frame": 3.97461742019249,
+          "hardness": 368306387.923753,
+          "recovery": 0.999931443996024,
+          "key_lift": 0.996134079860527,
+          "velocity_factor": 0.998728710207056,
+          "recovery_velocity_factor": 0.999095985116731,
+          "preserved_separated_position": false
+        },
+        {
+          "seconds": 0.35,
+          "request_id": 7,
+          "hammer_velocity_after_frame": 3.94127826692526,
+          "hardness": 366407549.765071,
+          "recovery": 0.998077166167149,
+          "key_lift": 0.964326006652746,
+          "velocity_factor": 0.998255395791605,
+          "recovery_velocity_factor": 0.991171101898579,
+          "preserved_separated_position": false
+        }
+      ]
+    }
+  ]
+}

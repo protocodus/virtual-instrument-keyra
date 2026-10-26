@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "measurement_version": 2,
+  "passed": true,
+  "split_sha256": "a00135a26fb0e9a95e1245d1f29d55c57da332d42510f1efb9adcbca36fd0428",
+  "manifest_sha256": "41e2f850647975d646412565dda2ec01ab72e7c4445d83c8b579a6a62eb1f647",
+  "train_features_sha256": "0a736544aba17f52db23823ed49c026e4a752a2c9b016ae3aec0a005fbf35218",
+  "combined_train_features_sha256": "249e5b1b623aea2cc008d4523016a700c83b74ffc0fe9f10b54929f678ad0bc7",
+  "quality_sha256": "81ee3236793bde5e664d721fb779b0b7ac72f0d7bf7b05e9d134ad4970b177ab",
+  "source_hashes": {
+    "tools/fetch_full_range_grand.py": "34c993b2ea4bd7f55c312416c0a00dbbe6676f7992a07ca7e966544831db8c14",
+    "tools/extract_full_range_grand.py": "e16339fe8990d77cd8cd7db73ff25af4d59045936f3524b859b8dba269fba027",
+    "tools/full_range_pitch.py": "5f75a2bb871128e98456db69b5b9cc147fca02f079d0e18d24852bb4a80e2be1"
+  },
+  "checks": {
+    "synthetic_out_of_prior_component_exposes_identity_ambiguity": true,
+    "synthetic_single_peak_does_not_identify_B": true,
+    "C8_weak_candidate_retained_no_forced_retune": true,
+    "C8_noise_derived_B_invalidated": true,
+    "fixed_reference_component_counterpart_powers_match": true,
+    "C8_candidate_H1_and_global_nonpitch_measurements_unchanged": true,
+    "other6_new_extreme_numeric_measurements_unchanged": true,
+    "original_train10_numeric_fields_preserved": true,
+    "expanded_train26_rows_preserved_exactly": true,
+    "default_formula_matches_frozen_long_note": true,
+    "insufficient_counterpart_support_rejected": true,
+    "training18_and_combined34_correct": true,
+    "fresh_extremes_no_flac_or_wav": true
+  }
+}

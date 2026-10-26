@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "scope": "One4s48k full-network correctness pair; C4 andmechanicalLevel.2; no timing claim",
+  "freeze": {
+    "scope": "One long correctness pair, no timing claim",
+    "created_utc": "2026-10-26T18:31:52.021720+00:00",
+    "base_study_report_sha256": "7c0c3eb889c6df17f79fdcdf9c2c7e0e9865cf8c10a266fdd2c8207ec52a6b12",
+    "canonical_edits_can_occur_after_snapshot": true,
+    "frozen_base_source_sha256": {
+      "/workspace/virtual-instrument-keyra/out/full-mechanism-cache/FullInstrument.cpp": "38b670bd1955c7891fa50a164268de7896501952c7a4e2af993434b1688d14b0",
+      "/workspace/virtual-instrument-keyra/out/full-mechanism-cache/BodyCache.h": "2124974facf12182fafd2c73766abe9111abbe7937475f89fad1f6e0cec39c84",
+      "/workspace/virtual-instrument-keyra/out/full-mechanism-cache/PreparedModel.h": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36",
+      "/workspace/virtual-instrument-keyra/out/full-mechanism-cache/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+    },
+    "long_source_sha256": {
+      "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/FullInstrument.cpp": "e8a4d1d8fc7e3df07c22f12ff6a7c871f17e1f28dad8a8218550f76229628daa",
+      "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/harness.cpp": "bebf7226ac66ce78f6b1b201bf1214307d57d8f50ac3dbcf3b6a3f27af7ba892"
+    },
+    "predeclared_unforced_guard": {
+      "maximum_energy_ratio": 1.0001,
+      "max256frame_energy_increase_over_unforced_initial": 0.0001,
+      "scope": "Same conservative hot-float full-network budget used previously; no external events after frame3840, scans outside process."
+    },
+    "commands": [
+      [
+        "g++",
+        "-std=c++17",
+        "-O3",
+        "-DNDEBUG",
+        "-fno-exceptions",
+        "-fno-rtti",
+        "-fno-builtin",
+        "-ffp-contract=off",
+        "-DKEYRA_FULL_FAST_CONTACT=1",
+        "-DKEYRA_FULL_PRESSURE_SIMD=0",
+        "-I/workspace/virtual-instrument-keyra/out/full-mechanism-cache/include",
+        "-I/workspace/virtual-instrument-keyra/out/full-mechanism-cache",
+        "-DKEYRA_MECHANISM_CACHE=0",
+        "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/FullInstrument.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/harness.cpp",
+        "-o",
+        "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/baseline/probe"
+      ],
+      [
+        "g++",
+        "-std=c++17",
+        "-O3",
+        "-DNDEBUG",
+        "-fno-exceptions",
+        "-fno-rtti",
+        "-fno-builtin",
+        "-ffp-contract=off",
+        "-DKEYRA_FULL_FAST_CONTACT=1",
+        "-DKEYRA_FULL_PRESSURE_SIMD=0",
+        "-I/workspace/virtual-instrument-keyra/out/full-mechanism-cache/include",
+        "-I/workspace/virtual-instrument-keyra/out/full-mechanism-cache",
+        "-DKEYRA_MECHANISM_CACHE=1",
+        "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/FullInstrument.cpp",
+        "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/harness.cpp",
+        "-o",
+        "/workspace/virtual-instrument-keyra/out/full-mechanism-cache-tail/cached/probe"
+      ]
+    ],
+    "binaries": {
+      "baseline": "44b4a509deb4dc5ea6e3915c512744da60d22a10902afe7b9f1e895fb501ab8a",
+      "cached": "7cc849f42542cd8d07b6b7df375209e8ba66a31e4e2f0a87cd59dd8aa6e2b673"
+    }
+  },
+  "variants": {
+    "baseline": {
+      "metadata": {
+        "rate": 48000,
+        "frames": 192000,
+        "mechanicalLevel": 0.2,
+        "last_external_event_frame": 3840,
+        "launches": 1,
+        "fault_flags": 0,
+        "timing_study": false
+      },
+      "metadata_correction": "Raw printf metadata used JSON-invalid .2; analysis normalizes that numeric spelling to0.2 only. Energy/audio/source/binary files unchanged.",
+      "energy_scan_rows": 753,
+      "unforced_initial_frame": 3840,
+      "unforced_initial_energy_J": 0.008891764487831376,
+      "final_energy_J": 4.670365382926733e-20,
+      "final_to_unforced_initial_ratio": 5.252461858743848e-18,
+      "maximum_energy_ratio": 1.0,
+      "max_scan_step_energy_rise_over_initial": 0.0,
+      "finite_nonnegative": true,
+      "passed": true
+    },
+    "cached": {
+      "metadata": {
+        "rate": 48000,
+        "frames": 192000,
+        "mechanicalLevel": 0.2,
+        "last_external_event_frame": 3840,
+        "launches": 1,
+        "fault_flags": 0,
+        "timing_study": false
+      },
+      "metadata_correction": "Raw printf metadata used JSON-invalid .2; analysis normalizes that numeric spelling to0.2 only. Energy/audio/source/binary files unchanged.",
+      "energy_scan_rows": 753,
+      "unforced_initial_frame": 3840,
+      "unforced_initial_energy_J": 0.00889176449195115,
+      "final_energy_J": 4.6702028118104465e-20,
+      "final_to_unforced_initial_ratio": 5.252279022951999e-18,
+      "maximum_energy_ratio": 1.0,
+      "max_scan_step_energy_rise_over_initial": 0.0,
+      "finite_nonnegative": true,
+      "passed": true
+    }
+  },
+  "audio_windows": {
+    "0-0.35s": {
+      "baseline_rms": 0.1628448559526171,
+      "baseline_peak": 1.0268783569335938,
+      "difference_rms": 2.385735816034345e-07,
+      "difference_peak": 1.1622905731201172e-06,
+      "null_db_relative_rms": -116.68303387718711,
+      "difference_rms_db_reference1": -132.44755299026878
+    },
+    "0.35-1.5s": {
+      "baseline_rms": 9.095047490733593e-06,
+      "baseline_peak": 9.609430708223954e-05,
+      "difference_rms": 2.4360175635991727e-10,
+      "difference_peak": 1.4661054592579603e-09,
+      "null_db_relative_rms": -91.44249111798693,
+      "difference_rms_db_reference1": -192.26639169560502
+    },
+    "1.5-4s": {
+      "baseline_rms": 9.856503742617868e-09,
+      "baseline_peak": 5.632156074852901e-08,
+      "difference_rms": 1.6522091000665811e-13,
+      "difference_peak": 1.4139800441625994e-12,
+      "null_db_relative_rms": -95.51315762609175,
+      "difference_rms_db_reference1": -255.63869980304378
+    },
+    "0-4s": {
+      "baseline_rms": 0.04817015825100675,
+      "baseline_peak": 1.0268783569335938,
+      "difference_rms": 7.057113802192442e-08,
+      "difference_peak": 1.1622905731201172e-06,
+      "null_db_relative_rms": -116.6830190442002,
+      "difference_rms_db_reference1": -143.02745758254673
+    }
+  },
+  "maximum_total_energy_difference_J": 3.685303798239836e-11,
+  "maximum_energy_difference_over_unforced_baseline_initial": 4.1446259662896785e-09,
+  "limits": [
+    "Nominal model energy uses independent double promotion before all state/coefficient products, including contact compression. Source modes already use double.",
+    "No external events after0.08s; use last duplicate frame3840 scan after finalpedal trigger, not before trigger.",
+    "Energy scans are outside process; no new timed pairs. Comparison remains original calibration and authoredmechanismlevel only.",
+    "No measuredgeometry,SPL,audibility or universalpassivity/realtime claim."
+  ],
+  "artifacts": {
+    "FullInstrument.cpp": "e8a4d1d8fc7e3df07c22f12ff6a7c871f17e1f28dad8a8218550f76229628daa",
+    "baseline/audio.f32le": "093396a9d9ee700b7ddfce795ebe2324da9ed89a5ff44d98f862c72e35f5bca9",
+    "baseline/energy.f64le": "8e8429dbf2d5e8ef1b4697c4e4de604be388980a44b52005119ddf6763bf62fe",
+    "baseline/probe": "44b4a509deb4dc5ea6e3915c512744da60d22a10902afe7b9f1e895fb501ab8a",
+    "baseline/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cached/audio.f32le": "8aca478e57e983c0766c097cd86c2219c00c056f82ca184cbe6973e5b004b338",
+    "cached/energy.f64le": "1ad861c0a85ee6d89c122f50733095784fa384ae58fc66c0001230fe7aea1634",
+    "cached/probe": "7cc849f42542cd8d07b6b7df375209e8ba66a31e4e2f0a87cd59dd8aa6e2b673",
+    "cached/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "freeze.json": "4db80b48b361b451bab2c8ecba7b11b9d730a64dc8d47eed022ddbe24ffa5a04",
+    "harness.cpp": "bebf7226ac66ce78f6b1b201bf1214307d57d8f50ac3dbcf3b6a3f27af7ba892",
+    "prepare_and_run.py": "36043a4aee3d478507a3607c5b53caf9a7cac36c6d68af498f60ae98f9c235e1",
+    "run.log": "8b47783fac562f971e0f2b03a0f0679e6856cd341ef0097238e00d839e5b9909"
+  }
+}

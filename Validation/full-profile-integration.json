@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "completed_at_utc": "2026-10-26T18:51:10.352480+00:00",
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/freeze.json",
+    "sha256": "a02940b3653119377c5a223cefd560707811998c892642739fcb9c82572c2826"
+  },
+  "source_snapshot": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/source-snapshot.json",
+    "sha256": "ccf45286e6c08f2523794d8ff88fac9eccbac38bc6fbf7cc63b6ef25d4b5f809"
+  },
+  "cases": [
+    {
+      "profile": "OriginalControl",
+      "default_profile_option_omitted": true,
+      "asan_ubsan": false,
+      "passed": true,
+      "commands": [
+        {
+          "command": [
+            "/home/agent/.local/bin/cmake",
+            "-S",
+            "/workspace/virtual-instrument-keyra",
+            "-B",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/control",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DBUILD_TESTING=ON",
+            "-DKEYRA_BUILD_REFERENCE=OFF",
+            "-DKEYRA_BUILD_FULL_REFERENCE=OFF",
+            "-DKEYRA_BUILD_PHYSICAL=OFF",
+            "-DKEYRA_BUILD_PLUGIN=OFF",
+            "-DKEYRA_BUILD_VST3=OFF",
+            "-DKEYRA_BUILD_FULL_BACKEND=ON",
+            "-DKEYRA_FULL_FAST_CONTACT=ON",
+            "-DKEYRA_FULL_MECHANISM_CACHE=ON",
+            "-DKEYRA_FULL_PRESSURE_SIMD=OFF",
+            "-DKEYRA_SANITIZERS=OFF"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control-configure.log",
+            "sha256": "84fa56786de37de9d265e0e8de1f7e7dcb5f9ac1a8bfdf800efc7b4128b74923"
+          },
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/home/agent/.local/bin/cmake",
+            "--build",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/control",
+            "--target",
+            "keyra_full_instrument_tests",
+            "keyra_full_profile_tests",
+            "keyra_full_sdk_compat_tests",
+            "keyra_full_render",
+            "-j",
+            "2"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control-build.log",
+            "sha256": "2a9b511e797784ba9cc5e458afe2440e560719eaac00b0d43f328bcbefe03481"
+          },
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "ctest",
+            "--test-dir",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/control",
+            "--output-on-failure",
+            "-R",
+            "^(full_instrument|full_model_profile|full_sdk_portable)$"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control-tests.log",
+            "sha256": "377e252fd1a6200c80c59902317715dc2eea5bcf563f7767c4a78ec64b236f47"
+          },
+          "exit_code": 0
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control/keyra_full_instrument_tests",
+          "sha256": "c87f9d5a053ab96dbf1cb11838970f1b86a665d45d736bf934bc7f5e61a2756a"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control/keyra_full_profile_tests",
+          "sha256": "3611346b85de36000b52146fb37e63ea70c761cac3647c3af11bfb22bd8a5ed4"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control/keyra_full_sdk_compat_tests",
+          "sha256": "53c6a4f783adaa58b56af0a71f029476f9cccd2e5f5f2efde0d8b87790d7653a"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control/keyra_full_render",
+          "sha256": "a410806a3fcdc7e349bc2981f534a191bc999582546a147990fb476701f9d826"
+        }
+      ],
+      "native_scalar_api_tests": true,
+      "private_profile_tests": true,
+      "expected_topology": {
+        "strings": 230,
+        "string_modes": 17778,
+        "board_modes": 475
+      }
+    },
+    {
+      "profile": "FrozenConfidenceGrand",
+      "default_profile_option_omitted": false,
+      "asan_ubsan": false,
+      "passed": true,
+      "commands": [
+        {
+          "command": [
+            "/home/agent/.local/bin/cmake",
+            "-S",
+            "/workspace/virtual-instrument-keyra",
+            "-B",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DBUILD_TESTING=ON",
+            "-DKEYRA_BUILD_REFERENCE=OFF",
+            "-DKEYRA_BUILD_FULL_REFERENCE=OFF",
+            "-DKEYRA_BUILD_PHYSICAL=OFF",
+            "-DKEYRA_BUILD_PLUGIN=OFF",
+            "-DKEYRA_BUILD_VST3=OFF",
+            "-DKEYRA_BUILD_FULL_BACKEND=ON",
+            "-DKEYRA_FULL_FAST_CONTACT=ON",
+            "-DKEYRA_FULL_MECHANISM_CACHE=ON",
+            "-DKEYRA_FULL_PRESSURE_SIMD=OFF",
+            "-DKEYRA_FULL_MODEL_PROFILE=FrozenConfidenceGrand",
+            "-DKEYRA_SANITIZERS=OFF"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-configure.log",
+            "sha256": "f98d51ccdcdcbb4a51ab75c4c0818d6b759564ed4ca9f547eb63d4c8b91fbf75"
+          },
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/home/agent/.local/bin/cmake",
+            "--build",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence",
+            "--target",
+            "keyra_full_instrument_tests",
+            "keyra_full_profile_tests",
+            "keyra_full_sdk_compat_tests",
+            "keyra_full_render",
+            "-j",
+            "2"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-build.log",
+            "sha256": "2a9b511e797784ba9cc5e458afe2440e560719eaac00b0d43f328bcbefe03481"
+          },
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "ctest",
+            "--test-dir",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence",
+            "--output-on-failure",
+            "-R",
+            "^(full_instrument|full_model_profile|full_sdk_portable)$"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-tests.log",
+            "sha256": "6097954c6e992885c9d1fcaa04ac0cbb2040b9d2c565c7d9eac439dba45b9896"
+          },
+          "exit_code": 0
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence/keyra_full_instrument_tests",
+          "sha256": "b7007b9956f843e5f7c1f875b1d9d236a8d9c0c31edb2a12596f84911bf62e66"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence/keyra_full_profile_tests",
+          "sha256": "140d6f39c2cead6b58939143c225dda8b8bc4e08f35b319b8fcbb112f1702643"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence/keyra_full_sdk_compat_tests",
+          "sha256": "9d55a41f5ccf73d9e2ed26e0dfdafc695b6a3def38318f2672446b9ff11a0342"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence/keyra_full_render",
+          "sha256": "cba105b513293ad18f3486e6172da43d8b16c662bafe4b2a8bb3f0357c942ccf"
+        }
+      ],
+      "native_scalar_api_tests": true,
+      "private_profile_tests": true,
+      "expected_topology": {
+        "strings": 230,
+        "string_modes": 17849,
+        "board_modes": 475
+      }
+    },
+    {
+      "profile": "FrozenConfidenceGrand",
+      "default_profile_option_omitted": false,
+      "asan_ubsan": true,
+      "passed": true,
+      "commands": [
+        {
+          "command": [
+            "/home/agent/.local/bin/cmake",
+            "-S",
+            "/workspace/virtual-instrument-keyra",
+            "-B",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DBUILD_TESTING=ON",
+            "-DKEYRA_BUILD_REFERENCE=OFF",
+            "-DKEYRA_BUILD_FULL_REFERENCE=OFF",
+            "-DKEYRA_BUILD_PHYSICAL=OFF",
+            "-DKEYRA_BUILD_PLUGIN=OFF",
+            "-DKEYRA_BUILD_VST3=OFF",
+            "-DKEYRA_BUILD_FULL_BACKEND=ON",
+            "-DKEYRA_FULL_FAST_CONTACT=ON",
+            "-DKEYRA_FULL_MECHANISM_CACHE=ON",
+            "-DKEYRA_FULL_PRESSURE_SIMD=OFF",
+            "-DKEYRA_FULL_MODEL_PROFILE=FrozenConfidenceGrand",
+            "-DKEYRA_SANITIZERS=ON"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan-configure.log",
+            "sha256": "e252a1637e842f538519b7df625435199323af4fec901e9492165190faee6f14"
+          },
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/home/agent/.local/bin/cmake",
+            "--build",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan",
+            "--target",
+            "keyra_full_instrument_tests",
+            "keyra_full_profile_tests",
+            "-j",
+            "2"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan-build.log",
+            "sha256": "4a2338db8529bd931edd6c6ce41c4f2cf3d266eb1e06c9f807d988c457c6d848"
+          },
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "ctest",
+            "--test-dir",
+            "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan",
+            "--output-on-failure",
+            "-R",
+            "^(full_instrument|full_model_profile)$"
+          ],
+          "log": {
+            "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan-tests.log",
+            "sha256": "b32583c278569c4839580186ba9d5448354d53be2a1dc5956bd96df548875a63"
+          },
+          "exit_code": 0
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan/keyra_full_instrument_tests",
+          "sha256": "2560f566330f4693ac88a58e7a7d2e8b82768b25d5e05adee6e34f52173f8207"
+        },
+        {
+          "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/confidence-asan/keyra_full_profile_tests",
+          "sha256": "bfcdf1adde21255de5972020fcc897274451a546a911a13d69aad580f076e4ec"
+        }
+      ],
+      "native_scalar_api_tests": false,
+      "private_profile_tests": true,
+      "expected_topology": {
+        "strings": 230,
+        "string_modes": 17849,
+        "board_modes": 475
+      }
+    }
+  ],
+  "default_profile": "OriginalControl",
+  "candidate_opt_in": true,
+  "candidate_promoted": false,
+  "fast_contact": true,
+  "mechanism_cache": true,
+  "pressure_simd": false,
+  "coverage": "Actual block API validation, block partitions, reset/independence, seeded humanization, repetitions/touching notes, virgin hammer, allocations, four rates, mechanism isolation and cache reprepare/reset; private topology/anchors and reset/no-fault checks.",
+  "unchanged_control_asan": "Covered by the preserved actual API mechanism-cache matrix before the header-selector-only edit; candidate dimensions/paths receive new ASAN coverage here.",
+  "limits": [
+    "Engineering build profile; no listening approval, new fit, acquisition or reference decode.",
+    "No realtime/Reason SDK-host qualification; sibling SDK-free wrapper results recorded separately.",
+    "Calibration retains known A0/C2/C8 recording-agreement problems."
+  ]
+}

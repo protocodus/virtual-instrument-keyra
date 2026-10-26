@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "report_sha256": "9790c0e792a84d81aadc098d37b3868796e5921996a9164d5608a8a3ad4b78f3",
+  "export_tool_sha256": "50f4e485e8f2ded4b349dbdbf702438c8eebda755ab7b004ea3d907fc29b930e",
+  "source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+  "candidate_source_sha256": "7ecdb865518ad726e693e104e87a00f19d2dd05f062c702e0ade61a5f996e411",
+  "format": "24-bit FLAC, 48 kHz stereo; no lossy codec",
+  "processing": "Existing whole-file RMS matching and common sample-peak gain retained; no further gain, EQ or room.",
+  "within_file_segments": [
+    "C2soft",
+    "C4hard",
+    "C6hard",
+    "music_prefix"
+  ],
+  "within_file_start_seconds": [
+    0,
+    1.4,
+    2.8,
+    4.2
+  ],
+  "limits": "Labeled short excerpts. Audibility, long-tail behavior and Reason realtime performance are unproven. Candidate adds measured numerical loss.",
+  "entries": [
+    {
+      "file": "precision-comparison/double-control.flac",
+      "sha256": "bcc658c7bdf58d9d01f453f775675b9d05f007181869a42d6193b20eb717163f",
+      "profile": "baseline",
+      "source_sha256": "5882ee1903145a7661160f9ffbd95dad6bf86950ac40ce13ed6b898dfdc3d5ba",
+      "duration_seconds": 5.4
+    },
+    {
+      "file": "precision-comparison/float-candidate.flac",
+      "sha256": "6d120723871a2fb9ccae825895af493dba08b847fd7d30f767e6e257812ec923",
+      "profile": "hot_f32_biased",
+      "source_sha256": "86c5849f54f558ba7f282e12b846dd0244f067cc6a49d29bfed2f02c768b7b3e",
+      "duration_seconds": 5.4
+    },
+    {
+      "file": "precision-comparison/double-then-float.flac",
+      "sha256": "b8dd970dc43fa7c988819c9b066183b55142b605958bdde064fdd568789b8bf7",
+      "order": [
+        "full double control",
+        "full float candidate"
+      ],
+      "segment_start_seconds": [
+        0,
+        5.9
+      ]
+    }
+  ]
+}

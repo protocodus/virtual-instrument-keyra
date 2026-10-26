@@ -1,0 +1,880 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-10-26T18:00:29.612119+00:00",
+  "passed": true,
+  "decision": "Select bounded fast contact ON by default; retain explicit legacy OFF. Same contact equation, stricter zero-force failure policy, identical float output in tested scores, and all four supported-rate dense peak medians improve about2.1x. Whole-score and global-peak regressions remain; no universal speedup or real-time claim.",
+  "default_option": "ON",
+  "pressure_option_in_this_study": "OFF",
+  "topology": {
+    "strings": 230,
+    "string_modes": 17778,
+    "board_modes": 475
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "source_sha256": {
+    "include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "include/keyra/physics/ContactSolver.h": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+    "src/full_instrument/FullInstrument.cpp": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+    "src/full_instrument/PreparedModel.h": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36",
+    "src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "src/full_instrument/generate_prepared_model.py": "c8c7078533e09a929196272ab537c6af108b766e232e7c30e51cbe08a6cf5050",
+    "src/full_instrument/prepared_model_provenance.json": "92f89e114d848c1f7d74e1cd80f7e7b02dfcd3ffe552d1d04adc3514d15e58e3",
+    "src/full_instrument/check_cli_parity.py": "52e6673fe7143b0bacc1e3319e01fd25481f93ea4ddb1db1f4987c1582ed47ae",
+    "tests/full_instrument_tests.cpp": "7fce4176f6612c3a341031169da2560c071bb94a5adf0def71ca4446e7f3f54e",
+    "tests/contact_solver_tests.cpp": "22916a31b820f12a7869ace1746cdca3fd19d04d0dcb0155859f2b4940f24f8f",
+    "docs/FULL_BACKEND.md": "df186e22db1b7ca5a46367a3a8099471d0836a9d0dfa50a4d0d4b3d0b8484879",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "tools/probe_full_precision.py": "280d77738d50f23b0fbcd14822edb50a1bda22428fafa43e16f45a493426f961"
+  },
+  "source_snapshot": {
+    "path": "out/full-contact-integration/final-source-snapshot/sha256.json",
+    "sha256": "e99fcd09d364d24c44865e28ae7397ce25c6e64a24c2cc2c8d75f8be0dc21f10"
+  },
+  "baseline": {
+    "manifest": {
+      "path": "out/full-contact-integration/baseline/sha256.json",
+      "sha256": "e9f021f12e24c610ae9304d3dd35114917ca9270ae04c198ba243b6271c291aa"
+    },
+    "file_count": 16,
+    "verified_all_hashes": true
+  },
+  "build_policy": {
+    "option": "KEYRA_FULL_FAST_CONTACT",
+    "cmake_default": "ON",
+    "undefined_or_zero_macro": "legacy fallback",
+    "native_and_scalar_compatibility_same_selected_contact": true,
+    "target_U_D_overrides_conflicting_global_macro": "tested GNU14.2 native/scalar",
+    "compiler_extension_required": false,
+    "additional_runtime": false,
+    "global_fast_math_added": false,
+    "actual_reason_sdk_or_msvc_tested": false
+  },
+  "build_evidence": [
+    {
+      "path": "out/full-contact-integration/off-checks.json",
+      "sha256": "0fa23454a226a15bc7b95fd888b46ea0ce87f9b05e90fb2217f81ade92605178"
+    },
+    {
+      "path": "out/full-contact-integration/on-checks.json",
+      "sha256": "4af83a49845933c26a3108f8d6468be7b0e69935a12c580c14a0b96540eb5629"
+    },
+    {
+      "path": "out/full-contact-integration/asan-checks.json",
+      "sha256": "8aebbfaf52dfb7890151517f88e647fd0b093e4d7d4cb3aa3d17437d3644a33b"
+    }
+  ],
+  "tests": [
+    {
+      "name": "full_instrument",
+      "variant": "off",
+      "passed": true,
+      "seconds": 10.5077
+    },
+    {
+      "name": "full_sdk_portable",
+      "variant": "off",
+      "passed": true,
+      "seconds": 15.0563
+    },
+    {
+      "name": "full_instrument",
+      "variant": "on",
+      "passed": true,
+      "seconds": 12.7363
+    },
+    {
+      "name": "contact_solver",
+      "variant": "on",
+      "passed": true,
+      "seconds": 2.65332
+    },
+    {
+      "name": "full_sdk_portable",
+      "variant": "on",
+      "passed": true,
+      "seconds": 14.2369
+    },
+    {
+      "name": "full_instrument",
+      "variant": "asan",
+      "passed": true,
+      "seconds": 128.207
+    },
+    {
+      "name": "contact_solver",
+      "variant": "asan",
+      "passed": true,
+      "seconds": 12.2232
+    }
+  ],
+  "default_only_followup": {
+    "evidence": {
+      "path": "out/full-contact-integration/default-on-checks.json",
+      "sha256": "3db58abf615796e04aa7ffa372cff016c5284d51633f3bab5c554f29bcdb295e"
+    },
+    "validated_explicit_cmake": {
+      "path": "out/full-contact-integration/validated-explicit-options-CMakeLists.txt",
+      "sha256": "c3c1cc13e96af1a0c3596937ac67b5f11390ab2d2b7a1d85b160ba7fa1241028"
+    },
+    "validated_default_cmake": {
+      "path": "out/full-contact-integration/validated-default-on-CMakeLists.txt",
+      "sha256": "645b0a60d4f7c559d6f0e3fa3490b867568e71a23cecaad99fd3af07acbc78a1"
+    },
+    "delta": "Only option default and description; fresh default configure selects native/scalarFAST1, pressure0. Later root acoustic targets do not alter these backend flags.",
+    "default_followup_repeats_DSP_tests": false
+  },
+  "generation_and_structure": {
+    "generation": {
+      "path": "out/full-contact-integration/generation-checks.json",
+      "sha256": "2e4cda03b622c0060847a42c040f87bde12632880785826ffab32b419c56e7b1"
+    },
+    "structural_identity": {
+      "path": "out/full-contact-integration/structural-checks.json",
+      "sha256": "1f69f61f67774fd09e268540fa78120b0f8ac47033bb3017c4583c818f57197f"
+    },
+    "generated_artifacts_byte_reproducible": true,
+    "legacy_contact_body_verbatim": true,
+    "former_header_reconstructed_byte_identically": true
+  },
+  "solver_contract": {
+    "potential": "K*max(x,0)^(p+1)/(p+1)",
+    "law": "F=DG(V)(a,free-compliance*F)*max(0,1+loss*(b-a)/dt)",
+    "max_newton": 10,
+    "max_bisection": 56,
+    "max_residual_evaluations": 67,
+    "refinement_normalized_residual": 2e-14,
+    "acceptance_normalized_residual": 1e-10,
+    "every_failure_returns_force_zero": true,
+    "failure_retires_only_offending_hammer_before_force_update": true,
+    "positive_potential_underflow": "explicit NumericalRange failure"
+  },
+  "independent_long_double_math": {
+    "evidence": {
+      "path": "out/full-contact-integration/contact-solver-math-scalar.json",
+      "sha256": "fc87b86851a981c63d480d42ad64d25057aea90fe344fe1577cb51f6d26bd709"
+    },
+    "passed": true,
+    "physical_and_endpoint_cases": 17396,
+    "keys_per_rate": 88,
+    "rates": [
+      44100,
+      48000,
+      88200,
+      96000
+    ],
+    "actual_model_rebuilt_at_each_rate": true,
+    "maximum_normalized_force_error": 7.869520288418199e-13,
+    "maximum_pure_relative_force_error_above_1e_3_N": 1.4034242360415262e-11,
+    "maximum_reference_residual": 1.5863977635145143e-12,
+    "maximum_normalized_work_defect": 1.6383625548626986e-16,
+    "maximum_normalized_negative_dissipation": 5.690821232562813e-17,
+    "maximum_absolute_work_defect_J": 1.670077921442359e-16,
+    "maximum_newton": 10,
+    "maximum_bisection": 56,
+    "maximum_evaluations": 67,
+    "valid_bisection_cases": 12,
+    "forced_failure_evaluations": 67,
+    "failure_force_zero": true,
+    "solver_allocations": 0,
+    "physical_valid_failures": 0,
+    "expected_failure_cases": 33,
+    "long_double_digits": 64
+  },
+  "mechanical_comparison": {
+    "report": {
+      "path": "out/full-contact-integration/comparison/report.json",
+      "sha256": "f6662c5557ca388265a868c1fadd5710e2a155f70a0b920bbd38717a59718d83"
+    },
+    "summary": {
+      "path": "out/full-contact-integration/comparison/summary.json",
+      "sha256": "8470e898af0900fda3adac9249ae7da49e0a1a084f1fc5adf1e0397cb3e4b641"
+    },
+    "supplementary": {
+      "path": "out/full-contact-integration/comparison/supplementary-state-and-byte-checks.json",
+      "sha256": "72bc093264992ab5a0a5a0695bdf1af701dffd11f4f79d759053731f8e916f5a"
+    },
+    "sample_rates": [
+      44100,
+      48000,
+      88200,
+      96000
+    ],
+    "scores": [
+      "music",
+      "repeats-pedal",
+      "touching",
+      "dense-88"
+    ],
+    "case_rate_cells": 16,
+    "former_vs_OFF_checkpoints_byte_equal": 62,
+    "former_vs_OFF_pressure_and_output_bytes_equal": true,
+    "FAST_vs_OFF_float_output_bytes_equal_cases": 16,
+    "FAST_vs_OFF_raw_pressure_bytes_equal_cases": 11,
+    "maximum_raw_pressure_absolute_difference": 1.1102230246251565e-16,
+    "state_groups": {
+      "strings": {
+        "all_equal": true,
+        "maximum_absolute_difference": 0
+      },
+      "board": {
+        "all_equal": true,
+        "maximum_absolute_difference": 0
+      },
+      "hammers": {
+        "all_equal": false,
+        "maximum_absolute_difference": 1.5511147921642987e-11
+      },
+      "controller": {
+        "all_equal": false,
+        "maximum_absolute_difference": 1.5300261058115439e-13
+      },
+      "sources": {
+        "all_equal": false,
+        "maximum_absolute_difference": 1.7618285302889447e-19
+      },
+      "global": {
+        "all_equal": false,
+        "maximum_absolute_difference": 1.355004997094511e-11
+      },
+      "diagnostics": {
+        "all_equal": false,
+        "maximum_absolute_difference": 1.4395219535770881e-11
+      }
+    },
+    "normal_score_max_newton": 4,
+    "normal_score_fallback_total": 0,
+    "conservative_trajectory_audits_per_variant": 36,
+    "core_audits": {
+      "former": {
+        "maximum_relative_energy_drift": 3.7903328769209644e-05,
+        "maximum_normalized_long_double_force_error": 3.82777931607692e-11,
+        "maximum_normalized_work_defect": 1.3122434892076304e-15,
+        "nan_input_retired_without_force_and_finished_damping": true,
+        "finite_nonconverged_stress_retired": false,
+        "passed": true
+      },
+      "off": {
+        "maximum_relative_energy_drift": 3.7903328769209644e-05,
+        "maximum_normalized_long_double_force_error": 3.82777931607692e-11,
+        "maximum_normalized_work_defect": 1.3122434892076304e-15,
+        "nan_input_retired_without_force_and_finished_damping": true,
+        "finite_nonconverged_stress_retired": false,
+        "passed": true
+      },
+      "on": {
+        "maximum_relative_energy_drift": 3.7903328661829705e-05,
+        "maximum_normalized_long_double_force_error": 2.4380320975237936e-13,
+        "maximum_normalized_work_defect": 3.625212140133378e-17,
+        "nan_input_retired_without_force_and_finished_damping": true,
+        "finite_nonconverged_stress_retired": true,
+        "passed": true
+      }
+    },
+    "floating_energy_gate_relative": 5e-05,
+    "not_bit_identity_guarantee_for_other_states_or_compilers": true
+  },
+  "failure_isolation": {
+    "evidence": {
+      "path": "out/full-contact-integration/failure-isolation/report.json",
+      "sha256": "d2d7f1af8a387a782afc6b3872af7984fa4944a9d1782b675968c5f88d06aaa2"
+    },
+    "fixtures": [
+      "NaN stiffness",
+      "finite nonconverged stiffness/compliance stress"
+    ],
+    "frames_per_fixture": 16,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "another_active_hammer_and_network_byte_equivalent_to_passive_control": true
+  },
+  "actual_CLI_parity": {
+    "scope": "Controller bypass and mechanisms off, original24HzHP,8192frames irregular blocks/events. Separate API/Reason tests exercise repetition and mechanical network.",
+    "OFF_reports": [
+      {
+        "path": "out/full-contact-integration/cli-off-48000/report.json",
+        "sha256": "2a1e0a84f4e7e72dd4359ba9f2c6818e5592535f0491e708dc65413b33e23de7"
+      },
+      {
+        "path": "out/full-contact-integration/cli-off-96000/report.json",
+        "sha256": "021dd4f751b57508423d3503dd574fbbc0388c3a7d810778a736769f2d73737f"
+      }
+    ],
+    "ON_reports": [
+      {
+        "path": "out/full-contact-integration/cli-fast-on-48000/report.json",
+        "sha256": "fda035dba3ac16c68cef4e170bae4ba26c0eed521eda01495d40045e2b46aff1"
+      },
+      {
+        "path": "out/full-contact-integration/cli-fast-on-96000/report.json",
+        "sha256": "164a55fa5f6691defa592c3ee36ee2f64125c955299c09d5bef41b69a4268938"
+      }
+    ],
+    "explicit_ON_compile_preprocessor_receipt": {
+      "path": "out/full-contact-integration/cli-fast-on-compile-receipt.json",
+      "sha256": "bc7d6f09d1bb3ae023614cc19f9f96f5b6f91593638e7533c58f01092f939900"
+    },
+    "both_ON_and_OFF_float_output_byte_identical_to_same_hot_float_control": true,
+    "fault_and_reset_paths": true
+  },
+  "current_timing": {
+    "report": {
+      "path": "out/full-contact-integration/comparison/timing-report.json",
+      "sha256": "62b76b501bbfe1cb001c4f6283620ae688c67e150a846c43a9b76852129c9282"
+    },
+    "summary": {
+      "path": "out/full-contact-integration/comparison/timing-summary.json",
+      "sha256": "dd187bceca571544d876db2c8385c5cf1884e32b1270072b2c0d96aaaa36f0ea"
+    },
+    "peak_location_diagnostic": {
+      "path": "out/full-contact-integration/comparison/dense-peak-contact-windows.json",
+      "sha256": "7f8abbbce12047854573fe8b1b45e6bf51ebbf63efcf0422aa37cba4b1e29a9b"
+    },
+    "balanced_pairs": 2,
+    "paired_case_measurements": 32,
+    "average_CPU_regressions": 13,
+    "global_peak_regressions": 16,
+    "dense_rows": [
+      {
+        "rate": 44100,
+        "case": "dense-88",
+        "median_cpu_off": 3.6883611500000004,
+        "median_cpu_on": 3.331635037500001,
+        "median_cpu_reduction_fraction": 0.09671669828210816,
+        "paired_cpu_speedups": [
+          1.1581636247679945,
+          1.0551434241079396
+        ],
+        "median_peak_off_ms": 24.6876295,
+        "median_peak_on_ms": 11.4129065,
+        "median_peak_speedup": 2.1631325464727147,
+        "paired_peak_speedups": [
+          2.212090802167699,
+          2.093107982112416
+        ],
+        "median_p95_off_ms": 6.792571125,
+        "median_p95_on_ms": 5.907869500000001
+      },
+      {
+        "rate": 48000,
+        "case": "dense-88",
+        "median_cpu_off": 3.9213059437499997,
+        "median_cpu_on": 3.73727058125,
+        "median_cpu_reduction_fraction": 0.04693216115751586,
+        "paired_cpu_speedups": [
+          1.068043216059232,
+          1.029969653999276
+        ],
+        "median_peak_off_ms": 20.514806,
+        "median_peak_on_ms": 9.730939000000001,
+        "median_peak_speedup": 2.1082041517267758,
+        "paired_peak_speedups": [
+          2.1857872514576178,
+          2.0317207558020356
+        ],
+        "median_p95_off_ms": 7.247239174999998,
+        "median_p95_on_ms": 6.921047624999996
+      },
+      {
+        "rate": 88200,
+        "case": "dense-88",
+        "median_cpu_off": 7.1665495125000005,
+        "median_cpu_on": 6.747494150000003,
+        "median_cpu_reduction_fraction": 0.058473797155670915,
+        "paired_cpu_speedups": [
+          1.0758592418095532,
+          1.0477031531124656
+        ],
+        "median_peak_off_ms": 21.028647,
+        "median_peak_on_ms": 9.924397,
+        "median_peak_speedup": 2.1188840994571256,
+        "paired_peak_speedups": [
+          2.0476445111359456,
+          2.1937322823289285
+        ],
+        "median_p95_off_ms": 6.949636999999999,
+        "median_p95_on_ms": 6.58196425
+      },
+      {
+        "rate": 96000,
+        "case": "dense-88",
+        "median_cpu_off": 7.79466015625,
+        "median_cpu_on": 7.22347874375,
+        "median_cpu_reduction_fraction": 0.07327855237434677,
+        "paired_cpu_speedups": [
+          1.054939670602432,
+          1.103867958317433
+        ],
+        "median_peak_off_ms": 21.394318,
+        "median_peak_on_ms": 9.811406,
+        "median_peak_speedup": 2.180555773555798,
+        "paired_peak_speedups": [
+          2.261350451180778,
+          2.1023743947093907
+        ],
+        "median_p95_off_ms": 6.804610199999999,
+        "median_p95_on_ms": 5.626909899999999
+      }
+    ],
+    "all_case_rows": [
+      {
+        "rate": 44100,
+        "case": "music",
+        "median_cpu_off": 3.2489525609374983,
+        "median_cpu_on": 3.2677065250000012,
+        "median_cpu_reduction_fraction": -0.005772310832723004,
+        "paired_cpu_speedups": [
+          1.026472829405752,
+          0.9610913338752672
+        ],
+        "median_peak_off_ms": 8.394068,
+        "median_peak_on_ms": 10.1895825,
+        "median_peak_speedup": 0.8237891984288856,
+        "paired_peak_speedups": [
+          1.1763427957827297,
+          0.5140652950174153
+        ],
+        "median_p95_off_ms": 5.624848500000001,
+        "median_p95_on_ms": 5.973286000000001
+      },
+      {
+        "rate": 44100,
+        "case": "repeats-pedal",
+        "median_cpu_off": 3.3310177125000004,
+        "median_cpu_on": 3.1716269109375013,
+        "median_cpu_reduction_fraction": 0.04785048154033167,
+        "paired_cpu_speedups": [
+          1.093481215464345,
+          1.0060613095421025
+        ],
+        "median_peak_off_ms": 8.508030000000002,
+        "median_peak_on_ms": 11.3583215,
+        "median_peak_speedup": 0.7490569799419748,
+        "paired_peak_speedups": [
+          0.6577504385681286,
+          1.0163753363332597
+        ],
+        "median_p95_off_ms": 6.158348500000001,
+        "median_p95_on_ms": 5.014628
+      },
+      {
+        "rate": 44100,
+        "case": "touching",
+        "median_cpu_off": 3.259716275999999,
+        "median_cpu_on": 3.298755346,
+        "median_cpu_reduction_fraction": -0.011976217159582303,
+        "paired_cpu_speedups": [
+          0.9785394832047831,
+          0.9990111431093004
+        ],
+        "median_peak_off_ms": 8.385159,
+        "median_peak_on_ms": 44.320891499999995,
+        "median_peak_speedup": 0.18919202020112796,
+        "paired_peak_speedups": [
+          0.13686927366409896,
+          0.9664185044230281
+        ],
+        "median_p95_off_ms": 5.7177121,
+        "median_p95_on_ms": 5.2932018
+      },
+      {
+        "rate": 44100,
+        "case": "dense-88",
+        "median_cpu_off": 3.6883611500000004,
+        "median_cpu_on": 3.331635037500001,
+        "median_cpu_reduction_fraction": 0.09671669828210816,
+        "paired_cpu_speedups": [
+          1.1581636247679945,
+          1.0551434241079396
+        ],
+        "median_peak_off_ms": 24.6876295,
+        "median_peak_on_ms": 11.4129065,
+        "median_peak_speedup": 2.1631325464727147,
+        "paired_peak_speedups": [
+          2.212090802167699,
+          2.093107982112416
+        ],
+        "median_p95_off_ms": 6.792571125,
+        "median_p95_on_ms": 5.907869500000001
+      },
+      {
+        "rate": 48000,
+        "case": "music",
+        "median_cpu_off": 3.5376391937500005,
+        "median_cpu_on": 3.464169051562501,
+        "median_cpu_reduction_fraction": 0.020768127602526665,
+        "paired_cpu_speedups": [
+          1.06594915505995,
+          0.9776406317651537
+        ],
+        "median_peak_off_ms": 8.566869,
+        "median_peak_on_ms": 7.787671500000001,
+        "median_peak_speedup": 1.100055260420268,
+        "paired_peak_speedups": [
+          1.2838082891984155,
+          0.8777488660337928
+        ],
+        "median_p95_off_ms": 5.440566200000001,
+        "median_p95_on_ms": 5.00829575
+      },
+      {
+        "rate": 48000,
+        "case": "repeats-pedal",
+        "median_cpu_off": 3.4755415328125023,
+        "median_cpu_on": 4.256367517187499,
+        "median_cpu_reduction_fraction": -0.22466311422356422,
+        "paired_cpu_speedups": [
+          0.7156782867651823,
+          0.9620811092692411
+        ],
+        "median_peak_off_ms": 7.9167205,
+        "median_peak_on_ms": 11.742989000000001,
+        "median_peak_speedup": 0.6741657085772625,
+        "paired_peak_speedups": [
+          0.6371755782186859,
+          0.7528869935216213
+        ],
+        "median_p95_off_ms": 5.203242099999997,
+        "median_p95_on_ms": 8.039663449999999
+      },
+      {
+        "rate": 48000,
+        "case": "touching",
+        "median_cpu_off": 3.4404289179999994,
+        "median_cpu_on": 3.756206292000002,
+        "median_cpu_reduction_fraction": -0.09178430408716931,
+        "paired_cpu_speedups": [
+          0.8730306327916346,
+          0.9657746678925441
+        ],
+        "median_peak_off_ms": 7.521142,
+        "median_peak_on_ms": 7.320855,
+        "median_peak_speedup": 1.0273584164691147,
+        "paired_peak_speedups": [
+          0.8727022529231422,
+          1.306978025107642
+        ],
+        "median_p95_off_ms": 5.17791755,
+        "median_p95_on_ms": 6.3606017
+      },
+      {
+        "rate": 48000,
+        "case": "dense-88",
+        "median_cpu_off": 3.9213059437499997,
+        "median_cpu_on": 3.73727058125,
+        "median_cpu_reduction_fraction": 0.04693216115751586,
+        "paired_cpu_speedups": [
+          1.068043216059232,
+          1.029969653999276
+        ],
+        "median_peak_off_ms": 20.514806,
+        "median_peak_on_ms": 9.730939000000001,
+        "median_peak_speedup": 2.1082041517267758,
+        "paired_peak_speedups": [
+          2.1857872514576178,
+          2.0317207558020356
+        ],
+        "median_p95_off_ms": 7.247239174999998,
+        "median_p95_on_ms": 6.921047624999996
+      },
+      {
+        "rate": 88200,
+        "case": "music",
+        "median_cpu_off": 6.9181237187499995,
+        "median_cpu_on": 6.67116323125,
+        "median_cpu_reduction_fraction": 0.03569761073087907,
+        "paired_cpu_speedups": [
+          1.091408741194301,
+          0.9753670803183887
+        ],
+        "median_peak_off_ms": 9.7915875,
+        "median_peak_on_ms": 20.500839,
+        "median_peak_speedup": 0.4776188672083128,
+        "paired_peak_speedups": [
+          0.3952849679821969,
+          0.9977452987050904
+        ],
+        "median_p95_off_ms": 7.031134,
+        "median_p95_on_ms": 6.467870500000001
+      },
+      {
+        "rate": 88200,
+        "case": "repeats-pedal",
+        "median_cpu_off": 6.377154448437501,
+        "median_cpu_on": 6.661775179687501,
+        "median_cpu_reduction_fraction": -0.044631305945512345,
+        "paired_cpu_speedups": [
+          0.9376483520828289,
+          0.9791465845022255
+        ],
+        "median_peak_off_ms": 8.5697875,
+        "median_peak_on_ms": 10.518119,
+        "median_peak_speedup": 0.8147642653596142,
+        "paired_peak_speedups": [
+          0.7449199063488298,
+          1.0029479129457741
+        ],
+        "median_p95_off_ms": 5.280772500000001,
+        "median_p95_on_ms": 6.363947
+      },
+      {
+        "rate": 88200,
+        "case": "touching",
+        "median_cpu_off": 6.556524696000001,
+        "median_cpu_on": 6.216173620000003,
+        "median_cpu_reduction_fraction": 0.051910286589424315,
+        "paired_cpu_speedups": [
+          1.0861069626253599,
+          1.0224755463624335
+        ],
+        "median_peak_off_ms": 12.274068,
+        "median_peak_on_ms": 7.365721500000001,
+        "median_peak_speedup": 1.6663768783546864,
+        "paired_peak_speedups": [
+          2.162759346157922,
+          0.9153350302446783
+        ],
+        "median_p95_off_ms": 5.746292800000001,
+        "median_p95_on_ms": 4.9744318
+      },
+      {
+        "rate": 88200,
+        "case": "dense-88",
+        "median_cpu_off": 7.1665495125000005,
+        "median_cpu_on": 6.747494150000003,
+        "median_cpu_reduction_fraction": 0.058473797155670915,
+        "paired_cpu_speedups": [
+          1.0758592418095532,
+          1.0477031531124656
+        ],
+        "median_peak_off_ms": 21.028647,
+        "median_peak_on_ms": 9.924397,
+        "median_peak_speedup": 2.1188840994571256,
+        "paired_peak_speedups": [
+          2.0476445111359456,
+          2.1937322823289285
+        ],
+        "median_p95_off_ms": 6.949636999999999,
+        "median_p95_on_ms": 6.58196425
+      },
+      {
+        "rate": 96000,
+        "case": "music",
+        "median_cpu_off": 7.065632129687499,
+        "median_cpu_on": 7.082961965625,
+        "median_cpu_reduction_fraction": -0.002452694340635997,
+        "paired_cpu_speedups": [
+          0.9836680264681096,
+          1.0127927983110998
+        ],
+        "median_peak_off_ms": 8.557865500000002,
+        "median_peak_on_ms": 9.577202,
+        "median_peak_speedup": 0.8935663568545388,
+        "paired_peak_speedups": [
+          0.8384307101677667,
+          1.0276109654961902
+        ],
+        "median_p95_off_ms": 5.426001125,
+        "median_p95_on_ms": 5.86809805
+      },
+      {
+        "rate": 96000,
+        "case": "repeats-pedal",
+        "median_cpu_off": 7.411060846874996,
+        "median_cpu_on": 7.232176704687502,
+        "median_cpu_reduction_fraction": 0.024137454257027624,
+        "paired_cpu_speedups": [
+          1.1453713323023698,
+          0.9068570355965867
+        ],
+        "median_peak_off_ms": 12.428534500000001,
+        "median_peak_on_ms": 59.3162895,
+        "median_peak_speedup": 0.20952987121691083,
+        "paired_peak_speedups": [
+          1.7385516620868147,
+          0.06589312086228248
+        ],
+        "median_p95_off_ms": 7.421122024999997,
+        "median_p95_on_ms": 5.393444925000001
+      },
+      {
+        "rate": 96000,
+        "case": "touching",
+        "median_cpu_off": 8.715488852000009,
+        "median_cpu_on": 7.107084621999997,
+        "median_cpu_reduction_fraction": 0.18454549794196795,
+        "paired_cpu_speedups": [
+          1.4330580350404056,
+          1.0059761519745507
+        ],
+        "median_peak_off_ms": 11.9390335,
+        "median_peak_on_ms": 12.649810500000001,
+        "median_peak_speedup": 0.9438112531409067,
+        "paired_peak_speedups": [
+          0.9935823400393242,
+          0.8109240753610802
+        ],
+        "median_p95_off_ms": 7.961469900000001,
+        "median_p95_on_ms": 5.785228100000001
+      },
+      {
+        "rate": 96000,
+        "case": "dense-88",
+        "median_cpu_off": 7.79466015625,
+        "median_cpu_on": 7.22347874375,
+        "median_cpu_reduction_fraction": 0.07327855237434677,
+        "paired_cpu_speedups": [
+          1.054939670602432,
+          1.103867958317433
+        ],
+        "median_peak_off_ms": 21.394318,
+        "median_peak_on_ms": 9.811406,
+        "median_peak_speedup": 2.180555773555798,
+        "paired_peak_speedups": [
+          2.261350451180778,
+          2.1023743947093907
+        ],
+        "median_p95_off_ms": 6.804610199999999,
+        "median_p95_on_ms": 5.626909899999999
+      }
+    ],
+    "48k_repeats_pedal_median_cost_rise_percent": 22.466311422356423,
+    "all_dense_peaks_improve_in_both_pairs": true,
+    "all_dense_peaks_still_miss_64_frame_deadline": true,
+    "two_FAST_dense_global_maxima_outside_contact_windows_retained": true,
+    "scope": "Exactly two balanced same-binary pairs after correctness. Callback thread CPU includes event dispatch and identical raw-pressure capture; excludes preparation, state snapshots and final I/O. Every sample, state and timing trial retained; no tuning, discarded outliers, SDK or supported realtime claim."
+  },
+  "maximum_velocity_dense_supplement": {
+    "report": {
+      "path": "out/full-contact-integration/hard/report.json",
+      "sha256": "6dff8a2731ed407af10622649ec5bc41357dff1e0ea478274f5495d4b2705293"
+    },
+    "summary": {
+      "path": "out/full-contact-integration/hard/summary.json",
+      "sha256": "95ea08d8f40c50d19a29deed9b89731c71260182be86ca5e62d514164822d510"
+    },
+    "rows": [
+      {
+        "rate": 44100,
+        "output_bytes_equal": true,
+        "cpu_off": 3.4040200874999993,
+        "cpu_on": 3.1558859124999996,
+        "average_cpu_speedup": 1.0786258381575762,
+        "peak_off_ms": 19.519046000000003,
+        "peak_on_ms": 10.430921000000001,
+        "peak_speedup": 1.871267743279812,
+        "p95_off_ms": 5.741755,
+        "p95_on_ms": 5.07467625,
+        "on_stats": {
+          "solves": 7233,
+          "fast_evaluations": 27017,
+          "fast_newton_iterations": 19784,
+          "fast_bisection_iterations": 0,
+          "fast_fallbacks": 0,
+          "maximum_fast_newton": 4,
+          "maximum_fast_bisections": 0,
+          "faults": 0,
+          "active_hammers": 0,
+          "max_contact_residual": 1.9742511647037496e-14,
+          "diagnostic_energy": 1.1467391364457717
+        }
+      },
+      {
+        "rate": 48000,
+        "output_bytes_equal": true,
+        "cpu_off": 3.9159140625000006,
+        "cpu_on": 3.5489598875000006,
+        "average_cpu_speedup": 1.103397667663833,
+        "peak_off_ms": 19.664004000000002,
+        "peak_on_ms": 9.649890000000001,
+        "peak_speedup": 2.0377438499298957,
+        "p95_off_ms": 6.511826099999999,
+        "p95_on_ms": 5.228371599999999,
+        "on_stats": {
+          "solves": 7873,
+          "fast_evaluations": 29162,
+          "fast_newton_iterations": 21289,
+          "fast_bisection_iterations": 0,
+          "fast_fallbacks": 0,
+          "maximum_fast_newton": 4,
+          "maximum_fast_bisections": 0,
+          "faults": 0,
+          "active_hammers": 0,
+          "max_contact_residual": 1.999608697882707e-14,
+          "diagnostic_energy": 1.118255617212834
+        }
+      },
+      {
+        "rate": 88200,
+        "output_bytes_equal": true,
+        "cpu_off": 6.790526812499997,
+        "cpu_on": 6.620295337500003,
+        "average_cpu_speedup": 1.025713577162598,
+        "peak_off_ms": 20.545322000000002,
+        "peak_on_ms": 9.422059,
+        "peak_speedup": 2.1805554391030664,
+        "p95_off_ms": 6.0318935,
+        "p95_on_ms": 6.3639765,
+        "on_stats": {
+          "solves": 14413,
+          "fast_evaluations": 50690,
+          "fast_newton_iterations": 36277,
+          "fast_bisection_iterations": 0,
+          "fast_fallbacks": 0,
+          "maximum_fast_newton": 3,
+          "maximum_fast_bisections": 0,
+          "faults": 0,
+          "active_hammers": 0,
+          "max_contact_residual": 1.9943478813409288e-14,
+          "diagnostic_energy": 1.174526848087183
+        }
+      },
+      {
+        "rate": 96000,
+        "output_bytes_equal": true,
+        "cpu_off": 7.43139285,
+        "cpu_on": 7.014270137499999,
+        "average_cpu_speedup": 1.0594677285481153,
+        "peak_off_ms": 21.329201,
+        "peak_on_ms": 9.570435999999999,
+        "peak_speedup": 2.2286550999348416,
+        "p95_off_ms": 6.129800599999998,
+        "p95_on_ms": 5.405262349999999,
+        "on_stats": {
+          "solves": 15692,
+          "fast_evaluations": 54744,
+          "fast_newton_iterations": 39052,
+          "fast_bisection_iterations": 0,
+          "fast_fallbacks": 0,
+          "maximum_fast_newton": 3,
+          "maximum_fast_bisections": 0,
+          "faults": 0,
+          "active_hammers": 0,
+          "max_contact_residual": 1.9959787690223336e-14,
+          "diagnostic_energy": 1.1460151925513136
+        }
+      }
+    ],
+    "scope": "Separate maximum normalized velocity1.0 dense88, .08s, all four supported rates. One serialized OFF\u2192ON pair is exploratory; no balanced performance or realtime claim. No change to the frozen main16case report/binaries."
+  },
+  "documentation": {
+    "path": "docs/FULL_BACKEND.md",
+    "sha256": "df186e22db1b7ca5a46367a3a8099471d0836a9d0dfa50a4d0d4b3d0b8484879"
+  },
+  "limitations": [
+    "No supported DAW or real-time deadline qualification.",
+    "No actual Jukebox SDK compiler or Reason host run.",
+    "Timing includes every observed regression; short local tests do not establish universally lower CPU.",
+    "Observed float output equality covers these cases/builds; hammer/controller states differ by roundoff.",
+    "Existing hot-float conservative trajectory energy gate permits small numerical drift, not exact floating-point passivity."
+  ],
+  "independent_audit": {
+    "path": "out/full-contact-integration/independent-audit.json",
+    "sha256": "77dc5fb863c85beb6d9c1c79c8ba055e4812774332e0e97237e38bef306e9362"
+  }
+}

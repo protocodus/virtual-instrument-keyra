@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-10-26T18:54:16.048414+00:00",
+  "scope": "Main-repository profile generation and actual core integration review; SDK-free Reason wrapper proof tracked separately.",
+  "receipts": [
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-profile-phase-a.json",
+      "sha256": "ba2d0d5ffbcf095ab7c8342d6b7b87590c848ec991f55f627219362104af8c75"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-profile-cmake.json",
+      "sha256": "bf8a3edf26a90c3fdfef6f7d6233e6e3d7674fd965caf5a176920036ff626149"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-profile-api-parity.json",
+      "sha256": "398f7cc1e1f264795810febe01276fff1897d1de2abf9f6c9e1fdea83a2b84a9"
+    },
+    {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-profile-integration.json",
+      "sha256": "b8fc60a25c97a532c8d10975a9706f5fc58d203555dec28a18e2ecc46b2be501"
+    }
+  ],
+  "fresh_original_control_cli_parity": [
+    {
+      "sample_rate": 48000,
+      "report": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control-cli-48000/report.json",
+        "sha256": "fda73e56d44a8966063dd9b8346dd7dde17f35f4a19f1a7ff82bc84075ca1e3d"
+      },
+      "passed": true,
+      "audio_sha256": "cdbc4cf58ed39c25938868bc3151b5a77f45fb87adb684361bb566f5fd655656",
+      "reference_source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+      "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "contact": "Legacy branch; default profile selector0; isolated mechanism/humanization levels0; old checker unchanged."
+    },
+    {
+      "sample_rate": 96000,
+      "report": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/control-cli-96000/report.json",
+        "sha256": "eb414bf3c9a0b6c8ed363191ee52962e2376990fabf238fe52046ccae6426cf4"
+      },
+      "passed": true,
+      "audio_sha256": "1200754723f12bf41926448cff98209f8f0f9e24597b3ba2bdf11f2b6a728639",
+      "reference_source_sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+      "calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "contact": "Legacy branch; default profile selector0; isolated mechanism/humanization levels0; old checker unchanged."
+    }
+  ],
+  "original_model_exact": {
+    "path": "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h",
+    "sha256": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36"
+  },
+  "original_calibration_exact": {
+    "path": "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedCalibration.h",
+    "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7"
+  },
+  "candidate_numeric_profile_exact": {
+    "path": "/workspace/virtual-instrument-keyra/src/full_instrument/profiles/confidence_grand/calibration.json",
+    "sha256": "3cdd77c04d5507ff6c20e150bb8503c7accf21486c3bbead590f63dbb99fd90e"
+  },
+  "candidate_header_exact": {
+    "path": "/workspace/virtual-instrument-keyra/src/full_instrument/profiles/confidence_grand/PreparedCalibration.h",
+    "sha256": "fdeee2144dc45bd7b56078c146a6444710c038b62610e9be156adbc321908b63"
+  },
+  "candidate_model": {
+    "path": "/workspace/virtual-instrument-keyra/src/full_instrument/profiles/confidence_grand/PreparedModel.h",
+    "sha256": "68d04ecff615c89d743467ad19e3a14fb5a381d41f875876b2cbf83d86324386"
+  },
+  "profile_provenance": {
+    "path": "/workspace/virtual-instrument-keyra/src/full_instrument/profiles/confidence_grand/profile_provenance.json",
+    "sha256": "0454a73c1b182d542fe0b1cb8a72e5ed03f76bbb79ab8b4f194ded1393186d4c"
+  },
+  "profile_selection": {
+    "default": "OriginalControl",
+    "candidate": "FrozenConfidenceGrand",
+    "runtime_switching": false,
+    "shared_cpp_runtime": {
+      "path": "/workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp",
+      "sha256": "b5e70ee79dff7573c02bb7dd051eda87518ff783e35491ba485117cb795a8f0f"
+    },
+    "private_selector": {
+      "path": "/workspace/virtual-instrument-keyra/src/full_instrument/SelectedModel.h",
+      "sha256": "cbd3b19bb182c89d206d1e88a194bd092957d02a7e13f057979264355e5156b9"
+    },
+    "cmake_resolver": {
+      "path": "/workspace/virtual-instrument-keyra/src/full_instrument/FullModelProfile.cmake",
+      "sha256": "9dcdd95eb113f77c3f0e12cc53ca0f95dbbb75583782309c02ad45782bf5bd82"
+    }
+  },
+  "checks": {
+    "candidate_api_frozen_cli_float32_exact_48_96_legacy_and_fast_contact": true,
+    "both_profiles_native_scalar_behavior_passed": true,
+    "candidate_api_and_private_profile_asan_ubsan_passed": true,
+    "default_original_control_cli_float32_exact_48_96_after_selector": true,
+    "default_model_and_calibration_bytes_unchanged": true,
+    "numeric_candidate_bytes_match_frozen_train_fit": true,
+    "no_public_control_api_change": true,
+    "new_fit_acquisition_or_audio_decode": false,
+    "candidate_promoted": false
+  },
+  "limits": [
+    "Engineering opt-in fidelity integration, not a default calibration promotion or listening verdict.",
+    "Historical recording regression remains observed; no fresh/instrument/microphone generalization.",
+    "No realtime callback or actual Reason SDK/host qualification."
+  ],
+  "current_source_guard_recheck": [
+    {
+      "receipt": "Validation/full-profile-api-parity.json",
+      "freeze": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-api-parity/v1/freeze.json",
+        "sha256": "634338fad76ea0f77abfaa3df047ad873b8ef934f231fbbfaa169f334f1ea6f9"
+      },
+      "all_current_frozen_inputs_verified": true,
+      "frozen_input_count": 20
+    },
+    {
+      "receipt": "Validation/full-profile-integration.json",
+      "freeze": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-profile-integration/freeze.json",
+        "sha256": "a02940b3653119377c5a223cefd560707811998c892642739fcb9c82572c2826"
+      },
+      "all_current_frozen_inputs_verified": true,
+      "frozen_input_count": 22
+    }
+  ]
+}

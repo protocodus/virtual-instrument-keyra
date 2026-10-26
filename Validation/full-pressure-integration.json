@@ -1,0 +1,530 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-10-26T16:52:05.723567+00:00",
+  "passed": true,
+  "decision": "Keep pressure SIMD as a validated experimental explicit option, default OFF. Mixed timings include a 12.16% median regression for 48 kHz repetition/pedal; no universal speedup, inaudibility, SDK-compiler or real-time claim.",
+  "default_option": "OFF",
+  "topology": {
+    "strings": 230,
+    "string_modes": 17778,
+    "board_modes": 475
+  },
+  "allowed_change": "Only float pressure observer sums in Modes::portImpulseRadiation and radiation reassociate. All per-mode updates and other mechanical arithmetic retain original expressions.",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "source_sha256": {
+    "CMakeLists.txt": "7e4edd1352d99affe0561a3cc3f194d0299012f4ee11c19543272b0c5ba8f5e8",
+    "include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "src/full_instrument/FullInstrument.cpp": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199",
+    "src/full_instrument/PreparedModel.h": "5c8c92f8a761b46a66f3823765f6348ab0c08b74457d7efc062f0941ab07faf8",
+    "src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "src/full_instrument/generate_prepared_model.py": "118d5e8a8bd39fe124f21f4a1fc7b409e826bc9d8e15927832b77db340f89220",
+    "src/full_instrument/prepared_model_provenance.json": "d8ff41d328277c2535e3da6b2e1ce9528b37ec3953eb65fdaccfe43de15b6b7e",
+    "src/full_instrument/check_cli_parity.py": "52e6673fe7143b0bacc1e3319e01fd25481f93ea4ddb1db1f4987c1582ed47ae",
+    "tests/full_instrument_tests.cpp": "7fce4176f6612c3a341031169da2560c071bb94a5adf0def71ca4446e7f3f54e",
+    "docs/FULL_BACKEND.md": "28c9f67fd4159ec44b02d51f5bf62de6328ebb46614a51095f2a91ec47cd0be6",
+    "docs/FULL_RADIATION_SIMD.md": "5dd61b3c6dc4e5d6458695498f2c5393012ef051dfd2f1b888118566552a2688",
+    "src/full_reference/grand.cpp": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+    "src/full_reference/calibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "tools/probe_full_precision.py": "280d77738d50f23b0fbcd14822edb50a1bda22428fafa43e16f45a493426f961"
+  },
+  "baseline": {
+    "manifest": {
+      "path": "out/full-pressure-integration/baseline/sha256.json",
+      "sha256": "5f1cb3fbcb3c89e358edef2d951571bd9b33ed322ea128529fd941d524ce469e"
+    },
+    "file_count": 17,
+    "prior_reports_and_exact_sources_preserved": true
+  },
+  "build_policy": {
+    "option": "KEYRA_FULL_PRESSURE_SIMD",
+    "default": "OFF",
+    "explicit_on_requires": "GNU/Clang, NOT MSVC, accepted -fopenmp-simd compiler flag",
+    "optimized_macro": "KEYRA_FULL_PRESSURE_SIMD=1",
+    "fallback": "macro0 or undefined; compiler guard rejects unsupported compilers",
+    "scalar_compatibility_always_fallback": true,
+    "conflicting_global_macro_overridden_by_target_U_D_options": true,
+    "openmp_runtime_added": false,
+    "global_fast_math_added": false,
+    "fma_enabled": false,
+    "unsupported_sdk_compiler_tested": false
+  },
+  "tests": [
+    {
+      "name": "full_instrument",
+      "pressure_option": "ON",
+      "passed": true,
+      "seconds": 13.6133
+    },
+    {
+      "name": "full_sdk_portable",
+      "pressure_option": "ON",
+      "passed": true,
+      "seconds": 9.39993
+    },
+    {
+      "name": "full_instrument",
+      "pressure_option": "OFF",
+      "passed": true,
+      "seconds": 14.0621
+    },
+    {
+      "name": "full_sdk_portable",
+      "pressure_option": "OFF",
+      "passed": true,
+      "seconds": 9.58947
+    },
+    {
+      "name": "full_instrument",
+      "pressure_option": "ON with ASan/UBSan",
+      "passed": true,
+      "seconds": 86.9121
+    }
+  ],
+  "build_evidence": [
+    {
+      "path": "out/full-pressure-integration/on-checks.json",
+      "sha256": "760eb4d5e7fc107312673b19a137ec4c6c9eb464a971edc82089930c70ad531f"
+    },
+    {
+      "path": "out/full-pressure-integration/off-checks.json",
+      "sha256": "bd67e702edf7c1e4b406dbce80c0d252beee0a2c2aa4050934a968a92296bf84"
+    },
+    {
+      "path": "out/full-pressure-integration/asan-checks.json",
+      "sha256": "eaf42cf24811f12f0c7cc702f00d32851b743b579f4e2dd0aa8b43f4d5b0da67"
+    }
+  ],
+  "default_only_followup": {
+    "evidence": {
+      "path": "out/full-pressure-integration/default-off-checks.json",
+      "sha256": "2698d7d8853f72dfd8203e5919131cb6a3cf736c08a6a37b54bf0be448989a5b"
+    },
+    "validated_explicit_matrix_cmake_sha256": "6cd091c1426cbb510a0cad1a6b79d139f188872c5d9950d44ae03ffd9da369e9",
+    "current_cmake_sha256": "7e4edd1352d99affe0561a3cc3f194d0299012f4ee11c19543272b0c5ba8f5e8",
+    "only_delta": "option default and description; fresh default configure selects native/scalar macro0 without OpenMP SIMD flag",
+    "no_repeated_dsp_tests_required": true
+  },
+  "guard_generation_and_structure": {
+    "generation_and_unavailable_flag_fallback": {
+      "path": "out/full-pressure-integration/guard-and-generation-checks.json",
+      "sha256": "fa868fe5a94940017e6f41e030729010040622abfe574b93fd693ec796490b9d"
+    },
+    "selector_preprocessed_identity": {
+      "path": "out/full-pressure-integration/selector-preprocessing-checks.json",
+      "sha256": "d03eddd10f18fecf58fafd45fcc78059a9ca6e25f51be291a5d4651b162b7da4"
+    },
+    "fallback_original_header_identity": {
+      "path": "out/full-pressure-integration/structural-checks.json",
+      "sha256": "8fe29b452061173c9bebe1d7c33cfe7c40ed148d95d959bedf25490996763c58"
+    },
+    "generated_artifacts_reproduced_byte_identically": true,
+    "fallback_reproduces_entire_former_header_except_comment": true
+  },
+  "mechanical_comparison": {
+    "report": {
+      "path": "out/full-pressure-integration/comparison/report.json",
+      "sha256": "72802b4528499bf0b7d4690d6d820b62d9992ffbe623f44c3360578fb69829b5"
+    },
+    "checkpoint_triplets": 40,
+    "pairwise_comparisons": 80,
+    "all_byte_identical": true,
+    "sample_rates": [
+      48000,
+      96000
+    ],
+    "cases": [
+      "music",
+      "repeats-pedal",
+      "touching",
+      "dense-88-tail"
+    ],
+    "former_off_pressure_and_output_bytes_identical": true,
+    "touching_requests_launches": {
+      "requests": 3,
+      "launches": 3,
+      "all_arms_and_rates": true
+    },
+    "observer_caches_and_output_filter_state_excluded": true,
+    "snapshot_scope": "All string q/p/damp and bridge velocity/force; board q/p/force; hammer/contact/damper/pedal/counters; controller pending/recovery/RNG state; mechanical source x/v. Individually serialized fields, no padding."
+  },
+  "optimized_pressure_difference_limits": {
+    "pressure_null_db_relative_fallback_range": [
+      -139.11593026614887,
+      -127.34896268370917
+    ],
+    "output_null_db_relative_fallback_range": [
+      -138.6899134234731,
+      -127.29071364722569
+    ],
+    "maximum_absolute_pressure_difference": 2.4596847651991993e-06,
+    "maximum_absolute_output_difference": 2.384185791015625e-06,
+    "maximum_absolute_welch_band_power_change_db": 0.000229337193874698,
+    "maximum_absolute_stereo_correlation_change": 1.8740778928716395e-08,
+    "maximum_absolute_channel_balance_change_db": 1.1718312120656549e-07
+  },
+  "per_case_signal_summary": [
+    {
+      "rate": 48000,
+      "case": "music",
+      "pressure_null_db": -132.1994372288678,
+      "output_null_db": -132.0869443568658,
+      "max_pressure_abs": 7.152586578573761e-07,
+      "max_band_power_change_db": 0.000229337193874698,
+      "max_stereo_corr_change": 3.3121245746059458e-09
+    },
+    {
+      "rate": 48000,
+      "case": "repeats-pedal",
+      "pressure_null_db": -138.9509442502629,
+      "output_null_db": -138.54618970811606,
+      "max_pressure_abs": 3.576228970736395e-07,
+      "max_band_power_change_db": 2.3482067185524115e-05,
+      "max_stereo_corr_change": 5.095828203849351e-10
+    },
+    {
+      "rate": 48000,
+      "case": "touching",
+      "pressure_null_db": -139.11593026614887,
+      "output_null_db": -138.6899134234731,
+      "max_pressure_abs": 2.3841896523713046e-07,
+      "max_band_power_change_db": 0.00011069125999909494,
+      "max_stereo_corr_change": 3.5590441704869136e-10
+    },
+    {
+      "rate": 48000,
+      "case": "dense-88-tail",
+      "pressure_null_db": -127.50686706675852,
+      "output_null_db": -127.43917598591929,
+      "max_pressure_abs": 2.112392394337803e-06,
+      "max_band_power_change_db": 0.00010422834809425842,
+      "max_stereo_corr_change": 1.186738274316923e-08
+    },
+    {
+      "rate": 96000,
+      "case": "music",
+      "pressure_null_db": -131.74647654254173,
+      "output_null_db": -131.64617193545556,
+      "max_pressure_abs": 1.0281804894152202e-06,
+      "max_band_power_change_db": 2.751593555205476e-05,
+      "max_stereo_corr_change": 7.094777543237285e-09
+    },
+    {
+      "rate": 96000,
+      "case": "repeats-pedal",
+      "pressure_null_db": -138.95825114831814,
+      "output_null_db": -138.5521097017664,
+      "max_pressure_abs": 4.172373169186727e-07,
+      "max_band_power_change_db": 3.968559681284327e-05,
+      "max_stereo_corr_change": 2.481009842014714e-10
+    },
+    {
+      "rate": 96000,
+      "case": "touching",
+      "pressure_null_db": -139.04471185273292,
+      "output_null_db": -138.6454911688965,
+      "max_pressure_abs": 2.6822399193382473e-07,
+      "max_band_power_change_db": 3.371645567365968e-05,
+      "max_stereo_corr_change": 4.19670742601852e-10
+    },
+    {
+      "rate": 96000,
+      "case": "dense-88-tail",
+      "pressure_null_db": -127.34896268370917,
+      "output_null_db": -127.29071364722569,
+      "max_pressure_abs": 2.4596847651991993e-06,
+      "max_band_power_change_db": 9.828090234107109e-05,
+      "max_stereo_corr_change": 1.8740778928716395e-08
+    }
+  ],
+  "optimized_short_count_sanitizer": {
+    "passed": true,
+    "counts": [
+      0,
+      1,
+      3,
+      4,
+      5,
+      7,
+      16,
+      17
+    ],
+    "flags": [
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-fopenmp-simd",
+      "-DKEYRA_FULL_PRESSURE_SIMD=1",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer"
+    ],
+    "stdout": "pressure kernel short-count/empty/tail states and finite outputs passed"
+  },
+  "actual_cli_parity_OFF_only": [
+    {
+      "path": "out/full-pressure-integration/cli-off-48000/report.json",
+      "sha256": "aa2869f9bf19c9b56e08ac073438e6ba373ee756aa8a1afd3417448b32c0abe9",
+      "sample_rate": 48000,
+      "frames": 8192,
+      "pressure_macro": "undefined; fallback selected",
+      "bit_identical_float32": true,
+      "audio_sha256": "cdbc4cf58ed39c25938868bc3151b5a77f45fb87adb684361bb566f5fd655656",
+      "private_fault_and_reset_checks": true
+    },
+    {
+      "path": "out/full-pressure-integration/cli-off-96000/report.json",
+      "sha256": "8df8cf4f2d2d642d7265777bdeb43b5c34c7a4b29eadc1f1cb735f353e9d2e85",
+      "sample_rate": 96000,
+      "frames": 8192,
+      "pressure_macro": "undefined; fallback selected",
+      "bit_identical_float32": true,
+      "audio_sha256": "1200754723f12bf41926448cff98209f8f0f9e24597b3ba2bdf11f2b6a728639",
+      "private_fault_and_reset_checks": true
+    }
+  ],
+  "current_timing": {
+    "balanced_report": {
+      "path": "out/full-pressure-integration/balanced-countercheck.json",
+      "sha256": "296d8c5416100653cac783880c71cc617f241a0f34f39b8df80b1ec3e5f50798"
+    },
+    "summary": {
+      "path": "out/full-pressure-integration/balanced-countercheck-summary.json",
+      "sha256": "35b4967c571c3f48dfbeefef1db8fe62aa522fcae72a74bb9de9eeff5b9cbd72"
+    },
+    "initial_mixed_report_retained": {
+      "path": "out/full-pressure-integration/comparison/report.json",
+      "sha256": "72802b4528499bf0b7d4690d6d820b62d9992ffbe623f44c3360578fb69829b5"
+    },
+    "trial_orders": {
+      "0": [
+        "off",
+        "on"
+      ],
+      "1": [
+        "on",
+        "off"
+      ],
+      "2": [
+        "off",
+        "on"
+      ]
+    },
+    "paired_measurements": 24,
+    "improvements": 17,
+    "regressions": 7,
+    "all_regressions_retained": true,
+    "same_arm_audio_pressure_bytes_identical_all_trials": true,
+    "rows": [
+      {
+        "sample_rate": 48000,
+        "case": "music",
+        "off_cpu_seconds_per_audio_second": [
+          3.8691292640625012,
+          3.8232993750000013,
+          4.406003304687498
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          4.670322171874998,
+          2.92263271875,
+          2.6592608109375
+        ],
+        "paired_speedup": [
+          0.8284501843069123,
+          1.3081696343409217,
+          1.6568526436239994
+        ],
+        "regression_trials": [
+          0
+        ],
+        "median_cpu_reduction_fraction": 0.24462779109083077
+      },
+      {
+        "sample_rate": 48000,
+        "case": "repeats-pedal",
+        "off_cpu_seconds_per_audio_second": [
+          3.8916232406250013,
+          3.5217771921874994,
+          3.5641373421874962
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          7.240186998437495,
+          3.077787573437501,
+          3.9974315765624997
+        ],
+        "paired_speedup": [
+          0.5375031392787027,
+          1.1442560957038754,
+          0.8916068415240755
+        ],
+        "regression_trials": [
+          0,
+          2
+        ],
+        "median_cpu_reduction_fraction": -0.12157057733052135
+      },
+      {
+        "sample_rate": 48000,
+        "case": "touching",
+        "off_cpu_seconds_per_audio_second": [
+          4.120657531999997,
+          3.5602949840000018,
+          3.504495328
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          5.171934700000002,
+          2.7865637920000004,
+          2.8284647800000013
+        ],
+        "paired_speedup": [
+          0.7967342534313118,
+          1.277664984459111,
+          1.239009710419657
+        ],
+        "regression_trials": [
+          0
+        ],
+        "median_cpu_reduction_fraction": 0.20555324974162315
+      },
+      {
+        "sample_rate": 48000,
+        "case": "dense-88-tail",
+        "off_cpu_seconds_per_audio_second": [
+          3.5988615187500024,
+          3.661665046875002,
+          3.580516918750001
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          6.920380084374994,
+          3.004762784375,
+          2.891984734375
+        ],
+        "paired_speedup": [
+          0.5200381301130557,
+          1.21862034031969,
+          1.238082924916892
+        ],
+        "regression_trials": [
+          0
+        ],
+        "median_cpu_reduction_fraction": 0.16507963178904184
+      },
+      {
+        "sample_rate": 96000,
+        "case": "music",
+        "off_cpu_seconds_per_audio_second": [
+          7.420813870312501,
+          7.141643064062497,
+          6.956864304687489
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          9.475627251562516,
+          6.422160400000005,
+          5.678275179687497
+        ],
+        "paired_speedup": [
+          0.7831475081598235,
+          1.1120312510510468,
+          1.2251720961981203
+        ],
+        "regression_trials": [
+          0
+        ],
+        "median_cpu_reduction_fraction": 0.1007446966487312
+      },
+      {
+        "sample_rate": 96000,
+        "case": "repeats-pedal",
+        "off_cpu_seconds_per_audio_second": [
+          8.417214271875002,
+          7.633188562499998,
+          7.488636517187498
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          5.774110137500003,
+          5.792232506249997,
+          6.764196096874993
+        ],
+        "paired_speedup": [
+          1.457750903850853,
+          1.3178318643568872,
+          1.1070992635247803
+        ],
+        "regression_trials": [],
+        "median_cpu_reduction_fraction": 0.24117785656366086
+      },
+      {
+        "sample_rate": 96000,
+        "case": "touching",
+        "off_cpu_seconds_per_audio_second": [
+          7.346703820000001,
+          6.970536427999998,
+          7.061154183999998
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          5.646990028000001,
+          5.571291063999996,
+          6.017892163999997
+        ],
+        "paired_speedup": [
+          1.3009946508798758,
+          1.251152802452111,
+          1.173360038958651
+        ],
+        "regression_trials": [],
+        "median_cpu_reduction_fraction": 0.2002737964856195
+      },
+      {
+        "sample_rate": 96000,
+        "case": "dense-88-tail",
+        "off_cpu_seconds_per_audio_second": [
+          7.673835306249997,
+          7.1711823000000035,
+          7.0761731437499975
+        ],
+        "on_cpu_seconds_per_audio_second": [
+          9.886865087500011,
+          5.798363868749996,
+          6.048078287499998
+        ],
+        "paired_speedup": [
+          0.7761646627455296,
+          1.2367596208731824,
+          1.169987028503721
+        ],
+        "regression_trials": [
+          0
+        ],
+        "median_cpu_reduction_fraction": 0.1566135074407472
+      }
+    ],
+    "scope": "All three pairs retained, including initial mixed/regressive pair. Exactly two authorized additional pairs; no tuning, recompilation, case selection, discarded measurements, inaudibility, SDK or realtime claim. The same copied-source pressure capture and schedules run in every arm. Mechanical snapshot writes and final I/O stay outside measured callback CPU; exact existing binaries retained.",
+    "decision": "Seven of eight case/rate medians improve 10.1\u201324.5%; 48 kHz repetition/pedal median regresses 12.16%. Keep default OFF and preserve explicit ON for measured workloads. No universal current CPU-gain claim."
+  },
+  "historical_timing": {
+    "report": {
+      "path": "Validation/full-radiation-simd.json",
+      "sha256": "2653bc2c459874e4c6226150abe9e59c9aee12545327bea9836f64fa88772ec9"
+    },
+    "scope": "Original three-pair study uses the former controller/source hashes and remains historical. No substitution for current integrated measurements."
+  },
+  "research": {
+    "unchanged_from_head": true,
+    "no_untracked_files": true
+  },
+  "documentation": [
+    {
+      "path": "docs/FULL_BACKEND.md",
+      "sha256": "28c9f67fd4159ec44b02d51f5bf62de6328ebb46614a51095f2a91ec47cd0be6"
+    },
+    {
+      "path": "docs/FULL_RADIATION_SIMD.md",
+      "sha256": "5dd61b3c6dc4e5d6458695498f2c5393012ef051dfd2f1b888118566552a2688"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "scope": "Current default fast-contact offline renderer; focused touching-note, seed/block partition, metadata and finite-output checks. Initial control/invalid-input checks remain in full-renderer.json. No callback timing qualification.",
+  "source_sha256": {
+    "CMakeLists.txt": "05abb0d958ac8f03a1a260621c16de8bdc255d4c2a049c89014b23c96afd8219",
+    "tools/render_full.cpp": "3b7ec376c71d7105ed7109209ac7c50ad903e980bbd0e5612d08a8d8123411f1",
+    "include/keyra/FullInstrument.h": "b9d4b4ec99b8225fc146d1bcb3f63dec995791041b3403a422d134229d412029",
+    "include/keyra/physics/StrikeController.h": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+    "include/keyra/physics/MechanismExciter.h": "65d6630290488d744fe00b7056998a4100db8768b1f9ad44df16b46d4c91da27",
+    "include/keyra/physics/ContactSolver.h": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+    "src/full_instrument/PreparedModel.h": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36",
+    "src/full_instrument/PreparedCalibration.h": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+    "src/full_instrument/FullInstrument.cpp": "6b4bc94b4d6ebdbf554df8157d5cdf7318c942676467fe4b0cb1e94b9485f199"
+  },
+  "source_snapshot": "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/sources",
+  "binary_sha256": "0c4f7d4a3a658c7dd824ce636c524552d6bbf021e893be1ca9b28bcf21e554d1",
+  "event_sha256": "a6487f68360e5ac3424a6eec1b8c24d5291a6cc61d95772060a398c701a8deff",
+  "variants": {
+    "block64": {
+      "command": [
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/keyra_full_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/touching.events",
+        "--seconds",
+        ".35",
+        "--seed",
+        "123456",
+        "--param",
+        "gain=-6",
+        "--output",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/block64.wav",
+        "--report",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/block64.json",
+        "--block",
+        "64"
+      ],
+      "wav_sha256": "94ba409675d6e58a03551648e35393f4ec12d976b9a9e689830af6abcc9c5d81",
+      "report_sha256": "701cfde5cd1818494519d860c262b03bbd7baa07ea7ba00b04170c89ae0deb93",
+      "diagnostics": {
+        "engine": "FullInstrument, original control calibration",
+        "sample_rate": 48000,
+        "frames": 16800,
+        "block_frames": 64,
+        "seed": 123456,
+        "pressure_simd": false,
+        "fast_contact": true,
+        "peak": 0.5085902810096741,
+        "rms": 0.13740380251840162,
+        "render_wall_seconds": 2.806704472,
+        "render_process_cpu_seconds": 2.224535,
+        "events_applied": 7,
+        "events_after_render": 0,
+        "events_rejected": 0,
+        "requests": 3,
+        "launches": 3,
+        "deferred_requests": 2,
+        "coalesced": 0,
+        "cancelled": 0,
+        "expired": 0,
+        "fault_flags": 0,
+        "unsafe_launches": 0,
+        "topology": {
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475
+        },
+        "parameters": {
+          "dynamics": 0.5,
+          "humanization": 0.65,
+          "mechanicalLevel": 0.025,
+          "width": 1,
+          "gain_db": -6
+        },
+        "isolation": {
+          "mechanism_body_coupling": true,
+          "direct_mechanism_observation": true,
+          "repetition_controller": true
+        },
+        "limits": "Offline render includes event dispatch and collection; timing is not callback qualification. No automatic gain or room."
+      }
+    },
+    "block17": {
+      "command": [
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/keyra_full_render",
+        "--events",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/touching.events",
+        "--seconds",
+        ".35",
+        "--seed",
+        "123456",
+        "--param",
+        "gain=-6",
+        "--output",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/block17.wav",
+        "--report",
+        "/workspace/virtual-instrument-keyra/out/full-render-validation/v2/block17.json",
+        "--block",
+        "17"
+      ],
+      "wav_sha256": "94ba409675d6e58a03551648e35393f4ec12d976b9a9e689830af6abcc9c5d81",
+      "report_sha256": "46291a430aa4f05dcab3b2095b51009a2cb374fd9bc8711663e072d58330b8a2",
+      "diagnostics": {
+        "engine": "FullInstrument, original control calibration",
+        "sample_rate": 48000,
+        "frames": 16800,
+        "block_frames": 17,
+        "seed": 123456,
+        "pressure_simd": false,
+        "fast_contact": true,
+        "peak": 0.5085902810096741,
+        "rms": 0.13740380251840162,
+        "render_wall_seconds": 2.842160852,
+        "render_process_cpu_seconds": 2.256499,
+        "events_applied": 7,
+        "events_after_render": 0,
+        "events_rejected": 0,
+        "requests": 3,
+        "launches": 3,
+        "deferred_requests": 2,
+        "coalesced": 0,
+        "cancelled": 0,
+        "expired": 0,
+        "fault_flags": 0,
+        "unsafe_launches": 0,
+        "topology": {
+          "strings": 230,
+          "string_modes": 17778,
+          "board_modes": 475
+        },
+        "parameters": {
+          "dynamics": 0.5,
+          "humanization": 0.65,
+          "mechanicalLevel": 0.025,
+          "width": 1,
+          "gain_db": -6
+        },
+        "isolation": {
+          "mechanism_body_coupling": true,
+          "direct_mechanism_observation": true,
+          "repetition_controller": true
+        },
+        "limits": "Offline render includes event dispatch and collection; timing is not callback qualification. No automatic gain or room."
+      }
+    }
+  },
+  "block_partition_audio_identical": true,
+  "initial_smoke_report": "Validation/full-renderer.json",
+  "initial_smoke_report_sha256": "d1d37764f8b667490ba3c5680a90601d6f810d62d49b2b8f0c56ec7d38b759c7",
+  "vs_initial_block64_wav_identical": true
+}

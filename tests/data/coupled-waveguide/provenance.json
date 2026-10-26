@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "purpose": "Numeric fixtures for bounded coupled-waveguide tests; copied byte-for-byte from the frozen 32-section feasibility study",
+  "source_provenance": "Validation/waveguide-provenance.json",
+  "source_provenance_sha256": "673b18533f54ee20968286b79129345fd82eb999aa30d62cd76cda8e02ce60d5",
+  "source_fit_report": "Validation/waveguide-s32-fit-report.json",
+  "source_fit_report_sha256": "f2b8a956780ca9c5b9d43cb2bdfaf468228784c504f0c5a2da71acf3574c8cd5",
+  "limits": "One polarization at 48 kHz, fixed .12 hammer position, original authored loss prior. These coefficients are not a full-keyboard or coupled-piano equivalence fit.",
+  "files": [
+    {
+      "file": "tests/data/coupled-waveguide/C2-s32.cfg",
+      "sha256": "97e3329bc2d885d09bd80cd303a99ee3bc6facb862adf5f1b339c57592f9fadd",
+      "frozen_source": "out/waveguide-study/sections32/C2-s32.cfg",
+      "source_sha256": "97e3329bc2d885d09bd80cd303a99ee3bc6facb862adf5f1b339c57592f9fadd"
+    },
+    {
+      "file": "tests/data/coupled-waveguide/C4-s32.cfg",
+      "sha256": "54d172577bc5e5dd5faa4ade7f52525ebb1fb702341af2db81887dfb5b047648",
+      "frozen_source": "out/waveguide-study/sections32/C4-s32.cfg",
+      "source_sha256": "54d172577bc5e5dd5faa4ade7f52525ebb1fb702341af2db81887dfb5b047648"
+    }
+  ]
+}

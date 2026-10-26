@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "analysis": "Training-only leave-one-pitch-out modal envelope comparison",
+  "engine_source_sha256": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+  "analysis_source_sha256": "ced275824de28306a11cd4c379d6152ca672b2c1cfc4278b78c1f66c20b5b332",
+  "selected_policy": "linear_amplitude_log_loss",
+  "fold_rule": "Predict C3/C4/C5 from adjacent C training pitches at identical source layer; the omitted training fit is not used in prediction.",
+  "gain_rule": "One note-wide power gain from summed partial power in the first two windows, duration weighted; fixed through later windows.",
+  "windows_seconds": [
+    [
+      0.05,
+      0.25
+    ],
+    [
+      0.25,
+      0.75
+    ],
+    [
+      0.75,
+      1.5
+    ],
+    [
+      1.5,
+      3.5
+    ]
+  ],
+  "hann_squared_quadrature_points": 512,
+  "prominent_mask": "Reference partial power greater than 1e-5 of reference early RMS squared.",
+  "synthetic_branch_relabeling": {
+    "passed": true,
+    "legacy_midpoint_onset_amplitude": 2.0000000000000008e-06,
+    "selected_midpoint_onset_amplitude": 1.0,
+    "endpoint_onset_amplitudes": [
+      1.0,
+      1.0
+    ],
+    "limits": "Onset mixture is preserved. This two-branch policy is not invariant to arbitrary unused loss parameters at later times."
+  },
+  "limits": "This compares coherent positive envelopes analytically, not rendered audio; it excludes authored beating, attack, microphones and nonlinear mechanics. Cross-validation reuses training cases and is not a fresh recording held-out result. Linear component amplitudes remove zero-component collapse but do not make arbitrary fitted branch parameters uniquely physical or fully representation invariant.",
+  "families": {
+    "grand": {
+      "feature_source": "Research/GrandPianoV2/benchmark/reference_features.json",
+      "feature_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+      "fit_source": "Validation/live-calibration.json",
+      "fit_sha256": "75eb17e037c42a458dd6b9cd9651c1b12b185c1ee26f64d4879bc73d8dfef4ed",
+      "calibration_header": "src/LiveCalibration.h",
+      "calibration_header_sha256": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+      "training_ids": [
+        "C2v12",
+        "C2v4",
+        "C3v12",
+        "C3v4",
+        "C4v12",
+        "C4v4",
+        "C5v12",
+        "C5v4",
+        "C6v12",
+        "C6v4"
+      ],
+      "all_fitted_training_ids": [
+        "A1v12",
+        "A1v4",
+        "A2v12",
+        "A2v4",
+        "A4v12",
+        "A4v4",
+        "A5v12",
+        "A5v4",
+        "C2v12",
+        "C2v4",
+        "C3v12",
+        "C3v4",
+        "C4v12",
+        "C4v4",
+        "C5v12",
+        "C5v4",
+        "C6v12",
+        "C6v4",
+        "D#2v12",
+        "D#2v4",
+        "D#3v12",
+        "D#3v4",
+        "D#4v12",
+        "D#4v4",
+        "D#5v12",
+        "D#5v4"
+      ],
+      "scope": "C-anchor interpolation diagnostic; additional fitted pitches are not used in these leave-one-C-anchor-out folds.",
+      "folds": [
+        {
+          "excluded_training_case": "C3v4",
+          "predictor_training_cases": [
+            "C2v4",
+            "C4v4"
+          ],
+          "prominent_partial_windows": 58,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 5.525576967607549,
+              "median_error_db": 4.731103255284392,
+              "single_power_gain_db": 0.7068029401922535
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 6.433925485945288,
+              "median_error_db": 4.749684559850049,
+              "single_power_gain_db": -2.0355948986690326
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C3v12",
+          "predictor_training_cases": [
+            "C2v12",
+            "C4v12"
+          ],
+          "prominent_partial_windows": 76,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 5.315884022058546,
+              "median_error_db": 4.384517706705304,
+              "single_power_gain_db": -0.8801040260438968
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 5.432734070157882,
+              "median_error_db": 3.7526514807739604,
+              "single_power_gain_db": -3.9666475787222444
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C4v4",
+          "predictor_training_cases": [
+            "C3v4",
+            "C5v4"
+          ],
+          "prominent_partial_windows": 37,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 5.660295061351108,
+              "median_error_db": 4.23712445252159,
+              "single_power_gain_db": 2.2919214621587134
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 5.189180116679557,
+              "median_error_db": 4.501440625394269,
+              "single_power_gain_db": 0.8982009845105172
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C4v12",
+          "predictor_training_cases": [
+            "C3v12",
+            "C5v12"
+          ],
+          "prominent_partial_windows": 50,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 8.300253102943309,
+              "median_error_db": 4.931793847771166,
+              "single_power_gain_db": 3.803393050798637
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 5.408911966239421,
+              "median_error_db": 4.238177839847786,
+              "single_power_gain_db": 2.4579989633839174
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C5v4",
+          "predictor_training_cases": [
+            "C4v4",
+            "C6v4"
+          ],
+          "prominent_partial_windows": 20,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 5.324554688753153,
+              "median_error_db": 4.582677464770544,
+              "single_power_gain_db": 5.069351603691359
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 8.620060942334813,
+              "median_error_db": 7.181544419823569,
+              "single_power_gain_db": 1.5367152521216454
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C5v12",
+          "predictor_training_cases": [
+            "C4v12",
+            "C6v12"
+          ],
+          "prominent_partial_windows": 25,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 7.925434196403833,
+              "median_error_db": 6.227549015660365,
+              "single_power_gain_db": 1.8861409523044559
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 7.698798665959466,
+              "median_error_db": 5.287444866512281,
+              "single_power_gain_db": -0.5367944605500137
+            }
+          }
+        }
+      ],
+      "pooled_error_db": {
+        "legacy_log_amplitude_log_loss": 6.216395379323319,
+        "linear_amplitude_log_loss": 6.065307953539937
+      },
+      "adjacent_anchor_worst_below_both_endpoints": {
+        "legacy_log_amplitude_log_loss": {
+          "training_endpoints": [
+            "C2v4",
+            "C3v4"
+          ],
+          "semitones_above_low": 10,
+          "partial": 1,
+          "seconds": 0.6019249640769385,
+          "relative_to_smaller_endpoint_db": -7.239701016481939
+        },
+        "linear_amplitude_log_loss": {
+          "training_endpoints": [
+            "C3v4",
+            "C4v4"
+          ],
+          "semitones_above_low": 4,
+          "partial": 13,
+          "seconds": 0.6019249640769385,
+          "relative_to_smaller_endpoint_db": -1.7059228246866418
+        }
+      }
+    },
+    "upright": {
+      "feature_source": "References/Upright/train_features.json",
+      "feature_sha256": "e9e16438691f69efb75bea8c7a957579999f53403cdecd0140e1cc808d883e38",
+      "fit_source": "Validation/upright-calibration.json",
+      "fit_sha256": "6554966fd6c501edf9b5d638ab0890c6c9f26bd471589dc87e26c4fcfb001704",
+      "calibration_header": "src/UprightCalibration.h",
+      "calibration_header_sha256": "21cf33bc990ac09e16e9137b5c2e4491f2fdf2d58292df464dcefa4e96e42dd3",
+      "training_ids": [
+        "C2v12",
+        "C2v4",
+        "C3v12",
+        "C3v4",
+        "C4v12",
+        "C4v4",
+        "C5v12",
+        "C5v4",
+        "C6v12",
+        "C6v4"
+      ],
+      "all_fitted_training_ids": [
+        "C2v12",
+        "C2v4",
+        "C3v12",
+        "C3v4",
+        "C4v12",
+        "C4v4",
+        "C5v12",
+        "C5v4",
+        "C6v12",
+        "C6v4"
+      ],
+      "scope": "C-anchor interpolation diagnostic; additional fitted pitches are not used in these leave-one-C-anchor-out folds.",
+      "folds": [
+        {
+          "excluded_training_case": "C3v4",
+          "predictor_training_cases": [
+            "C2v4",
+            "C4v4"
+          ],
+          "prominent_partial_windows": 26,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 7.649681775017839,
+              "median_error_db": 6.045351361586353,
+              "single_power_gain_db": -8.307893198503816
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 7.002225770116515,
+              "median_error_db": 4.9658781809316,
+              "single_power_gain_db": -11.666897412834434
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C3v12",
+          "predictor_training_cases": [
+            "C2v12",
+            "C4v12"
+          ],
+          "prominent_partial_windows": 105,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 10.013998409908998,
+              "median_error_db": 5.28751776159546,
+              "single_power_gain_db": 2.9347142210938273
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 9.540730446891033,
+              "median_error_db": 6.4952240062849835,
+              "single_power_gain_db": -1.2579747301943756
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C4v4",
+          "predictor_training_cases": [
+            "C3v4",
+            "C5v4"
+          ],
+          "prominent_partial_windows": 31,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 15.554398843936726,
+              "median_error_db": 9.135057391525645,
+              "single_power_gain_db": 9.896680812585595
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 16.37042726591499,
+              "median_error_db": 13.052687030639374,
+              "single_power_gain_db": 3.9442002292928358
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C4v12",
+          "predictor_training_cases": [
+            "C3v12",
+            "C5v12"
+          ],
+          "prominent_partial_windows": 55,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 19.102669995936647,
+              "median_error_db": 10.214724273975289,
+              "single_power_gain_db": 1.8350369637485906
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 5.278760735094141,
+              "median_error_db": 4.202579981004381,
+              "single_power_gain_db": -1.4892654283699986
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C5v4",
+          "predictor_training_cases": [
+            "C4v4",
+            "C6v4"
+          ],
+          "prominent_partial_windows": 15,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 12.253263165265349,
+              "median_error_db": 12.275723570729713,
+              "single_power_gain_db": 12.667554218411937
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 14.261039447496705,
+              "median_error_db": 13.937288066971439,
+              "single_power_gain_db": 6.279830713936575
+            }
+          }
+        },
+        {
+          "excluded_training_case": "C5v12",
+          "predictor_training_cases": [
+            "C4v12",
+            "C6v12"
+          ],
+          "prominent_partial_windows": 27,
+          "policies": {
+            "legacy_log_amplitude_log_loss": {
+              "mean_error_db": 9.003043541019455,
+              "median_error_db": 6.961969309899898,
+              "single_power_gain_db": 9.683732119966608
+            },
+            "linear_amplitude_log_loss": {
+              "mean_error_db": 9.650609638144799,
+              "median_error_db": 6.965998665845577,
+              "single_power_gain_db": 4.223753690988349
+            }
+          }
+        }
+      ],
+      "pooled_error_db": {
+        "legacy_log_amplitude_log_loss": 12.394115429405284,
+        "linear_amplitude_log_loss": 9.48313399444977
+      },
+      "adjacent_anchor_worst_below_both_endpoints": {
+        "legacy_log_amplitude_log_loss": {
+          "training_endpoints": [
+            "C2v12",
+            "C3v12"
+          ],
+          "semitones_above_low": 6,
+          "partial": 1,
+          "seconds": 1.9501613423656101,
+          "relative_to_smaller_endpoint_db": -92.35814170866895
+        },
+        "linear_amplitude_log_loss": {
+          "training_endpoints": [
+            "C2v4",
+            "C3v4"
+          ],
+          "semitones_above_low": 8,
+          "partial": 2,
+          "seconds": 3.747117522103561,
+          "relative_to_smaller_endpoint_db": -16.902614852235377
+        }
+      }
+    }
+  }
+}

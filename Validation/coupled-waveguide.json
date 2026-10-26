@@ -1,0 +1,811 @@
+{
+  "schema": "keyra.coupled-waveguide.v1",
+  "created_utc": "2026-10-26T18:04:49.645181+00:00",
+  "status": "bounded passive interface proof; not adopted as full piano representation",
+  "scope": {
+    "sample_rate": 48000,
+    "tested_notes": [
+      36,
+      60
+    ],
+    "active_keys_per_case": 1,
+    "polarizations": 1,
+    "board_modes": 475,
+    "choir_lines": "original per-key count, identical string configurations",
+    "default_backend_changed": false,
+    "Research_changed": false,
+    "fidelity_or_realtime_claim": false
+  },
+  "tests": {
+    "native": {
+      "exit_code": 0,
+      "command": [
+        "g++",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-Iinclude",
+        "tests/coupled_waveguide_tests.cpp",
+        "-o",
+        "out/coupled-waveguide/coupled_waveguide_tests"
+      ],
+      "run": [
+        "out/coupled-waveguide/coupled_waveguide_tests",
+        "/workspace/virtual-instrument-keyra/tests/data/coupled-waveguide"
+      ],
+      "log": "out/coupled-waveguide/native-tests.log"
+    },
+    "address_undefined_sanitizer": {
+      "exit_code": 0,
+      "command": [
+        "g++",
+        "-O1",
+        "-g",
+        "-std=c++17",
+        "-ffp-contract=off",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-Iinclude",
+        "tests/coupled_waveguide_tests.cpp",
+        "-o",
+        "out/coupled-waveguide/coupled_waveguide_tests_asan"
+      ],
+      "run": [
+        "out/coupled-waveguide/coupled_waveguide_tests_asan",
+        "/workspace/virtual-instrument-keyra/tests/data/coupled-waveguide"
+      ],
+      "runtime_environment": {
+        "ASAN_OPTIONS": "detect_leaks=1"
+      },
+      "log": "out/coupled-waveguide/asan-tests.log"
+    },
+    "runtime_allocations": 0,
+    "runtime_locks_io": "No runtime locks or I/O in header network by source inspection; not intercepted by allocation counter",
+    "observation_isolation": "exact mechanical trajectory equality",
+    "coupling_isolation": "board-driven unstruck string energy exactly zero when disconnected",
+    "persistent_touching_10hz": {
+      "requests": 3,
+      "launches": 3,
+      "partial_launches": 2,
+      "event_string_board_energy_delta_j": 0,
+      "final_C4_global_residual_j": -4.4408920985e-16
+    },
+    "cmake": {
+      "report": "Validation/coupled-waveguide-cmake.json",
+      "sha256": "9eb80df94cc3f3bbcd397cd965e968cc46ce3c2548d4fee5205a57f7a2fd35ff",
+      "status": "passed parent focused build and two CTest cases",
+      "scope": "standalone waveguide and fixture-backed coupled waveguide, no header changes after receipt"
+    }
+  },
+  "metrics": {
+    "maximum_global_residual_j": 5.737771369140887e-14,
+    "maximum_step_interaction_residual_j": 1.766402508204118e-17,
+    "maximum_normalized_contact_residual": 1.6169001241020308e-14,
+    "maximum_unforced_growth_j": 1.94289029309e-16,
+    "external_board_test_maximum_string_energy_j": 1.42592949357e-11,
+    "external_board_test_maximum_balance_residual_j": 9.87446856235e-24
+  },
+  "probe": {
+    "command": [
+      "out/coupled-waveguide/probe_coupled_waveguide",
+      "out/coupled-waveguide/render",
+      "out/waveguide-study/sections32"
+    ],
+    "compile": [
+      "g++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "-ffp-contract=off",
+      "-Iinclude",
+      "tools/probe_coupled_waveguide.cpp",
+      "-o",
+      "out/coupled-waveguide/probe_coupled_waveguide"
+    ],
+    "input_fixtures": "tests/data/coupled-waveguide are byte-identical to the two frozen out/ study profiles used by the probe",
+    "report": {
+      "schema": 1,
+      "sample_rate": 48000,
+      "seconds_per_case": 1,
+      "scope": "One key per case, 1 polarization, identical choir lines, original 475-mode board; raw board-only pressure, no final radiation calibration",
+      "realtime_claim": false,
+      "cases": [
+        {
+          "name": "C2-connected",
+          "note": 36,
+          "cpu_seconds": 0.185894,
+          "pressure_peak": 101.18254825762833,
+          "pressure_rms": 15.758608236027584,
+          "max_balance_residual_j": 1.4557799410397365e-14,
+          "maximum_interaction_residual_j": 1.496198998029996e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.005543126442876934,
+          "board_loss_j": 0.02780599845533651,
+          "contact_loss_j": 0.007472095808429308,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.004769078334053867,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.4035210539527422e-14,
+          "maximum_string_energy_j": 0.039520267875820074,
+          "maximum_board_energy_j": 0.00437964438044771,
+          "final_energy_j": 0.006154221812652558,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 3.0886281024800214e-05,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-lossless",
+          "note": 36,
+          "cpu_seconds": 0.18576,
+          "pressure_peak": 340.8794235144117,
+          "pressure_rms": 90.51008279792032,
+          "max_balance_residual_j": 5.737771369140887e-14,
+          "maximum_interaction_residual_j": 1.766402508204118e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0,
+          "board_loss_j": 0,
+          "contact_loss_j": 0,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.006030107834061689,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.3697386378825345e-14,
+          "maximum_string_energy_j": 0.045714413019272926,
+          "maximum_board_energy_j": 0.016822781347032568,
+          "final_energy_j": 0.0457144130193304,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 0.00038759676755865436,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-coupling-off",
+          "note": 36,
+          "cpu_seconds": 0.185373,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 3.3362201889985954e-14,
+          "maximum_interaction_residual_j": 1.496198998029996e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.013043674419035079,
+          "board_loss_j": 0,
+          "contact_loss_j": 0.007472095808429308,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.004769078334053867,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.4035210539527422e-14,
+          "maximum_string_energy_j": 0.039520267875820074,
+          "maximum_board_energy_j": 0,
+          "final_energy_j": 0.026459672291849735,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -0.00024769657944021553,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-observer-off",
+          "note": 36,
+          "cpu_seconds": 0.150772,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 1.4557799410397365e-14,
+          "maximum_interaction_residual_j": 1.496198998029996e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.051744520853334613,
+          "external_work_j": 0,
+          "path_loss_j": 0.005543126442876934,
+          "board_loss_j": 0.02780599845533651,
+          "contact_loss_j": 0.007472095808429308,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.004769078334053867,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.4035210539527422e-14,
+          "maximum_string_energy_j": 0.039520267875820074,
+          "maximum_board_energy_j": 0.00437964438044771,
+          "final_energy_j": 0.006154221812652558,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 3.0886281024800214e-05,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-repeat-10hz",
+          "note": 36,
+          "cpu_seconds": 0.189081,
+          "pressure_peak": 132.53602705364955,
+          "pressure_rms": 23.04150554407,
+          "max_balance_residual_j": 2.8255175976710234e-14,
+          "maximum_interaction_residual_j": 1.6425662913155392e-17,
+          "launches": 3,
+          "partial_launches": 2,
+          "launch_work_j": 0.11339218901179227,
+          "external_work_j": 0,
+          "path_loss_j": 0.01141487785704753,
+          "board_loss_j": 0.062344923325375334,
+          "contact_loss_j": 0.018001601875140497,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.008352893412785452,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.473904334981335e-14,
+          "maximum_string_energy_j": 0.05760427467561241,
+          "maximum_board_energy_j": 0.005175415473791725,
+          "final_energy_j": 0.013277892541471752,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0.039351743508573366,
+          "final_contact_displacement_m": -0.0003190118110082292,
+          "requests": 3,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C2-board-source-only",
+          "note": 36,
+          "cpu_seconds": 0.186211,
+          "pressure_peak": 0.038998622174586106,
+          "pressure_rms": 0.0016351715764475337,
+          "max_balance_residual_j": 9.564275832644382e-24,
+          "maximum_interaction_residual_j": 8.077935669463161e-28,
+          "launches": 0,
+          "partial_launches": 0,
+          "launch_work_j": 0,
+          "external_work_j": 3.7184769429184973e-10,
+          "path_loss_j": 2.2990830045161497e-12,
+          "board_loss_j": 3.6706890147031226e-10,
+          "contact_loss_j": 0,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 0,
+          "maximum_string_energy_j": 2.015630266742865e-11,
+          "maximum_board_energy_j": 3.4929051826019674e-10,
+          "final_energy_j": 2.4797098170167293e-12,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.303443672937782e-10,
+          "requests": 0,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-connected",
+          "note": 60,
+          "cpu_seconds": 0.189528,
+          "pressure_peak": 134.31882703213503,
+          "pressure_rms": 13.200086042218189,
+          "max_balance_residual_j": 2.463307335887066e-16,
+          "maximum_interaction_residual_j": 8.266618048728344e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.0015086990184437737,
+          "board_loss_j": 0.010584610917022392,
+          "contact_loss_j": 0.0034005584771456252,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.011978809604019612,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 5.325875251018591e-15,
+          "maximum_string_energy_j": 0.01288724419726595,
+          "maximum_board_energy_j": 0.0016281146573741952,
+          "final_energy_j": 0.00012582975141378817,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.6559185460527557e-06,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-lossless",
+          "note": 60,
+          "cpu_seconds": 0.189518,
+          "pressure_peak": 200.90833490032637,
+          "pressure_rms": 54.704337890680954,
+          "max_balance_residual_j": 1.863093013199091e-15,
+          "maximum_interaction_residual_j": 1.214306433183765e-17,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0,
+          "board_loss_j": 0,
+          "contact_loss_j": 0,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.01354957654068557,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.6169001241020308e-14,
+          "maximum_string_energy_j": 0.01472065572065337,
+          "maximum_board_energy_j": 0.003672304273550941,
+          "final_energy_j": 0.014048931227357897,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -1.4466753458556128e-05,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-coupling-off",
+          "note": 60,
+          "cpu_seconds": 0.205769,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 6.140921104957897e-16,
+          "maximum_interaction_residual_j": 8.266618048728344e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.006101418600510892,
+          "board_loss_j": 0,
+          "contact_loss_j": 0.0034005584771456252,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.011978809604019612,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 5.325875251018591e-15,
+          "maximum_string_energy_j": 0.012887244201490127,
+          "maximum_board_energy_j": 0,
+          "final_energy_j": 0.00611772108636858,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": -0.00015590117794908205,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-observer-off",
+          "note": 60,
+          "cpu_seconds": 0.155937,
+          "pressure_peak": 0,
+          "pressure_rms": 0,
+          "max_balance_residual_j": 2.463307335887066e-16,
+          "maximum_interaction_residual_j": 8.266618048728344e-18,
+          "launches": 1,
+          "partial_launches": 0,
+          "launch_work_j": 0.027598507768045333,
+          "external_work_j": 0,
+          "path_loss_j": 0.0015086990184437737,
+          "board_loss_j": 0.010584610917022392,
+          "contact_loss_j": 0.0034005584771456252,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.011978809604019612,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 5.325875251018591e-15,
+          "maximum_string_energy_j": 0.01288724419726595,
+          "maximum_board_energy_j": 0.0016281146573741952,
+          "final_energy_j": 0.00012582975141378817,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 2.6559185460527557e-06,
+          "requests": 1,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-repeat-10hz",
+          "note": 60,
+          "cpu_seconds": 0.19153,
+          "pressure_peak": 134.6284667205457,
+          "pressure_rms": 18.020533676766103,
+          "max_balance_residual_j": 5.134781488891349e-16,
+          "maximum_interaction_residual_j": 7.706305754119624e-18,
+          "launches": 3,
+          "partial_launches": 2,
+          "launch_work_j": 0.06057089600893522,
+          "external_work_j": 0,
+          "path_loss_j": 0.0035442334557408625,
+          "board_loss_j": 0.023476829456606518,
+          "contact_loss_j": 0.005840997831208851,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0.027199007903887414,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 1.5453546009497843e-14,
+          "maximum_string_energy_j": 0.01731352629525229,
+          "maximum_board_energy_j": 0.0021076055689131594,
+          "final_energy_j": 0.0005098273614911205,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0.0100036379442719,
+          "final_contact_displacement_m": -1.561100074186978e-05,
+          "requests": 3,
+          "expired": 0,
+          "cancelled": 0
+        },
+        {
+          "name": "C4-board-source-only",
+          "note": 60,
+          "cpu_seconds": 0.189429,
+          "pressure_peak": 0.03925002197604536,
+          "pressure_rms": 0.0016478903563844753,
+          "max_balance_residual_j": 1.1166938269465874e-23,
+          "maximum_interaction_residual_j": 8.077935669463161e-28,
+          "launches": 0,
+          "partial_launches": 0,
+          "launch_work_j": 0,
+          "external_work_j": 3.757024515366215e-10,
+          "path_loss_j": 8.744390436120263e-13,
+          "board_loss_j": 3.747484383152772e-10,
+          "contact_loss_j": 0,
+          "minimum_contact_loss_j": 0,
+          "retired_energy_j": 0,
+          "contact_faults": 0,
+          "bridge_faults": 0,
+          "maximum_contact_residual": 0,
+          "maximum_string_energy_j": 1.4259294935695287e-11,
+          "maximum_board_energy_j": 3.5674565680727953e-10,
+          "final_energy_j": 7.957417772471173e-14,
+          "event_state_delta_j": 0,
+          "energy_before_repeat_j": 0,
+          "final_contact_displacement_m": 1.131996152278817e-09,
+          "requests": 0,
+          "expired": 0,
+          "cancelled": 0
+        }
+      ]
+    },
+    "wav_checks": [
+      {
+        "name": "C2-connected",
+        "wav_sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-lossless",
+        "wav_sha256": "e7e997a3734dfc314cfde5fe64c61b265eea9a9a3c5ec508eb4a6977f963eec3",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-coupling-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-observer-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-repeat-10hz",
+        "wav_sha256": "ac8253bfc5876f1c812a6956e9a74986c7fabf468c6e91ef6237aad12ebe4da5",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C2-board-source-only",
+        "wav_sha256": "87a6446ff35ae4728fa8eb8fa6a8ad1cb7dcf78f9b2f84032d38b13c3edc5b9a",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-connected",
+        "wav_sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-lossless",
+        "wav_sha256": "e2d533b5abfada44bc210d174c84c76f8c1f1550058f741fe22f57b92f287111",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-coupling-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-observer-off",
+        "wav_sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-repeat-10hz",
+        "wav_sha256": "6e5a384cf5536b68bc203200aacf5a79d6aa10ec5da4b56472c03adc09c3c453",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      },
+      {
+        "name": "C4-board-source-only",
+        "wav_sha256": "246603b2e0fc80f8f61142eee058ddfa3e532d21fd60e7a78b502db8fc286b83",
+        "rate": 48000,
+        "shape": [
+          48000,
+          2
+        ],
+        "format": "float32 raw board-only pressure",
+        "finite": true
+      }
+    ],
+    "timing_limit": "CPU timing includes state energy scans and a single active key, with other work on host. It is not a whole-piano benchmark or callback deadline proof."
+  },
+  "shelf_review": {
+    "report": "Validation/coupled-waveguide-shelf-review.json",
+    "sha256": "a6ff5b80cfb4114ecb65a58b61026f094ac9cc497ca939b654d4de43b655753a",
+    "summary": "Independent passive identity, actual state/transfer and DC tests; native and ASAN pass; default legacy digest unchanged"
+  },
+  "inputs": {
+    "include/keyra/physics/CoupledWaveguide.h": {
+      "sha256": "7ca54a4342b860a27632d8a8fdc74c1bf20984cae662d4e061d84566781ef7e9",
+      "snapshot": "out/coupled-waveguide/source-snapshot/include/keyra/physics/CoupledWaveguide.h"
+    },
+    "include/keyra/physics/WaveguideString.h": {
+      "sha256": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+      "snapshot": "out/coupled-waveguide/source-snapshot/include/keyra/physics/WaveguideString.h"
+    },
+    "include/keyra/physics/StrikeController.h": {
+      "sha256": "0e531829e4fcc439bf6c4f1754aeda06741145fedb74a9521b0eecbae2964325",
+      "snapshot": "out/coupled-waveguide/source-snapshot/include/keyra/physics/StrikeController.h"
+    },
+    "include/keyra/physics/ContactSolver.h": {
+      "sha256": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
+      "snapshot": "out/coupled-waveguide/source-snapshot/include/keyra/physics/ContactSolver.h"
+    },
+    "tools/coupled_waveguide_support.h": {
+      "sha256": "9d8a9b7b6e476c2e1f78b145a87d62b5d9290a89fbcf35eea3dce658f967c231",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tools/coupled_waveguide_support.h"
+    },
+    "tools/probe_coupled_waveguide.cpp": {
+      "sha256": "8b956bc92ba4b927c22893e28d58ac6b912545ce7c58d00760a08cbe21e78c82",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tools/probe_coupled_waveguide.cpp"
+    },
+    "tests/coupled_waveguide_tests.cpp": {
+      "sha256": "faa1a6dd98b2821b224d5a1cf8fbabdb459c87b30879213525b8cd715ac532cf",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tests/coupled_waveguide_tests.cpp"
+    },
+    "tests/waveguide_string_tests.cpp": {
+      "sha256": "9a5c47f2ee7bf0541eaa9ad3a970bb6f78f9ca07afab2a1349ab5faaba2e71e4",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tests/waveguide_string_tests.cpp"
+    },
+    "tests/data/coupled-waveguide/C2-s32.cfg": {
+      "sha256": "97e3329bc2d885d09bd80cd303a99ee3bc6facb862adf5f1b339c57592f9fadd",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tests/data/coupled-waveguide/C2-s32.cfg"
+    },
+    "tests/data/coupled-waveguide/C4-s32.cfg": {
+      "sha256": "54d172577bc5e5dd5faa4ade7f52525ebb1fb702341af2db81887dfb5b047648",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tests/data/coupled-waveguide/C4-s32.cfg"
+    },
+    "tests/data/coupled-waveguide/provenance.json": {
+      "sha256": "d620a1f32922bff9b62a8971e4ca8b262e29f214f52e743796d15ca55b491506",
+      "snapshot": "out/coupled-waveguide/source-snapshot/tests/data/coupled-waveguide/provenance.json"
+    },
+    "src/full_reference/grand.cpp": {
+      "sha256": "0de379e97ceb26851c92c19f41f065bc554346e916dc0b91bac5117a1c4267e2",
+      "snapshot": "out/coupled-waveguide/source-snapshot/src/full_reference/grand.cpp"
+    },
+    "src/full_reference/calibration.h": {
+      "sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+      "snapshot": "out/coupled-waveguide/source-snapshot/src/full_reference/calibration.h"
+    },
+    "docs/COUPLED_WAVEGUIDE.md": {
+      "sha256": "69d31d85f879548822f3a7b0e4e0fc8fc81020f4de4a451598c2541fffcb28ed",
+      "snapshot": "out/coupled-waveguide/source-snapshot/docs/COUPLED_WAVEGUIDE.md"
+    }
+  },
+  "artifacts": {
+    "out/coupled-waveguide/asan-tests.log": {
+      "sha256": "ca0a83bb443b19cfc267b589895642e2e8920f3400ec3257a672eed95786d637",
+      "bytes": 923
+    },
+    "out/coupled-waveguide/cmake/LastTest.log": {
+      "sha256": "3e2d3965fb69696118cf28882deb1680662d3c47ab341b03db317ddff7079188",
+      "bytes": 2721
+    },
+    "out/coupled-waveguide/coupled_waveguide_tests": {
+      "sha256": "7c79ea9cbb125f6a27d58d524851e1cf93bfa96be5474f72fa044b28c3b9ccc8",
+      "bytes": 356872
+    },
+    "out/coupled-waveguide/coupled_waveguide_tests_asan": {
+      "sha256": "7536452e71fabcf4d6354bd07f9f00d87d3a8793147f7a6ef1351104cbc33bf1",
+      "bytes": 6177888
+    },
+    "out/coupled-waveguide/native-tests.log": {
+      "sha256": "ca0a83bb443b19cfc267b589895642e2e8920f3400ec3257a672eed95786d637",
+      "bytes": 923
+    },
+    "out/coupled-waveguide/probe.log": {
+      "sha256": "d8debd791f300cfea3fc535dd52250dff892cc2ea4d13fd9b722b3f8ab9bacf0",
+      "bytes": 57
+    },
+    "out/coupled-waveguide/probe_coupled_waveguide": {
+      "sha256": "566e6b0dab43887664ae6bd5dadd419c28b147408efe2b1a20edef6746f4e107",
+      "bytes": 352976
+    },
+    "out/coupled-waveguide/render/C2-board-source-only.wav": {
+      "sha256": "87a6446ff35ae4728fa8eb8fa6a8ad1cb7dcf78f9b2f84032d38b13c3edc5b9a",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C2-connected.wav": {
+      "sha256": "2274be832b612247ea2a53c3b7ad25645939f167206307b32e4c5fb0985700b4",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C2-coupling-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C2-lossless.wav": {
+      "sha256": "e7e997a3734dfc314cfde5fe64c61b265eea9a9a3c5ec508eb4a6977f963eec3",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C2-observer-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C2-repeat-10hz.wav": {
+      "sha256": "ac8253bfc5876f1c812a6956e9a74986c7fabf468c6e91ef6237aad12ebe4da5",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C4-board-source-only.wav": {
+      "sha256": "246603b2e0fc80f8f61142eee058ddfa3e532d21fd60e7a78b502db8fc286b83",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C4-connected.wav": {
+      "sha256": "53f59a962a7b05908f53fe15d15ed8fb80dd4e89d4372a481fed151febf9df76",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C4-coupling-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C4-lossless.wav": {
+      "sha256": "e2d533b5abfada44bc210d174c84c76f8c1f1550058f741fe22f57b92f287111",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C4-observer-off.wav": {
+      "sha256": "e95a5af23ccc7c2372216dd545d332b327153809e41fd56af852446a65e64b69",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/render/C4-repeat-10hz.wav": {
+      "sha256": "6e5a384cf5536b68bc203200aacf5a79d6aa10ec5da4b56472c03adc09c3c453",
+      "bytes": 384044
+    },
+    "out/coupled-waveguide/waveguide-support/before/WaveguideString.h": {
+      "sha256": "a571d9f92c980c89318194f9a9a24b84b553b644e4ff7b3a71a1aacf966e2ab7",
+      "bytes": 6813
+    },
+    "out/coupled-waveguide/waveguide-support/digest-after": {
+      "sha256": "513f6cd3b345f91c54f248ab7783792e8015d79c3430f88b62b65a4ef5d0cff3",
+      "bytes": 20304
+    },
+    "out/coupled-waveguide/waveguide-support/digest-before": {
+      "sha256": "dc93e43ac0133d11093473f3f3ab7b01c301ef5d6fd23402fe5c877d04f92433",
+      "bytes": 20304
+    },
+    "out/coupled-waveguide/waveguide-support/legacy_digest.cpp": {
+      "sha256": "5f8bd83bf510188d14905b5f54819811d3a1af64c89dacfb9041cb5479e256bb",
+      "bytes": 1665
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/include__keyra__physics__WaveguideString.h": {
+      "sha256": "521fd54ce3606b2188d0d228f8da46fea1325d7a749d772dee1785a206070247",
+      "bytes": 9536
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/out__coupled-waveguide__waveguide-support__before__WaveguideString.h": {
+      "sha256": "a571d9f92c980c89318194f9a9a24b84b553b644e4ff7b3a71a1aacf966e2ab7",
+      "bytes": 6813
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/out__coupled-waveguide__waveguide-support__legacy_digest.cpp": {
+      "sha256": "5f8bd83bf510188d14905b5f54819811d3a1af64c89dacfb9041cb5479e256bb",
+      "bytes": 1665
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-source-snapshot/tests__waveguide_string_tests.cpp": {
+      "sha256": "9a5c47f2ee7bf0541eaa9ad3a970bb6f78f9ca07afab2a1349ab5faaba2e71e4",
+      "bytes": 11943
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests": {
+      "sha256": "e38f64f754739061ebf7d1c037338626a5c9ed6c5de587d8bdb3a1b87e7c3b46",
+      "bytes": 87792
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests-asan": {
+      "sha256": "bcd77358257bc645b64236bc4711c577254bbcd649d37349dee3e692ed75d600",
+      "bytes": 415432
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests-asan.log": {
+      "sha256": "7f9344e032cc63743284df2ef20c31fa3e1f1dde0dcecb933673017cff13e392",
+      "bytes": 531
+    },
+    "out/coupled-waveguide/waveguide-support/shelf-tests.log": {
+      "sha256": "7f9344e032cc63743284df2ef20c31fa3e1f1dde0dcecb933673017cff13e392",
+      "bytes": 531
+    }
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "host": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "limits": [
+    "One key, 48 kHz, one polarization. All choir lines use identical coefficients; no unison detuning/common-loss network.",
+    "Note-off only advances action recovery; no damper contact. No mechanical noise, air or player load in this experiment.",
+    "Raw output observes board acceleration only. Direct string radiation and the complete original calibrated radiation are absent; raw peaks may exceed full scale.",
+    "The DC shelf changes the old isolated string fit. No coupled pole/admittance/radiation equivalence or full-keyboard fit is established.",
+    "Source original modal bridge ports are authored transformers, not necessarily the same as waveguide endpoint ports.",
+    "High-treble dispersion limitations remain. No original-model replacement, SDK integration or production/readiness/price claim."
+  ]
+}

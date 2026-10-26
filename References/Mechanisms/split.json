@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "source_commit": "3382bf9496bba2486f5ab0de55a264d1dfc38404",
+  "training_ids": [
+    "key-release-A0",
+    "key-release-C4",
+    "key-release-C8",
+    "pedal-D1",
+    "pedal-U1",
+    "string-release-L-C4",
+    "string-release-S-C2",
+    "string-release-V3-C6"
+  ],
+  "reserved_fresh_evaluation_ids": [
+    "key-release-C1",
+    "key-release-C3",
+    "key-release-C6",
+    "pedal-D2",
+    "pedal-U2",
+    "string-release-L-C6",
+    "string-release-S-C4",
+    "string-release-V3-C2"
+  ],
+  "selected_before_audio_acquisition": true,
+  "selection_policy": "Metadata-stratified16-file corpus:3 key releases at A0/C4/C8,2 pedal endpoint variants,3 release-resonance family/register pairs train;8 disjoint files reserved. No audio-based selection.",
+  "samples": [
+    {
+      "id": "key-release-A0",
+      "kind": "key_release",
+      "note": "A0",
+      "midi": 21,
+      "family": "rel",
+      "role": "train",
+      "source_sample": "rel1.flac"
+    },
+    {
+      "id": "key-release-C4",
+      "kind": "key_release",
+      "note": "C4",
+      "midi": 60,
+      "family": "rel",
+      "role": "train",
+      "source_sample": "rel40.flac"
+    },
+    {
+      "id": "key-release-C8",
+      "kind": "key_release",
+      "note": "C8",
+      "midi": 108,
+      "family": "rel",
+      "role": "train",
+      "source_sample": "rel88.flac"
+    },
+    {
+      "id": "key-release-C1",
+      "kind": "key_release",
+      "note": "C1",
+      "midi": 24,
+      "family": "rel",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "rel4.flac"
+    },
+    {
+      "id": "key-release-C3",
+      "kind": "key_release",
+      "note": "C3",
+      "midi": 48,
+      "family": "rel",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "rel28.flac"
+    },
+    {
+      "id": "key-release-C6",
+      "kind": "key_release",
+      "note": "C6",
+      "midi": 84,
+      "family": "rel",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "rel64.flac"
+    },
+    {
+      "id": "pedal-D1",
+      "kind": "pedal_down",
+      "note": null,
+      "midi": null,
+      "family": "pedalD",
+      "role": "train",
+      "source_sample": "pedalD1.flac"
+    },
+    {
+      "id": "pedal-D2",
+      "kind": "pedal_down",
+      "note": null,
+      "midi": null,
+      "family": "pedalD",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "pedalD2.flac"
+    },
+    {
+      "id": "pedal-U1",
+      "kind": "pedal_up",
+      "note": null,
+      "midi": null,
+      "family": "pedalU",
+      "role": "train",
+      "source_sample": "pedalU1.flac"
+    },
+    {
+      "id": "pedal-U2",
+      "kind": "pedal_up",
+      "note": null,
+      "midi": null,
+      "family": "pedalU",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "pedalU2.flac"
+    },
+    {
+      "id": "string-release-S-C2",
+      "kind": "string_release",
+      "note": "C2",
+      "midi": 36,
+      "family": "harmS",
+      "role": "train",
+      "source_sample": "harmSC2.flac"
+    },
+    {
+      "id": "string-release-L-C4",
+      "kind": "string_release",
+      "note": "C4",
+      "midi": 60,
+      "family": "harmL",
+      "role": "train",
+      "source_sample": "harmLC4.flac"
+    },
+    {
+      "id": "string-release-V3-C6",
+      "kind": "string_release",
+      "note": "C6",
+      "midi": 84,
+      "family": "harmV3",
+      "role": "train",
+      "source_sample": "harmV3C6.flac"
+    },
+    {
+      "id": "string-release-S-C4",
+      "kind": "string_release",
+      "note": "C4",
+      "midi": 60,
+      "family": "harmS",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "harmSC4.flac"
+    },
+    {
+      "id": "string-release-L-C6",
+      "kind": "string_release",
+      "note": "C6",
+      "midi": 84,
+      "family": "harmL",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "harmLC6.flac"
+    },
+    {
+      "id": "string-release-V3-C2",
+      "kind": "string_release",
+      "note": "C2",
+      "midi": 36,
+      "family": "harmV3",
+      "role": "reserved_fresh_evaluation",
+      "source_sample": "harmV3C2.flac"
+    }
+  ]
+}

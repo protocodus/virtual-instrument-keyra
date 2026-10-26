@@ -1,0 +1,1109 @@
+{
+  "schema_version": 1,
+  "training_only": true,
+  "training_ids": [
+    "A1v12",
+    "A1v4",
+    "A2v12",
+    "A2v4",
+    "A4v12",
+    "A4v4",
+    "A5v12",
+    "A5v4",
+    "C2v12",
+    "C2v4",
+    "C3v12",
+    "C3v4",
+    "C4v12",
+    "C4v4",
+    "C5v12",
+    "C5v4",
+    "C6v12",
+    "C6v4",
+    "D#2v12",
+    "D#2v4",
+    "D#3v12",
+    "D#3v4",
+    "D#4v12",
+    "D#4v4",
+    "D#5v12",
+    "D#5v4"
+  ],
+  "heldout_or_reserved_cases_used": false,
+  "decision": "Reject this bounded two-branch surrogate projection candidate; no native audio, default source, header or plugin change was made.",
+  "input_sha256": {
+    "training_features": "c571fd7bf5e064ed41960849e8f6a67eca4c60188fda4abe90aeced1762206cf",
+    "training_covariances": "a689c145dee7918e7fd85f0b0461de18b0f187a9baea1a1f28198f34eade3673",
+    "calibration": "75eb17e037c42a458dd6b9cd9651c1b12b185c1ee26f64d4879bc73d8dfef4ed",
+    "split": "35fc73788b8e27e6762a1e9664992c6bbc4702858e2b7bb5185885974dac0061",
+    "engine": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+    "analysis": "ec2599924fedfddd7af8fb8d96434bace3e2e6862f57e20515d6e5886168add6"
+  },
+  "input_snapshots": {
+    "training_features": "out/stereo-candidate/rejected-two-branch/inputs/training_features.json",
+    "training_covariances": "out/stereo-candidate/rejected-two-branch/inputs/training_covariances.json",
+    "calibration": "out/stereo-candidate/rejected-two-branch/inputs/calibration.json",
+    "split": "out/stereo-candidate/rejected-two-branch/inputs/split.json",
+    "engine": "out/stereo-candidate/rejected-two-branch/inputs/engine.cpp",
+    "analysis": "out/stereo-candidate/rejected-two-branch/inputs/analysis.py"
+  },
+  "raw_artifact_sha256": {
+    "out/stereo-candidate/rejected-two-branch/local-0.03.json": "cf4cedc52491883014b649aaac2bd53dd2c4ce961bdee1c0f088101d44607962",
+    "out/stereo-candidate/rejected-two-branch/local-0.1.json": "924d57d73a59cd7a3c5d817ca1d761dce02649e9ddeb796112bb5226e1fbcba1",
+    "out/stereo-candidate/rejected-two-branch/local-0.3.json": "3f0a9cf958974fab7a2766e0314d4f2da9fef1d845e50d5f2d25650ae352d99f",
+    "out/stereo-candidate/rejected-two-branch/field-0.5-12-cartesian.json": "1800d83d5c0acfbba4cef27b72e80fef0efa5fe941054c4224d8efad3b3b8ac9",
+    "out/stereo-candidate/rejected-two-branch/field-0.5-12-polar.json": "75cb6eb1594e49ffd0e693f72185152359d9fe9f7c8d6b014b386f5aee46318e",
+    "out/stereo-candidate/rejected-two-branch/field-0.25-12-cartesian.json": "205881abb5c65cfeab16b562758933fb6cae6ed05984207109184e68d88fb70b",
+    "out/stereo-candidate/rejected-two-branch/field-0.25-12-polar.json": "0fb52beaad4eca210e9a0b150f9d1c7969735ee0ea95dc837bcef1e38554dbd3",
+    "out/stereo-candidate/rejected-two-branch/field-0.75-inf-cartesian.json": "6e9d56cfc697579127991de825e4c4f870dd3d9fa2e984a56c23c294d014c6d0",
+    "out/stereo-candidate/rejected-two-branch/field-0.75-inf-polar.json": "2fc72b80e57937931f09d482b80a507b26b7f160114c0f7ae8c789f8b5853f03"
+  },
+  "known_signal_and_gradient_checks": {
+    "passed": true,
+    "random_positive_source_cases": 30,
+    "maximum_direct_analytic_signal_covariance_error": 3.7367087251761353e-17,
+    "minimum_predicted_covariance_eigenvalue": 0.0,
+    "maximum_finite_difference_jacobian_error": 8.785676090109386e-12,
+    "maximum_column_normalization_and_amplitude_rescale_error": 2.0885070287412922e-17,
+    "limits": "Checks the analysis formulation against explicit complex time signals and finite differences. It is not a native audio or recording-realism test."
+  },
+  "model": "S=T Q T_dagger; Q is the positive two-source covariance from the existing fast/late envelopes with .23-cent detuning. T has independent complex L/R columns, gauge a_fast_left>0.",
+  "power_consistency": "Distinct normalized columns change the mean-power interference term. Normalizing each column and absorbing its norm in its source amplitude preserves new predictions, not the previous coherent fit or live early-energy normalization. A native candidate would need observation-aware energy normalization and velocity/attack checks.",
+  "fit_scope": "Two velocities share T at each note/partial; all four windows fit with reference-trace-scaled covariance residuals and bounded coefficients. Source frequencies/rates/envelopes remain fixed during local fitting.",
+  "cv_scope": "Both velocities of each interior training pitch omitted together. Prediction uses retained endpoint source amplitudes/rates, tuning offsets and dispersion. Target measurements enter only masks, weights and errors. Rank-one baselines use the same evaluated windows. This is training cross-validation, not a fresh recording test.",
+  "field_scope": "RBF ridge smoothing of local T parameters over log-frequency and pitch, refit on retained pitches within each fold. Six predefined Cartesian/polar fields; ridge0.1. This is a bounded exploratory regularization check, not exhaustive model selection.",
+  "metrics": "Covariance error is Frobenius norm after trace normalization, weighted by reference partial power. Channel-balance error is absolute R/L dB error. Raw power error is also retained; covariance success alone cannot justify changing the amplitude fit.",
+  "local_fits": {
+    "0.03": {
+      "regularization": 0.03,
+      "node_count": 193,
+      "optimizer": "Bounded least-squares, seven-real-parameter gauge, analytic Jacobian, three relative-phase starts.",
+      "training_partial_mean_power_error_db": 0.7463587204422167,
+      "maximum_column_amplitude_scale": 3.2406955810800007,
+      "known_training_pitch_early_covariance": {
+        "pan": 0.7870431101759362,
+        "shared_static": 0.12080678494721027,
+        "two_branch": 0.12471208614137637
+      },
+      "conditioning": {
+        "nodes": 193,
+        "optimizer_successful_nodes": 193,
+        "full_data_jacobian_rank_nodes": 190,
+        "median_smallest_largest_jacobian_singular_ratio": 0.05345826845004002,
+        "p10_smallest_largest_jacobian_singular_ratio": 0.0029203541507297585,
+        "limits": "Local identifiability is conditional on the assumed source envelopes, frequencies and gauge; it does not identify physical strings or microphones."
+      },
+      "all_windows_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "static_complex": {
+          "weighted_covariance_error": 0.8698046246396252,
+          "weighted_balance_error_db": 9.591687508465125
+        },
+        "two_branch_normalized": {
+          "weighted_covariance_error": 0.8742707346450012,
+          "weighted_balance_error_db": 10.346641219902864
+        },
+        "two_branch_direct": {
+          "weighted_covariance_error": 0.882272719969095,
+          "weighted_balance_error_db": 10.57777874046486
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 2.6453730366201498
+      },
+      "early_windows_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "static_complex": {
+          "weighted_covariance_error": 0.8796113501925599,
+          "weighted_balance_error_db": 9.669046690110859
+        },
+        "two_branch_normalized": {
+          "weighted_covariance_error": 0.8836439302027305,
+          "weighted_balance_error_db": 10.437936011832678
+        },
+        "two_branch_direct": {
+          "weighted_covariance_error": 0.891903307271834,
+          "weighted_balance_error_db": 10.682912649224006
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 2.4839601754605076
+      },
+      "pitchwise_cv": {
+        "36": {
+          "pan": {
+            "weighted_covariance_error": 0.7219092458007873,
+            "weighted_balance_error_db": 2.9181230949557366
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.7260381296645042,
+            "weighted_balance_error_db": 4.107895080469529
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6542388889570829,
+            "weighted_balance_error_db": 3.3301277850222397
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6684982262672791,
+            "weighted_balance_error_db": 3.1190817372835564
+          },
+          "evaluated_partial_windows": 90,
+          "weighted_absolute_raw_power_error_db": 2.6531042550935013
+        },
+        "39": {
+          "pan": {
+            "weighted_covariance_error": 0.7586036236418965,
+            "weighted_balance_error_db": 5.659536746356352
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.7128451224940555,
+            "weighted_balance_error_db": 4.598469820147536
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.7100876664685316,
+            "weighted_balance_error_db": 4.745934037007863
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.703425181901309,
+            "weighted_balance_error_db": 4.600089232453666
+          },
+          "evaluated_partial_windows": 82,
+          "weighted_absolute_raw_power_error_db": 3.2283488825108355
+        },
+        "45": {
+          "pan": {
+            "weighted_covariance_error": 0.4743449568773069,
+            "weighted_balance_error_db": 3.489309292480814
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.5063444857230943,
+            "weighted_balance_error_db": 5.394482514769608
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.5174162810894367,
+            "weighted_balance_error_db": 5.935337808750978
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.5146062216243613,
+            "weighted_balance_error_db": 5.908931659632835
+          },
+          "evaluated_partial_windows": 64,
+          "weighted_absolute_raw_power_error_db": 3.620190525127239
+        },
+        "48": {
+          "pan": {
+            "weighted_covariance_error": 0.5214762650441291,
+            "weighted_balance_error_db": 8.067912638503458
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.6869965563830234,
+            "weighted_balance_error_db": 11.556565855470339
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6877032065307315,
+            "weighted_balance_error_db": 11.834834815720093
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6937206083186246,
+            "weighted_balance_error_db": 11.908838352603494
+          },
+          "evaluated_partial_windows": 60,
+          "weighted_absolute_raw_power_error_db": 1.2024343483606645
+        },
+        "51": {
+          "pan": {
+            "weighted_covariance_error": 0.6773925975924207,
+            "weighted_balance_error_db": 7.087509558599608
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.9593507052121945,
+            "weighted_balance_error_db": 12.924325490921127
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.971463041054033,
+            "weighted_balance_error_db": 12.652224260013645
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.972476665889399,
+            "weighted_balance_error_db": 12.61674125684797
+          },
+          "evaluated_partial_windows": 52,
+          "weighted_absolute_raw_power_error_db": 3.332502154673472
+        },
+        "60": {
+          "pan": {
+            "weighted_covariance_error": 0.7065567227072206,
+            "weighted_balance_error_db": 10.246456568083238
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.9814898329095176,
+            "weighted_balance_error_db": 10.27076247806135
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.9288765258489099,
+            "weighted_balance_error_db": 9.19731640554267
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9336759298431675,
+            "weighted_balance_error_db": 9.201065112583004
+          },
+          "evaluated_partial_windows": 35,
+          "weighted_absolute_raw_power_error_db": 3.935556777466231
+        },
+        "63": {
+          "pan": {
+            "weighted_covariance_error": 0.6223100857007948,
+            "weighted_balance_error_db": 2.9986120750057528
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.974109606475276,
+            "weighted_balance_error_db": 9.980660245421175
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.0735870672316208,
+            "weighted_balance_error_db": 11.1803604607452
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.0719925914283748,
+            "weighted_balance_error_db": 11.875486815313511
+          },
+          "evaluated_partial_windows": 31,
+          "weighted_absolute_raw_power_error_db": 5.300260141358662
+        },
+        "69": {
+          "pan": {
+            "weighted_covariance_error": 1.063098332584724,
+            "weighted_balance_error_db": 10.257784334285079
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.0954599406867074,
+            "weighted_balance_error_db": 13.971100012484074
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.14012702058654,
+            "weighted_balance_error_db": 13.248231957018474
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.2471998928196852,
+            "weighted_balance_error_db": 16.3364537058379
+          },
+          "evaluated_partial_windows": 24,
+          "weighted_absolute_raw_power_error_db": 1.2893265535448852
+        },
+        "72": {
+          "pan": {
+            "weighted_covariance_error": 1.2351614471773928,
+            "weighted_balance_error_db": 4.781661219547163
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.6570138935869257,
+            "weighted_balance_error_db": 7.24572154040646
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6901816550509803,
+            "weighted_balance_error_db": 8.098062830288802
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6931852837700849,
+            "weighted_balance_error_db": 8.048103745106173
+          },
+          "evaluated_partial_windows": 22,
+          "weighted_absolute_raw_power_error_db": 0.9826865870105739
+        },
+        "75": {
+          "pan": {
+            "weighted_covariance_error": 0.9590388978925007,
+            "weighted_balance_error_db": 15.051379373231772
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.0429752396816538,
+            "weighted_balance_error_db": 17.640771503140332
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.0278816926142504,
+            "weighted_balance_error_db": 17.29345255732518
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9821136542456151,
+            "weighted_balance_error_db": 16.63565396851099
+          },
+          "evaluated_partial_windows": 19,
+          "weighted_absolute_raw_power_error_db": 0.5719516415631533
+        },
+        "81": {
+          "pan": {
+            "weighted_covariance_error": 0.5367479180132846,
+            "weighted_balance_error_db": 1.9574477689496899
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.290205747507454,
+            "weighted_balance_error_db": 7.792382815934779
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.275869536732335,
+            "weighted_balance_error_db": 16.949304791700534
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.2799245870856344,
+            "weighted_balance_error_db": 16.680661903965262
+          },
+          "evaluated_partial_windows": 13,
+          "weighted_absolute_raw_power_error_db": 1.443807904949772
+        }
+      }
+    },
+    "0.1": {
+      "regularization": 0.1,
+      "node_count": 193,
+      "optimizer": "Bounded least-squares, seven-real-parameter gauge, analytic Jacobian, three relative-phase starts.",
+      "training_partial_mean_power_error_db": 0.7451668313785803,
+      "maximum_column_amplitude_scale": 2.04773586561632,
+      "known_training_pitch_early_covariance": {
+        "pan": 0.7870431101759362,
+        "shared_static": 0.12080678494721027,
+        "two_branch": 0.1250932187094188
+      },
+      "conditioning": {
+        "nodes": 193,
+        "optimizer_successful_nodes": 193,
+        "full_data_jacobian_rank_nodes": 190,
+        "median_smallest_largest_jacobian_singular_ratio": 0.04960683318446502,
+        "p10_smallest_largest_jacobian_singular_ratio": 0.0024728508016069093,
+        "limits": "Local identifiability is conditional on the assumed source envelopes, frequencies and gauge; it does not identify physical strings or microphones."
+      },
+      "all_windows_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "static_complex": {
+          "weighted_covariance_error": 0.8698046246396252,
+          "weighted_balance_error_db": 9.591687508465125
+        },
+        "two_branch_normalized": {
+          "weighted_covariance_error": 0.8748016715200783,
+          "weighted_balance_error_db": 10.172805662150044
+        },
+        "two_branch_direct": {
+          "weighted_covariance_error": 0.8824481813210321,
+          "weighted_balance_error_db": 10.401070067848954
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 2.6565113649527223
+      },
+      "early_windows_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "static_complex": {
+          "weighted_covariance_error": 0.8796113501925599,
+          "weighted_balance_error_db": 9.669046690110859
+        },
+        "two_branch_normalized": {
+          "weighted_covariance_error": 0.8839795783581296,
+          "weighted_balance_error_db": 10.256088392778985
+        },
+        "two_branch_direct": {
+          "weighted_covariance_error": 0.8919449897321864,
+          "weighted_balance_error_db": 10.499585758716051
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 2.4959531825790595
+      },
+      "pitchwise_cv": {
+        "36": {
+          "pan": {
+            "weighted_covariance_error": 0.7219092458007873,
+            "weighted_balance_error_db": 2.9181230949557366
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.7260381296645042,
+            "weighted_balance_error_db": 4.107895080469529
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6605699307789556,
+            "weighted_balance_error_db": 3.5651316026771886
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6749926719536846,
+            "weighted_balance_error_db": 3.402686814483531
+          },
+          "evaluated_partial_windows": 90,
+          "weighted_absolute_raw_power_error_db": 2.7281159472357412
+        },
+        "39": {
+          "pan": {
+            "weighted_covariance_error": 0.7586036236418965,
+            "weighted_balance_error_db": 5.659536746356352
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.7128451224940555,
+            "weighted_balance_error_db": 4.598469820147536
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.7109274714997197,
+            "weighted_balance_error_db": 4.679264805157585
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.7043965240701803,
+            "weighted_balance_error_db": 4.634003206350341
+          },
+          "evaluated_partial_windows": 82,
+          "weighted_absolute_raw_power_error_db": 3.2806502120073615
+        },
+        "45": {
+          "pan": {
+            "weighted_covariance_error": 0.4743449568773069,
+            "weighted_balance_error_db": 3.489309292480814
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.5063444857230943,
+            "weighted_balance_error_db": 5.394482514769608
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.5090063356824087,
+            "weighted_balance_error_db": 5.784300032435911
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.507555913444557,
+            "weighted_balance_error_db": 5.746826484425702
+          },
+          "evaluated_partial_windows": 64,
+          "weighted_absolute_raw_power_error_db": 3.5907843785351976
+        },
+        "48": {
+          "pan": {
+            "weighted_covariance_error": 0.5214762650441291,
+            "weighted_balance_error_db": 8.067912638503458
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.6869965563830234,
+            "weighted_balance_error_db": 11.556565855470339
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6868456249212144,
+            "weighted_balance_error_db": 11.79651776482446
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6925615361577925,
+            "weighted_balance_error_db": 11.860741509284262
+          },
+          "evaluated_partial_windows": 60,
+          "weighted_absolute_raw_power_error_db": 1.2353441860151881
+        },
+        "51": {
+          "pan": {
+            "weighted_covariance_error": 0.6773925975924207,
+            "weighted_balance_error_db": 7.087509558599608
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.9593507052121945,
+            "weighted_balance_error_db": 12.924325490921127
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.9760524356042938,
+            "weighted_balance_error_db": 12.780667451691093
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9760468769846449,
+            "weighted_balance_error_db": 12.744850093209191
+          },
+          "evaluated_partial_windows": 52,
+          "weighted_absolute_raw_power_error_db": 3.333768576318148
+        },
+        "60": {
+          "pan": {
+            "weighted_covariance_error": 0.7065567227072206,
+            "weighted_balance_error_db": 10.246456568083238
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.9814898329095176,
+            "weighted_balance_error_db": 10.27076247806135
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.9261246841115336,
+            "weighted_balance_error_db": 9.14734109483829
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9330254893508629,
+            "weighted_balance_error_db": 9.189961312035305
+          },
+          "evaluated_partial_windows": 35,
+          "weighted_absolute_raw_power_error_db": 3.9290407154267113
+        },
+        "63": {
+          "pan": {
+            "weighted_covariance_error": 0.6223100857007948,
+            "weighted_balance_error_db": 2.9986120750057528
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.974109606475276,
+            "weighted_balance_error_db": 9.980660245421175
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.0769272359174176,
+            "weighted_balance_error_db": 11.065142345834719
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.0745898288751314,
+            "weighted_balance_error_db": 11.644436932515042
+          },
+          "evaluated_partial_windows": 31,
+          "weighted_absolute_raw_power_error_db": 5.214324444549218
+        },
+        "69": {
+          "pan": {
+            "weighted_covariance_error": 1.063098332584724,
+            "weighted_balance_error_db": 10.257784334285079
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.0954599406867074,
+            "weighted_balance_error_db": 13.971100012484074
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.1382069713542153,
+            "weighted_balance_error_db": 13.28372238545849
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.2393218810671058,
+            "weighted_balance_error_db": 16.180345256566405
+          },
+          "evaluated_partial_windows": 24,
+          "weighted_absolute_raw_power_error_db": 1.3455312419782048
+        },
+        "72": {
+          "pan": {
+            "weighted_covariance_error": 1.2351614471773928,
+            "weighted_balance_error_db": 4.781661219547163
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.6570138935869257,
+            "weighted_balance_error_db": 7.24572154040646
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6791100627855068,
+            "weighted_balance_error_db": 8.131922831524776
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6812809363680697,
+            "weighted_balance_error_db": 8.098230016182141
+          },
+          "evaluated_partial_windows": 22,
+          "weighted_absolute_raw_power_error_db": 1.0173215289484536
+        },
+        "75": {
+          "pan": {
+            "weighted_covariance_error": 0.9590388978925007,
+            "weighted_balance_error_db": 15.051379373231772
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.0429752396816538,
+            "weighted_balance_error_db": 17.640771503140332
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.0258496666350165,
+            "weighted_balance_error_db": 17.25225748718155
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9825558835577007,
+            "weighted_balance_error_db": 16.62619190835421
+          },
+          "evaluated_partial_windows": 19,
+          "weighted_absolute_raw_power_error_db": 0.5715785091355987
+        },
+        "81": {
+          "pan": {
+            "weighted_covariance_error": 0.5367479180132846,
+            "weighted_balance_error_db": 1.9574477689496899
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.290205747507454,
+            "weighted_balance_error_db": 7.792382815934779
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.291311964170636,
+            "weighted_balance_error_db": 14.85312349379443
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.2951832637788097,
+            "weighted_balance_error_db": 14.684856502859544
+          },
+          "evaluated_partial_windows": 13,
+          "weighted_absolute_raw_power_error_db": 1.438835512352056
+        }
+      }
+    },
+    "0.3": {
+      "regularization": 0.3,
+      "node_count": 193,
+      "optimizer": "Bounded least-squares, seven-real-parameter gauge, analytic Jacobian, three relative-phase starts.",
+      "training_partial_mean_power_error_db": 0.7587031085207705,
+      "maximum_column_amplitude_scale": 1.5371771063161594,
+      "known_training_pitch_early_covariance": {
+        "pan": 0.7870431101759362,
+        "shared_static": 0.12080678494721027,
+        "two_branch": 0.13097458297169767
+      },
+      "conditioning": {
+        "nodes": 193,
+        "optimizer_successful_nodes": 193,
+        "full_data_jacobian_rank_nodes": 190,
+        "median_smallest_largest_jacobian_singular_ratio": 0.042855812024446154,
+        "p10_smallest_largest_jacobian_singular_ratio": 0.002425153351759945,
+        "limits": "Local identifiability is conditional on the assumed source envelopes, frequencies and gauge; it does not identify physical strings or microphones."
+      },
+      "all_windows_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "static_complex": {
+          "weighted_covariance_error": 0.8698046246396252,
+          "weighted_balance_error_db": 9.591687508465125
+        },
+        "two_branch_normalized": {
+          "weighted_covariance_error": 0.8650587661520784,
+          "weighted_balance_error_db": 9.739181204938035
+        },
+        "two_branch_direct": {
+          "weighted_covariance_error": 0.8746723619442095,
+          "weighted_balance_error_db": 9.970789039338088
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 2.6604648050275475
+      },
+      "early_windows_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "static_complex": {
+          "weighted_covariance_error": 0.8796113501925599,
+          "weighted_balance_error_db": 9.669046690110859
+        },
+        "two_branch_normalized": {
+          "weighted_covariance_error": 0.8748853802569491,
+          "weighted_balance_error_db": 9.805754022330037
+        },
+        "two_branch_direct": {
+          "weighted_covariance_error": 0.8848239815545739,
+          "weighted_balance_error_db": 10.051579194228188
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 2.5015092203000453
+      },
+      "pitchwise_cv": {
+        "36": {
+          "pan": {
+            "weighted_covariance_error": 0.7219092458007873,
+            "weighted_balance_error_db": 2.9181230949557366
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.7260381296645042,
+            "weighted_balance_error_db": 4.107895080469529
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6733759003300858,
+            "weighted_balance_error_db": 3.728477765488191
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6789356687533936,
+            "weighted_balance_error_db": 3.687982506071881
+          },
+          "evaluated_partial_windows": 90,
+          "weighted_absolute_raw_power_error_db": 2.7829948188661886
+        },
+        "39": {
+          "pan": {
+            "weighted_covariance_error": 0.7586036236418965,
+            "weighted_balance_error_db": 5.659536746356352
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.7128451224940555,
+            "weighted_balance_error_db": 4.598469820147536
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.7085205788903577,
+            "weighted_balance_error_db": 4.658697988207522
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.7068925365755985,
+            "weighted_balance_error_db": 4.680851539222668
+          },
+          "evaluated_partial_windows": 82,
+          "weighted_absolute_raw_power_error_db": 3.2666152502717805
+        },
+        "45": {
+          "pan": {
+            "weighted_covariance_error": 0.4743449568773069,
+            "weighted_balance_error_db": 3.489309292480814
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.5063444857230943,
+            "weighted_balance_error_db": 5.394482514769608
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.5010952623946432,
+            "weighted_balance_error_db": 5.566193071837776
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.5015016343587703,
+            "weighted_balance_error_db": 5.591122462927212
+          },
+          "evaluated_partial_windows": 64,
+          "weighted_absolute_raw_power_error_db": 3.6001122723669137
+        },
+        "48": {
+          "pan": {
+            "weighted_covariance_error": 0.5214762650441291,
+            "weighted_balance_error_db": 8.067912638503458
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.6869965563830234,
+            "weighted_balance_error_db": 11.556565855470339
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6804385236183604,
+            "weighted_balance_error_db": 11.625230386182295
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.684920971514406,
+            "weighted_balance_error_db": 11.666166662589346
+          },
+          "evaluated_partial_windows": 60,
+          "weighted_absolute_raw_power_error_db": 1.2473234499691215
+        },
+        "51": {
+          "pan": {
+            "weighted_covariance_error": 0.6773925975924207,
+            "weighted_balance_error_db": 7.087509558599608
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.9593507052121945,
+            "weighted_balance_error_db": 12.924325490921127
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.9872762603052059,
+            "weighted_balance_error_db": 13.19500859256063
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9874012721253423,
+            "weighted_balance_error_db": 13.23536057183654
+          },
+          "evaluated_partial_windows": 52,
+          "weighted_absolute_raw_power_error_db": 3.342536414798477
+        },
+        "60": {
+          "pan": {
+            "weighted_covariance_error": 0.7065567227072206,
+            "weighted_balance_error_db": 10.246456568083238
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.9814898329095176,
+            "weighted_balance_error_db": 10.27076247806135
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.9219534581309315,
+            "weighted_balance_error_db": 9.198233256829953
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9316480359845035,
+            "weighted_balance_error_db": 9.318320057416221
+          },
+          "evaluated_partial_windows": 35,
+          "weighted_absolute_raw_power_error_db": 3.97489894918127
+        },
+        "63": {
+          "pan": {
+            "weighted_covariance_error": 0.6223100857007948,
+            "weighted_balance_error_db": 2.9986120750057528
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.974109606475276,
+            "weighted_balance_error_db": 9.980660245421175
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.0708107723409488,
+            "weighted_balance_error_db": 11.053692699697027
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.0716396720914936,
+            "weighted_balance_error_db": 11.617286174053964
+          },
+          "evaluated_partial_windows": 31,
+          "weighted_absolute_raw_power_error_db": 4.989306941206808
+        },
+        "69": {
+          "pan": {
+            "weighted_covariance_error": 1.063098332584724,
+            "weighted_balance_error_db": 10.257784334285079
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.0954599406867074,
+            "weighted_balance_error_db": 13.971100012484074
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.0836707323380599,
+            "weighted_balance_error_db": 12.883689409810396
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.1728794194979486,
+            "weighted_balance_error_db": 14.820560399550278
+          },
+          "evaluated_partial_windows": 24,
+          "weighted_absolute_raw_power_error_db": 1.4448325963053417
+        },
+        "72": {
+          "pan": {
+            "weighted_covariance_error": 1.2351614471773928,
+            "weighted_balance_error_db": 4.781661219547163
+          },
+          "static_complex": {
+            "weighted_covariance_error": 0.6570138935869257,
+            "weighted_balance_error_db": 7.24572154040646
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.6622261234086867,
+            "weighted_balance_error_db": 7.797099690569104
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.6618219157166734,
+            "weighted_balance_error_db": 7.7962538115059665
+          },
+          "evaluated_partial_windows": 22,
+          "weighted_absolute_raw_power_error_db": 1.133591232969947
+        },
+        "75": {
+          "pan": {
+            "weighted_covariance_error": 0.9590388978925007,
+            "weighted_balance_error_db": 15.051379373231772
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.0429752396816538,
+            "weighted_balance_error_db": 17.640771503140332
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 0.9880806296479406,
+            "weighted_balance_error_db": 16.756332635580396
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 0.9791116713065087,
+            "weighted_balance_error_db": 16.635416490375547
+          },
+          "evaluated_partial_windows": 19,
+          "weighted_absolute_raw_power_error_db": 0.5565738978544876
+        },
+        "81": {
+          "pan": {
+            "weighted_covariance_error": 0.5367479180132846,
+            "weighted_balance_error_db": 1.9574477689496899
+          },
+          "static_complex": {
+            "weighted_covariance_error": 1.290205747507454,
+            "weighted_balance_error_db": 7.792382815934779
+          },
+          "two_branch_normalized": {
+            "weighted_covariance_error": 1.3089512603627096,
+            "weighted_balance_error_db": 10.789766957205103
+          },
+          "two_branch_direct": {
+            "weighted_covariance_error": 1.3125396175276831,
+            "weighted_balance_error_db": 10.755796775439762
+          },
+          "evaluated_partial_windows": 13,
+          "weighted_absolute_raw_power_error_db": 1.402830696305237
+        }
+      }
+    }
+  },
+  "frequency_pitch_fields": [
+    {
+      "frequency_bandwidth_octaves": 0.5,
+      "pitch_bandwidth_semitones": 12,
+      "parameterization": "cartesian",
+      "ridge": 0.1,
+      "early_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "field": {
+          "weighted_covariance_error": 0.8828030823041165,
+          "weighted_balance_error_db": 11.362992327407818
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 3.276870241752056
+      },
+      "full_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "field": {
+          "weighted_covariance_error": 0.8744299658210309,
+          "weighted_balance_error_db": 11.221815659558938
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 3.441849717555854
+      }
+    },
+    {
+      "frequency_bandwidth_octaves": 0.5,
+      "pitch_bandwidth_semitones": 12,
+      "parameterization": "polar",
+      "ridge": 0.1,
+      "early_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "field": {
+          "weighted_covariance_error": 0.8579481865699554,
+          "weighted_balance_error_db": 9.032344018097497
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 2.7000490484189137
+      },
+      "full_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "field": {
+          "weighted_covariance_error": 0.8501040234808682,
+          "weighted_balance_error_db": 8.972830125412964
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 2.849664390970936
+      }
+    },
+    {
+      "frequency_bandwidth_octaves": 0.25,
+      "pitch_bandwidth_semitones": 12,
+      "parameterization": "cartesian",
+      "ridge": 0.1,
+      "early_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "field": {
+          "weighted_covariance_error": 0.9033535649020162,
+          "weighted_balance_error_db": 10.342834092490993
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 3.2043012029357305
+      },
+      "full_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "field": {
+          "weighted_covariance_error": 0.8943737826735899,
+          "weighted_balance_error_db": 10.262048410411445
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 3.364576795241275
+      }
+    },
+    {
+      "frequency_bandwidth_octaves": 0.25,
+      "pitch_bandwidth_semitones": 12,
+      "parameterization": "polar",
+      "ridge": 0.1,
+      "early_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "field": {
+          "weighted_covariance_error": 0.889666917569537,
+          "weighted_balance_error_db": 10.615980019803843
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 2.716112642952826
+      },
+      "full_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "field": {
+          "weighted_covariance_error": 0.8809781651987678,
+          "weighted_balance_error_db": 10.516969415029878
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 2.8743672931530226
+      }
+    },
+    {
+      "frequency_bandwidth_octaves": 0.75,
+      "pitch_bandwidth_semitones": null,
+      "parameterization": "cartesian",
+      "ridge": 0.1,
+      "early_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "field": {
+          "weighted_covariance_error": 0.9557407873571466,
+          "weighted_balance_error_db": 16.02573969684859
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 4.378849255580521
+      },
+      "full_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "field": {
+          "weighted_covariance_error": 0.9442447571341204,
+          "weighted_balance_error_db": 15.756864606140025
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 4.553132549985636
+      }
+    },
+    {
+      "frequency_bandwidth_octaves": 0.75,
+      "pitch_bandwidth_semitones": null,
+      "parameterization": "polar",
+      "ridge": 0.1,
+      "early_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7599487501756348,
+          "weighted_balance_error_db": 6.654149642790314
+        },
+        "field": {
+          "weighted_covariance_error": 0.779123900354582,
+          "weighted_balance_error_db": 7.067524440702579
+        },
+        "evaluated_partial_windows": 492,
+        "weighted_absolute_raw_power_error_db": 2.816391530473187
+      },
+      "full_window_cv": {
+        "pan": {
+          "weighted_covariance_error": 0.7543870228752484,
+          "weighted_balance_error_db": 6.6057067777068506
+        },
+        "field": {
+          "weighted_covariance_error": 0.773033306977351,
+          "weighted_balance_error_db": 7.024616339034364
+        },
+        "evaluated_partial_windows": 812,
+        "weighted_absolute_raw_power_error_db": 2.9767002494531356
+      }
+    }
+  ],
+  "native_candidate_generated": false,
+  "elapsed_seconds": 15.348233938217163,
+  "limits": "No first20/50ms, cross-harmonic onset phase, native audio, perception, dynamics or runtime CPU claim. Per-partial covariance leaves common onset phase unidentified. Conditional Jacobian rank does not identify physical polarizations, unisons, bridge geometry or microphones. Failed interpolation does not rule out richer consistently identified physical source bases."
+}

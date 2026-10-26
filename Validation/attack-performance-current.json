@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "scenario": "Simultaneous fresh note attacks and one 64-frame render; reset excluded from timing",
+  "timing_is_diagnostic_not_a_test_gate": true,
+  "iterations_per_case": 400,
+  "cases": [
+    {
+      "sample_rate": 48000,
+      "notes": 10,
+      "frames": 64,
+      "deadline_us": 1333.333333,
+      "mean_us": 123.7095775,
+      "median_us": 114.929,
+      "p95_us": 161.671,
+      "maximum_us": 341.132,
+      "deadline_exceedances": 0,
+      "output_checksum": 66.97284043
+    },
+    {
+      "sample_rate": 48000,
+      "notes": 32,
+      "frames": 64,
+      "deadline_us": 1333.333333,
+      "mean_us": 486.2369675,
+      "median_us": 455.394,
+      "p95_us": 596.24,
+      "maximum_us": 2089.187,
+      "deadline_exceedances": 3,
+      "output_checksum": 396.9441819
+    },
+    {
+      "sample_rate": 48000,
+      "notes": 64,
+      "frames": 64,
+      "deadline_us": 1333.333333,
+      "mean_us": 1096.515052,
+      "median_us": 726.797,
+      "p95_us": 3756.138,
+      "maximum_us": 5770.366,
+      "deadline_exceedances": 60,
+      "output_checksum": 441.4201498
+    },
+    {
+      "sample_rate": 96000,
+      "notes": 10,
+      "frames": 64,
+      "deadline_us": 666.6666667,
+      "mean_us": 126.46669,
+      "median_us": 114.166,
+      "p95_us": 177.317,
+      "maximum_us": 772.701,
+      "deadline_exceedances": 1,
+      "output_checksum": 23.4942095
+    },
+    {
+      "sample_rate": 96000,
+      "notes": 32,
+      "frames": 64,
+      "deadline_us": 666.6666667,
+      "mean_us": 492.730125,
+      "median_us": 453.285,
+      "p95_us": 609.073,
+      "maximum_us": 3383.426,
+      "deadline_exceedances": 13,
+      "output_checksum": 243.0140233
+    },
+    {
+      "sample_rate": 96000,
+      "notes": 64,
+      "frames": 64,
+      "deadline_us": 666.6666667,
+      "mean_us": 802.28306,
+      "median_us": 710.854,
+      "p95_us": 1132.006,
+      "maximum_us": 4751.47,
+      "deadline_exceedances": 398,
+      "output_checksum": 303.0742264
+    }
+  ],
+  "engine_sha256": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+  "grand_calibration_sha256": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": "C++17 Release -O3, no exceptions/RTTI, -fno-builtin; see CMake for scalar host approximation targets.",
+  "performance_scope": "Shared Linux host diagnostics, not Jukebox compiler or Reason-host certification."
+}

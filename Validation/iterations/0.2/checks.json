@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "platform": "Linux x86_64, GCC 14.2, C++17",
+  "engine_sha256": "eb709992f90aeb2d58141dfb734a090f71634fddd528ebc0c97c67cc0eb4b138",
+  "research_reference_unchanged": true,
+  "release_ctest": {
+    "passed": 5,
+    "failed": 0,
+    "engine_groups_per_variant": 12,
+    "variants": [
+      "native",
+      "exception-free no-builtin scalar host approximation"
+    ]
+  },
+  "asan_ubsan": {
+    "engine_groups": 12,
+    "engine_passed": true,
+    "clap_host_passed": true
+  },
+  "vst3": {
+    "official_validator_passed": 47,
+    "failed": 0,
+    "headless_event_state_test_passed": true,
+    "native_windows_run": false
+  },
+  "reason_prototype": {
+    "ctests_passed": 2,
+    "failed": 0,
+    "asan_ubsan_passed": true,
+    "lua_source_preflight_passed": true,
+    "real_lua_host_execution": false,
+    "sdk_build": false,
+    "host_creation": false,
+    "u45_created": false
+  },
+  "reference_downloads_verified": {
+    "grand": 24,
+    "upright": 17
+  },
+  "calibration_reproduction": "Both generated numeric headers reproduced byte-for-byte using training-only inputs.",
+  "portfolio_checks": {
+    "no_sdk_paths_tracked": "passed",
+    "instrument_source_inventory": "blocked: existing Acustra submodule is not initialized; prototype is outside production Examples inventory."
+  },
+  "limits": "No perceptual panel, real Jukebox SDK compile, Reason/Recon run or production release. Allocation tests intercept C++ new, not every platform allocation API."
+}

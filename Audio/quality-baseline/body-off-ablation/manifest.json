@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "purpose": "Archived first comparison: reduced live body and mechanical-noise effects bypassed; not the full live default.",
+  "events_sha256": "2f2cfb1a4d6b99a5796c0aec2b30412552f32b8fafd797c379e841b56f708ca5",
+  "events_source": "First six seconds of the original nocturne score, followed by three seconds of held/tail behavior.",
+  "reference_source_sha256": "732f2ef6054b6536197351cab928ecadbcdd05ef870f533db93ec04ff88e8889",
+  "reference_calibration_sha256": "619d6bf4d3200a6b55007a1abcc0658e76a14124ce5f3abad9f5f4b94d8979f7",
+  "reference_binary_sha256": "5c1cdf2792c706abec642abd71303b43d32b9edafc4b1b97d29a27a77591bc98",
+  "reference_raw_sha256": "7246e786c99eaba719fce4052d4d7700dccf926178d9d906b9baac5aa0fe139d",
+  "reduced_source_sha256": "5329e36a0352877f1e46be2914a64082faf9d24669ac3c2728dfeee0e44befa4",
+  "reduced_calibration_sha256": "703996d247e9e7cba454518f34c2df863ce13698cb00e417cbca9463450ba123",
+  "reduced_binary_sha256": "e331b20e64737ca216cb3e4ba9d9c4cf8921f4ffaa5d0f2be003616802424b77",
+  "reduced_raw_sha256": "9d3ea894b8fdb5c81a6ada27e81ba97e734940b34dfeae23ee8087f165e7dd83",
+  "reduced_command": [
+    "/workspace/virtual-instrument-keyra/build/keyra_render",
+    "--events",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/passage.events",
+    "--output",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/reduced-48k.wav",
+    "--rate",
+    "48000",
+    "--seconds",
+    "9",
+    "--param",
+    "noise=0",
+    "--param",
+    "distance=0",
+    "--param",
+    "resonance=0",
+    "--report",
+    "/workspace/virtual-instrument-keyra/out/quality-baseline/reduced-48k.json"
+  ],
+  "output_rate": 48000,
+  "reference_internal_rate": 192000,
+  "reduced_internal_rate": 48000,
+  "gain_policy": "Each complete nine-second engine/presentation file matches .08 stereo RMS before the same150ms end fade; one final true-peak gain is shared across all files.",
+  "room": "Identical preserved procedural room_ir and presentation(), wet=.16 for both room files; no added room for dry files.",
+  "native_filter_difference": "Reference includes its24Hz output high-pass; reduced engine includes7Hz DC rejection. These native differences are retained, with no additional EQ.",
+  "limits": "Labeled comparison, not a blind listening verdict. Different internal synthesis rates are documented; the same output rate and room prevent presentation being mistaken for a proof of engine parity. Body/noise are disabled only in the reduced preview; this ablation cannot attribute missing body solely to architecture.",
+  "metrics": {
+    "original-dry": {
+      "rms": 0.08300771404124183,
+      "left_right_correlation": 0.14662354851228596,
+      "right_minus_left_power_db": 3.0786724858601318
+    },
+    "original-room": {
+      "rms": 0.08300771251173991,
+      "left_right_correlation": 0.15244092337344065,
+      "right_minus_left_power_db": 2.72199954512943
+    },
+    "reduced-dry": {
+      "rms": 0.08300030726599135,
+      "left_right_correlation": 0.9245040757488526,
+      "right_minus_left_power_db": -1.8764204277568306
+    },
+    "reduced-room": {
+      "rms": 0.08300037135462142,
+      "left_right_correlation": 0.7580569725876776,
+      "right_minus_left_power_db": -1.3338889294433645
+    }
+  },
+  "entries": [
+    {
+      "file": "quality-baseline/body-off-ablation/original-dry.mp3",
+      "sha256": "021f09a4e594fd9e46183438819a8202a87bc820fdc1eba72875efbc9ac88fbc",
+      "engine": "original",
+      "presentation": "dry",
+      "duration_seconds": 9.0,
+      "whole_file_rms_gain_before_fade": 0.9389080049625068,
+      "common_true_peak_gain": 1.0375991808183203
+    },
+    {
+      "file": "quality-baseline/body-off-ablation/original-room.mp3",
+      "sha256": "60ae9fcd49278fff0cfebbfedffe8a38ffea90f21eb358d69ad039f6f3cce578",
+      "engine": "original",
+      "presentation": "room",
+      "duration_seconds": 9.0,
+      "whole_file_rms_gain_before_fade": 0.8905105610017202,
+      "common_true_peak_gain": 1.0375991808183203
+    },
+    {
+      "file": "quality-baseline/body-off-ablation/reduced-dry.mp3",
+      "sha256": "3c9dc3bc2e7a906476ed25482a8208faef23898d9881f3de0cba5157e59def50",
+      "engine": "reduced",
+      "presentation": "dry",
+      "duration_seconds": 9.0,
+      "whole_file_rms_gain_before_fade": 1.9238470035672044,
+      "common_true_peak_gain": 1.0375991808183203
+    },
+    {
+      "file": "quality-baseline/body-off-ablation/reduced-room.mp3",
+      "sha256": "6afe994350c1734c0b87e3e5ae539d40c78e30d3b1e38309343c35459dddcd42",
+      "engine": "reduced",
+      "presentation": "room",
+      "duration_seconds": 9.0,
+      "whole_file_rms_gain_before_fade": 1.7698720355914128,
+      "common_true_peak_gain": 1.0375991808183203
+    },
+    {
+      "file": "quality-baseline/body-off-ablation/original-then-reduced-dry.mp3",
+      "sha256": "ca2f84ba7dce2736eae226e7fa7eaa6b14ef35a84bfa62aac1283c519d1cb026",
+      "order": [
+        "preserved physical original",
+        "reduced live model"
+      ],
+      "segment_start_seconds": [
+        0,
+        9.5
+      ],
+      "duration_seconds": 18.5,
+      "presentation": "dry, whole-file RMS matched before end fade"
+    }
+  ]
+}
