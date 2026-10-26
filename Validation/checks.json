@@ -930,5 +930,26 @@
     "fix_applied": false,
     "sound_validation_passed": false,
     "limits": "Relative guard failures reject this observer/crossover; original source, calibration and defaults remain unchanged. Reference C8 LF dominance and weak/unassigned tonal families limit interpretation of its large fixed RMS-matching gains. Stored-evidence verification does not open the external waveform/proof bundle or establish realism, real-time performance or Reason host qualification."
+  },
+  "body_radiation_reconstruction": {
+    "scope": "Offline original-control body-only replay from stored simulation forces, no recording fit or runtime change.",
+    "summary": {
+      "path": "Validation/full-body-radiation-basis.json",
+      "sha256": "b5e23146ae5c0249c982a421bfd67785ef1bb3d1301865c2f8e1d8fec27fb245"
+    },
+    "package": {
+      "path": "tools/experiments/body_radiation_basis/index.json",
+      "sha256": "9a5c2b4d7b49d127176634b5ae565159899c5ab26329fc62bdf105e22e8d74ca"
+    },
+    "review_command": "python3 tools/experiments/body_radiation_basis/check.py",
+    "cases": 34,
+    "raw_pressure_samples_bitidentical": 12403200,
+    "force_frames_matched_to_archived_FNV": 6201600,
+    "chunk_witnesses": 6,
+    "coherent_gram_checks": 12,
+    "reference_pcm_accessed": false,
+    "default_changed": false,
+    "sound_validation_passed": false,
+    "realtime_qualified": false
   }
 }

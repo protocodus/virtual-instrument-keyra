@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "study": "body_radiation_basis",
+  "scope": "Frozen rawbody reconstruction infrastructure only; no soniccandidate or fullpiano performance result.",
+  "passed_cases": 34,
+  "total_cases": 34,
+  "default_changed": false,
+  "fit_performed": false,
+  "reference_pcm_accessed": false,
+  "production_ready_claim": false,
+  "no_adoption": true,
+  "package_index": "tools/experiments/body_radiation_basis/index.json",
+  "protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-basis/v1/protocol.json",
+    "sha256": "1911e87e24f4bd944feeb345e9cbd9bdba6dfae75a3fa1ded9dbafa7e7f29633"
+  },
+  "result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-basis/v1/result.json",
+    "sha256": "38995fca86d97d0944a39202bce1813d3e98381771d2a293051c92c839318c1a"
+  },
+  "independent_post_review": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-basis-audit/v1/post-run-review.json",
+    "sha256": "788e62c94e040e4f5d398d825e198103aa6e5bf7d040c2301ecf6960dbb3aacc"
+  },
+  "raw_pressure_samples_bitidentical": 12403200,
+  "force_frames_matched": 6201600,
+  "chunk_witnesses": 6,
+  "actual_coherent_gram_checks": 12,
+  "raw_output_bytes": 694579200,
+  "offline_wall_seconds": 56.305023818000336,
+  "cpu_claim": "Offline475mode replay includes externalcaptureI/O, proofchecks and sixalternatechunkruns. Not fullpiano render or realtimebenchmark.",
+  "limits": [
+    "6basis span rawboardmic only. Recomputing nonlinear empirical target/abs(H) string corrections is NOT represented.",
+    "No new poles, decay, physicalparts, stereo phase, body energy or acoustic accuracy established.",
+    "Global positive alpha chosen only in later separately authorized/frozen fit; no alpha selection in this study."
+  ],
+  "preopening_history": [
+    "v1 unrun numeric-vs-bit equality auditrejection preserved",
+    "v2 syntheticGram np.bool_ JSONserialization failure beforetraceopening preserved",
+    "v3 samebasisandgates successful34case replay"
+  ]
+}
