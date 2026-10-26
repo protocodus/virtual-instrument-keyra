@@ -52,10 +52,15 @@ price above USD 199. No public product release or website availability claim
 has been made.
 
 The full portfolio-standard audit is not green. This initial research repository
-still needs the portfolio's CI/release, CLAP, test-tier and shared-tool adoption,
+still needs the portfolio's release, CLAP, test-tier and shared-tool adoption,
 and its preserved `Research/` layout differs from that checker's expected root
 layout. Some build-wiring checks also inspect only root CMake text, whereas the
 working JUCE configuration lives in `cmake/Plugin.cmake`. These are additional
 release-engineering gaps, not passing checks. The Rack repository's 64 general
 and 61 portfolio unit tests passed; its whole-repository style audit also has
 pre-existing failures in unrelated devices.
+
+The public repository now has CI for the core/reference tests, live DSP
+sanitizers, and the Linux VST3/standalone build, processor tests and pluginval.
+This validates the development candidate; it does not publish binaries or
+establish the commercial/host acceptance gates above.
