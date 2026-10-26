@@ -951,5 +951,43 @@
     "default_changed": false,
     "sound_validation_passed": false,
     "realtime_qualified": false
+  },
+  "body_radiation_fit": {
+    "scope": "One six-weight body-only observation fit on32 already observed TRAIN cases; same coefficients on all34. Numerically verified, acoustically rejected, no runtime change.",
+    "summary": {
+      "path": "Validation/full-body-radiation-fit.json",
+      "sha256": "6d2b83c9ae32d4c9e078e026871577cdc90c8ed1410407fab98ecc6000789800"
+    },
+    "package": {
+      "path": "tools/experiments/body_radiation_fit/index.json",
+      "sha256": "3a7eb280c696624f877277d12f15b99e0df933a2b7fe9baf8dadca3b8e5b601a"
+    },
+    "findings": {
+      "path": "docs/BODY_RADIATION.md",
+      "sha256": "fec2a5ca6391d1abf230eea1f05029d392ae468b0b95363e909a2947f54fdc47"
+    },
+    "review_command": "python3 tools/experiments/body_radiation_fit/check.py",
+    "optimizer_runs": 1,
+    "fitted_cases": 32,
+    "applied_reported_cases": 34,
+    "cases_passing_all_preservation_gates": 0,
+    "passes_all_preservation_gates": false,
+    "numerical_checks_pass": true,
+    "optimizer_converged": true,
+    "failed_gate_counts": {
+      "late_harmonic_MAE": 24,
+      "late_RMS_drift": 34,
+      "mono_energy_shift": 31,
+      "each_early_window_band_MAE": 22,
+      "stereo_LR_shift": 25,
+      "C3_ring5_20_excess_reduction": 2,
+      "late_envelope_MAE": 17
+    },
+    "reference_pcm_accessed": false,
+    "new_physical_renders": 0,
+    "default_changed": false,
+    "fix_applied": false,
+    "sound_validation_passed": false,
+    "realtime_qualified": false
   }
 }
