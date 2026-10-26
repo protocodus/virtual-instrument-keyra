@@ -13,7 +13,8 @@ change a phrase on purpose, and commit the changed .mid files on their own:
     python3 Tools/write_preset_midi.py Docs/audio/midi
 
 Every file is format 0 on MIDI channel 1 at 480 PPQ, with a tempo and a track
-name, and lasts 10-16 s before the renderer's release tail. Notes stay inside
+name, and its last event falls 5.5-9.5 s in, so with the renderer's 2.5 s
+release tail every demo is 8-12 s long (G3c). Notes stay inside
 the piano's A0..C8: MIDI 12-14 are Keyra's pedal keyswitches.
 """
 import argparse
@@ -102,19 +103,16 @@ class Phrase:
 
 
 def concert_grand():
-    # C minor, four bars of left-hand arpeggios under a melody that grows
-    # from piano to forte, then a full-range final chord.
+    # C minor, a bar of the tonic and one of the dominant in left-hand
+    # arpeggios under a melody that grows from piano to forte, then a
+    # full-range final chord.
     p = Phrase(72)
     bars = [
         ["C2", "G2", "C3", "Eb3", "G3", "Eb3", "C3", "G2"],
-        ["Ab1", "Eb2", "Ab2", "C3", "Eb3", "C3", "Ab2", "Eb2"],
-        ["F1", "C2", "F2", "Ab2", "C3", "Ab2", "F2", "C2"],
         ["G1", "D2", "G2", "B2", "F3", "D3", "B2", "G2"],
     ]
     melody = [
         [("G4", 2), ("Eb5", 1), ("D5", 1)],
-        [("C5", 1.5), ("Bb4", 0.5), ("Ab4", 2)],
-        [("Ab4", 1), ("C5", 1), ("F5", 1.5), ("Eb5", 0.5)],
         [("D5", 1), ("Eb5", 0.5), ("D5", 0.5), ("B4", 2)],
     ]
     p.cc(0, SUSTAIN, 127)
@@ -122,11 +120,11 @@ def concert_grand():
         start = 4 * bar
         if bar:
             p.change_pedal(start)
-        p.arpeggio(start, 0.5, arpeggio, 0.5, 56 + 8 * bar)
-        p.line(start, line, 62 + 12 * bar)
-    p.change_pedal(16)
-    p.chord(16, 3, ["C1", "C2", "G2", "Eb3", "G4", "C5", "Eb5", "C6"], 104)
-    p.cc(19, SUSTAIN, 0)
+        p.arpeggio(start, 0.5, arpeggio, 0.5, 60 + 16 * bar)
+        p.line(start, line, 66 + 20 * bar)
+    p.change_pedal(8)
+    p.chord(8, 2.5, ["C1", "C2", "G2", "Eb3", "G4", "C5", "Eb5", "C6"], 104)
+    p.cc(10.5, SUSTAIN, 0)
     return p
 
 
@@ -137,7 +135,6 @@ def studio_grand():
     progression = [
         (["C2", "C3"], ["E4", "G4", "C5"]),
         (["B1", "B2"], ["D4", "G4", "B4"]),
-        (["A1", "A2"], ["C4", "E4", "A4"]),
         (["F1", "F2"], ["C4", "F4", "A4"]),
     ]
     for bar, (bass, chord) in enumerate(progression):
@@ -147,27 +144,21 @@ def studio_grand():
             p.chord(start + beat, 0.4, chord, velocity)
         p.cc(start + 0.1, SUSTAIN, 127)
         p.cc(start + 3.85, SUSTAIN, 0)
-    p.line(14, [("G5", 0.5), ("A5", 0.5), ("G5", 0.5), ("E5", 0.5)], 86)
-    p.chord(16, 1.9, ["G1", "G2"], 86)
-    p.chord(16, 1, ["D4", "G4", "C5"], 84)
-    p.chord(17, 0.9, ["D4", "G4", "B4"], 80)
-    p.cc(16.1, SUSTAIN, 127)
-    p.cc(17.95, SUSTAIN, 0)
-    p.chord(18, 4, ["C2", "C3", "E4", "G4", "C5", "E5"], 90)
-    p.cc(18.1, SUSTAIN, 127)
-    p.cc(22, SUSTAIN, 0)
+    p.line(10, [("G5", 0.5), ("A5", 0.5), ("G5", 0.5), ("E5", 0.5)], 86)
+    p.chord(12, 2.5, ["C2", "C3", "E4", "G4", "C5", "E5"], 90)
+    p.cc(12.1, SUSTAIN, 127)
+    p.cc(14.5, SUSTAIN, 0)
     return p
 
 
 def warm_walnut():
-    # Rootless jazz voicings in the middle register, played quietly with the
-    # soft pedal down for two bars and up for the rest.
+    # A ii-V-I in rootless jazz voicings in the middle register, played
+    # quietly with the soft pedal down for the first bar and up for the rest.
     p = Phrase(84)
     changes = [
         ("D2", ["F3", "A3", "C4", "E4"], [("A4", 1.5), ("G4", 0.5), ("F4", 1), ("E4", 1)]),
         ("G1", ["F3", "B3", "E4"], [("F4", 1), ("A4", 1), ("G4", 2)]),
         ("C2", ["E3", "G3", "B3", "D4"], [("E4", 1.5), ("D4", 0.5), ("B3", 1), ("C4", 1)]),
-        ("A1", ["G3", "C#4", "F4", "Bb4"], [("E4", 1), ("C#4", 1), ("A3", 2)]),
     ]
     p.cc(0, SOFT, 127)
     p.cc(0, SUSTAIN, 127)
@@ -178,30 +169,23 @@ def warm_walnut():
         p.note(start, 3.9, bass, 64)
         p.chord(start + 0.5, 3.3, voicing, 52)
         p.line(start, line, 66)
-    p.cc(8, SOFT, 0)
-    p.change_pedal(16)
-    p.note(16, 3, "D2", 60)
-    p.chord(16.1, 2.9, ["F3", "A3", "C4", "E4", "A4"], 54)
-    p.cc(19, SUSTAIN, 0)
+    p.cc(4, SOFT, 0)
+    p.cc(12, SUSTAIN, 0)
     return p
 
 
 def felt_nocturne():
-    # A quiet nocturne in F through the preset's felt; the modulation wheel
-    # brings more felt in under the third bar and takes it out again before
-    # the final chord. Past about 64 the extra felt chokes even held notes
-    # within a beat, so the wheel stays below it.
+    # A quiet nocturne in F through the preset's felt, tonic to dominant and
+    # home; the modulation wheel brings more felt in under the second bar and
+    # takes it out again before the final chord. Past about 64 the extra felt
+    # chokes even held notes within a beat, so the wheel stays below it.
     p = Phrase(66)
     left = [
         ["F2", "C3", "A3", "C4", "A3", "C3"],
-        ["Bb1", "F2", "D3", "F3", "D3", "F2"],
-        ["G1", "D2", "Bb2", "E3", "Bb2", "D2"],
         ["C2", "G2", "Bb2", "E3", "Bb2", "G2"],
     ]
     melody = [
         [("A4", 1.5), ("C5", 0.5), ("A4", 1)],
-        [("Bb4", 1), ("D5", 1), ("C5", 1)],
-        [("Bb4", 2), ("A4", 0.5), ("G4", 0.5)],
         [("G4", 1.5), ("A4", 0.5), ("Bb4", 1)],
     ]
     p.cc(0, SUSTAIN, 127)
@@ -211,11 +195,11 @@ def felt_nocturne():
             p.change_pedal(start)
         p.arpeggio(start, 0.5, arpeggio, 0.5, 44)
         p.line(start, line, 58)
-    p.ramp_cc(6, 3, MODULATION, 0, 60)
-    p.ramp_cc(9, 2.5, MODULATION, 60, 0)
-    p.change_pedal(12)
-    p.chord(12, 3, ["F2", "C3", "A3", "F4", "A4", "C5"], 52)
-    p.cc(15, SUSTAIN, 0)
+    p.ramp_cc(2.5, 1.5, MODULATION, 0, 60)
+    p.ramp_cc(4, 1.6, MODULATION, 60, 0)
+    p.change_pedal(6)
+    p.chord(6, 3, ["F2", "C3", "A3", "F4", "A4", "C5"], 52)
+    p.cc(9, SUSTAIN, 0)
     return p
 
 
@@ -227,11 +211,11 @@ def open_strings():
     p.cc(0, SUSTAIN, 127)
     for index, pitch in enumerate(["C6", "G5", "E6", "C7"]):
         p.note(0.5 + 0.75 * index, 0.12, pitch, 100)
-    p.chord(4, 0.25, ["C1", "C2"], 116)
-    p.arpeggio(6, 0.25, ["C2", "G2", "D3", "E3", "B3", "D4", "E4", "G4",
+    p.chord(3.5, 0.25, ["C1", "C2"], 116)
+    p.arpeggio(5, 0.25, ["C2", "G2", "D3", "E3", "B3", "D4", "E4", "G4",
                          "B4", "D5", "E5", "G5", "B5", "D6", "E6"], 0.4, 84)
-    p.chord(10.5, 0.3, ["E5", "G5", "B5", "D6"], 96)
-    p.cc(13, SUSTAIN, 0)
+    p.chord(9.25, 0.3, ["E5", "G5", "B5", "D6"], 96)
+    p.cc(11, SUSTAIN, 0)
     return p
 
 
@@ -252,8 +236,8 @@ def main() -> None:
         phrase = build()
         last = max(beat for beat, _, _ in phrase.events)
         seconds = last * 60 / phrase.bpm
-        if not 9.5 <= seconds <= 16.5:
-            raise SystemExit(f"{slug}: {seconds:.1f} s is outside the 10-16 s phrase length")
+        if not 5.5 <= seconds <= 9.5:
+            raise SystemExit(f"{slug}: {seconds:.1f} s is outside the 5.5-9.5 s phrase length")
         path = args.output / f"{index:02d}-{slug}.mid"
         path.write_bytes(phrase.smf(slug))
         print(f"{path.name:28s} {seconds:5.1f} s")
