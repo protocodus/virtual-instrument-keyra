@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "training_ids": [
+    "C2v4",
+    "C2v12",
+    "C3v4",
+    "C3v12",
+    "C4v4",
+    "C4v12",
+    "C5v4",
+    "C5v12",
+    "C6v4",
+    "C6v12"
+  ],
+  "heldout_measurements_used": false,
+  "sample_free": true,
+  "reference_features_sha256": "2af4d3e9c57481b18e44046ab7970c132905282c9b78fb8ba37a214825dd80e8",
+  "split_sha256": "d8f7969885ab0a6060a064e6165145473a1e2bb20f291e2818410b6d37db7169",
+  "metric_source_sha256": "f64c0be9d6ae365bb8dcaa1d36d30a6e531f0778082722f0a58a1a27484e1cda",
+  "calibration_prior_sha256": "70b1b6cde161637554eb9232159e94ae7dddc9ac875aca344ef5396679bf7b0c",
+  "fitter_source_sha256": "39a7c313b45d2c1eed7531cb735090b1ab01d74c4592b961813008364a1e6b74",
+  "tool_versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0"
+  },
+  "recordings": [
+    {
+      "id": "C2v4",
+      "wav_sha256": "36c79cd4976815a90be797f0ec6883056c6b0d022be699b95dbd871973f5c048"
+    },
+    {
+      "id": "C2v12",
+      "wav_sha256": "6fdee8b21af461d199f4d4dca1375f5100c4c8def1e092b8c23d71e42f09372c"
+    },
+    {
+      "id": "C3v4",
+      "wav_sha256": "9a35672fe713b73c5e6c02861e8ab7c03826a33b5be63d0623046282b797e002"
+    },
+    {
+      "id": "C3v12",
+      "wav_sha256": "2ee3c48a5150b505202c808118ca6ab87d2ae0ea807f18f1722f4a9dfcad6001"
+    },
+    {
+      "id": "C4v4",
+      "wav_sha256": "b25c65964c4d4e118fc9a7d67d68156fde483db5415339ab759a58dffa4abf51"
+    },
+    {
+      "id": "C4v12",
+      "wav_sha256": "ff2a1f2850f5266ef9cb4b2830e3027af6a65fd203a182fb7a861fdebf04897a"
+    },
+    {
+      "id": "C5v4",
+      "wav_sha256": "41c9862627542aec425a1c53c164c9d4617a1e3f8be97687d4ef14a3dae1432a"
+    },
+    {
+      "id": "C5v12",
+      "wav_sha256": "a505db5f171788b45021c62187c8b2057cdefd6c103588c5270ecca0e554a638"
+    },
+    {
+      "id": "C6v4",
+      "wav_sha256": "f7795b27c5f2c078c41651dde88e2f765f7762caa5770a4d50ae41fce806c9cb"
+    },
+    {
+      "id": "C6v12",
+      "wav_sha256": "1d2d99da7dab09066cd67940ccd21f381a6b3399fafda3c9b1f3cc4a45281100"
+    }
+  ],
+  "partial_count": 64,
+  "amplitude_model": ".5*(Ap*exp(-sp*t)+Al*exp(-sl*t))^2*(1-exp(-t/attackSeconds))^2; Hann-power window quadrature",
+  "identification_limit": "Positive prompt/late decomposition regularized by measured training slopes; not a unique mechanical identification.",
+  "training_window_power_mean_absolute_error_db": 0.8283542279856054
+}
