@@ -182,13 +182,18 @@ PartialData blend(const PartialData& a,const PartialData& b,double t) noexcept {
     // Phases come from the nearer anchor: each is one measured pattern of
     // the strike's arrival across the partials, and a blend of two is neither.
     l.phase=t<.5?x.phase:y.phase;
-    // Lanes are stored fastest first, so like roles meet. The pickup shape is
-    // blended as a vector and renormalised to unit mean channel power.
-    l.left={mix(x.left.re,y.left.re,t),mix(x.left.im,y.left.im,t)};
-    l.right={mix(x.right.re,y.right.re,t),mix(x.right.im,y.right.im,t)};
-    const double norm=(l.left.re*l.left.re+l.left.im*l.left.im+l.right.re*l.right.re+l.right.im*l.right.im)/2;
-    if(norm>1e-6){const double k=1/std::sqrt(norm);l.left={l.left.re*k,l.left.im*k};l.right={l.right.re*k,l.right.im*k};}
-    else{const auto& near=t<.5?x:y;l.left=near.left;l.right=near.right;}
+    // Lanes are stored fastest first, so like roles meet. The pickup shape
+    // (left real, unit mean channel power) is blended as its channels' level
+    // difference in dB and their phase difference along the shorter arc. The
+    // microphones hear the board about 3.4 ms apart, so like partials of two
+    // recorded pitches can arrive half a turn apart in phase; blended as
+    // vectors they cancelled a channel, putting D#3's fundamental 12 dB
+    // further left than either C3 or F#3 has it.
+    const double ra=std::max(1e-6,std::hypot(x.right.re,x.right.im)),rb=std::max(1e-6,std::hypot(y.right.re,y.right.im));
+    const double g=std::exp(mix(std::log(ra/std::max(1e-6,x.left.re)),std::log(rb/std::max(1e-6,y.left.re)),t));
+    const double from=std::atan2(x.right.im,x.right.re),phase=from+t*std::remainder(std::atan2(y.right.im,y.right.re)-from,2*pi);
+    const double left=std::sqrt(2/(1+g*g));
+    l.left={left,0};l.right={left*g*std::cos(phase),left*g*std::sin(phase)};
   }
   return d;
 }

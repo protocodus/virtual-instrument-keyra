@@ -52,7 +52,7 @@ musical passages through the same engine. Both are frozen evidence from
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
   partial levels sit 3.2 dB from the recordings (0.3.0: 9.3 dB), the attack
   spectrum 4.2 dB (15.8 dB), the sustain spectrum 5.2 dB (10.2 dB) and the
-  noise between partials 6.0 dB (25.9 dB); its regressions, D♯3's stereo image
+  noise between partials 6.0 dB (25.9 dB); its regressions, C4's onset rise
   and the late decay from C7 to F♯7 first, are listed there.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
@@ -117,7 +117,8 @@ below the treble's fundamentals, where no string sounds; the board noise is
 measured in the gaps between the partials the recordings show and, above the
 highest of them, across whole bands, as the benchmark measures it. A strike
 interpolates between the recorded pitches by partial order and between the
-layers by velocity, taking phases from the nearer pitch. C8 is left out: its
+layers by velocity, taking phases from the nearer pitch; a partial's stereo
+pickup moves between the two pitches' channel level and phase differences. C8 is left out: its
 strongest components sit 90–100 cents above the stretch that F♯7 and A7 set
 and no partial series explains the recording, so the keys above A7 play A7's
 data on the stretch curve. Only fitted numbers enter the header; no recorded
@@ -169,8 +170,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   contact is not played: a note sounds from contact.
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
-  sharply with frequency, so at D♯3 the image is further from the recording
-  than 0.3.0's fixed panning was.
+  sharply with frequency, so at D♯3 the image is still further from the
+  recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB).
 - From C6 up, the partials' decay after half a second is still 12 dB/s from
   the recordings' on the dev cases, no closer than 0.3.0's; from C7 to F♯7 it
   is 4 to 5 dB/s further. From F♯3 to F♯5 the first

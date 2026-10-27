@@ -61,6 +61,23 @@ double spectralPeak(const Audio& audio,double low,double high){
   }
   return peak;
 }
+// The right channel's level against the left's, in dB, at the strongest
+// frequency between `low` and `high`.
+double levelDifference(const Audio& audio,double low,double high){
+  constexpr double pi=3.14159265358979323846;
+  const std::size_t frames=audio.size()/2;std::vector<double> w(frames);
+  for(std::size_t i=0;i<frames;++i)w[i]=.5-.5*std::cos(2*pi*i/(frames-1));
+  double power=-1,difference=0;
+  for(double frequency=low;frequency<=high;frequency+=.25){
+    const double c=std::cos(2*pi*frequency/48000),s=std::sin(2*pi*frequency/48000);
+    double phaseC=1,phaseS=0,lr=0,li=0,rr=0,ri=0;
+    for(std::size_t i=0;i<frames;++i){const double l=w[i]*audio[2*i],r=w[i]*audio[2*i+1];
+      lr+=l*phaseC;li+=l*phaseS;rr+=r*phaseC;ri+=r*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
+    const double left=lr*lr+li*li,right=rr*rr+ri*ri;
+    if(left+right>power){power=left+right;difference=10*std::log10(right/left);}
+  }
+  return difference;
+}
 std::string timing(int count){
   std::array<double,3> onset{},cpu{},wall{};
   for(int run=0;run<3;++run){keyra::Engine e;e.setParameters(dry());
@@ -213,6 +230,24 @@ int main(int argc,char** argv){
       std::cout<<"noise_band_hz="<<m::noiseBands[b].hz<<" error_db="<<error<<'\n';
     }
     check(compared>=5,"board noise spectrum compared in at least five bands");
+  }
+  {
+    // A pitch between two recorded ones places each partial between their
+    // stereo positions. The microphones can hear like partials of C3 and F#3
+    // half a turn apart; blended as vectors, those cancelled a channel and put
+    // D#3's fundamental 12 dB further left than either.
+    std::array<std::array<double,4>,3> difference{};
+    for(int key=0;key<3;++key){
+      const int note=48+3*key;keyra::Engine e;e.setParameters(dry());e.noteOn(note,.7f);
+      auto audio=render(e,52800);audio.erase(audio.begin(),audio.begin()+4800);
+      const double f=440*std::pow(2.,(note-69)/12.);
+      for(int k=0;k<4;++k)difference[key][k]=levelDifference(audio,(k+1)*f*.97,(k+1)*f*1.03);
+    }
+    for(int k=0;k<4;++k){
+      const double low=std::min(difference[0][k],difference[2][k]),high=std::max(difference[0][k],difference[2][k]);
+      check(difference[1][k]>low-3&&difference[1][k]<high+3,"an interpolated pitch's partials sit between its recorded neighbours' stereo positions");
+      std::cout<<"partial="<<k+1<<" c3_level_difference_db="<<difference[0][k]<<" d#3="<<difference[1][k]<<" f#3="<<difference[2][k]<<'\n';
+    }
   }
   for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
