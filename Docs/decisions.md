@@ -128,3 +128,13 @@ the benchmark's window rather than anything the piano sets. The relative
 weights also let many bass partials spend a lane on the recording's noise
 floor; weights from the floor's variance plus the fit's own relative error
 are the next candidate.
+
+## 2026-10-27 — keep the relative fit weights
+
+The next candidate named above, each frame weighed by the floor's variance plus
+the fit's own relative error and refitted until the weights settle, was fitted
+on the train recordings and scored on the never-fitted dev cases. Against the
+relative weights it moved the partial levels from 3.20 to 3.33 dB, the late
+decay from 4.85 to 5.13 dB/s, the broadband envelope from 2.59 to 2.84 dB and
+the 10–90 % rise from 5.3 to 6.7 ms, and stayed within 0.1 dB elsewhere. The
+relative weights stay. Chosen on these measurements, not by ear.
