@@ -133,6 +133,37 @@ void channelWideReleaseOwnership(int controller, int note, int releaseChannel)
             "ownership pedal witness did not reach its expected state");
     }
 }
+
+// An overflowing GUI queue must release the GUI's sounding note exactly as
+// its key-up would. Silence is no witness: after a key-up the strike's body
+// knock and board noise ring on at their own decay, near -100 dBFS a second
+// later. A held copy shows that a stuck note would differ.
+void keyboardOverflowRelease()
+{
+    enum class Ending { overflow, keyUp, held };
+    const auto play = [](Ending ending) {
+        KeyraAudioProcessor gui;
+        gui.prepareToPlay(48000, 128);
+        set(gui, "resonance", 0);
+        juce::AudioBuffer<float> audio(2, 128);
+        juce::MidiBuffer midi;
+        gui.enqueueKeyboard(true, 60, .8f);
+        gui.processBlock(audio, midi);
+        if (ending == Ending::overflow)
+            for (int i = 0; i < 255; ++i) gui.enqueueKeyboard(true, 60, .8f);
+        if (ending != Ending::held) gui.enqueueKeyboard(false, 60, 0);
+        std::vector<float> result;
+        for (int block = 0; block < 375; ++block) {
+            gui.processBlock(audio, midi);
+            for (int channel = 0; channel < 2; ++channel)
+                for (int frame = 0; frame < 128; ++frame) result.push_back(audio.getSample(channel, frame));
+        }
+        return result;
+    };
+    const auto overflowed = play(Ending::overflow), keyUp = play(Ending::keyUp), held = play(Ending::held);
+    require(held != keyUp, "keyboard overflow witness ignored its key-up");
+    require(overflowed == keyUp, "keyboard overflow failed to release an already sounding GUI note");
+}
 }
 
 int main()
@@ -229,10 +260,7 @@ int main()
         processor.enqueueKeyboard(true, 60, .8f);
         processor.processBlock(keyboardBuffer, noMidi);
         require(keyboardBuffer.getMagnitude(0, 128) > 1e-8f, "keyboard overflow recovery witness did not sound");
-        for (int i = 0; i < 255; ++i) processor.enqueueKeyboard(true, 60, .8f);
-        processor.enqueueKeyboard(false, 60, 0);
-        for (int i = 0; i < 375; ++i) processor.processBlock(keyboardBuffer, noMidi);
-        require(keyboardBuffer.getMagnitude(0, 128) < 1e-5f, "keyboard overflow failed to release an already sounding GUI note");
+        keyboardOverflowRelease();
         std::array<juce::uint8, 4096> sysex {};
         noMidi.addEvent(juce::MidiMessage::createSysExMessage(sysex.data(), static_cast<int>(sysex.size())), 0);
         const auto allocationCount = allocationProbe::count;
