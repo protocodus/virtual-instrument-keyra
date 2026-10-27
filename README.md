@@ -50,10 +50,10 @@ musical passages through the same engine. Both are frozen evidence from
   not this ring, which dies within a second.
 - Existing sessions sound different; the median note keeps 0.3.0's level. On
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
-  partial levels sit 3.4 dB from the recordings (0.3.0: 9.6 dB), the attack
+  partial levels sit 3.2 dB from the recordings (0.3.0: 9.3 dB), the attack
   spectrum 4.2 dB (15.8 dB), the sustain spectrum 5.2 dB (10.2 dB) and the
-  noise between partials 6.0 dB (25.9 dB); its regressions, A7 and C8's late
-  decay and D♯3's stereo image first, are listed there.
+  noise between partials 6.0 dB (25.9 dB); its regressions, D♯3's stereo image
+  and the late decay from C7 to F♯7 first, are listed there.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -172,8 +172,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   sharply with frequency, so at D♯3 the image is further from the recording
   than 0.3.0's fixed panning was.
 - From C6 up, the partials' decay after half a second is still 12 dB/s from
-  the recordings' on the dev cases (0.3.0: 9 dB/s); at A7 most of that comes
-  from a second partial 50 dB under the first. From F♯3 to F♯5 the first
+  the recordings' on the dev cases, no closer than 0.3.0's; from C7 to F♯7 it
+  is 4 to 5 dB/s further. From F♯3 to F♯5 the first
   seconds of the sustain sit up to 1 dB further from the recordings (4 dB at
   D♯5) than under a fit weighted towards them, as a long note's tail now
   counts as much.

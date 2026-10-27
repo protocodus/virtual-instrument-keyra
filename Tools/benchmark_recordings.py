@@ -13,11 +13,13 @@ Metrics per case (lower is better):
 
   partial_db      partial levels in four windows (0.05-0.25, -0.75, -1.5,
                   -3.5 s), every recorded partial at least 10 dB above its
-                  floor in that window; a missing partial scores its full level
+                  floor (the power of its quietest second before the
+                  library's fade-out) in that window; a missing partial
+                  scores its full level
   tuning_cents    absolute partial frequency error, partials 1-30
   decay_db_s      late decay slope (0.5 s to 3.5 s, Theil-Sen) per partial,
-                  both over the frames where the recording is 6 dB above its
-                  floor
+                  both over the frames where the recording, averaged over
+                  0.1 s, is 6 dB above its floor
   attack_db       third-octave level error, 0-100 ms (10 ms hops)
   early_db        third-octave level error, 0.1-0.5 s
   sustain_db      third-octave level error, 0.5-3.0 s; a band counts where
@@ -27,7 +29,9 @@ Metrics per case (lower is better):
   ild_db / icc    per third-octave band left/right level difference and
                   inter-channel coherence error, 0.05-1.5 s
   envelope_db     5 ms RMS envelope error, 0.02-3.5 s, where the recording
-                  stands 10 dB above its own floor (both high-passed at 20 Hz)
+                  stands 10 dB above its own floor, the power of its quietest
+                  second before the library's fade-out (both high-passed at
+                  20 Hz)
   rise_ms         10-90 % envelope rise error within the first 150 ms
   level_db        loudness error across notes and velocities: each case's
                   gain against the run's median gain, which stands for the
@@ -68,7 +72,7 @@ WINDOWS = [(.05, .25), (.25, .75), (.75, 1.5), (1.5, 3.5)]
 # Rounded midpoints of the SFZ velocity bins of layers 1..16.
 LAYER_VELOCITY = [14, 31, 36, 40, 45, 49, 54, 61, 69, 77, 85, 93, 101, 109, 117, 124]
 RENDER_SECONDS = 4.6
-FEATURES = 'features 4'  # bump when features() changes, to refresh cached references
+FEATURES = 'features 6'  # bump when features() changes, to refresh cached references
 LEAD = .05
 
 
@@ -101,8 +105,9 @@ def features(path, note):
     start = pa.onset(x, sr)
     f1, B, found = pa.partials(x, sr, note, start)
     freqs = np.array([q['hz'] for q in found])
+    tracked = freqs if len(freqs) else np.array([pa.midi_hz(note)])
     seconds = min(3.6, (len(x) - start) / sr - .02)
-    t, z = pa.envelopes(x, sr, freqs if len(freqs) else np.array([pa.midi_hz(note)]), f1, start, seconds)
+    t, z = pa.envelopes(x, sr, tracked, f1, start, seconds)
     power = np.mean(np.abs(z) ** 2, axis=1)
     level, left, right, cross = band_spectrogram(x, sr, start, min(3.0, seconds))
     # The recording's own floor per band (room, microphones, ventilation): the
@@ -117,6 +122,14 @@ def features(path, note):
     whole = 10 ** (whole / 10)
     second = np.array([whole[k:k + 20].mean(axis=0) for k in range(max(1, len(whole) - 19))])
     band_floor = 10 * np.log10(np.maximum(second.min(axis=0), 1e-30))
+    # Each partial's floor the same way, from its envelope up to the fade-out.
+    # The last quarter of the 3.6 s scored is the fade itself in the treble's
+    # short files, which put those floors 20-30 dB under the room, so the
+    # room's noise at a partial's frequency scored as the partial's late decay.
+    _, zw = pa.envelopes(x, sr, tracked, f1, start, max(1.0, end - start / sr), hop=int(.05 * sr))
+    pw = np.mean(np.abs(zw) ** 2, axis=1)
+    second = np.array([pw[:, k:k + 20].mean(axis=1) for k in range(max(1, pw.shape[1] - 19))])
+    partial_floor = 10 * np.log10(np.maximum(second.min(axis=0), 1e-30))
     _, noise = pa.residual_bands(x, sr, freqs, f1, start, seconds=.3, hop_s=.01)
     # The broadband measures leave out the room's infrasonic rumble, which in
     # the quiet treble files outweighs the piano a second after the strike.
@@ -129,13 +142,19 @@ def features(path, note):
     cross90 = np.flatnonzero(env[:int(.15 * sr)] >= .9 * peak)
     times = np.arange(.02, 3.501, .02)
     envelope = np.interp(times * sr, np.arange(len(env)), env)
+    # The broadband floor like the bands': the quietest second before the
+    # fade-out. A floor from the envelope's own last frames sat 10 to 60 dB
+    # under the room in the treble's short files, whose last frames are the
+    # fade, and so scored the room's rumble as the piano's tail there.
+    total = np.cumsum(np.r_[0.0, np.mean(xh * xh, axis=1)[:max(sr, int(end * sr))]])
+    quietest = float(np.min((total[sr:] - total[:-sr])[::int(.05 * sr)])) / sr
     return {'sr': sr, 'f1': f1, 'B': B, 'n': [q['n'] for q in found], 'hz': freqs.tolist(),
-            'env_t': t, 'env_power': power, 'floor': pa.envelope_floor(t, 10 * np.log10(np.maximum(power, 1e-30))),
+            'env_t': t, 'env_power': power, 'floor': partial_floor,
             'bands': level, 'band_floor': band_floor, 'left': left, 'right': right, 'cross': cross, 'noise': noise,
             'early_rms': float(np.sqrt(np.mean(early * early))),
             'rise': (cross90[0] - cross10[0]) / sr if len(cross10) and len(cross90) else None,
             'envelope': envelope,
-            'envelope_floor_db': float(pa.envelope_floor(times, 20 * np.log10(np.maximum(envelope, 1e-12))[None])[0])}
+            'envelope_floor_db': 10 * math.log10(max(quietest, 1e-30))}
 
 
 def window_db(t, power, lo, hi):
@@ -177,9 +196,13 @@ def compare(ref, mod):
         mdb = 10 * np.log10(np.maximum(mod['env_power'][j], 1e-30))
         # Both slopes over the frames where the recording stands clear of its
         # floor: a two-stage decay measured over different spans differs even
-        # when the model is exact.
+        # when the model is exact. The frames are chosen on the envelope
+        # averaged over 0.1 s; chosen frame by frame, the noise's own peaks
+        # passed once a treble partial had sunk into it (A7's second partial
+        # from 0.6 s) and set the recording's slope there.
         rt = ref['env_t']
-        late = (rt >= .5) & (rt <= 3.5) & (rdb > ref['floor'][i] + 6)
+        smooth = ndimage.uniform_filter1d(ref['env_power'][i], max(1, round(.1 / (rt[1] - rt[0]))), mode='nearest')
+        late = (rt >= .5) & (rt <= 3.5) & (10 * np.log10(np.maximum(smooth, 1e-30)) > ref['floor'][i] + 6)
         rs = slope(rt, rdb, late)
         ms = slope(rt, np.interp(rt, mod['env_t'], mdb), late)
         if rs is not None and ms is not None:
