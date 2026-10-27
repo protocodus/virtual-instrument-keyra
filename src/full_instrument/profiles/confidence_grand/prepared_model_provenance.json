@@ -68,7 +68,7 @@
     "new_fit_or_acquisition": false,
     "default_promoted": false
   },
-  "generator_sha256": "eae90644da1b937fcb6c7e04515d5a10d227e8c5ef061ba86ea4dc65986600e7",
+  "generator_sha256": "16d7d8da91764ff8d2ae031edb543f250c319e9f5091db642e8cc12267decd81",
   "precision_transform_source": "tools/probe_full_precision.py:precision,hot_precision",
   "precision_tool_sha256": "280d77738d50f23b0fbcd14822edb50a1bda22428fafa43e16f45a493426f961",
   "precision_transform_sha256": "e8261b494d929caaa08182dec6a5836b730afdf7da84514ff93d9cc9689b16b4",
@@ -84,6 +84,18 @@
     "solver_sha256": "7319e1afdb41773e5ba36674a39904769f76bf57f54e1c1ec9c02d05385c202a",
     "fallback": "legacy contact method verbatim; macro zero or undefined",
     "failure_policy": "invalid or unconverged result retires only the hammer; tentative force never applied"
+  },
+  "free_unison_fusion": {
+    "macro": "KEYRA_FULL_FREE_UNISON_SIMD",
+    "required_compiler_flag": "-fopenmp-simd",
+    "control_profile": 0,
+    "available_for_selected_profile": false,
+    "helper_sha256": "58c56ffdf7981ae4ce15c7e8c950013e0834ed5f1a51fa6eea6ceab870795581",
+    "transform_sha256": "42727afd8502d0560b9c63f3c846dddc4922fdf6d99a2a8501f946256d6d8cb6",
+    "coefficients_changed": false,
+    "optimized": "SIMD across independent inactive-hammer rows; original float order within each row",
+    "fallback": "original storage, setup and callback when macro zero, undefined or compiler unsupported",
+    "invalid_inventory_fallback": "original oscillator and grouped-unison callback"
   },
   "generated_model_sha256": "68d04ecff615c89d743467ad19e3a14fb5a381d41f875876b2cbf83d86324386"
 }
