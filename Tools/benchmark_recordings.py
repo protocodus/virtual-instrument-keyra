@@ -68,7 +68,7 @@ WINDOWS = [(.05, .25), (.25, .75), (.75, 1.5), (1.5, 3.5)]
 # Rounded midpoints of the SFZ velocity bins of layers 1..16.
 LAYER_VELOCITY = [14, 31, 36, 40, 45, 49, 54, 61, 69, 77, 85, 93, 101, 109, 117, 124]
 RENDER_SECONDS = 4.6
-FEATURES = 'features 3'  # bump when features() changes, to refresh cached references
+FEATURES = 'features 4'  # bump when features() changes, to refresh cached references
 LEAD = .05
 
 
@@ -105,10 +105,18 @@ def features(path, note):
     t, z = pa.envelopes(x, sr, freqs if len(freqs) else np.array([pa.midi_hz(note)]), f1, start, seconds)
     power = np.mean(np.abs(z) ** 2, axis=1)
     level, left, right, cross = band_spectrogram(x, sr, start, min(3.0, seconds))
-    # The recording's own floor per band (room, microphones, ventilation) from
-    # its quietest frames anywhere in the file; nothing near it is scored.
-    whole, _, _, _ = band_spectrogram(x, sr, 0, len(x) / sr - .05, hop=.05)
-    band_floor = np.percentile(whole, 5, axis=0)
+    # The recording's own floor per band (room, microphones, ventilation): the
+    # mean power of its quietest second before the library's fade-out (the
+    # analysis' horizon); nothing near it is scored. The quietest single frames
+    # sat 10-15 dB under the room's rumble, as a band of one or two bins swings
+    # that far from frame to frame and the files fade to silence, so in the
+    # treble that rumble scored as the piano's sustain.
+    duration = len(x) / sr
+    end = duration - max(1.0, .25 * duration) if duration > 8 else duration - 1.0
+    whole, _, _, _ = band_spectrogram(x, sr, 0, end, hop=.05)
+    whole = 10 ** (whole / 10)
+    second = np.array([whole[k:k + 20].mean(axis=0) for k in range(max(1, len(whole) - 19))])
+    band_floor = 10 * np.log10(np.maximum(second.min(axis=0), 1e-30))
     _, noise = pa.residual_bands(x, sr, freqs, f1, start, seconds=.3, hop_s=.01)
     # The broadband measures leave out the room's infrasonic rumble, which in
     # the quiet treble files outweighs the piano a second after the strike.
