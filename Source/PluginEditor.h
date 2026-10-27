@@ -24,6 +24,18 @@ private:
     bool held = false;
 };
 
+// The painted KEYRA title's About box: transparent, so the panel is unchanged.
+class KeyraAboutArea final : public juce::Component, public juce::SettableTooltipClient
+{
+public:
+    std::function<void()> onClick;
+    void mouseUp(const juce::MouseEvent& event) override
+    {
+        if (getLocalBounds().contains(event.getPosition()) && onClick)
+            onClick();
+    }
+};
+
 class KeyraAudioProcessorEditor final : public juce::AudioProcessorEditor, private juce::Timer,
     private juce::MidiKeyboardState::Listener
 {
@@ -45,6 +57,8 @@ private:
     juce::MidiKeyboardState keyboardState;
     juce::MidiKeyboardComponent keyboard { keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard };
     juce::TooltipWindow tooltips { this, 750 };
+    KeyraAboutArea about;
+    juce::ScopedMessageBox aboutMessageBox;
     float level = 0;
     bool activity = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyraAudioProcessorEditor)

@@ -206,12 +206,25 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     keyboard.setColour(juce::MidiKeyboardComponent::keyDownOverlayColourId, brass.withAlpha(.55f));
     keyboardState.addListener(this);
     addAndMakeVisible(keyboard);
+    // The build identity stays off the panel so the committed screenshot does
+    // not change with every build.
+    about.setTooltip("About Keyra " KEYRA_BUILD_IDENTITY);
+    about.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    about.onClick = [this] {
+        aboutMessageBox = juce::AlertWindow::showScopedAsync(
+            juce::MessageBoxOptions().withTitle("About Keyra")
+                .withMessage("Keyra " KEYRA_BUILD_IDENTITY)
+                .withButton("OK")
+                .withAssociatedComponent(this), nullptr);
+    };
+    addAndMakeVisible(about);
     setSize(980, 560);
     startTimerHz(24);
 }
 
 KeyraAudioProcessorEditor::~KeyraAudioProcessorEditor()
 {
+    aboutMessageBox = {};
     for (size_t i = 0; i < pedals.size(); ++i) {
         processor.enqueueKeyboard(false, 12 + static_cast<int>(i), 0);
         pedals[i].onHold = nullptr;
@@ -234,6 +247,7 @@ void KeyraAudioProcessorEditor::resized()
         controls[static_cast<size_t>(8 - i)].setBounds(x + 86, 388, 164, 29);
     }
     keyboard.setBounds(54, 442, 872, 82);
+    about.setBounds(70, 52, 300, 50); // where paint() draws the title
 }
 
 void KeyraAudioProcessorEditor::paint(juce::Graphics& g)

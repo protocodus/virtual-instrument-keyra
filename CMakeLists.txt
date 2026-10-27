@@ -183,11 +183,23 @@ if(KEYRA_BUILD_PLUGIN)
             juce::juce_recommended_lto_flags
             juce::juce_recommended_warning_flags)
 
+    # The About box names the package this binary ships in, with the build
+    # number read the way scripts/release_metadata.py reads it.
+    if(NOT "$ENV{BUILD_NUMBER}" STREQUAL "")
+        set(KEYRA_BUILD_NUMBER "$ENV{BUILD_NUMBER}")
+    elseif(NOT "$ENV{GITHUB_RUN_NUMBER}" STREQUAL "")
+        set(KEYRA_BUILD_NUMBER "$ENV{GITHUB_RUN_NUMBER}")
+    else()
+        set(KEYRA_BUILD_NUMBER "local")
+    endif()
+
     target_compile_definitions(Keyra
         PUBLIC
             JUCE_WEB_BROWSER=0
             JUCE_USE_CURL=0
-            JUCE_VST3_CAN_REPLACE_VST2=0)
+            JUCE_VST3_CAN_REPLACE_VST2=0
+        PRIVATE
+            KEYRA_BUILD_IDENTITY="${PROJECT_VERSION}-build.${KEYRA_BUILD_NUMBER}")
 
     # The editor preview renders the README screenshot and the Shop images.
     add_executable(keyra_editor_preview Tools/editor_preview.cpp)
