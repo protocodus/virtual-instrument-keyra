@@ -10,11 +10,17 @@ differences do not establish inaudibility, SDK compatibility or realtime use.
 A later guarded native API integration is documented in
 `docs/FULL_BACKEND.md` and `Validation/full-pressure-integration.json`. That
 integration checks compiler support, preserves the original fallback, and
-validates the newer finite key-lift controller. Its performance option defaults
-to OFF because the current measurements retain a repetition/pedal regression.
+validates the newer finite key-lift controller. That integration left the option
+OFF because its measurements retained a repetition/pedal regression.
 The original timing tables below
 remain historical evidence for their recorded inputs; their 16–22% medians are
 not a new measurement of the integrated build.
+
+The later [current-backend study](PRESSURE_CURRENT.md) remeasures pressure SIMD
+with free/unison fusion, adds isolated register/velocity checks and changes the
+fresh supported native OriginalControl default after passing its declared
+quality and timing guards. Its 22–25% gains belong to that newer source/config;
+the historical regressions below remain intact.
 
 The integrated build's later three-pair countercheck preserves its mixed first
 pass and reports **a 12.2% higher median CPU cost for 48 kHz repetition/pedal**.

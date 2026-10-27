@@ -1,0 +1,70 @@
+{
+  "kind": "native",
+  "passed": true,
+  "error": null,
+  "commands": [
+    {
+      "command": [
+        "/home/agent/.local/bin/cmake",
+        "-S",
+        "/workspace/keyra-publish/Experiments",
+        "-B",
+        "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/build",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_TESTING=ON",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DKEYRA_BUILD_REFERENCE=OFF",
+        "-DKEYRA_BUILD_FULL_REFERENCE=OFF",
+        "-DKEYRA_BUILD_PHYSICAL=OFF",
+        "-DKEYRA_BUILD_CLAP=OFF",
+        "-DKEYRA_SANITIZERS=OFF"
+      ],
+      "log": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/configure.log",
+        "sha256": "fdcb411986dc1bb977229d43a687f8880992e7f4c679c1649440a0eba4fa3387"
+      },
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/home/agent/.local/bin/cmake",
+        "--build",
+        "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/build",
+        "--target",
+        "keyra_full_instrument_tests",
+        "keyra_full_profile_tests",
+        "keyra_full_sdk_compat_tests",
+        "keyra_full_render",
+        "-j",
+        "1"
+      ],
+      "log": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/build.log",
+        "sha256": "2a9b511e797784ba9cc5e458afe2440e560719eaac00b0d43f328bcbefe03481"
+      },
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/build",
+        "--output-on-failure",
+        "-R",
+        "^(full_instrument|full_model_profile|full_sdk_portable)$"
+      ],
+      "log": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/tests.log",
+        "sha256": "a80a62720c645b5c6eddf0f40eb728189932e13136b10274b2e06184f6275c4b"
+      },
+      "exit_code": 0
+    }
+  ],
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/native/freeze.json",
+    "sha256": "bfe374c78d08f114ce30eee5cbea392b974675e045dc358817ca57413bd001dd"
+  },
+  "tests_are_host_approximations": true,
+  "Reason_SDK_or_Recon_run": false,
+  "finished_at_utc": "2026-10-27T04:06:12.360290+00:00"
+}

@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "published_at_utc": "2026-10-27T04:01:21.320675+00:00",
+  "scope": "CURRENT fused OriginalControl fullAPI pressure-observer SIMD OFF/ON. Exact sampled physical state plus predeclared numerical output bounds; authored simulation fixtures, no recording fit or audibility claim.",
+  "source_commit": "863391a5b7cf4112f6dcaa3535339fa6e488efeb",
+  "source_protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/v1/protocol.json",
+    "sha256": "9b092dc4000e764db6399683a7aa1e1936d8a71a26e2c582af1c4fca75610e74"
+  },
+  "harness_protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/protocol.json",
+    "sha256": "f886a11d36e5c79d8b5ebb22411a86e439338c84d3fdfc9579b01f4d76228646"
+  },
+  "build_receipt": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/build-receipt.json",
+    "sha256": "201e86814cf3afd57137f144fb948af4d0db0209ca15a32c66538bf61bb7dd3a"
+  },
+  "configuration": {
+    "free_unison_simd": 1,
+    "fast_contact": 1,
+    "mechanism_cache": 1,
+    "model_profile": 0,
+    "only_arm_difference": "KEYRA_FULL_PRESSURE_SIMD=0 versus1",
+    "flags": [
+      "-std=c++17",
+      "-O3",
+      "-DNDEBUG",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-builtin",
+      "-ffp-contract=off",
+      "-DKEYRA_FULL_FAST_CONTACT=1",
+      "-DKEYRA_FULL_MECHANISM_CACHE=1",
+      "-DKEYRA_FULL_MODEL_PROFILE=0",
+      "-fopenmp-simd",
+      "-DKEYRA_FULL_FREE_UNISON_SIMD=1"
+    ],
+    "controls": "Current fullAPI defaults; seed0x4b657972, humanization.65, mechanisms.025, repetitioncontroller/bodycoupling/directmechanismobservation enabled."
+  },
+  "numerical_recipe": {
+    "sample_rates": [
+      44100,
+      48000,
+      88200,
+      96000
+    ],
+    "maximum_null_rms_db": -110.0,
+    "maximum_absolute_error_factor": 0.0001,
+    "maximum_LR_shift_db": 0.001,
+    "maximum_correlation_shift": 1e-05,
+    "maximum_mono_shift_db": 0.001,
+    "maximum_band_shift_db": 0.01,
+    "relative_power_floor": 1e-10,
+    "window_edges_seconds": [
+      0.05,
+      0.2
+    ],
+    "band_edges_hz": [
+      0.0,
+      31.25,
+      250.0,
+      1000.0,
+      4000.0,
+      12000.0,
+      19000.0
+    ],
+    "absolute_error_reference": "old peak in the same window",
+    "baseline_wholly_zero_requires_candidate_wholly_zero": true,
+    "FFT_normalization": "symmetric np.hanning(N); mean channel |rfft(x*w)|^2/(N*sum(w^2)); one-sided interior bins doubled, DC and even-N Nyquist counted once. Sum equals Hann-squared-weighted mean stereo power. No detrending.",
+    "FFT_gated_at_all_declared_rates": true,
+    "correlation": "mean-removed Pearson, with baseline-variance mask",
+    "adjustments": "none: no level matching, onset, delay, detrending or alignment"
+  },
+  "quality_source": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/quality.py",
+    "sha256": "7023e7ca4984312ff72492a55267b630482762bc01a8369360dcd6fd657a6e9e"
+  },
+  "core_quality": {
+    "result": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/correctness-result.json",
+      "sha256": "45e101c909437fc7f3d65697a9fd3fd935141b3e96aeaa5ad1dad21aeafd8655"
+    },
+    "review": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/correctness-review.json",
+      "sha256": "323949cab1da100a3f1c9eb0096e5753d7b87b62787f3e286c693b18dd38ab2e"
+    },
+    "rate_case_groups": 16,
+    "sample_rates": [
+      44100,
+      48000,
+      88200,
+      96000
+    ],
+    "frames_per_arm": 574704,
+    "physical_snapshot_pairs_exact": 80,
+    "observer_payloads_numerically_checked": 32,
+    "observer_payloads_byte_identical": 0,
+    "excluded_observer_fields": [
+      "String.cachedRadiation",
+      "Impl.previous",
+      "Impl.highpass"
+    ],
+    "lastStems_and_bodyCache_remain_exact": true,
+    "windows": 128,
+    "bands": 224,
+    "powered_band_gates": 200,
+    "weak_band_diagnostics_retained": 24,
+    "worst_window_null_db": {
+      "sample_rate": 44100,
+      "case": "silent-reset",
+      "payload": "output_f32",
+      "window": "50_to_200ms",
+      "null_rms_db": -126.3274544042808
+    },
+    "maximum_gated_band_shift": {
+      "sample_rate": 96000,
+      "case": "dense-88-tail",
+      "payload": "raw_f64",
+      "band_hz": [
+        12000.0,
+        19000.0
+      ],
+      "shift_db": 0.0005345601542749989
+    },
+    "maximum_any_defined_band_shift": {
+      "sample_rate": 96000,
+      "case": "dense-88-tail",
+      "payload": "output_f32",
+      "band_hz": [
+        19000.0,
+        48000.0
+      ],
+      "shift_db": -0.11653088229193642
+    }
+  },
+  "performance": {
+    "result": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/performance-result.json",
+      "sha256": "6c387ba1b8c2b171353a7154b09ed7404338d582b71510c2fad986469b4439df"
+    },
+    "review": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/harness-v1/performance-review.json",
+      "sha256": "aaef30a80b9f70ea2bbd065f6056e677da9287fb20f4a57605dd5f10596de1b9"
+    },
+    "policy": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion-audit/harness-v1/performance-decision-policy.json",
+      "sha256": "1c45ff61a8ec8de1711c59a345774c76bf8d7a45754bf5f99204d39a74eb027f"
+    },
+    "policy_pass": true,
+    "cpu_groups_passed": 6,
+    "p95_groups_passed": 6,
+    "trial_orders": [
+      [
+        "baseline",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ],
+      [
+        "baseline",
+        "candidate"
+      ]
+    ],
+    "runs": 12,
+    "case_runs": 36,
+    "paired_trials": 18,
+    "raw_callbacks_retained": 14400,
+    "candidate_slower_paired_trials": 0,
+    "groups": [
+      {
+        "sample_rate": 48000,
+        "case": "music",
+        "median_cpu_per_audio": {
+          "baseline": 2.874101948437499,
+          "candidate": 2.1541269984374996
+        },
+        "median_cpu_reduction_fraction": 0.2505043185372784,
+        "median_p95_cpu_seconds": {
+          "baseline": 0.004176638,
+          "candidate": 0.0034435010000000003
+        },
+        "median_p95_cpu_change_fraction": -0.175532808924307,
+        "paired_speedups": [
+          1.3292948091313528,
+          1.319953568574383,
+          1.336014337774853
+        ]
+      },
+      {
+        "sample_rate": 48000,
+        "case": "repeats-pedal",
+        "median_cpu_per_audio": {
+          "baseline": 2.856538946875002,
+          "candidate": 2.172487798437499
+        },
+        "median_cpu_reduction_fraction": 0.23946851807703917,
+        "median_p95_cpu_seconds": {
+          "baseline": 0.004242094,
+          "candidate": 0.0033758810000000003
+        },
+        "median_p95_cpu_change_fraction": -0.20419467366824018,
+        "paired_speedups": [
+          1.3148699610324566,
+          1.2723734652684253,
+          1.307387369553935
+        ]
+      },
+      {
+        "sample_rate": 48000,
+        "case": "dense-88-tail",
+        "median_cpu_per_audio": {
+          "baseline": 2.946911021874999,
+          "candidate": 2.2915213937499996
+        },
+        "median_cpu_reduction_fraction": 0.22239885197076692,
+        "median_p95_cpu_seconds": {
+          "baseline": 0.004498291000000001,
+          "candidate": 0.003645156
+        },
+        "median_p95_cpu_change_fraction": -0.18965758329107663,
+        "paired_speedups": [
+          1.2585976211552008,
+          1.2843913991741802,
+          1.3273332535979159
+        ]
+      },
+      {
+        "sample_rate": 96000,
+        "case": "music",
+        "median_cpu_per_audio": {
+          "baseline": 5.66390110625,
+          "candidate": 4.412855021874997
+        },
+        "median_cpu_reduction_fraction": 0.22088063702145133,
+        "median_p95_cpu_seconds": {
+          "baseline": 0.0042241150000000005,
+          "candidate": 0.0033944780000000003
+        },
+        "median_p95_cpu_change_fraction": -0.19640492742266724,
+        "paired_speedups": [
+          1.2835003819915751,
+          1.3088594189051055,
+          1.2713186218918826
+        ]
+      },
+      {
+        "sample_rate": 96000,
+        "case": "repeats-pedal",
+        "median_cpu_per_audio": {
+          "baseline": 5.838386978125,
+          "candidate": 4.536615937500003
+        },
+        "median_cpu_reduction_fraction": 0.22296758428353802,
+        "median_p95_cpu_seconds": {
+          "baseline": 0.004462335,
+          "candidate": 0.003414143
+        },
+        "median_p95_cpu_change_fraction": -0.2348976488766532,
+        "paired_speedups": [
+          1.3873623251598382,
+          1.2788427290689068,
+          1.1747925524173035
+        ]
+      },
+      {
+        "sample_rate": 96000,
+        "case": "dense-88-tail",
+        "median_cpu_per_audio": {
+          "baseline": 5.993295056249998,
+          "candidate": 4.67746644375
+        },
+        "median_cpu_reduction_fraction": 0.21955011394404989,
+        "median_p95_cpu_seconds": {
+          "baseline": 0.0046586050000000006,
+          "candidate": 0.0037665430000000002
+        },
+        "median_p95_cpu_change_fraction": -0.1914869365400158,
+        "paired_speedups": [
+          1.2835007792103672,
+          1.2362891463139274,
+          1.3487515585878112
+        ]
+      }
+    ],
+    "all18_performance_audio_numerical_gates_pass": true,
+    "worst_audio_null": {
+      "sample_rate": 48000,
+      "case": "dense-88-tail",
+      "pair": 0,
+      "window": "50_to_200ms",
+      "null_rms_db": -126.8848754121095
+    },
+    "maximum_gated_audio_band_shift": {
+      "sample_rate": 48000,
+      "case": "music",
+      "pair": 0,
+      "band": [
+        12000.0,
+        19000.0
+      ],
+      "shift_db": -0.00046510748163086646
+    },
+    "weak_audio_band_diagnostics_retained": 18,
+    "all_wall_deadlines_missed": true,
+    "retained_maximum_cpu_seconds": 0.049756984000000004
+  },
+  "register_diagnostics": {
+    "protocol": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/register-v1/protocol.json",
+      "sha256": "e791c664575b78a6608f506fe4e5693becf276ee67178725f12ee7a39e04a3f1"
+    },
+    "result": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/register-v1/result.json",
+      "sha256": "1d1690b03227b7d7a151424712652284e2c9dfaf6db11d2e6bc31b831dce09f3"
+    },
+    "summary": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current-audit/v1/register-summary.json",
+      "sha256": "b184d6efe8656e11d58b5f60b2b864662a1da256c62699c0684188561dc8b22c"
+    },
+    "notes": [
+      "A0",
+      "C2",
+      "C4",
+      "C6",
+      "C8"
+    ],
+    "velocities_MIDI": [
+      14,
+      124
+    ],
+    "sample_rate": 48000,
+    "seconds_per_case": 1,
+    "humanization": 0.65,
+    "mechanical_level": 0,
+    "pedal": 0.75,
+    "note_on_seconds": 0.05,
+    "note_off_seconds": 0.65,
+    "physical_final_state_pairs_exact": 10,
+    "observer_payloads_passed": 20,
+    "worst_window_null_db": {
+      "case": "C2v124",
+      "payload": "output_f32",
+      "null_rms_db": -121.9674980057882,
+      "name": "200ms_to_end"
+    },
+    "maximum_gated_band_shift": {
+      "case": "C2v124",
+      "payload": "raw_f64",
+      "shift_db": -0.001717630469499909,
+      "hz": [
+        12000.0,
+        19000.0
+      ],
+      "gate_applied": true,
+      "old_relative_total_db": -95.70437361635604
+    },
+    "weak_bands_retained": 28,
+    "worst_weak_band_diagnostic": {
+      "case": "C4v14",
+      "payload": "raw_f64",
+      "shift_db": -3.8771191859942533,
+      "hz": [
+        19000.0,
+        24000.0
+      ],
+      "gate_applied": false,
+      "old_relative_total_db": -146.0993882852266
+    },
+    "scope": "Model register/velocity diagnostics, no fresh recording validation or new gates."
+  },
+  "historical_regression": {
+    "validation": {
+      "path": "/workspace/virtual-instrument-keyra/Validation/full-pressure-integration.json",
+      "sha256": "a75d99731c137b5e2e0f528608aeb9c3cbe6c41b7014f72fe0e08e686f5cb8ea"
+    },
+    "sample_rate": 48000,
+    "case": "repeats-pedal",
+    "median_cpu_reduction_fraction": -0.12157057733052135,
+    "off_cpu_triplet": [
+      3.8916232406250013,
+      3.5217771921874994,
+      3.5641373421874962
+    ],
+    "on_cpu_triplet": [
+      7.240186998437495,
+      3.077787573437501,
+      3.9974315765624997
+    ],
+    "scope": "Prior pre-fusion integrated measurements, retained as historical negative evidence. Not substituted into current paired baseline or erased."
+  },
+  "default_integration": {
+    "status": "Fresh supported-native OriginalControl pressuredefaultON integrated; native/sanitizer/Reasonmock checks pass. Actual ReasonSDK/Recon untested.",
+    "fresh_OriginalControl_supported_native_pressure_default": "ON",
+    "existing_cached_OFF_preserved": true,
+    "scalar_SDK_or_unsupported_pressure": "OFF",
+    "fresh_confidence_profile_pressure_default": "OFF",
+    "confidence_explicit_ON": "Remains experimental optin, not qualified by currentprofile0 measurements.",
+    "free_unison_optout": "Independent option; does not automatically turn pressureoff. Current timingqualification usesfreeunisonON.",
+    "tests": [
+      {
+        "kind": "native",
+        "tests_passed": 3,
+        "result": {
+          "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/integration/native/result.json",
+          "sha256": "04644dc85098f40bd72895cdf07d0283b76547bd7320e16705a70b90c7f9f53c"
+        }
+      },
+      {
+        "kind": "asan",
+        "tests_passed": 2,
+        "result": {
+          "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/integration/asan/result.json",
+          "sha256": "65ca09634eb82c4440f0adb0517b59beeb2549773558bab5329b7b6022e6b0ba"
+        }
+      },
+      {
+        "kind": "reason",
+        "tests_passed": 12,
+        "result": {
+          "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/integration/reason/result.json",
+          "sha256": "1da56c6191161c049d71a7081dfdebae536572dd6a2c3b413c706773ec9fbc75"
+        }
+      }
+    ],
+    "build_policy": {
+      "configurations_passed": 7,
+      "effective_target_checks": 14,
+      "result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/integration-policy/result.json",
+        "sha256": "d638004a381ffc4487e1c91ab4e26060e5659eec18cb8e8cd79255c301538ead"
+      }
+    },
+    "production_CLI": {
+      "protocol": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/production-register-v1/protocol.json",
+        "sha256": "2a76933ca7475691c368486bdba6795798e0c5a863c911c792562db0bd3a5d17"
+      },
+      "result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/production-register-v1/result.json",
+        "sha256": "24c7ce9251b87118cf0f764f67ee68710044c71d06c0f21c9c92b0e18247b1d2"
+      },
+      "summary": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current-audit/v1/production-cli-summary.json",
+        "sha256": "c478ed11b332c2ff00984dcbd1b262c69631e26f31960c269889a767bc90b7a4"
+      },
+      "cases_passed": 10,
+      "actual_float32_payloads_exact_qualified_ON": 10,
+      "same_frozen_numerical_recipe_vs_OFF": true,
+      "scope": "ActualCMakeCLI output path; publicmetadata retains nativecomparison and actualinterleavedpayload hashes. Referenceplanarrawfile hashes useanotherlayout. WAVs remainexternal; no SDK/Recon/pitch/audibility/readinessclaim."
+    },
+    "actual_Reason_SDK_or_Recon_run": false
+  },
+  "realtime_qualified": false,
+  "production_goal_complete": false,
+  "recording_audio_access": false,
+  "inaudibility_proven": false,
+  "pitch_or_realism_improvement_claimed": false,
+  "limits": [
+    "Shared Linux GCC14 oneinstance/thread, no certified worst-case or supportedDAW/SDK qualification.",
+    "CurrentON48kmedians2.154\u20132.292CPU/audio still exceedone; all measuredwallcallbackdeadlines missed and49.76msCPUoutlier retained.",
+    "Seven-band gates use fixedOFFbaselinespectralpower floor1e-10; all weakbandpowers/nulls/errors remain visible.",
+    "Compare currentpressureOFF/ON only; do not multiply priorfree-unison7\u201312percent with this22\u201325percent as a single measured combined gain.",
+    "Physicalexactness is80core and10register checkpoints, not every internalstate at everyframe. Observer outputs intentionally differ within engineeringlimits."
+  ],
+  "evidence_package": "tools/experiments/pressure_current",
+  "documentation": "docs/PRESSURE_CURRENT.md"
+}

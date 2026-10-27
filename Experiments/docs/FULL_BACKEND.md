@@ -177,13 +177,16 @@ renderer metadata edits, which carry separate validation.
 
 ## Pressure reduction build option
 
-`KEYRA_FULL_PRESSURE_SIMD` is an experimental option that defaults to `OFF`.
-Timings are mixed: the 48 kHz repetition/pedal median regresses by 12.2%, despite
-lower medians in seven other case/rate cells. All checked mechanical state is
-identical across branches, but compiler support alone does not establish a
-benefit for every workload.
+Fresh native OriginalControl builds now default `KEYRA_FULL_PRESSURE_SIMD` to
+`ON`, subject to compiler support. The [current study](PRESSURE_CURRENT.md)
+measures 21.96–25.05% lower median CPU across all six 48/96 kHz workloads on the
+fused backend. Physical states remain byte-identical; observer output has small
+rounding differences bounded by the declared numerical checks and isolated
+register tests. Fresh FrozenConfidenceGrand builds retain `OFF`; this study
+does not qualify its optional pressure-SIMD path. Existing cache choices and
+explicit opt-outs are preserved.
 
-When explicitly enabled on GNU or Clang, CMake first checks acceptance of
+When requested on GNU or Clang, CMake first checks acceptance of
 `-fopenmp-simd`; only a successful check
 adds that private compiler flag and defines `KEYRA_FULL_PRESSURE_SIMD=1` for the
 full piano library. Other builds retain the original pressure sums. No OpenMP
@@ -202,12 +205,18 @@ source arithmetic changes. Pressure and output filter values can differ because
 the observation sum has a different order. This is a numerical tradeoff, not an
 inaudibility claim.
 
-The default `-DKEYRA_FULL_PRESSURE_SIMD=OFF` retains the original pressure reduction order and
+The explicit `-DKEYRA_FULL_PRESSURE_SIMD=OFF` retains the original pressure reduction order and
 exact same-compiler CLI null comparisons. Direct compilation without the macro
 also retains that fallback and needs no OpenMP flag. A custom integration must
 explicitly establish compiler support before enabling the macro and flag; SDK
 support is not inferred from native Linux results. The SDK-free Reason prototype
-uses its own explicit option, whose default remains off.
+uses its own compiler-checked native option, with the same fresh-control default.
+This does not enable SIMD in an unqualified Jukebox/SDK build.
+
+The earlier integration below preceded row fusion and the current remeasurement.
+It left the option off because of a 12.2% repetition/pedal regression. Its source,
+all trials and conclusions remain historical evidence; the newer passing study
+does not erase that regression.
 
 ON and OFF native/scalar tests, the optimized AddressSanitizer/UndefinedBehaviorSanitizer
 path, a feature-unavailable fallback build, generated-artifact reproduction, and
@@ -238,7 +247,7 @@ comparisons. ON applies to both native and scalar compatibility targets; unlike 
 SIMD it requires no compiler extension or additional runtime. GNU/Clang target
 options enforce the selection against conflicting parent macros; an actual
 Reason SDK compiler and MSVC have not been validated. The render tool records
-the selected branch through `KEYRA_RENDER_FAST_CONTACT`. Current contact studies
+the selected branch through `KEYRA_RENDER_FAST_CONTACT`. The frozen contact studies
 keep pressure SIMD OFF.
 
 `physics::solveFullContact()` solves the same convex felt potential and
@@ -342,7 +351,7 @@ Supported native OriginalControl builds now default to
 `KEYRA_FULL_FREE_UNISON_SIMD=ON`, after checking `-fopenmp-simd`. This fuses free
 updates and unison coupling across independent rows, preserving the float
 operation order within a row. It is independent of the pressure SIMD option,
-which remains off. The [measured study](FREE_UNISON_FUSION.md) retains both the
+whose current policy is described above. The [measured study](FREE_UNISON_FUSION.md) retains both the
 slower scalar attempt and the passing exact row-vectorized implementation.
 
 The entire added storage, setup and callback path is guarded. Macro zero,

@@ -1,0 +1,68 @@
+{
+  "at_utc": "2026-10-27T04:08:20.092758+00:00",
+  "passed": true,
+  "error": null,
+  "freeze": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/freeze.json",
+    "sha256": "db8d6f48c4349404c65706b9bd39239bf46df3efa22a3f34ca21eecb12aac6fc"
+  },
+  "commands": [
+    {
+      "stage": "configure",
+      "command": [
+        "cmake",
+        "-S",
+        "/workspace/reason-keyra-publish/Prototypes/Keyra",
+        "-B",
+        "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/build",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_TESTING=ON",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DKEYRA_BUILD_EXPERIMENTAL_FULL_MODEL=ON",
+        "-DKEYRA_INSTRUMENT_DIR=/workspace/keyra-publish"
+      ],
+      "log": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/configure.log",
+        "sha256": "f45d974e3c355402df6b0bce670b6a0fb971abd5e06d74f19351c02143588506"
+      },
+      "exit_code": 0
+    },
+    {
+      "stage": "build",
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/build",
+        "--target",
+        "keyra_rack_host",
+        "keyra_rack_full_host",
+        "keyra_rack_full_scalar_host",
+        "-j",
+        "1"
+      ],
+      "log": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/build.log",
+        "sha256": "ed0f6cf7c174cf1548fbb43fb24d3a3ede4af24ef172203e9f8627981149655b"
+      },
+      "exit_code": 0
+    },
+    {
+      "stage": "ctest",
+      "command": [
+        "ctest",
+        "--test-dir",
+        "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/build",
+        "--output-on-failure"
+      ],
+      "log": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-pressure-current/layout/reason/ctest.log",
+        "sha256": "49f396e6ab7096e80e72a49652e2c202f79655d95016eb1df8dd44938ebd9586"
+      },
+      "exit_code": 0
+    }
+  ],
+  "wall_seconds": 98.36824359800084,
+  "SDK_or_Recon_validated": false,
+  "ASAN_or_benchmark_repeated": false,
+  "scope": "SDK-freepathsmokeonly; relocatedcanonicalExperiments/source andfreshdefaultnative+forcedscalarcores withstaticcontracts/buildpolicy."
+}
