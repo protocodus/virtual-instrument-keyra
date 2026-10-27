@@ -1,4 +1,5 @@
 #include "DSP/KeyraEngine.h"
+#include "DSP/MeasuredModalData.h"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -172,6 +173,46 @@ int main(int argc,char** argv){
     check(rms(render(b,24000))<rms(render(a,24000)),"soft pedal changes hammer excitation");
     keyra::Engine c,d;c.setParameters(dry());d.setParameters(dry());c.controlChange(64,127);c.controlChange(66,127);c.controlChange(1,127);c.pitchBend(2);c.controlChange(121,0);
     c.noteOn(60,.7f);d.noteOn(60,.7f);check(render(c,24000)==render(d,24000),"reset all controllers restores channel playing state");
+  }
+  {
+    // The board's noise keeps to its measured spectrum: at the top recorded
+    // pitch, every band clear of its partials and no more than 10 dB under
+    // either neighbour sounds within 6 dB of its measured level against the
+    // 2.5 kHz band. (A deeper step is beyond what third-octave bands can
+    // draw.) Second-order bands leaked 10-34 dB into the quiet bands above.
+    namespace m=keyra::measured;
+    constexpr double pi=3.14159265358979323846,sr=48000;constexpr int layer=5,n=2048,reference=4;
+    const int anchor=static_cast<int>(m::anchors.size())-1,bandCount=static_cast<int>(m::noiseBands.size());
+    const auto& a=m::anchors[anchor];const auto& bands=m::noise[anchor];
+    keyra::Engine e(sr);e.setParameters(dry());e.noteOn(a.note,m::layerVelocity[layer]/127.f);
+    Audio left(n),right(n);e.process(left.data(),right.data(),n);
+    std::vector<double> w(n);double w2=0;for(int i=0;i<n;++i){w[i]=.5-.5*std::cos(2*pi*i/n);w2+=w[i]*w[i];}
+    auto edge=[&](int b,double side){return m::noiseBands[b].hz*std::pow(2.,side/6);};
+    auto rendered=[&](int b){double sum=0;int points=0;
+      for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=50,++points)
+        for(const Audio* x:{&left,&right}){double re=0,im=0;
+          for(int i=0;i<n;++i){re+=(*x)[i]*w[i]*std::cos(2*pi*f*i/sr);im+=(*x)[i]*w[i]*std::sin(2*pi*f*i/sr);}
+          sum+=re*re+im*im;}
+      return 10*std::log10(sum/points);};
+    // A band's density at the strike, its mean over the window as it decays,
+    // and both channels' share of it.
+    auto measuredDb=[&](int b){const auto& x=bands[b];double decay=0;
+      for(int i=0;i<n;++i)decay+=w[i]*w[i]*std::exp(-2*x.rate*i/sr);
+      return x.densityDb[layer]+10*std::log10(decay/w2)+10*std::log10(std::pow(10.,-x.balanceDb/20)+std::pow(10.,x.balanceDb/20));};
+    const double offset=rendered(reference)-measuredDb(reference);
+    int compared=0;
+    for(int b=0;b<bandCount;++b){
+      bool partial=false,step=false;
+      for(int k=a.first;k<a.first+a.count;++k){const auto& q=m::partials[k];
+        const double hz=q.order*a.f1*std::sqrt((1+a.B*q.order*q.order)/(1+a.B))*std::pow(2.,q.cents/1200);
+        partial=partial||(hz>edge(b,-1)-100&&hz<edge(b,1)+100);}
+      for(int k:{b-1,b+1})if(k>=0&&k<bandCount)step=step||measuredDb(k)-measuredDb(b)>10;
+      if(partial||step||b==reference)continue;
+      const double error=rendered(b)-measuredDb(b)-offset;++compared;
+      check(std::abs(error)<6,"board noise band follows its measured density where no partial sounds");
+      std::cout<<"noise_band_hz="<<m::noiseBands[b].hz<<" error_db="<<error<<'\n';
+    }
+    check(compared>=5,"board noise spectrum compared in at least five bands");
   }
   for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);

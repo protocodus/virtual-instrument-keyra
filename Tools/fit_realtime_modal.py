@@ -570,22 +570,23 @@ def noise_bands(result, contact, window=.04, hop=.002):
     (dB/s), from a Theil-Sen line through 40 ms Hann frames 20 to 120 ms after
     contact, and the density before the onset; NaN where the band never stands
     10 dB above that floor. As the benchmark measures noise, bins within 1.5
-    main-lobe half-widths (75 Hz) of any partial the stiff string could have
-    are left out, and a band that keeps under a quarter of its bins is not
-    measured. Also the right-over-left level difference (dB) and left/right
-    coherence there."""
+    main-lobe half-widths (75 Hz) of the partials the recordings show are left
+    out, and a band that keeps under a quarter of its bins is not measured.
+    Above the highest of them a band is measured whole, as the benchmark
+    measures it: excluding every partial the stiff string could have left no
+    band to measure below A3, whose keys then took the treble's louder noise.
+    Also the right-over-left level difference (dB) and left/right coherence
+    there."""
     import math
     import numpy as np
     from scipy import signal, stats
-    import piano_analysis as pa
     sr = result['sr']
     length = int(window * sr)
     nfft = 1 << int(math.ceil(math.log2(2 * length)))
     w = signal.windows.hann(length, sym=False)
     hz = np.fft.rfftfreq(nfft, 1 / sr)
-    f1, B = result['f1'], result['layers'][0]['B']
     keep = np.ones(len(hz), bool)
-    for f in pa.stiff(f1, B, np.arange(1, int(sr / 2 / f1) + 2)):
+    for f in np.r_[result['freqs'], [q['hz'] for L in result['layers'] for q in L['found']]]:
         keep &= np.abs(hz - f) > 1.5 * 2 / window
     bins = []
     for centre in NOISE_BANDS:

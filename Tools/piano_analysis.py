@@ -433,14 +433,18 @@ def _layer_frames(times, power_db, floor_db):
     return sel if len(sel) >= 6 else None
 
 
-def fit_partial_layers(layers, f1, sr, n, hz, cap_db=20.0, ridge=.03):
+def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
     """Fit one partial jointly across velocity layers.
 
     `layers` is a list of dicts with `times` (seconds after that layer's
     string contact), `z` (channels x frames complex envelope), `power_db`,
     `floor_db` and `velocity`. Each frame is weighted by the inverse of the
-    measured envelope, capped `cap_db` below the layer's peak, so the long
-    tail is fitted in relative terms and the loud attack in absolute ones.
+    envelope's largest value within `beat` seconds plus the partial's floor,
+    so the whole decay is fitted in relative terms down to the floor, frames
+    near the floor count as the noise they hold, and a null between unison
+    beats weighs as the beat around it. (Weights capped 20 dB below the peak
+    left the treble's slow aftersound to the noise: C6's fitted tails fell
+    20 dB/s faster than the recordings'.)
     Each lane amplitude also costs `ridge` times its size relative to the
     layer's peak: without it, two lanes can merge into a cancelling pair of
     huge amplitudes that only float64 arithmetic reproduces, and that no
@@ -459,7 +463,8 @@ def fit_partial_layers(layers, f1, sr, n, hz, cap_db=20.0, ridge=.03):
             continue
         tt = L['times'][sel]
         amp = 10 ** (L['power_db'][sel] / 20)
-        w = 1 / np.maximum(amp, amp.max() * 10 ** (-cap_db / 20))
+        local = np.array([amp[np.abs(tt - s) <= beat].max() for s in tt])
+        w = 1 / (local + 10 ** (L['floor_db'] / 20))
         w /= math.sqrt(len(sel))
         zw = L['z'][:, sel] * w
         prepared.append({'response': _WindowedExponentials(tt, grid, profile), 'w': w,

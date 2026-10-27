@@ -50,9 +50,10 @@ musical passages through the same engine. Both are frozen evidence from
   not this ring, which dies within a second.
 - Existing sessions sound different; the median note keeps 0.3.0's level. On
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
-  partial levels sit 3.9 dB from the recordings (0.3.0: 10.8 dB), the attack
-  spectrum 6.4 dB (15.9 dB) and the noise between partials 11.3 dB (25.8 dB);
-  its regressions, the treble's late decay first, are listed there.
+  partial levels sit 3.4 dB from the recordings (0.3.0: 9.6 dB), the attack
+  spectrum 4.2 dB (15.8 dB), the sustain spectrum 5.2 dB (10.2 dB) and the
+  noise between partials 6.0 dB (25.9 dB); its regressions, A7 and C8's late
+  decay and D♯3's stereo image first, are listed there.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -96,8 +97,9 @@ Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, which rings for half a second to a second,
 with the level, phase and velocity response measured for each recorded pitch.
 Above the modes, the board's dense ring is band noise in 13 third-octave bands
-from 1 to 16 kHz: each strike starts its own burst with the density, decay and
-left/right balance measured for its pitch. A shared bank of 88 open-string
+from 1 to 16 kHz, each a sixth-order band-pass so that the quiet top octaves
+keep their measured level: each strike starts its own burst with the density,
+decay and left/right balance measured for its pitch. A shared bank of 88 open-string
 resonators supplies the sympathetic response the Resonance control sets.
 
 ### Calibration from recordings
@@ -108,10 +110,12 @@ from the train role of a locked split of the Salamander Grand Piano V3
 `Tools/fetch_salamander.py`): every A, C and F♯ from A0 to A7 at twelve
 velocity layers, 264 recordings. Each partial is fitted jointly across its
 pitch's layers (`Tools/piano_analysis.py`), the lanes' rates shared and their
-levels and phases per layer; the layers' contact times are aligned so that
-the phases form one pattern across the partials. The body modes are found
-below the treble's fundamentals, where no string sounds, and the noise
-between the partials, measured as the benchmark measures it. A strike
+levels and phases per layer, every moment of its decay weighed relative to its
+level down to the recording's floor; the layers' contact times are aligned so
+that the phases form one pattern across the partials. The body modes are found
+below the treble's fundamentals, where no string sounds; the board noise is
+measured in the gaps between the partials the recordings show and, above the
+highest of them, across whole bands, as the benchmark measures it. A strike
 interpolates between the recorded pitches by partial order and between the
 layers by velocity, taking phases from the nearer pitch. C8 is left out: its
 strongest components sit 90–100 cents above the stretch that F♯7 and A7 set
@@ -160,16 +164,22 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   times slower than real time.
 - Pedal behaviour is not validated against recordings: the training recordings
   do not document pedal positions or timings. Key and damper noises and the
-  room are not calibrated.
+  room are not calibrated ([release recordings](Docs/research/release-recordings-2026-10-27.md)),
+  and the key and action noise the recordings carry 1 to 28 ms before string
+  contact is not played: a note sounds from contact.
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is further from the recording
   than 0.3.0's fixed panning was.
-- The treble's late decay, after half a second from C6 up, falls faster than
-  the recordings'.
+- From C6 up, the partials' decay after half a second is still 12 dB/s from
+  the recordings' on the dev cases (0.3.0: 9 dB/s); at A7 most of that comes
+  from a second partial 50 dB under the first. From F♯3 to F♯5 the first
+  seconds of the sustain sit up to 1 dB further from the recordings (4 dB at
+  D♯5) than under a fit weighted towards them, as a long note's tail now
+  counts as much.
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
-  measure the board noise in most bands, so those keys take each band from
-  the lowest pitch where it was measured.
+  measure the board noise in six to ten of the thirteen bands; those bands are
+  interpolated between the nearest pitches that measured them.
 - Every recording is from one piano and one session, so the holdout does not
   establish how the fit generalises to another instrument.
 - Only Linux VST3 and standalone builds have been validated

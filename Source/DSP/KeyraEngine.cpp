@@ -100,12 +100,14 @@ struct Burst {
   std::uint64_t serial=0;
   bool active=false;
 };
-// One band: a band-pass (b1 = 0, b2 = -b0) on each of two independent noise
-// sources, mixed for the measured left/right coherence, under gains that
-// ramp across each chunk to the bursts' sum at its end.
+// One band: a band-pass of `noiseSections` sections (b1 = 0, b2 = -b0) on
+// each of two independent noise sources, mixed for the measured left/right
+// coherence, under gains that ramp across each chunk to the bursts' sum at
+// its end.
+constexpr int noiseSections=3;
 struct NoiseBand {
-  double b0=0,a1=0,a2=0,scale=0,c=1,s=0;
-  double x1[2]{},x2[2]{},y1[2]{},y2[2]{};
+  double b0[noiseSections]{},a1[noiseSections]{},a2[noiseSections]{},scale=0,c=1,s=0;
+  double x1[noiseSections][2]{},x2[noiseSections][2]{},y1[noiseSections][2]{},y2[noiseSections][2]{};
   double left=0,right=0,leftStep=0,rightStep=0,leftEnd=0,rightEnd=0;
 };
 struct Voice {
@@ -276,32 +278,59 @@ struct Engine::Impl {
       }
     }
   }
+  // The power response at w (rad/sample) of one section, b0 (1 - z^-2) over
+  // 1 + a1 z^-1 + a2 z^-2.
+  static double sectionPower(double b0,double a1,double a2,double w) noexcept {
+    const double re=1+a1*std::cos(w)+a2*std::cos(2*w),im=a1*std::sin(w)+a2*std::sin(2*w);
+    return b0*b0*(2-2*std::cos(2*w))/(re*re+im*im);
+  }
   void prepareNoise() noexcept {
-    // Third-octave band-passes with unit gain at their centres. A band's
-    // scale turns a noise density (1/Hz) into the gain on its uniform source
-    // (variance 1/3), shared with the neighbouring bands' skirts.
-    constexpr double q=4.318473046;
+    // Sixth-order Butterworth third-octave band-passes, the IEC 61260 kind,
+    // with unit gain at their centres. Second-order band-passes fall only
+    // 6 dB per octave: above the treble's fundamentals, where the measured
+    // noise falls about 20 dB per octave, their skirts stood 25-50 dB over the
+    // measured densities from 6 to 16 kHz. A band's scale turns a noise
+    // density (1/Hz) into the gain on its uniform source (variance 1/3),
+    // shared with the neighbouring bands' skirts.
     for(auto& band:noise)band.scale=0;
+    auto warp=[this](double f){const double x=pi*f/sampleRate;return 2*sampleRate*std::sin(x)/std::cos(x);};
     for(int b=0;b<noiseBands;++b){
       const double hz=measured::noiseBands[b].hz;
-      if(hz>.45*sampleRate)continue;
-      auto& band=noise[b];const double w=2*pi*hz/sampleRate,alpha=std::sin(w)/(2*q),a0=1+alpha;
-      band.b0=alpha/a0;band.a1=-2*std::cos(w)/a0;band.a2=(1-alpha)/a0;
+      if(hz*std::pow(2.,1/6.)>.45*sampleRate)continue;
+      auto& band=noise[b];
+      // Each pole of the low-pass prototype maps to one pole pair of the band,
+      // whose edges, a sixth of an octave either side, are prewarped for the
+      // bilinear transform; every section has one zero at DC and one at Nyquist.
+      const double lo=warp(hz*std::pow(2.,-1/6.)),hi=warp(hz*std::pow(2.,1/6.));
+      const double centre=std::sqrt(lo*hi),width=hi-lo,w=2*pi*hz/sampleRate;
+      for(int j=0;j<noiseSections;++j){
+        const double angle=pi*(2*j+noiseSections+1)/(2*noiseSections);
+        const Complex q{std::cos(angle)*width/2,std::sin(angle)*width/2};
+        const Complex d{q.re*q.re-q.im*q.im-centre*centre,2*q.re*q.im};
+        const double m=std::sqrt(d.re*d.re+d.im*d.im);
+        const Complex r{std::sqrt((m+d.re)/2),(d.im<0?-1:1)*std::sqrt((m-d.re)/2)};
+        Complex pole{q.re+r.re,q.im+r.im};
+        if(pole.im<0)pole={q.re-r.re,q.im-r.im};
+        const double nr=2*sampleRate+pole.re,dr=2*sampleRate-pole.re,dd=dr*dr+pole.im*pole.im;
+        const Complex z{(nr*dr-pole.im*pole.im)/dd,(pole.im*dr+nr*pole.im)/dd};
+        band.a1[j]=-2*z.re;band.a2[j]=z.re*z.re+z.im*z.im;
+        band.b0[j]=1/std::sqrt(sectionPower(1,band.a1[j],band.a2[j],w));
+      }
       const double theta=std::acos(bounded(measured::noiseBands[b].coherence))/2;
       band.c=std::cos(theta);band.s=std::sin(theta);band.scale=1;
     }
     for(int b=0;b<noiseBands;++b){auto& band=noise[b];if(band.scale==0)continue;
       const double w=2*pi*measured::noiseBands[b].hz/sampleRate;double overlap=0;
-      for(const auto& other:noise)if(other.scale!=0){
-        const double re=1+other.a1*std::cos(w)+other.a2*std::cos(2*w),im=other.a1*std::sin(w)+other.a2*std::sin(2*w);
-        overlap+=other.b0*other.b0*(2-2*std::cos(2*w))/(re*re+im*im);}
+      for(const auto& other:noise)if(other.scale!=0){double power=1;
+        for(int j=0;j<noiseSections;++j)power*=sectionPower(other.b0[j],other.a1[j],other.a2[j],w);
+        overlap+=power;}
       band.scale=std::sqrt(3*sampleRate/2/overlap);
     }
   }
   void silenceNoise() noexcept {
     for(auto& burst:bursts)burst.active=false;
     for(auto& band:noise){
-      for(int k=0;k<2;++k)band.x1[k]=band.x2[k]=band.y1[k]=band.y2[k]=0;
+      for(int j=0;j<noiseSections;++j)for(int k=0;k<2;++k)band.x1[j][k]=band.x2[j][k]=band.y1[j][k]=band.y2[j][k]=0;
       band.left=band.right=band.leftStep=band.rightStep=band.leftEnd=band.rightEnd=0;
     }
     seed=1;hissing=false;
@@ -336,9 +365,11 @@ struct Engine::Impl {
       double l=0,r=0;
       for(auto& band:noise)if(band.scale!=0){
         double y[2];
-        for(int k=0;k<2;++k){
-          y[k]=band.b0*(source[k]-band.x2[k])-band.a1*band.y1[k]-band.a2*band.y2[k];
-          band.x2[k]=band.x1[k];band.x1[k]=source[k];band.y2[k]=band.y1[k];band.y1[k]=y[k];}
+        for(int k=0;k<2;++k){y[k]=source[k];
+          for(int j=0;j<noiseSections;++j){
+            const double x=y[k];
+            y[k]=band.b0[j]*(x-band.x2[j][k])-band.a1[j]*band.y1[j][k]-band.a2[j]*band.y2[j][k];
+            band.x2[j][k]=band.x1[j][k];band.x1[j][k]=x;band.y2[j][k]=band.y1[j][k];band.y1[j][k]=y[k];}}
         const double mid=band.c*y[0],side=band.s*y[1];
         l+=band.left*(mid+side);r+=band.right*(mid-side);
         band.left+=band.leftStep;band.right+=band.rightStep;
@@ -508,6 +539,11 @@ struct Engine::Impl {
       const double laneSoft[lanes]={1-.28*soft,1,1,1+.08*soft};
       auto& partial=voice.partials[voice.count];
       partial.frequency=frequency;
+      // Felt loss once the damper lands: about 500 dB/s on a released C4.
+      // Measured C4-C5 terminations on a Yamaha C7 fall 220-470 dB/s after a
+      // quick key release (Taguti et al., Acoust. Sci. & Tech. 23(5), 2002,
+      // Table 6). The Salamander release recordings cannot set it
+      // (Docs/research/release-recordings-2026-10-27.md).
       partial.damperScale=(24+1.4*std::sqrt(frequency)+.001*frequency)/sampleRate;
       partial.tintScale=std::min(4.,std::log2(static_cast<double>(order)));
       partial.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));

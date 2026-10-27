@@ -107,3 +107,24 @@ listening, without changing any acoustic gate. Identical original audio,
 physical-state/force witnesses, a full rho=1 observer control and shared
 presentation gains qualify the comparison. They do not establish listener
 preference, physical-part identity, realtime cost or production readiness.
+
+## 2026-10-27 — fit each partial's whole decay in relative terms
+
+The four-lane fit weighed each frame by the inverse of its envelope capped
+20 dB under the peak, which left the treble's slow aftersound to the noise.
+Weighing each frame by the envelope's largest value within a beat plus the
+partial's floor fits the whole decay in relative terms. With the board-noise
+code unchanged, the dev recordings' treble decay error fell from 17.3 to
+12.4 dB/s and treble partial levels from 6.6 to 4.3 dB; C3–B5 sustain went
+from 3.5 to 4.6 dB, as the evenly spaced frames of a long tail, up to 20 s, now
+count as much as the first seconds, and the bass's 10–90 % rise error from 3.9
+to 5.1 ms. Chosen on these measurements, not by ear.
+
+Rejected on the same dev cases: thinning the tail's weight as 1/√t, so that
+each doubling of time counts alike, which brought C3–B5 sustain back to 3.6 dB
+but the treble's decay back to 17.9 dB/s and the bass's rise error to 10.7 ms;
+and even weights to 3.5 s with 1/√t after, a compromise whose break point is
+the benchmark's window rather than anything the piano sets. The relative
+weights also let many bass partials spend a lane on the recording's noise
+floor; weights from the floor's variance plus the fit's own relative error
+are the next candidate.
