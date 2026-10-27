@@ -1,0 +1,36 @@
+[ 25%] Building CXX object CMakeFiles/keyra_full_instrument.dir/src/full_instrument/FullInstrument.cpp.o
+In file included from /workspace/virtual-instrument-keyra/src/full_instrument/SelectedModel.h:7,
+                 from /workspace/virtual-instrument-keyra/src/full_instrument/FullInstrument.cpp:4:
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h: In member function ‘bool grand::Piano::buildFreeUnisonViews()’:
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:512:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  512 |         if(originalRow>=unisonPorts.size())return false;const auto& port=unisonPorts[originalRow++];
+      |         ^~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:512:57: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  512 |         if(originalRow>=unisonPorts.size())return false;const auto& port=unisonPorts[originalRow++];
+      |                                                         ^~~~~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:516:11: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  516 |           if(key<0)key=owner[si];if(owner[si]!=key)return false;
+      |           ^~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:516:34: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  516 |           if(key<0)key=owner[si];if(owner[si]!=key)return false;
+      |                                  ^~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:529:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  529 |       if(key<0)return false;freeUnisonGroupIndices[key].push_back(gi);
+      |       ^~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:529:29: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  529 |       if(key<0)return false;freeUnisonGroupIndices[key].push_back(gi);
+      |                             ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:531:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  531 |     if(originalRow!=unisonPorts.size())return false;freeUnisonInventory.originalGroupedRowsExact=true;
+      |     ^~
+/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h:531:53: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  531 |     if(originalRow!=unisonPorts.size())return false;freeUnisonInventory.originalGroupedRowsExact=true;
+      |                                                     ^~~~~~~~~~~~~~~~~~~
+[ 50%] Linking CXX static library libkeyra_full_instrument.a
+[ 50%] Built target keyra_full_instrument
+[ 75%] Building CXX object CMakeFiles/keyra_full_instrument_tests.dir/tests/full_instrument_tests.cpp.o
+[100%] Linking CXX executable keyra_full_instrument_tests
+[100%] Built target keyra_full_instrument_tests
+[ 50%] Building CXX object CMakeFiles/keyra_full_profile_tests.dir/tests/full_profile_tests.cpp.o
+[100%] Linking CXX executable keyra_full_profile_tests
+[100%] Built target keyra_full_profile_tests
