@@ -63,6 +63,17 @@ be inexpensive; the dense tonal network remains the present bottleneck.
 
 ## Engineering judgment and priorities
 
+The later [free/unison row-fusion study](FREE_UNISON_FUSION.md) measures the
+current full API with pressure SIMD off, fast contact and mechanism cache on.
+Its guarded row-vectorized implementation reduces median CPU by 7.04–11.66%
+across all six 48/96 kHz workload groups, with exact pressure, output and common
+state comparisons. Every paired timing trial improves. At 48 kHz the measured
+candidate still costs 2.81–2.94 CPU seconds per audio second and every measured
+callback misses its wall deadline. This is incremental progress, not realtime.
+The scalar fused version was slower and is rejected; unsupported/scalar builds
+retain the original complete schedule. Do not multiply these gains with the
+earlier studies' percentages or apply them to the SDK compiler.
+
 The first layout experiments preserve the entire physical model. They target
 repeated modal scans, unison pointer traffic and radiation observation. Useful
 gains are worth retaining, but a few percent does not close the measured gap.

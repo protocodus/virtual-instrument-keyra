@@ -1,0 +1,545 @@
+{
+  "schema_version": 1,
+  "published_at_utc": "2026-10-27T03:05:44.352518+00:00",
+  "scope": "Bounded native implementation optimization of the current full physical API, preserving model state/output on authored event fixtures. Not a recording-fit or realism benchmark.",
+  "source_baseline_commit": "0227028b7e86fe3f09d1381fa9dcb860080f22da",
+  "source_model_sha256": "edae57fb1bad84a9e632961726d3ab60b3c5c27474b0f1194bcc89462384ee36",
+  "configuration": {
+    "model_profile": 0,
+    "pressure_simd": 0,
+    "fast_contact": 1,
+    "mechanism_cache": 1,
+    "humanization": 0.65,
+    "mechanical_level": 0.025,
+    "repetition_controller": true,
+    "mechanism_body_coupling": true,
+    "mechanism_observation": true,
+    "seed": 1264941426,
+    "seed_hex": "0x4b657972"
+  },
+  "decision_policy": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion-audit/harness-v1/performance-decision-policy.json",
+    "sha256": "1c45ff61a8ec8de1711c59a345774c76bf8d7a45754bf5f99204d39a74eb027f"
+  },
+  "policy": {
+    "minimum_median_callback_cpu_reduction_each_of_six_groups": 0.05,
+    "maximum_median_of_three_p95_callback_cpu_regression_any_group": 0.05,
+    "orders": [
+      [
+        "baseline",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ],
+      [
+        "baseline",
+        "candidate"
+      ]
+    ],
+    "discarded_trials": 0
+  },
+  "variants": [
+    {
+      "id": "v1",
+      "source_protocol": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/v1/protocol.json",
+        "sha256": "0e7f323362d0357fa90fd12e6f41a02a63e22eafe41aaf23952521e2969587f2"
+      },
+      "harness_protocol": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v1/protocol.json",
+        "sha256": "804e765fe6c097dfd21c8ad52b447282d66f7b514a1f1041f17761a11f24b866"
+      },
+      "build_receipt": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v1/build-receipt.json",
+        "sha256": "7bd7b2ada5ecc5a7715747ca069af32f0324ce73868e5d1db0653b40ef933388"
+      },
+      "correctness_result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v1/correctness-result.json",
+        "sha256": "681b5f0978d62829c43459d8bf2a75021f6fee4be07efe3fe148fd02eb87ecc3"
+      },
+      "correctness_review": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v1/correctness-review.json",
+        "sha256": "9125cafa90e6d51c5aab8e7a359488bb4b4586dee6f74c3fd4266408e5d2ffc7"
+      },
+      "performance_result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v1/performance-result.json",
+        "sha256": "97398703d8bc9bcfceac354055c9a6f308119c619fb859e5bc7243b12b0a7d4d"
+      },
+      "performance_review": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v1/performance-review.json",
+        "sha256": "a491232ce9ac25ace5f58dcae2ad7a12b20ec18af6d631f7f502fd0507f246b1"
+      },
+      "quality": {
+        "native_exact_pass": true,
+        "sample_rates": [
+          44100,
+          48000,
+          88200,
+          96000
+        ],
+        "rate_case_groups": 16,
+        "frames_per_arm": 574704,
+        "paired_raw_float64_values": 1149408,
+        "paired_float32_output_values": 1149408,
+        "paired_deep_state_checkpoints": 80,
+        "paired_file_comparisons": 112,
+        "all_outputs_finite": true,
+        "final_diagnostic_faults_and_unsafe_zero": true,
+        "inventory": {
+          "candidate": true,
+          "valid": true,
+          "mode_count": 17778,
+          "fused_modes": 12507,
+          "fallback_modes": 5271,
+          "original_rows": 6168,
+          "scheduled_rows": 6168,
+          "group_count": 89,
+          "keys_owned": 88,
+          "strings_owned": 230,
+          "unique_mode_updates": true,
+          "unique_row_membership": true,
+          "original_grouped_rows_exact": true,
+          "added_cache_bytes": 42328
+        }
+      },
+      "timing": {
+        "native_policy_pass": false,
+        "material_requirement_groups_passed": 0,
+        "p95_requirement_groups_passed": 1,
+        "paired_trials": 18,
+        "runs": 12,
+        "case_runs": 36,
+        "raw_callbacks": 14400,
+        "all_trials_retained": true,
+        "paired_performance_audio_byte_exact": 18,
+        "all_measured_wall_callback_deadlines_missed": true,
+        "groups": [
+          {
+            "sample_rate": 48000,
+            "case": "music",
+            "median_cpu_per_audio": {
+              "baseline": 3.5198117359375036,
+              "candidate": 4.402391874999998
+            },
+            "median_cpu_reduction_fraction": -0.25074640499981715,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.0070968640000000005,
+              "candidate": 0.007533473000000001
+            },
+            "median_p95_cpu_change_fraction": 0.06152139874739038,
+            "material_5percent_requirement_pass": false,
+            "p95_no_more_than_5percent_regression_pass": false,
+            "paired_speedups": [
+              0.8582064446337936,
+              0.772038861828947,
+              0.6741986381997855
+            ]
+          },
+          {
+            "sample_rate": 48000,
+            "case": "repeats-pedal",
+            "median_cpu_per_audio": {
+              "baseline": 3.4196865234375005,
+              "candidate": 4.223893237500001
+            },
+            "median_cpu_reduction_fraction": -0.2351697176190597,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.005460368,
+              "candidate": 0.007002447
+            },
+            "median_p95_cpu_change_fraction": 0.28241301685161146,
+            "material_5percent_requirement_pass": false,
+            "p95_no_more_than_5percent_regression_pass": false,
+            "paired_speedups": [
+              0.8096053406552275,
+              0.8911358996222495,
+              0.6482755606642165
+            ]
+          },
+          {
+            "sample_rate": 48000,
+            "case": "dense-88-tail",
+            "median_cpu_per_audio": {
+              "baseline": 3.3432558687499996,
+              "candidate": 4.37571465
+            },
+            "median_cpu_reduction_fraction": -0.308818356052426,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.005559391,
+              "candidate": 0.007934662
+            },
+            "median_p95_cpu_change_fraction": 0.4272538125129173,
+            "material_5percent_requirement_pass": false,
+            "p95_no_more_than_5percent_regression_pass": false,
+            "paired_speedups": [
+              0.8050480336966217,
+              0.801093161974477,
+              0.5448487081705886
+            ]
+          },
+          {
+            "sample_rate": 96000,
+            "case": "music",
+            "median_cpu_per_audio": {
+              "baseline": 6.834475978125003,
+              "candidate": 8.125141674999991
+            },
+            "median_cpu_reduction_fraction": -0.1888463286733324,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.006610047000000001,
+              "candidate": 0.006420661
+            },
+            "median_p95_cpu_change_fraction": -0.02865123349349874,
+            "material_5percent_requirement_pass": false,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              0.8411516071349008,
+              0.9102223640322,
+              0.6209672949703435
+            ]
+          },
+          {
+            "sample_rate": 96000,
+            "case": "repeats-pedal",
+            "median_cpu_per_audio": {
+              "baseline": 6.467020499999992,
+              "candidate": 7.977445565624996
+            },
+            "median_cpu_reduction_fraction": -0.23355810695590118,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.005075998,
+              "candidate": 0.006491612000000001
+            },
+            "median_p95_cpu_change_fraction": 0.2788838766287931,
+            "material_5percent_requirement_pass": false,
+            "p95_no_more_than_5percent_regression_pass": false,
+            "paired_speedups": [
+              0.7185545858903153,
+              0.8294279913278071,
+              0.8106630683719784
+            ]
+          },
+          {
+            "sample_rate": 96000,
+            "case": "dense-88-tail",
+            "median_cpu_per_audio": {
+              "baseline": 6.821957837499995,
+              "candidate": 8.058482712500005
+            },
+            "median_cpu_reduction_fraction": -0.18125659883192013,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.006128251,
+              "candidate": 0.007067595
+            },
+            "median_p95_cpu_change_fraction": 0.15328092795154769,
+            "material_5percent_requirement_pass": false,
+            "p95_no_more_than_5percent_regression_pass": false,
+            "paired_speedups": [
+              0.8468287693499508,
+              0.7571267299935888,
+              1.0935115294819835
+            ]
+          }
+        ]
+      },
+      "adopted_by_experiment": false
+    },
+    {
+      "id": "v2",
+      "source_protocol": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/v2/protocol.json",
+        "sha256": "7b6414d12195f9d6fe936deaaa93135463f0107ee4d1d2dbe268fd56c5850e37"
+      },
+      "harness_protocol": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v2/protocol.json",
+        "sha256": "991b638ed3b470c8b1d76fb5c291bf01f3a3f98103a0c5c22239f60c816037e7"
+      },
+      "build_receipt": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v2/build-receipt.json",
+        "sha256": "66060342406b2bf82a4a858cbca6e95e63c0dbf42eb03cac7fa0a0164f14201f"
+      },
+      "correctness_result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v2/correctness-result.json",
+        "sha256": "d952f2ce484aa22147c82e322e88fe7e35e5f2b7105f4e4703316d2acf9f794f"
+      },
+      "correctness_review": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v2/correctness-review.json",
+        "sha256": "167aeec3434d8645731ff12def360fcf367fcb14516529f3790e40766e698a8e"
+      },
+      "performance_result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v2/performance-result.json",
+        "sha256": "9592aaa472a0814cc62f0463fcbfce34b72a0cd08f725975b5620ac29a55cac4"
+      },
+      "performance_review": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/harness-v2/performance-review.json",
+        "sha256": "11e69b56656313e155f7d2378ba127b245170f68ff746875c4b9a30ba7fb44fd"
+      },
+      "quality": {
+        "native_exact_pass": true,
+        "sample_rates": [
+          44100,
+          48000,
+          88200,
+          96000
+        ],
+        "rate_case_groups": 16,
+        "frames_per_arm": 574704,
+        "paired_raw_float64_values": 1149408,
+        "paired_float32_output_values": 1149408,
+        "paired_deep_state_checkpoints": 80,
+        "paired_file_comparisons": 112,
+        "all_outputs_finite": true,
+        "final_diagnostic_faults_and_unsafe_zero": true,
+        "inventory": {
+          "candidate": true,
+          "valid": true,
+          "mode_count": 17778,
+          "fused_modes": 12507,
+          "fallback_modes": 5271,
+          "original_rows": 6168,
+          "scheduled_rows": 6168,
+          "group_count": 89,
+          "keys_owned": 88,
+          "strings_owned": 230,
+          "unique_mode_updates": true,
+          "unique_row_membership": true,
+          "original_grouped_rows_exact": true,
+          "added_cache_bytes": 42328
+        }
+      },
+      "timing": {
+        "native_policy_pass": true,
+        "material_requirement_groups_passed": 6,
+        "p95_requirement_groups_passed": 6,
+        "paired_trials": 18,
+        "runs": 12,
+        "case_runs": 36,
+        "raw_callbacks": 14400,
+        "all_trials_retained": true,
+        "paired_performance_audio_byte_exact": 18,
+        "all_measured_wall_callback_deadlines_missed": true,
+        "groups": [
+          {
+            "sample_rate": 48000,
+            "case": "music",
+            "median_cpu_per_audio": {
+              "baseline": 3.184407128124999,
+              "candidate": 2.813129009375
+            },
+            "median_cpu_reduction_fraction": 0.11659254103246841,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.004599939,
+              "candidate": 0.004225182
+            },
+            "median_p95_cpu_change_fraction": -0.08146999340643424,
+            "material_5percent_requirement_pass": true,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              1.1196584197257649,
+              1.1337077482259041,
+              1.1213077262959648
+            ]
+          },
+          {
+            "sample_rate": 48000,
+            "case": "repeats-pedal",
+            "median_cpu_per_audio": {
+              "baseline": 3.152602406249999,
+              "candidate": 2.859452714062498
+            },
+            "median_cpu_reduction_fraction": 0.0929865724920893,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.004540716,
+              "candidate": 0.0041729720000000005
+            },
+            "median_p95_cpu_change_fraction": -0.0809881084833316,
+            "material_5percent_requirement_pass": true,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              1.183942288266954,
+              1.1025195103754717,
+              1.092267784131477
+            ]
+          },
+          {
+            "sample_rate": 48000,
+            "case": "dense-88-tail",
+            "median_cpu_per_audio": {
+              "baseline": 3.197767259375,
+              "candidate": 2.943439596875
+            },
+            "median_cpu_reduction_fraction": 0.07953288712753537,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.004791111000000001,
+              "candidate": 0.0045616170000000004
+            },
+            "median_p95_cpu_change_fraction": -0.04789995472866315,
+            "material_5percent_requirement_pass": true,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              1.1421467296098784,
+              1.0726798536851943,
+              1.0725609010473085
+            ]
+          },
+          {
+            "sample_rate": 96000,
+            "case": "music",
+            "median_cpu_per_audio": {
+              "baseline": 6.204554900000001,
+              "candidate": 5.614569265624997
+            },
+            "median_cpu_reduction_fraction": 0.09508911499437345,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.0044514640000000005,
+              "candidate": 0.004149032
+            },
+            "median_p95_cpu_change_fraction": -0.06793989572868608,
+            "material_5percent_requirement_pass": true,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              1.1357579732438075,
+              1.0352274571126616,
+              1.0765835445752823
+            ]
+          },
+          {
+            "sample_rate": 96000,
+            "case": "repeats-pedal",
+            "median_cpu_per_audio": {
+              "baseline": 6.227638737499999,
+              "candidate": 5.700378449999997
+            },
+            "median_cpu_reduction_fraction": 0.08466455902862202,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.0045806480000000005,
+              "candidate": 0.0041045940000000005
+            },
+            "median_p95_cpu_change_fraction": -0.10392721728454135,
+            "material_5percent_requirement_pass": true,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              1.115580697760515,
+              1.0876195931715467,
+              1.08848095655332
+            ]
+          },
+          {
+            "sample_rate": 96000,
+            "case": "dense-88-tail",
+            "median_cpu_per_audio": {
+              "baseline": 6.431742212499998,
+              "candidate": 5.979025112500002
+            },
+            "median_cpu_reduction_fraction": 0.07038794234012469,
+            "median_p95_cpu_seconds": {
+              "baseline": 0.004820017,
+              "candidate": 0.0043839560000000005
+            },
+            "median_p95_cpu_change_fraction": -0.09046876805621218,
+            "material_5percent_requirement_pass": true,
+            "p95_no_more_than_5percent_regression_pass": true,
+            "paired_speedups": [
+              1.1005321636788832,
+              1.0396088132280066,
+              1.0992737710629812
+            ]
+          }
+        ]
+      },
+      "adopted_by_experiment": false
+    }
+  ],
+  "decisions": {
+    "v1": "Rejected: all six median throughput groups slower; five of six p95 guards fail.",
+    "v2": "Passes unchanged native policy: all six median throughput reductions7.04\u201311.66percent; all six median p95s improve. Further integration/host qualification required."
+  },
+  "integration": {
+    "status": "Canonical native optimization integrated and validated; actual Reason SDK/Recon remain untested.",
+    "configuration": "KEYRA_FULL_FREE_UNISON_SIMD defaults ON only for supported native compilers and OriginalControl profile0; optout, unsupported, profile1 and scalar SDK builds retain original scheduling.",
+    "source_equivalence": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration-source-equivalence.json",
+      "sha256": "6e0dcbd083a5e2df9f1b0bdec89ff0055faa40418e77b5a87ee4891c650ee37f"
+    },
+    "generator_reproduction": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration-source-reproduction.json",
+      "sha256": "0fb92a31161d397b67a11d17429aa744e49845e993e803ac8a2c2f59a5d9b36c"
+    },
+    "validation_results": [
+      {
+        "kind": "native",
+        "tests_passed": 3,
+        "result": {
+          "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration/native/result.json",
+          "sha256": "9c1b55a6c935da17ac72fa0643bc2573f560fabb7a35bfc9c35158b14827177a"
+        }
+      },
+      {
+        "kind": "asan",
+        "tests_passed": 2,
+        "result": {
+          "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration/asan/result.json",
+          "sha256": "e5715559306beac745af655429cc6277cf36b9e002310210a9feca2163e755fe"
+        }
+      },
+      {
+        "kind": "reason",
+        "tests_passed": 12,
+        "result": {
+          "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration/reason/result.json",
+          "sha256": "3a1a0f3adb90bbed3296773fd28dd229a116cb6bf1ab3a5ea164b4831544cc83"
+        }
+      }
+    ],
+    "compile_policy": {
+      "configurations_passed": 4,
+      "effective_target_checks": 8,
+      "result": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration-policy/result.json",
+        "sha256": "9ebc0ec20a2651760dc34561bf987c9a2e08254989d137946509110cfe91d543"
+      }
+    },
+    "renderer_report": {
+      "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration/native/renderer-report.json",
+      "sha256": "45fa28d1d78b91ef112fffaf38c126f96c24d94416eedb96d23cf8879b80febc"
+    },
+    "format_only_chain": {
+      "old_tested_model_sha256": "31ceb1fa72ccb29a2824c27cda90e38a528ec8182998cf22de77c2b6cf8c3c71",
+      "final_model": {
+        "path": "/workspace/virtual-instrument-keyra/src/full_instrument/PreparedModel.h",
+        "sha256": "325a6eff65c8caffda65ebd803bcc44894a27ca85d2a7e7f018e60efaa29bd80"
+      },
+      "format_receipt": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration-format-v1/format-only-receipt.json",
+        "sha256": "f9fecf2cdef2eaaba2190acc1f1fc801a7b15a30daaefeb6bc0882e9e03aa5af"
+      },
+      "native_four_tested_executables_exact": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration/native/post-format-result.json",
+        "sha256": "6aa39c0525309fbcccef728d56ebd01e744f1505818488c989fba572d05ec6fa"
+      },
+      "reason_three_tested_executables_exact": {
+        "path": "/workspace/virtual-instrument-keyra/out/full-free-unison-fusion/integration/reason/post-format-result.json",
+        "sha256": "9891d46e1f49ae9c10e2123da71a9145c43dfaa36e40f05d411d3493e6c332be"
+      },
+      "ASAN_rerun_after_whitespace_cleanup": false,
+      "scope": "Original31ce integration freezes/logs remain immutable. Four cold linebreak edits preserve C++tokens/hothelper; finalnative4 andReason3 executable hashes match already-tested binaries. ASAN result is the originalpreformat run, linked by token identity."
+    },
+    "runtime_optimizer_integrated": true,
+    "real_Reason_SDK_or_Recon_run": false
+  },
+  "reason_sdk_or_recon_validated": false,
+  "realtime_qualified": false,
+  "production_goal_complete": false,
+  "new_recording_access_or_fitting": false,
+  "limits": [
+    "Linux GCC14 serial oneinstance/thread; shared host, not certified worst-case.",
+    "Every measured callback in both studies missed its wall deadline; v2 stilluses2.81\u20132.94CPU seconds/audio second at48k and5.61\u20135.98at96k.",
+    "Exactness is scoped to emittedfixturepressure/audio and five original-state/coefficient checkpoints percase, plus separatelyvalidatedcandidateviewinventory. Not every internal state at every frame.",
+    "No isolatedphysicalpart/recordingrealism/piano/material/microphone/ReasonSDK/pricevalue claim.",
+    "The unsupported/scalar configuration must retain original scheduling; scalar fusedv1 regressed."
+  ],
+  "evidence_package": "tools/experiments/free_unison_fusion",
+  "documentation": "docs/FREE_UNISON_FUSION.md"
+}

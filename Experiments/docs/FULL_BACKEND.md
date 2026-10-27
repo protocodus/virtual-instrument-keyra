@@ -338,12 +338,29 @@ clipping, reverb, or automatic gain. A host must choose suitable playback gain.
 
 ## Reproduction and validation
 
+Supported native OriginalControl builds now default to
+`KEYRA_FULL_FREE_UNISON_SIMD=ON`, after checking `-fopenmp-simd`. This fuses free
+updates and unison coupling across independent rows, preserving the float
+operation order within a row. It is independent of the pressure SIMD option,
+which remains off. The [measured study](FREE_UNISON_FUSION.md) retains both the
+slower scalar attempt and the passing exact row-vectorized implementation.
+
+The entire added storage, setup and callback path is guarded. Macro zero,
+undefined, unavailable compiler support, the explicit CMake opt-out and the
+scalar SDK approximation retain the original complete scheduling; they do not
+select the rejected scalar fusion. FrozenConfidenceGrand runtime headers and
+calibration remain unchanged. The renderer reports `free_unison_simd` from its
+actual selected build configuration. This is a build option, not another piano
+parameter.
+
 `src/full_instrument/generate_prepared_model.py` reproduces the private model and
 calibration headers. Its manifest records input, generator, transform, solver
 header, and output hashes. It applies `tools/probe_full_precision.py:hot_precision` to the pinned
 control source, extracts the model before its event/CLI code, removes setup dump
 I/O, and adds the documented fault policy, in-place reset and guarded pressure/
-contact options. It can also
+contact options. The bounded `free_unison_transform.py` and unchanged qualified
+`FreeUnisonFusion.h` add the optional OriginalControl scheduling path; provenance
+binds both helper identities. It can also
 accept explicit `--prepared-source` and `--calibration` inputs into a separate
 output directory; this capability does not promote a candidate calibration.
 Neither canonical source nor Research files are modified.

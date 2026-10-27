@@ -27,6 +27,9 @@
 #ifndef KEYRA_RENDER_MODEL_PROFILE
 #define KEYRA_RENDER_MODEL_PROFILE 0
 #endif
+#ifndef KEYRA_RENDER_FREE_UNISON_SIMD
+#define KEYRA_RENDER_FREE_UNISON_SIMD 0
+#endif
 
 namespace {
 #if KEYRA_RENDER_MODEL_PROFILE == 0
@@ -182,6 +185,7 @@ int main(int argc,char** argv) {
       <<",\n  \"pressure_simd\": "<<(KEYRA_RENDER_PRESSURE_SIMD?"true":"false")
       <<",\n  \"fast_contact\": "<<(KEYRA_RENDER_FAST_CONTACT?"true":"false")
       <<",\n  \"mechanism_cache\": "<<(KEYRA_RENDER_MECHANISM_CACHE?"true":"false")
+      <<",\n  \"free_unison_simd\": "<<(KEYRA_RENDER_FREE_UNISON_SIMD?"true":"false")
       <<",\n  \"peak\": "<<peak<<",\n  \"rms\": "<<std::sqrt(power/(2*total))
       <<",\n  \"render_wall_seconds\": "<<wall<<",\n  \"render_process_cpu_seconds\": "<<processCpu
       <<",\n  \"events_applied\": "<<next<<",\n  \"events_after_render\": "<<events.size()-next
