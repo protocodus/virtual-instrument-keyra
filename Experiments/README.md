@@ -21,7 +21,9 @@ A subsequent [confidence-prior decay candidate](docs/FULL_CONFIDENCE_LOSS.md) im
 
 The [A0 attack diagnosis](docs/FULL_ATTACK_TIMING.md) separates the large relative-rise metric change from actual hammer timing: radiation weighting changes which bass-cycle peak crosses the threshold. Early attack-band agreement improves, while excessive initial pressure remains. The next fit needs coherent pressure guards before 50 ms alongside the existing spectrum/envelope criteria.
 
-The latest [radiation-startup confirmation](docs/RADIATION_STARTUP.md) rejects the proposed click correction: 26 of 34 TRAIN cases pass, but eight regress in early attack texture. The [matched diagnostic passage](Audio/full-radiation-crossover/README.md) remains available for listening; the default sound is unchanged.
+The [radiation-startup confirmation](docs/RADIATION_STARTUP.md) rejects the proposed observer/crossover click correction: 26 of 34 TRAIN cases pass, but eight regress in early attack texture. The [matched diagnostic passage](Audio/full-radiation-crossover/README.md) remains available for listening; the default sound is unchanged.
+
+The [soundboard reconstruction and fit](docs/BODY_RADIATION.md) provides a faster way to test the actual body observation: all 34 cases reproduce captured raw body pressure bit for bit from saved simulation forces. A single six-weight fit improved early band agreement but worsened late harmonics, envelopes and levels; **0/34 cases passed all preservation guards**. This replacement is rejected and adds no runtime change.
 
 For frozen listening exports and numerical replays, follow the [replay-environment addendum](docs/REPLAY_ENVIRONMENT.md), including `OPENBLAS_NUM_THREADS=1` before Python starts. It records a later-discovered procedural-room fingerprint requirement while preserving the original evidence and its scope.
 

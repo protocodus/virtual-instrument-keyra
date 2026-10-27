@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/workspace/virtual-instrument-keyra/out/full-body-basis/v1/run.py", line 84, in <module>
+    try:freeze() if sys.argv[1]=='freeze' else run()
+                                               ^^^^^
+  File "/workspace/virtual-instrument-keyra/out/full-body-basis/v1/run.py", line 63, in run
+    synth=gramcheck(x);dump(OUT/'synthetic-gram.json',synth);assert synth['pass']
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/virtual-instrument-keyra/out/full-body-basis/v1/run.py", line 7, in dump
+    def dump(p,v):p.write_text(json.dumps(v,indent=2)+'\n')
+                               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type bool is not JSON serializable

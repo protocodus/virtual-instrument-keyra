@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "experiment": "Sixstaticpositivesoundboardobservationweights, onebodyonlyfit",
+  "status": "REJECTED:0of34originalpreservationcasespass",
+  "numerical_checks_pass": true,
+  "optimizer_converged": true,
+  "optimizer_iterations": 13,
+  "optimizer_evaluations": 14,
+  "fitted_cases": 32,
+  "applied_reported_cases": 34,
+  "excluded_fit_only": [
+    "C8v4",
+    "C8v12"
+  ],
+  "alpha": [
+    3.3404142505211154,
+    3.2668159573778293,
+    0.8037613184416685,
+    0.6394228856276086,
+    0.7126087623069426,
+    0.292373857289762
+  ],
+  "theta_dB": [
+    10.476006555151733,
+    10.282493366296793,
+    -1.897457967148513,
+    -3.8842364784615415,
+    -2.9429768364960815,
+    -10.68122925140925
+  ],
+  "original_final_baseline_vs_body_only": {
+    "fit32": {
+      "count": 32,
+      "early_fiveband_MAE_dB_old": 14.433739453223673,
+      "early_fiveband_MAE_dB_new": 11.49004167076184,
+      "late_harmonic_MAE_dB_old": 11.385276779476982,
+      "late_harmonic_MAE_dB_new": 12.873573385923367,
+      "late_envelope_MAE_dB_old": 5.444505099669681,
+      "late_envelope_MAE_dB_new": 6.808732621352201,
+      "sustain_RMS_drift_dB_range": [
+        -8.91818627389017,
+        12.721611701167896
+      ]
+    },
+    "all34": {
+      "count": 34,
+      "early_fiveband_MAE_dB_old": 14.963365082096642,
+      "early_fiveband_MAE_dB_new": 11.976748891043563,
+      "late_harmonic_MAE_dB_old": 13.217077816310871,
+      "late_harmonic_MAE_dB_new": 14.523849597821156,
+      "late_envelope_MAE_dB_old": 5.964652896366784,
+      "late_envelope_MAE_dB_new": 8.079367083912283,
+      "sustain_RMS_drift_dB_range": [
+        -8.91818627389017,
+        12.721611701167896
+      ]
+    },
+    "C8": {
+      "count": 2,
+      "early_fiveband_MAE_dB_old": 23.43737514406412,
+      "early_fiveband_MAE_dB_new": 19.764064415551097,
+      "late_harmonic_MAE_dB_old": 42.5258944056531,
+      "late_harmonic_MAE_dB_new": 40.928268988185785,
+      "late_envelope_MAE_dB_old": 14.287017643520441,
+      "late_envelope_MAE_dB_new": 28.409518484873573,
+      "sustain_RMS_drift_dB_range": [
+        3.809066353258669,
+        3.8814147134467176
+      ]
+    }
+  },
+  "failed_gate_counts": {
+    "late_harmonic_MAE": 24,
+    "late_RMS_drift": 34,
+    "mono_energy_shift": 31,
+    "each_early_window_band_MAE": 22,
+    "stereo_LR_shift": 25,
+    "C3_ring5_20_excess_reduction": 2,
+    "late_envelope_MAE": 17
+  },
+  "C3_click": [
+    {
+      "id": "C3v4",
+      "first5_excess_reduction_dB": 20.242306144292495,
+      "ring_5_20_excess_reduction_dB": -0.9039621123569148,
+      "failed_gates": [
+        "late_harmonic_MAE",
+        "late_RMS_drift",
+        "stereo_LR_shift",
+        "mono_energy_shift",
+        "C3_ring5_20_excess_reduction"
+      ]
+    },
+    {
+      "id": "C3v12",
+      "first5_excess_reduction_dB": 19.217135929407185,
+      "ring_5_20_excess_reduction_dB": -1.0247038299757527,
+      "failed_gates": [
+        "late_harmonic_MAE",
+        "late_RMS_drift",
+        "stereo_LR_shift",
+        "mono_energy_shift",
+        "C3_ring5_20_excess_reduction"
+      ]
+    }
+  ],
+  "result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-fit/v2/result.json",
+    "sha256": "b09923d5f83dd36fd3de8fb45971e511dd078e5c97aa6036e3c80dcb8e0c5044"
+  },
+  "protocol": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-fit/v2/protocol.json",
+    "sha256": "90f2e16bc9006ca1206990f4d592f0f10457f5c9aff706631a1cd345c7dc58e7"
+  },
+  "fit_result": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-fit/v2/fit-result.json",
+    "sha256": "b4fe345df586ccdda59b9be9f6f6dd71d78e92792cda2b9a7118c7a4475b631e"
+  },
+  "post_run_review": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-fit-audit/v2/post-run-review.json",
+    "sha256": "b0cdb399de84a7676542b13e63c64564147d07cea8ec7fbc28381341b0730c0e"
+  },
+  "completion_review": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-body-fit-audit/v2/completion-review-addendum.json",
+    "sha256": "ad68fb21f4551a87e255f3d1df9fecdfb77755e2d3f8ef13dc2025eb140ff54f"
+  },
+  "wall_seconds": 19.00656847600476,
+  "reference_PCM_opened": false,
+  "physical_synthesis_runs": 0,
+  "runtime_or_default_changes": false,
+  "adopted": false,
+  "limits": [
+    "AllpreviouslyobservedTRAIN; noholdoutgeneralization/perceptual/realtime/Reasonhostqualification.",
+    "Improvementrelativealpha1rawbodyobjective isnotimprovementrelativeoldfinalsound.",
+    "Localfitfailuredoesnotproveallbodyobservationsorpositiveweightsgloballyimpossible.",
+    "All34RMSguardsfail; noafterfitgain/onset/caseexceptions."
+  ],
+  "archive": "tools/experiments/body_radiation_fit/index.json"
+}
