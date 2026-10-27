@@ -43,11 +43,15 @@ pedal acquisition state, so it cannot validate pedal fidelity.
 
 ## Iteration discipline
 
-Keep the original ten fitting cases, twelve held-out cases and two extreme
-notes locked. Fit only to the ten training cases. Freeze a candidate and its
-source/data hashes before reading held-out results. If held-out results inform
-another architectural choice, report that reuse and require an independent
-evaluation set before claiming generalization.
+Keep the calibration split `Tools/corpus/split-2026-10-27.json` locked: fit
+only its train role, score its dev role at every iteration without fitting
+it, and open the sealed pitches (D♯2, D♯4, D♯6) only to report a candidate the
+owner is asked to approve, logging each opening in
+`Tools/corpus/sealed-openings.json`. Dev results choose between candidates, so
+they are development evidence; only a sealed opening is a first look. The
+preserved research split's ten training, twelve held-out and two extreme cases
+remain as labels in `Tools/evaluate_recordings.py`, so reports stay comparable
+with earlier ones.
 
 Prefer improvements to measured attack, partial balance and decay which survive
 held-out cases. Report tradeoffs and per-case regressions, rather than one

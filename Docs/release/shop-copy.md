@@ -14,7 +14,7 @@ Keyra brings a continuously voiced, sample-free grand piano into a walnut-and-iv
 
 # Product desc
 
-Keyra generates its tone from tuned, dispersive modes with detuned unisons and separate prompt and late decay components. Numerical voicing comes from acoustic piano recordings; the sound engine does not play back recorded notes or impulse responses.
+Keyra generates its tone from tuned, dispersive string modes, each with the beating and stereo spread of its unison strings, over a measured soundboard ring and the noise of the board under every strike. Numerical voicing comes from 264 recordings of a grand piano; the sound engine does not play back recorded notes or impulse responses.
 
 The soft, sostenuto and sustain pedals can be held on screen or played from MIDI. Dedicated momentary keyswitches sit below the piano range: C0 / MIDI 12 for soft, C#0 / MIDI 13 for sostenuto and D0 / MIDI 14 for sustain, using C4 = MIDI 60. Continuous sliders and standard CC67, CC66 and CC64 messages provide pedal depth, with visible pedal travel following the effective performance state.
 
@@ -24,9 +24,9 @@ Five authored presets offer concert, studio, warm, felt and open-string starting
 
 ## Version history
 
-### 0.3.0
+### 0.4.0
 
-Native instrument with a real-time modal core, five presets, three visible pedals, momentary pedal keyswitches, continuous pedal depth and modulation-wheel felt muting, now as VST3, CLAP, Audio Unit and standalone builds.
+Native instrument with a real-time modal core voiced from 264 recordings of a grand piano, with a measured soundboard ring and board noise, five presets, three visible pedals, momentary pedal keyswitches, continuous pedal depth and modulation-wheel felt muting, as VST3, CLAP, Audio Unit and standalone builds.
 
 # Images
 

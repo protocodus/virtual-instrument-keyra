@@ -9,9 +9,12 @@ are retained under `Experiments/Research/GrandPianoV2/reference/`. See
 [ATTRIBUTION.md](Experiments/Research/GrandPianoV2/reference/ATTRIBUTION.md) and
 [LICENSE-CC-BY-3.0.txt](Experiments/Research/GrandPianoV2/reference/upstream/LICENSE-CC-BY-3.0.txt).
 
-Keyra measures these recordings and derives numerical spectral, attack, decay
-and tuning parameters. The synthesizer generates sound from those parameters;
-it does not load recorded note waveforms or impulse responses. This attribution
+Keyra measures these recordings (the set pinned in `Tools/corpus/salamander-v3.json`)
+and derives numerical parameters: partial frequencies, decay rates, levels,
+phases and stereo pickups, onset rises, soundboard mode frequencies, decays
+and levels, and band noise densities. The synthesizer generates sound from
+those parameters; it does not load recorded note waveforms or impulse
+responses. This attribution
 does not imply endorsement by the recording author or instrument maker.
 
 ## JUCE 8.0.14

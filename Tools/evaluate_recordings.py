@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """Reproduce real-recording evaluation of the live Keyra signal path.
 
-The 10 training cases, 12 in-range held-out cases and two edge cases remain
-locked by Experiments/Research/GrandPianoV2/benchmark/split.json. This tool never fits a
-parameter. It renders the measured-attack engine and its fixed-2ms ablation,
-then evaluates the same four windows with the preserved phase-insensitive
-measurements. Missing model partials receive a noise-floor penalty rather
-than silently disappearing from the harmonic average.
+The 24 cases of Experiments/Research/GrandPianoV2/benchmark/split.json (10
+training, 12 in-range held-out and two edge cases of the preserved research)
+keep their labels, so every live model is scored on the same cases with the
+preserved phase-insensitive measurements. The live model is now calibrated
+from the 2026-10-27 split (Tools/corpus/split-2026-10-27.json), whose
+training set contains all 24 recordings: the report records each case's
+calibration role, and held-out evidence for the live model comes from that
+split's dev set (Tools/benchmark_recordings.py). This tool never fits a
+parameter. It renders the measured-attack engine and its fixed-2ms ablation.
+Missing model partials receive a noise-floor penalty rather than silently
+disappearing from the harmonic average.
 """
 from __future__ import annotations
 
@@ -119,14 +124,15 @@ def write_markdown(report, path):
              'These errors measure agreement with one recorded piano and microphone setup. '
              'They do not measure perceptual realism or demonstrate commercial readiness.', '',
              f"The source FLACs and decoded PCM were verified for all {report['reference_verification']['samples']} cases. "
-             'Ten notes/velocities train the numerical model, twelve in-range cases are held out, '
-             'and two extreme notes measure extrapolation separately.', '',
-             'The original twelve held-out cases stayed excluded from all numerical fitting, '
-             'but their results were inspected before the train-only choir correction. These '
-             'are now development-validation results. The separately locked eight-note fresh '
-             'report supplies the first score after the final model coefficients were frozen.', '',
+             'The case labels are those of the preserved research split: ten training notes, twelve '
+             'in-range held-out cases and two extreme notes measuring extrapolation separately.', '',
+             'The live model is calibrated from every A, C and F# pitch at twelve velocity layers '
+             '(Tools/corpus/split-2026-10-27.json), which includes all of these recordings, so for '
+             'the live columns every case here is training data and the held-out labels only keep '
+             'the comparison with earlier reports. Held-out scores for the live model are in the '
+             'dev rows of the matching recording scorecard under Docs/validation/.', '',
              'The measured attack and fixed 2 ms attack use identical events, rate and engine '
-             'parameters. The attack coefficients come only from the ten training recordings. '
+             'parameters. '
              'The preserved offline v2 renderer is a different, much more expensive model; its '
              'metrics are shown as historical context. In the attack comparison, the exposed '
              'resonance control is zero to measure the fitted modal source. The product-default '
@@ -147,9 +153,11 @@ def write_markdown(report, path):
     lines += ['## Limits', '',
               '- Recorded pedal positions, release events and physical hammer speeds are unknown. '
               'Pedal behavior requires new synchronized captures and host playing tests.',
-              '- Modal phases, the recording room, detailed contact mechanics and complete '
-              'mechanical noises are not identified by this fit. Positive prompt/late decay '
-              'components are a compact empirical model.',
+              '- The recording room, detailed contact mechanics and the hammer and action noises '
+              'are not identified by this fit. Phases between partials are the measured pattern at '
+              'string contact; four lanes per partial are a compact empirical model of its unison '
+              'strings and polarisations; the body is a bank of measured modes up to 1 kHz and, '
+              'above them, third-octave noise measured between the partials.',
               '- One early scalar gain is removed for scoring; later windows keep that gain. '
               'Stereo channels combine in power. Missing prominent model partials receive a penalty.',
               '- The two edge cases are not part of the twelve-case held-out mean. '
@@ -161,7 +169,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--renderer',type=Path,default=ROOT/'build/keyra_render')
     parser.add_argument('--audio-dir',type=Path,default=ROOT/'build/recording-benchmark')
-    parser.add_argument('--output',type=Path,default=ROOT/'Docs/validation/recording-benchmark-2026-10-26.json')
+    parser.add_argument('--output',type=Path,default=ROOT/'Docs/validation/recording-benchmark-2026-10-27.json')
     parser.add_argument('--sample-rate',type=int,default=48000)
     parser.add_argument('--jobs',type=int,default=2)
     parser.add_argument('--skip-render',action='store_true')
@@ -186,14 +194,16 @@ def main():
     verification=verify_references(samples)
     reference_path=RESEARCH/'benchmark/reference_features.json'
     references={r['id']:r for r in json.loads(reference_path.read_text())['samples']}
-    fit_path=ROOT/'Docs/research/realtime-modal-fit-2026-10-26.json'
+    fit_path=ROOT/'Docs/research/realtime-modal-fit-2026-10-27.json'
     fitting=json.loads(fit_path.read_text())
-    expected_training={s['id'] for s in split['samples'] if s['split']=='train'}
-    if (set(fitting['training_ids'])!=expected_training
-        or fitting['heldout_measurements_used'] is not False
+    if (fitting['roles_used']!=['train']
+        or fitting['dev_or_sealed_recordings_opened'] is not False
         or fitting['generated_header_sha256']!=sha(ROOT/'Source/DSP/MeasuredModalData.h')
         or fitting['fitter_source_sha256']!=sha(ROOT/'Tools/fit_realtime_modal.py')):
-        raise ValueError('Current calibration provenance does not match TRAIN10 fit and generated header')
+        raise ValueError('Current calibration provenance does not match the fit and generated header')
+    calibration_split=ROOT/fitting['split']
+    roles=json.loads(calibration_split.read_text())['cases']
+    calibration_roles={s['id']:roles.get(s['id']) for s in samples}
     report={'schema_version':1,'analysis':metrics.ANALYSIS,
             'harmonic_missing_partial_policy':'Zero model power; same reference -50 dB mask and -70 dB floor as observed partials.',
             'split_sha256':sha(split_path),'reference_features_sha256':sha(reference_path),
@@ -201,9 +211,11 @@ def main():
             'sample_rate':args.sample_rate,'duration_seconds':4.4,'case_count':len(samples),
             'parameters_common':{'gain':.7,'brightness':.5,'width':.75,'tuning':440,
                           'mute':0,'sustain':0,'sostenuto':0,'soft':0},
-            'fitting_used_heldouts':False,
+            'fitting_used_heldouts':any(calibration_roles[s['id']]=='train' for s in samples if s['split']!='train'),
+            'calibration_split':fitting['split'],'calibration_split_sha256':sha(calibration_split),
+            'calibration_roles':calibration_roles,
             'fit_metadata_sha256':sha(fit_path),
-            'validation_status':'Development validation: same holdout reused after train-only model correction; fresh unseen captures needed.',
+            'validation_status':'Training-set agreement for the live model; its held-out evidence is the calibration split dev set.',
             'engine_sources':{str(p.relative_to(ROOT)):sha(p) for p in sorted((ROOT/'Source/DSP').glob('*')) if p.is_file()},
             'variants':{}}
     history_path=RESEARCH/'benchmark/candidate_report_features.json'

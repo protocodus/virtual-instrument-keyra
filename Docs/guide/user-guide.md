@@ -84,9 +84,13 @@ and native host performance properties for pitch, mod and sustain.
 
 ## Scope of the sound model
 
-The live core uses positive prompt and late decay components, detuned unison
-modes and a reduced sympathetic response. It does not reproduce the reference
-solver's nonlinear hammer contact or full reciprocal soundboard network.
-Detailed key/damper noises and recording-room acoustics are not calibrated.
+The live core plays each partial as four measured decay lanes, with the
+beating and left/right balance of its unison strings, over a bank of measured
+soundboard and case modes and the board's band noise, which every strike
+excites; the open-string bank adds a reduced sympathetic response. The felt
+mute damps the strings, not the board's ring, which dies within a second. The
+core does not reproduce the reference solver's nonlinear hammer contact or
+full reciprocal soundboard network. Detailed key/damper noises and
+recording-room acoustics are not calibrated.
 The current isolated-note library cannot establish pedal realism because the
 recording pedal positions and timings are undocumented.

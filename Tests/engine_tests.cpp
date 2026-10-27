@@ -156,10 +156,15 @@ int main(int argc,char** argv){
     a.noteOff(60);b.noteOff(60);check(render(a,24000)==render(b,24000),"CC121 never creates an edge on an unchanged panel sostenuto pedal");
   }
   {
-    keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());
-    a.noteOn(60,.7f);b.noteOn(60,.7f);render(a,12000);render(b,12000);
-    a.controlChange(1,127);render(a,24000);render(b,24000);
-    check(rms(render(a,12000))<rms(render(b,12000))*.001,"CC1 physically damps held strings smoothly");
+    // The body's knock rings on at its own decay whatever damps the strings,
+    // the same in all three engines: `c` releases the key where `a` takes
+    // CC1, so the differences from `c` hold only the strings.
+    keyra::Engine a,b,c;a.setParameters(dry());b.setParameters(dry());c.setParameters(dry());
+    a.noteOn(60,.7f);b.noteOn(60,.7f);c.noteOn(60,.7f);render(a,12000);render(b,12000);render(c,12000);
+    a.controlChange(1,127);c.noteOff(60);render(a,24000);render(b,24000);render(c,24000);
+    auto damped=render(a,12000),held=render(b,12000);const auto released=render(c,12000);
+    for(std::size_t i=0;i<released.size();++i){damped[i]-=released[i];held[i]-=released[i];}
+    check(rms(damped)<rms(held)*.001,"CC1 physically damps held strings smoothly");
     a.controlChange(120,0);check(rms(render(a,512))==0,"all sound off clears owned voices and shared residue when last channel stops");
   }
   {

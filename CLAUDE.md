@@ -188,8 +188,11 @@ assumption was stale.
 
 The live reduced modal model is a separate candidate. Never describe its sound,
 physics or CPU as equivalent to the preserved solver without measurements.
-For that retained frontend, C2–C6 at velocity layers 4/12 are training data; report all twelve in-range
-held-out cases and both edge cases, including regressions. Reference audio is
+For that retained frontend, the locked split `Tools/corpus/split-2026-10-27.json` decides the
+training data: its train role is fitted, dev is scored and never fitted, and the sealed pitches are
+opened only for a candidate the owner is asked to approve. Report every regression
+`Tools/compare_benchmarks.py` lists, and all twelve in-range held-out cases and both edge cases of
+`Tools/evaluate_recordings.py`. Reference audio is
 Salamander Grand Piano V3, Alexander Holm, CC BY 3.0; retain attribution and
 hashes. No recorded waveform or impulse response is loaded by the instrument.
 
