@@ -91,3 +91,19 @@ and the dry versus room path. Preserve the instrument's body and sustained
 spectrum; do not mask the problem by removing mechanical behavior or applying
 a blanket high-frequency cut. No click fix or listening approval has been
 inferred from this feedback.
+
+## 2026-10-27 — listen before further transient adjustment
+
+The contact-driven, frequency-aware observation experiment reduces C3's measured
+first impulse and ringing excess, but passes only 33/34 original TRAIN cases.
+Hard C8 still exceeds the early-window allowance, and early/whole-note stereo
+changes are not covered by sustain preservation. Keep the global failure and
+default sound unchanged; see [TRANSIENT_RADIATION.md](TRANSIENT_RADIATION.md).
+
+Stop parameter adjustment for an explicitly experimental musical comparison.
+The stricter, unrun music protocol requiring 34/34 remains preserved; a new
+diagnostic protocol deliberately admits this exact failed candidate for
+listening, without changing any acoustic gate. Identical original audio,
+physical-state/force witnesses, a full rho=1 observer control and shared
+presentation gains qualify the comparison. They do not establish listener
+preference, physical-part identity, realtime cost or production readiness.

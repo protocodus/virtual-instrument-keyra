@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "published_at_utc": "2026-10-27T02:03:45.016566+00:00",
+  "status": "EXPERIMENTAL listening diagnostic of globallyfailed33/34candidate. No listenerverdict or runtimepromotion.",
+  "source_manifest": {
+    "historical_path": "/workspace/virtual-instrument-keyra/out/full-transient-music/v4/listening/manifest.json",
+    "sha256": "5e53aea55d844b0dcd158d7f260626b4f4627ec8c00f94f371e85cb8e0674ad0"
+  },
+  "render_receipt": {
+    "path": "/workspace/virtual-instrument-keyra/out/full-transient-music/v4/render/receipt.json",
+    "sha256": "149e6037ec797e95ef928b1404cbe27e50e9cdcaf1165bb6761cd88480a98cab"
+  },
+  "order": [
+    "old OriginalControl",
+    "modal transient completion of same physical trajectory"
+  ],
+  "segment_start_seconds": [
+    0,
+    9.5
+  ],
+  "segment_duration_seconds": 9,
+  "gap_seconds": 0.5,
+  "entries": [
+    {
+      "file": "old-then-modal-room.flac",
+      "sha256": "b8360e06a9f0343742c341b0b411d67aeeb868963f0e90bdd9cba4ce33fa7eda",
+      "bytes": 1739722,
+      "kind": "room",
+      "pcm24_sha256": "2254709c60c39e3b347defd759f6df876f4114c2b62b09206e4954c3a6a9e29f",
+      "old_PCM24_sha256": "ffcdb25cb2324439688d5d7c4a9ae2b9c619332e127d790076352643c71a5112",
+      "statistics": {
+        "combined": {
+          "frames": 888000,
+          "finite": true,
+          "sample_peak": 0.6232379674911499,
+          "true_peak_4x": 0.6242532582138471,
+          "stereo_rms": 0.06311547139888775,
+          "mono_rms": 0.047562812291445565,
+          "mono_energy_relative_average_channel_db": -2.4573660917753046,
+          "left_right_balance_db": -2.869160771334127,
+          "left_right_correlation": 0.14325307283401162
+        },
+        "old": {
+          "frames": 432000,
+          "finite": true,
+          "sample_peak": 0.6232379674911499,
+          "true_peak_4x": 0.6242532582138471,
+          "stereo_rms": 0.06480422059965944,
+          "mono_rms": 0.048979743754990854,
+          "mono_energy_relative_average_channel_db": -2.4317356601917957,
+          "left_right_balance_db": -2.8241292922264547,
+          "left_right_correlation": 0.1500994648636592
+        },
+        "modal": {
+          "frames": 432000,
+          "finite": true,
+          "sample_peak": 0.611312985420227,
+          "true_peak_4x": 0.6124104889144549,
+          "stereo_rms": 0.06315732335072885,
+          "mono_rms": 0.047445820454115745,
+          "mono_energy_relative_average_channel_db": -2.484515099786318,
+          "left_right_balance_db": -2.9167328238979047,
+          "left_right_correlation": 0.13602460160711954
+        }
+      },
+      "stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 888000,
+        "bits_per_raw_sample": "24"
+      },
+      "lossless_pcm24_decode_exact": true,
+      "gap_pcm24_zero": true
+    },
+    {
+      "file": "old-then-modal-dry.flac",
+      "sha256": "263c57b625df916aa1ecbd4b6cf8d79486d373427b6087d8036be179a6d53a96",
+      "bytes": 1743833,
+      "kind": "dry",
+      "pcm24_sha256": "f7d44930ed9879a89bfaa5e6b7c8c9b87f11edfdaf2dc195caa8f8ef241aeafb",
+      "old_PCM24_sha256": "74e29df1f3ccc31c1325afcfdaaa12751f375d2b0aef49228d38b2eae4738409",
+      "statistics": {
+        "combined": {
+          "frames": 888000,
+          "finite": true,
+          "sample_peak": 0.6140987873077393,
+          "true_peak_4x": 0.6147644662023354,
+          "stereo_rms": 0.06312364074481196,
+          "mono_rms": 0.04744037226121327,
+          "mono_energy_relative_average_channel_db": -2.4808790244359584,
+          "left_right_balance_db": -3.2167944097543764,
+          "left_right_correlation": 0.13863824876613925
+        },
+        "old": {
+          "frames": 432000,
+          "finite": true,
+          "sample_peak": 0.6140987873077393,
+          "true_peak_4x": 0.6147644662023354,
+          "stereo_rms": 0.06480422103567894,
+          "mono_rms": 0.04887369145194247,
+          "mono_energy_relative_average_channel_db": -2.450563038467836,
+          "left_right_balance_db": -3.171720358747407,
+          "left_right_correlation": 0.14683176558765845
+        },
+        "modal": {
+          "frames": 432000,
+          "finite": true,
+          "sample_peak": 0.5904011726379395,
+          "true_peak_4x": 0.5910573642264162,
+          "stereo_rms": 0.06317410317695354,
+          "mono_rms": 0.04730298978097244,
+          "mono_energy_relative_average_channel_db": -2.513009884411495,
+          "left_right_balance_db": -3.2644043062336436,
+          "left_right_correlation": 0.12998781835213297
+        }
+      },
+      "stream": {
+        "codec_name": "flac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "time_base": "1/48000",
+        "duration_ts": 888000,
+        "bits_per_raw_sample": "24"
+      },
+      "lossless_pcm24_decode_exact": true,
+      "gap_pcm24_zero": true
+    }
+  ],
+  "same_fixed_gains": true,
+  "candidate_RMS_matching": false,
+  "default_changed": false,
+  "listener_verdict": null,
+  "global_recording_acceptance": false,
+  "recording_cases_passed": 33,
+  "recording_cases_total": 34,
+  "failed_recording_case": "C8v12",
+  "realtime_claim": false,
+  "limitations": [
+    "GLOBALFAIL retained:33/34recordingguards pass; C8v12 5–20ms bandMAE worsens1.1429885386924123dB against1dBbudget. No acceptance, promotion, listenerverdict or retuning.",
+    "Posthoc engineering on observed TRAINandmusicalscore, not an independent piano or unseen listening result.",
+    "Modal transient companion is an observation counterterm, not an identified physical piano part or measured damping law.",
+    "Uniformrhoimpulserampidentity doesnotapply to nonuniform modal contraction.",
+    "Originalold48kgeometry, humanization0mechanics0repetitionOFF; no connected/currentdefault qualification.",
+    "Extra fullnetwork observer andrho1control areoffline qualityproof; no realtime/CPUarchitecture/ReasonSDK/Recon/production/price claim.",
+    "Default/publicruntimeunchanged; privateoutputonly; no listeningverdict fromnumericgates."
+  ]
+}
