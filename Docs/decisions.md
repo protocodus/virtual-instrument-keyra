@@ -138,3 +138,34 @@ relative weights it moved the partial levels from 3.20 to 3.33 dB, the late
 decay from 4.85 to 5.13 dB/s, the broadband envelope from 2.59 to 2.84 dB and
 the 10–90 % rise from 5.3 to 6.7 ms, and stayed within 0.1 dB elsewhere. The
 relative weights stay. Chosen on these measurements, not by ear.
+
+## 2026-10-28 — measure the components beside the series through their own windows
+
+The recordings hold peaks between the partials that four or more velocity
+layers share: in the bass mostly the strings' longitudinal and phantom
+partials, from F6 up the undamped strings a strike sets ringing. Each is now
+measured through a window just long enough to part it from its nearest
+neighbour, from 30 ms to 2 s, its frames weighed against its envelope within
+one window and its rise pinned at contact, and the engine plays each with one
+lane. A peak from F6 up that recurs within 1.5 cents in four or more recorded
+pitches is one undamped string (22 strings, where the same peaks shifted at
+random form about three); it rings at one pitch whichever key sets it ringing,
+as the per-pitch offsets of the fit had put one string up to 0.5 Hz apart
+between keys.
+
+Against the committed engine, on the never-fitted dev recordings from C6 up,
+the sustain spectrum moved from 8.83 to 7.86 dB, the early spectrum from 6.43
+to 5.17 dB, the late decay from 5.16 to 4.56 dB/s and the board noise from 5.50
+to 5.09 dB; the one regression listed is F♯6's tuning on the train recordings,
+from 0.97 to 1.47 cents. Chosen on these measurements, not by ear.
+
+Rejected: weighing a component's frames over its first 0.3 s only, which left
+components pinging on after the partials around them had decayed, and fitting
+each component's rise, which left A7's string at 1578 Hz 20 dB under the
+recording. Each undamped string keeps one decay, fitted to its first second;
+the slower ring the recordings hold after it is the next candidate.
+
+The benchmark's late decay now needs half a second of frames above the
+recording's floor and scores the render with that floor added; both rules,
+and the cases that called for them, are beside the code in
+`Tools/benchmark_recordings.py`. Both versions were scored again under them.

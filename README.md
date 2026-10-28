@@ -48,12 +48,16 @@ musical passages through the same engine. Both are frozen evidence from
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
   not this ring, which dies within a second.
+- Beside its partials, a strike plays the components the recordings hold
+  between them, 51 at A0 and a few or none from C4 up, and sets ringing the
+  undamped strings from F6 up that its pitch is heard to excite (22 strings),
+  which ring on after the key is let go.
 - Existing sessions sound different; the median note keeps 0.3.0's level. On
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
-  partial levels sit 3.2 dB from the recordings (0.3.0: 9.3 dB), the attack
-  spectrum 4.2 dB (15.8 dB), the sustain spectrum 5.2 dB (10.2 dB) and the
-  noise between partials 6.0 dB (25.9 dB); its regressions, C4's onset rise
-  and the late decay from C7 to F♯7 first, are listed there.
+  partial levels sit 3.1 dB from the recordings (0.3.0: 9.3 dB), the attack
+  spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.9 dB (10.2 dB) and the
+  noise between partials 5.8 dB (25.9 dB); its regressions, C4's onset rise
+  and D♯1's tuning first, are listed there.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -93,6 +97,13 @@ than its pitch's recorded onset builds up. The lanes run four to a 128-bit
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 
+Beside its series, a strike plays the components the recordings hold between
+the partials, each one lane placed by the series and damped with it, and sets
+ringing the undamped strings from F6 up that its pitch is heard to excite.
+Those ring at their own pitches whichever key struck them, and on after the
+key is let go. All start at contact under the pitch's onset rise and share
+vectors four to a slot, so each costs a quarter of a partial.
+
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, which rings for half a second to a second,
 with the level, phase and velocity response measured for each recorded pitch.
@@ -112,8 +123,14 @@ velocity layers, 264 recordings. Each partial is fitted jointly across its
 pitch's layers (`Tools/piano_analysis.py`), the lanes' rates shared and their
 levels and phases per layer, every moment of its decay weighed relative to its
 level down to the recording's floor; the layers' contact times are aligned so
-that the phases form one pattern across the partials. The body modes are found
-below the treble's fundamentals, where no string sounds; the board noise is
+that the phases form one pattern across the partials. Beside the series, the
+residual's peaks that four or more layers share are measured each through a
+window just long enough to part it from its nearest neighbour, from 30 ms to
+2 s, and fitted with one lane from contact; a peak from F6 up that recurs
+within 1.5 cents across four or more recorded pitches is an undamped string
+ringing (22 such strings, where the same peaks shifted at random form about
+three). The body modes are found below the treble's fundamentals, where no
+string sounds; the board noise is
 measured in the gaps between the partials the recordings show and, above the
 highest of them, across whole bands, as the benchmark measures it. A strike
 interpolates between the recorded pitches by partial order and between the
@@ -172,12 +189,13 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
   recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB).
-- From C6 up, the partials' decay after half a second is still 12 dB/s from
-  the recordings' on the dev cases, no closer than 0.3.0's; from C7 to F♯7 it
-  is 4 to 5 dB/s further. From F♯3 to F♯5 the first
-  seconds of the sustain sit up to 1 dB further from the recordings (4 dB at
-  D♯5) than under a fit weighted towards them, as a long note's tail now
-  counts as much.
+- From C6 up, the partials' decay after half a second is 4.6 dB/s from the
+  recordings' on the dev cases (0.3.0: 6.7 dB/s), but at A7 it is 1 to 2 dB/s
+  further than 0.3.0's. An undamped string rings with one decay, so after
+  1.5 s the ones F♯7 and A7 set ringing sit 20 to 40 dB under the recordings.
+  From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
+  the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
+  long note's tail now counts as much.
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
   measure the board noise in six to ten of the thirteen bands; those bands are
   interpolated between the nearest pitches that measured them.
