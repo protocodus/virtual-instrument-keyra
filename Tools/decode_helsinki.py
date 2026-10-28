@@ -2,8 +2,8 @@
 """Decode and verify the Helsinki 1967 Tube-Ribbon Edition recordings Keyra's
 upright is measured against.
 
-The library (Mikko Patama, 2026, a Decent Sampler instrument) is not public.
-Its author permits fitting numeric data from its recordings provided the
+The library is Mikko Patama's (2026, a Decent Sampler instrument). Its
+author permits fitting numeric data from its recordings provided the
 recordings themselves are not distributed, so this reads a copy of the
 library's .dsbundle and decodes into the ignored out/ tree, which never enters
 the repository or the instrument. The Stereo Ribbon preset's sample map names
@@ -99,8 +99,8 @@ def main():
             'title': 'Helsinki 1967 Tube-Ribbon Edition', 'author': 'Mikko Patama',
             'instrument': 'an upright piano with worn hammers (the library does not name its make), in a '
                           'rehearsal space treated to sound dry',
-            'license': 'not public; the author permits fitting numeric data from the recordings provided the '
-                       'recordings are not distributed (as the project owner relayed it, 28 October 2026)',
+            'license': 'the author permits fitting numeric data from the recordings provided the recordings '
+                       'are not distributed (as the project owner relayed it, 28 October 2026)',
             'capture': 'the Stereo Ribbon preset: a stereo ribbon microphone (Blumlein pair) in player position '
                        'close to the hammers, 48 kHz/24-bit stereo FLAC',
             'pitch_names': 'the library names middle C (MIDI 60) C3, an octave under the scientific pitch used '
