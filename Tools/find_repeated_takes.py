@@ -31,6 +31,7 @@ the level slope across the train layers around it reads as velocity:
   touch_spread one strike's spread: the median absolute velocity difference
                over 0.6745, as a normal spread's, and the square root of two,
                as the difference of two strikes
+  touch_spread_db  the same of the early level differences themselves
   tilt         how much more the second take's first eight partials gain per
                octave up, 50-250 ms after the onset, as the benchmark measures
                them: louder and brighter together are a velocity change
@@ -166,6 +167,8 @@ def main():
                'new_strikes_measured': len(strikes),
                'median_abs_velocity': float(np.median([abs(r['velocity']) for r in strikes])),
                'touch_spread': float(np.median([abs(r['velocity']) for r in strikes]) / .6745 / np.sqrt(2)),
+               'median_abs_db': float(np.median([abs(r['early_db']) for r in strikes])),
+               'touch_spread_db': float(np.median([abs(r['early_db']) for r in strikes]) / .6745 / np.sqrt(2)),
                'brighter_where_louder': sum(r['tilt'] is not None and r['tilt'] * r['early_db'] > 0 for r in strikes),
                'median_abs_cents_of_new_strikes': float(np.median([abs(r['cents']) for r in strikes if r['cents'] is not None]))}
     print(json.dumps({'summary': summary, 'pairs': rows}, indent=1))

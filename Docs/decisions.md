@@ -562,3 +562,25 @@ within 1.2 % of before on both pianos, from C6 to C8 and from A0 to B4 (the
 grand 6.02 to 6.07 s and 27.17 to 26.88 s, the upright 3.17 to 3.21 s and 7.37
 to 7.42 s), the median of seven paired rounds. Chosen on these measurements,
 not by ear.
+
+## 2026-10-28 — a strike's spread is in level
+
+The strike spread (above) moved a strike's layer coordinate by 5.6 velocity
+units, and a velocity unit is worth what the layers' level slope makes it: the
+upright's levels climb about twice as steeply between its two loudest layers
+as between the layers the spread was measured at, and the grand's softest
+layers climb steeply too. Read on Reason's channel meter (the louder channel's
+RMS over 300 ms), single notes every fourth semitone and eight chords at
+velocities 50 to 127 strayed from the steady strikes' readings by an RMS 1.4
+to 2.3 dB on the upright, the most at velocity 120, and by 2.2 dB on the grand
+at velocity 50, where the same twelve new strikes differ from their first
+takes by a median 1.04 dB in early level (`find_repeated_takes.py`'s
+`touch_spread_db`). A strike now moves the level the velocity response asks
+for by a draw of spread 1.085 dB and plays the layer coordinate where the
+piano's measured layers reach that level, continuing the end layers' slopes
+beyond them. It strays by an RMS 1.1 to 1.5 dB on the upright and 0.8 to 1.3
+dB on the grand, at every velocity; the eight chords grow a median 1.9 dB on
+the upright from velocity 110 to 127, where they grew 1.6 dB and one read 0.5
+dB quieter. The draws are the same, so a render still replays exactly;
+`keyra_render` and so every benchmark strike steadily and do not move.
+Measured, not chosen by ear.

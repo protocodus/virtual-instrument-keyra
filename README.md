@@ -65,7 +65,7 @@ musical passages through the same engine. Both are frozen evidence from
   loudest than the grand's, no longer plays on its own.
 - No two strikes land alike: each plays a little harder or softer than its
   velocity, as a player's do, by the spread the upright library's new
-  second strikes measure, 5.6 velocity units (about 1 dB), the harder one
+  second strikes measure, 1.085 dB of level on every key, the harder one
   the brighter. Repeated chords change level and colour from strike to
   strike; tuning does not, as those strikes keep their pitch within
   0.02 cents.
@@ -179,10 +179,12 @@ from 4 dB under to 7 dB over the same key of the grand (the tenth to the
 ninetieth percentile), where the two pianos' median notes sit within 1 dB.
 
 No two strikes land alike. Each plays a little harder or softer than its
-velocity asks, by a random amount with a spread of 5.6 units of the recorded
-layers' velocity, which the upright library's new second strikes measure
-(below): a repeated chord
-changes level and colour from strike to strike, and keeps its tuning. The
+velocity asks: its level moves by a random amount with a spread of 1.085 dB,
+which the upright library's new second strikes measure (below), and it plays
+the layer coordinate at that level, so a repeated chord changes level and
+colour from strike to strike, and keeps its tuning. A spread in velocity
+units instead would follow each layer's level slope, which at the upright's
+loudest layers is twice the measured layers', and so double it there. The
 draws restart with the engine, so a render replays exactly.
 
 Beside its series, a strike plays the components the recordings hold between
@@ -292,8 +294,8 @@ within 0.15 cents of it (`Tools/find_repeated_takes.py`), so no second take is
 fitted or scored. The other 17 are new strikes. Twelve of them, at train
 pitches, set how far the engine's strikes spread: each differs from its first
 as a velocity change does, ten of them brighter where louder, by a median
-5.4 velocity units at their layers' level slopes, which is a spread of 5.6
-for one strike, and in pitch by a median 0.02 cents.
+1.04 dB in early level, which is a spread of 1.085 dB for one strike, and in
+pitch by a median 0.02 cents.
 
 `Tools/benchmark_recordings.py` scores a renderer against every train and dev
 recording, through `keyra_render`, which strikes every note at exactly its

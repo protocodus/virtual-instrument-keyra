@@ -103,15 +103,17 @@ constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::par
 // never quite reaches an end still sounds and half-pedalling between does not.
 constexpr float pedalClear=.92f,pedalRest=.08f;
 // How far a player's strikes of one key at one intended force spread, in
-// velocity units. Twelve of the upright library's second takes at train
-// pitches, nine of them at its softest layer, are new strikes rather than
-// copies of the first (find_repeated_takes.py). They differ from their first
-// as a velocity change does, ten of them brighter where louder, by a median
-// 5.4 velocity units at their layers' level slopes (about 1 dB), so one
-// strike spreads 5.6 about its key's velocity: the median absolute difference
-// over 0.6745 and the square root of two. Their pitches differ by a median
-// 0.02 cents, so a strike keeps its tuning.
-constexpr double touchSpread=5.6;
+// level. Twelve of the upright library's second takes at train pitches, nine
+// of them at its softest layer, are new strikes rather than copies of the
+// first (find_repeated_takes.py). They differ from their first as a velocity
+// change does, ten of them brighter where louder, by a median 1.04 dB in
+// early level, so one strike spreads 1.085 dB about its key's level: the
+// median absolute difference over 0.6745 and the square root of two. A spread
+// in velocity units instead would follow each layer's level slope, which at
+// the upright's loudest layers is twice the measured layers', and so double
+// it there. Their pitches differ by a median 0.02 cents, so a strike keeps
+// its tuning.
+constexpr double touchSpreadDb=1.085;
 #if (defined(__clang__) || defined(__GNUC__)) && !defined(KEYRA_FORCE_SCALAR)
 // Explicit 128-bit lanes also survive the freestanding Rack compiler, whose
 // ordinary loops do not auto-vectorize. One vector holds a partial's lanes.
@@ -261,12 +263,19 @@ double levelAt(const Model& model,const std::array<float,measured::maxLayers>& d
 // layer and 1 the higher of the two softest layers' levels, which the other
 // piano passes between its own, so neither plays beyond what it recorded.
 constexpr double responseFloorDb=std::max(grand::layerLevelDb[0],upright::layerLevelDb[0]);
-double responseAt(const Model& model,double midi) noexcept {
-  const double x=(std::max(1.,std::min(127.,midi))-1)/126,db=responseFloorDb*(1-.5*(x+x*x*(3-2*x)));
+double responseDb(double midi) noexcept {
+  const double x=(std::max(1.,std::min(127.,midi))-1)/126;
+  return responseFloorDb*(1-.5*(x+x*x*(3-2*x)));
+}
+// The layer coordinate where the piano's measured layers reach a level:
+// piecewise linear between them, continued with the end segments' slopes,
+// within velocities 1 to 127.
+double layerAt(const Model& model,double db) noexcept {
   const float *v=model.layerVelocity,*l=model.layerLevelDb;
   int i=0;while(i<model.layers-2&&db>l[i+1])++i;
-  return v[i]+(v[i+1]-v[i])*std::max(0.,std::min(1.,(db-l[i])/(l[i+1]-l[i])));
+  return std::max(1.,std::min(127.,v[i]+(v[i+1]-v[i])*(db-l[i])/(l[i+1]-l[i])));
 }
+double responseAt(const Model& model,double midi) noexcept {return layerAt(model,responseDb(midi));}
 double onsetRiseAt(const Model& model,const measured::Anchor& anchor,double velocity) noexcept {
   // Log-linear between the recorded layers, held beyond them.
   const float* v=model.layerVelocity;const auto& r=anchor.onsetRise;
@@ -729,12 +738,12 @@ struct Engine::Impl {
     // A strike plays at a recording-layer coordinate, not measured hammer
     // speed: the shared response's for its MIDI velocity, or for a
     // measurement the velocity itself. No two strikes land alike: each moves
-    // that coordinate by a draw of spread touchSpread (four uniform draws
-    // summed, within 3.5 spreads).
+    // the response's level by a draw of spread touchSpreadDb (four uniform
+    // draws summed, within 3.5 spreads) and plays the coordinate there.
     double draw=0;
     for(int k=0;k<4;++k){touch^=touch<<13;touch^=touch>>17;touch^=touch<<5;draw+=touch*(1./4294967296.)-.5;}
-    const double played=steady?127*bounded(velocity):responseAt(*model,127*bounded(velocity));
-    const double v=std::max(1.,std::min(127.,played+(steady?0.:touchSpread*std::sqrt(3.)*draw)));
+    const double v=steady?std::max(1.,127.*bounded(velocity))
+                         :layerAt(*model,responseDb(127*bounded(velocity))+touchSpreadDb*std::sqrt(3.)*draw);
     channel.velocity[note-21]=static_cast<float>(v/127);channel.struck[note-21]=clock;
     const Model& m=*model;
     const int upper=upperAnchor(m,note);
