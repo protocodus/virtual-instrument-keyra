@@ -150,8 +150,22 @@ struct Channel {
 };
 struct Resonator {double q=0,p=0,c=1,s=0,decay=1;};
 // A strike's data, interpolated between the two recorded pitches around it.
-struct LaneData {double rate=0,offset=0,level=0;Complex phase{1,0},left{},right{};};
+// `ratio` and `angle` are its pickup's right-over-left level (natural log)
+// and phase difference.
+struct LaneData {double rate=0,offset=0,level=0,ratio=0,angle=0;Complex phase{1,0},left{},right{};};
 struct PartialData {int order=0;double cents=0,rise=0;LaneData lane[lanes]{};};
+// What every strike would otherwise recompute of a measured lane: its log
+// rate, its pickup's ratio and angle (see LaneData) and its layers' phases
+// as unit vectors.
+struct LaneCache {double logRate=0,ratio=0,angle=0;std::array<Complex,measured::layers> phase{};};
+LaneCache cacheLane(const measured::Lane& m) noexcept {
+  LaneCache c;c.logRate=std::log(m.rate);
+  const double right=std::max(1e-6,std::hypot(static_cast<double>(m.rightRe),static_cast<double>(m.rightIm)));
+  c.ratio=std::log(right/std::max(1e-6,static_cast<double>(m.left)));
+  c.angle=std::atan2(static_cast<double>(m.rightIm),static_cast<double>(m.rightRe));
+  for(int i=0;i<measured::layers;++i)c.phase[i]={std::cos(m.phase[i]),std::sin(m.phase[i])};
+  return c;
+}
 
 double levelAt(const std::array<float,measured::layers>& db,double velocity) noexcept {
   // Piecewise linear in dB between the recorded layers, continued with the
@@ -176,27 +190,27 @@ Complex unit(Complex z,Complex fallback) noexcept {
   const double norm=std::sqrt(z.re*z.re+z.im*z.im);
   return norm>1e-6?Complex{z.re/norm,z.im/norm}:fallback;
 }
-Complex phaseAt(const measured::Lane& lane,double velocity) noexcept {
+Complex phaseAt(const LaneCache& lane,double velocity) noexcept {
   // A lane's phase against the partial's strongest lane, held beyond the
   // recorded layers and interpolated on the unit circle between them.
   const auto& v=measured::layerVelocity;const auto& ph=lane.phase;
   constexpr int last=measured::layers-1;
-  if(velocity<=v[0])return {std::cos(ph[0]),std::sin(ph[0])};
-  if(velocity>=v[last])return {std::cos(ph[last]),std::sin(ph[last])};
+  if(velocity<=v[0])return ph[0];
+  if(velocity>=v[last])return ph[last];
   int i=0;while(velocity>v[i+1])++i;
   const double t=(velocity-v[i])/(v[i+1]-v[i]);
-  const Complex a{std::cos(ph[i]),std::sin(ph[i])},b{std::cos(ph[i+1]),std::sin(ph[i+1])};
+  const Complex a=ph[i],b=ph[i+1];
   return unit({mix(a.re,b.re,t),mix(a.im,b.im,t)},t<.5?a:b);
 }
-LaneData laneAt(const measured::Lane& m,double velocity) noexcept {
-  LaneData l;l.rate=std::log(m.rate);l.offset=m.offsetHz;l.level=levelAt(m.levelDb,velocity);l.phase=phaseAt(m,velocity);
-  l.left={m.left,0};l.right={m.rightRe,m.rightIm};
+LaneData laneAt(const measured::Lane& m,const LaneCache& c,double velocity) noexcept {
+  LaneData l;l.rate=c.logRate;l.offset=m.offsetHz;l.level=levelAt(m.levelDb,velocity);l.phase=phaseAt(c,velocity);
+  l.ratio=c.ratio;l.angle=c.angle;l.left={m.left,0};l.right={m.rightRe,m.rightIm};
   return l;
 }
-PartialData single(const measured::Partial& p,double velocity) noexcept {
+PartialData single(const measured::Partial& p,const std::array<LaneCache,lanes>& c,double velocity) noexcept {
   PartialData d;d.order=p.order;d.cents=p.cents;
   d.rise=std::log(p.riseSeconds)+p.riseSlope*(velocity-64)/64;
-  for(int j=0;j<lanes;++j)d.lane[j]=laneAt(p.lanes[j],velocity);
+  for(int j=0;j<lanes;++j)d.lane[j]=laneAt(p.lanes[j],c[j],velocity);
   return d;
 }
 LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
@@ -211,9 +225,8 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
   // partials of two recorded pitches can arrive half a turn apart in phase;
   // blended as vectors they cancelled a channel, putting D#3's fundamental
   // 12 dB further left than either C3 or F#3 has it.
-  const double ra=std::max(1e-6,std::hypot(x.right.re,x.right.im)),rb=std::max(1e-6,std::hypot(y.right.re,y.right.im));
-  const double g=std::exp(mix(std::log(ra/std::max(1e-6,x.left.re)),std::log(rb/std::max(1e-6,y.left.re)),t));
-  const double from=std::atan2(x.right.im,x.right.re),phase=from+t*std::remainder(std::atan2(y.right.im,y.right.re)-from,2*pi);
+  const double g=std::exp(mix(x.ratio,y.ratio,t));
+  const double phase=x.angle+t*std::remainder(y.angle-x.angle,2*pi);
   const double left=std::sqrt(2/(1+g*g));
   l.left={left,0};l.right={left*g*std::cos(phase),left*g*std::sin(phase)};
   return l;
@@ -258,6 +271,11 @@ double detuning(double f1,double B,double hz) noexcept {
 
 struct Engine::Impl {
   std::array<Voice,maxVoices> voices{};
+  // Every measured lane's cache (see LaneCache), filled at construction.
+  static constexpr std::size_t ringLanes=measured::undamped[0].lanes.size();
+  std::array<std::array<LaneCache,lanes>,measured::partials.size()> partialLanes{};
+  std::array<LaneCache,measured::extras.size()> extraLanes{};
+  std::array<std::array<LaneCache,ringLanes>,measured::undamped.size()> undampedLanes{};
   // How far (Hz) each string a recorded pitch lists lies from that pitch's
   // nearest partial.
   std::array<double,measured::undamped.size()> ringDetuning{};
@@ -595,9 +613,9 @@ struct Engine::Impl {
     while((i<ia||j<jb)&&voice.count<maxPartials){
       PartialData d;double weight=1;
       const int oa=i<ia?measured::partials[i].order:1<<30,ob=j<jb?measured::partials[j].order:1<<30;
-      if(oa==ob){d=blend(single(measured::partials[i],v),single(measured::partials[j],v),t);++i;++j;}
-      else if(oa<ob){d=single(measured::partials[i++],v);weight=1-t;}
-      else{d=single(measured::partials[j++],v);weight=t;}
+      if(oa==ob){d=blend(single(measured::partials[i],partialLanes[i],v),single(measured::partials[j],partialLanes[j],v),t);++i;++j;}
+      else if(oa<ob){d=single(measured::partials[i],partialLanes[i],v);++i;weight=1-t;}
+      else{d=single(measured::partials[j],partialLanes[j],v);++j;weight=t;}
       if(weight<=0)continue;
       const int order=d.order;
       const double frequency=order*f1*std::sqrt((1+B*order*order)/(1+B))*std::pow(2.,d.cents/1200);
@@ -667,10 +685,10 @@ struct Engine::Impl {
     const int enda=a.extraFirst+a.extraCount,endb=b.extraFirst+b.extraCount;
     while((ea<enda||eb<endb)&&voice.count<maxPartials){
       const bool first=eb>=endb||(ea<enda&&place(measured::extras[ea])<=place(measured::extras[eb]));
-      const auto& e=measured::extras[first?ea++:eb++];
+      const int k=first?ea++:eb++;const auto& e=measured::extras[k];
       const double weight=share[first?0:1],frequency=place(e);
       if(weight<=0||frequency>highest)continue;
-      LaneData l=laneAt(e.lane,v);l.level+=20*std::log10(weight);
+      LaneData l=laneAt(e.lane,extraLanes[k],v);l.level+=20*std::log10(weight);
       add(frequency,e.order,l);
       if(filled==lanes)close(true);
     }
@@ -702,7 +720,7 @@ struct Engine::Impl {
         return std::min(0.,20*std::log10(std::hypot(rate,2*pi*ringDetuning[i])/std::hypot(rate,2*pi*away)));};
       const double cx=offPitch(ix),cy=offPitch(iy);
       for(int j=0;j<static_cast<int>(x.lanes.size())&&voice.count<maxPartials;++j){
-        LaneData lx=laneAt(x.lanes[j],v),ly=laneAt(y.lanes[j],v);
+        LaneData lx=laneAt(x.lanes[j],undampedLanes[ix][j],v),ly=laneAt(y.lanes[j],undampedLanes[iy][j],v);
         lx.level+=cx;ly.level+=cy;
         LaneData l=blendLane(lx,ly,t);
         l.level+=20*std::log10(weight);
@@ -848,6 +866,9 @@ struct Engine::Impl {
 
 Engine::Engine(double sampleRate):impl(new Impl){
   auto& p=*impl;
+  for(std::size_t i=0;i<measured::partials.size();++i)for(int j=0;j<lanes;++j)p.partialLanes[i][j]=cacheLane(measured::partials[i].lanes[j]);
+  for(std::size_t i=0;i<measured::extras.size();++i)p.extraLanes[i]=cacheLane(measured::extras[i].lane);
+  for(std::size_t i=0;i<measured::undamped.size();++i)for(std::size_t j=0;j<Impl::ringLanes;++j)p.undampedLanes[i][j]=cacheLane(measured::undamped[i].lanes[j]);
   for(const auto& anchor:measured::anchors)
     for(int i=anchor.undampedFirst;i<anchor.undampedFirst+anchor.undampedCount;++i){
       const auto& ring=measured::rings[measured::undamped[i].ring];
