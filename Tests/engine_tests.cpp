@@ -363,6 +363,26 @@ int main(int argc,char** argv){
     }
   }
   {
+    // A key between two recorded pitches plays about as loud as they do. Its
+    // partials' lanes, blended one by one, beat and cancel where neither
+    // pitch's do, which put the grand's B4 4 dB under both its neighbours.
+    // Every such key on both pianos, at one layer coordinate, 50-750 ms.
+    double worst=0;
+    const auto scan=[&](keyra::Piano piano,const auto& anchors){
+      auto p=dry();p.piano=piano;
+      const auto early=[&](int note){keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(note,.7f);
+        auto audio=render(e,36000);audio.erase(audio.begin(),audio.begin()+4800);return 20*std::log10(rms(audio));};
+      for(std::size_t i=1;i<anchors.size();++i){
+        const int low=anchors[i-1].note,high=anchors[i].note;const double a=early(low),b=early(high);
+        for(int note=low+1;note<high;++note){const double x=early(note);
+          worst=std::max({worst,std::min(a,b)-x,x-std::max(a,b)});}
+      }
+    };
+    scan(keyra::Piano::grand,keyra::measured::grand::anchors);scan(keyra::Piano::upright,keyra::measured::upright::anchors);
+    std::cout<<"between_pitches_outside_neighbours_db="<<worst<<'\n';
+    check(worst<3,"a key between two recorded pitches plays within 3 dB of their levels");
+  }
+  {
     // A damped key struck and let go leaves the undamped strings ringing,
     // whatever the Resonance control: each at its own pitch whichever key
     // struck it, heard through its own measured pickup. Taken: the string

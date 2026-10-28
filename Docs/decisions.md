@@ -517,3 +517,48 @@ next two beats rather than around it, was tried on the upright with the wider
 reach and not kept: its never-fitted partials moved 5.86 to 6.67 dB, the
 sustain spectrum 7.76 to 8.56 dB and the envelope 5.00 to 5.88 dB, and only
 the decay improved, 4.27 to 3.50 dB/s.
+
+## 2026-10-28 — a blended partial keeps its two pitches' power
+
+A key between two recorded pitches blends each partial's four lanes one by
+one (`blendLane`): rate, offset and level between the two pitches', phase
+from the nearer, stereo pickup between theirs. A partial's lanes beat against
+each other, so the power of their sum turns on all of these together, and the
+blend's combination is one neither pitch has: on the grand B4 played 3.5 to
+4.4 dB under both A4 and C5 at every velocity and A♯6 up to 4.6 dB over both
+A6 and C7, and on the upright B3 played 3 to 4.7 dB under both F♯3 and C4.
+`blend` now computes a partial's heard power, every pair of its lanes with
+their amplitudes, phases and pickups integrated in closed form against
+e^(−t/0.4 s) from contact, for both pitches and for the blend, and moves the
+blend's lanes together so its power sits at the two pitches' mixed in dB, as
+the lanes' levels are. 0.4 s is the mean time of the 50–750 ms window the
+layers' levels are measured over; the rise the lanes share is left out.
+Recorded pitches play as before, to the bit.
+
+Over every key at the layer coordinates velocities 1, 32, 64, 96 and 127 ask
+for (both channels, 50–750 ms), the keys more than 1 dB outside the levels of
+the two recorded pitches around them go from 8–16 of the grand's 63 to 1–4
+and from 8–18 of the upright's 52 to 3–5; the furthest goes from 4.6 to
+2.6 dB on the grand and from 4.7 to 2.8 dB on the upright. A new engine test
+holds every such key within 3 dB of its neighbours' levels at one layer
+coordinate on both pianos: 4.2 dB before, 1.7 dB now.
+
+On the [grand's benchmark](validation/grand-between-pitches-benchmark-2026-10-28.md)
+the never-fitted pitches between recorded ones, D♯1, D♯3, D♯5 and D♯7, sit
+0.39, 0.80, 0.03 and 0.61 dB closer to their recordings' level; the dev cases'
+level moves 1.29 to 1.10 dB and their partials 3.20 to 3.13 dB, with no
+regressions. On the [upright's](validation/upright-between-pitches-benchmark-2026-10-28.md)
+D♯2 sits 0.34 dB closer and G♯3, B3, C5 and E6 0.92, 0.75, 0.27 and 0.30 dB
+further; the dev cases' level moves 2.25 to 2.56 dB and their partials 5.86
+to 5.97 dB, and its nine regressions, at G♯3, B3 and C5, are listed there.
+The upright's recorded levels are uneven from note to note: C4 sits 3 to
+7.5 dB over the line through F♯3's and D4's levels at every layer, and F♯5 3
+to 9 dB under E5's and A♯5's. G♯3 and B3 lie between F♯3 and C4, and there
+the old blend happened to stray from the two pitches' levels the way their
+recordings do, over at G♯3 and under at B3; a blend's beating says nothing
+about a note's own level, so it is not kept for that.
+Three-note chords every 0.15 s under the sustain pedal, 6 s of them, render
+within 1.2 % of before on both pianos, from C6 to C8 and from A0 to B4 (the
+grand 6.02 to 6.07 s and 27.17 to 26.88 s, the upright 3.17 to 3.21 s and 7.37
+to 7.42 s), the median of seven paired rounds. Chosen on these measurements,
+not by ear.

@@ -321,11 +321,42 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
   l.left={left,0};l.right={left*g*std::cos(phase),left*g*std::sin(phase)};
   return l;
 }
+// A partial's power as the first second or so hears it: every pair of its
+// lanes, amplitudes and pickups, integrated in closed form against
+// e^(-t/0.4 s) from contact, the mean time of the 50-750 ms window the
+// layers' levels are measured over; the rise its lanes share is left out.
+double heardPower(const PartialData& d) noexcept {
+  constexpr double heard=.4;
+  double amplitude[lanes],rate[lanes];
+  for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
+  double sum=0;
+  for(int j=0;j<lanes;++j)for(int k=j;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
+    // Both lanes' phases and the pickups' inner product over the channels.
+    const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
+    const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
+    const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
+    const double re=rate[j]+rate[k]+1/heard,im=2*pi*(y.offset-x.offset);
+    const double term=amplitude[j]*amplitude[k]*(product.re*re+product.im*im)/(re*re+im*im);
+    sum+=j==k?term:2*term;
+  }
+  return sum;
+}
 PartialData blend(const PartialData& a,const PartialData& b,double t) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
   d.rise=mix(a.rise,b.rise,t);
   // Lanes are stored fastest first, so like roles meet.
   for(int j=0;j<lanes;++j)d.lane[j]=blendLane(a.lane[j],b.lane[j],t);
+  // Blended one by one, the lanes beat and cancel with offsets, phases and
+  // pickups neither pitch has, and a partial could play several dB under or
+  // over both: grand B4 sat 4 dB under its neighbours. Its heard power is
+  // set between the two pitches' instead, in dB like the lanes' levels.
+  if(t>0&&t<1){
+    const double pa=heardPower(a),pb=heardPower(b),pd=heardPower(d);
+    if(pa>0&&pb>0&&pd>0){
+      const double gain=10*(mix(std::log10(pa),std::log10(pb),t)-std::log10(pd));
+      for(auto& l:d.lane)l.level+=gain;
+    }
+  }
   return d;
 }
 // The recorded pitch above a key, or the last one; the one below is upper - 1.

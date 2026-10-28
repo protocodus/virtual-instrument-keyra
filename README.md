@@ -74,6 +74,20 @@ musical passages through the same engine. Both are frozen evidence from
   undamped string from F6 up but its own key's, each at its own measured
   pitch, decay and stereo position, at the level the recorded pitches around
   the key set it. They ring on after the key is let go.
+- A key between two recorded pitches plays about as loud as they do. Its
+  partials' lanes were blended one by one and, with offsets, phases and
+  stereo pickups neither pitch has, beat and cancelled where neither pitch's
+  do: the grand's B4 sat about 4 dB under both its neighbours and the
+  upright's B3 3 to 4.7 dB. Each blended partial's power over its first second
+  now sits between the two pitches' in dB. At five velocities no key plays
+  more than 2.8 dB outside the levels of the recorded pitches around it, and
+  at most 4 of the grand's 63 such keys and 5 of the upright's 52 more than
+  1 dB, where up to 16 and 18 did. The grand's never-fitted D♯ pitches sit up
+  to 0.8 dB closer to their recordings' level; the upright's recordings are
+  less even from note to note, and four of its five never-fitted pitches sit
+  0.3 to 0.9 dB further from theirs
+  ([grand](Docs/validation/grand-between-pitches-benchmark-2026-10-28.md),
+  [upright](Docs/validation/upright-between-pitches-benchmark-2026-10-28.md)).
 - Letting a key go knocks the body as its damper lands, and the sustain pedal
   knocks it going down and coming up, synthesized on the body's modes: each
   mode's level and phase is measured from the library's release and pedal
@@ -243,7 +257,9 @@ velocity and 2 dB quieter for each second held, the pedal at −20 dB down and
 −19 dB up), not a measurement. A strike interpolates between the recorded
 pitches by partial order and between the layers by velocity, taking phases from
 the nearer pitch; a partial's stereo pickup moves between the two pitches'
-channel level and phase differences. C8 is left out: its strongest components
+channel level and phase differences, and its level is set so that its power
+over the first second or so, its lanes' beating included, sits between the
+two pitches' in dB. C8 is left out: its strongest components
 sit 90–100 cents above the stretch that F♯7 and A7 set and no partial series
 explains the recording, so the keys above A7 play A7's data on the stretch
 curve. Only fitted numbers enter the header; no recorded waveform or impulse
@@ -344,7 +360,12 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
-  recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB).
+  recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB). A key
+  between two recorded pitches follows one that is louder or quieter than
+  its neighbours, where its own recording may not: the upright's C4 sits 3
+  to 7.5 dB over the line through F♯3's and D4's levels at every layer, and
+  the never-fitted B3 beside it plays 1.7 dB louder against its recording
+  than the median note does.
 - From C6 up, the partials' decay after half a second is 4.5 dB/s from the
   recordings' on the dev cases (0.3.0: 6.7 dB/s), but at A7 it is 1 to 2 dB/s
   further than 0.3.0's. Each undamped key rings as one string at one pitch,
