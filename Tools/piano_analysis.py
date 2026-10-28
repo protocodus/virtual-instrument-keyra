@@ -409,6 +409,20 @@ def _fit_frames(times, power_db, floor_db, end):
 
 LANES = 4
 SLOWEST_RATE = .003   # 1/s: no lane decays slower; a fit left there did not time its lane
+# How far a partial's lanes may sit from it, as a share of its frequency:
+# about 3 cents, and 10 where a lane settles at that bound. From C6 up the
+# upright's unison strings sit 2 to 10 cents from their partial; reaching 3,
+# G7's fundamental fitted two lanes at the bounds that fell 40 dB in half a
+# second, between strings that ring on for two. Refitting every partial with
+# the wider reach and its resolved components broke some that need neither:
+# D5's fundamental settled on two lanes 0.09 Hz apart that cancel, F#3's
+# second partial on a 32 ms rise.
+LANE_REACH, UNISON_REACH = .0017, .006
+
+
+def lane_span(n, hz, reach=LANE_REACH):
+    """How far (Hz) the lanes of partial `n` at `hz` may sit from it."""
+    return max(2.5, .2 * n, reach * hz)
 
 
 def lane_complex_rates(theta, velocity, lanes=LANES):
@@ -433,6 +447,35 @@ def _layer_frames(times, power_db, floor_db):
     end = times[int(np.flatnonzero(live)[-1])]
     sel = _fit_frames(times, power_db, floor_db, end)
     return sel if len(sel) >= 6 else None
+
+
+def _component_offsets(layers, span, count):
+    """Offsets (Hz) of the `count` strongest components within +-`span` that
+    a partial's envelopes hold: peaks of the layers' summed power spectra over
+    their evenly spaced frames from 0.5 s, each layer scaled to its own peak.
+    Every 20 ms, the frames resolve offsets up to 22 Hz."""
+    total, grid = None, None
+    for L in layers:
+        t = L['times']
+        idx = np.flatnonzero((t >= .5) & (L['power_db'] > L['floor_db'] + 8))
+        if len(idx) < 16:
+            continue
+        dt = float(np.median(np.diff(t[idx])))
+        z = L['z'][:, idx[0]:idx[-1] + 1]
+        z = z / (np.abs(z).max() + 1e-30)
+        nfft = 1 << int(math.ceil(math.log2(z.shape[1] * 16)))
+        power = np.sum(np.abs(np.fft.fft(z * np.hanning(z.shape[1]), nfft, axis=1)) ** 2, axis=0)
+        hz = np.fft.fftshift(np.fft.fftfreq(nfft, dt))
+        power = np.fft.fftshift(power)
+        if grid is None:
+            limit = min(span, .45 / dt)
+            grid = np.linspace(-limit, limit, 2001)
+            total = np.zeros_like(grid)
+        total += np.interp(grid, hz, power / power.max())
+    if total is None:
+        return []
+    peaks, _ = signal.find_peaks(total, prominence=.02 * total.max())
+    return [float(grid[k]) for k in sorted(peaks, key=lambda k: -total[k])[:count]]
 
 
 def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, length=None, rise=True):
@@ -545,10 +588,6 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, l
     beat = float(np.median([abs(s['beat']) for s in starts]))
     start_rise = float(np.median([s['rise'] for s in starts]))
     slow = min(float(np.median(tails)) if tails else sl / 3, sl)
-    # Lanes may sit a few cents from the measured partial (unison strings).
-    span = max(2.5, .2 * n, .0017 * hz)
-    lower = [math.log(SLOWEST_RATE)] * lanes + [-span] * lanes + [math.log(2e-4), -3.0]
-    upper = [math.log(500)] * lanes + [span] * lanes + [math.log(.5), 3.0]
     # The beating pair at the late rate, or at the slow tail's; one lane
     # starts from either rate, and two from the prompt or late rate and the
     # slow tail's.
@@ -556,20 +595,41 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, l
                                                            ((sp, sl, slow, slow), (0, 0, 0, sign * beat)))],
              2: [((sp, slow), (0, 0)), ((sl, slow), (0, 0))],
              1: [((sl,), (0,)), ((slow,), (0,))]}[lanes]
-    best = None
-    for rates, offsets in seeds:
-        theta0 = np.clip([math.log(r) for r in rates] + list(offsets) + [math.log(start_rise), 0.0],
-                         np.add(lower, 1e-6), np.subtract(upper, 1e-6))[:free]
-        try:
-            fit = optimize.least_squares(residual, theta0, jac=jacobian, bounds=(lower[:free], upper[:free]),
-                                         max_nfev=200, x_scale=([1] * lanes + [.1] * lanes + [1, 1])[:free])
-        except (ValueError, np.linalg.LinAlgError):
-            continue
-        if best is None or fit.cost < best.cost:
-            best = fit
-    if best is None:
-        return None
-    theta = np.r_[best.x, pinned]
+    # Lanes may sit a few cents from the measured partial (unison strings),
+    # and further where one settles at that bound (LANE_REACH).
+    best, span = None, 0.0
+    for reach in (LANE_REACH, UNISON_REACH):
+        if best is not None:
+            if np.all(np.abs(theta[lanes:2 * lanes]) < .98 * span) or lane_span(n, hz, reach) <= span:
+                break
+            # The wider reach moves where the lanes ring, not how the partial
+            # starts: it keeps the first fit's rise, which refitted with it
+            # slowed C6's fundamental from 2 to 7 ms.
+            pinned, free = list(theta[2 * lanes:]), 2 * lanes
+            # And from the components the envelopes resolve: seeded only at the
+            # partial and its beat, G7's four lanes settled between its strings.
+            found = _component_offsets(layers, lane_span(n, hz, reach), lanes) if lanes == 4 else []
+            if len(found) >= 2:
+                # Lanes left over start at the partial, the last of two at its
+                # prompt rate: seeded alike, E7's two stayed alike.
+                offsets = tuple(found + [0.0] * (lanes - len(found)))
+                last = slow if len(found) > 2 else sp
+                seeds = seeds + [((sl, sl, slow, last), offsets), ((sp, sl, slow, last), offsets)]
+        span = lane_span(n, hz, reach)
+        lower = [math.log(SLOWEST_RATE)] * lanes + [-span] * lanes + [math.log(2e-4), -3.0]
+        upper = [math.log(500)] * lanes + [span] * lanes + [math.log(.5), 3.0]
+        for rates, offsets in seeds:
+            theta0 = np.clip([math.log(r) for r in rates] + list(offsets) + [math.log(start_rise), 0.0],
+                             np.add(lower, 1e-6), np.subtract(upper, 1e-6))[:free]
+            try:
+                fit = optimize.least_squares(residual, theta0, jac=jacobian, bounds=(lower[:free], upper[:free]),
+                                             max_nfev=200, x_scale=([1] * lanes + [.1] * lanes + [1, 1])[:free])
+            except (ValueError, np.linalg.LinAlgError):
+                continue
+            if best is None or fit.cost < best.cost:
+                best, theta = fit, np.r_[fit.x, pinned]
+        if best is None:
+            return None
     res, amps = evaluate(theta)
     out_amps, errors, k = [], [], 0
     for p in prepared:
@@ -793,8 +853,13 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
             residual[L['start']:L['start'] + samples] -= layer_partial_waveform(
                 fit['theta'], fit['amplitudes'][i], L['velocity'], freqs[k], sr, samples, L['delay'])
         L['residual'] = residual
-    # The lanes of a partial may sit up to `span` from it (fit_partial_layers).
-    exclude = [(f - max(2.5, .2 * n, .0017 * f), f + max(2.5, .2 * n, .0017 * f)) for n, f in zip(orders, freqs)]
+    # A partial's lanes hold what lies within their reach (lane_span), or out
+    # to the furthest of them where they reach further: E7's fundamental held
+    # nothing 14 Hz out, which an exclusion to its wider bound left unplayed.
+    spans = [lane_span(n, f) if fit is None else
+             max(lane_span(n, f), float(np.max(np.abs(fit['theta'][LANES:2 * LANES]))))
+             for n, f, fit in zip(orders, freqs, fits)]
+    exclude = [(f - s, f + s) for f, s in zip(freqs, spans)]
     contacts = [L['start'] + int(L['delay'] * sr) for L in layers]
     extras = shared_peaks([residual_peaks(L['residual'], L['x'], sr, c, exclude, EXTRA_LOW)
                            for L, c in zip(layers, contacts)])

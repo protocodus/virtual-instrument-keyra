@@ -469,3 +469,51 @@ scale alone. The shape is the owner's choice, not a measurement. A lettered
 chord ramp went to the owner on both pianos: the shipping response, this
 halfway shape, a straight line and smoothstep, with the key beside them, and
 no verdict yet.
+
+## 2026-10-28 — a partial's lanes reach its farther unison strings
+
+From C6 up the upright's unison strings sound 2 to 20 cents from their
+partial, where a partial's lanes reached about 3 cents
+(`piano_analysis.fit_partial_layers`). The strings beyond played as one-lane
+components beside the series (above), and G7's fundamental fitted two lanes
+at those bounds that fell 40 dB in half a second, between strings that ring
+on for two. Where a fitted lane now settles within 2 % of its bound, the
+partial is fitted again with lanes up to 0.6 % of its frequency out (about 10
+cents), seeded also from the components its layers' envelopes resolve from
+0.5 s and keeping the first fit's rise, and the fit of lower cost is kept.
+A partial whose lanes reach further keeps the residual's peaks within its
+furthest lane out of the components beside it. 131 of the grand's partials
+and 120 of the upright's are refitted, all but six of them above 1 kHz; the
+grand plays 206 components beside its series instead of 217, the upright 53
+instead of 74.
+
+On the [upright's benchmark](validation/upright-lane-reach-benchmark-2026-10-28.md)
+the never-fitted E6's partials sit 7.75 to 6.83 dB from the recordings, their
+decay 12.34 to 8.23 dB/s, the sustain spectrum 12.43 to 10.10 dB and the
+envelope 9.04 to 6.46 dB; the train treble's decay 3.54 to 2.16 dB/s and its
+sustain spectrum 9.17 to 6.93 dB, and D6's shortest onset rise returns from
+19.8 ms to 0.2–4.3 ms. Its 24 regressions are listed there, among them the
+stereo coherence of A♯6 and C6, the onset rise at C1, A1, A2, A♯6 and C6, E6's
+stereo balance, 2.94 to 4.67 dB, and E7's level, 3.54 to 5.77 dB: from 0.05 to
+0.75 s E7 sits 3 to 5 dB under its recordings, as the fit weighs its quiet
+tail as much as its start. On the
+[grand's](validation/grand-lane-reach-benchmark-2026-10-28.md) the
+never-fitted treble's decay moves 4.48 to 3.29 dB/s, its sustain spectrum
+7.30 to 7.15 dB, its stereo balance 1.93 to 1.62 dB and its tuning 1.26 to
+1.86 cents; the train treble's decay 3.82 to 3.56 dB/s, its sustain spectrum
+7.86 to 8.13 dB and its envelope 2.82 to 3.39 dB. Its 17 regressions are
+listed there, F♯6's first: its envelope 2.16 to 5.29 dB and its sustain
+spectrum 4.84 to 7.00 dB from the train recordings. Its refitted fundamental
+follows the recordings' complex envelope more closely (relative error 0.24 to
+0.20), but where their level holds or rises from 0.75 to 1 s it keeps
+falling, and sits 6 to 8 dB under them from 1 to 1.5 s. Three-note chords
+every 0.15 s from C6 to C8 under the sustain pedal, 6 s of them, render
+25.5 % faster on the upright (4.28 to 3.19 s) and 6.0 % slower on the grand
+(5.60 to 5.93 s), the median of seven paired rounds. Chosen on these
+measurements, not by ear.
+
+A forward weight, each frame weighed by the envelope's largest value over the
+next two beats rather than around it, was tried on the upright with the wider
+reach and not kept: its never-fitted partials moved 5.86 to 6.67 dB, the
+sustain spectrum 7.76 to 8.56 dB and the envelope 5.00 to 5.88 dB, and only
+the decay improved, 4.27 to 3.50 dB/s.

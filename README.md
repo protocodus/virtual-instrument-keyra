@@ -93,19 +93,24 @@ musical passages through the same engine. Both are frozen evidence from
   sounds; sessions saved before keep the grand. On the
   [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
   its attack, tuning and level sit closer to its never-fitted recordings than
-  the grand's data does; its treble does not yet (Known gaps). From C6 up it
-  now plays the unison strings that sound further from their partial than its
-  lanes reach: its first fit took them for the partial's own and left them
-  out, so its treble tails fell too fast. On the never-fitted E6 the partials
-  sit 7.7 dB from the recordings instead of 8.9 and the sustain spectrum
-  12.4 dB instead of 15.1
-  ([unisons](Docs/validation/upright-unison-benchmark-2026-10-28.md)); the
-  grand gains such a string at F♯6, A6 and C7. Its dampers
-  leave ringing what the library's key-release takes show, a share of each
-  partial that fades over seconds once the felt lands, 13 dB down at middle
-  C and less higher up: on the never-fitted takes its releases sit 6.3 dB
-  from the recordings, where the grand's felt left them 8.4 dB
-  ([release benchmark](Docs/validation/upright-release-benchmark-2026-10-28.md)).
+  the grand's data does; its treble does not yet (Known gaps). From C6 up its
+  unison strings sound up to 20 cents from their partial: its first fit took
+  those beyond the partial's lanes, which reached about 3 cents, for the
+  partial's own and left them out, so its treble tails fell too fast. The
+  lanes now reach about 10 cents where the recordings hold strings that far
+  out, and the strings beyond them play beside the partials. On the
+  never-fitted E6 the partials sit 6.8 dB from the recordings instead of 8.9,
+  their decay 8.2 dB/s instead of 13.9 and the sustain spectrum 10.1 dB
+  instead of 15.1 ([unisons](Docs/validation/upright-unison-benchmark-2026-10-28.md),
+  [reach](Docs/validation/upright-lane-reach-benchmark-2026-10-28.md)). The
+  grand's lanes reach as far: its never-fitted treble's decay sits 3.3 dB/s
+  from the recordings instead of 4.5, and F♯6's envelope 5.3 dB instead of
+  2.2 ([grand](Docs/validation/grand-lane-reach-benchmark-2026-10-28.md)).
+  Its dampers leave ringing what the library's key-release takes show, a
+  share of each partial that fades over seconds once the felt lands, 13 dB
+  down at middle C and less higher up: on the never-fitted takes its
+  releases sit 6.3 dB from the recordings, where the grand's felt left them
+  8.4 dB ([release benchmark](Docs/validation/upright-release-benchmark-2026-10-28.md)).
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -207,7 +212,11 @@ level down to the recording's floor; in a layer where it does not stand clear
 of that floor, it is no louder than its recorded peak there. The layers'
 contact times are aligned so that the phases form one pattern across the
 partials, and a pitch's onset rise follows one line over velocity, held within
-the range its layers measure. Beside the series, the
+the range its layers measure. A partial's lanes sit within about 3 cents of
+it; where one settles at that bound, the partial is fitted again with lanes
+up to about 10 cents out, seeded from the components its envelopes resolve
+and keeping the first fit's rise, and the closer of the two fits is kept.
+Beside the series, the
 residual's peaks that four or more layers share are measured each through a
 window just long enough to part it from its nearest neighbour, from 30 ms to 2
 s, and fitted with one lane from contact; one within 3.5 cents of another
@@ -372,14 +381,16 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   felt taking all of it ([dampers](Docs/research/upright-dampers-2026-10-28.md)).
 - The upright's treble is fitted worse than its middle. From C6 up its unison
   strings sound 6 to 20 cents apart (the grand's top octave up to 12). A
-  partial's lanes hold those within about 3 cents of it; each one further out
-  plays as a component beside it, which has no rise of its own and takes the
-  pitch's shortest, so the fit lengthens that for every partial: D6's is now
-  20 ms, where it was 0.2 ms
-  ([unisons](Docs/validation/upright-unison-benchmark-2026-10-28.md)).
+  partial's four lanes reach those within about 10 cents of it (above); each
+  one further out plays as a component beside it, which has no rise of its
+  own. Around G7's fundamental the recordings hold about six components and
+  its lanes play four, without the 6 Hz beat two of them make. From 0.05 to
+  0.75 s E7 sits 3 to 5 dB under its recordings, as the fit weighs its quiet
+  tail as much as its start
+  ([reach](Docs/validation/upright-lane-reach-benchmark-2026-10-28.md)).
   At the never-fitted E6, between the recorded pitches, the partials sit
-  7.7 dB from the recording and their decay 12.3 dB/s from its, where the
-  middle register's sit 5.7 dB and 3.3 dB/s. Its noise between partials
+  6.8 dB from the recording and their decay 8.2 dB/s from its, where the
+  middle register's sit 5.4 dB and 3.5 dB/s. Its noise between partials
   scores 9 to 10 dB, most of it above 6 kHz the recordings' own steady floor,
   which that score does not part from the piano's noise.
 - Only Linux VST3 and standalone builds have been validated

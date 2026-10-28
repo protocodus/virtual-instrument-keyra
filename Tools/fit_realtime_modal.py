@@ -95,9 +95,9 @@ MODELS = {
 # peaks halo_pitches takes for a string lie that close to it. (Within 15
 # cents instead, a fifth of the bass's components fell near some string by
 # chance.) A peak beside an anchor's own fundamental lies beyond its lanes'
-# reach (piano_analysis.fit_partial_layers) and is one of its own unison
-# strings: from C6 up the upright's sit 2 to 10 cents out, where the lanes
-# reach about 3. Taken for the partial's own and left out, they left G7's
+# reach (piano_analysis.lane_span: about 3 cents, or 10 where a lane settles
+# at 3) and is one of its own unison strings: from C6 up the upright's sit 2
+# to 10 cents out. Taken for the partial's own and left out, they left G7's
 # fundamental 14 to 30 dB under the recordings from 0.25 to 1.5 s.
 UNDAMPED = range(89, 109)
 HALO_UNISON = 3.5
