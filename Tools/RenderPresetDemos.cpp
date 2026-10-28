@@ -5,6 +5,7 @@
 
 #include "DSP/KeyraEngine.h"
 #include "DSP/KeyraPresets.h"
+#include "DSP/OutputStage.h"
 #include "PresetDemoRenderer.h"
 
 #include <memory>
@@ -53,6 +54,9 @@ int main (int argc, char** argv)
 {
     protocodus::demos::Instrument instrument;
     instrument.name = "Keyra";
+    // The engine ends in the shared output stage, whose limiter holds every
+    // sample at -1.5 dBFS; the margin is the float rounding its own test allows.
+    instrument.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
     for (const auto& preset : keyra::factoryPresets)
         instrument.presets.push_back (preset.name);
     instrument.open = [] (std::size_t preset, double sampleRate, int, std::uint32_t)

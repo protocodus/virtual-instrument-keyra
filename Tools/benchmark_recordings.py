@@ -84,6 +84,10 @@ LAYER_VELOCITY = fit.LAYER_VELOCITY
 RENDER_SECONDS = 4.6
 FEATURES = 'features 6'  # bump when features() changes, to refresh cached references
 LEAD = .05
+# keyra_render's Output for measurements: 20 dB under the default, where the
+# output stage (Source/DSP/OutputStage.h) passes every strike untouched. The
+# scores take each render's level out, so they do not depend on it.
+MEASURE = ['--gain', '.07']
 
 
 def band_spectrogram(x, sr, start, seconds, hop=.01, win=.04):
@@ -331,7 +335,7 @@ def run_case(args):
         events.write_text(f'{LEAD} on {note} {velocity}\n')
         wav = Path(keep) / f'{case}.wav' if keep else Path(tmp) / 'render.wav'
         subprocess.run([renderer, '--events', str(events), '--output', str(wav),
-                        '--duration', str(RENDER_SECONDS)] + extra, check=True, stdout=subprocess.DEVNULL)
+                        '--duration', str(RENDER_SECONDS)] + MEASURE + extra, check=True, stdout=subprocess.DEVNULL)
         mod = features(wav, note, ref)
     result = compare(ref, mod)
     result.update({'case': case, 'note': note, 'layer': layer, 'velocity': velocity})

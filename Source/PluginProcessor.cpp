@@ -66,6 +66,7 @@ void KeyraAudioProcessor::prepareToPlay(double sampleRate, int)
 {
     prepared = std::isfinite(sampleRate) && sampleRate >= 22050.0 && sampleRate <= 192000.0;
     if (prepared) engine.prepare(sampleRate);
+    setLatencySamples(engine.outputLatencySamples());
     reset();
 }
 

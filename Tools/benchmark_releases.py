@@ -39,6 +39,7 @@ import numpy as np  # noqa: E402
 from scipy import optimize  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import benchmark_recordings as bench  # noqa: E402
 import fit_realtime_modal as fit  # noqa: E402
 import piano_analysis as pa  # noqa: E402
 
@@ -90,7 +91,8 @@ def run_case(args):
         events, wav = Path(tmp) / 'release.events', Path(tmp) / 'render.wav'
         events.write_text(f'0 on {note} {VELOCITY}\n{HOLD} off {note} 0\n')
         subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--model', model_name,
-                        '--duration', str(HOLD + SHIFTS[-1] + times[-1] + .2)], check=True, stdout=subprocess.DEVNULL)
+                        '--duration', str(HOLD + SHIFTS[-1] + times[-1] + .2)] + bench.MEASURE,
+                       check=True, stdout=subprocess.DEVNULL)
         sr, x = pa.load(wav)
     best = None
     for shift in SHIFTS:

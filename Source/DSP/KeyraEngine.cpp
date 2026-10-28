@@ -1,6 +1,7 @@
 #include "KeyraEngine.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
+#include "OutputStage.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -71,10 +72,12 @@ constexpr Model models[]{
    // second and carry no level against the notes'
    // (Docs/research/release-recordings-2026-10-27.md).
    nullptr,
-   // The measured levels are the recordings' own. This scale keeps the
-   // median note as loud as version 0.3.0's (Tools/benchmark_recordings.py,
-   // median gain 17.6 dB to the recordings).
-   .21},
+   // The measured levels are the recordings' own. This scale brings typical
+   // playing on the default controls to -9 VU on Reason's channel meter at
+   // the default Output, where the portfolio's newer instruments play, with
+   // the output stage's guard keeping the loudest chords out of the red
+   // (Tools/KeyraLevels.cpp).
+   .7887},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -87,13 +90,14 @@ constexpr Model models[]{
    // velocity and however long the key was held. It has no pedal recordings.
    -13.9794,0,0,0,0,0,
    upright::noiseBands.data(),upright::noise.data(),&upright::damper,
-   // The recordings' levels are their own. This scale makes the median note
-   // at velocity 127 as loud as the grand's (each key A0-C8 held, both
-   // channels' RMS from 50 to 750 ms after the strike, as the benchmark sets
-   // a case's gain), so both pianos' fortissimo leaves the output the same
-   // headroom. Below it the shared velocity response (responseAt) keeps the
-   // two medians within 1 dB of each other.
-   .642},
+   // The recordings' levels are their own. This scale brings its typical
+   // playing to the grand's, -9 VU (Tools/KeyraLevels.cpp), which also keeps
+   // its median note at velocity 127 within 0.1 dB as loud as the grand's
+   // (each key A0-C8 held, both channels' RMS from 50 to 750 ms after the
+   // strike, as the benchmark sets a case's gain). Below it the shared
+   // velocity response (responseAt) keeps the two medians within 1 dB of each
+   // other.
+   2.387},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
@@ -426,6 +430,10 @@ struct Engine::Impl {
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset or a piano switch
   bool sleeping=true;
   bool pedalHeld=false;  // the sustain pedal's dampers off the strings
+  // The portfolio's shared output stage, with the guard the newer
+  // instruments use: typical playing passes it untouched and the hardest
+  // chords stay out of the red (Tools/KeyraLevels.cpp).
+  protocodus::OutputStage<2> output;
 
   Complex rotation(double frequency) const noexcept {
     double phase=frequency/sampleRate;
@@ -470,7 +478,7 @@ struct Engine::Impl {
     for(auto& voice:voices)voice.active=false;
     for(auto& r:sympathetic){r.q=0;r.p=0;}
     silenceBody();silenceNoise();touch=1;
-    highpassL=highpassR=previousL=previousR=0;
+    highpassL=highpassR=previousL=previousR=0;output.Reset();
     placeHalo();retuneSympathetic();prepareBody();prepareNoise();
   }
   void retuneSympathetic() noexcept {
@@ -1013,13 +1021,16 @@ struct Engine::Impl {
         responseL+=mode.q*(1-pan);responseR+=mode.q*(1+pan);
       }
       outL+=responseL*parameters.resonance*.35;outR+=responseR*parameters.resonance*.35;
-      // DC blocker and bounded, memoryless emergency ceiling. Typical single
-      // notes remain linear; extreme 128-strike stacks cannot emit NaN/Inf.
+      // DC blocker, a memoryless emergency bound where the clip at full scale
+      // used to be, then the output stage. The bound, +12 dBFS, keeps extreme
+      // 128-strike stacks finite and within the range the limiter holds
+      // exactly; nothing playable reaches it.
       const double hpL=outL-previousL+highpassCoefficient*highpassL,hpR=outR-previousR+highpassCoefficient*highpassR;
       previousL=outL;previousR=outR;highpassL=hpL;highpassR=hpR;
       const double yL=hpL*gain*model->outputScale,yR=hpR*gain*model->outputScale;
-      left[i]=static_cast<float>(yL>1?1:yL< -1?-1:yL);
-      right[i]=static_cast<float>(yR>1?1:yR< -1?-1:yR);
+      std::array<float,2> frame{static_cast<float>(yL>4?4:yL< -4?-4:yL),static_cast<float>(yR>4?4:yR< -4?-4:yR)};
+      output.Process(frame);
+      left[i]=frame[0];right[i]=frame[1];
     }
   }
 };
@@ -1044,6 +1055,7 @@ void Engine::prepare(double sampleRate){
   p.retuneSympathetic();
   p.prepareBody();
   p.prepareNoise();
+  p.output.Prepare(p.sampleRate,protocodus::kVuGuard);
   reset();
 }
 void Engine::reset() noexcept {
@@ -1055,6 +1067,7 @@ void Engine::reset() noexcept {
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
+  p.output.Reset();
   for(int ch=0;ch<16;++ch)p.capture(ch);
   p.pedalHeld=false;p.pedalEdge(false);
 }
@@ -1111,7 +1124,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
-    if(!any){for(auto& r:p.sympathetic){r.q=0;r.p=0;}p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;}
+    if(!any){for(auto& r:p.sympathetic){r.q=0;r.p=0;}p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();}
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
@@ -1135,6 +1148,7 @@ PedalState Engine::pedalState(int channel) const noexcept {
   }
   return state;
 }
+int Engine::outputLatencySamples() const noexcept {return impl->output.DelaySamples();}
 void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
 float responseVelocity(Piano piano,float velocity) noexcept {
@@ -1165,10 +1179,13 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     for(const auto& r:p.sympathetic)residue+=std::abs(r.q)+std::abs(r.p);
     if(residue<1e-14){
       // Chunks restart with the next strike, so a silent engine's output
-      // does not depend on how long it has been silent.
+      // does not depend on how long it has been silent. The output stage
+      // restarts empty too: its look-ahead holds only the last 2 ms, which
+      // are as quiet as the residue.
       p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       for(auto& r:p.sympathetic){r.q=0;r.p=0;}
       p.silenceNoise();
+      p.output.Reset();
     }
   }
 }

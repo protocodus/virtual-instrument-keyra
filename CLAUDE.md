@@ -171,14 +171,16 @@ it is the owner's step.
 
 ## Shared portfolio tools
 
-`Tools/PresetDemoRenderer.h`, `Tools/update_readme_blocks.py`,
-`Tests/ParameterMatrix.h` and `Tests/FuzzHarness.h`, and the Documentation
-layout, A–Z listening tests and Demo songs sections above, are byte-identical
-copies of the portfolio masters in `reason-rack-extensions/Tools/portfolio/`.
-Change them there, never here. Keyra's own parts are
-`Tools/RenderPresetDemos.cpp` (the demo voice), `Tools/write_preset_midi.py`
-(the phrases in `Docs/audio/midi/`) and `Tests/ParameterMatrixTests.cpp` (the
-limits Keyra's design implies).
+`Source/DSP/OutputStage.h`, `Tools/PresetDemoRenderer.h`,
+`Tools/update_readme_blocks.py`, `Tests/ParameterMatrix.h` and
+`Tests/FuzzHarness.h`, and the Documentation layout, A–Z listening tests and
+Demo songs sections above, are byte-identical copies of the portfolio masters
+in `reason-rack-extensions/Tools/portfolio/`. Change them there, never here.
+Keyra's own parts are `Tools/RenderPresetDemos.cpp` (the demo voice),
+`Tools/write_preset_midi.py` (the phrases in `Docs/audio/midi/`),
+`Tests/ParameterMatrixTests.cpp` (the limits Keyra's design implies) and
+`Tools/KeyraLevels.cpp` (the playing level the engine's output scales are
+pinned to, on Reason's meter).
 
 ## Build and verify
 

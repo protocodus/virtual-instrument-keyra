@@ -536,11 +536,16 @@ int main(int argc,char** argv){
     e.reset();e.controlChange(120,0);trap=false;
     check(allocations==0,"all live event/render/reset APIs allocate zero bytes");
   }
+  // A fortissimo chord meets the output stage's limiter, never the emergency
+  // bound ahead of it (4, +12 dBFS): read 24 dB down, where the stage passes
+  // it untouched, its peak at the default Output stays 3 dB under the bound.
   for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(int count:{3,6,10}){
-    keyra::Engine e;keyra::Parameters p;p.piano=piano;e.setParameters(p);for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
+    keyra::Engine e;keyra::Parameters p;p.piano=piano;p.gain/=16;e.setParameters(p);e.reset();
+    for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));
-    check(peak<.9f,"fortissimo chord has headroom before emergency hard ceiling");
-    std::cout<<"headroom_piano="<<(piano==keyra::Piano::upright?"upright":"grand")<<" notes="<<count<<" peak_dbfs="<<20*std::log10(peak)<<'\n';
+    peak*=16;
+    check(peak<4*std::pow(10.f,-3/20.f),"fortissimo chord has headroom before the emergency bound");
+    std::cout<<"headroom_piano="<<(piano==keyra::Piano::upright?"upright":"grand")<<" notes="<<count<<" peak_dbfs_before_stage="<<20*std::log10(peak)<<'\n';
   }
   std::cout<<"engine_failures="<<failures<<" live_allocations="<<allocations<<'\n';return failures?1:0;
 }

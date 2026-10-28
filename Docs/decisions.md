@@ -584,3 +584,52 @@ the upright from velocity 110 to 127, where they grew 1.6 dB and one read 0.5
 dB quieter. The draws are the same, so a render still replays exactly;
 `keyra_render` and so every benchmark strike steadily and do not move.
 Measured, not chosen by ear.
+
+## 2026-10-28 — typical playing at −9 VU, behind the portfolio's output stage
+
+The owner asked for every new instrument to play "just right - not too loud,
+not too silent". Keyra played 11.5 dB under the portfolio's newer
+instruments: typical playing on the default controls read −20.5 VU on
+Reason's channel meter (the louder channel's RMS over 300 ms, 0 VU at
+−12 dBFS), where Aculele and Aculyre read −9 VU, the owner's choice for them.
+`Tools/KeyraLevels.cpp` now reads every factory preset on that meter: single
+notes every fourth semitone and eight chords at velocities 70, 90 and 110
+for typical playing, the median over them, and the chords at 127 for the
+loudest. Each piano's output scale brings its default sound's typical playing
+to −9 VU (the grand's .21 to .7887, the upright's .642 to 2.387, both
++11.5 dB, so the upright's median note at velocity 127 stays within 0.1 dB of
+the grand's).
+
+At that level the eight chords at velocity 127 would read up to +1.3 VU on
+the grand and +5.9 VU on the upright, peaking 1.0 and 5.8 dB over full
+scale, so the clip at full scale gives way to the portfolio's shared output
+stage
+(`Source/DSP/OutputStage.h`) with the guard the newer instruments use
+(`kVuGuard`: power over the meter's 300 ms, a knee from −11 to +5 VU, 10:1),
+then a look-ahead limiter at −1.5 dBFS with 2 ms of latency, which the
+plug-in reports and `keyra_render` compensates. Single notes pass it
+untouched, a median 0.04 dB at velocity 110. Chords lose a median 0.5 and
+1.4 dB on the grand at velocities 90 and 110, 0.9 and 3.0 dB on the upright;
+at 127, 2.0 dB on the grand and 4.7 dB on the upright, whose middle register,
+where the chords sit, is hotter than the grand's. The loudest chords read
+−0.6 VU on the grand and −0.2 VU on the upright, and a chord at velocity 127
+still reads louder than at 110, by a median 0.2 dB on the grand and 0.3 dB
+on the upright through the guard, where it reads 0.6 and 2.7 dB louder
+without it. The presets without felt read −10.8 to −7.8 VU; the felt presets
+read about 8 dB lower (Felt Nocturne −17.5 VU, Felt Upright −16.5 VU) and are
+left there: the felt stops each note within a fraction of a second, so the
+meter's 300 ms holds less of it, while its attacks peak as high as the
+others' and raising them would press every hard note into the limiter. The
+audio-tier test `Keyra.Levels` holds these readings.
+
+The measurements render 20 dB under the default Output, where the stage
+passes every strike untouched (`benchmark_recordings.MEASURE`): both
+benchmarks score within 0.001 dB of before, with no regressions. The upright's
+dampers leave part of each partial ringing (above), so at the new level its
+released chords reach the matrix's −60 dBFS floor 2 s after the keys go up
+and 3 s at full Output; `Keyra.ParameterMatrix` allows the upright presets 3 s.
+The level and the stage are the portfolio's, chosen by measurement; whether
+the guard's cost to the hardest chords is worth keeping them out of the red is
+the owner's to hear. A lettered crescendo of chords on both pianos went to
+the owner, level-matched: the shipping engine, this stage, and the same level
+through the limiter alone, with the key beside them, and no verdict yet.

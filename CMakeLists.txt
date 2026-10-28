@@ -58,7 +58,8 @@ set(KEYRA_DSP_HEADERS
     Source/DSP/KeyraPresets.h
     Source/DSP/MeasuredTypes.h
     Source/DSP/MeasuredModalData.h
-    Source/DSP/MeasuredUprightData.h)
+    Source/DSP/MeasuredUprightData.h
+    Source/DSP/OutputStage.h)
 
 add_library(KeyraDSP STATIC ${KEYRA_DSP_SOURCES} ${KEYRA_DSP_HEADERS})
 target_include_directories(KeyraDSP PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Source")
@@ -227,6 +228,11 @@ if(KEYRA_BUILD_TOOLS)
     else()
         target_compile_options(RenderKeyraPresetDemos PRIVATE -Wall -Wextra -Wpedantic)
     endif()
+
+    # Every preset's level on Reason's channel meter, and each piano's
+    # outputScale calibration (Tools/KeyraLevels.cpp).
+    add_executable(KeyraLevels Tools/KeyraLevels.cpp)
+    target_link_libraries(KeyraLevels PRIVATE KeyraDSP Threads::Threads)
 endif()
 
 if(BUILD_TESTING)
@@ -280,6 +286,10 @@ if(BUILD_TESTING)
                  COMMAND RenderKeyraPresetDemos --jobs 4 --check
                          "${CMAKE_CURRENT_SOURCE_DIR}/Docs/audio/midi")
         set_tests_properties(Keyra.AudioDemos PROPERTIES TIMEOUT 300 LABELS audio)
+        # Typical playing at -9 VU on Reason's meter and the loudest chords
+        # out of the red (Tools/KeyraLevels.cpp).
+        add_test(NAME Keyra.Levels COMMAND KeyraLevels --check --jobs 4)
+        set_tests_properties(Keyra.Levels PROPERTIES TIMEOUT 900 LABELS audio)
     endif()
 
     if(KEYRA_BUILD_PLUGIN)

@@ -34,6 +34,10 @@ public:
   // Channel0 returns maxima across all channels;1..16 return one channel.
   PedalState pedalState(int channel=0) const noexcept;
   void process(float* left,float* right,int frames) noexcept;
+  // How late the output is: the shared output stage's look-ahead
+  // (Source/DSP/OutputStage.h), 2 ms at the prepared rate. Front ends report
+  // it to the host.
+  int outputLatencySamples() const noexcept;
   // Offline diagnostic: fixed 2ms rise versus training-recording rise. This
   // changes only future strikes; it is deliberately absent from product UIs.
   void setLegacyAttackForComparison(bool enabled) noexcept;

@@ -18,7 +18,7 @@ Each MIDI channel owns its key and controller state.
 | Control | Behavior |
 | --- | --- |
 | Piano | The grand or the upright. Switching silences what sounds; held keys and pedals keep their state |
-| Output | Master output level, smoothed during playback |
+| Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2 ms, which the plug-in reports to the host |
 | Hammer / Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
 | Width | Stereo spread, from centered to wide |

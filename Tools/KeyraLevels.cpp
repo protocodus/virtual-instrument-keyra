@@ -1,0 +1,188 @@
+// Keyra's levels on Reason's channel meter, the scale the portfolio's newer
+// instruments are calibrated on (Aculele's Tools/ReasonMeter.h): the RMS over
+// a sliding 300 ms window of the louder channel, read 12 dB up, so 0 VU is
+// -12 dBFS RMS (Reason's VU offset as its users report it; the manual gives
+// no default).
+//
+//   KeyraLevels --report [--jobs N]   every factory preset's readings and each
+//                                     piano's outputScale correction
+//   KeyraLevels --check [--jobs N]    the audio-tier test Keyra.Levels
+//
+// Playing is at 48 kHz in 256-sample blocks, through the plug-in's velocity
+// response and strike variation, each event alone in a 1.5 s slot and held
+// 0.8 s without pedal, with the output stage's latency compensated:
+//  - typical playing: single notes every fourth semitone from A0 to A7 and
+//    eight chords, four around middle C and four for two hands, at
+//    velocities 70, 90 and 110. Its reading is the median over events of
+//    each event's highest reading.
+//  - the loudest chords: the same chords at velocity 127, read as the
+//    highest of their readings and the output's sample peak.
+//
+// A piano's calibration reads its default sound 20 dB down, below the output
+// stage, and adds the 20 dB back; the factor --report prints brings it to
+// targetVu at the default Output (KeyraEngine.cpp's outputScale). --check
+// fails unless each piano's default sound reads targetVu within half a
+// decibel; every preset without felt reads within 2 dB of it; the loudest
+// chords of every preset stay out of the red, under 0 VU, with no sample over
+// the stage's ceiling; and the chords still play louder at velocity 127 than
+// at 110 through the guard, by their median difference: each strike's own
+// spread (touchSpreadDb) can turn one chord over. The felt presets read lower and are not
+// held to the target: the felt stops each note within a fraction of a second,
+// so the meter's 300 ms holds less of it, while its attack peaks as high as
+// the others' and raising them would press every hard note into the limiter.
+// When an engine change moves a reading, re-pin outputScale rather than move
+// these bounds.
+#include "DSP/KeyraEngine.h"
+#include "DSP/KeyraPresets.h"
+#include "DSP/OutputStage.h"
+
+#include <algorithm>
+#include <atomic>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <functional>
+#include <thread>
+#include <vector>
+
+namespace {
+constexpr double rate=48000,slotSeconds=1.5,holdSeconds=.8,vuOffsetDb=12,targetVu=-9,belowDb=20;
+constexpr int block=256;
+struct Event {std::vector<int> notes;int velocity;};
+const std::vector<std::vector<int>> chords{
+  {60,64,67},{60,65,69},{59,62,67},{57,60,64},
+  {48,55,64,67,72},{41,53,57,60,65},{43,55,59,62,67},{45,52,57,60,64}};
+constexpr int singles=22,velocities[]{70,90,110};
+std::vector<Event> typicalPlaying(){
+  std::vector<Event> events;
+  for(int velocity:velocities){
+    for(int i=0;i<singles;++i)events.push_back({{21+4*i},velocity});
+    for(const auto& chord:chords)events.push_back({chord,velocity});
+  }
+  return events;
+}
+std::vector<Event> loudestChords(){
+  std::vector<Event> events;
+  for(const auto& chord:chords)events.push_back({chord,127});
+  return events;
+}
+
+struct Reading {std::vector<double> events;double peakDbfs=-300;};
+// Each event's highest reading on the meter, and the output's sample peak.
+Reading play(const keyra::Parameters& parameters,const std::vector<Event>& events){
+  const auto slot=static_cast<long long>(slotSeconds*rate),hold=static_cast<long long>(holdSeconds*rate);
+  keyra::Engine engine(rate);engine.setParameters(parameters);
+  // Starts the smoothed Output at its setting rather than the default's.
+  engine.reset();
+  const long long latency=engine.outputLatencySamples(),total=slot*static_cast<long long>(events.size());
+  const long long length=total+latency;
+  std::vector<float> left(static_cast<std::size_t>(length)),right(left.size());
+  for(long long done=0;done<length;){
+    // Events land on their exact frame: blocks end at the next one.
+    long long next=std::min(length,done+block);
+    const auto index=static_cast<std::size_t>(done/slot);
+    if(index<events.size()){
+      const long long at=static_cast<long long>(index)*slot,off=at+hold;
+      if(done==at)for(int note:events[index].notes)engine.noteOn(note,events[index].velocity/127.f);
+      if(done==off)for(int note:events[index].notes)engine.noteOff(note);
+      next=std::min(next,done<off?off:at+slot);
+    }
+    engine.process(left.data()+done,right.data()+done,static_cast<int>(next-done));
+    done=next;
+  }
+  Reading result;
+  const auto window=static_cast<long long>(.3*rate);
+  double sumLeft=0,sumRight=0,peak=0,highest=-300;
+  for(long long i=0;i<total;++i){
+    const auto at=static_cast<std::size_t>(i+latency);
+    sumLeft+=static_cast<double>(left[at])*left[at];sumRight+=static_cast<double>(right[at])*right[at];
+    if(i>=window){
+      const auto gone=at-static_cast<std::size_t>(window);
+      sumLeft-=static_cast<double>(left[gone])*left[gone];sumRight-=static_cast<double>(right[gone])*right[gone];
+    }
+    const double meanSquare=std::max(std::max(sumLeft,sumRight)/static_cast<double>(window),1e-30);
+    highest=std::max(highest,10*std::log10(meanSquare)+vuOffsetDb);
+    peak=std::max({peak,static_cast<double>(std::abs(left[at])),static_cast<double>(std::abs(right[at]))});
+    if((i+1)%slot==0){result.events.push_back(highest);highest=-300;}
+  }
+  result.peakDbfs=20*std::log10(std::max(peak,1e-15));
+  return result;
+}
+double median(std::vector<double> x){
+  std::sort(x.begin(),x.end());const auto n=x.size();
+  return n%2?x[n/2]:.5*(x[n/2-1]+x[n/2]);
+}
+void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>& work){
+  std::atomic<std::size_t> next{0};std::vector<std::thread> threads;
+  for(int j=0;j<jobs;++j)threads.emplace_back([&]{for(std::size_t i=next++;i<count;i=next++)work(i);});
+  for(auto& thread:threads)thread.join();
+}
+
+int run(int jobs,bool check){
+  const auto& presets=keyra::factoryPresets;
+  const keyra::Piano pianos[]{keyra::Piano::grand,keyra::Piano::upright};
+  const char* const pianoNames[]{"grand","upright"};
+  const auto typicalEvents=typicalPlaying(),loudestEvents=loudestChords();
+  // Tasks: each piano's default sound below the stage, then each preset's
+  // typical playing and loudest chords as heard.
+  const std::size_t calibrations=2,count=calibrations+2*presets.size();
+  std::vector<Reading> readings(count);
+  parallel(count,jobs,[&](std::size_t task){
+    if(task<calibrations){
+      keyra::Parameters parameters;parameters.piano=pianos[task];
+      parameters.gain*=static_cast<float>(std::pow(10.,-belowDb/20));
+      readings[task]=play(parameters,typicalEvents);
+      return;
+    }
+    const std::size_t preset=(task-calibrations)/2;
+    const auto parameters=keyra::withPreset(keyra::Parameters{},presets[preset]);
+    readings[task]=play(parameters,(task-calibrations)%2?loudestEvents:typicalEvents);
+  });
+
+  int failures=0;
+  const auto expect=[&failures](bool ok,const char* what,const char* message,double value){
+    if(ok)return;
+    std::printf("FAIL %s: %s (%.2f)\n",what,message,value);++failures;
+  };
+  for(std::size_t piano=0;piano<calibrations;++piano){
+    const double reading=median(readings[piano].events)+belowDb;
+    std::printf("%-8s default sound %6.2f VU; outputScale x%.5f (%+.2f dB) for %.0f VU\n",pianoNames[piano],
+                reading,std::pow(10.,(targetVu-reading)/20),targetVu-reading,targetVu);
+    expect(std::abs(reading-targetVu)<=.5,pianoNames[piano],"its default sound is not at the target",reading);
+  }
+  const int strongest=2*(singles+static_cast<int>(chords.size()))+singles;  // the first chord at velocity 110
+  for(std::size_t preset=0;preset<presets.size();++preset){
+    const auto& typical=readings[calibrations+2*preset];const auto& loudest=readings[calibrations+2*preset+1];
+    const double reading=median(typical.events);
+    const double loud=*std::max_element(loudest.events.begin(),loudest.events.end());
+    std::vector<double> steps;
+    for(std::size_t chord=0;chord<chords.size();++chord)
+      steps.push_back(loudest.events[chord]-typical.events[static_cast<std::size_t>(strongest)+chord]);
+    const double step=median(steps),least=*std::min_element(steps.begin(),steps.end());
+    const double peak=std::max(typical.peakDbfs,loudest.peakDbfs);
+    std::printf("%-18s typical %6.2f VU  loudest chords %6.2f VU  velocity 110 to 127 %+.2f dB (least %+.2f)  peak %6.2f dBFS\n",
+                presets[preset].name,reading,loud,step,least,peak);
+    const char* name=presets[preset].name;
+    if(presets[preset].mute==0)expect(std::abs(reading-targetVu)<=2,name,"typical playing is not near the target",reading);
+    expect(loud<0,name,"the loudest chords reach the red",loud);
+    expect(step>0,name,"the chords at velocity 127 are no louder than at 110",step);
+    expect(peak<=20*std::log10(protocodus::OutputStage<2>::kCeiling)+.01,name,"a sample passes the ceiling",peak);
+  }
+  if(!check)return 0;
+  if(failures==0)std::printf("Keyra levels: all checks passed\n");
+  return failures==0?0:1;
+}
+}
+
+int main(int argc,char** argv){
+  int jobs=static_cast<int>(std::max(1u,std::thread::hardware_concurrency()));
+  bool check=false,known=argc>=2;
+  if(known)check=!std::strcmp(argv[1],"--check"),known=check||!std::strcmp(argv[1],"--report");
+  for(int i=2;known&&i<argc;++i){
+    if(!std::strcmp(argv[i],"--jobs")&&i+1<argc)jobs=std::max(1,std::atoi(argv[++i]));
+    else known=false;
+  }
+  if(!known){std::fprintf(stderr,"usage: KeyraLevels --report | --check [--jobs N]\n");return 2;}
+  return run(jobs,check);
+}

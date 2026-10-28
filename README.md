@@ -69,6 +69,15 @@ musical passages through the same engine. Both are frozen evidence from
   the brighter. Repeated chords change level and colour from strike to
   strike; tuning does not, as those strikes keep their pitch within
   0.02 cents.
+- Both pianos play 11.5 dB louder, at the level of the portfolio's newer
+  instruments: typical playing on the default controls reads −9 VU on
+  Reason's channel meter at the default Output. The portfolio's shared output
+  stage replaces the clip at full scale: its guard keeps the loudest chords
+  out of the red and its look-ahead limiter every sample under −1.5 dBFS,
+  for 2 ms of latency, which the plug-in reports. Single notes pass it
+  untouched; it takes a median 1.4 dB from the grand's chords at velocity
+  110 and 3 dB from the upright's. The felt presets read about 8 dB lower
+  (below).
 - Beside its partials, a strike plays the components the recordings hold
   between them, 48 at A0 and a few or none from C4 up, and sets ringing every
   undamped string from F6 up but its own key's, each at its own measured
@@ -339,6 +348,26 @@ Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend
 channel owns its keys and pedals, and CC120, CC121 and CC123 are honoured per
 channel. The [user guide](Docs/guide/user-guide.md) describes every control.
 
+### Playing level
+
+`Tools/KeyraLevels.cpp` reads the factory presets on Reason's channel meter
+(the louder channel's RMS over 300 ms, 0 VU at −12 dBFS), playing single
+notes every fourth semitone and eight chords at velocities 70, 90 and 110
+for typical playing, and the chords at 127 for the loudest. Each piano's
+output scale brings its default sound's typical playing to −9 VU at the
+default Output, where the portfolio's newer instruments play; the other
+presets without felt read from −10.8 to −7.8 VU. The output ends in the
+portfolio's shared stage (`Source/DSP/OutputStage.h`): the plucked
+instruments' guard compressor, which reads power over the meter's 300 ms,
+and a look-ahead limiter at −1.5 dBFS. Single notes pass it untouched (a
+median 0.04 dB at velocity 110); chords at velocity 110 lose a median 1.4 dB
+on the grand and 3 dB on the upright, and the loudest chords read
+−0.6 VU on the grand and −0.2 VU on the upright. A velocity-127 chord still
+reads louder than the same chord at 110, by a median 0.2 dB on the grand
+and 0.3 dB on the upright through the guard, where it reads 0.6 and 2.7 dB
+louder without it; its hammer's brighter strike is untouched. The audio-tier
+test `Keyra.Levels` holds these readings.
+
 ### The full physical research
 
 [`Experiments/`](Experiments/README.md) holds the preserved nonlinear
@@ -391,6 +420,16 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   nine of them at its softest layer, and plays at every velocity on both
   pianos: the grand's library holds one take of each note, so its own spread
   is unmeasured.
+- The felt presets read about 8 dB under the others on the meter (Felt
+  Nocturne −17.5 VU, Felt Upright −16.5 VU): the felt stops each note within
+  a fraction of a second, so the meter's 300 ms holds less of it, while its
+  attack peaks as high as the others'. Raising them to −9 VU would press
+  every hard note into the limiter. To keep the loudest chords out of the
+  red at −9 VU, the guard compresses the hardest playing, most on the
+  upright, whose middle register, where chords sit, is hotter against its
+  bass and treble than the grand's: its velocity-127 chords lose a median
+  4.7 dB (above), and their attacks, which would peak 5.8 dB over full
+  scale, meet the limiter.
 - The upright's soft pedal is the grand's: it lowers the level and the high
   partials and moves energy to the slowest lane as an una corda does, where an
   upright's moves the hammers closer to the strings. Its pedals are silent

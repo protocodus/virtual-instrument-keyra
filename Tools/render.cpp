@@ -88,18 +88,23 @@ int main(int argc,char** argv){try {
   u32(out,rate);u32(out,rate*8);u16(out,8);u16(out,32);out.write("data",4);u32(out,static_cast<std::uint32_t>(frames*8));
   std::array<float,256> l{},r{};std::array<float,512> interleaved{};std::size_t next=0;std::uint64_t frame=0;
   double squares=0,peak=0;const auto start=std::chrono::steady_clock::now();
-  while(frame<frames){
+  // As a host compensates the output stage's look-ahead: its first frames are
+  // dropped, so a strike at t sounds at t in the file.
+  const auto latency=static_cast<std::uint64_t>(engine.outputLatencySamples());
+  while(frame<frames+latency){
     while(next<events.size()&&std::llround(events[next].time*rate)<=static_cast<std::int64_t>(frame)){
       const auto&e=events[next++];if(e.type=="on")engine.noteOn(e.note,e.value/127,e.channel);
       else if(e.type=="off")engine.noteOff(e.note,e.channel);else if(e.type=="cc")engine.controlChange(e.note,static_cast<int>(e.value),e.channel);
       else if(e.type=="bend")engine.pitchBend(e.value,e.channel);
       else{const int cc=e.type=="pedal"?64:e.type=="soft"?67:e.type=="sostenuto"?66:1;engine.controlChange(cc,static_cast<int>(std::lround(e.value*127)),e.channel);}
     }
-    int count=static_cast<int>(std::min<std::uint64_t>(256,frames-frame));
+    int count=static_cast<int>(std::min<std::uint64_t>(256,frames+latency-frame));
     if(next<events.size())count=std::min(count,static_cast<int>(std::max<std::int64_t>(1,std::llround(events[next].time*rate)-static_cast<std::int64_t>(frame))));
     engine.process(l.data(),r.data(),count);
-    for(int i=0;i<count;++i){interleaved[2*i]=l[i];interleaved[2*i+1]=r[i];squares+=static_cast<double>(l[i])*l[i]+static_cast<double>(r[i])*r[i];peak=std::max({peak,std::abs(static_cast<double>(l[i])),std::abs(static_cast<double>(r[i]))});}
-    out.write(reinterpret_cast<const char*>(interleaved.data()),count*8);frame+=count;
+    int kept=0;
+    for(int i=0;i<count;++i){if(frame+static_cast<std::uint64_t>(i)<latency)continue;
+      interleaved[2*kept]=l[i];interleaved[2*kept+1]=r[i];++kept;squares+=static_cast<double>(l[i])*l[i]+static_cast<double>(r[i])*r[i];peak=std::max({peak,std::abs(static_cast<double>(l[i])),std::abs(static_cast<double>(r[i]))});}
+    out.write(reinterpret_cast<const char*>(interleaved.data()),kept*8);frame+=count;
   }
   const double elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
   std::ostringstream json;json<<std::setprecision(10)<<"{\"sample_rate\":"<<rate<<",\"frames\":"<<frames<<",\"duration_seconds\":"<<duration<<",\"wall_seconds\":"<<elapsed<<",\"realtime_factor\":"<<elapsed/duration<<",\"peak\":"<<peak<<",\"rms\":"<<std::sqrt(squares/(2*frames))<<",\"legacy_attack\":"<<(legacy?"true":"false")<<"}";

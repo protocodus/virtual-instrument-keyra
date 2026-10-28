@@ -14,6 +14,8 @@
 
 #include "PluginProcessor.h"
 #include "ParameterMatrix.h"
+#include "DSP/KeyraPresets.h"
+#include "DSP/OutputStage.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -40,10 +42,10 @@ public:
     Limits LimitsFor (const Case& c) const override
     {
         Limits limits;
-        // Process() bounds every sample to [-1, 1] after the output gain, so
-        // the declared ceiling is full scale itself: reaching it is the
-        // engine's emergency bound, not a runaway.
-        limits.ceiling = 1.0001f;
+        // The shared output stage ends process() after the output gain, so
+        // no sample passes its limiter's ceiling, -1.5 dBFS, at any Output;
+        // the margin is the float rounding its own test allows.
+        limits.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
         // Output at zero is silent by design, in whichever row has it. So are
         // held notes under the felt mute, which is what it is for: control()
         // adds 180 m^2 (0.5 + 0.00015 f) nepers per second of loss to held
@@ -60,6 +62,14 @@ public:
         // back up (capture()), so those strings ring on after the keys go up.
         if (value (c.values, "sustain") > 0.0 || value (c.values, "sostenuto") >= 0.5)
             limits.releaseSeconds = -1.0;
+        // The upright's dampers hold part of each partial only loosely, as its
+        // release takes show (setDamper(), measured::Damper): C4's keeps 12.9 dB
+        // under the partial and falls about 6 dB a second, lower keys more of
+        // it and slower. At -9 VU typical playing (Tools/KeyraLevels.cpp) the
+        // chord's strings sit at the -60 dBFS floor 2 s after the release, and
+        // at full Output 3 dB over it, so silence is due a second later.
+        else if (c.preset >= 0 && keyra::factoryPresets[static_cast<std::size_t> (c.preset)].piano == keyra::Piano::upright)
+            limits.releaseSeconds = 3.0;
         return limits;
     }
 

@@ -90,7 +90,8 @@ def score(job):
         for name, renderer in renderers.items():
             wav = Path(tmp) / f'{name}.wav'
             subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--sample-rate',
-                            str(recording[2]), '--duration', '3.6', '--resonance', '0'], check=True, capture_output=True)
+                            str(recording[2]), '--duration', '3.6', '--resonance', '0'] + bench.MEASURE,
+                           check=True, capture_output=True)
             out[name] = levels(*load(wav), freqs)
     return out
 
