@@ -169,3 +169,45 @@ The benchmark's late decay now needs half a second of frames above the
 recording's floor and scores the render with that floor added; both rules,
 and the cases that called for them, are beside the code in
 `Tools/benchmark_recordings.py`. Both versions were scored again under them.
+
+## 2026-10-28 — two decays for the undamped strings, timed from their tone
+
+With one lane, an undamped string's decay was caught between its quick early
+fall and its slow ringing on: after 1.5 s the strings F♯7 and A7 set ringing
+sat 20 to 40 dB under the recordings. Each is now fitted like a partial, with
+two lanes from contact across the layers, and the engine plays both, the
+slower at the string's pitch.
+
+The fit measures a string through a window as wide as the gap to its
+neighbours, which also holds the board's noise around a faint string, and a
+free slower lane takes that noise for the string ringing on; some were left
+at the slowest rate a fit allows, so their notes never ended.
+`Tools/compare_ring_levels.py` measures the strings as tones instead, within
+2 Hz at 1, 2 and 3 s after contact: at four layers of every train pitch that
+rings them, and at every dev case with the strings the engine plays there. A
+render over the recording sounds a tone the piano did not; one under it counts
+only where the recording shows the string 10 dB clear of the noise around it.
+Rules for the slower lane, at 1, 2 and 3 s:
+
+| Rule | Train: over by 10 dB | Train: clear strings' error | Dev: over by 10 dB | Dev: over by 20 dB | Dev: clear strings' error |
+|---|---|---|---|---|---|
+| One lane (before) | 2.7, 2.2, 2.4 % | 7.5, 19.2, 31.5 dB | 9.3, 4.6, 2.6 % | 4.3, 0.2, 0.4 % | 9.6, 19.6, 35.1 dB |
+| Two free lanes | 6.3, 6.3, 6.6 % | 4.2, 8.3, 11.7 dB | 10.7, 6.9, 5.5 % | 4.7, 0.6, 0.9 % | 6.3, 8.8, 15.8 dB |
+| Lanes at the slowest rate moved to the string's median | 6.3, 5.8, 6.3 % | 4.4, 10.3, 14.3 dB | 10.5, 6.9, 4.8 % | 4.6, 0.6, 0.7 % | 6.8, 10.7, 17.9 dB |
+| The slower lane at the string's median | 15.8, 10.2, 7.8 % | 5.9, 11.5, 17.0 dB | 18.6, 13.0, 10.7 % | 11.1, 5.8, 4.2 % | 7.9, 10.3, 17.5 dB |
+| No lane slower than the string's median | 4.6, 1.7, 1.9 % | 5.4, 13.5, 21.6 dB | 8.9, 4.2, 2.7 % | 4.2, 0.3, 0.3 % | 7.7, 13.1, 23.9 dB |
+| Timed from the tone | 0.5, 0.0, 1.0 % | 5.4, 6.1, 7.2 dB | 7.9, 7.0, 7.2 % | 6.1, 4.6, 3.8 % | 8.6, 7.2, 8.7 dB |
+
+The string's median is that of its slower lanes over the recorded pitches
+whose fits timed one. Timed from the tone: where the string's tone stands
+clear in two or more of a layer's half-second windows from 1 to 3.5 s after
+contact, a second apart in all, its decay there times the slower lane and its
+level sets the lane's (67 of the 103 times a recorded pitch rings a string);
+elsewhere no lane decays more slowly than the string's median; and at no
+layer do the two lanes together stand over the tone. It is the closest on the
+recorded pitches, and on the dev cases' clear strings after a second. Chosen
+on these measurements, not by ear.
+
+Its dev strings 20 dB over the recordings after 2 s are almost all at D♯3 and
+D♯5: keys between recorded pitches that ring the strings their neighbours
+list, though their own partials pass far from them. That is the next change.

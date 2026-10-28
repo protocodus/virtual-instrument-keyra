@@ -408,6 +408,7 @@ def _fit_frames(times, power_db, floor_db, end):
 # and the treble's slow aftersound together; three had to drop one of them.
 
 LANES = 4
+SLOWEST_RATE = .003   # 1/s: no lane decays slower; a fit left there did not time its lane
 
 
 def lane_complex_rates(theta, velocity, lanes=LANES):
@@ -422,7 +423,7 @@ def _tail_rate(L):
     m = (t > 1.0) & (p > L['floor_db'] + 10)
     if m.sum() < 8:
         return None
-    return max(.003, -stats.theilslopes(p[m], t[m])[0] / 8.686)
+    return max(SLOWEST_RATE, -stats.theilslopes(p[m], t[m])[0] / 8.686)
 
 
 def _layer_frames(times, power_db, floor_db):
@@ -546,13 +547,15 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, l
     slow = min(float(np.median(tails)) if tails else sl / 3, sl)
     # Lanes may sit a few cents from the measured partial (unison strings).
     span = max(2.5, .2 * n, .0017 * hz)
-    lower = [math.log(.003)] * lanes + [-span] * lanes + [math.log(2e-4), -3.0]
+    lower = [math.log(SLOWEST_RATE)] * lanes + [-span] * lanes + [math.log(2e-4), -3.0]
     upper = [math.log(500)] * lanes + [span] * lanes + [math.log(.5), 3.0]
     # The beating pair at the late rate, or at the slow tail's; one lane
-    # starts from either rate.
-    seeds = ([seed for sign in (1.0, -1.0) for seed in (((sp, sl, sl, slow), (0, 0, sign * beat, 0)),
-                                                        ((sp, sl, slow, slow), (0, 0, 0, sign * beat)))]
-             if lanes == 4 else [((sl,), (0,)), ((slow,), (0,))])
+    # starts from either rate, and two from the prompt or late rate and the
+    # slow tail's.
+    seeds = {4: [seed for sign in (1.0, -1.0) for seed in (((sp, sl, sl, slow), (0, 0, sign * beat, 0)),
+                                                           ((sp, sl, slow, slow), (0, 0, 0, sign * beat)))],
+             2: [((sp, slow), (0, 0)), ((sl, slow), (0, 0))],
+             1: [((sl,), (0,)), ((slow,), (0,))]}[lanes]
     best = None
     for rates, offsets in seeds:
         theta0 = np.clip([math.log(r) for r in rates] + list(offsets) + [math.log(start_rise), 0.0],
@@ -660,6 +663,7 @@ EXTRA_LOW = 1000.0       # Hz: below it the body's modes take what the partials 
 HALO_KEYS = range(89, 109)   # MIDI: the keys without dampers (F6 up)
 HALO_SPAN = (-20.0, 70.0)    # cents from a key's equal-tempered pitch searched; the treble stretches +10 to +50
 HALO_PROMINENCE = 10.0       # dB over the residual's median across a semitone either side
+HALO_LOW = midi_hz(HALO_KEYS[0]) * 2 ** (HALO_SPAN[0] / 1200)   # Hz: the lowest an undamped string is sought
 
 
 def residual_peaks(residual, x, sr, contact, exclude, low, seconds=.9):
@@ -815,7 +819,11 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
     # weighed against the largest value within 0.3 s, as the partials' beats
     # are, the frames after the burst counted for nothing, and F#6's
     # components at 2.3 to 2.8 kHz fitted the burst as 0.1 s pings.
-    extra_fits = []
+    # A component where an undamped string may ring is also fitted with two
+    # lanes: with one, the strings F#7 sets ringing fell 30 dB under the
+    # recording by 1.5 s, the one rate caught between their quick early fall
+    # and their slow ringing on.
+    extra_fits, ring_fits = [], []
     others = np.r_[freqs, extra_freqs]
     for k, f in enumerate(extra_freqs):
         gap = float(np.min(np.abs(np.delete(others, len(freqs) + k) - f)))
@@ -833,11 +841,14 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
             L.setdefault('extra_floor_db', []).append(floor)
         extra_fits.append(fit_partial_layers(measured, f1, sr, max(1, int(round(f / f1))), f, lanes=1,
                                              beat=window / sr, length=window, rise=False))
+        ring_fits.append(fit_partial_layers(measured, f1, sr, max(1, int(round(f / f1))), f, lanes=2,
+                                            beat=window / sr, length=window, rise=False) if f >= HALO_LOW else None)
     out_layers = []
     for i, L in enumerate(layers):
         samples = min(len(L['x']) - L['start'], int(residual_seconds * sr))
         residual = L['residual'][L['start']:L['start'] + samples].copy()
         for k, fit in enumerate(extra_fits):
+            fit = ring_fits[k] or fit
             if fit is None or fit['amplitudes'][i] is None:
                 continue
             residual -= layer_partial_waveform(fit['theta'], fit['amplitudes'][i], L['velocity'], extra_freqs[k], sr,
@@ -850,4 +861,5 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
                              'extra_peak_db': np.array(L.get('extra_peak_db', [])),
                              'residual': residual.astype(np.float32), 'pre_onset': pre.astype(np.float32)})
     return {'note': int(note), 'sr': sr, 'f1': f1, 'orders': orders, 'freqs': freqs, 'fits': fits,
-            'extra_freqs': extra_freqs, 'extra_halo': extra_halo, 'extra_fits': extra_fits, 'layers': out_layers}
+            'extra_freqs': extra_freqs, 'extra_halo': extra_halo, 'extra_fits': extra_fits, 'ring_fits': ring_fits,
+            'layers': out_layers}

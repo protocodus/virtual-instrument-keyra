@@ -222,10 +222,13 @@ int main(int argc,char** argv){
   }
   {
     // The board's noise keeps to its measured spectrum: at the top recorded
-    // pitch, every band clear of its partials and no more than 10 dB under
-    // either neighbour sounds within 6 dB of its measured level against the
-    // 2.5 kHz band. (A deeper step is beyond what third-octave bands can
-    // draw.) Second-order bands leaked 10-34 dB into the quiet bands above.
+    // pitch, at every layer, every band clear of its partials and no more
+    // than 10 dB under either neighbour sounds within 6 dB of its measured
+    // level against the 2.5 kHz band, and at least four bands are compared.
+    // (A deeper step is beyond what third-octave bands can draw. Whether a
+    // band clears it turns on densities 100 dB under the note's peak, so a
+    // layer's count moves by a band or two between fits.)
+    // Second-order bands leaked 10-34 dB into the quiet bands above.
     // The components beside the series are measured apart from the noise:
     // as the fit measures it, a band leaves out the frequencies within 1.5
     // main-lobe half-widths of them and counts where a quarter remains. With
@@ -233,48 +236,53 @@ int main(int argc,char** argv){
     // read at every bin through four half-overlapping frames, each brought
     // back to the strike at the band's measured decay.
     namespace m=keyra::measured;
-    constexpr double pi=3.14159265358979323846,sr=48000;constexpr int layer=5,n=2048,reference=4;
+    constexpr double pi=3.14159265358979323846,sr=48000;constexpr int n=2048,reference=4;
     const int anchor=static_cast<int>(m::anchors.size())-1,bandCount=static_cast<int>(m::noiseBands.size());
     const auto& a=m::anchors[anchor];const auto& bands=m::noise[anchor];
-    keyra::Engine e(sr);e.setParameters(dry());e.noteOn(a.note,m::layerVelocity[layer]/127.f);
     constexpr int frames=4,hop=n/2;
-    Audio left(n+(frames-1)*hop),right(n+(frames-1)*hop);e.process(left.data(),right.data(),n+(frames-1)*hop);
     std::vector<double> w(n);double w2=0;for(int i=0;i<n;++i){w[i]=.5-.5*std::cos(2*pi*i/n);w2+=w[i]*w[i];}
     auto edge=[&](int b,double side){return m::noiseBands[b].hz*std::pow(2.,side/6);};
     auto stiff=[&](int order,float cents){return order*a.f1*std::sqrt((1+a.B*order*order)/(1+a.B))*std::pow(2.,cents/1200);};
     std::vector<double> beside;
     for(int k=a.extraFirst;k<a.extraFirst+a.extraCount;++k)beside.push_back(stiff(m::extras[k].order,m::extras[k].cents));
     for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k)beside.push_back(ringHz(m::undamped[k].ring));
-    auto rendered=[&](int b){double sum=0;int points=0,all=0;
-      for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=sr/n,++all){
-        bool clear=true;for(double hz:beside)clear=clear&&std::abs(f-hz)>3*sr/n;
-        if(!clear)continue;
-        ++points;
-        for(int frame=0;frame<frames;++frame){double first=0,later=0;
-          for(int i=0;i<n;++i){first+=w[i]*w[i]*std::exp(-2*bands[b].rate*i/sr);later+=w[i]*w[i]*std::exp(-2*bands[b].rate*(frame*hop+i)/sr);}
-          for(const Audio* x:{&left,&right}){double re=0,im=0;
-            for(int i=0;i<n;++i){const double y=(*x)[frame*hop+i]*w[i];re+=y*std::cos(2*pi*f*i/sr);im+=y*std::sin(2*pi*f*i/sr);}
-            sum+=(re*re+im*im)*first/later/frames;}}}
-      return 4*points>=all?10*std::log10(sum/points):std::numeric_limits<double>::quiet_NaN();};
-    // A band's density at the strike, its mean over the window as it decays,
-    // and both channels' share of it.
-    auto measuredDb=[&](int b){const auto& x=bands[b];double decay=0;
-      for(int i=0;i<n;++i)decay+=w[i]*w[i]*std::exp(-2*x.rate*i/sr);
-      return x.densityDb[layer]+10*std::log10(decay/w2)+10*std::log10(std::pow(10.,-x.balanceDb/20)+std::pow(10.,x.balanceDb/20));};
-    const double offset=rendered(reference)-measuredDb(reference);
-    int compared=0;
-    for(int b=0;b<bandCount;++b){
-      bool partial=false,step=false;
-      for(int k=a.first;k<a.first+a.count;++k){const double hz=stiff(m::partials[k].order,m::partials[k].cents);
-        partial=partial||(hz>edge(b,-1)-100&&hz<edge(b,1)+100);}
-      for(int k:{b-1,b+1})if(k>=0&&k<bandCount)step=step||measuredDb(k)-measuredDb(b)>10;
-      const double level=rendered(b);
-      if(partial||step||b==reference||std::isnan(level))continue;
-      const double error=level-measuredDb(b)-offset;++compared;
-      check(std::abs(error)<6,"board noise band follows its measured density where no partial sounds");
-      std::cout<<"noise_band_hz="<<m::noiseBands[b].hz<<" error_db="<<error<<'\n';
+    int fewest=bandCount;double worst=0;
+    for(int layer=0;layer<m::layers;++layer){
+      keyra::Engine e(sr);e.setParameters(dry());e.noteOn(a.note,m::layerVelocity[layer]/127.f);
+      Audio left(n+(frames-1)*hop),right(n+(frames-1)*hop);e.process(left.data(),right.data(),n+(frames-1)*hop);
+      auto rendered=[&](int b){double sum=0;int points=0,all=0;
+        for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=sr/n,++all){
+          bool clear=true;for(double hz:beside)clear=clear&&std::abs(f-hz)>3*sr/n;
+          if(!clear)continue;
+          ++points;
+          for(int frame=0;frame<frames;++frame){double first=0,later=0;
+            for(int i=0;i<n;++i){first+=w[i]*w[i]*std::exp(-2*bands[b].rate*i/sr);later+=w[i]*w[i]*std::exp(-2*bands[b].rate*(frame*hop+i)/sr);}
+            for(const Audio* x:{&left,&right}){double re=0,im=0;
+              for(int i=0;i<n;++i){const double y=(*x)[frame*hop+i]*w[i];re+=y*std::cos(2*pi*f*i/sr);im+=y*std::sin(2*pi*f*i/sr);}
+              sum+=(re*re+im*im)*first/later/frames;}}}
+        return 4*points>=all?10*std::log10(sum/points):std::numeric_limits<double>::quiet_NaN();};
+      // A band's density at the strike, its mean over the window as it decays,
+      // and both channels' share of it.
+      auto measuredDb=[&](int b){const auto& x=bands[b];double decay=0;
+        for(int i=0;i<n;++i)decay+=w[i]*w[i]*std::exp(-2*x.rate*i/sr);
+        return x.densityDb[layer]+10*std::log10(decay/w2)+10*std::log10(std::pow(10.,-x.balanceDb/20)+std::pow(10.,x.balanceDb/20));};
+      const double offset=rendered(reference)-measuredDb(reference);
+      int compared=0;
+      for(int b=0;b<bandCount;++b){
+        bool partial=false,step=false;
+        for(int k=a.first;k<a.first+a.count;++k){const double hz=stiff(m::partials[k].order,m::partials[k].cents);
+          partial=partial||(hz>edge(b,-1)-100&&hz<edge(b,1)+100);}
+        for(int k:{b-1,b+1})if(k>=0&&k<bandCount)step=step||measuredDb(k)-measuredDb(b)>10;
+        const double level=rendered(b);
+        if(partial||step||b==reference||std::isnan(level))continue;
+        const double error=level-measuredDb(b)-offset;++compared;
+        check(std::abs(error)<6,"board noise band follows its measured density where no partial sounds");
+        worst=std::max(worst,std::abs(error));
+      }
+      fewest=std::min(fewest,compared);
     }
-    check(compared>=5,"board noise spectrum compared in at least five bands");
+    std::cout<<"noise_bands_compared_fewest="<<fewest<<" worst_error_db="<<worst<<'\n';
+    check(fewest>=4,"board noise spectrum compared in at least four bands at every layer");
   }
   {
     // A pitch between two recorded ones places each partial between their
@@ -305,7 +313,9 @@ int main(int argc,char** argv){
       bool alone=true;for(int o=0;o<static_cast<int>(m::rings.size());++o)alone=alone&&(o==r||std::abs(ringHz(o)-ringHz(r))>10);
       std::array<int,2> notes{};int found=0;double level=1e9;
       for(const auto& a:m::anchors)for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k)
-        if(a.note<89&&found<2&&m::undamped[k].ring==r){notes[found++]=a.note;level=std::min(level,static_cast<double>(m::undamped[k].lane.levelDb[m::layers-1]));}
+        if(a.note<89&&found<2&&m::undamped[k].ring==r){
+          double top=-1e9;for(const auto& lane:m::undamped[k].lanes)top=std::max(top,static_cast<double>(lane.levelDb[m::layers-1]));
+          notes[found++]=a.note;level=std::min(level,top);}
       if(alone&&found==2&&level>loudest){loudest=level;ring=r;struck=notes;}
     }
     check(ring>=0,"two recorded pitches below F6 hear one undamped string ring");

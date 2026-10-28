@@ -50,8 +50,9 @@ musical passages through the same engine. Both are frozen evidence from
   not this ring, which dies within a second.
 - Beside its partials, a strike plays the components the recordings hold
   between them, 51 at A0 and a few or none from C4 up, and sets ringing the
-  undamped strings from F6 up that its pitch is heard to excite (22 strings),
-  which ring on after the key is let go.
+  undamped strings from F6 up that its pitch is heard to excite (22 strings):
+  each falls fast at first and then rings on more slowly, and goes on ringing
+  after the key is let go.
 - Existing sessions sound different; the median note keeps 0.3.0's level. On
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
   partial levels sit 3.1 dB from the recordings (0.3.0: 9.3 dB), the attack
@@ -101,8 +102,9 @@ Beside its series, a strike plays the components the recordings hold between
 the partials, each one lane placed by the series and damped with it, and sets
 ringing the undamped strings from F6 up that its pitch is heard to excite.
 Those ring at their own pitches whichever key struck them, and on after the
-key is let go. All start at contact under the pitch's onset rise and share
-vectors four to a slot, so each costs a quarter of a partial.
+key is let go, each with two lanes: a fast first fall and a slower ring. All
+start at contact under the pitch's onset rise and share vectors four lanes to
+a slot, so a component costs a quarter of a partial and a string half of one.
 
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, which rings for half a second to a second,
@@ -126,10 +128,16 @@ level down to the recording's floor; the layers' contact times are aligned so
 that the phases form one pattern across the partials. Beside the series, the
 residual's peaks that four or more layers share are measured each through a
 window just long enough to part it from its nearest neighbour, from 30 ms to
-2 s, and fitted with one lane from contact; a peak from F6 up that recurs
+2 s, and fitted with one lane from contact. A peak from F6 up that recurs
 within 1.5 cents across four or more recorded pitches is an undamped string
 ringing (22 such strings, where the same peaks shifted at random form about
-three). The body modes are found below the treble's fundamentals, where no
+three), fitted with two lanes. Its window also holds the board's noise around
+a faint string, which a slower lane can take for the string ringing on, so the
+string's tone (its largest amplitude within 2 Hz through half-second windows
+from 1 to 3.5 s) times and levels the slower lane where it stands 10 dB clear
+of the noise either side, as it does at 67 of the 103 recorded pitches that
+ring a string; elsewhere no lane decays more slowly than the string's median,
+and the two lanes never stand over the tone. The body modes are found below the treble's fundamentals, where no
 string sounds; the board noise is
 measured in the gaps between the partials the recordings show and, above the
 highest of them, across whole bands, as the benchmark measures it. A strike
@@ -191,8 +199,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB).
 - From C6 up, the partials' decay after half a second is 4.6 dB/s from the
   recordings' on the dev cases (0.3.0: 6.7 dB/s), but at A7 it is 1 to 2 dB/s
-  further than 0.3.0's. An undamped string rings with one decay, so after
-  1.5 s the ones F♯7 and A7 set ringing sit 20 to 40 dB under the recordings.
+  further than 0.3.0's. Between the recorded pitches a key rings the undamped
+  strings either neighbour lists, faded towards the other; where its own
+  partials pass far from them, as at D♯3 and D♯5, they stand 20 dB or more
+  over the recordings after 2 s (4.6 % of the strings the dev cases ring).
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.

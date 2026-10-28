@@ -8,8 +8,8 @@
     "train"
   ],
   "dev_or_sealed_recordings_opened": false,
-  "analysis_source_sha256": "119a939c4ef22a59ea83ce13efb2e59f4393ff35f61d9cfc1e07faa3af127d1f",
-  "fitter_source_sha256": "639324f8f520589651b445047b5906a93fbff9f2a6e1bfbb15aa694200994af4",
+  "analysis_source_sha256": "6d7ac1bb7a9d220b4bac27591b7975dae7061d0ea053c62dc6980e707bdba9b8",
+  "fitter_source_sha256": "7043b011d8c6ef3649123d968916f3d719b00269b5b633ab4ebdc485f59ac31e",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -28,7 +28,7 @@
     109.0,
     124.0
   ],
-  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), and beside each undamped string's pitch (MIDI 89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a window that parts it from its neighbours and fitted with one lane from contact. Peaks within 15 cents of the fundamental are left to the partial's lanes. Peaks from F6 up that recur within 1.5 cents in four or more anchors are undamped strings ringing, each kept at one frequency and interpolated between anchors by string; the rest of the strings' search is dropped. The other peaks are placed by the series in cents from their nearest order and cross-faded in power between anchors. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), and beside each undamped string's pitch (MIDI 89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a window that parts it from its neighbours and fitted with one lane from contact. Peaks within 15 cents of the fundamental are left to the partial's lanes. Peaks from F6 up that recur within 1.5 cents in four or more anchors are undamped strings ringing, fitted with two lanes instead. Where a string's tone (the largest amplitude within 2 Hz through 0.5 s Hann windows every 0.25 s from 1 to 3.5 s after contact) stands 10 dB over the median 4 to 20 Hz either side in two or more windows of a layer, a second apart in all, its decay there times the slower lane and its level sets the lane's; elsewhere no lane is slower than the string's median slower lane where its fits timed one; at no layer do the two lanes together stand over the tone. Each string is kept at one frequency for its slower lane and interpolated between anchors by string, lanes fastest first; the rest of the strings' search is dropped. The other peaks are placed by the series in cents from their nearest order and cross-faded in power between anchors. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
   "anchors": [
     {
       "note": 21,
@@ -113,7 +113,7 @@
         0.405
       ],
       "body_modes_hidden": 26,
-      "body_phase_coherence": 0.9126666772069808,
+      "body_phase_coherence": 0.9126469658483605,
       "noise_bands_filled": 6
     },
     {
@@ -200,7 +200,7 @@
         0.409
       ],
       "body_modes_hidden": 22,
-      "body_phase_coherence": 0.8512124619548641,
+      "body_phase_coherence": 0.8512601173395759,
       "noise_bands_filled": 7
     },
     {
@@ -285,7 +285,7 @@
         0.631
       ],
       "body_modes_hidden": 20,
-      "body_phase_coherence": 0.9256638705565658,
+      "body_phase_coherence": 0.9256649000660196,
       "noise_bands_filled": 8
     },
     {
@@ -372,7 +372,7 @@
         0.505
       ],
       "body_modes_hidden": 12,
-      "body_phase_coherence": 0.8510380073944352,
+      "body_phase_coherence": 0.8510726811939024,
       "noise_bands_filled": 9
     },
     {
@@ -458,7 +458,7 @@
         0.534
       ],
       "body_modes_hidden": 12,
-      "body_phase_coherence": 0.978494443145751,
+      "body_phase_coherence": 0.9784928734955884,
       "noise_bands_filled": 9
     },
     {
@@ -516,7 +516,7 @@
       "onset_rise_ms": [
         30.0,
         14.958,
-        4.913,
+        5.646,
         5.646,
         5.646,
         5.646,
@@ -543,7 +543,7 @@
         0.682
       ],
       "body_modes_hidden": 5,
-      "body_phase_coherence": 0.9821766356754864,
+      "body_phase_coherence": 0.9821691568860789,
       "noise_bands_filled": 9
     },
     {
@@ -620,7 +620,7 @@
         0.721,
         0.716,
         0.722,
-        0.708,
+        0.707,
         0.703,
         0.693,
         0.671,
@@ -628,7 +628,7 @@
         0.638
       ],
       "body_modes_hidden": 4,
-      "body_phase_coherence": 0.9885343440946406,
+      "body_phase_coherence": 0.9885343065927087,
       "noise_bands_filled": 10
     },
     {
@@ -713,7 +713,7 @@
         0.561
       ],
       "body_modes_hidden": 8,
-      "body_phase_coherence": 0.9826919330455526,
+      "body_phase_coherence": 0.9826902799815896,
       "noise_bands_filled": 10
     },
     {
@@ -799,7 +799,7 @@
         0.583
       ],
       "body_modes_hidden": 3,
-      "body_phase_coherence": 0.9858399325746792,
+      "body_phase_coherence": 0.9858412929908877,
       "noise_bands_filled": 7
     },
     {
@@ -858,15 +858,15 @@
       ],
       "median_phase_agreement": 0.980636771014798,
       "onset_rise_ms": [
-        0.23,
+        0.2,
         1.613,
-        1.221,
-        1.221,
-        1.221,
+        0.2,
+        0.2,
+        0.2,
         0.2,
         1.063,
         1.063,
-        0.804,
+        0.7,
         0.2,
         0.804,
         0.804
@@ -887,7 +887,7 @@
         0.647
       ],
       "body_modes_hidden": 3,
-      "body_phase_coherence": 0.9862326427919779,
+      "body_phase_coherence": 0.9862380930749701,
       "noise_bands_filled": 0
     },
     {
@@ -954,7 +954,7 @@
         0.23,
         5.646,
         4.913,
-        3.719,
+        0.2,
         4.274,
         0.2,
         2.815
@@ -975,7 +975,7 @@
         0.469
       ],
       "body_modes_hidden": 3,
-      "body_phase_coherence": 0.9846539700005907,
+      "body_phase_coherence": 0.9846498162343538,
       "noise_bands_filled": 0
     },
     {
@@ -1062,7 +1062,7 @@
         0.325
       ],
       "body_modes_hidden": 2,
-      "body_phase_coherence": 0.9850339463880721,
+      "body_phase_coherence": 0.9850384212074883,
       "noise_bands_filled": 0
     },
     {
@@ -1088,6 +1088,7 @@
       "rings": [
         1,
         3,
+        5,
         7,
         8,
         9,
@@ -1134,10 +1135,10 @@
         0.2,
         0.2,
         0.2,
-        0.2,
-        0.401,
+        0.264,
         0.461,
-        0.401,
+        0.461,
+        0.461,
         0.264
       ],
       "median_relative_error": 0.12582747756496404,
@@ -1147,7 +1148,7 @@
         0.476,
         0.457,
         0.455,
-        0.443,
+        0.442,
         0.438,
         0.436,
         0.432,
@@ -1156,7 +1157,7 @@
         0.398
       ],
       "body_modes_hidden": 2,
-      "body_phase_coherence": 0.9911830588001463,
+      "body_phase_coherence": 0.9911832268081175,
       "noise_bands_filled": 0
     },
     {
@@ -1246,7 +1247,7 @@
         0.373
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9790911201306699,
+      "body_phase_coherence": 0.9790948390595571,
       "noise_bands_filled": 0
     },
     {
@@ -1336,7 +1337,7 @@
         0.357
       ],
       "body_modes_hidden": 1,
-      "body_phase_coherence": 0.9799399785368224,
+      "body_phase_coherence": 0.9800120221462052,
       "noise_bands_filled": 0
     },
     {
@@ -1361,6 +1362,7 @@
       "extras": 2,
       "rings": [
         1,
+        5,
         8,
         11,
         13
@@ -1424,7 +1426,7 @@
         0.263
       ],
       "body_modes_hidden": 1,
-      "body_phase_coherence": 0.962742371652918,
+      "body_phase_coherence": 0.9627343737177374,
       "noise_bands_filled": 0
     },
     {
@@ -1454,7 +1456,8 @@
         5,
         7,
         8,
-        13
+        13,
+        18
       ],
       "contact_delay_ms": [
         15.917,
@@ -1497,7 +1500,7 @@
         1.221,
         1.613,
         1.221,
-        1.404
+        1.613
       ],
       "median_relative_error": 0.6643762838752794,
       "body_explained": [
@@ -1515,7 +1518,7 @@
         0.606
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9764462990075529,
+      "body_phase_coherence": 0.9764466444901081,
       "noise_bands_filled": 0
     },
     {
@@ -1578,10 +1581,10 @@
       "median_phase_agreement": 0.903410693727352,
       "onset_rise_ms": [
         0.2,
-        1.613,
-        1.613,
-        1.221,
-        1.221,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
         0.2,
         0.2,
         0.2,
@@ -1606,7 +1609,7 @@
         0.849
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9507770326858046,
+      "body_phase_coherence": 0.9507656899018412,
       "noise_bands_filled": 0
     },
     {
@@ -1668,16 +1671,16 @@
       "onset_rise_ms": [
         0.2,
         0.2,
-        1.613,
-        3.236,
+        0.2,
+        0.804,
         11.324,
         6.489,
-        4.913,
+        4.274,
         6.489,
         3.719,
         2.815,
         2.449,
-        2.449
+        2.131
       ],
       "median_relative_error": 0.2886064156171652,
       "body_explained": [
@@ -1692,10 +1695,10 @@
         0.814,
         0.817,
         0.827,
-        0.832
+        0.833
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9618244968067573,
+      "body_phase_coherence": 0.9619259593757092,
       "noise_bands_filled": 0
     },
     {
@@ -1761,15 +1764,15 @@
         7.458,
         7.458,
         0.2,
-        0.609,
-        0.349,
-        0.349,
-        0.401,
-        0.304,
-        0.349,
-        0.264,
-        0.461,
-        0.349
+        1.854,
+        1.404,
+        1.404,
+        1.613,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
       ],
       "median_relative_error": 0.2793789599927012,
       "body_explained": [
@@ -1787,7 +1790,7 @@
         0.811
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9435214369911883,
+      "body_phase_coherence": 0.943517382074213,
       "noise_bands_filled": 0
     },
     {
@@ -1855,14 +1858,14 @@
         9.852,
         0.23,
         0.2,
-        0.23,
         0.2,
-        0.23,
         0.2,
-        0.264,
-        0.23,
         0.2,
-        0.264,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
         0.2
       ],
       "median_relative_error": 0.599959224206089,
@@ -1881,7 +1884,7 @@
         0.782
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.89912866000605,
+      "body_phase_coherence": 0.8991785889535224,
       "noise_bands_filled": 0
     },
     {
@@ -1949,7 +1952,7 @@
         22.711,
         5.646,
         4.274,
-        4.274,
+        0.2,
         4.913,
         4.913,
         4.913,
@@ -1971,11 +1974,11 @@
         0.699,
         0.681,
         0.675,
-        0.675,
+        0.674,
         0.739
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9309085053004333,
+      "body_phase_coherence": 0.9310442775967865,
       "noise_bands_filled": 0
     }
   ],
@@ -1985,7 +1988,14 @@
         "key": 91,
         "cents": -23.22,
         "hz": 1558.46,
+        "rate": 1.603,
         "anchors": [
+          21,
+          24,
+          96,
+          105
+        ],
+        "timed_by_tone": [
           21,
           24,
           96,
@@ -1996,7 +2006,18 @@
         "key": 91,
         "cents": -1.65,
         "hz": 1577.99,
+        "rate": 3.677,
         "anchors": [
+          66,
+          69,
+          78,
+          81,
+          84,
+          90,
+          102,
+          105
+        ],
+        "timed_by_tone": [
           66,
           69,
           78,
@@ -2011,7 +2032,14 @@
         "key": 91,
         "cents": 2.14,
         "hz": 1581.45,
+        "rate": 0.362,
         "anchors": [
+          54,
+          60,
+          72,
+          84
+        ],
+        "timed_by_tone": [
           54,
           60,
           72,
@@ -2022,20 +2050,32 @@
         "key": 92,
         "cents": 26.11,
         "hz": 1698.3,
+        "rate": 2.533,
         "anchors": [
           57,
           66,
           69,
           84,
           93
+        ],
+        "timed_by_tone": [
+          66,
+          69
         ]
       },
       {
         "key": 93,
         "cents": 0.26,
         "hz": 1772.04,
+        "rate": 1.906,
         "anchors": [
           78,
+          90,
+          96,
+          102,
+          105
+        ],
+        "timed_by_tone": [
           90,
           96,
           102,
@@ -2046,8 +2086,15 @@
         "key": 93,
         "cents": 2.91,
         "hz": 1774.75,
+        "rate": 2.361,
         "anchors": [
+          69,
+          81,
           84,
+          96
+        ],
+        "timed_by_tone": [
+          69,
           96
         ]
       },
@@ -2055,7 +2102,15 @@
         "key": 94,
         "cents": 4.34,
         "hz": 1885.8,
+        "rate": 1.083,
         "anchors": [
+          90,
+          93,
+          96,
+          102,
+          105
+        ],
+        "timed_by_tone": [
           90,
           93,
           96,
@@ -2067,7 +2122,14 @@
         "key": 94,
         "cents": 32.58,
         "hz": 1916.81,
+        "rate": 2.554,
         "anchors": [
+          57,
+          69,
+          72,
+          84
+        ],
+        "timed_by_tone": [
           57,
           69,
           72,
@@ -2078,33 +2140,49 @@
         "key": 95,
         "cents": 43.26,
         "hz": 2047.67,
+        "rate": 0.775,
         "anchors": [
           24,
           69,
           78,
           81,
           84
+        ],
+        "timed_by_tone": [
+          24,
+          69
         ]
       },
       {
         "key": 95,
         "cents": 43.92,
         "hz": 2048.45,
+        "rate": 3.838,
         "anchors": [
           69,
           72,
           90,
           102,
           105
+        ],
+        "timed_by_tone": [
+          69,
+          72
         ]
       },
       {
         "key": 96,
         "cents": -2.9,
         "hz": 2116.8,
+        "rate": 1.13,
         "anchors": [
           21,
           33,
+          42,
+          60
+        ],
+        "timed_by_tone": [
+          21,
           42,
           60
         ]
@@ -2113,7 +2191,16 @@
         "key": 96,
         "cents": 1.28,
         "hz": 2121.92,
+        "rate": 3.21,
         "anchors": [
+          48,
+          81,
+          90,
+          93,
+          102,
+          105
+        ],
+        "timed_by_tone": [
           48,
           81,
           90,
@@ -2126,11 +2213,15 @@
         "key": 96,
         "cents": 42.98,
         "hz": 2173.65,
+        "rate": 4.16,
         "anchors": [
           33,
           57,
           66,
           69,
+          78
+        ],
+        "timed_by_tone": [
           78
         ]
       },
@@ -2138,7 +2229,16 @@
         "key": 97,
         "cents": -32.61,
         "hz": 2205.95,
+        "rate": 1.268,
         "anchors": [
+          33,
+          57,
+          60,
+          69,
+          81,
+          84
+        ],
+        "timed_by_tone": [
           33,
           57,
           60,
@@ -2151,8 +2251,15 @@
         "key": 97,
         "cents": -4.73,
         "hz": 2241.76,
+        "rate": 1.316,
         "anchors": [
           24,
+          93,
+          96,
+          102,
+          105
+        ],
+        "timed_by_tone": [
           93,
           96,
           102,
@@ -2163,7 +2270,14 @@
         "key": 98,
         "cents": -3.46,
         "hz": 2378.36,
+        "rate": 1.196,
         "anchors": [
+          93,
+          96,
+          102,
+          105
+        ],
+        "timed_by_tone": [
           93,
           96,
           102,
@@ -2174,21 +2288,29 @@
         "key": 99,
         "cents": -38.84,
         "hz": 2470.41,
+        "rate": 2.083,
         "anchors": [
           60,
           69,
           72,
           90
-        ]
+        ],
+        "timed_by_tone": []
       },
       {
         "key": 100,
         "cents": 0.38,
         "hz": 2679.01,
+        "rate": 1.547,
         "anchors": [
           69,
           96,
           102,
+          105
+        ],
+        "timed_by_tone": [
+          69,
+          96,
           105
         ]
       },
@@ -2196,44 +2318,58 @@
         "key": 101,
         "cents": -21.13,
         "hz": 2805.09,
+        "rate": 4.682,
         "anchors": [
           69,
           72,
+          84,
           90
-        ]
+        ],
+        "timed_by_tone": []
       },
       {
         "key": 103,
         "cents": -16.48,
         "hz": 3164.98,
+        "rate": 0.777,
         "anchors": [
           36,
           45,
           96,
           102
+        ],
+        "timed_by_tone": [
+          36,
+          45
         ]
       },
       {
         "key": 106,
         "cents": 39.22,
         "hz": 3908.48,
+        "rate": 1.52,
         "anchors": [
           36,
           54,
           72,
           78
+        ],
+        "timed_by_tone": [
+          54
         ]
       },
       {
         "key": 108,
         "cents": -11.48,
         "hz": 4276.26,
+        "rate": 3.482,
         "anchors": [
           30,
           78,
           102,
           105
-        ]
+        ],
+        "timed_by_tone": []
       }
     ],
     "by_chance": 2.7
@@ -2382,7 +2518,7 @@
       0.673,
       0.612,
       0.77,
-      0.638,
+      0.639,
       0.671,
       0.645,
       0.759,
@@ -2401,7 +2537,7 @@
       0.826,
       0.994,
       0.831,
-      0.645,
+      0.644,
       0.732,
       1.05,
       0.671,
@@ -2427,7 +2563,7 @@
       0.633
     ],
     "pickup_explained": [
-      0.968,
+      0.969,
       0.835,
       0.982,
       0.946,
@@ -2489,7 +2625,7 @@
       0.718,
       0.57,
       0.724,
-      0.733,
+      0.734,
       0.616,
       0.843,
       0.596,
@@ -2500,7 +2636,7 @@
       0.889,
       0.816,
       0.745,
-      0.807,
+      0.806,
       0.791,
       0.631,
       0.741,
@@ -2509,7 +2645,7 @@
       0.763,
       0.786,
       0.865,
-      0.842,
+      0.841,
       0.715,
       0.63,
       0.742,
@@ -2552,7 +2688,7 @@
       "78": [
         0.639,
         0.95,
-        0.56,
+        0.639,
         0.95,
         0.56,
         0.1,
@@ -2597,13 +2733,13 @@
         0.253,
         0.429,
         0.253,
-        0.13,
+        0.114,
         0.253,
-        0.194,
+        0.149,
         0.1,
         0.1,
-        0.729,
-        0.729
+        0.639,
+        0.639
       ],
       "93": [
         0.114,
@@ -2624,9 +2760,9 @@
         0.729,
         0.429,
         0.429,
+        0.194,
         0.1,
-        0.1,
-        0.114,
+        0.13,
         0.1,
         0.1,
         1.085,
@@ -2652,14 +2788,14 @@
         0.639,
         0.833,
         2.402,
-        2.742,
+        3.131,
         3.131,
         1.615,
         2.104,
         4.081,
         2.742,
         1.843,
-        1.085
+        1.239
       ]
     }
   },
@@ -2681,15 +2817,15 @@
     ],
     "coherence": [
       0.378,
-      0.369,
-      0.271,
-      0.22,
+      0.372,
+      0.272,
+      0.227,
+      0.168,
       0.178,
-      0.187,
-      0.236,
       0.23,
+      0.249,
       0.189,
-      0.143,
+      0.14,
       0.084,
       0.092,
       0.058
@@ -2701,5 +2837,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "db1b1a87abd8a7d2ca8a64b39fe34e300c39ddb175c23f7dd07a33a505634f1e"
+  "generated_header_sha256": "abf50d5b72400bb670dfb5af0ac7f3d1bb9b36f387a64eba7925077706dddfa6"
 }

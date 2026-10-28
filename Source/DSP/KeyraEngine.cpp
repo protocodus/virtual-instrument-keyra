@@ -633,16 +633,21 @@ struct Engine::Impl {
     const int endua=a.undampedFirst+a.undampedCount,endub=b.undampedFirst+b.undampedCount;
     while((ua<endua||ub<endub)&&voice.count<maxPartials){
       const int ra=ua<endua?measured::undamped[ua].ring:1<<30,rb=ub<endub?measured::undamped[ub].ring:1<<30;
-      LaneData l;double weight=1;
-      if(ra==rb)l=blendLane(laneAt(measured::undamped[ua++].lane,v),laneAt(measured::undamped[ub++].lane,v),t);
-      else{l=laneAt(measured::undamped[ra<rb?ua++:ub++].lane,v);weight=ra<rb?1-t:t;}
+      // Either pitch's entry stands in for the other's where only one lists the string.
+      const auto& x=measured::undamped[ra<=rb?ua:ub];const auto& y=measured::undamped[rb<=ra?ub:ua];
+      const double weight=ra==rb?1:ra<rb?1-t:t;
+      if(ra<=rb)++ua;
+      if(rb<=ra)++ub;
       const auto& ring=measured::rings[std::min(ra,rb)];
       const double frequency=keyPitch(ring.key)*std::pow(2.,ring.cents/1200);
       // The struck key's own strings are the series.
       if(weight<=0||frequency>highest||std::abs(1200*std::log2(frequency/f1))<=measured::unisonCents)continue;
-      l.level+=20*std::log10(weight);
-      add(frequency,std::max(1.,frequency/f1),l);
-      if(filled==lanes)close(false);
+      for(int j=0;j<static_cast<int>(x.lanes.size())&&voice.count<maxPartials;++j){
+        LaneData l=blendLane(laneAt(x.lanes[j],v),laneAt(y.lanes[j],v),t);
+        l.level+=20*std::log10(weight);
+        add(frequency,std::max(1.,frequency/f1),l);
+        if(filled==lanes)close(false);
+      }
     }
     if(filled>0&&voice.count<maxPartials)close(false);
     if(voice.count==0)voice.active=false;
