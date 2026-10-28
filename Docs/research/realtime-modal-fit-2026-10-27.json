@@ -9,7 +9,7 @@
   ],
   "dev_or_sealed_recordings_opened": false,
   "analysis_source_sha256": "bf945db135e2390692668990a84ea6806a51a3f853cda8497b4fc9f2c4049d1b",
-  "fitter_source_sha256": "cc6c539a9627bb39b0de6d8697cc89278ed50011a1d9fcd26fa7a6a36c397a0d",
+  "fitter_source_sha256": "22531828961297b6260a89c7b3fcff0e71545e3ada2b8d405b5ab0236f2597b6",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -27,6 +27,20 @@
     101.0,
     109.0,
     124.0
+  ],
+  "layer_level_db": [
+    -21.167,
+    -16.694,
+    -12.571,
+    -10.796,
+    -9.851,
+    -8.356,
+    -7.532,
+    -6.92,
+    -4.82,
+    -3.705,
+    -2.574,
+    0.0
   ],
   "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials; in a layer where a component does not stand clear of its floor, no louder than its recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one velocity slope pooled within pitch and string, and per anchor and string a level at contact at velocity 64: the mean over the layers clear in two or more windows, brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release, the sustain pedal down and up; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band. Anchors recorded at other velocities than the layers most have are carried onto those as the engine plays between and beyond layers.",
   "anchors": [
@@ -3135,5 +3149,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "16854762ed363508498a650b3a59343dbd4034ce58f9b463163b4ca20c74d71f"
+  "generated_header_sha256": "e0ea52a7a3783ecfbcd36d0d10343c9f8ba445b07ee03519c4cbdc00b621156c"
 }

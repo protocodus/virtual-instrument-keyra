@@ -77,7 +77,9 @@ int main(int argc,char** argv){try {
   }else{events.push_back({0,"on",60,80,1});events.push_back({1,"off",60,0,1});}
   std::stable_sort(events.begin(),events.end(),[](const Event&a,const Event&b){return a.time<b.time;});
   keyra::Engine engine(rate);engine.setParameters(parameters);engine.setLegacyAttackForComparison(legacy);
-  // Measurements play each strike at its velocity exactly; --vary plays them as the plug-in does.
+  // Measurements play each strike at exactly the recorded layers' velocity it is
+  // given; --vary plays them as the plug-in does, through the shared velocity
+  // response and each a little harder or softer.
   engine.setSteadyStrikesForMeasurement(!vary);
   const auto frames=static_cast<std::uint64_t>(std::llround(duration*rate));
   if(frames*8>0xffffffffu-36u)throw std::runtime_error("WAV too large");

@@ -39,7 +39,7 @@ double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracki
 // recordings has no pedal knocks, and one whose release recordings cannot
 // show what its dampers leave has its felt take all of every partial.
 struct Model {
-  int layers;const float* layerVelocity;
+  int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;
   const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
   const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb;
@@ -51,7 +51,7 @@ struct Model {
   double outputScale;
 };
 constexpr Model models[]{
-  {grand::layers,grand::layerVelocity.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
+  {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
    grand::partials.data(),grand::extras.data(),0,0,
    grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
@@ -75,7 +75,7 @@ constexpr Model models[]{
    // median note as loud as version 0.3.0's (Tools/benchmark_recordings.py,
    // median gain 17.6 dB to the recordings).
    .21},
-  {upright::layers,upright::layerVelocity.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
+  {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
    upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,
@@ -91,9 +91,9 @@ constexpr Model models[]{
    // at velocity 127 as loud as the grand's (each key A0-C8 held, both
    // channels' RMS from 50 to 750 ms after the strike, as the benchmark sets
    // a case's gain), so both pianos' fortissimo leaves the output the same
-   // headroom. Below it the upright keeps the wider span its recordings
-   // have: at velocity 85 its median note is 6 dB under the grand's.
-   .502},
+   // headroom. Below it the shared velocity response (responseAt) keeps the
+   // two medians within 1 dB of each other.
+   .642},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
@@ -252,6 +252,20 @@ double levelAt(const Model& model,const std::array<float,measured::maxLayers>& d
   if(velocity>=v[last])return db[last]+std::max(0.f,(db[last]-db[last-1])/(v[last]-v[last-1]))*(velocity-v[last]);
   int i=0;while(velocity>v[i+1])++i;
   return mix(db[i],db[i+1],(velocity-v[i])/(v[i+1]-v[i]));
+}
+// The owner asked for one velocity response for both pianos, between linear
+// and an S-curve (2026-10-28). A MIDI velocity sets a level under the loudest
+// layer, halfway between a straight line and smoothstep, and plays the layer
+// coordinate where the piano's measured layers (layerLevelDb) reach it: the
+// tone it recorded at that loudness. Velocity 127 plays each piano's loudest
+// layer and 1 the higher of the two softest layers' levels, which the other
+// piano passes between its own, so neither plays beyond what it recorded.
+constexpr double responseFloorDb=std::max(grand::layerLevelDb[0],upright::layerLevelDb[0]);
+double responseAt(const Model& model,double midi) noexcept {
+  const double x=(std::max(1.,std::min(127.,midi))-1)/126,db=responseFloorDb*(1-.5*(x+x*x*(3-2*x)));
+  const float *v=model.layerVelocity,*l=model.layerLevelDb;
+  int i=0;while(i<model.layers-2&&db>l[i+1])++i;
+  return v[i]+(v[i+1]-v[i])*std::max(0.,std::min(1.,(db-l[i])/(l[i+1]-l[i])));
 }
 double onsetRiseAt(const Model& model,const measured::Anchor& anchor,double velocity) noexcept {
   // Log-linear between the recorded layers, held beyond them.
@@ -681,12 +695,15 @@ struct Engine::Impl {
     voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
     const double soft=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
-    // MIDI velocity is a recording-layer coordinate, not measured hammer speed.
-    // No two strikes land alike: each moves its key's velocity by a draw of
-    // spread touchSpread (four uniform draws summed, within 3.5 spreads).
+    // A strike plays at a recording-layer coordinate, not measured hammer
+    // speed: the shared response's for its MIDI velocity, or for a
+    // measurement the velocity itself. No two strikes land alike: each moves
+    // that coordinate by a draw of spread touchSpread (four uniform draws
+    // summed, within 3.5 spreads).
     double draw=0;
     for(int k=0;k<4;++k){touch^=touch<<13;touch^=touch>>17;touch^=touch<<5;draw+=touch*(1./4294967296.)-.5;}
-    const double v=std::max(1.,std::min(127.,127*bounded(velocity)+(steady?0.:touchSpread*std::sqrt(3.)*draw)));
+    const double played=steady?127*bounded(velocity):responseAt(*model,127*bounded(velocity));
+    const double v=std::max(1.,std::min(127.,played+(steady?0.:touchSpread*std::sqrt(3.)*draw)));
     channel.velocity[note-21]=static_cast<float>(v/127);channel.struck[note-21]=clock;
     const Model& m=*model;
     const int upper=upperAnchor(m,note);
@@ -1080,6 +1097,9 @@ PedalState Engine::pedalState(int channel) const noexcept {
 }
 void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
+float responseVelocity(Piano piano,float velocity) noexcept {
+  return static_cast<float>(responseAt(models[piano==Piano::upright?1:0],127*bounded(velocity)));
+}
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;

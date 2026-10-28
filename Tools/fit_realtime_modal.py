@@ -1303,7 +1303,7 @@ def wrap(text, width=76):
     return ['// ' + line for line in textwrap.wrap(text, width)]
 
 
-def header(model, grid, anchors, halo, body, noise, action, damper):
+def header(model, grid, layer_level, anchors, halo, body, noise, action, damper):
     """The model's generated header: its data in the types of MeasuredTypes.h,
     in namespace keyra::measured::<name>."""
     name = next(key for key, m in MODELS.items() if m is model)
@@ -1331,8 +1331,11 @@ def header(model, grid, anchors, halo, body, noise, action, damper):
               '#pragma once', '#include "MeasuredTypes.h"', '',
               f'namespace keyra {{ namespace measured {{ namespace {name} {{',
               f'constexpr int layers={len(grid)};',
-              '// MIDI velocity of each recorded layer the levels are measured at.',
+              '// Each recorded layer the levels are measured at: its velocity in the',
+              '// library\'s own map from MIDI velocity, and its early level (dB) under',
+              '// the loudest layer\'s, the median over the pitches recorded at every layer.',
               'constexpr std::array<float,maxLayers> layerVelocity{{' + ','.join(number(v) for v in grid) + '}};',
+              'constexpr std::array<float,maxLayers> layerLevelDb{{' + ','.join(number(v) for v in layer_level) + '}};',
               f'constexpr std::array<Anchor,{rows}> anchors{{{{']
     first = extra = 0
     for a in anchors:
@@ -1445,9 +1448,19 @@ def generate(model):
     for record, a in zip(records, anchors):
         if list(a['velocities']) != grid:
             record['recorded_velocities'] = list(a['velocities'])
+    # How loud each layer plays: both channels' RMS from 50 to 750 ms after the
+    # onset, as the benchmark sets a case's gain, under the same pitch's
+    # loudest layer, the median over the pitches recorded at every layer. The
+    # engine's velocity response picks the layer coordinate where this reaches
+    # the level a MIDI velocity asks for.
+    levels = np.array([[L['early_rms_db'] for L in r['layers']]
+                       for r, a in zip(results, anchors) if list(a['velocities']) == grid])
+    layer_level = np.median(levels - levels[:, -1:], axis=0)
+    if np.any(np.diff(layer_level) <= 0):
+        raise SystemExit(f'the layers\' median levels do not rise with velocity: {np.round(layer_level, 2)}')
     on_grid(anchors, noise, grid)
     damper = damper_data(model, results, halo_hz) if model.get('damper') else None
-    content = header(model, grid, anchors, halo, body, noise, action, damper)
+    content = header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
     metadata = {
         'schema_version': 5,
         'corpus': str(model['corpus'].relative_to(ROOT)), 'corpus_sha256': sha256(model['corpus']),
@@ -1455,7 +1468,7 @@ def generate(model):
         'roles_used': ['train'], 'dev_or_sealed_recordings_opened': False,
         'analysis_source_sha256': sha256(ANALYSIS), 'fitter_source_sha256': sha256(Path(__file__)),
         'tool_versions': {'numpy': np.__version__, 'scipy': scipy.__version__},
-        'layer_velocity': grid,
+        'layer_velocity': grid, 'layer_level_db': [round(float(v), 3) for v in layer_level],
         'model': ('Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) '
                   'that starts them from zero, never shorter than the anchor\'s onset rise measured from the '
                   'recordings\' build-up; per lane a velocity-independent pickup shape and a smoothed level and '

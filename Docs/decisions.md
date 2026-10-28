@@ -434,3 +434,38 @@ and so every benchmark, strikes at the velocity exactly unless given
 spread plays at every velocity and on the grand, whose library holds one
 take of each note. Measured, at the owner's request; Pop Upright's
 before/after went to the owner, with no listening verdict yet.
+
+## 2026-10-28 — one velocity response for both pianos
+
+A Recon check of the Rack device found the upright's chords growing about
+12 dB from velocity 96 to 127 where the grand's grew 5. The engine followed
+each library: every layer sits within 0.2 dB of its recordings (median), and
+the libraries map velocity differently, the Helsinki library putting its two
+loudest layers at 100–127 where Salamander spreads sixteen evenly. The owner
+asked for one response for every piano, "something between linear and
+sigmoid". A velocity v now asks for a level under the loudest recorded layer,
+floor × (1 − (x + smoothstep(x)) / 2) with x = (v − 1) / 126, and plays the
+layer coordinate where the piano's measured layer levels reach it: each
+layer's early level under its pitch's loudest (both channels' RMS 50–750 ms
+after the onset), the median over the pitches recorded at every layer, from
+−21.2 dB for the grand and −27.2 dB for the upright. The floor is the higher
+of those, so neither piano plays outside what it recorded: velocity 1 plays
+the grand's softest layer, which the upright reaches between its two
+softest, and velocity 127 each piano's loudest, where it used to play past
+it. The strike spread moves the layer coordinate as before. The upright's
+output scale goes from .502 to .642, so that its median note at velocity 127
+stays as loud as the grand's.
+
+Over every key A0–C8 (RMS 50–750 ms, no spread), the median notes now sit
+within 1 dB of each other at velocities 1, 32, 64, 96 and 127, where they
+sat 7.0, 8.7, 9.9, 4.5 and 0 dB apart, and from velocity 64 to 127 the
+median key grows 10.6 dB on the grand and 9.9 dB on the upright (8.4 and
+17.4). Single keys keep their recordings' differences: a key of the upright
+sits from 4 dB under to 7 dB over the same key of the grand (the tenth to the
+ninetieth percentile). The upright's softest layer no longer plays on its
+own. The benchmarks strike at layer coordinates and do not move: their grand
+renders are bit-identical and their upright renders scale by the new output
+scale alone. The shape is the owner's choice, not a measurement. A lettered
+chord ramp went to the owner on both pianos: the shipping response, this
+halfway shape, a straight line and smoothstep, with the key beside them, and
+no verdict yet.

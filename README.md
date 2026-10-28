@@ -52,6 +52,17 @@ musical passages through the same engine. Both are frozen evidence from
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
   not this ring, which dies within a second.
+- Both pianos answer velocity alike, at the owner's request: a velocity asks
+  for a level under the loudest recorded layer, halfway between a straight
+  line and an S-curve, and plays the layer coordinate where that piano's
+  recordings reach it, so its tone is the one recorded at that loudness.
+  Velocity 127 plays each piano's loudest layer, which it used to play past,
+  and velocity 1 the grand's softest, 21 dB under it. The two pianos' median
+  notes now sit within 1 dB of each other at every velocity, where the
+  upright's sat up to 10 dB under the grand's, and from velocity 64 to 127
+  the median key grows 10.6 dB on the grand and 9.9 dB on the upright (it
+  grew 8.4 and 17.4). The upright's softest layer, 6 dB further under its
+  loudest than the grand's, no longer plays on its own.
 - No two strikes land alike: each plays a little harder or softer than its
   velocity, as a player's do, by the spread the upright library's new
   second strikes measure, 5.6 velocity units (about 1 dB), the harder one
@@ -134,9 +145,24 @@ than its pitch's recorded onset builds up. The lanes run four to a 128-bit
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 
+Both pianos answer velocity alike. A strike plays at a coordinate between
+its piano's recorded layers, each layer at the velocity its library maps to
+it: a velocity asks for a level under the loudest layer, halfway between a
+straight line and smoothstep from velocity 1 to 127, and the strike plays
+where the piano's layers reach that level, so its tone is the one recorded
+at that loudness. A layer's level is its early level under the same pitch's
+loudest layer (both channels' RMS from 50 to 750 ms after the onset), the
+median over the pitches recorded at every layer. Velocity 127 plays each
+piano's loudest layer, and velocity 1 the grand's softest, 21.2 dB under it,
+which the upright reaches between its two softest layers. Single keys keep
+their recordings' differences: at one velocity a key of the upright sits
+from 4 dB under to 7 dB over the same key of the grand (the tenth to the
+ninetieth percentile), where the two pianos' median notes sit within 1 dB.
+
 No two strikes land alike. Each plays a little harder or softer than its
-velocity, by a random amount with a spread of 5.6 velocity units, which the
-upright library's new second strikes measure (below): a repeated chord
+velocity asks, by a random amount with a spread of 5.6 units of the recorded
+layers' velocity, which the upright library's new second strikes measure
+(below): a repeated chord
 changes level and colour from strike to strike, and keeps its tuning. The
 draws restart with the engine, so a render replays exactly.
 
@@ -245,8 +271,9 @@ as a velocity change does, ten of them brighter where louder, by a median
 for one strike, and in pitch by a median 0.02 cents.
 
 `Tools/benchmark_recordings.py` scores a renderer against every train and dev
-recording, through `keyra_render`, which strikes every note at its velocity
-exactly unless given `--vary`. The dev recordings, D♯1, D♯3, D♯5 and D♯7 at
+recording, through `keyra_render`, which strikes every note at exactly its
+recorded layer's velocity unless given `--vary`, which plays it as the
+plug-in does. The dev recordings, D♯1, D♯3, D♯5 and D♯7 at
 every layer and four other layers of every calibrated pitch, are never fitted;
 D♯2, D♯4 and D♯6 stay sealed until a candidate goes to the owner. `Tools/compare_benchmarks.py`
 lists every note where a candidate is worse than the shipping engine. The [current report](Docs/validation/recording-benchmark-split-2026-10-27.md)

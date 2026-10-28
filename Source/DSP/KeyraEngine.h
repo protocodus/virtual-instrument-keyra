@@ -37,11 +37,15 @@ public:
   // Offline diagnostic: fixed 2ms rise versus training-recording rise. This
   // changes only future strikes; it is deliberately absent from product UIs.
   void setLegacyAttackForComparison(bool enabled) noexcept;
-  // Offline measurement: every strike at its key's velocity exactly, where
-  // strikes otherwise vary as a player's do. Also absent from product UIs.
+  // Offline measurement: every strike at exactly the recorded layers'
+  // velocity it is given, where strikes otherwise go through the shared
+  // velocity response and vary as a player's do. Also absent from product UIs.
   void setSteadyStrikesForMeasurement(bool enabled) noexcept;
 private:
   struct Impl;
   std::unique_ptr<Impl> impl;
 };
+// The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
+// plays on `piano` before its player's spread: one response for both pianos.
+float responseVelocity(Piano piano,float velocity) noexcept;
 }

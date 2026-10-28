@@ -160,6 +160,31 @@ int main(int argc,char** argv){
     check(played==twice(false),"an engine from its start replays the same strikes");
   }
   {
+    // One velocity response for both pianos: a velocity asks for a level under
+    // the loudest layer, halfway between a straight line and smoothstep from
+    // the higher of the two softest layers' levels, and plays where each
+    // piano's measured layers reach it.
+    namespace g=keyra::measured::grand;namespace u=keyra::measured::upright;
+    auto level=[](const auto& v,const auto& l,int layers,double at){
+      int i=0;while(i<layers-2&&at>v[i+1])++i;
+      return l[i]+(l[i+1]-l[i])*(at-v[i])/(v[i+1]-v[i]);};
+    const double floor=std::max(g::layerLevelDb[0],u::layerLevelDb[0]);
+    double worst=0;float last[2]{};bool rising=true;
+    for(int midi=1;midi<=127;++midi){
+      const double x=(midi-1)/126.,wanted=floor*(1-.5*(x+x*x*(3-2*x)));
+      const float at[2]{keyra::responseVelocity(keyra::Piano::grand,midi/127.f),
+                        keyra::responseVelocity(keyra::Piano::upright,midi/127.f)};
+      worst=std::max({worst,std::abs(level(g::layerVelocity,g::layerLevelDb,g::layers,at[0])-wanted),
+                      std::abs(level(u::layerVelocity,u::layerLevelDb,u::layers,at[1])-wanted)});
+      rising=rising&&at[0]>=last[0]&&at[1]>=last[1];last[0]=at[0];last[1]=at[1];
+    }
+    std::cout<<"velocity_response_worst_db="<<worst<<'\n';
+    check(worst<.01,"both pianos play the shared velocity response's level at every velocity");
+    check(rising,"a harder strike never plays a softer layer");
+    check(last[0]==g::layerVelocity[g::layers-1]&&last[1]==u::layerVelocity[u::layers-1],
+          "velocity 127 plays each piano's loudest layer");
+  }
+  {
     keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.noteOn(60,.7f,1);b.noteOn(60,.7f,1);
     render(a,12000);render(b,12000);a.noteOff(60,2);a.controlChange(1,127,2);
     check(render(a,24000)==render(b,24000),"foreign channel noteOff and mute preserve channel1 exactly");

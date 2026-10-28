@@ -8,7 +8,11 @@ development and evaluation; host acceptance and commercial release are pending.
 ## Playing and controls
 
 Send MIDI notes A0–C8 (21–108). MIDI velocity changes spectral balance and
-excitation level continuously. MIDI note-on with velocity zero releases a key.
+excitation level continuously, along one curve on both pianos: halfway
+between a straight line and an S-curve in level, from the grand's softest
+recorded strike at velocity 1 to each piano's loudest at 127. Each strike
+lands a little harder or softer than its velocity, as a player's do. MIDI
+note-on with velocity zero releases a key.
 Each MIDI channel owns its key and controller state.
 
 | Control | Behavior |

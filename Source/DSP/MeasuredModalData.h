@@ -7,8 +7,11 @@
 
 namespace keyra { namespace measured { namespace grand {
 constexpr int layers=12;
-// MIDI velocity of each recorded layer the levels are measured at.
+// Each recorded layer the levels are measured at: its velocity in the
+// library's own map from MIDI velocity, and its early level (dB) under
+// the loudest layer's, the median over the pitches recorded at every layer.
 constexpr std::array<float,maxLayers> layerVelocity{{14.f,31.f,40.f,45.f,49.f,61.f,69.f,77.f,93.f,101.f,109.f,124.f}};
+constexpr std::array<float,maxLayers> layerLevelDb{{-21.1674f,-16.69434f,-12.57055f,-10.79616f,-9.851363f,-8.35563f,-7.532016f,-6.920315f,-4.820412f,-3.70505f,-2.573798f,0.f}};
 constexpr std::array<Anchor,22> anchors{{
   {21,27.23821f,0.0002283888f,{{0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f,0.002815287f}},0,78,0,48},
   {24,32.43432f,0.0001611304f,{{0.001041625f,0.001098385f,0.001129676f,0.001147443f,0.001161858f,0.001206199f,0.001236695f,0.001267963f,0.001332889f,0.001366589f,0.001401141f,0.001468297f}},78,82,48,37},
