@@ -5,6 +5,7 @@
 #include <array>
 #include <chrono>
 #include <cmath>
+#include <complex>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -95,6 +96,25 @@ double spectralPeak(const Audio& audio,double low,double high){
   }
   return peak;
 }
+// Each third-octave band's power over the whole render, both channels: band
+// k is centred on 20 * 2^(k/3) Hz.
+std::array<double,31> thirdOctaves(const Audio& audio){
+  constexpr double pi=3.14159265358979323846;
+  std::size_t n=1;while(n<audio.size()/2)n<<=1;
+  std::array<double,31> bands{};
+  for(int channel=0;channel<2;++channel){
+    std::vector<std::complex<double>> a(n);
+    for(std::size_t i=0;i<audio.size()/2;++i)a[i]=audio[2*i+static_cast<std::size_t>(channel)];
+    for(std::size_t i=1,j=0;i<n;++i){std::size_t bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;if(i<j)std::swap(a[i],a[j]);}
+    for(std::size_t length=2;length<=n;length<<=1){const auto w=std::polar(1.,-2*pi/static_cast<double>(length));
+      for(std::size_t i=0;i<n;i+=length){std::complex<double> turn=1;
+        for(std::size_t j=0;j<length/2;++j){const auto u=a[i+j],v=a[i+j+length/2]*turn;a[i+j]=u+v;a[i+j+length/2]=u-v;turn*=w;}}}
+    for(std::size_t k=1;k<n/2;++k){
+      const int band=static_cast<int>(std::floor(3*std::log2(static_cast<double>(k)*48000/static_cast<double>(n)/20)+.5));
+      if(band>=0&&band<31)bands[static_cast<std::size_t>(band)]+=std::norm(a[k]);}
+  }
+  return bands;
+}
 // The right channel's level against the left's, in dB, at the strongest
 // frequency between `low` and `high`.
 double levelDifference(const Audio& audio,double low,double high){
@@ -158,6 +178,30 @@ int main(int argc,char** argv){
     check(played.first!=played.second&&std::abs(apart)<6,"no two strikes of a key land alike");
     check(steady.first==steady.second,"steady strikes play their velocity exactly");
     check(played==twice(false),"an engine from its start replays the same strikes");
+  }
+  {
+    // Below full quality a strike leaves out only what no band of the note
+    // hears (keepAudible). Over every third key at velocities 40, 80, 110 and
+    // 127 these keys' bands changed the most, each piano's at each quality:
+    // in 3 s of each, no third-octave band within 40 dB of the strongest
+    // moves by more than 0.1 dB at balanced quality or 1 dB at light, and
+    // light leaves something out.
+    struct Key {keyra::Piano piano;int note;float velocity;};
+    const std::array<Key,4> keys{{{keyra::Piano::grand,51,80/127.f},{keyra::Piano::grand,93,1},
+                                  {keyra::Piano::upright,33,40/127.f},{keyra::Piano::upright,42,110/127.f}}};
+    double worst[3]{};bool lighter=true;
+    for(const auto& key:keys){
+      std::array<Audio,3> audio;std::array<std::array<double,31>,3> bands;
+      for(std::size_t q=0;q<3;++q){keyra::Engine e;keyra::Parameters p;p.piano=key.piano;p.quality=static_cast<keyra::Quality>(q);
+        e.setParameters(p);e.noteOn(key.note,key.velocity);audio[q]=render(e,144000);bands[q]=thirdOctaves(audio[q]);}
+      const double top=*std::max_element(bands[0].begin(),bands[0].end());
+      for(std::size_t q=1;q<3;++q)for(std::size_t b=0;b<bands[0].size();++b)
+        if(bands[0][b]>top*1e-4)worst[q]=std::max(worst[q],std::abs(10*std::log10(bands[q][b]/bands[0][b])));
+      lighter=lighter&&audio[2]!=audio[0];
+    }
+    std::cout<<"quality_band_change_db balanced="<<worst[1]<<" light="<<worst[2]<<'\n';
+    check(worst[1]<.1&&worst[2]<1,"below full quality no band the note is heard in changes");
+    check(lighter,"light quality leaves out what no band hears");
   }
   {
     // One velocity response for both pianos: a velocity asks for a level under

@@ -887,7 +887,31 @@ struct Engine::Impl {
       if(filled==lanes)close(true);
     }
     if(filled>0&&voice.count<maxPartials)close(true);
+    if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
     if(voice.count==0)voice.active=false;
+  }
+  // Below full quality a strike keeps only the slots that come within dropDb
+  // of its strongest, either at contact (the sum of their lanes' amplitudes)
+  // or over their whole ring with the key held (their lanes' energy to
+  // silence), at their tint. Over every third key from A0 to C8 at
+  // velocities 40 to 127, 3 s of each, the slots dropped at 60 dB change no
+  // third-octave band within 40 dB of the note's strongest by more than
+  // 0.04 dB and those dropped at 50 dB by 0.74 dB, while the grand plays 39
+  // and 50 % fewer slots and the upright 11 and 20 %. At 40 dB a soft bass
+  // note's band from 1 to 4 kHz, 35 to 40 dB under its strongest, loses up to
+  // 27 dB. Engine tests hold the keys whose bands changed the most.
+  void keepAudible(Voice& voice,double dropDb) noexcept {
+    double peak[maxPartials],energy[maxPartials],peakTop=0,energyTop=0;
+    for(int k=0;k<voice.count;++k){const auto& x=voice.partials[k];double p=0,e=0;
+      for(int j=0;j<lanes;++j){p+=std::sqrt(x.energyWeight[j]);e+=x.energyWeight[j]/(1-x.decay[j]*x.decay[j]);}
+      peak[k]=p*x.tint;energy[k]=e*x.tint*x.tint;
+      peakTop=std::max(peakTop,peak[k]);energyTop=std::max(energyTop,energy[k]);
+    }
+    const double peakFloor=peakTop*std::pow(10.,-dropDb/20),energyFloor=energyTop*std::pow(10.,-dropDb/10);
+    int kept=0;
+    for(int k=0;k<voice.count;++k)
+      if(peak[k]>=peakFloor||energy[k]>=energyFloor){if(kept!=k)voice.partials[kept]=voice.partials[k];++kept;}
+    voice.count=kept;
   }
   // A partial's rise, tuning, weights and state from its strike, `ahead`
   // samples before the next chunk boundary.
@@ -1078,7 +1102,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   // Wrappers combine their 400..480 Hz user range with host master tuning.
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
   p.parameters.sustain=bounded(input.sustain);p.parameters.sostenuto=bounded(input.sostenuto);
-  p.parameters.soft=bounded(input.soft);
+  p.parameters.soft=bounded(input.soft);p.parameters.quality=input.quality;
   const Model& chosen=models[input.piano==Piano::upright?1:0];
   if(p.model!=&chosen)p.choose(chosen);
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}

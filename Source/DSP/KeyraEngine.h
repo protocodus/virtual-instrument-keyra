@@ -6,10 +6,16 @@ namespace keyra {
 // recordings, or the upright measured from the Helsinki 1967 Tube-Ribbon
 // Edition's. Switching silences what sounds.
 enum class Piano {grand,upright};
+// How much of each strike plays, for CPU: every partial, or only those that
+// come within 60 dB (balanced) or 50 dB (light) of the strike's strongest,
+// which no third-octave band of the note misses by more than 0.04 or 0.74 dB
+// (KeyraEngine.cpp, keepAudible). A change applies from the next strike.
+enum class Quality {full,balanced,light};
 struct Parameters {
   float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
   Piano piano=Piano::grand;
+  Quality quality=Quality::full;
 };
 struct PedalState {float sustain=0,sostenuto=0,soft=0;};
 

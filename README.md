@@ -78,6 +78,13 @@ musical passages through the same engine. Both are frozen evidence from
   untouched; it takes a median 1.4 dB from the grand's chords at velocity
   110 and 3 dB from the upright's. The felt presets read about 8 dB lower
   (below).
+- A Quality choice trades detail for CPU on slower machines, at the owner's
+  request. Full, the default, plays every partial; Balanced and Light leave
+  out a strike's partials and components 60 and 50 dB under its strongest,
+  which moves no third-octave band of a note by more than 0.04 and 0.74 dB.
+  Legato chords under the pedal take 49 and 38 % of Full's CPU on the
+  grand; the upright, which plays fewer partials, saves up to 13 %. Quality
+  stays with the session, not the preset.
 - Beside its partials, a strike plays the components the recordings hold
   between them, 48 at A0 and a few or none from C4 up, and sets ringing every
   undamped string from F6 up but its own key's, each at its own measured
@@ -338,15 +345,35 @@ a reset of the controllers lifts it without a sound.
 
 ### Controls, presets and MIDI
 
-Piano, Output, Brightness, Resonance, Width, Tuning, Felt mute and the three
-pedals are the ten saved parameters; Piano is not offered for automation, as
-switching silences what sounds, and a session saved before it existed plays
-the grand. The eight factory presets in `Source/DSP/KeyraPresets.h`, five on
-the grand and three on the upright, set the piano, Brightness, Resonance,
-Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend
-(two semitones each way) are dispatched at their sample positions; each MIDI
-channel owns its keys and pedals, and CC120, CC121 and CC123 are honoured per
-channel. The [user guide](Docs/guide/user-guide.md) describes every control.
+Piano, Quality, Output, Brightness, Resonance, Width, Tuning, Felt mute and
+the three pedals are the eleven saved parameters. Piano and Quality are not
+offered for automation: switching the piano silences what sounds, and Quality
+is a setting for the machine, not the music. A session saved before either
+existed plays the grand at full quality. The eight factory presets in
+`Source/DSP/KeyraPresets.h`, five on the grand and three on the upright, set
+the piano, Brightness, Resonance, Width and Felt mute and leave the rest
+alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
+their sample positions; each MIDI channel owns its keys and pedals, and CC120,
+CC121 and CC123 are honoured per channel. The
+[user guide](Docs/guide/user-guide.md) describes every control.
+
+### Quality
+
+Quality sets how much of each strike plays. Full, the default, plays all of
+it. Balanced and Light keep a strike's partials, and the components beside
+them, only where they come within 60 and 50 dB of its strongest: at contact,
+the sum of their lanes' amplitudes, or over their ring with the key held,
+their lanes' energy to silence, each at the strike's brightness. Over every
+third key from A0 to C8 at velocities 40 to 127, no third-octave band within
+40 dB of a note's strongest moves by more than 0.04 dB at Balanced or 0.74 dB
+at Light, while a grand strike plays 39 and 50 % fewer of them and an upright
+strike, whose partials sit closer to its strongest, 11 and 20 % fewer. Timed
+on a development machine, not in Reason or a DAW, legato chords under the
+pedal take 49 % of Full's process CPU at Balanced and 38 % at Light on the
+grand, and 95 and 87 % on the upright
+([receipt](Docs/benchmarks/quality-cpu-2026-10-28.json)). At 40 dB a soft bass
+note lost up to 27 dB in a band 35 to 40 dB under its strongest, so there is
+no lighter setting. A change applies from the next strike.
 
 ### Playing level
 

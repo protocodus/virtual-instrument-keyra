@@ -10,6 +10,7 @@ public:
     void drawRotarySlider(juce::Graphics&, int, int, int, int, float, float, float, juce::Slider&) override;
     void drawLinearSlider(juce::Graphics&, int, int, int, int, float, float, float,
         juce::Slider::SliderStyle, juce::Slider&) override;
+    juce::Font getComboBoxFont(juce::ComboBox&) override;
 };
 
 class KeyraPedal final : public juce::Button
@@ -50,8 +51,8 @@ private:
     void handleNoteOff(juce::MidiKeyboardState*, int, int note, float) override;
     KeyraAudioProcessor& processor;
     KeyraLookAndFeel look;
-    juce::ComboBox program, piano;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> pianoAttachment;
+    juce::ComboBox program, piano, quality;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> pianoAttachment, qualityAttachment;
     std::array<juce::Slider, 9> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
     std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 9> attachments;

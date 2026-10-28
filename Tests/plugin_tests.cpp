@@ -216,6 +216,27 @@ int main()
                 && std::abs(reopened.parameters.getRawParameterValue("brightness")->load() - .83f) < 1e-5f,
                 "a session saved before the piano choice did not load as the grand");
         }
+        {
+            // Quality stays with the session, not with presets, and a session
+            // saved before the choice existed loads at full quality.
+            KeyraAudioProcessor light;
+            set(light, "quality", 2.0f);
+            light.setCurrentProgram(1);
+            require(light.parameters.getRawParameterValue("quality")->load() == 2, "a preset changed the quality");
+            juce::MemoryBlock saved;
+            light.getStateInformation(saved);
+            KeyraAudioProcessor reopened;
+            reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
+            require(reopened.parameters.getRawParameterValue("quality")->load() == 2, "the quality was not restored");
+            auto xml = juce::AudioProcessor::getXmlFromBinary(saved.getData(), static_cast<int>(saved.getSize()));
+            for (auto* parameter : xml->getChildIterator())
+                if (parameter->getStringAttribute("id") == "quality") { xml->removeChildElement(parameter, true); break; }
+            juce::MemoryBlock older;
+            juce::AudioProcessor::copyXmlToBinary(*xml, older);
+            reopened.setStateInformation(older.getData(), static_cast<int>(older.getSize()));
+            require(reopened.parameters.getRawParameterValue("quality")->load() == 0,
+                "a session saved before the quality choice did not load at full quality");
+        }
         const auto large = render(8192), small = render(97);
         require(large == small, "MIDI/pedal render depends on host block size");
         double energy = 0;

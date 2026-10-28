@@ -2,7 +2,7 @@
 #include <cmath>
 
 namespace {
-const juce::Colour ink(0xff302c26), ivory(0xffeee8dc), brass(0xffa48448), muted(0xff7c766b);
+const juce::Colour ink(0xff302c26), ivory(0xffeee8dc), brass(0xffa48448), muted(0xff7c766b), footer(0xffc6ad89);
 constexpr std::array<const char*, 9> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft" }};
 constexpr std::array<const char*, 9> captions {{ "OUTPUT", "HAMMER", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT" }};
 
@@ -23,6 +23,12 @@ KeyraLookAndFeel::KeyraLookAndFeel()
     setColour(juce::Slider::textBoxHighlightColourId, brass.withAlpha(.25f));
     setColour(juce::TextEditor::highlightColourId, brass.withAlpha(.25f));
     setColour(juce::TextEditor::textColourId, ink);
+}
+
+// The footer's Quality selector sets its text in the footer's small type.
+juce::Font KeyraLookAndFeel::getComboBoxFont(juce::ComboBox& box)
+{
+    return box.getHeight() < 24 ? juce::Font(juce::FontOptions(11.0f)) : LookAndFeel_V4::getComboBoxFont(box);
 }
 
 void KeyraLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
@@ -155,6 +161,15 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     piano.setTooltip("The piano that plays: the modelled grand or upright. Switching silences what sounds.");
     addAndMakeVisible(piano);
     pianoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "model", piano);
+    quality.addItemList({ "Full", "Balanced", "Light" }, 1);
+    quality.setColour(juce::ComboBox::backgroundColourId, juce::Colours::transparentBlack);
+    quality.setColour(juce::ComboBox::textColourId, footer);
+    quality.setColour(juce::ComboBox::outlineColourId, footer.withAlpha(.35f));
+    quality.setColour(juce::ComboBox::arrowColourId, footer);
+    quality.setTooltip("How much of each note plays, for CPU. Full plays every partial; Balanced and Light "
+                       "leave out those 60 and 50 dB under the note's strongest. Applies from the next note.");
+    addAndMakeVisible(quality);
+    qualityAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "quality", quality);
     for (size_t i = 0; i < controls.size(); ++i) {
         auto& slider = controls[i];
         slider.setName(captions[i]);
@@ -256,6 +271,7 @@ void KeyraAudioProcessorEditor::resized()
         controls[static_cast<size_t>(8 - i)].setBounds(x + 86, 388, 164, 29);
     }
     keyboard.setBounds(54, 442, 872, 82);
+    quality.setBounds(452, 535, 92, 19);
     about.setBounds(70, 52, 300, 50); // where paint() draws the title
 }
 
@@ -310,9 +326,9 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
     g.fillRect(54, 434, 872, 8);
     g.setColour(brass.withAlpha(.8f));
     g.fillRect(54, 434, 872, 1);
-    text(g, "88 KEYS", { 56, 536, 140, 17 }, 10, juce::Colour(0xffc6ad89));
-    text(g, "MOD WHEEL  /  FELT MUTE", { 620, 536, 304, 17 }, 10,
-        juce::Colour(0xffc6ad89), juce::Justification::centredRight);
+    text(g, "88 KEYS", { 56, 536, 140, 17 }, 10, footer);
+    text(g, "QUALITY", { 372, 536, 72, 17 }, 10, footer, juce::Justification::centredRight);
+    text(g, "MOD WHEEL  /  FELT MUTE", { 620, 536, 304, 17 }, 10, footer, juce::Justification::centredRight);
     g.setColour(activity ? brass : ink.withAlpha(.22f));
     g.fillEllipse(887, 137, 5, 5);
     g.setColour(ink.withAlpha(.15f));

@@ -45,7 +45,7 @@ private:
     void dispatch(const juce::MidiMessage&) noexcept;
     void publishPedals() noexcept;
     keyra::Engine engine;
-    std::array<std::atomic<float>*, 10> values {};
+    std::array<std::atomic<float>*, 11> values {};
     bool prepared = false;
     std::atomic<int> currentProgram { 0 };
     struct KeyboardEvent { bool down; int note; float velocity; };

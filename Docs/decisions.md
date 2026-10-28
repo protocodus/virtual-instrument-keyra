@@ -633,3 +633,39 @@ the guard's cost to the hardest chords is worth keeping them out of the red is
 the owner's to hear. A lettered crescendo of chords on both pianos went to
 the owner, level-matched: the shipping engine, this stage, and the same level
 through the limiter alone, with the key beside them, and no verdict yet.
+
+## 2026-10-28 — a Quality choice leaves out what no band hears
+
+The owner asked every new instrument for a quality setting ("oversample 1x
+2x 4x"). Keyra plays each partial as its own oscillator and silences any
+above 0.45 of the sample rate, so it has nothing to alias and oversampling
+would cost CPU for nothing. On the decision card the owner chose instead a
+Quality choice that sets how much of each note plays, trading detail for CPU
+on slower machines, with the full sound as the default.
+
+A strike's slots (a partial's four lanes, or four of the components beside
+the partials) cost alike, and many play far under the strike's strongest:
+over every key at velocities 40, 80, 110 and 127 a grand strike plays a mean
+43.1 slots and an upright strike 24.2. Balanced and Light keep only the
+slots that come within 60 and 50 dB of the strike's strongest, at contact
+(the sum of their lanes' amplitudes) or over their whole ring with the key
+held (their lanes' energy to silence), each at its brightness tint; the
+second test keeps a quiet partial that rings long. The grand then plays 26.5
+and 21.5 slots a strike and the upright 21.6 and 19.4. Over every third key
+from A0 to C8 at those velocities, 3 s of each, no third-octave band within
+40 dB of the note's strongest moves by more than 0.04 dB at Balanced (the
+grand's D♯3 at velocity 80) or 0.74 dB at Light (its A6 at 127), and the
+median note's largest change is under 0.001 dB at both. At 40 dB a soft bass
+note's band from 1 to 4 kHz, 35 to 40 dB under its strongest, lost up to
+27 dB, so no lighter setting is offered. On this development machine's
+process CPU (`Docs/benchmarks/quality-cpu-2026-10-28.json`), twenty legato
+chords under the pedal take 49 % of Full's at Balanced and 38 % at Light on
+the grand, 95 and 87 % on the upright; fast chords under the pedal take 61
+and 48 % in the grand's bass and 90 and 74 % in its treble, while the
+upright's treble saves nothing. `Keyra.Engine` holds the four
+keys whose bands changed the most.
+
+Chosen by measurement. Whether Light's largest change can be heard is the
+owner's to judge: a lettered passage on both pianos, the shipping Full
+against Balanced and Light, went to the owner level-matched with its key,
+and no verdict yet.

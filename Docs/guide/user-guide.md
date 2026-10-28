@@ -18,6 +18,7 @@ Each MIDI channel owns its key and controller state.
 | Control | Behavior |
 | --- | --- |
 | Piano | The grand or the upright. Switching silences what sounds; held keys and pedals keep their state |
+| Quality | How much of each note plays, for CPU on slower machines. Full, the default, plays all of it; Balanced and Light leave out the partials 60 and 50 dB under the note's strongest, which changes no third of an octave of its spectrum by more than 0.04 and 0.74 dB. A change applies from the next note |
 | Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2 ms, which the plug-in reports to the host |
 | Hammer / Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
@@ -29,9 +30,9 @@ Each MIDI channel owns its key and controller state.
 | Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
 
 The factory presets choose the piano and set Hammer, Resonance, Width and
-Felt mute; Output, Tuning and the pedals keep their settings. Five play the
-grand and three the upright. The DAW interface's on-screen keyboard is
-playable. Three brass pedal controls
+Felt mute; Output, Tuning, Quality and the pedals keep their settings. Five
+play the grand and three the upright. The DAW interface's on-screen keyboard
+is playable. Three brass pedal controls
 show the effective soft, sostenuto and sustain positions, in the physical
 piano's left-to-right order. Hold a pedal to press it and release to lift it;
 the continuous travel controls remain available for half pedalling. The

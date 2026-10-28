@@ -5,8 +5,8 @@
 #include <cstdlib>
 
 namespace {
-constexpr std::array<const char*, 10> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "model" }};
-constexpr size_t modelIndex = 9;
+constexpr std::array<const char*, 11> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "model", "quality" }};
+constexpr size_t modelIndex = 9, qualityIndex = 10;
 constexpr auto& programs = keyra::factoryPresets;
 }
 
@@ -51,6 +51,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     // sounds, so it is not offered for automation.
     layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "model", 1 }, "Piano",
         juce::StringArray { "Grand", "Upright" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
+    // A CPU setting, which presets leave alone; it applies from the next strike.
+    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "quality", 1 }, "Quality",
+        juce::StringArray { "Full", "Balanced", "Light" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
     return layout;
 }
 
@@ -126,6 +129,7 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.sostenuto = values[7]->load(std::memory_order_relaxed);
     p.soft = values[8]->load(std::memory_order_relaxed);
     p.piano = values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand;
+    p.quality = static_cast<keyra::Quality>(juce::jlimit(0, 2, juce::roundToInt(values[qualityIndex]->load(std::memory_order_relaxed))));
     engine.setParameters(p);
     auto read = keyboardRead.load(std::memory_order_relaxed);
     auto write = keyboardWrite.load(std::memory_order_acquire);
@@ -237,10 +241,11 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
             || value > parameter->getNormalisableRange().end) return;
         seen[index] = true;
     }
-    // Sessions saved before the piano choice existed lack "model" and keep
-    // its default, the grand they were made with.
+    // Sessions saved before the piano and quality choices existed lack
+    // "model" and "quality" and keep their defaults: the grand they were made
+    // with, at full quality.
     for (size_t i = 0; i < seen.size(); ++i)
-        if (!seen[i] && i != modelIndex) return;
+        if (!seen[i] && i != modelIndex && i != qualityIndex) return;
     parameters.replaceState(state);
     currentProgram.store(programText.getIntValue(), std::memory_order_relaxed);
 }
