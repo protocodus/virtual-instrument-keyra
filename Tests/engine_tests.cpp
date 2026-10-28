@@ -34,11 +34,12 @@ double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<d
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
 keyra::Parameters dryUpright(){auto p=dry();p.piano=keyra::Piano::upright;return p;}
 // C4's own strings: the amplitude of its first four partials, in both
-// channels. They sit below F6, where the undamped strings its strike sets
-// ringing begin; no damper reaches those, so a key-up leaves them sounding.
-double c4Strings(const Audio& audio){
+// channels, at a piano's measured pitch (the grand's unless given). They sit
+// below F6, where the undamped strings its strike sets ringing begin; no
+// damper reaches those, so a key-up leaves them sounding.
+template<class Anchors> double c4Strings(const Audio& audio,const Anchors& anchors){
   constexpr double pi=3.14159265358979323846;
-  const auto* a=&keyra::measured::grand::anchors[0];for(const auto& x:keyra::measured::grand::anchors)if(x.note==60)a=&x;
+  const auto* a=&anchors[0];for(const auto& x:anchors)if(x.note==60)a=&x;
   const std::size_t frames=audio.size()/2;double sum=0;
   for(int n=1;n<=4;++n){
     const double frequency=n*a->f1*std::sqrt((1+a->B*n*n)/(1+a->B));
@@ -51,6 +52,7 @@ double c4Strings(const Audio& audio){
   }
   return std::sqrt(sum);
 }
+double c4Strings(const Audio& audio){return c4Strings(audio,keyra::measured::grand::anchors);}
 // The engine's fundamental for a key (A4 = 440 Hz): its cents from equal
 // temperament between the recorded pitches around it.
 double keyPitch(int key){
@@ -423,6 +425,23 @@ int main(int argc,char** argv){
     check(std::abs(20*std::log10(rms(late)/rms(early)))<.05,"an upright release knock does not fade with the time held");
     keyra::Engine e;e.setParameters(dryUpright());e.controlChange(64,127);render(e,4800);e.controlChange(64,0);
     check(rms(render(e,9600))==0,"the upright's pedal sounds nothing");
+  }
+  {
+    // The upright's felt holds a share of each partial only loosely
+    // (measured::Damper), so C4's strings still ring half a second after the
+    // key-up, falling on, where the grand's felt has taken them. At middle C
+    // the share is 13 dB under the partial and falls about 6 dB/s.
+    const auto fall=[](const keyra::Parameters& p,const auto& anchors){
+      keyra::Engine e;e.setParameters(p);e.noteOn(60,.7f);render(e,60000);
+      const double before=c4Strings(render(e,12000),anchors);e.noteOff(60);render(e,24000);
+      const double half=c4Strings(render(e,12000),anchors);render(e,36000);
+      return std::array<double,3>{before,half,c4Strings(render(e,12000),anchors)};};
+    const auto upright=fall(dryUpright(),keyra::measured::upright::anchors),grand=fall(dry(),keyra::measured::grand::anchors);
+    check(upright[1]>upright[0]*.03,"the upright's felt leaves a share of a released C4 ringing");
+    check(upright[2]<upright[1]*.7,"what the upright's felt leaves keeps falling");
+    check(grand[1]<grand[0]*.01,"the grand's felt takes all of a released C4");
+    std::cout<<"upright_released_c4_db="<<20*std::log10(upright[1]/upright[0])<<','<<20*std::log10(upright[2]/upright[0])
+             <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])<<'\n';
   }
   for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.piano=piano;p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);

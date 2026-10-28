@@ -14,6 +14,7 @@ complex amplitude per microphone the hammer and the pickup set. What the
 partials leave below the treble's fundamentals gives the body modes every
 strike knocks, and the undamped strings from F6 up, which every strike sets
 ringing, are measured as tones at their own pitches across the anchors. The
+upright's key-release takes give what its dampers leave ringing. The
 fitted numbers go into the piano's header in Source/DSP (MeasuredModalData.h,
 MeasuredUprightData.h), in the types of MeasuredTypes.h; no recorded waveform
 or impulse response enters a header.
@@ -61,6 +62,9 @@ UNCALIBRATED = {108: 'strongest components 90-100 cents above the stretch trend;
 # header. A key let go knocks the body as the take of each anchor's key does:
 # Salamander's key release noise, and on the upright the hammer noise its
 # library plays on key release. Only the grand's corpus records the pedal.
+# The upright's key-release takes also show what its dampers leave ringing
+# (damper_data); the grand's fade in over the damper's first tenth of a
+# second (Docs/research/release-recordings-2026-10-27.md).
 MODELS = {
     'grand': {'title': 'the Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0)',
               'corpus': ROOT / 'Tools/corpus/salamander-v3.json',
@@ -79,7 +83,7 @@ MODELS = {
                 'wav': ROOT / 'out/helsinki/wav', 'cache': ROOT / 'out/calibration/upright',
                 'header': ROOT / 'Source/DSP/MeasuredUprightData.h',
                 'metadata': ROOT / 'Docs/research/upright-modal-fit-2026-10-28.json',
-                'uncalibrated': {}, 'release': 'hammer{note}', 'pedal': (), 'tail_floor': True,
+                'uncalibrated': {}, 'release': 'hammer{note}', 'pedal': (), 'tail_floor': True, 'damper': True,
                 'actions': 'The action\'s knocks on the body modes: the hammer noise the library plays as each '
                            'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
 }
@@ -940,6 +944,169 @@ def action_data(model, notes, hz, rates, shapes):
     return out
 
 
+# What a piano's dampers leave ringing, from its key-release takes where they
+# show it (MODELS 'damper'): each take is a key let go, recorded from about
+# the key-up. Its partials up to the tenth are measured every 10 ms through
+# the analysis window to DAMPER_SECONDS or half a second before its end, with
+# its last half second as their floor; those 25 dB over the floor in the first
+# 60 ms count, but not within DAMPER_HALO cents of an undamped string's first
+# three partials, where the take holds that string's sympathy, which the halo
+# plays.
+DAMPER_SECONDS, DAMPER_HALO = 3.0, 60.0
+# The takes match a note struck at velocity 85 and held about 1.5 s, so under
+# the felt a partial also decays as its anchor's lanes at that velocity do
+# from then on.
+DAMPER_VELOCITY, DAMPER_HOLD = 85, 1.5
+# The engine's damper (KeyraEngine.cpp, boundary() and setDamper()): it moves
+# toward the strings with an 18 ms time constant, its contact is
+# ((d - .08) / .92)^2.5, and the felt takes 24 + 1.4 sqrt(f) + .001 f (1/s at
+# full contact). The forward model samples envelopes at DAMPER_RATE.
+DAMPER_SMOOTH, DAMPER_REST, DAMPER_RATE = .018, .08, 4000
+DAMPER_SHIFTS = [-.06 + .005 * k for k in range(93)]           # key-up, s into a take
+
+
+def felt_loss(hz):
+    return 24 + 1.4 * hz ** .5 + .001 * hz
+
+
+def felt_curves(f1, times, rates, sr):
+    """How the analysis window sees a partial whose amplitude falls as
+    e^(-rate C) from the key-up, C the time integral of the damper's contact,
+    the take silent before its first sample: dB re before the key-up at the
+    take's `times`, per key-up of DAMPER_SHIFTS and per rate (1/s)."""
+    import numpy as np
+    from scipy import signal
+    import piano_analysis as pa
+    w = pa.blackman_harris(pa.window_length(f1, sr))
+    w = np.add.reduceat(w, np.arange(0, len(w), sr // DAMPER_RATE))
+    half = len(w) // 2
+    tau = np.arange(0, times[-1] + .05 + half / DAMPER_RATE, 1 / DAMPER_RATE)
+    out = np.empty((len(DAMPER_SHIFTS), len(rates), len(times)))
+    for i, shift in enumerate(DAMPER_SHIFTS):
+        after = np.maximum(tau - shift, 0)
+        d = 1 - np.exp(-after / DAMPER_SMOOTH)
+        c = np.maximum(0, (d - DAMPER_REST) / (1 - DAMPER_REST)) ** 2.5
+        C = np.concatenate([[0], np.cumsum((c[1:] + c[:-1]) / 2) / DAMPER_RATE])
+        a = np.exp(-np.outer(rates, C))
+        pad = np.zeros((len(rates), half))
+        m = signal.fftconvolve(np.hstack([pad, a, pad]), w[None, ::-1], mode='valid', axes=1)
+        idx = np.round(np.asarray(times) * DAMPER_RATE).astype(int)
+        out[i] = 20 * np.log10(np.abs(m[:, idx]) / w.sum() + 1e-12)
+    return out
+
+
+def damper_data(model, results, halo_hz):
+    """The law of measured::Damper fitted to the train key-release takes:
+    per partial the power (1 - r) e^(-2 F C) + r e^(-2 S C) under its lanes'
+    own decay, F the felt loss, r and S the law (dB and ln 1/s, each linear in
+    log2(f / 261.63 Hz)), seen through the analysis window with the take's
+    floor added; per take a key-up time and per partial a level. Robust
+    (soft L1, 2 dB) in dB over frames 6 dB over the floor."""
+    import math
+    import numpy as np
+    from scipy import optimize, sparse
+    import piano_analysis as pa
+    corpus = json.loads(model['corpus'].read_text())['files']
+    roles = json.loads(model['split'].read_text())['cases']
+    by_note = {r['note']: r for r in results}
+    halo = np.array([k * hz for hz in halo_hz.values() for k in (1, 2, 3)])
+    rates = np.geomspace(.05, 600, 64)
+    takes = []
+    for item in corpus:
+        if item['kind'] != 'key-release' or item['midi'] >= UNDAMPED.start or roles.get(item['id']) != 'train':
+            continue
+        result = by_note.get(item['midi'])
+        if result is None:
+            raise SystemExit(f'{item["id"]} has no anchor whose lanes decay under its felt')
+        sr, x = pa.load(model['wav'] / f'{item["id"]}.wav')
+        end = len(x) / sr
+        times = np.arange(0, min(DAMPER_SECONDS, end - .55), .01)
+        orders = [n for n in result['orders'] if n <= 10 and result['fits'][result['orders'].index(n)] is not None]
+        hz = [float(result['freqs'][result['orders'].index(n)]) for n in orders]
+        _, z = pa.envelopes(x, sr, hz, result['f1'], 0, None, times=times)
+        db = 10 * np.log10(np.mean(np.abs(z) ** 2, axis=1) + 1e-30)
+        _, z = pa.envelopes(x, sr, hz, result['f1'], 0, None, times=np.arange(end - .5, end - .03, .01))
+        floors = 10 * np.log10(np.mean(np.abs(z) ** 2, axis=(1, 2)) + 1e-30)
+        layer = int(np.argmin([abs(L['velocity'] - DAMPER_VELOCITY) for L in result['layers']]))
+        curves = felt_curves(result['f1'], times, rates, sr)
+        partials = []
+        for n, f, p, floor in zip(orders, hz, db, floors):
+            if p[times <= .06].max() < floor + 25 or np.min(np.abs(1200 * np.log2(halo / f))) < DAMPER_HALO:
+                continue
+            fit = result['fits'][result['orders'].index(n)]
+            lanes = (len(fit['theta']) - 2) // 2
+            power = (np.abs(fit['amplitudes'][layer]) ** 2).sum(axis=0)
+            decay = np.exp(np.asarray(fit['theta'][:lanes]))
+            own = np.array([10 * np.log10(power @ np.exp(-2 * np.outer(decay, DAMPER_HOLD - shift + times)) + 1e-300)
+                            for shift in DAMPER_SHIFTS])
+            partials.append({'order': n, 'hz': f, 'db': p, 'floor': float(floor), 'use': p > floor + 6, 'own': own})
+        if partials:
+            takes.append({'case': item['id'], 'curves': curves, 'partials': partials})
+    if not takes:
+        raise SystemExit('no train key-release take shows the felt')
+
+    def at(grid, shift):
+        """`grid` (per shift of DAMPER_SHIFTS) at `shift`, linear between them."""
+        y = min(max((shift - DAMPER_SHIFTS[0]) / .005, 0), len(DAMPER_SHIFTS) - 1.000001)
+        i = int(y)
+        return grid[i] + (y - i) * (grid[i + 1] - grid[i])
+
+    def view(curves, rate, shift):
+        """The window's view at `rate`, log-linear between the grid's rates."""
+        y = min(max(math.log(rate / rates[0]) / math.log(rates[1] / rates[0]), 0), len(rates) - 1.000001)
+        j = int(y)
+        a, b = at(curves[:, j], shift), at(curves[:, j + 1], shift)
+        return a + (y - j) * (b - a)
+
+    starts = []
+    count = 4
+    for take in takes:
+        starts.append(count)
+        count += 1 + len(take['partials'])
+
+    def residual(theta):
+        out = []
+        for take, start in zip(takes, starts):
+            shift = theta[start]
+            for k, q in enumerate(take['partials']):
+                x = math.log2(q['hz'] / 261.63)
+                r = min(10 ** ((theta[0] + theta[1] * x) / 10), 1.0)
+                fast = 10 ** (view(take['curves'], felt_loss(q['hz']), shift) / 10)
+                slow = 10 ** (view(take['curves'], math.exp(theta[2] + theta[3] * x), shift) / 10)
+                m = theta[start + 1 + k] + at(q['own'], shift) + 10 * np.log10((1 - r) * fast + r * slow + 1e-30)
+                out.append((q['db'] - 10 * np.log10(10 ** (m / 10) + 10 ** (q['floor'] / 10)))[q['use']])
+        return np.concatenate(out)
+
+    theta = [-14.0, -3.0, 0.0, 0.0]
+    lower, upper = [-np.inf] * 4, [np.inf] * 4
+    rows = sum(int(q['use'].sum()) for take in takes for q in take['partials'])
+    pattern = sparse.lil_matrix((rows, count), dtype=int)
+    row = 0
+    for take, start in zip(takes, starts):
+        theta += [.03]
+        lower += [DAMPER_SHIFTS[0]]
+        upper += [DAMPER_SHIFTS[-1]]
+        for k, q in enumerate(take['partials']):
+            theta += [float(q['db'][:6].max() - q['own'][0][:6].max())]
+            lower += [-np.inf]
+            upper += [np.inf]
+            used = int(q['use'].sum())
+            pattern[row:row + used, [0, 1, 2, 3, start, start + 1 + k]] = 1
+            row += used
+    fit = optimize.least_squares(residual, theta, bounds=(lower, upper), loss='soft_l1', f_scale=2.0,
+                                 jac_sparsity=pattern, x_scale='jac', max_nfev=300)
+    errors = np.abs(residual(fit.x))
+    out, row = [], 0
+    for take, start in zip(takes, starts):
+        used = sum(int(q['use'].sum()) for q in take['partials'])
+        out.append({'case': take['case'], 'key_up_ms': round(1000 * float(fit.x[start]), 1),
+                    'partials': [q['order'] for q in take['partials']],
+                    'mean_abs_db': round(float(np.mean(errors[row:row + used])), 3)})
+        row += used
+    return {'law': [float(v) for v in fit.x[:4]], 'takes': out,
+            'mean_abs_db': round(float(np.mean(errors)), 3)}
+
+
 # Above the body modes the soundboard's response is too dense to resolve,
 # and every strike leaves a broadband, decorrelated ring between the partials.
 # It is measured as band power in third octaves from 1 kHz, in the residual
@@ -1134,7 +1301,7 @@ def wrap(text, width=76):
     return ['// ' + line for line in textwrap.wrap(text, width)]
 
 
-def header(model, grid, anchors, halo, body, noise, action):
+def header(model, grid, anchors, halo, body, noise, action, damper):
     """The model's generated header: its data in the types of MeasuredTypes.h,
     in namespace keyra::measured::<name>."""
     name = next(key for key, m in MODELS.items() if m is model)
@@ -1213,6 +1380,10 @@ def header(model, grid, anchors, halo, body, noise, action):
         if edge in action:
             lines.append(f'constexpr std::array<ActionKnock,{modes}> {"pedalDown" if edge == "pedal_down" else "pedalUp"}'
                          + '{{' + ','.join(action_knock(k) for k in action[edge]) + '}};')
+    if damper:
+        lines += wrap('What the felt leaves ringing of a damped partial (measured::Damper), from the '
+                      'train key-release takes.')
+        lines.append('constexpr Damper damper{' + ','.join(number(x) for x in damper['law']) + '};')
     lines += [f'constexpr std::array<NoiseBand,{bands}> noiseBands{{{{'
               + ','.join('{' + number(f) + ',' + number(c) + '}' for f, c in zip(noise['hz'], noise['coherence']))
               + '}};']
@@ -1273,7 +1444,8 @@ def generate(model):
         if list(a['velocities']) != grid:
             record['recorded_velocities'] = list(a['velocities'])
     on_grid(anchors, noise, grid)
-    content = header(model, grid, anchors, halo, body, noise, action)
+    damper = damper_data(model, results, halo_hz) if model.get('damper') else None
+    content = header(model, grid, anchors, halo, body, noise, action, damper)
     metadata = {
         'schema_version': 5,
         'corpus': str(model['corpus'].relative_to(ROOT)), 'corpus_sha256': sha256(model['corpus']),
@@ -1314,7 +1486,13 @@ def generate(model):
                   'at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 '
                   'to 100 ms after contact; one left/right coherence per band. Anchors recorded at other '
                   'velocities than the layers most have are carried onto those as the engine plays between and '
-                  'beyond layers.'),
+                  'beyond layers.'
+                  + (' What the dampers leave ringing, from the train key-release takes below F6: their partials to '
+                     'the tenth, 25 dB over their floor and clear of the undamped strings\' first three partials, '
+                     'every 10 ms to 3 s, under the engine\'s damper landing as a share the felt loss takes and a '
+                     'loosely held share r falling at S, both besides the lanes\' own decay at velocity 85 from '
+                     '1.5 s; r (dB) and ln S linear in octaves from 261.63 Hz, per take a key-up time and per '
+                     'partial a level.' if damper else '')),
         'anchors': records,
         'halo': {'strings': [{'key': key, 'hz': round(hz, 2), 'cents': round(cents, 2), 'rate': round(rate, 3),
                               'rate_layers': count, 'right_over_left_db': round(20 * math.log10(abs(u[1]) / u[0]), 2),
@@ -1331,6 +1509,10 @@ def generate(model):
                                    for note, rises in body['layer_rises'].items()}},
         'action': {'cases': action['cases'], 'rise_ms': round(1000 * action['rise'], 3),
                    'unexplained': dict(zip(action['cases'], action['unexplained']))},
+        **({'damper': {'share_db': round(damper['law'][0], 3), 'share_db_per_octave': round(damper['law'][1], 3),
+                       'slow_rate_per_s': round(math.exp(damper['law'][2]), 4),
+                       'slow_rate_ratio_per_octave': round(math.exp(damper['law'][3]), 4),
+                       'mean_abs_db': damper['mean_abs_db'], 'takes': damper['takes']}} if damper else {}),
         'noise': {'band_hz': [round(f, 1) for f in noise['hz']],
                   'coherence': [round(c, 3) for c in noise['coherence']]},
         'uncalibrated_anchors': [{'note': note, 'reason': reason} for note, reason in model['uncalibrated'].items()],

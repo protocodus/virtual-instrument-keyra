@@ -34,8 +34,10 @@ float pedalLevel(float panel,float midi,std::uint16_t heldSwitches) noexcept {
 double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracking*v*v;}
 // A piano: its fitted data (MeasuredTypes.h), where its lanes start in the
 // engine's caches, how its library mixes the action's noises against the
-// notes, and the scale of its levels. Tables over the recorded pitches hold
-// a row per pitch; one without pedal recordings has no pedal knocks.
+// notes, what its dampers leave ringing and the scale of its levels. Tables
+// over the recorded pitches hold a row per pitch; one without pedal
+// recordings has no pedal knocks, and one whose release recordings cannot
+// show what its dampers leave has its felt take all of every partial.
 struct Model {
   int layers;const float* layerVelocity;
   const measured::Anchor* anchors;int anchorCount;
@@ -45,6 +47,7 @@ struct Model {
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
+  const measured::Damper* damper;
   double outputScale;
 };
 constexpr Model models[]{
@@ -64,6 +67,10 @@ constexpr Model models[]{
    // not a measurement (Docs/research/release-recordings-2026-10-27.md).
    -37,.82,.73,2,-20,-19,
    grand::noiseBands.data(),grand::noise.data(),
+   // Its release recordings fade in over the damper's first tenth of a
+   // second and carry no level against the notes'
+   // (Docs/research/release-recordings-2026-10-27.md).
+   nullptr,
    // The measured levels are the recordings' own. This scale keeps the
    // median note as loud as version 0.3.0's (Tools/benchmark_recordings.py,
    // median gain 17.6 dB to the recordings).
@@ -79,7 +86,7 @@ constexpr Model models[]{
    // with that key, at its group's volume of 0.2 (-14 dB) whatever the
    // velocity and however long the key was held. It has no pedal recordings.
    -13.9794,0,0,0,0,0,
-   upright::noiseBands.data(),upright::noise.data(),
+   upright::noiseBands.data(),upright::noise.data(),&upright::damper,
    // The recordings' levels are their own. This scale makes the median note
    // at velocity 127 as loud as the grand's (each key A0-C8 held, both
    // channels' RMS from 50 to 750 ms after the strike, as the benchmark sets
@@ -133,6 +140,9 @@ struct alignas(16) Partial {
   float baseLeftRe[lanes]{},baseLeftIm[lanes]{},baseRightRe[lanes]{},baseRightIm[lanes]{};
   double energyWeight[lanes]{};
   double frequency=0,damperScale=0,tintScale=0;
+  // The share of the partial's power the felt holds only loosely, which falls
+  // at slowScale under contact where the rest falls at damperScale.
+  double slowShare=0,slowScale=0;
   double riseExact=0,riseStep=0,riseLeap=0; // d at the next chunk boundary, per sample and per chunk
   float riseRemaining=0,riseDecay=0;        // d's float copy, run one chunk from riseExact
   float tint=1,audibility=1,targetAudibility=1;
@@ -533,7 +543,36 @@ struct Engine::Impl {
   }
   double dampingFactor(const Voice& voice,const Partial& partial) const noexcept {
     const double m=channels[voice.channel].smoothedMute;
-    return 1/(1+voice.contact*partial.damperScale+180*m*m/sampleRate*(.5+partial.frequency*.00015));
+    return 1/(1+voice.contact*(partial.slowShare<1?partial.damperScale:partial.slowScale)+180*m*m/sampleRate*(.5+partial.frequency*.00015));
+  }
+  // While the felt is on a partial that both its shares still hold, the
+  // partial's power over the next chunk is the two shares' sum, each falling
+  // at its own rate, and the loosely held share is then more of what is left.
+  void feltChunk(const Voice& voice,Partial& partial) const noexcept {
+    const double m=channels[voice.channel].smoothedMute,mute=180*m*m/sampleRate*(.5+partial.frequency*.00015);
+    const double fast=std::pow(1+voice.contact*partial.damperScale+mute,-2.*chunk),
+                 slow=std::pow(1+voice.contact*partial.slowScale+mute,-2.*chunk),
+                 total=(1-partial.slowShare)*fast+partial.slowShare*slow;
+    setRotation(partial,std::pow(total,.5/chunk));
+    // Once the firmly held share is 60 dB under the rest it no longer counts.
+    partial.slowShare=std::min(1.,partial.slowShare*slow/total);
+    if(partial.slowShare>.999999)partial.slowShare=1;
+  }
+  // Felt loss once the damper lands: about 500 dB/s on a released C4.
+  // Measured C4-C5 terminations on a Yamaha C7 fall 220-470 dB/s after a
+  // quick key release (Taguti et al., Acoust. Sci. & Tech. 23(5), 2002,
+  // Table 6). The Salamander release recordings cannot set it
+  // (Docs/research/release-recordings-2026-10-27.md). A piano whose
+  // recordings show what the felt leaves ringing holds that share of the
+  // partial only loosely (measured::Damper).
+  void setDamper(const Model& m,Partial& partial) const noexcept {
+    const double f=partial.frequency;
+    partial.damperScale=(24+1.4*std::sqrt(f)+.001*f)/sampleRate;
+    partial.slowShare=partial.slowScale=0;
+    if(!m.damper)return;
+    const double x=std::log2(f/261.63);
+    partial.slowShare=std::min(1.,std::pow(10.,(m.damper->shareDb+m.damper->shareSlopeDb*x)/10));
+    partial.slowScale=std::exp(m.damper->logRate+m.damper->logRateSlope*x)/sampleRate;
   }
   static void setRotation(Partial& partial,double damping) noexcept {
     for(int j=0;j<lanes;++j){
@@ -602,7 +641,8 @@ struct Engine::Impl {
         e*=partial.audibility*partial.audibility*partial.tint*partial.tint;
         if(e<1e-15&&partial.targetAudibility==partial.audibility){partial=voice.partials[--voice.count];continue;}
         energy+=e;
-        if(damping||voice.retune)setRotation(partial,dampingFactor(voice,partial));
+        if(voice.contact>0&&partial.slowShare>0&&partial.slowShare<1)feltChunk(voice,partial);
+        else if(damping||voice.retune)setRotation(partial,dampingFactor(voice,partial));
         for(int j=0;j<lanes;++j)partial.exact[j]=partial.exact[j]*partial.leap[j];
         ++k;
       }
@@ -705,12 +745,7 @@ struct Engine::Impl {
       const double laneSoft[lanes]={1-.28*soft,1,1,1+.08*soft};
       auto& partial=voice.partials[voice.count];
       partial.frequency=frequency;
-      // Felt loss once the damper lands: about 500 dB/s on a released C4.
-      // Measured C4-C5 terminations on a Yamaha C7 fall 220-470 dB/s after a
-      // quick key release (Taguti et al., Acoust. Sci. & Tech. 23(5), 2002,
-      // Table 6). The Salamander release recordings cannot set it
-      // (Docs/research/release-recordings-2026-10-27.md).
-      partial.damperScale=(24+1.4*std::sqrt(frequency)+.001*frequency)/sampleRate;
+      setDamper(m,partial);
       partial.tintScale=std::min(4.,std::log2(static_cast<double>(order)));
       partial.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
       double peak=0;
@@ -746,7 +781,8 @@ struct Engine::Impl {
         slot.decay[k]=0;slot.hz[k]=hzSum/filled;
         slot.baseLeftRe[k]=slot.baseLeftIm[k]=slot.baseRightRe[k]=slot.baseRightIm[k]=0;}
       slot.frequency=hzSum/filled;
-      slot.damperScale=damped?(24+1.4*std::sqrt(slot.frequency)+.001*slot.frequency)/sampleRate:0;
+      if(damped)setDamper(m,slot);
+      else slot.damperScale=slot.slowShare=slot.slowScale=0;
       slot.tintScale=std::min(4.,std::log2(orderSum/filled));
       slot.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*slot.tintScale));
       if(peak>=1e-7){

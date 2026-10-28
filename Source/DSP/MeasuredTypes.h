@@ -42,6 +42,12 @@ struct Knock { float levelDb, slopeDb, phase; };
 // A knock of the action on a body mode: the level (dB) and phase (rad) at
 // the knock's onset.
 struct ActionKnock { float levelDb, phase; };
+// What the felt leaves ringing of a damped partial at frequency f, with
+// x = log2(f / 261.63 Hz): of its power when the felt lands, the share
+// 10^((shareDb + shareSlopeDb x) / 10), at most all of it, falls at
+// e^(logRate + logRateSlope x) (1/s at full contact) besides the partial's
+// own decay, while the felt takes the rest at the engine's felt loss.
+struct Damper { float shareDb, shareSlopeDb, logRate, logRateSlope; };
 // A third-octave band of the board's dense ring above the modes: its centre
 // (Hz) and its left/right coherence.
 struct NoiseBand { float hz, coherence; };
