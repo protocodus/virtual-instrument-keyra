@@ -49,11 +49,10 @@ musical passages through the same engine. Both are frozen evidence from
   repeated notes differ as real strikes do. The felt mute damps the strings,
   not this ring, which dies within a second.
 - Beside its partials, a strike plays the components the recordings hold
-  between them, 51 at A0 and a few or none from C4 up, and sets ringing the
-  undamped strings from F6 up that its pitch is heard to excite (22 strings):
-  each falls fast at first and then rings on more slowly, as strongly as the
-  struck key's partials come near it, and goes on ringing after the key is
-  let go.
+  between them, 48 at A0 and a few or none from C4 up, and sets ringing every
+  undamped string from F6 up but its own key's, each at its own measured
+  pitch, decay and stereo position, at the level the recorded pitches around
+  the key set it. They ring on after the key is let go.
 - Letting a key go knocks the body as its damper lands, and the sustain pedal
   knocks it going down and coming up, synthesized on the body's modes: each
   mode's level and phase is measured from the library's release and pedal
@@ -62,7 +61,7 @@ musical passages through the same engine. Both are frozen evidence from
 - Existing sessions sound different; the median note keeps 0.3.0's level. On
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
   partial levels sit 3.1 dB from the recordings (0.3.0: 9.3 dB), the attack
-  spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.9 dB (10.2 dB) and the
+  spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.7 dB (10.2 dB) and the
   noise between partials 5.8 dB (25.9 dB); its regressions, C4's onset rise
   and D♯1's tuning first, are listed there.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
@@ -105,15 +104,9 @@ vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 
 Beside its series, a strike plays the components the recordings hold between
-the partials, each one lane placed by the series and damped with it, and sets
-ringing the undamped strings from F6 up that its pitch is heard to excite.
-Those ring at their own pitches whichever key struck them, and on after the
-key is let go, each with two lanes: a fast first fall and a slower ring. A
-key between the recorded pitches rings each string they list through its own
-partial nearest it, as a resonator driven off its pitch: by the strike's decay
-over the distance between them, against the recorded pitch's, and never louder
-than that pitch rang it. All start at contact under the pitch's onset rise and share vectors four lanes to
-a slot, so a component costs a quarter of a partial and a string half of one.
+the partials, each one lane placed by the series and damped with it. They
+start at contact under the pitch's onset rise and share vectors four lanes to
+a slot, so a component costs a quarter of a partial.
 
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, which rings for half a second to a second,
@@ -122,7 +115,12 @@ Above the modes, the board's dense ring is band noise in 13 third-octave bands
 from 1 to 16 kHz, each a sixth-order band-pass so that the quiet top octaves
 keep their measured level: each strike starts its own burst with the density,
 decay and left/right balance measured for its pitch. A shared bank of 88 open-string
-resonators supplies the sympathetic response the Resonance control sets.
+resonators supplies the sympathetic response the Resonance control sets. Its
+top twenty are the undamped strings from F6 up, which every strike sets
+ringing whatever that control: each but the struck key's own, at the level the
+recorded pitches around the key set it, and each at its own measured pitch,
+decay and stereo pickup whichever key struck it. They ring on after the key is
+let go; the felt mute damps them.
 
 The action knocks the same modes. A key let go knocks them as its damper lands,
 building up over the 54 ms the release recordings show rather than clicking,
@@ -143,33 +141,35 @@ levels and phases per layer, every moment of its decay weighed relative to its
 level down to the recording's floor; the layers' contact times are aligned so
 that the phases form one pattern across the partials. Beside the series, the
 residual's peaks that four or more layers share are measured each through a
-window just long enough to part it from its nearest neighbour, from 30 ms to
-2 s, and fitted with one lane from contact. A peak from F6 up that recurs
-within 1.5 cents across four or more recorded pitches is an undamped string
-ringing (22 such strings, where the same peaks shifted at random form about
-three), fitted with two lanes. Its window also holds the board's noise around
-a faint string, which a slower lane can take for the string ringing on, so the
-string's tone (its largest amplitude within 2 Hz through half-second windows
-from 1 to 3.5 s) times and levels the slower lane where it stands 10 dB clear
-of the noise either side, as it does at 67 of the 103 recorded pitches that
-ring a string; elsewhere no lane decays more slowly than the string's median,
-and the two lanes never stand over the tone. The body modes are found below the treble's fundamentals, where no
-string sounds; the board noise is
-measured in the gaps between the partials the recordings show and, above the
-highest of them, across whole bands, as the benchmark measures it. The action's
-knocks are measured from each recorded pitch's key-release take and the sustain
-pedal's two: a level and phase per mode at the knock's onset, fitted on the
-same modes under one rise they share; the
-recordings were gained up as a set, so their level against the notes is the
-library's SFZ mix (a release at −37 dB tracking velocity and 2 dB quieter for
-each second held, the pedal at −20 dB down and −19 dB up), not a measurement. A strike
-interpolates between the recorded pitches by partial order and between the
-layers by velocity, taking phases from the nearer pitch; a partial's stereo
-pickup moves between the two pitches' channel level and phase differences. C8 is left out: its
-strongest components sit 90–100 cents above the stretch that F♯7 and A7 set
-and no partial series explains the recording, so the keys above A7 play A7's
-data on the stretch curve. Only fitted numbers enter the header; no recorded
-waveform or impulse response is loaded.
+window just long enough to part it from its nearest neighbour, from 30 ms to 2
+s, and fitted with one lane from contact; one within 3.5 cents of an undamped
+string's pitch is that string. The undamped strings are measured as tones from
+F♯3 up, below which the struck key's series covers their pitches: through
+half-second windows from 1 to 2 s after contact, both channels' power at the
+strongest bin within 1 Hz of a string's pitch, where it stands 10 dB over the
+median 4–20 Hz either side and 10 Hz from every partial of the struck key. A
+string's pitch is the median of its strongest peak in the recordings from C6
+up; its stereo pickup the median level difference and mean phase between the
+channels; its decay its fall from 1 to 2 s, drawn towards the strings' median;
+its level at a recorded pitch the mean over the layers where it rings clear,
+brought back to contact, or 10 dB under the tone where the noise hides it, with
+one velocity slope for every string. The body modes are found below the
+treble's fundamentals, where no string sounds; the board noise is measured in
+the gaps between the partials the recordings show and, above the highest of
+them, across whole bands, as the benchmark measures it. The action's knocks are
+measured from each recorded pitch's key-release take and the sustain pedal's
+two: a level and phase per mode at the knock's onset, fitted on the same modes
+under one rise they share; the recordings were gained up as a set, so their
+level against the notes is the library's SFZ mix (a release at −37 dB tracking
+velocity and 2 dB quieter for each second held, the pedal at −20 dB down and
+−19 dB up), not a measurement. A strike interpolates between the recorded
+pitches by partial order and between the layers by velocity, taking phases from
+the nearer pitch; a partial's stereo pickup moves between the two pitches'
+channel level and phase differences. C8 is left out: its strongest components
+sit 90–100 cents above the stretch that F♯7 and A7 set and no partial series
+explains the recording, so the keys above A7 play A7's data on the stretch
+curve. Only fitted numbers enter the header; no recorded waveform or impulse
+response is loaded.
 
 `Tools/benchmark_recordings.py` scores a renderer against every train and dev
 recording. The dev recordings, D♯1, D♯3, D♯5 and D♯7 at every layer and four
@@ -225,13 +225,16 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
   recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB).
-- From C6 up, the partials' decay after half a second is 4.6 dB/s from the
+- From C6 up, the partials' decay after half a second is 4.5 dB/s from the
   recordings' on the dev cases (0.3.0: 6.7 dB/s), but at A7 it is 1 to 2 dB/s
-  further than 0.3.0's. The undamped strings ring only through the struck
-  key's partials: the strike's knock through the body, which also sets
-  ringing strings no partial comes near, does not drive them, so at 1 s 30 %
-  of the strings that ring clear in the dev recordings sit 10 dB or more
-  under them.
+  further than 0.3.0's. Each undamped key rings as one string at one pitch,
+  without its unison's beating, and falls at its rate from 1 to 2 s
+  throughout, where the real strings fall faster at first and more slowly
+  later: on the dev cases the strings that ring clear sit a median 1.6 dB
+  over the recordings at 1 s and 1.5 dB under at 3 s, when 9 % of them are
+  10 dB or more under. Where a recorded pitch's own partials cover a string,
+  its level there is interpolated from the pitches around it; below F♯3 each
+  string keeps the level of the lowest pitch that measured it.
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.

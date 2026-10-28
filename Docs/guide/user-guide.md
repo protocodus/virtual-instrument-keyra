@@ -87,7 +87,9 @@ and native host performance properties for pitch, mod and sustain.
 The live core plays each partial as four measured decay lanes, with the
 beating and left/right balance of its unison strings, over a bank of measured
 soundboard and case modes and the board's band noise, which every strike
-excites; the open-string bank adds a reduced sympathetic response. The felt
+excites; the open-string bank adds a reduced sympathetic response. The strings
+from F6 up have no dampers: every strike sets them ringing, whatever the
+Resonance control, and they ring on after the key is let go. The felt
 mute damps the strings, not the board's ring, which dies within a second. The
 core does not reproduce the reference solver's nonlinear hammer contact or
 full reciprocal soundboard network. Detailed key/damper noises and

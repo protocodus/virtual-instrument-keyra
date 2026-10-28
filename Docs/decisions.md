@@ -248,3 +248,44 @@ events and controls, level-matched on whole-file RMS (B trimmed by
 -0.001 dB). The owner chose B. Chosen by ear: it licenses playing the knocks
 at the SFZ's balance, a mixing choice rather than a measured level; no
 recorded waveform is played.
+
+## 2026-10-28 — every strike rings the undamped strings, each at its own pitch
+
+The strings from F6 up have no dampers, and a strike sets them ringing through
+the bridge, not only those its partials come near. The fit had found them as
+peaks of a pitch's residual that recur across the recorded pitches, in a mono
+sum, and listed 22; the engine rang each only through the struck key's
+nearest partial. Measured instead as tones at each string's own pitch, in
+both channels' mean power (a string ringing in anti-phase between the
+channels read 16 to 26 dB low in the sum), every recorded pitch from F♯3 up
+rings 5 to 19 of the twenty strings clear of the noise around them between 1
+and 2 s after contact, 70 % of the times measured.
+
+Each string now has one pitch, the median of its strongest peak in the
+recordings from C6 up; one decay, its fall from 1 to 2 s drawn towards the
+strings' median; one stereo pickup; and a level per recorded pitch at
+velocity 64, with one velocity slope for every string (13.5 dB per 64). Every
+strike rings all twenty but its own key's, in the shared bank's top twenty
+slots and whatever the Resonance control; they ring on after the key is let
+go, and the felt mute damps them. A component the fit finds within 3.5 cents
+of a string's pitch is that string and is not played as a component: 95 % of
+the peaks taken for a string lie that close to it, while within 15 cents a
+fifth of the bass's components fell near some string by chance.
+
+`Tools/compare_ring_levels.py` now measures every string the fit's way, at 1,
+2 and 3 s after onset, each sound scaled as the benchmark scales a case. On the
+dev cases, the strings that ring clear sit a median 1.6, 0.6 and −1.5 dB from
+the recordings (c23b45d: 60.7, 66.3 and 57.0 dB under, most of them never
+played), 3.7, 3.5 and 4.5 dB from them on average; 1.7, 2.9 and 8.6 % of them
+sit 10 dB or more under (c23b45d: 86.5, 74.2 and 64.9 %), and 5.4, 1.9 and
+0.6 % of all the strings measured 10 dB or more over (0.7, 0.3 and 0.1 %).
+
+On the recording benchmark against c23b45d, the treble's sustain spectrum
+moves from 8.61 to 7.96 dB on train and from 8.15 to 7.48 dB on dev, its early
+spectrum from 5.67 to 5.33 and 5.62 to 5.16 dB, and the bass's partial levels
+from 0.75 to 0.64 and 2.19 to 2.11 dB. One note regresses: D♯1's dev onset
+rise, 4.68 to 6.03 ms, all from layer 14 (2.67 to 24.48 ms), whose 90 % point
+moved from the first peak to a later swell, as at layers 15 and 16; its attack
+spectrum is unchanged (5.53 to 5.52 dB). The paired CPU rounds show no change
+beyond their spread (`Docs/benchmarks/realtime-cpu-2026-10-27.json`). Chosen
+on these measurements, which decide it, not by ear.
