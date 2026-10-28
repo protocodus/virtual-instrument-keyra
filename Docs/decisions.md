@@ -289,3 +289,18 @@ moved from the first peak to a later swell, as at layers 15 and 16; its attack
 spectrum is unchanged (5.53 to 5.52 dB). The paired CPU rounds show no change
 beyond their spread (`Docs/benchmarks/realtime-cpu-2026-10-27.json`). Chosen
 on these measurements, which decide it, not by ear.
+
+## 2026-10-28 — the upright's second takes repeat its first
+
+The upright's split made every second take dev. But 126 of the library's 143
+second takes share their first take's hammer impact noise (correlation 0.8
+or more from 2 to 12 kHz over the first 30 ms, which differs from strike to
+strike), and nine in ten of those sit under 0.15 cents from it over their
+first six partials: the first take played back a fraction of a cent off, a
+few samples later (`Tools/find_repeated_takes.py`). All but F♯1's softest correlate with
+their first take at 0.96 or more over the first half second. A second take
+cannot hold out the first take the fit used, so every second take is now
+`repeat`, neither fitted nor scored, and the dev role keeps the first takes
+of the pitches never fitted: D♯2, G♯3, C5, E6 and B3's one take, 21 cases.
+Train is unchanged. Decided on these measurements, after the first fit's
+benchmark had scored the second takes.
