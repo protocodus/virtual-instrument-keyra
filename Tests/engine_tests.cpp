@@ -36,7 +36,7 @@ keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
 // ringing begin; no damper reaches those, so a key-up leaves them sounding.
 double c4Strings(const Audio& audio){
   constexpr double pi=3.14159265358979323846;
-  const auto* a=&keyra::measured::anchors[0];for(const auto& x:keyra::measured::anchors)if(x.note==60)a=&x;
+  const auto* a=&keyra::measured::grand::anchors[0];for(const auto& x:keyra::measured::grand::anchors)if(x.note==60)a=&x;
   const std::size_t frames=audio.size()/2;double sum=0;
   for(int n=1;n<=4;++n){
     const double frequency=n*a->f1*std::sqrt((1+a->B*n*n)/(1+a->B));
@@ -52,14 +52,14 @@ double c4Strings(const Audio& audio){
 // The engine's fundamental for a key (A4 = 440 Hz): its cents from equal
 // temperament between the recorded pitches around it.
 double keyPitch(int key){
-  namespace m=keyra::measured;
+  namespace m=keyra::measured::grand;
   int upper=1;while(upper<static_cast<int>(m::anchors.size())-1&&m::anchors[upper].note<key)++upper;
   const auto& a=m::anchors[upper-1];const auto& b=m::anchors[upper];
-  auto cents=[](const m::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
+  auto cents=[](const keyra::measured::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
   return 440*std::pow(2.,(key-69+(cents(a)+(cents(b)-cents(a))*(key-a.note)/(b.note-a.note))/100)/12.);
 }
 // The frequency of the undamped string `j` places above F6.
-double haloHz(int j){return keyPitch(89+j)*std::pow(2.,keyra::measured::haloStrings[j].cents/1200);}
+double haloHz(int j){return keyPitch(89+j)*std::pow(2.,keyra::measured::grand::haloStrings[j].cents/1200);}
 double released(float sustain){keyra::Engine e;e.setParameters(dry());e.controlChange(64,static_cast<int>(sustain*127));e.noteOn(60,.7f);render(e,12000);e.noteOff(60);render(e,24000);return c4Strings(render(e,12000));}
 double sostenuto(bool beforeNote){keyra::Engine e;e.setParameters(dry());if(beforeNote)e.controlChange(66,127);e.noteOn(60,.7f);render(e,12000);if(!beforeNote)e.controlChange(66,127);e.noteOff(60);render(e,24000);return c4Strings(render(e,12000));}
 Audio sympatheticTail(float tuning,bool prepareAfterTuning){
@@ -248,10 +248,10 @@ int main(int argc,char** argv){
     // a few frequencies left, one frame's reading swung by 4 dB, so a band is
     // read at every bin through four half-overlapping frames, each brought
     // back to the strike at the band's measured decay.
-    namespace m=keyra::measured;
+    namespace m=keyra::measured::grand;
     constexpr double pi=3.14159265358979323846,sr=48000;constexpr int n=2048,reference=4;
     const int anchor=static_cast<int>(m::anchors.size())-1,bandCount=static_cast<int>(m::noiseBands.size());
-    const auto& a=m::anchors[anchor];const auto& bands=m::noise[anchor];
+    const auto& a=m::anchors[anchor];const auto* bands=&m::noise[anchor*bandCount];
     constexpr int frames=4,hop=n/2;
     std::vector<double> w(n);double w2=0;for(int i=0;i<n;++i){w[i]=.5-.5*std::cos(2*pi*i/n);w2+=w[i]*w[i];}
     auto edge=[&](int b,double side){return m::noiseBands[b].hz*std::pow(2.,side/6);};
@@ -323,10 +323,12 @@ int main(int argc,char** argv){
     // struck it, heard through its own measured pickup. Taken: the string
     // each of two recorded pitches below F6 sets ringing loudest, half a
     // second after the dampers fall.
-    namespace m=keyra::measured;
+    namespace m=keyra::measured::grand;
+    constexpr int strings=static_cast<int>(m::haloStrings.size());
     for(const int recorded:{60,81}){
       int index=0;while(m::anchors[index].note!=recorded)++index;
-      int j=0;for(int k=1;k<static_cast<int>(m::haloStrings.size());++k)if(m::haloLevels[index][k]>m::haloLevels[index][j])j=k;
+      const float* levels=&m::haloLevels[index*strings];
+      int j=0;for(int k=1;k<strings;++k)if(levels[k]>levels[j])j=k;
       keyra::Engine e;e.setParameters(dry());e.noteOn(recorded,m::layerVelocity[m::layers-1]/127.f);
       render(e,14400);e.noteOff(recorded);render(e,24000);
       const auto tail=render(e,48000);const double hz=haloHz(j);

@@ -14,8 +14,9 @@ constexpr double pi=3.14159265358979323846;
 // the float lanes only ever run one chunk from it.
 constexpr int maxVoices=128, maxPartials=128, chunk=32, sineSize=4096;
 constexpr int lanes=4; // a partial's measured lanes, one per vector lane
+namespace grand=measured::grand;
 // F6, the lowest key without a damper, and the undamped strings from it up.
-constexpr int firstHalo=89,halo=static_cast<int>(measured::haloStrings.size());
+constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
@@ -25,20 +26,47 @@ int switchIndex(int note) noexcept {return note>=12&&note<=14?note-12:-1;}
 float pedalLevel(float panel,float midi,std::uint16_t heldSwitches) noexcept {
   return heldSwitches?1.f:std::max(panel,midi);
 }
-// The action's noises against the notes, as the library's own SFZ mixes them
-// (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt and
-// Data/pedal.txt): a key let go at -37 dB with 82 % velocity tracking, 2 dB
-// quieter for each second since its strike (rt_decay); the sustain pedal at
-// -20 dB going down and -19 dB coming up. The notes track velocity at 73 %
-// there (CC99's default) but play at the recordings' own levels here, so a
-// release takes the ratio of the two trackings. The noise files were gained
-// up as a set, so this balance is the library's mixing choice, not a
-// measurement (Docs/research/release-recordings-2026-10-27.md).
-constexpr double releaseDb=-37,releaseTracking=.82,noteTracking=.73,releaseFadeDbPerSecond=2;
-constexpr double pedalDownDb=-20,pedalUpDb=-19;
 // The gain at velocity v (0..1) under an SFZ amp_veltrack of `tracking`, as
 // sfizz's Region::velocityCurve computes it.
 double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracking*v*v;}
+// A piano: its fitted data (MeasuredTypes.h), where its lanes start in the
+// engine's caches, how its library mixes the action's noises against the
+// notes, and the scale of its levels. Tables over the recorded pitches hold
+// a row per pitch; one without pedal recordings has no pedal knocks.
+struct Model {
+  int layers;const float* layerVelocity;
+  const measured::Anchor* anchors;int anchorCount;
+  const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
+  const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb;
+  const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
+  const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
+  double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb;
+  const measured::NoiseBand* noiseBands;const measured::Noise* noise;
+  double outputScale;
+};
+constexpr Model models[]{
+  {grand::layers,grand::layerVelocity.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
+   grand::partials.data(),grand::extras.data(),0,0,
+   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,
+   grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
+   grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,
+   // The action's noises against the notes, as the library's own SFZ mixes
+   // them (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt
+   // and Data/pedal.txt): a key let go at -37 dB with 82 % velocity tracking,
+   // 2 dB quieter for each second since its strike (rt_decay); the sustain
+   // pedal at -20 dB going down and -19 dB coming up. The notes track velocity
+   // at 73 % there (CC99's default) but play at the recordings' own levels
+   // here, so a release takes the ratio of the two trackings. The noise files
+   // were gained up as a set, so this balance is the library's mixing choice,
+   // not a measurement (Docs/research/release-recordings-2026-10-27.md).
+   -37,.82,.73,2,-20,-19,
+   grand::noiseBands.data(),grand::noise.data(),
+   // The measured levels are the recordings' own. This scale keeps the
+   // median note as loud as version 0.3.0's (Tools/benchmark_recordings.py,
+   // median gain 17.6 dB to the recordings).
+   .21},
+};
+constexpr int partialCaches=static_cast<int>(grand::partials.size()),extraCaches=static_cast<int>(grand::extras.size());
 // The SFZ sounds the pedal at CC64 127 and 0. Here it sounds within .08 of
 // either end of its travel, the margin within which the dampers already
 // clear the strings (the contact in boundary()), so that a pedal which
@@ -94,7 +122,7 @@ struct alignas(16) BodyBank {
   V4 re{},im{},c{},s{},left{},rightRe{},rightIm{};
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{};
 };
-constexpr int bodyModes=static_cast<int>(measured::bodyModes.size()),bodyBanks=(bodyModes+lanes-1)/lanes;
+constexpr int bodyModes=static_cast<int>(grand::bodyModes.size()),bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
   setLane(bank.re,j,lane(bank.re,j)+static_cast<float>(g.re));
@@ -116,7 +144,7 @@ bool advance(Body& body) noexcept {
 // Above the body modes the board's ring is noise in third-octave bands. A
 // strike's burst holds, per band, its left and right amplitude at the next
 // chunk boundary and its decay per chunk.
-constexpr int noiseBands=static_cast<int>(measured::noiseBands.size()),maxBursts=32;
+constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
 struct Burst {
   double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
   std::uint64_t serial=0;
@@ -160,30 +188,30 @@ struct PartialData {int order=0;double cents=0,rise=0;LaneData lane[lanes]{};};
 // What every strike would otherwise recompute of a measured lane: its log
 // rate, its pickup's ratio and angle (see LaneData) and its layers' phases
 // as unit vectors.
-struct LaneCache {double logRate=0,ratio=0,angle=0;std::array<Complex,measured::layers> phase{};};
-LaneCache cacheLane(const measured::Lane& m) noexcept {
+struct LaneCache {double logRate=0,ratio=0,angle=0;std::array<Complex,measured::maxLayers> phase{};};
+LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
   LaneCache c;c.logRate=std::log(m.rate);
   const double right=std::max(1e-6,std::hypot(static_cast<double>(m.rightRe),static_cast<double>(m.rightIm)));
   c.ratio=std::log(right/std::max(1e-6,static_cast<double>(m.left)));
   c.angle=std::atan2(static_cast<double>(m.rightIm),static_cast<double>(m.rightRe));
-  for(int i=0;i<measured::layers;++i)c.phase[i]={std::cos(m.phase[i]),std::sin(m.phase[i])};
+  for(int i=0;i<layers;++i)c.phase[i]={std::cos(m.phase[i]),std::sin(m.phase[i])};
   return c;
 }
 
-double levelAt(const std::array<float,measured::layers>& db,double velocity) noexcept {
+double levelAt(const Model& model,const std::array<float,measured::maxLayers>& db,double velocity) noexcept {
   // Piecewise linear in dB between the recorded layers, continued with the
   // end segments' slopes (never rising toward softer playing).
-  const auto& v=measured::layerVelocity;
-  constexpr int last=measured::layers-1;
+  const float* v=model.layerVelocity;
+  const int last=model.layers-1;
   if(velocity<=v[0])return db[0]-std::max(0.f,(db[1]-db[0])/(v[1]-v[0]))*(v[0]-velocity);
   if(velocity>=v[last])return db[last]+std::max(0.f,(db[last]-db[last-1])/(v[last]-v[last-1]))*(velocity-v[last]);
   int i=0;while(velocity>v[i+1])++i;
   return mix(db[i],db[i+1],(velocity-v[i])/(v[i+1]-v[i]));
 }
-double onsetRiseAt(const measured::Anchor& anchor,double velocity) noexcept {
+double onsetRiseAt(const Model& model,const measured::Anchor& anchor,double velocity) noexcept {
   // Log-linear between the recorded layers, held beyond them.
-  const auto& v=measured::layerVelocity;const auto& r=anchor.onsetRise;
-  constexpr int last=measured::layers-1;
+  const float* v=model.layerVelocity;const auto& r=anchor.onsetRise;
+  const int last=model.layers-1;
   if(velocity<=v[0])return std::log(r[0]);
   if(velocity>=v[last])return std::log(r[last]);
   int i=0;while(velocity>v[i+1])++i;
@@ -193,11 +221,11 @@ Complex unit(Complex z,Complex fallback) noexcept {
   const double norm=std::sqrt(z.re*z.re+z.im*z.im);
   return norm>1e-6?Complex{z.re/norm,z.im/norm}:fallback;
 }
-Complex phaseAt(const LaneCache& lane,double velocity) noexcept {
+Complex phaseAt(const Model& model,const LaneCache& lane,double velocity) noexcept {
   // A lane's phase against the partial's strongest lane, held beyond the
   // recorded layers and interpolated on the unit circle between them.
-  const auto& v=measured::layerVelocity;const auto& ph=lane.phase;
-  constexpr int last=measured::layers-1;
+  const float* v=model.layerVelocity;const auto& ph=lane.phase;
+  const int last=model.layers-1;
   if(velocity<=v[0])return ph[0];
   if(velocity>=v[last])return ph[last];
   int i=0;while(velocity>v[i+1])++i;
@@ -205,15 +233,15 @@ Complex phaseAt(const LaneCache& lane,double velocity) noexcept {
   const Complex a=ph[i],b=ph[i+1];
   return unit({mix(a.re,b.re,t),mix(a.im,b.im,t)},t<.5?a:b);
 }
-LaneData laneAt(const measured::Lane& m,const LaneCache& c,double velocity) noexcept {
-  LaneData l;l.rate=c.logRate;l.offset=m.offsetHz;l.level=levelAt(m.levelDb,velocity);l.phase=phaseAt(c,velocity);
+LaneData laneAt(const Model& model,const measured::Lane& m,const LaneCache& c,double velocity) noexcept {
+  LaneData l;l.rate=c.logRate;l.offset=m.offsetHz;l.level=levelAt(model,m.levelDb,velocity);l.phase=phaseAt(model,c,velocity);
   l.ratio=c.ratio;l.angle=c.angle;l.left={m.left,0};l.right={m.rightRe,m.rightIm};
   return l;
 }
-PartialData single(const measured::Partial& p,const std::array<LaneCache,lanes>& c,double velocity) noexcept {
+PartialData single(const Model& model,const measured::Partial& p,const std::array<LaneCache,lanes>& c,double velocity) noexcept {
   PartialData d;d.order=p.order;d.cents=p.cents;
   d.rise=std::log(p.riseSeconds)+p.riseSlope*(velocity-64)/64;
-  for(int j=0;j<lanes;++j)d.lane[j]=laneAt(p.lanes[j],c[j],velocity);
+  for(int j=0;j<lanes;++j)d.lane[j]=laneAt(model,p.lanes[j],c[j],velocity);
   return d;
 }
 LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
@@ -242,33 +270,34 @@ PartialData blend(const PartialData& a,const PartialData& b,double t) noexcept {
   return d;
 }
 // The recorded pitch above a key, or the last one; the one below is upper - 1.
-int upperAnchor(int note) noexcept {
-  const auto& anchors=measured::anchors;
-  int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
+int upperAnchor(const Model& model,int note) noexcept {
+  int upper=1;while(upper<model.anchorCount-1&&model.anchors[upper].note<note)++upper;
   return upper;
 }
 // The fundamental (Hz at A4 = 440 Hz) the engine gives a key: its cents from
 // equal temperament between the recorded pitches around it, continued from
 // the last two beyond them.
-double keyPitch(int note) noexcept {
-  const int upper=upperAnchor(note);
-  const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
+double keyPitch(const Model& model,int note) noexcept {
+  const int upper=upperAnchor(model,note);
+  const auto& a=model.anchors[upper-1];const auto& b=model.anchors[upper];
   auto cents=[](const measured::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
   return 440*std::pow(2.,(note-69+mix(cents(a),cents(b),static_cast<double>(note-a.note)/(b.note-a.note))/100)/12.);
 }
 // A key's stiffness B, between the recorded pitches around it like its pitch.
-double keyStiffness(int note) noexcept {
-  const int upper=upperAnchor(note);
-  const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
+double keyStiffness(const Model& model,int note) noexcept {
+  const int upper=upperAnchor(model,note);
+  const auto& a=model.anchors[upper-1];const auto& b=model.anchors[upper];
   return std::exp(mix(std::log(a.B),std::log(b.B),static_cast<double>(note-a.note)/(b.note-a.note)));
 }
 }
 
 struct Engine::Impl {
   std::array<Voice,maxVoices> voices{};
-  // Every measured lane's cache (see LaneCache), filled at construction.
-  std::array<std::array<LaneCache,lanes>,measured::partials.size()> partialLanes{};
-  std::array<LaneCache,measured::extras.size()> extraLanes{};
+  // The piano that plays.
+  const Model* model=&models[0];
+  // Every piano's measured lanes' caches (see LaneCache), filled at construction.
+  std::array<std::array<LaneCache,lanes>,partialCaches> partialLanes{};
+  std::array<LaneCache,extraCaches> extraLanes{};
   // Each undamped string's frequency (Hz at A4 = 440 Hz).
   std::array<double,halo> haloHz{};
   std::array<Channel,16> channels{};
@@ -339,15 +368,15 @@ struct Engine::Impl {
       const int j=i+21-firstHalo;
       const double frequency=j<0?parameters.tuning*std::pow(2.,(i+21-69)/12.):haloHz[j]*parameters.tuning/440;
       const Complex r=rotation(frequency);mode.c=r.re;mode.s=r.im;
-      mode.decay=std::exp(-(j<0?.7+.001*frequency:measured::haloStrings[j].rate)/sampleRate);
+      mode.decay=std::exp(-(j<0?.7+.001*frequency:model->haloStrings[j].rate)/sampleRate);
     }
   }
   void prepareBody() noexcept {
     // Each bank's decay per sample beyond the ring's.
-    const double settle[3]={1,std::exp(-1/(measured::bodyRise*sampleRate)),std::exp(-1/(measured::actionRise*sampleRate))};
+    const double settle[3]={1,std::exp(-1/(model->bodyRise*sampleRate)),std::exp(-1/(model->actionRise*sampleRate))};
     for(int m=0;m<bodyBanks*lanes;++m){
       const int k=m/lanes,j=m%lanes;
-      const bool real=m<bodyModes;const auto& mode=measured::bodyModes[real?m:0];
+      const bool real=m<model->bodyModeCount;const auto& mode=model->bodyModes[real?m:0];
       const double d=real?std::exp(-mode.rate/sampleRate):0,w=2*pi*mode.hz/sampleRate;
       const Complex step{d*std::cos(w),d*std::sin(w)};
       BodyBank* banks[3]={&ring[k],&onset[k],&actionOnset[k]};
@@ -377,7 +406,7 @@ struct Engine::Impl {
     for(auto& band:noise)band.scale=0;
     auto warp=[this](double f){const double x=pi*f/sampleRate;return 2*sampleRate*std::sin(x)/std::cos(x);};
     for(int b=0;b<noiseBands;++b){
-      const double hz=measured::noiseBands[b].hz;
+      const double hz=model->noiseBands[b].hz;
       if(hz*std::pow(2.,1/6.)>.45*sampleRate)continue;
       auto& band=noise[b];
       // Each pole of the low-pass prototype maps to one pole pair of the band,
@@ -398,11 +427,11 @@ struct Engine::Impl {
         band.a1[j]=-2*z.re;band.a2[j]=z.re*z.re+z.im*z.im;
         band.b0[j]=1/std::sqrt(sectionPower(1,band.a1[j],band.a2[j],w));
       }
-      const double theta=std::acos(bounded(measured::noiseBands[b].coherence))/2;
+      const double theta=std::acos(bounded(model->noiseBands[b].coherence))/2;
       band.c=std::cos(theta);band.s=std::sin(theta);band.scale=1;
     }
     for(int b=0;b<noiseBands;++b){auto& band=noise[b];if(band.scale==0)continue;
-      const double w=2*pi*measured::noiseBands[b].hz/sampleRate;double overlap=0;
+      const double w=2*pi*model->noiseBands[b].hz/sampleRate;double overlap=0;
       for(const auto& other:noise)if(other.scale!=0){double power=1;
         for(int j=0;j<noiseSections;++j)power*=sectionPower(other.b0[j],other.a1[j],other.a2[j],w);
         overlap+=power;}
@@ -566,27 +595,28 @@ struct Engine::Impl {
     // MIDI velocity is a recording-layer coordinate, not measured hammer speed.
     const double v=127*bounded(velocity);
     channel.velocity[note-21]=bounded(velocity);channel.struck[note-21]=clock;
-    const int upper=upperAnchor(note);
-    const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
+    const Model& m=*model;
+    const int upper=upperAnchor(m,note);
+    const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
     // Keys beyond the last recorded pitch keep its partials but follow the
     // stretch and stiffness trend of the last two.
     const double reach=static_cast<double>(note-a.note)/(b.note-a.note),t=std::max(0.,std::min(1.,reach));
-    const double f1=keyPitch(note),B=keyStiffness(note);
+    const double f1=keyPitch(m,note),B=keyStiffness(m,note);
     const double highest=std::min(17000.,sampleRate*.43);
     // No partial rises faster than its recorded pitch's onset builds up.
-    const double shortestRise=std::exp(mix(onsetRiseAt(a,v),onsetRiseAt(b,v),t));
+    const double shortestRise=std::exp(mix(onsetRiseAt(m,a,v),onsetRiseAt(m,b,v),t));
     const double ratio=tuningRatio(ch);
     const double softGain=1-.28*soft;
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     // The body's knock: levels between the two pitches like the partials',
     // phases from the nearer one.
-    const auto& ka=measured::knocks[upper-1];const auto& kb=measured::knocks[upper];
-    for(int m=0;m<bodyModes;++m){const auto& x=ka[m];const auto& y=kb[m];
+    const auto* ka=m.knocks+(upper-1)*m.bodyModeCount;const auto* kb=ka+m.bodyModeCount;
+    for(int k=0;k<m.bodyModeCount;++k){const auto& x=ka[k];const auto& y=kb[k];
       const double level=mix(x.levelDb,y.levelDb,t)+mix(x.slopeDb,y.slopeDb,t)*(v-64)/64;
       const double amplitude=std::pow(10.,level/20)*softGain,phase=t<.5?x.phase:y.phase;
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
-      knock(ring[m/lanes],m%lanes,g,ahead);knock(onset[m/lanes],m%lanes,{-g.re,-g.im},ahead);
+      knock(ring[k/lanes],k%lanes,g,ahead);knock(onset[k/lanes],k%lanes,{-g.re,-g.im},ahead);
     }
     ringing=rising=true;
     // The undamped strings: the strike sets every one ringing but its own
@@ -598,7 +628,7 @@ struct Engine::Impl {
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
       if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
       const double order=std::max(1.,haloHz[j]/f1);
-      const double level=mix(measured::haloLevels[upper-1][j],measured::haloLevels[upper][j],t)+measured::haloSlopeDb*(v-64)/64;
+      const double level=mix(m.haloLevels[(upper-1)*halo+j],m.haloLevels[upper*halo+j],t)+m.haloSlopeDb*(v-64)/64;
       const double amplitude=std::pow(10.,level/20)*softGain*std::exp(-soft*.115*(order-1))
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);
@@ -607,10 +637,10 @@ struct Engine::Impl {
     // The board's noise: each band's density between the pitches like the
     // partials' levels, tinted and softened like a partial of its order.
     auto& burst=claimBurst();
-    const auto& na=measured::noise[upper-1];const auto& nb=measured::noise[upper];
+    const auto* na=m.noise+(upper-1)*noiseBands;const auto* nb=na+noiseBands;
     for(int k=0;k<noiseBands;++k){const auto& x=na[k];const auto& y=nb[k];
-      const double density=mix(levelAt(x.densityDb,v),levelAt(y.densityDb,v),t);
-      const double order=std::max(1.,measured::noiseBands[k].hz/f1);
+      const double density=mix(levelAt(m,x.densityDb,v),levelAt(m,y.densityDb,v),t);
+      const double order=std::max(1.,m.noiseBands[k].hz/f1);
       const double amplitude=std::pow(10.,density/20)*noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double balance=mix(x.balanceDb,y.balanceDb,t);
@@ -621,10 +651,11 @@ struct Engine::Impl {
     int i=a.first,j=b.first;const int ia=a.first+a.count,jb=b.first+b.count;
     while((i<ia||j<jb)&&voice.count<maxPartials){
       PartialData d;double weight=1;
-      const int oa=i<ia?measured::partials[i].order:1<<30,ob=j<jb?measured::partials[j].order:1<<30;
-      if(oa==ob){d=blend(single(measured::partials[i],partialLanes[i],v),single(measured::partials[j],partialLanes[j],v),t);++i;++j;}
-      else if(oa<ob){d=single(measured::partials[i],partialLanes[i],v);++i;weight=1-t;}
-      else{d=single(measured::partials[j],partialLanes[j],v);++j;weight=t;}
+      const int oa=i<ia?m.partials[i].order:1<<30,ob=j<jb?m.partials[j].order:1<<30;
+      const auto* cache=&partialLanes[m.partialFirst];
+      if(oa==ob){d=blend(single(m,m.partials[i],cache[i],v),single(m,m.partials[j],cache[j],v),t);++i;++j;}
+      else if(oa<ob){d=single(m,m.partials[i],cache[i],v);++i;weight=1-t;}
+      else{d=single(m,m.partials[j],cache[j],v);++j;weight=t;}
       if(weight<=0)continue;
       const int order=d.order;
       const double frequency=order*f1*std::sqrt((1+B*order*order)/(1+B))*std::pow(2.,d.cents/1200);
@@ -693,11 +724,11 @@ struct Engine::Impl {
     int ea=a.extraFirst,eb=b.extraFirst;
     const int enda=a.extraFirst+a.extraCount,endb=b.extraFirst+b.extraCount;
     while((ea<enda||eb<endb)&&voice.count<maxPartials){
-      const bool first=eb>=endb||(ea<enda&&place(measured::extras[ea])<=place(measured::extras[eb]));
-      const int k=first?ea++:eb++;const auto& e=measured::extras[k];
+      const bool first=eb>=endb||(ea<enda&&place(m.extras[ea])<=place(m.extras[eb]));
+      const int k=first?ea++:eb++;const auto& e=m.extras[k];
       const double weight=share[first?0:1],frequency=place(e);
       if(weight<=0||frequency>highest)continue;
-      LaneData l=laneAt(e.lane,extraLanes[k],v);l.level+=20*std::log10(weight);
+      LaneData l=laneAt(m,e.lane,extraLanes[m.extraFirst+k],v);l.level+=20*std::log10(weight);
       add(frequency,e.order,l);
       if(filled==lanes)close(true);
     }
@@ -726,11 +757,10 @@ struct Engine::Impl {
   }
   // A knock of the action on the body between two recorded pitches' (levels
   // mixed, phases from the nearer), building up under the action's rise.
-  void actionKnock(const std::array<measured::ActionKnock,bodyModes>& x,const std::array<measured::ActionKnock,bodyModes>& y,
-                   double t,double gainDb) noexcept {
+  void actionKnock(const measured::ActionKnock* x,const measured::ActionKnock* y,double t,double gainDb) noexcept {
     sleeping=false;
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
-    for(int m=0;m<bodyModes;++m){
+    for(int m=0;m<model->bodyModeCount;++m){
       const double amplitude=std::pow(10.,(mix(x[m].levelDb,y[m].levelDb,t)+gainDb)/20),phase=t<.5?x[m].phase:y[m].phase;
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
       knock(ring[m/lanes],m%lanes,g,ahead);knock(actionOnset[m/lanes],m%lanes,{-g.re,-g.im},ahead);
@@ -744,11 +774,13 @@ struct Engine::Impl {
     const auto& channel=channels[ch];const int key=note-21;
     if(note<89&&(channel.captured[key]||pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])>=pedalClear))return;
     const double v=channel.velocity[key],held=static_cast<double>(clock-channel.struck[key])/sampleRate;
-    const int upper=upperAnchor(note);
-    const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
+    const Model& m=*model;
+    const int upper=upperAnchor(m,note);
+    const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
     const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
-    actionKnock(measured::releaseKnocks[upper-1],measured::releaseKnocks[upper],t,
-                releaseDb+20*std::log10(trackingGain(releaseTracking,v)/trackingGain(noteTracking,v))-releaseFadeDbPerSecond*held);
+    const auto* x=m.releaseKnocks+(upper-1)*m.bodyModeCount;
+    actionKnock(x,x+m.bodyModeCount,t,
+                m.releaseDb+20*std::log10(trackingGain(m.releaseTracking,v)/trackingGain(m.noteTracking,v))-m.releaseFadeDbPerSecond*held);
   }
   // After anything that moves the sustain pedal: at an end of its travel it
   // sounds, unless `audible` is false for a reset.
@@ -756,7 +788,8 @@ struct Engine::Impl {
     float level=0;
     for(const auto& c:channels)level=std::max(level,pedalLevel(parameters.sustain,c.sustain,c.keySwitches[2]));
     const bool held=level>=pedalClear||(pedalHeld&&level>pedalRest);
-    if(audible&&held!=pedalHeld){const auto& k=held?measured::pedalDown:measured::pedalUp;actionKnock(k,k,0,held?pedalDownDb:pedalUpDb);}
+    if(audible&&held!=pedalHeld&&model->pedalDown){
+      const auto* k=held?model->pedalDown:model->pedalUp;actionKnock(k,k,0,held?model->pedalDownDb:model->pedalUpDb);}
     pedalHeld=held;
   }
   void ringBody(Body& body,int frames) noexcept {
@@ -806,7 +839,7 @@ struct Engine::Impl {
       // The undamped strings ring from their strikes alone (strike()),
       // heard through their measured pickups like the partials, whatever
       // the Resonance control.
-      for(int j=0;j<halo;++j){auto& mode=sympathetic[firstHalo-21+j];const auto& string=measured::haloStrings[j];
+      for(int j=0;j<halo;++j){auto& mode=sympathetic[firstHalo-21+j];const auto& string=model->haloStrings[j];
         const double d=mode.decay/(1+180*mute*mute/sampleRate);
         const double q=mode.q,im=mode.p;
         mode.q=d*(mode.c*q+mode.s*im);mode.p=d*(mode.c*im-mode.s*q);
@@ -838,22 +871,22 @@ struct Engine::Impl {
       // notes remain linear; extreme 128-strike stacks cannot emit NaN/Inf.
       const double hpL=outL-previousL+highpassCoefficient*highpassL,hpR=outR-previousR+highpassCoefficient*highpassR;
       previousL=outL;previousR=outR;highpassL=hpL;highpassR=hpR;
-      const double yL=hpL*gain*outputScale,yR=hpR*gain*outputScale;
+      const double yL=hpL*gain*model->outputScale,yR=hpR*gain*model->outputScale;
       left[i]=static_cast<float>(yL>1?1:yL< -1?-1:yL);
       right[i]=static_cast<float>(yR>1?1:yR< -1?-1:yR);
     }
   }
-  // The measured levels are the recordings' own. This scale keeps the
-  // median note as loud as version 0.3.0's (Tools/benchmark_recordings.py,
-  // median gain 17.6 dB to the recordings).
-  static constexpr double outputScale=.21;
 };
 
 Engine::Engine(double sampleRate):impl(new Impl){
   auto& p=*impl;
-  for(std::size_t i=0;i<measured::partials.size();++i)for(int j=0;j<lanes;++j)p.partialLanes[i][j]=cacheLane(measured::partials[i].lanes[j]);
-  for(std::size_t i=0;i<measured::extras.size();++i)p.extraLanes[i]=cacheLane(measured::extras[i].lane);
-  for(int j=0;j<halo;++j)p.haloHz[j]=keyPitch(firstHalo+j)*std::pow(2.,measured::haloStrings[j].cents/1200);
+  for(const auto& m:models){
+    for(int i=0;i<m.anchors[m.anchorCount-1].first+m.anchors[m.anchorCount-1].count;++i)
+      for(int j=0;j<lanes;++j)p.partialLanes[m.partialFirst+i][j]=cacheLane(m.partials[i].lanes[j],m.layers);
+    for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
+      p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);
+  }
+  for(int j=0;j<halo;++j)p.haloHz[j]=keyPitch(*p.model,firstHalo+j)*std::pow(2.,p.model->haloStrings[j].cents/1200);
   prepare(sampleRate);
 }
 Engine::~Engine()=default;

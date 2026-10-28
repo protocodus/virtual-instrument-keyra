@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
-"""Fit Keyra's measured modal data from the calibration split of the
-Salamander Grand Piano V3 (Tools/corpus/split-2026-10-27.json).
+"""Fit the measured modal data of each of Keyra's pianos from the calibration
+split of its recordings (MODELS): the grand from the Salamander Grand Piano V3
+(Tools/corpus/split-2026-10-27.json), the upright from the Helsinki 1967
+Tube-Ribbon Edition (Tools/corpus/split-helsinki-2026-10-28.json).
 
-Only the split's train recordings are opened: every A, C and F# pitch from A0
-to A7 (22 anchors; C8 is left out, see UNCALIBRATED) at twelve velocity
-layers. Each anchor is calibrated by `piano_analysis.analyse_anchor`: every
-partial is fitted jointly across the layers, with lanes whose rates and
-frequencies the strings fix and whose complex amplitude per microphone the
-hammer and the pickup set. What the partials leave below the treble's
-fundamentals gives the body modes every strike knocks, and the undamped
-strings from F6 up, which every strike sets ringing, are measured as tones at
-their own pitches across the anchors. The fitted numbers go
-into Source/DSP/MeasuredModalData.h; no recorded waveform or impulse response
-enters the header.
+Only a split's train recordings are opened: for the grand every A, C and F#
+pitch from A0 to A7 (22 anchors; C8 is left out, see UNCALIBRATED) at twelve
+velocity layers, for the upright 28 of its 35 recorded pitches at their five
+layers' first takes. Each anchor is calibrated by
+`piano_analysis.analyse_anchor`: every partial is fitted jointly across the
+layers, with lanes whose rates and frequencies the strings fix and whose
+complex amplitude per microphone the hammer and the pickup set. What the
+partials leave below the treble's fundamentals gives the body modes every
+strike knocks, and the undamped strings from F6 up, which every strike sets
+ringing, are measured as tones at their own pitches across the anchors. The
+fitted numbers go into the piano's header in Source/DSP (MeasuredModalData.h,
+MeasuredUprightData.h), in the types of MeasuredTypes.h; no recorded waveform
+or impulse response enters a header.
 
-  python3 Tools/fetch_salamander.py                  # the corpus, once
+  python3 Tools/fetch_salamander.py                  # the grand's corpus, once
+  python3 Tools/decode_helsinki.py --library <path>  # the upright's, from a copy of the library
   python3 Tools/fit_realtime_modal.py --analyse      # measure the anchors (cached in out/)
   python3 Tools/fit_realtime_modal.py                # regenerate the header and provenance
   python3 Tools/fit_realtime_modal.py --check        # verify both reproduce exactly
+  python3 Tools/fit_realtime_modal.py --model upright [--analyse | --check]
 """
 from __future__ import annotations
 
@@ -35,10 +41,6 @@ os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 os.environ.setdefault('OMP_NUM_THREADS', '1')
 
 ROOT = Path(__file__).resolve().parents[1]
-CORPUS = ROOT / 'Tools/corpus/salamander-v3.json'
-SPLIT = ROOT / 'Tools/corpus/split-2026-10-27.json'
-WAV = ROOT / 'out/salamander/wav'
-CACHE = ROOT / 'out/calibration/anchors'
 ANALYSIS = ROOT / 'Tools/piano_analysis.py'
 # The SFZ velocity bins' rounded midpoints, layer 1..16 (the split's mapping).
 LAYER_VELOCITY = [14, 31, 36, 40, 45, 49, 54, 61, 69, 77, 85, 93, 101, 109, 117, 124]
@@ -55,6 +57,32 @@ def sha256(path: Path) -> str:
 # data on the stretch curve.
 UNCALIBRATED = {108: 'strongest components 90-100 cents above the stretch trend; no partial series explains '
                      'the recording'}
+# The two pianos, each fitted from its own corpus and split into its own
+# header. A key let go knocks the body as the take of each anchor's key does:
+# Salamander's key release noise, and on the upright the hammer noise its
+# library plays on key release. Only the grand's corpus records the pedal.
+MODELS = {
+    'grand': {'title': 'the Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0)',
+              'corpus': ROOT / 'Tools/corpus/salamander-v3.json',
+              'split': ROOT / 'Tools/corpus/split-2026-10-27.json',
+              'wav': ROOT / 'out/salamander/wav', 'cache': ROOT / 'out/calibration/anchors',
+              'header': ROOT / 'Source/DSP/MeasuredModalData.h',
+              'metadata': ROOT / 'Docs/research/realtime-modal-fit-2026-10-27.json',
+              'uncalibrated': UNCALIBRATED, 'release': 'rel{key}', 'pedal': ('pedalD1', 'pedalU1'),
+              'actions': 'The action\'s knocks on the body modes: each recorded pitch\'s key let go (its damper '
+                         'landing) and the sustain pedal going down and up, from one take each in those '
+                         'recordings\' own scale, gained up as a set.'},
+    'upright': {'title': 'the Helsinki 1967 Tube-Ribbon Edition (Mikko Patama), with its author\'s permission; '
+                         'the recordings are not distributed',
+                'corpus': ROOT / 'Tools/corpus/helsinki-1967.json',
+                'split': ROOT / 'Tools/corpus/split-helsinki-2026-10-28.json',
+                'wav': ROOT / 'out/helsinki/wav', 'cache': ROOT / 'out/calibration/upright',
+                'header': ROOT / 'Source/DSP/MeasuredUprightData.h',
+                'metadata': ROOT / 'Docs/research/upright-modal-fit-2026-10-28.json',
+                'uncalibrated': {}, 'release': 'hammer{note}', 'pedal': (), 'tail_floor': True,
+                'actions': 'The action\'s knocks on the body modes: the hammer noise the library plays as each '
+                           'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
+}
 # The keys from F6 up have no dampers: every strike sets their strings
 # ringing at their own pitches (halo_data). The analysis also searches the
 # residual beside each one's pitch, so that the noise is measured clear of
@@ -69,18 +97,26 @@ UNISON_CENTS = 15.0
 HALO_UNISON = 3.5
 
 
-def train_anchors():
+def layer_velocity(item) -> int:
+    """The velocity a recorded layer plays at: its velocity range's midpoint,
+    rounded half up, which for Salamander the SFZ's bins give (LAYER_VELOCITY)."""
+    if 'velocity' in item:
+        lo, hi = item['velocity']
+        return (lo + hi + 1) // 2
+    return LAYER_VELOCITY[item['layer'] - 1]
+
+
+def train_anchors(model):
     """Each calibrated train pitch with its train layers' (id, velocity, flac pin)."""
-    corpus = {f['id']: f for f in json.loads(CORPUS.read_text())['files']}
-    roles = json.loads(SPLIT.read_text())['cases']
+    corpus = {f['id']: f for f in json.loads(model['corpus'].read_text())['files']}
+    roles = json.loads(model['split'].read_text())['cases']
     anchors = {}
     for case, role in roles.items():
         item = corpus[case]
         if role == 'train' and item['kind'] == 'note':
-            anchors.setdefault(item['midi'], []).append(
-                (case, LAYER_VELOCITY[item['layer'] - 1], item['flac_sha256']))
+            anchors.setdefault(item['midi'], []).append((case, layer_velocity(item), item['flac_sha256']))
     return {note: sorted(layers, key=lambda layer: layer[1]) for note, layers in sorted(anchors.items())
-            if note not in UNCALIBRATED}
+            if note not in model['uncalibrated']}
 
 
 def cache_key(layers) -> str:
@@ -90,15 +126,16 @@ def cache_key(layers) -> str:
     return h.hexdigest()
 
 
-def analyse_one(note, layers):
+def analyse_one(name, note, layers):
     import piano_analysis as pa
+    model = MODELS[name]
     key = cache_key(layers)
-    target = CACHE / f'{note}.pkl'
+    target = model['cache'] / f'{note}.pkl'
     if target.exists():
         with target.open('rb') as f:
             if pickle.load(f).get('cache_key') == key:
                 return note, 'cached'
-    result = pa.analyse_anchor([WAV / f'{case}.wav' for case, _, _ in layers], note,
+    result = pa.analyse_anchor([model['wav'] / f'{case}.wav' for case, _, _ in layers], note,
                                [velocity for _, velocity, _ in layers])
     result['cache_key'] = key
     result['cases'] = [case for case, _, _ in layers]
@@ -108,11 +145,11 @@ def analyse_one(note, layers):
     return note, 'analysed'
 
 
-def analyse(jobs):
-    anchors = train_anchors()
+def analyse(name, jobs):
+    anchors = train_anchors(MODELS[name])
     # Bass anchors carry the most partials; start them first.
     with concurrent.futures.ProcessPoolExecutor(jobs) as pool:
-        futures = [pool.submit(analyse_one, note, layers) for note, layers in anchors.items()]
+        futures = [pool.submit(analyse_one, name, note, layers) for note, layers in anchors.items()]
         for future in concurrent.futures.as_completed(futures):
             note, state = future.result()
             print(f'anchor {note}: {state}', flush=True)
@@ -320,9 +357,10 @@ def header_waves(data, i, sr, samples, contact):
     return np.array(waves), np.array(rises)
 
 
-def anchor_data(result, halo_hz):
+def anchor_data(result, halo_hz, wav):
     """The engine's data for one calibrated anchor; `halo_hz` are the
-    undamped strings' frequencies (halo_pitches)."""
+    undamped strings' frequencies (halo_pitches) and `wav` the folder of the
+    model's recordings."""
     import math
     import numpy as np
     from scipy import stats
@@ -426,7 +464,7 @@ def anchor_data(result, halo_hz):
     # Theil-Sen, which a few outlying layers cannot tilt.
     sr, onsets = result['sr'], []
     for i, (case, L) in enumerate(zip(result['cases'], result['layers'])):
-        _, x = pa.load(WAV / f'{case}.wav')
+        _, x = pa.load(wav / f'{case}.wav')
         contact = L['delay'] - shifts[i]
         waves, rises = header_waves(data, i, sr, int((contact + .05) * sr), contact)
         onsets.append(onset_rise(x, sr, L['start'], contact, result['f1'], waves, rises))
@@ -456,7 +494,7 @@ HALO_LOWEST = 54
 HALO_HIDDEN = 10.0
 
 
-def halo_spectra(result, i, windows):
+def halo_spectra(result, i, windows, wav):
     """Layer i's stereo spectrum (the recording's units, zero-padded 8 times)
     through each Hann window of `windows` (its centre in seconds after string
     contact, its length in seconds), with its frequencies; (None, None) for a
@@ -464,7 +502,7 @@ def halo_spectra(result, i, windows):
     import numpy as np
     import piano_analysis as pa
     L = result['layers'][i]
-    sr, x = pa.load(WAV / f'{result["cases"][i]}.wav')
+    sr, x = pa.load(wav / f'{result["cases"][i]}.wav')
     contact = L['start'] + L['delay'] * sr
     spectra = []
     for centre, seconds in windows:
@@ -492,7 +530,7 @@ def halo_tone(f, z, hz):
     return 10 * np.log10(power[k] + 1e-30), 10 * np.log10(power[k] / (noise + 1e-30)), z[k]
 
 
-def halo_pitches(results, strings):
+def halo_pitches(results, strings, wav):
     """Each undamped string's frequency (Hz), by key: through a Hann window
     from 1 to 2 s after contact in the train recordings struck from C6 up,
     the strongest peak within 30 cents of the pitch the engine gives the key
@@ -507,7 +545,7 @@ def halo_pitches(results, strings):
             continue
         ladder = pa.stiff(*series(r), np.arange(1, 400))
         for i in range(len(r['layers'])):
-            (f, z), (g, y) = halo_spectra(r, i, [(1.5, 1.0), (1.0, .5)])
+            (f, z), (g, y) = halo_spectra(r, i, [(1.5, 1.0), (1.0, .5)], wav)
             power = np.mean(np.abs(z) ** 2, axis=1)
             for key in UNDAMPED:
                 span = (f >= strings[key] * 2 ** (-30 / 1200)) & (f <= strings[key] * 2 ** (30 / 1200))
@@ -517,7 +555,7 @@ def halo_pitches(results, strings):
     return {key: float(np.median(hzs)) for key, hzs in found.items()}
 
 
-def halo_data(results, strings, hz):
+def halo_data(results, strings, hz, wav):
     """The undamped strings every strike sets ringing (see HALO_TIMES), at
     their frequencies `hz` (halo_pitches) by key; `strings` are the pitches
     the engine gives their keys.
@@ -555,7 +593,7 @@ def halo_data(results, strings, hz):
              'tone': np.full(shape, np.nan), 'margin': np.full(shape, np.nan),
              'channels': np.zeros(shape + (2,), complex)}
         for i in range(len(r['layers'])):
-            for k, (f, z) in enumerate(halo_spectra(r, i, [(c, .5) for c in t])):
+            for k, (f, z) in enumerate(halo_spectra(r, i, [(c, .5) for c in t], wav)):
                 if z is None:
                     continue
                 for j, key in enumerate(keys):
@@ -815,13 +853,13 @@ def body_data(results, datas):
 ACTION_SECONDS = 1.0
 
 
-def action_signal(name):
+def action_signal(path):
     """A knock's recording from its onset for ACTION_SECONDS, BODY_LOW to
     BODY_TOP, at BODY_RATE."""
     import numpy as np
     from scipy import ndimage, signal
     import piano_analysis as pa
-    sr, x = pa.load(WAV / f'{name}.wav')
+    sr, x = pa.load(path)
     sos = signal.butter(6, [BODY_LOW, BODY_TOP], 'bandpass', fs=sr, output='sos')
     y = signal.sosfiltfilt(sos, x, axis=0)
     p = ndimage.uniform_filter1d(np.mean(y * y, axis=1), int(.005 * sr))
@@ -846,24 +884,28 @@ def action_fit(y, hz, rates, shapes, rise, ridge=1e-3):
     return levels, float(np.sum((y - A @ c) ** 2) / np.sum(y ** 2))
 
 
-def action_data(notes, hz, rates, shapes):
-    """The anchors' key releases and the pedal's down and up as knocks: their
-    shared rise (s), the one under which the modes leave least of them
-    unexplained, and per knock and mode the level (dB) and phase at the onset."""
+def action_data(model, notes, hz, rates, shapes):
+    """The anchors' key releases and, where the corpus records it, the pedal's
+    down and up as knocks (MODELS): their shared rise (s), the one under which
+    the modes leave least of them unexplained, and per knock and mode the
+    level (dB) and phase at the onset."""
     import numpy as np
-    names = [f'rel{note - 20}' for note in notes] + ['pedalD1', 'pedalU1']
-    roles = json.loads(SPLIT.read_text())['cases']
+    names = [model['release'].format(key=note - 20, note=note) for note in notes] + list(model['pedal'])
+    roles = json.loads(model['split'].read_text())['cases']
     if any(roles.get(name) != 'train' for name in names):
         raise SystemExit('the action knocks are fitted on train recordings only')
-    signals = [action_signal(name) for name in names]
+    signals = [action_signal(model['wav'] / f'{name}.wav') for name in names]
     grid = np.geomspace(.005, .3, 25)
     unexplained = [float(np.mean([action_fit(y, hz, rates, shapes, rise)[1] for y in signals])) for rise in grid]
     rise = float(grid[int(np.argmin(unexplained))])
     fits = [action_fit(y, hz, rates, shapes, rise) for y in signals]
     knocks = [[{'level_db': float(20 * np.log10(abs(level) + 1e-12)), 'phase': float(np.angle(level))}
                for level in levels] for levels, _ in fits]
-    return {'rise': rise, 'releases': knocks[:-2], 'pedal_down': knocks[-2], 'pedal_up': knocks[-1],
-            'cases': names, 'unexplained': [round(u, 3) for _, u in fits]}
+    out = {'rise': rise, 'releases': knocks[:len(notes)], 'cases': names,
+           'unexplained': [round(u, 3) for _, u in fits]}
+    if model['pedal']:
+        out.update({'pedal_down': knocks[len(notes)], 'pedal_up': knocks[len(notes) + 1]})
+    return out
 
 
 # Above the body modes the soundboard's response is too dense to resolve,
@@ -873,7 +915,7 @@ def action_data(notes, hz, rates, shapes):
 NOISE_BANDS = [1000.0 * 2 ** (k / 3) for k in range(13)]   # Hz: 1 to 16 kHz
 
 
-def noise_bands(result, contact, window=.04, hop=.002):
+def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     """Per layer and band (layers x bands): the residual's noise density
     between the partials (dB re 1/Hz, stereo mean) at contact and its decay
     (dB/s), from a Theil-Sen line through 40 ms Hann frames 20 to 120 ms after
@@ -885,10 +927,14 @@ def noise_bands(result, contact, window=.04, hop=.002):
     measures it: excluding every partial the stiff string could have left no
     band to measure below A3, whose keys then took the treble's louder noise.
     Also the right-over-left level difference (dB) and left/right coherence
-    there."""
+    there. Where a take starts too close to its onset to measure the floor
+    before it and runs on into the room's noise (`tail_floor`, the upright's
+    takes), the floor is measured over its last frames instead (`wav` holds
+    the takes); Salamander's takes are faded out at their ends."""
     import math
     import numpy as np
     from scipy import signal, stats
+    import piano_analysis as pa
     sr = result['sr']
     length = int(window * sr)
     nfft = 1 << int(math.ceil(math.log2(2 * length)))
@@ -915,6 +961,10 @@ def noise_bands(result, contact, window=.04, hop=.002):
             return np.fft.rfft(x[a:a + length] * w[:, None], nfft, axis=0) if a >= 0 else None
         frames = [spectrum(t) for t in times]
         quiet = [z for z in (spectrum(-window / 2 - .005), spectrum(-window / 2)) if z is not None]
+        if not quiet and tail_floor:
+            _, take = pa.load(wav / f'{result["cases"][i]}.wav')
+            quiet = [np.fft.rfft(take[len(take) - length - a:len(take) - a] * w[:, None], nfft, axis=0)
+                     for a in (int(.005 * sr), 0)]
         for j, band in enumerate(bins):
             if band is None:
                 continue
@@ -934,7 +984,7 @@ def noise_bands(result, contact, window=.04, hop=.002):
     return level, decay, floor, balance, coherence
 
 
-def noise_data(results, datas):
+def noise_data(results, datas, wav, tail_floor):
     """The noise bands and each anchor's excitation of them (see NOISE_BANDS).
 
     Per anchor and band: the density at contact per layer, smoothed across
@@ -950,7 +1000,7 @@ def noise_data(results, datas):
     measured = []
     for r, d in zip(results, datas):
         contact = np.array([L['delay'] for L in r['layers']]) - np.array(d['layer_shift_ms']) / 1000
-        measured.append(noise_bands(r, contact))
+        measured.append(noise_bands(r, contact, wav, tail_floor))
     anchors = []
     for r, d, (level, decay, floor, balance, _) in zip(results, datas, measured):
         velocities = np.array(d['velocities'])
@@ -983,41 +1033,96 @@ def noise_data(results, datas):
     return {'hz': NOISE_BANDS, 'coherence': coherence, 'anchors': anchors}
 
 
+def level_at(velocities, db, v):
+    """A level (dB) at velocity v from its layers', as the engine's levelAt
+    takes it: piecewise linear, continued beyond the layers with the end
+    segments' slopes, never rising toward softer playing."""
+    if v <= velocities[0]:
+        return db[0] - max(0.0, (db[1] - db[0]) / (velocities[1] - velocities[0])) * (velocities[0] - v)
+    if v >= velocities[-1]:
+        return db[-1] + max(0.0, (db[-1] - db[-2]) / (velocities[-1] - velocities[-2])) * (v - velocities[-1])
+    import numpy as np
+    return float(np.interp(v, velocities, db))
+
+
+def phase_at(velocities, phase, v):
+    """A phase (rad) at velocity v from its layers', as the engine's phaseAt
+    takes it: along the chord between the layers' unit vectors, held beyond."""
+    import cmath
+    import numpy as np
+    if v <= velocities[0]:
+        return float(phase[0])
+    if v >= velocities[-1]:
+        return float(phase[-1])
+    i = int(np.searchsorted(velocities, v)) - 1
+    t = (v - velocities[i]) / (velocities[i + 1] - velocities[i])
+    z = (1 - t) * cmath.exp(1j * phase[i]) + t * cmath.exp(1j * phase[i + 1])
+    return cmath.phase(z) if abs(z) > 1e-6 else float(phase[i] if t < .5 else phase[i + 1])
+
+
+def on_grid(anchors, noise, grid):
+    """Anchors whose layers lie at other velocities than `grid` (a pitch
+    without one of the layers, or a layer whose range spans two of the
+    grid's) carried onto it as the engine would play them: levels and
+    densities by level_at, phases by phase_at, the onset rise log-linear and
+    held beyond the layers."""
+    import numpy as np
+    for a, bands in zip(anchors, noise['anchors']):
+        v = list(a['velocities'])
+        if v == list(grid):
+            continue
+        for p in a['partials'] + a['extras']:
+            for lane in p['lanes']:
+                lane['level_db'] = np.array([level_at(v, lane['level_db'], g) for g in grid])
+                lane['phase'] = np.array([phase_at(v, lane['phase'], g) for g in grid])
+        a['onset_rise'] = np.exp(np.interp(grid, v, np.log(a['onset_rise'])))
+        for b in bands:
+            b['level_db'] = np.array([level_at(v, b['level_db'], g) for g in grid])
+        a['velocities'] = list(grid)
+
+
 def number(x):
     value = f'{float(x):.7g}'
     return value + ('f' if '.' in value or 'e' in value else '.f')
 
 
-def header(anchors, halo, body, noise, action):
-    velocities = anchors[0]['velocities']
-    layers = len(velocities)
-    total = sum(len(a['partials']) for a in anchors)
-    lines = ['// Generated by Tools/fit_realtime_modal.py from the calibration split of the',
-             '// Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0); regenerate, never edit.',
-             '// Fitted numbers only: no recorded waveform or impulse response.',
-             '#pragma once', '#include <array>', '', 'namespace keyra { namespace measured {',
-             f'constexpr int layers={layers};',
-             '// MIDI velocity of each recorded layer the levels are measured at.',
-             'constexpr std::array<float,layers> layerVelocity{{' + ','.join(number(v) for v in velocities) + '}};',
-             '// One lane of a partial: decay rate (1/s), frequency offset from the',
-             '// partial (Hz), the pickup shape (left real; right complex; mean channel',
-             '// power 1), and per layer its level (dB) and its phase (rad) at string',
-             '// contact, the layers aligned to one pattern across the partials.',
-             'struct Lane { float rate, offsetHz, left, rightRe, rightIm; std::array<float,layers> levelDb, phase; };',
-             '// A partial of the stiff-string series: its tuning (cents from the series),',
-             '// the rise 1 - e^(-t/rise) its lanes share (seconds at velocity 64; log',
-             '// slope per 64 velocity), and its lanes, fastest first.',
-             'struct Partial { int order; float cents, riseSeconds, riseSlope; std::array<Lane,4> lanes; };',
-             '// A recorded pitch: its series (f1 at A4 = 440 Hz, stiffness B), per layer',
-             '// the shortest rise its partials take (seconds), measured from the',
-             '// recordings\' onsets, and its partials.',
-             '// A component beside the series (below A3: the unison strings\' own series',
-             '// at high orders and phantom partials): one lane at its place by the',
-             '// series (cents from an order), starting at contact.',
-             'struct Extra { int order; float cents; Lane lane; };',
-             'struct Anchor { int note; float f1, B; std::array<float,layers> onsetRise; int first, count, '
-             'extraFirst, extraCount; };',
-             f'constexpr std::array<Anchor,{len(anchors)}> anchors{{{{']
+def wrap(text, width=76):
+    """`text` as // comment lines."""
+    import textwrap
+    return ['// ' + line for line in textwrap.wrap(text, width)]
+
+
+def header(model, grid, anchors, halo, body, noise, action):
+    """The model's generated header: its data in the types of MeasuredTypes.h,
+    in namespace keyra::measured::<name>."""
+    name = next(key for key, m in MODELS.items() if m is model)
+    rows, total = len(anchors), sum(len(a['partials']) for a in anchors)
+    modes, bands, strings = len(body['hz']), len(noise['hz']), len(halo['keys'])
+
+    def lane(lane):
+        return ('{' + ','.join(number(x) for x in (lane['rate'], lane['offset_hz'], lane['left'],
+                                                   lane['right'].real, lane['right'].imag))
+                + ',{{' + ','.join(number(x) for x in lane['level_db']) + '}}'
+                + ',{{' + ','.join(number(x) for x in lane['phase']) + '}}}')
+
+    def table(kind, name, size, row_values):
+        """A flat table over the recorded pitches, a commented row per pitch."""
+        out = [f'constexpr std::array<{kind},{rows}*{size}> {name}' + '{{']
+        for a, values in zip(anchors, row_values):
+            out += [f'  // MIDI {a["note"]}', '  ' + ','.join(values) + ',']
+        return out + ['}};']
+
+    def action_knock(k):
+        return '{' + number(k['level_db']) + ',' + number(k['phase']) + '}'
+    lines = wrap(f'Generated by Tools/fit_realtime_modal.py from the calibration split of {model["title"]}; '
+                 'regenerate, never edit.')
+    lines += ['// Fitted numbers only: no recorded waveform or impulse response.',
+              '#pragma once', '#include "MeasuredTypes.h"', '',
+              f'namespace keyra {{ namespace measured {{ namespace {name} {{',
+              f'constexpr int layers={len(grid)};',
+              '// MIDI velocity of each recorded layer the levels are measured at.',
+              'constexpr std::array<float,maxLayers> layerVelocity{{' + ','.join(number(v) for v in grid) + '}};',
+              f'constexpr std::array<Anchor,{rows}> anchors{{{{']
     first = extra = 0
     for a in anchors:
         lines.append(f'  {{{a["note"]},{number(a["f1"])},{number(a["B"])},'
@@ -1030,109 +1135,62 @@ def header(anchors, halo, body, noise, action):
     for a in anchors:
         lines.append(f'  // MIDI {a["note"]}')
         for p in a['partials']:
-            lanes = []
-            for lane in p['lanes']:
-                lanes.append('{' + ','.join(number(x) for x in (lane['rate'], lane['offset_hz'], lane['left'],
-                                                               lane['right'].real, lane['right'].imag))
-                             + ',{{' + ','.join(number(x) for x in lane['level_db']) + '}}'
-                             + ',{{' + ','.join(number(x) for x in lane['phase']) + '}}}')
             lines.append(f'  {{{p["order"]},' + ','.join(number(p[k]) for k in ('cents', 'rise_seconds', 'rise_slope'))
-                         + ',{{' + ','.join(lanes) + '}}},')
+                         + ',{{' + ','.join(lane(x) for x in p['lanes']) + '}}},')
     lines.append('}};')
     lines.append(f'constexpr std::array<Extra,{extra}> extras{{{{')
     for a in anchors:
         if a['extras']:
             lines.append(f'  // MIDI {a["note"]}')
         for p in a['extras']:
-            lane, = p['lanes']
-            lines.append(f'  {{{p["order"]},{number(p["cents"])},'
-                         + '{' + ','.join(number(x) for x in (lane['rate'], lane['offset_hz'], lane['left'],
-                                                              lane['right'].real, lane['right'].imag))
-                         + ',{{' + ','.join(number(x) for x in lane['level_db']) + '}}'
-                         + ',{{' + ','.join(number(x) for x in lane['phase']) + '}}}},')
+            only, = p['lanes']
+            lines.append(f'  {{{p["order"]},{number(p["cents"])},{lane(only)}}},')
     lines += ['}};',
-              '// The strings from F6 up, which have no dampers: every strike sets them',
-              '// ringing, and they ring on after the key is let go. Each string\'s',
-              '// frequency (cents from the pitch the engine gives its key), decay rate',
-              '// (1/s) and stereo pickup (left real; right complex; mean channel power 1).',
-              'struct HaloString { float cents, rate, left, rightRe, rightIm; };',
-              f'constexpr std::array<HaloString,{len(halo["keys"])}> haloStrings{{{{'
+              f'constexpr std::array<HaloString,{strings}> haloStrings{{{{'
               + ','.join('{' + ','.join(number(x) for x in (c, r, u[0], u[1].real, u[1].imag)) + '}'
                          for c, r, u in zip(halo['cents'], halo['rates'], halo['pickups'])) + '}};',
-              '// How loudly each recorded pitch\'s strike sets each string ringing: the',
-              '// level (dB) at contact at velocity 64, and the slope of every level (dB per',
-              '// 64 velocity).',
-              f'constexpr float haloSlopeDb={number(halo["slope"])};',
-              f'constexpr std::array<std::array<float,{len(halo["keys"])}>,{len(anchors)}> haloLevels{{{{']
-    for a, levels in zip(anchors, halo['levels']):
-        lines += [f'  // MIDI {a["note"]}', '  {{' + ','.join(number(x) for x in levels) + '}},']
-    lines.append('}};')
-    lines += ['// The soundboard and case: modes every strike knocks, shared by every key',
-              '// and measured under the treble\'s fundamentals. Each has its frequency (Hz),',
-              '// decay rate (1/s) and one stereo pickup (left real; right complex; mean',
-              '// channel power 1).',
-              'struct BodyMode { float hz, rate, left, rightRe, rightIm; };',
-              f'constexpr std::array<BodyMode,{len(body["hz"])}> bodyModes{{{{']
+              '// How loudly each recorded pitch\'s strike sets each undamped string',
+              '// ringing: the level (dB) at contact at velocity 64, and the slope of',
+              '// every level (dB per 64 velocity).',
+              f'constexpr float haloSlopeDb={number(halo["slope"])};']
+    lines += table('float', 'haloLevels', strings, [[number(x) for x in levels] for levels in halo['levels']])
+    lines += [f'constexpr std::array<BodyMode,{modes}> bodyModes{{{{']
     lines += ['  {' + ','.join(number(x) for x in (f, r, u[0].real, u[1].real, u[1].imag)) + '},'
               for f, r, u in zip(body['hz'], body['rates'], body['shapes'])]
     lines += ['}};',
               '// The rise 1 - e^(-t/rise) (seconds) of the body\'s ring, measured from the',
               '// treble recordings\' onsets.',
-              f'constexpr float bodyRise={number(body["rise"])};',
-              '// How each recorded pitch knocks each body mode: the level (dB at velocity',
-              '// 64), its slope (dB per 64 velocity) and the phase (rad) at string contact.',
-              'struct Knock { float levelDb, slopeDb, phase; };',
-              f'constexpr std::array<std::array<Knock,{len(body["hz"])}>,{len(anchors)}> knocks{{{{']
-    for a, knocks in zip(anchors, body['anchors']):
-        lines.append(f'  // MIDI {a["note"]}')
-        lines.append('  {{' + ','.join('{' + ','.join(number(k[key]) for key in ('level_db', 'slope_db', 'phase'))
-                                         + '}' for k in knocks) + '}},')
-
-    def action_knocks(knocks):
-        return '{{' + ','.join('{' + number(k['level_db']) + ',' + number(k['phase']) + '}' for k in knocks) + '}}'
-    lines += ['}};',
-              '// The action\'s knocks on the same modes: each recorded pitch\'s key let go',
-              '// (its damper landing) and the sustain pedal going down and up, from one',
-              '// take each in those recordings\' own scale, gained up as a set. Per mode the',
-              '// level (dB) and phase (rad) at the knock\'s onset, and the rise',
-              '// 1 - e^(-t/rise) (seconds) they share.',
-              'struct ActionKnock { float levelDb, phase; };',
-              f'constexpr float actionRise={number(action["rise"])};',
-              f'constexpr std::array<std::array<ActionKnock,{len(body["hz"])}>,{len(anchors)}> releaseKnocks{{{{']
-    for a, knocks in zip(anchors, action['releases']):
-        lines += [f'  // MIDI {a["note"]}', '  ' + action_knocks(knocks) + ',']
-    lines += ['}};',
-              f'constexpr std::array<ActionKnock,{len(body["hz"])}> pedalDown{action_knocks(action["pedal_down"])};',
-              f'constexpr std::array<ActionKnock,{len(body["hz"])}> pedalUp{action_knocks(action["pedal_up"])};',
-              '// Above the modes, the board\'s dense ring as noise in third-octave bands:',
-              '// each band\'s centre (Hz) and its left/right coherence.',
-              'struct NoiseBand { float hz, coherence; };',
-              f'constexpr std::array<NoiseBand,{len(noise["hz"])}> noiseBands{{{{'
+              f'constexpr float bodyRise={number(body["rise"])};']
+    lines += table('Knock', 'knocks', modes, [['{' + ','.join(number(k[key]) for key in ('level_db', 'slope_db', 'phase')) + '}'
+                                     for k in knocks] for knocks in body['anchors']])
+    lines += wrap(model['actions'] + ' Each knock\'s level and phase per mode, and the rise '
+                  '1 - e^(-t/rise) (seconds) the knocks share.')
+    lines += [f'constexpr float actionRise={number(action["rise"])};']
+    lines += table('ActionKnock', 'releaseKnocks', modes, [[action_knock(k) for k in knocks] for knocks in action['releases']])
+    for edge in ('pedal_down', 'pedal_up'):
+        if edge in action:
+            lines.append(f'constexpr std::array<ActionKnock,{modes}> {"pedalDown" if edge == "pedal_down" else "pedalUp"}'
+                         + '{{' + ','.join(action_knock(k) for k in action[edge]) + '}};')
+    lines += [f'constexpr std::array<NoiseBand,{bands}> noiseBands{{{{'
               + ','.join('{' + number(f) + ',' + number(c) + '}' for f, c in zip(noise['hz'], noise['coherence']))
-              + '}};',
-              '// How each recorded pitch\'s strike excites each band: the decay rate (1/s),',
-              '// the right-over-left level difference (dB) and per layer the noise',
-              '// density at contact (dB re 1/Hz).',
-              'struct Noise { float rate, balanceDb; std::array<float,layers> densityDb; };',
-              f'constexpr std::array<std::array<Noise,{len(noise["hz"])}>,{len(anchors)}> noise{{{{']
-    for a, bands in zip(anchors, noise['anchors']):
-        lines.append(f'  // MIDI {a["note"]}')
-        lines.append('  {{' + ','.join('{' + number(-b['decay_db_s'] / 8.685889638) + ',' + number(b['balance_db'])
-                                         + ',{{' + ','.join(number(x) for x in b['level_db']) + '}}}'
-                                         for b in bands) + '}},')
-    lines.extend(['}};', '}} // namespace keyra::measured', ''])
+              + '}};']
+    lines += table('Noise', 'noise', bands, [['{' + number(-b['decay_db_s'] / 8.685889638) + ',' + number(b['balance_db'])
+                                     + ',{{' + ','.join(number(x) for x in b['level_db']) + '}}}' for b in band_rows]
+                                    for band_rows in noise['anchors']])
+    lines.extend([f'}}}}}} // namespace keyra::measured::{name}', ''])
     return '\n'.join(lines)
 
 
-def generate():
+def generate(model):
     import cmath
     import math
+    import statistics
     import numpy as np
     import scipy
-    anchors_in = train_anchors()
+    anchors_in = train_anchors(model)
     anchors, records, results = [], [], []
     for note, layers in anchors_in.items():
-        target = CACHE / f'{note}.pkl'
+        target = model['cache'] / f'{note}.pkl'
         if not target.exists():
             raise SystemExit(f'anchor {note} is not analysed: run with --analyse first')
         with target.open('rb') as f:
@@ -1141,9 +1199,9 @@ def generate():
             raise SystemExit(f'anchor {note} was analysed from other inputs: run with --analyse')
         results.append(result)
     strings = string_pitches({r['note']: series(r)[0] for r in results})
-    halo_hz = halo_pitches(results, strings)
+    halo_hz = halo_pitches(results, strings, model['wav'])
     for (note, layers), result in zip(anchors_in.items(), results):
-        data = anchor_data(result, halo_hz)
+        data = anchor_data(result, halo_hz, model['wav'])
         anchors.append(data)
         errors = [p['error'] for p in data['partials']]
         records.append({'note': note, 'cases': [case for case, _, _ in layers], 'f1_hz': data['f1'],
@@ -1159,23 +1217,29 @@ def generate():
                        'body_modes_hidden': sum(1 for k in knocks if k.get('filled')),
                        'body_phase_coherence': float(np.median([k['coherence'] for k in knocks
                                                                 if not k.get('filled')]))})
-    noise = noise_data(results, anchors)
+    noise = noise_data(results, anchors, model['wav'], model.get('tail_floor', False))
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
-    action = action_data([a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
-    halo = halo_data(results, strings, halo_hz)
+    action = action_data(model, [a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
+    halo = halo_data(results, strings, halo_hz, model['wav'])
     for record, kinds in zip(records, halo['kinds']):
         record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
                                   for kind in ('clear', 'under', 'filled')}
-    content = header(anchors, halo, body, noise, action)
+    # The layers most recorded pitches have; the others are carried onto them.
+    grid = list(statistics.mode(tuple(a['velocities']) for a in anchors))
+    for record, a in zip(records, anchors):
+        if list(a['velocities']) != grid:
+            record['recorded_velocities'] = list(a['velocities'])
+    on_grid(anchors, noise, grid)
+    content = header(model, grid, anchors, halo, body, noise, action)
     metadata = {
-        'schema_version': 4,
-        'corpus': str(CORPUS.relative_to(ROOT)), 'corpus_sha256': sha256(CORPUS),
-        'split': str(SPLIT.relative_to(ROOT)), 'split_sha256': sha256(SPLIT),
+        'schema_version': 5,
+        'corpus': str(model['corpus'].relative_to(ROOT)), 'corpus_sha256': sha256(model['corpus']),
+        'split': str(model['split'].relative_to(ROOT)), 'split_sha256': sha256(model['split']),
         'roles_used': ['train'], 'dev_or_sealed_recordings_opened': False,
         'analysis_source_sha256': sha256(ANALYSIS), 'fitter_source_sha256': sha256(Path(__file__)),
         'tool_versions': {'numpy': np.__version__, 'scipy': scipy.__version__},
-        'layer_velocity': anchors[0]['velocities'],
+        'layer_velocity': grid,
         'model': ('Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) '
                   'that starts them from zero, never shorter than the anchor\'s onset rise measured from the '
                   'recordings\' build-up; per lane a velocity-independent pickup shape and a smoothed level and '
@@ -1201,12 +1265,13 @@ def generate():
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
                   'linear in velocity, modes hidden by an anchor\'s partials taken from its neighbours. The '
-                  'action\'s knocks on the same modes (each anchor\'s key release, the sustain pedal down and up; '
-                  'one train take each, in those files\' own scale) fitted from their onsets under one shared rise. '
-                  'Above the '
-                  'modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per '
-                  'layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms '
-                  'after contact; one left/right coherence per band.'),
+                  'action\'s knocks on the same modes (each anchor\'s key release'
+                  + (', the sustain pedal down and up' if model['pedal'] else '') + '; one train take each, in those files\' own scale) fitted from their onsets under one shared '
+                  'rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density '
+                  'at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 '
+                  'to 100 ms after contact; one left/right coherence per band. Anchors recorded at other '
+                  'velocities than the layers most have are carried onto those as the engine plays between and '
+                  'beyond layers.'),
         'anchors': records,
         'halo': {'strings': [{'key': key, 'hz': round(hz, 2), 'cents': round(cents, 2), 'rate': round(rate, 3),
                               'rate_layers': count, 'right_over_left_db': round(20 * math.log10(abs(u[1]) / u[0]), 2),
@@ -1225,7 +1290,7 @@ def generate():
                    'unexplained': dict(zip(action['cases'], action['unexplained']))},
         'noise': {'band_hz': [round(f, 1) for f in noise['hz']],
                   'coherence': [round(c, 3) for c in noise['coherence']]},
-        'uncalibrated_anchors': [{'note': note, 'reason': reason} for note, reason in UNCALIBRATED.items()],
+        'uncalibrated_anchors': [{'note': note, 'reason': reason} for note, reason in model['uncalibrated'].items()],
         'generated_header_sha256': hashlib.sha256(content.encode()).hexdigest(),
     }
     return content, metadata
@@ -1233,16 +1298,20 @@ def generate():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--model', choices=MODELS, default='grand')
     parser.add_argument('--analyse', action='store_true', help='measure the train anchors into out/')
     parser.add_argument('--jobs', type=int, default=os.cpu_count() or 1)
     parser.add_argument('--check', action='store_true', help='verify the header and provenance reproduce')
-    parser.add_argument('--header', type=Path, default=ROOT / 'Source/DSP/MeasuredModalData.h')
-    parser.add_argument('--metadata', type=Path, default=ROOT / 'Docs/research/realtime-modal-fit-2026-10-27.json')
+    parser.add_argument('--header', type=Path, help='default: the model\'s header in Source/DSP')
+    parser.add_argument('--metadata', type=Path, help='default: the model\'s provenance in Docs/research')
     args = parser.parse_args()
+    model = MODELS[args.model]
+    args.header = args.header or model['header']
+    args.metadata = args.metadata or model['metadata']
     if args.analyse:
-        analyse(args.jobs)
+        analyse(args.model, args.jobs)
         return
-    content, metadata = generate()
+    content, metadata = generate(model)
     if args.check:
         if args.header.read_text() != content:
             raise SystemExit('Measured modal header differs from the regenerated fit')
