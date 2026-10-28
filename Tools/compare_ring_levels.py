@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
-"""Score the undamped strings a note sets ringing, narrow-band, against the
+"""Score the undamped strings a note sets ringing, as tones, against the
 recordings, for one or more `keyra_render` binaries.
 
-The fit measures a string through a window as wide as the gap to its
-neighbours, which also holds the board's noise; this measures it as a tone.
-A train case is a recorded pitch that the fit's provenance lists strings for,
-at layers 5, 9, 13 and 16; a dev case is any of the split's dev notes, never
-fitted, with the strings the engine plays there: its recorded pitch's, or
-both neighbouring pitches'. The recording and a render of the held note (50 ms
-of silence, then the layer's velocity, sympathetic resonance off) are each
-normalised to their peak and timed from the first sample within 20 dB of it.
-At 1, 2 and 3 s from there, each string's level is the largest amplitude
-within 2 Hz of its frequency through a 0.5 s Hann window. A render that
-stands over the recording there sounds a tone the piano did not, so that is
-counted at every string. One under it may only miss the noise around the
-string, which the recording also holds, so the error is averaged only where
-the recording shows the string ringing clear of that noise: 10 dB or more
-over the median level from 4 to 20 Hz either side of it.
+Every strike sets the undamped strings from F6 up ringing, its own key's
+excepted, each at the one frequency the fit's provenance lists for it
+(`halo`). A train case is a recorded pitch the fit calibrated, at layers 5,
+9, 13 and 16; a dev case is any of the split's dev notes, never fitted. The
+recording and a render of the held note (50 ms of silence, then the layer's
+velocity, sympathetic resonance off) are each timed from their onset and
+scaled as the benchmark scales a case, by their RMS from 50 to 750 ms after
+it (high-passed at 20 Hz). Scaled to their peaks instead, the renders'
+strings read about 2 dB higher on the very notes the fit measured them in, as
+a render peaks a median 0.8 dB lower over that RMS than its recording. At 1,
+2 and 3 s from there, each string is measured as the fit measures it
+(fit_realtime_modal.halo_tone): through a 0.5 s Hann window, the largest of
+both channels' mean power within 1 Hz of its frequency, against the median
+from 4 to 20 Hz either side. Where a partial of the struck key's series, as
+the recording shows it, lies within HALO_APART of a string, the tone there is
+that partial's, and below HALO_LOWEST the series is dense at every string:
+those are left out. A render that stands over the recording there sounds a
+tone the piano did not, so that is counted at every string. One under it may
+only miss the noise around the string, which the recording also holds, so the
+error is averaged only where the recording shows the string ringing clear of
+that noise: 10 dB or more over that median.
 
   python3 Tools/compare_ring_levels.py --renderer candidate=build-dsp/keyra_render \\
       --renderer shipping=out/shipping/keyra_render --out out/rings.json
@@ -33,10 +39,12 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-from scipy.io import wavfile
+from scipy import signal
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import benchmark_recordings as bench  # noqa: E402
+import fit_realtime_modal as fit  # noqa: E402
+import piano_analysis as pa  # noqa: E402
 
 METADATA = bench.ROOT / 'Docs/research/realtime-modal-fit-2026-10-27.json'
 TRAIN_LAYERS = (5, 9, 13, 16)
@@ -44,44 +52,36 @@ TIMES = (1.0, 2.0, 3.0)
 
 
 def load(path):
-    """Mono, normalised to its peak, its onset sample and its sample rate."""
-    sr, x = wavfile.read(path)
-    y = x.astype(float)
-    y = y.mean(axis=1) if y.ndim == 2 else y
-    y /= np.max(np.abs(y))
-    return y, int(np.flatnonzero(np.abs(y) > .1)[0]), sr
+    """Stereo, scaled by its RMS from 50 to 750 ms after its onset as the
+    benchmark scales a case, its onset sample and its sample rate."""
+    sr, x = pa.load(path)
+    start = pa.onset(x, sr)
+    xh = signal.sosfiltfilt(signal.butter(2, 20, 'highpass', fs=sr, output='sos'), x, axis=0)
+    early = xh[start + int(.05 * sr):start + int(.75 * sr)]
+    return x / np.sqrt(np.mean(early * early)), start, sr
 
 
-def levels(y, onset, sr, freqs):
-    """Per time, each string's level (dB re peak) and the noise around it."""
+def levels(x, onset, sr, freqs):
+    """Per time, each string's tone (dB re the case's scale) and how far it
+    stands over the noise around it (dB)."""
     n = int(.5 * sr)
     w = np.hanning(n)
     f = np.fft.rfftfreq(8 * n, 1 / sr)
     out = {}
     for t in TIMES:
         start = onset + int((t - .25) * sr)
-        if start + n <= len(y):
-            spectrum = np.abs(np.fft.rfft(y[start:start + n] * w, 8 * n)) * 2 / np.sum(w)
-            db = lambda x: round(float(20 * np.log10(x + 1e-12)), 1)
-            out[t] = [(db(np.max(spectrum[np.abs(f - hz) < 2])),
-                       db(np.median(spectrum[(np.abs(f - hz) >= 4) & (np.abs(f - hz) <= 20)]))) for hz in freqs]
+        if start + n <= len(x):
+            z = np.fft.rfft(x[start:start + n] * w[:, None], 8 * n, axis=0) * 2 / np.sum(w)
+            out[t] = [tuple(round(float(v), 1) for v in fit.halo_tone(f, z, hz)[:2]) for hz in freqs]
     return out
 
 
-def strings_at(anchors, note):
-    """The strings the engine plays for `note`: its recorded pitch's, or both
-    neighbouring pitches'."""
-    notes = [a['note'] for a in anchors]
-    if note in notes:
-        return anchors[notes.index(note)]['rings']
-    lower = [a for a in anchors if a['note'] < note][-1:]
-    upper = [a for a in anchors if a['note'] > note][:1]
-    return sorted({ring for a in lower + upper for ring in a['rings']})
-
-
 def score(job):
-    case, note, layer, role, freqs, renderers = job
+    case, note, layer, role, strings, renderers = job
     recording = load(bench.CORPUS / f'{case}.wav')
+    f1, B, _ = pa.partials(recording[0], recording[2], note, recording[1])
+    ladder = pa.stiff(f1, B, np.arange(1, 400))
+    freqs = [s['hz'] for s in strings if s['key'] != note and np.min(np.abs(ladder - s['hz'])) >= fit.HALO_APART]
     out = {'case': case, 'role': role, 'note': note, 'layer': layer, 'hz': freqs,
            'recording': levels(*recording, freqs)}
     with tempfile.TemporaryDirectory(prefix='keyra-rings-') as tmp:
@@ -98,7 +98,7 @@ def score(job):
 def summary(cases, name):
     by_time = {}
     for t in TIMES:
-        pairs = [(c[name][t][i][0] - c['recording'][t][i][0], c['recording'][t][i][0] - c['recording'][t][i][1])
+        pairs = [(c[name][t][i][0] - c['recording'][t][i][0], c['recording'][t][i][1])
                  for c in cases if t in c[name] and t in c['recording'] for i in range(len(c['hz']))]
         d = np.array([difference for difference, _ in pairs])
         clear = np.array([difference for difference, above in pairs if above >= 10])
@@ -118,19 +118,17 @@ def main():
     args = parser.parse_args()
     renderers = dict(spec.split('=', 1) for spec in args.renderer)
     metadata = json.loads(METADATA.read_text())
-    strings, anchors = metadata['rings']['strings'], metadata['anchors']
+    strings, anchors = metadata['halo']['strings'], [a['note'] for a in metadata['anchors']]
     split = json.loads(bench.SPLIT.read_text())['cases']
     items = {i['id']: i for i in json.loads(bench.MANIFEST.read_text())['files']}
     jobs = []
     for case, role in split.items():
         item = items[case]
-        if item['kind'] != 'note' or role not in ('train', 'dev'):
+        if item['kind'] != 'note' or role not in ('train', 'dev') or item['midi'] < fit.HALO_LOWEST:
             continue
-        if role == 'train' and (item['layer'] not in TRAIN_LAYERS or item['midi'] not in [a['note'] for a in anchors]):
+        if role == 'train' and (item['layer'] not in TRAIN_LAYERS or item['midi'] not in anchors):
             continue
-        rings = strings_at(anchors, item['midi'])
-        if rings:
-            jobs.append((case, item['midi'], item['layer'], role, [strings[ring]['hz'] for ring in rings], renderers))
+        jobs.append((case, item['midi'], item['layer'], role, strings, renderers))
     with concurrent.futures.ProcessPoolExecutor(args.jobs) as pool:
         cases = sorted(pool.map(score, jobs), key=lambda c: (c['role'], c['note'], c['layer']))
     report = {'summary': {role: {name: summary([c for c in cases if c['role'] == role], name) for name in renderers}

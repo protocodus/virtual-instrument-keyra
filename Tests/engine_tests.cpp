@@ -58,7 +58,8 @@ double keyPitch(int key){
   auto cents=[](const m::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
   return 440*std::pow(2.,(key-69+(cents(a)+(cents(b)-cents(a))*(key-a.note)/(b.note-a.note))/100)/12.);
 }
-double ringHz(int ring){const auto& r=keyra::measured::rings[ring];return keyPitch(r.key)*std::pow(2.,r.cents/1200);}
+// The frequency of the undamped string `j` places above F6.
+double haloHz(int j){return keyPitch(89+j)*std::pow(2.,keyra::measured::haloStrings[j].cents/1200);}
 double released(float sustain){keyra::Engine e;e.setParameters(dry());e.controlChange(64,static_cast<int>(sustain*127));e.noteOn(60,.7f);render(e,12000);e.noteOff(60);render(e,24000);return c4Strings(render(e,12000));}
 double sostenuto(bool beforeNote){keyra::Engine e;e.setParameters(dry());if(beforeNote)e.controlChange(66,127);e.noteOn(60,.7f);render(e,12000);if(!beforeNote)e.controlChange(66,127);e.noteOff(60);render(e,24000);return c4Strings(render(e,12000));}
 Audio sympatheticTail(float tuning,bool prepareAfterTuning){
@@ -88,16 +89,6 @@ double spectralPeak(const Audio& audio,double low,double high){
     const double candidate=re*re+im*im;if(candidate>power){power=candidate;peak=frequency;}
   }
   return peak;
-}
-// The amplitude at one frequency, the channels' mean, through a Hann window.
-double amplitudeAt(const Audio& audio,double frequency){
-  constexpr double pi=3.14159265358979323846;
-  const std::size_t frames=audio.size()/2;
-  const double c=std::cos(2*pi*frequency/48000),s=std::sin(2*pi*frequency/48000);
-  double phaseC=1,phaseS=0,re=0,im=0;
-  for(std::size_t i=0;i<frames;++i){const double x=.5*(audio[2*i]+audio[2*i+1])*(.5-.5*std::cos(2*pi*i/(frames-1)));
-    re+=x*phaseC;im+=x*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
-  return std::hypot(re,im);
 }
 // The right channel's level against the left's, in dB, at the strongest
 // frequency between `low` and `high`.
@@ -267,7 +258,9 @@ int main(int argc,char** argv){
     auto stiff=[&](int order,float cents){return order*a.f1*std::sqrt((1+a.B*order*order)/(1+a.B))*std::pow(2.,cents/1200);};
     std::vector<double> beside;
     for(int k=a.extraFirst;k<a.extraFirst+a.extraCount;++k)beside.push_back(stiff(m::extras[k].order,m::extras[k].cents));
-    for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k)beside.push_back(ringHz(m::undamped[k].ring));
+    // The undamped strings stay in: leaving out every one would leave the
+    // 2.5 kHz reference under a quarter of its bins, and in these first
+    // 100 ms they move no band's reading by more than about 1 dB.
     int fewest=bandCount;double worst=0;
     for(int layer=0;layer<m::layers;++layer){
       keyra::Engine e(sr);e.setParameters(dry());e.noteOn(a.note,m::layerVelocity[layer]/127.f);
@@ -325,55 +318,25 @@ int main(int argc,char** argv){
     }
   }
   {
-    // A damped key struck and let go leaves the undamped strings it set
-    // ringing, each at its own pitch whichever key struck it. Taken: the
-    // loudest string that two recorded pitches below F6 both hear, with no
-    // other within 10 Hz, half a second after the dampers fall.
+    // A damped key struck and let go leaves the undamped strings ringing,
+    // whatever the Resonance control: each at its own pitch whichever key
+    // struck it, heard through its own measured pickup. Taken: the string
+    // each of two recorded pitches below F6 sets ringing loudest, half a
+    // second after the dampers fall.
     namespace m=keyra::measured;
-    int ring=-1;std::array<int,2> struck{};double loudest=-1e9;
-    for(int r=0;r<static_cast<int>(m::rings.size());++r){
-      bool alone=true;for(int o=0;o<static_cast<int>(m::rings.size());++o)alone=alone&&(o==r||std::abs(ringHz(o)-ringHz(r))>10);
-      std::array<int,2> notes{};int found=0;double level=1e9;
-      for(const auto& a:m::anchors)for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k)
-        if(a.note<89&&found<2&&m::undamped[k].ring==r){
-          double top=-1e9;for(const auto& lane:m::undamped[k].lanes)top=std::max(top,static_cast<double>(lane.levelDb[m::layers-1]));
-          notes[found++]=a.note;level=std::min(level,top);}
-      if(alone&&found==2&&level>loudest){loudest=level;ring=r;struck=notes;}
-    }
-    check(ring>=0,"two recorded pitches below F6 hear one undamped string ring");
-    for(const int note:struck)if(ring>=0){
-      keyra::Engine e;e.setParameters(dry());e.noteOn(note,m::layerVelocity[m::layers-1]/127.f);
-      render(e,14400);e.noteOff(note);render(e,24000);
-      const double peak=spectralPeak(render(e,48000),ringHz(ring)-20,ringHz(ring)+20);
-      check(std::abs(peak-ringHz(ring))<.5,"an undamped string rings on at its own pitch after the struck key is let go");
-      std::cout<<"struck="<<note<<" undamped_key="<<m::rings[ring].key<<" string_hz="<<ringHz(ring)<<" peak_hz="<<peak<<'\n';
-    }
-  }
-  {
-    // A string rings through the struck key's partial nearest it. Next to a
-    // recorded pitch with a partial on a string it lists, a key whose partials
-    // all pass far from that string rings it far less. Taken: the loudest
-    // such string a recorded pitch below F6 lists, a second from 1.5 s on.
-    namespace m=keyra::measured;
-    auto nearest=[](int key,double hz){
-      int upper=1;while(upper<static_cast<int>(m::anchors.size())-1&&m::anchors[upper].note<key)++upper;
-      const auto& a=m::anchors[upper-1];const auto& b=m::anchors[upper];
-      const double f1=keyPitch(key),B=std::exp(std::log(a.B)+(std::log(b.B)-std::log(a.B))*(key-a.note)/(b.note-a.note));
-      double best=1e9;for(int n=1;n<400;++n)best=std::min(best,std::abs(n*f1*std::sqrt((1+B*n*n)/(1+B))-hz));
-      return best;};
-    int recorded=0,ring=-1;double loudest=-1e9;
-    for(const auto& a:m::anchors)if(a.note<89)for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k){
-      const int r=m::undamped[k].ring;
-      double top=-1e9;for(const auto& lane:m::undamped[k].lanes)top=std::max(top,static_cast<double>(lane.levelDb[m::layers-1]));
-      if(nearest(a.note,ringHz(r))<5&&nearest(a.note+1,ringHz(r))>100&&top>loudest){loudest=top;recorded=a.note;ring=r;}
-    }
-    check(ring>=0,"a recorded pitch below F6 has a partial on a string it lists that the next key's pass far from");
-    if(ring>=0){
-      auto level=[&](int note){keyra::Engine e;e.setParameters(dry());e.noteOn(note,m::layerVelocity[m::layers-1]/127.f);
-        render(e,72000);return amplitudeAt(render(e,48000),ringHz(ring));};
-      const double drop=20*std::log10(level(recorded+1)/level(recorded));
-      check(drop<-20,"a key whose partials pass far from a string rings it far less than a recorded pitch with a partial on it");
-      std::cout<<"recorded="<<recorded<<" string_hz="<<ringHz(ring)<<" next_key_db="<<drop<<'\n';
+    for(const int recorded:{60,81}){
+      int index=0;while(m::anchors[index].note!=recorded)++index;
+      int j=0;for(int k=1;k<static_cast<int>(m::haloStrings.size());++k)if(m::haloLevels[index][k]>m::haloLevels[index][j])j=k;
+      keyra::Engine e;e.setParameters(dry());e.noteOn(recorded,m::layerVelocity[m::layers-1]/127.f);
+      render(e,14400);e.noteOff(recorded);render(e,24000);
+      const auto tail=render(e,48000);const double hz=haloHz(j);
+      const double peak=spectralPeak(tail,hz-20,hz+20);
+      check(std::abs(peak-hz)<.5,"an undamped string rings on at its own pitch after the struck key is let go");
+      const auto& string=m::haloStrings[j];
+      const double measured=20*std::log10(std::hypot(string.rightRe,string.rightIm)/string.left),played=levelDifference(tail,hz-1,hz+1);
+      check(std::abs(played-measured)<.5,"an undamped string sounds through its measured stereo pickup");
+      std::cout<<"struck="<<recorded<<" undamped_key="<<89+j<<" string_hz="<<hz<<" peak_hz="<<peak
+               <<" right_over_left_db="<<played<<" measured_db="<<measured<<'\n';
     }
   }
   {

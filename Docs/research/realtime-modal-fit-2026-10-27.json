@@ -8,8 +8,8 @@
     "train"
   ],
   "dev_or_sealed_recordings_opened": false,
-  "analysis_source_sha256": "6d7ac1bb7a9d220b4bac27591b7975dae7061d0ea053c62dc6980e707bdba9b8",
-  "fitter_source_sha256": "ba3935f791347bf811ba933d4f6ee2b3db4a3631a405685e57ea3fdb64e32165",
+  "analysis_source_sha256": "bf945db135e2390692668990a84ea6806a51a3f853cda8497b4fc9f2c4049d1b",
+  "fitter_source_sha256": "965552b0112c346108daef243053818b0f6e7c57791833e94354118b24127bd5",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -28,7 +28,7 @@
     109.0,
     124.0
   ],
-  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), and beside each undamped string's pitch (MIDI 89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a window that parts it from its neighbours and fitted with one lane from contact. Peaks within 15 cents of the fundamental are left to the partial's lanes. Peaks from F6 up that recur within 1.5 cents in four or more anchors are undamped strings ringing, fitted with two lanes instead. Where a string's tone (the largest amplitude within 2 Hz through 0.5 s Hann windows every 0.25 s from 1 to 3.5 s after contact) stands 10 dB over the median 4 to 20 Hz either side in two or more windows of a layer, a second apart in all, its decay there times the slower lane and its level sets the lane's; elsewhere no lane is slower than the string's median slower lane where its fits timed one; at no layer do the two lanes together stand over the tone. Each string is kept at one frequency for its slower lane and interpolated between anchors by string, lanes fastest first; the rest of the strings' search is dropped. The other peaks are placed by the series in cents from their nearest order and cross-faded in power between anchors. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release, the sustain pedal down and up; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one velocity slope pooled within pitch and string, and per anchor and string a level at contact at velocity 64: the mean over the layers clear in two or more windows, brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release, the sustain pedal down and up; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
   "anchors": [
     {
       "note": 21,
@@ -49,11 +49,7 @@
       "f1_hz": 27.238207126596603,
       "stiffness": 0.00022838882368081588,
       "partials": 78,
-      "extras": 51,
-      "rings": [
-        0,
-        10
-      ],
+      "extras": 48,
       "contact_delay_ms": [
         2.583,
         12.188,
@@ -84,7 +80,7 @@
       ],
       "median_phase_agreement": 0.9194248012483672,
       "onset_rise_ms": [
-        6.489,
+        5.646,
         2.815,
         0.925,
         0.804,
@@ -92,7 +88,7 @@
         13.015,
         13.015,
         11.324,
-        11.324,
+        4.274,
         2.815,
         2.815,
         2.815
@@ -114,7 +110,33 @@
       ],
       "body_modes_hidden": 26,
       "body_phase_coherence": 0.9126469658483605,
-      "noise_bands_filled": 6
+      "noise_bands_filled": 6,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 24,
@@ -135,12 +157,7 @@
       "f1_hz": 32.434319029715525,
       "stiffness": 0.0001611303736634232,
       "partials": 82,
-      "extras": 35,
-      "rings": [
-        0,
-        8,
-        14
-      ],
+      "extras": 37,
       "contact_delay_ms": [
         19.479,
         27.729,
@@ -180,7 +197,7 @@
         2.131,
         13.015,
         2.449,
-        1.854,
+        2.131,
         1.063,
         1.404
       ],
@@ -201,7 +218,33 @@
       ],
       "body_modes_hidden": 22,
       "body_phase_coherence": 0.8512601173395759,
-      "noise_bands_filled": 7
+      "noise_bands_filled": 7,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 30,
@@ -222,10 +265,7 @@
       "f1_hz": 46.02630266444191,
       "stiffness": 8.730049380633085e-05,
       "partials": 87,
-      "extras": 23,
-      "rings": [
-        21
-      ],
+      "extras": 22,
       "contact_delay_ms": [
         11.917,
         11.542,
@@ -266,7 +306,7 @@
         5.646,
         4.274,
         3.719,
-        1.404,
+        1.613,
         4.274
       ],
       "median_relative_error": 0.03991634997391347,
@@ -286,7 +326,33 @@
       ],
       "body_modes_hidden": 20,
       "body_phase_coherence": 0.9256649000660196,
-      "noise_bands_filled": 8
+      "noise_bands_filled": 8,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 33,
@@ -307,12 +373,7 @@
       "f1_hz": 54.850990718487516,
       "stiffness": 8.746517697771951e-05,
       "partials": 93,
-      "extras": 29,
-      "rings": [
-        10,
-        12,
-        13
-      ],
+      "extras": 31,
       "contact_delay_ms": [
         3.792,
         9.167,
@@ -352,7 +413,7 @@
         0.609,
         0.2,
         0.2,
-        0.401,
+        0.349,
         3.719,
         4.274
       ],
@@ -373,7 +434,33 @@
       ],
       "body_modes_hidden": 12,
       "body_phase_coherence": 0.8510726811939024,
-      "noise_bands_filled": 9
+      "noise_bands_filled": 9,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 36,
@@ -394,11 +481,7 @@
       "f1_hz": 65.18302762222687,
       "stiffness": 8.699497284695924e-05,
       "partials": 76,
-      "extras": 16,
-      "rings": [
-        19,
-        20
-      ],
+      "extras": 13,
       "contact_delay_ms": [
         6.438,
         5.812,
@@ -459,7 +542,33 @@
       ],
       "body_modes_hidden": 12,
       "body_phase_coherence": 0.9784928734955884,
-      "noise_bands_filled": 9
+      "noise_bands_filled": 9,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 42,
@@ -480,10 +589,7 @@
       "f1_hz": 92.40186637254808,
       "stiffness": 6.872810587253189e-05,
       "partials": 65,
-      "extras": 14,
-      "rings": [
-        10
-      ],
+      "extras": 13,
       "contact_delay_ms": [
         10.771,
         9.292,
@@ -516,7 +622,7 @@
       "onset_rise_ms": [
         30.0,
         14.958,
-        5.646,
+        4.913,
         5.646,
         5.646,
         5.646,
@@ -544,7 +650,33 @@
       ],
       "body_modes_hidden": 5,
       "body_phase_coherence": 0.9821691568860789,
-      "noise_bands_filled": 9
+      "noise_bands_filled": 9,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 45,
@@ -566,9 +698,6 @@
       "stiffness": 7.25731320980057e-05,
       "partials": 63,
       "extras": 7,
-      "rings": [
-        19
-      ],
       "contact_delay_ms": [
         10.854,
         7.604,
@@ -629,7 +758,33 @@
       ],
       "body_modes_hidden": 4,
       "body_phase_coherence": 0.9885343065927087,
-      "noise_bands_filled": 10
+      "noise_bands_filled": 10,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 48,
@@ -651,9 +806,6 @@
       "stiffness": 0.00010960557239020144,
       "partials": 58,
       "extras": 7,
-      "rings": [
-        11
-      ],
       "contact_delay_ms": [
         4.708,
         4.729,
@@ -689,7 +841,7 @@
         4.913,
         5.646,
         6.489,
-        6.489,
+        5.646,
         6.489,
         5.646,
         5.646,
@@ -714,7 +866,33 @@
       ],
       "body_modes_hidden": 8,
       "body_phase_coherence": 0.9826902799815896,
-      "noise_bands_filled": 10
+      "noise_bands_filled": 10,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
     },
     {
       "note": 54,
@@ -736,10 +914,6 @@
       "stiffness": 0.00017067171566673018,
       "partials": 43,
       "extras": 4,
-      "rings": [
-        2,
-        20
-      ],
       "contact_delay_ms": [
         5.208,
         5.5,
@@ -800,7 +974,35 @@
       ],
       "body_modes_hidden": 3,
       "body_phase_coherence": 0.9858412929908877,
-      "noise_bands_filled": 7
+      "noise_bands_filled": 7,
+      "halo_strings": {
+        "clear": [
+          91,
+          93,
+          94,
+          98,
+          100,
+          101,
+          105
+        ],
+        "under": [
+          89,
+          95,
+          96,
+          99,
+          102,
+          103,
+          104,
+          107,
+          108
+        ],
+        "filled": [
+          90,
+          92,
+          97,
+          106
+        ]
+      }
     },
     {
       "note": 57,
@@ -822,12 +1024,6 @@
       "stiffness": 0.00021594810579635127,
       "partials": 37,
       "extras": 4,
-      "rings": [
-        3,
-        7,
-        12,
-        13
-      ],
       "contact_delay_ms": [
         13.146,
         8.792,
@@ -860,13 +1056,13 @@
       "onset_rise_ms": [
         0.2,
         1.613,
-        0.2,
-        0.2,
-        0.2,
+        1.221,
+        1.221,
+        1.221,
         0.2,
         1.063,
         1.063,
-        0.7,
+        0.804,
         0.2,
         0.804,
         0.804
@@ -888,7 +1084,35 @@
       ],
       "body_modes_hidden": 3,
       "body_phase_coherence": 0.9862380930749701,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          91,
+          92,
+          94,
+          97,
+          98,
+          103
+        ],
+        "under": [
+          89,
+          96,
+          99,
+          101,
+          102,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          93,
+          95,
+          100,
+          104
+        ]
+      }
     },
     {
       "note": 60,
@@ -910,12 +1134,6 @@
       "stiffness": 0.00029075998494499907,
       "partials": 34,
       "extras": 2,
-      "rings": [
-        2,
-        10,
-        13,
-        16
-      ],
       "contact_delay_ms": [
         8.583,
         5.729,
@@ -954,7 +1172,7 @@
         0.23,
         5.646,
         4.913,
-        0.2,
+        3.719,
         4.274,
         0.2,
         2.815
@@ -976,7 +1194,35 @@
       ],
       "body_modes_hidden": 3,
       "body_phase_coherence": 0.9846498162343538,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          93,
+          94,
+          95,
+          100
+        ],
+        "under": [
+          89,
+          92,
+          97,
+          99,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          91,
+          96,
+          98
+        ]
+      }
     },
     {
       "note": 66,
@@ -998,11 +1244,6 @@
       "stiffness": 0.0005082418558528503,
       "partials": 25,
       "extras": 0,
-      "rings": [
-        1,
-        3,
-        12
-      ],
       "contact_delay_ms": [
         6.0,
         5.229,
@@ -1063,7 +1304,35 @@
       ],
       "body_modes_hidden": 2,
       "body_phase_coherence": 0.9850384212074883,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          91,
+          93,
+          94,
+          95,
+          96,
+          98,
+          99,
+          100,
+          103,
+          104
+        ],
+        "under": [
+          89,
+          92,
+          101,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          90,
+          97,
+          102
+        ]
+      }
     },
     {
       "note": 69,
@@ -1085,19 +1354,6 @@
       "stiffness": 0.0006359447285299903,
       "partials": 23,
       "extras": 1,
-      "rings": [
-        1,
-        3,
-        5,
-        7,
-        8,
-        9,
-        12,
-        13,
-        16,
-        17,
-        18
-      ],
       "contact_delay_ms": [
         9.521,
         6.0,
@@ -1135,10 +1391,10 @@
         0.2,
         0.2,
         0.2,
-        0.264,
+        0.2,
+        0.401,
         0.461,
-        0.461,
-        0.461,
+        0.401,
         0.264
       ],
       "median_relative_error": 0.12582747756496404,
@@ -1158,7 +1414,35 @@
       ],
       "body_modes_hidden": 2,
       "body_phase_coherence": 0.9911832268081175,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          91,
+          94,
+          97,
+          98,
+          99,
+          101,
+          103,
+          105
+        ],
+        "under": [
+          89,
+          92,
+          95,
+          96,
+          102,
+          104,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          93,
+          100
+        ]
+      }
     },
     {
       "note": 72,
@@ -1180,14 +1464,6 @@
       "stiffness": 0.0008203530241764827,
       "partials": 19,
       "extras": 0,
-      "rings": [
-        2,
-        7,
-        9,
-        16,
-        18,
-        20
-      ],
       "contact_delay_ms": [
         6.583,
         4.583,
@@ -1248,7 +1524,35 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.9790948390595571,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          92,
+          93,
+          94,
+          95,
+          97,
+          98,
+          99,
+          100,
+          105,
+          106,
+          108
+        ],
+        "under": [
+          89,
+          101,
+          102,
+          104,
+          107
+        ],
+        "filled": [
+          91,
+          96,
+          103
+        ]
+      }
     },
     {
       "note": 78,
@@ -1269,15 +1573,7 @@
       "f1_hz": 741.556653387407,
       "stiffness": 0.0014256737737510295,
       "partials": 16,
-      "extras": 1,
-      "rings": [
-        1,
-        4,
-        8,
-        12,
-        20,
-        21
-      ],
+      "extras": 0,
       "contact_delay_ms": [
         6.396,
         0.958,
@@ -1338,7 +1634,35 @@
       ],
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.9800120221462052,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          91,
+          93,
+          94,
+          95,
+          96,
+          98,
+          99,
+          101,
+          104,
+          105
+        ],
+        "under": [
+          89,
+          92,
+          100,
+          103,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          90,
+          97,
+          102
+        ]
+      }
     },
     {
       "note": 81,
@@ -1360,13 +1684,6 @@
       "stiffness": 0.0018256476546931418,
       "partials": 11,
       "extras": 2,
-      "rings": [
-        1,
-        5,
-        8,
-        11,
-        13
-      ],
       "contact_delay_ms": [
         6.438,
         4.667,
@@ -1427,7 +1744,35 @@
       ],
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.9627343737177374,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          91,
+          92,
+          94,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101
+        ],
+        "under": [
+          89,
+          95,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          93,
+          105
+        ]
+      }
     },
     {
       "note": 84,
@@ -1449,16 +1794,6 @@
       "stiffness": 0.0023812662452260573,
       "partials": 10,
       "extras": 3,
-      "rings": [
-        1,
-        2,
-        3,
-        5,
-        7,
-        8,
-        13,
-        18
-      ],
       "contact_delay_ms": [
         15.917,
         18.917,
@@ -1498,9 +1833,9 @@
         3.236,
         3.719,
         1.221,
-        1.613,
+        1.404,
         1.221,
-        1.613
+        1.404
       ],
       "median_relative_error": 0.6643762838752794,
       "body_explained": [
@@ -1519,7 +1854,35 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.9764466444901081,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          97,
+          98,
+          99,
+          100,
+          101,
+          104
+        ],
+        "under": [
+          89,
+          102,
+          105,
+          106,
+          107
+        ],
+        "filled": [
+          96,
+          103,
+          108
+        ]
+      }
     },
     {
       "note": 90,
@@ -1541,15 +1904,6 @@
       "stiffness": 0.004128826146873446,
       "partials": 6,
       "extras": 5,
-      "rings": [
-        1,
-        4,
-        6,
-        9,
-        11,
-        16,
-        18
-      ],
       "contact_delay_ms": [
         9.292,
         10.042,
@@ -1610,7 +1964,35 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.9507656899018412,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          103,
+          104,
+          105,
+          106,
+          108
+        ],
+        "under": [
+          89,
+          107
+        ],
+        "filled": [
+          90,
+          102
+        ]
+      }
     },
     {
       "note": 93,
@@ -1632,13 +2014,6 @@
       "stiffness": 0.005409734812195607,
       "partials": 5,
       "extras": 2,
-      "rings": [
-        3,
-        6,
-        11,
-        14,
-        15
-      ],
       "contact_delay_ms": [
         11.75,
         5.167,
@@ -1671,16 +2046,16 @@
       "onset_rise_ms": [
         0.2,
         0.2,
-        0.2,
-        0.804,
+        0.609,
+        1.404,
         11.324,
         6.489,
-        4.274,
+        4.913,
         6.489,
         3.719,
         2.815,
         2.449,
-        2.131
+        2.449
       ],
       "median_relative_error": 0.2886064156171652,
       "body_explained": [
@@ -1699,7 +2074,35 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.9619259593757092,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          89,
+          90,
+          91,
+          92,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          103,
+          104,
+          106,
+          107,
+          108
+        ],
+        "under": [
+          102
+        ],
+        "filled": [
+          93,
+          105
+        ]
+      }
     },
     {
       "note": 96,
@@ -1721,16 +2124,6 @@
       "stiffness": 0.009558042755025666,
       "partials": 3,
       "extras": 1,
-      "rings": [
-        0,
-        4,
-        5,
-        6,
-        14,
-        15,
-        17,
-        19
-      ],
       "contact_delay_ms": [
         8.542,
         11.438,
@@ -1764,10 +2157,10 @@
         7.458,
         7.458,
         0.2,
-        1.854,
-        1.404,
-        1.404,
-        1.613,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
         0.2,
         0.2,
         0.2,
@@ -1791,7 +2184,34 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.943517382074213,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "under": [],
+        "filled": [
+          96
+        ]
+      }
     },
     {
       "note": 102,
@@ -1812,19 +2232,7 @@
       "f1_hz": 3010.344549421251,
       "stiffness": 0.012847383710163885,
       "partials": 3,
-      "extras": 8,
-      "rings": [
-        1,
-        4,
-        6,
-        9,
-        11,
-        14,
-        15,
-        17,
-        19,
-        21
-      ],
+      "extras": 7,
       "contact_delay_ms": [
         7.521,
         5.812,
@@ -1856,7 +2264,7 @@
       "median_phase_agreement": 0.8900483943665634,
       "onset_rise_ms": [
         9.852,
-        0.23,
+        0.2,
         0.2,
         0.2,
         0.2,
@@ -1885,7 +2293,34 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.8991785889535224,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "under": [],
+        "filled": [
+          102
+        ]
+      }
     },
     {
       "note": 105,
@@ -1907,18 +2342,6 @@
       "stiffness": 0.015477888472003631,
       "partials": 2,
       "extras": 6,
-      "rings": [
-        0,
-        1,
-        4,
-        6,
-        9,
-        11,
-        14,
-        15,
-        17,
-        21
-      ],
       "contact_delay_ms": [
         8.896,
         10.083,
@@ -1952,7 +2375,7 @@
         22.711,
         5.646,
         4.274,
-        0.2,
+        4.274,
         4.913,
         4.913,
         4.913,
@@ -1979,400 +2402,220 @@
       ],
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.9310442775967865,
-      "noise_bands_filled": 0
+      "noise_bands_filled": 0,
+      "halo_strings": {
+        "clear": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108
+        ],
+        "under": [],
+        "filled": [
+          105
+        ]
+      }
     }
   ],
-  "rings": {
+  "halo": {
     "strings": [
       {
-        "key": 91,
-        "cents": -23.22,
-        "hz": 1558.46,
-        "rate": 1.603,
-        "anchors": [
-          21,
-          24,
-          96,
-          105
-        ],
-        "timed_by_tone": [
-          21,
-          24,
-          96,
-          105
-        ]
+        "key": 89,
+        "hz": 1409.5,
+        "cents": 3.09,
+        "rate": 1.653,
+        "rate_layers": 0,
+        "right_over_left_db": -2.06,
+        "phase": 0.139
+      },
+      {
+        "key": 90,
+        "hz": 1492.38,
+        "cents": 1.21,
+        "rate": 1.384,
+        "rate_layers": 70,
+        "right_over_left_db": -3.93,
+        "phase": -0.852
       },
       {
         "key": 91,
-        "cents": -1.65,
-        "hz": 1577.99,
-        "rate": 3.677,
-        "anchors": [
-          66,
-          69,
-          78,
-          81,
-          84,
-          90,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          66,
-          69,
-          78,
-          81,
-          84,
-          90,
-          102,
-          105
-        ]
-      },
-      {
-        "key": 91,
-        "cents": 2.14,
-        "hz": 1581.45,
-        "rate": 0.362,
-        "anchors": [
-          54,
-          60,
-          72,
-          84
-        ],
-        "timed_by_tone": [
-          54,
-          60,
-          72,
-          84
-        ]
+        "hz": 1582.38,
+        "cents": 3.15,
+        "rate": 1.284,
+        "rate_layers": 50,
+        "right_over_left_db": -4.58,
+        "phase": -1.51
       },
       {
         "key": 92,
-        "cents": 26.11,
-        "hz": 1698.3,
-        "rate": 2.533,
-        "anchors": [
-          57,
-          66,
-          69,
-          84,
-          93
-        ],
-        "timed_by_tone": [
-          66,
-          69
-        ]
+        "hz": 1674.62,
+        "cents": 1.81,
+        "rate": 1.293,
+        "rate_layers": 13,
+        "right_over_left_db": -0.25,
+        "phase": -2.943
       },
       {
         "key": 93,
-        "cents": 0.26,
-        "hz": 1772.04,
-        "rate": 1.906,
-        "anchors": [
-          78,
-          90,
-          96,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          90,
-          96,
-          102,
-          105
-        ]
-      },
-      {
-        "key": 93,
-        "cents": 2.91,
-        "hz": 1774.75,
-        "rate": 2.361,
-        "anchors": [
-          69,
-          81,
-          84,
-          96
-        ],
-        "timed_by_tone": [
-          69,
-          96
-        ]
+        "hz": 1774.12,
+        "cents": 2.3,
+        "rate": 1.837,
+        "rate_layers": 30,
+        "right_over_left_db": -1.98,
+        "phase": 2.229
       },
       {
         "key": 94,
-        "cents": 4.34,
-        "hz": 1885.8,
-        "rate": 1.083,
-        "anchors": [
-          90,
-          93,
-          96,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          90,
-          93,
-          96,
-          102,
-          105
-        ]
-      },
-      {
-        "key": 94,
-        "cents": 32.58,
-        "hz": 1916.81,
-        "rate": 2.554,
-        "anchors": [
-          57,
-          69,
-          72,
-          84
-        ],
-        "timed_by_tone": [
-          57,
-          69,
-          72,
-          84
-        ]
-      },
-      {
-        "key": 95,
-        "cents": 43.26,
-        "hz": 2047.67,
-        "rate": 0.775,
-        "anchors": [
-          24,
-          69,
-          78,
-          81,
-          84
-        ],
-        "timed_by_tone": [
-          24,
-          69
-        ]
-      },
-      {
-        "key": 95,
-        "cents": 43.92,
-        "hz": 2048.45,
-        "rate": 3.838,
-        "anchors": [
-          69,
-          72,
-          90,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          69,
-          72
-        ]
-      },
-      {
-        "key": 96,
-        "cents": -2.9,
-        "hz": 2116.8,
-        "rate": 1.13,
-        "anchors": [
-          21,
-          33,
-          42,
-          60
-        ],
-        "timed_by_tone": [
-          21,
-          42,
-          60
-        ]
-      },
-      {
-        "key": 96,
-        "cents": 1.28,
-        "hz": 2121.92,
-        "rate": 3.21,
-        "anchors": [
-          48,
-          81,
-          90,
-          93,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          48,
-          81,
-          90,
-          93,
-          102,
-          105
-        ]
-      },
-      {
-        "key": 96,
-        "cents": 42.98,
-        "hz": 2173.65,
-        "rate": 4.16,
-        "anchors": [
-          33,
-          57,
-          66,
-          69,
-          78
-        ],
-        "timed_by_tone": [
-          78
-        ]
-      },
-      {
-        "key": 97,
-        "cents": -32.61,
-        "hz": 2205.95,
+        "hz": 1884.12,
+        "cents": 2.8,
         "rate": 1.268,
-        "anchors": [
-          33,
-          57,
-          60,
-          69,
-          81,
-          84
-        ],
-        "timed_by_tone": [
-          33,
-          57,
-          60,
-          69,
-          81,
-          84
-        ]
+        "rate_layers": 65,
+        "right_over_left_db": -1.9,
+        "phase": 2.36
+      },
+      {
+        "key": 95,
+        "hz": 1997.25,
+        "cents": 0.1,
+        "rate": 1.933,
+        "rate_layers": 38,
+        "right_over_left_db": 14.39,
+        "phase": -0.331
+      },
+      {
+        "key": 96,
+        "hz": 2117.88,
+        "cents": -2.02,
+        "rate": 1.343,
+        "rate_layers": 6,
+        "right_over_left_db": 9.93,
+        "phase": 1.223
       },
       {
         "key": 97,
-        "cents": -4.73,
-        "hz": 2241.76,
-        "rate": 1.316,
-        "anchors": [
-          24,
-          93,
-          96,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          93,
-          96,
-          102,
-          105
-        ]
+        "hz": 2242.12,
+        "cents": -4.45,
+        "rate": 1.596,
+        "rate_layers": 64,
+        "right_over_left_db": -5.8,
+        "phase": 2.889
       },
       {
         "key": 98,
-        "cents": -3.46,
-        "hz": 2378.36,
-        "rate": 1.196,
-        "anchors": [
-          93,
-          96,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          93,
-          96,
-          102,
-          105
-        ]
+        "hz": 2377.12,
+        "cents": -4.35,
+        "rate": 1.312,
+        "rate_layers": 45,
+        "right_over_left_db": -6.93,
+        "phase": -2.095
       },
       {
         "key": 99,
-        "cents": -38.84,
-        "hz": 2470.41,
-        "rate": 2.083,
-        "anchors": [
-          60,
-          69,
-          72,
-          90
-        ],
-        "timed_by_tone": []
+        "hz": 2519.0,
+        "cents": -5.12,
+        "rate": 1.575,
+        "rate_layers": 45,
+        "right_over_left_db": 2.2,
+        "phase": -2.508
       },
       {
         "key": 100,
-        "cents": 0.38,
-        "hz": 2679.01,
-        "rate": 1.547,
-        "anchors": [
-          69,
-          96,
-          102,
-          105
-        ],
-        "timed_by_tone": [
-          69,
-          96,
-          105
-        ]
+        "hz": 2680.0,
+        "cents": 1.02,
+        "rate": 1.728,
+        "rate_layers": 36,
+        "right_over_left_db": 2.84,
+        "phase": -3.056
       },
       {
         "key": 101,
-        "cents": -21.13,
-        "hz": 2805.09,
-        "rate": 4.682,
-        "anchors": [
-          69,
-          72,
-          84,
-          90
-        ],
-        "timed_by_tone": []
+        "hz": 2849.38,
+        "cents": 5.99,
+        "rate": 2.127,
+        "rate_layers": 23,
+        "right_over_left_db": 2.83,
+        "phase": 0.073
+      },
+      {
+        "key": 102,
+        "hz": 3003.5,
+        "cents": -3.94,
+        "rate": 1.653,
+        "rate_layers": 0,
+        "right_over_left_db": 3.68,
+        "phase": 1.775
       },
       {
         "key": 103,
-        "cents": -16.48,
-        "hz": 3164.98,
-        "rate": 0.777,
-        "anchors": [
-          36,
-          45,
-          96,
-          102
-        ],
-        "timed_by_tone": [
-          36,
-          45
-        ]
+        "hz": 3185.38,
+        "cents": -5.36,
+        "rate": 1.718,
+        "rate_layers": 23,
+        "right_over_left_db": 10.67,
+        "phase": -0.082
+      },
+      {
+        "key": 104,
+        "hz": 3373.06,
+        "cents": -9.44,
+        "rate": 1.669,
+        "rate_layers": 3,
+        "right_over_left_db": 1.64,
+        "phase": -1.308
+      },
+      {
+        "key": 105,
+        "hz": 3571.75,
+        "cents": -13.55,
+        "rate": 1.859,
+        "rate_layers": 3,
+        "right_over_left_db": 11.51,
+        "phase": -2.76
       },
       {
         "key": 106,
-        "cents": 39.22,
-        "hz": 3908.48,
-        "rate": 1.52,
-        "anchors": [
-          36,
-          54,
-          72,
-          78
-        ],
-        "timed_by_tone": [
-          54
-        ]
+        "hz": 3805.12,
+        "cents": -7.17,
+        "rate": 1.464,
+        "rate_layers": 8,
+        "right_over_left_db": 7.49,
+        "phase": 2.298
+      },
+      {
+        "key": 107,
+        "hz": 4028.88,
+        "cents": -11.45,
+        "rate": 1.797,
+        "rate_layers": 9,
+        "right_over_left_db": 8.49,
+        "phase": -1.825
       },
       {
         "key": 108,
-        "cents": -11.48,
-        "hz": 4276.26,
-        "rate": 3.482,
-        "anchors": [
-          30,
-          78,
-          102,
-          105
-        ],
-        "timed_by_tone": []
+        "hz": 4282.62,
+        "cents": -8.91,
+        "rate": 2.007,
+        "rate_layers": 17,
+        "right_over_left_db": -0.39,
+        "phase": -2.725
       }
     ],
-    "by_chance": 2.7
+    "slope_db_per_64": 13.499
   },
   "body": {
     "modes": 91,
@@ -2892,5 +3135,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "3564977d7242e56437f5e93e2c20524b04c0ff7fda6b639dabd1541b62d16df6"
+  "generated_header_sha256": "c9bfac1251da9fc2f35098b8c86cc0349a4c10c4f06e2a26bfbdb2dcc5c57e72"
 }

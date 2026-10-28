@@ -14,6 +14,9 @@ constexpr double pi=3.14159265358979323846;
 // the float lanes only ever run one chunk from it.
 constexpr int maxVoices=128, maxPartials=128, chunk=32, sineSize=4096;
 constexpr int lanes=4; // a partial's measured lanes, one per vector lane
+// F6, the lowest key without a damper, and the undamped strings from it up.
+constexpr int firstHalo=89,halo=static_cast<int>(measured::haloStrings.size());
+static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
 }
@@ -259,26 +262,15 @@ double keyStiffness(int note) noexcept {
   const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
   return std::exp(mix(std::log(a.B),std::log(b.B),static_cast<double>(note-a.note)/(b.note-a.note)));
 }
-// How far (Hz) `hz` lies from the nearest partial of the stiff-string series
-// on f1 with stiffness B.
-double detuning(double f1,double B,double hz) noexcept {
-  const auto at=[&](double n){return n*f1*std::sqrt((1+B*n*n)/(1+B));};
-  // The order at `hz`, from B n^4 + n^2 = (hz/f1)^2 (1 + B).
-  const double c=hz*hz/(f1*f1)*(1+B),n=std::max(1.,std::floor(std::sqrt(2*c/(1+std::sqrt(1+4*B*c)))));
-  return std::min(std::abs(hz-at(n)),std::abs(hz-at(n+1)));
-}
 }
 
 struct Engine::Impl {
   std::array<Voice,maxVoices> voices{};
   // Every measured lane's cache (see LaneCache), filled at construction.
-  static constexpr std::size_t ringLanes=measured::undamped[0].lanes.size();
   std::array<std::array<LaneCache,lanes>,measured::partials.size()> partialLanes{};
   std::array<LaneCache,measured::extras.size()> extraLanes{};
-  std::array<std::array<LaneCache,ringLanes>,measured::undamped.size()> undampedLanes{};
-  // How far (Hz) each string a recorded pitch lists lies from that pitch's
-  // nearest partial.
-  std::array<double,measured::undamped.size()> ringDetuning{};
+  // Each undamped string's frequency (Hz at A4 = 440 Hz).
+  std::array<double,halo> haloHz{};
   std::array<Channel,16> channels{};
   std::array<Resonator,88> sympathetic{};
   std::array<double,88> openness{};
@@ -342,10 +334,12 @@ struct Engine::Impl {
   void retuneSympathetic() noexcept {
     // The shared open-string bank follows concert tuning, independently of
     // channel pitch bends. Rebuild coefficients without resetting its q/p.
+    // The undamped strings ring at their measured frequencies and rates.
     for(int i=0;i<88;++i){auto& mode=sympathetic[i];
-      const double frequency=parameters.tuning*std::pow(2.,(i+21-69)/12.);
+      const int j=i+21-firstHalo;
+      const double frequency=j<0?parameters.tuning*std::pow(2.,(i+21-69)/12.):haloHz[j]*parameters.tuning/440;
       const Complex r=rotation(frequency);mode.c=r.re;mode.s=r.im;
-      mode.decay=std::exp(-(.7+.001*frequency)/sampleRate);
+      mode.decay=std::exp(-(j<0?.7+.001*frequency:measured::haloStrings[j].rate)/sampleRate);
     }
   }
   void prepareBody() noexcept {
@@ -595,6 +589,21 @@ struct Engine::Impl {
       knock(ring[m/lanes],m%lanes,g,ahead);knock(onset[m/lanes],m%lanes,{-g.re,-g.im},ahead);
     }
     ringing=rising=true;
+    // The undamped strings: the strike sets every one ringing but its own
+    // key's, which its partials play, at the level the two pitches around
+    // the key set it (dB between them), softened and tinted like a
+    // component of its order. They ring on in the shared bank whatever
+    // damps the strings. The recordings do not fix their phases, so each
+    // key gives each string a fixed one.
+    for(int j=0;j<halo;++j){const int key=firstHalo+j;
+      if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
+      const double order=std::max(1.,haloHz[j]/f1);
+      const double level=mix(measured::haloLevels[upper-1][j],measured::haloLevels[upper][j],t)+measured::haloSlopeDb*(v-64)/64;
+      const double amplitude=std::pow(10.,level/20)*softGain*std::exp(-soft*.115*(order-1))
+                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
+      const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);
+      auto& mode=sympathetic[key-21];mode.q+=amplitude*std::cos(phase);mode.p+=amplitude*std::sin(phase);
+    }
     // The board's noise: each band's density between the pitches like the
     // partials' levels, tinted and softened like a partial of its order.
     auto& burst=claimBurst();
@@ -693,42 +702,6 @@ struct Engine::Impl {
       if(filled==lanes)close(true);
     }
     if(filled>0&&voice.count<maxPartials)close(true);
-    // The strings from F6 up have no dampers, and a strike sets them ringing
-    // at their own pitches, on after the key is let go. Each recorded pitch
-    // lists the ones it was heard to ring; a string both list blends like a
-    // partial, one that only one lists fades out towards the other.
-    int ua=a.undampedFirst,ub=b.undampedFirst;
-    const int endua=a.undampedFirst+a.undampedCount,endub=b.undampedFirst+b.undampedCount;
-    while((ua<endua||ub<endub)&&voice.count<maxPartials){
-      const int ra=ua<endua?measured::undamped[ua].ring:1<<30,rb=ub<endub?measured::undamped[ub].ring:1<<30;
-      // Either pitch's entry stands in for the other's where only one lists the string.
-      const int ix=ra<=rb?ua:ub,iy=rb<=ra?ub:ua;const auto& x=measured::undamped[ix];const auto& y=measured::undamped[iy];
-      const double weight=ra==rb?1:ra<rb?1-t:t;
-      if(ra<=rb)++ua;
-      if(rb<=ra)++ub;
-      const auto& ring=measured::rings[std::min(ra,rb)];
-      const double frequency=keyPitch(ring.key)*std::pow(2.,ring.cents/1200);
-      // The struck key's own strings are the series.
-      if(weight<=0||frequency>highest||std::abs(1200*std::log2(frequency/f1))<=measured::unisonCents)continue;
-      // A string rings through the strike's partial nearest it, as a
-      // resonator driven off its pitch: by the strike's decay (the string's
-      // faster lane) over the distance between them, against the recorded
-      // pitch's. Never louder than that pitch rang it.
-      const double away=detuning(f1,B,frequency);
-      const auto offPitch=[&](int i){
-        const double rate=measured::undamped[i].lanes[0].rate;
-        return std::min(0.,20*std::log10(std::hypot(rate,2*pi*ringDetuning[i])/std::hypot(rate,2*pi*away)));};
-      const double cx=offPitch(ix),cy=offPitch(iy);
-      for(int j=0;j<static_cast<int>(x.lanes.size())&&voice.count<maxPartials;++j){
-        LaneData lx=laneAt(x.lanes[j],undampedLanes[ix][j],v),ly=laneAt(y.lanes[j],undampedLanes[iy][j],v);
-        lx.level+=cx;ly.level+=cy;
-        LaneData l=blendLane(lx,ly,t);
-        l.level+=20*std::log10(weight);
-        add(frequency,std::max(1.,frequency/f1),l);
-        if(filled==lanes)close(false);
-      }
-    }
-    if(filled>0&&voice.count<maxPartials)close(false);
     if(voice.count==0)voice.active=false;
   }
   // A partial's rise, tuning, weights and state from its strike, `ahead`
@@ -830,6 +803,18 @@ struct Engine::Impl {
       double l=static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3);
       double r=static_cast<double>(lane(r4,0))+lane(r4,1)+lane(r4,2)+lane(r4,3);
       if(noisy){l+=noiseLeft[i];r+=noiseRight[i];}
+      // The undamped strings ring from their strikes alone (strike()),
+      // heard through their measured pickups like the partials, whatever
+      // the Resonance control.
+      for(int j=0;j<halo;++j){auto& mode=sympathetic[firstHalo-21+j];const auto& string=measured::haloStrings[j];
+        const double d=mode.decay/(1+180*mute*mute/sampleRate);
+        const double q=mode.q,im=mode.p;
+        mode.q=d*(mode.c*q+mode.s*im);mode.p=d*(mode.c*im-mode.s*q);
+        if(mode.q<1e-30&&mode.q>-1e-30)mode.q=0;
+        if(mode.p<1e-30&&mode.p>-1e-30)mode.p=0;
+        // The bank turns the other way to the partials' lanes.
+        l+=string.left*mode.q;r+=string.rightRe*mode.q+string.rightIm*mode.p;
+      }
       // The pickup's own image at the default width; narrower towards mono.
       const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
       double outL=mid+side,outR=mid-side;
@@ -837,7 +822,7 @@ struct Engine::Impl {
       // claim the reference solver's reciprocal 475-mode soundboard network.
       // No feedback reaches the driven voices, so this response cannot run away.
       double responseL=0,responseR=0;
-      for(int note=0;note<88;++note){
+      for(int note=0;note<firstHalo-21;++note){
         const double openness=this->openness[note];
         auto& mode=sympathetic[note];
         const double d=mode.decay/(1+(1-openness)*60/sampleRate+180*mute*mute/sampleRate);
@@ -868,12 +853,7 @@ Engine::Engine(double sampleRate):impl(new Impl){
   auto& p=*impl;
   for(std::size_t i=0;i<measured::partials.size();++i)for(int j=0;j<lanes;++j)p.partialLanes[i][j]=cacheLane(measured::partials[i].lanes[j]);
   for(std::size_t i=0;i<measured::extras.size();++i)p.extraLanes[i]=cacheLane(measured::extras[i].lane);
-  for(std::size_t i=0;i<measured::undamped.size();++i)for(std::size_t j=0;j<Impl::ringLanes;++j)p.undampedLanes[i][j]=cacheLane(measured::undamped[i].lanes[j]);
-  for(const auto& anchor:measured::anchors)
-    for(int i=anchor.undampedFirst;i<anchor.undampedFirst+anchor.undampedCount;++i){
-      const auto& ring=measured::rings[measured::undamped[i].ring];
-      p.ringDetuning[i]=detuning(keyPitch(anchor.note),keyStiffness(anchor.note),keyPitch(ring.key)*std::pow(2.,ring.cents/1200));
-    }
+  for(int j=0;j<halo;++j)p.haloHz[j]=keyPitch(firstHalo+j)*std::pow(2.,measured::haloStrings[j].cents/1200);
   prepare(sampleRate);
 }
 Engine::~Engine()=default;

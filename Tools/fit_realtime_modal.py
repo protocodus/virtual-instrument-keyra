@@ -8,7 +8,9 @@ layers. Each anchor is calibrated by `piano_analysis.analyse_anchor`: every
 partial is fitted jointly across the layers, with lanes whose rates and
 frequencies the strings fix and whose complex amplitude per microphone the
 hammer and the pickup set. What the partials leave below the treble's
-fundamentals gives the body modes every strike knocks. The fitted numbers go
+fundamentals gives the body modes every strike knocks, and the undamped
+strings from F6 up, which every strike sets ringing, are measured as tones at
+their own pitches across the anchors. The fitted numbers go
 into Source/DSP/MeasuredModalData.h; no recorded waveform or impulse response
 enters the header.
 
@@ -53,15 +55,18 @@ def sha256(path: Path) -> str:
 # data on the stretch curve.
 UNCALIBRATED = {108: 'strongest components 90-100 cents above the stretch trend; no partial series explains '
                      'the recording'}
-# The keys from F6 up have no dampers: their strings ring with every strike
-# at their own pitches. The analysis searches beside each one's pitch; a
-# string is a residual peak that recurs, within RING_CENTS, in RING_PITCHES
-# recorded pitches or more (find_rings). A peak within HALO_CENTS of an
-# anchor's own fundamental is its unison, which the partial's lanes hold.
+# The keys from F6 up have no dampers: every strike sets their strings
+# ringing at their own pitches (halo_data). The analysis also searches the
+# residual beside each one's pitch, so that the noise is measured clear of
+# them; a pitch's components leave those peaks out, and any other within
+# HALO_UNISON of a string's pitch, which is that string: 95 % of the peaks
+# halo_pitches takes for a string lie that close to it. (Within UNISON_CENTS
+# instead, a fifth of the bass's components fell near some string by
+# chance.) A peak within UNISON_CENTS of an anchor's own fundamental is its
+# unison, which the partial's lanes hold.
 UNDAMPED = range(89, 109)
-HALO_CENTS = 15.0
-RING_CENTS = 1.5
-RING_PITCHES = 4
+UNISON_CENTS = 15.0
+HALO_UNISON = 3.5
 
 
 def train_anchors():
@@ -290,8 +295,8 @@ def onset_rise(x, sr, start, delay, f1, waves, rises, seconds=.03):
 
 
 def header_waves(data, i, sr, samples, contact):
-    """Each partial, extra component and ringing undamped string of an
-    anchor's generated data as the engine plays it at layer i, both channels from `contact` seconds into
+    """Each partial and extra component of an anchor's generated data as the
+    engine plays it at layer i, both channels from `contact` seconds into
     `samples`, without its rise; and each one's own rise (s) there, none for a
     component beside the series, which starts at contact."""
     import math
@@ -302,8 +307,8 @@ def header_waves(data, i, sr, samples, contact):
     on = t >= contact
     x = (data['velocities'][i] - 64) / 64
     waves, rises = [], []
-    for p in data['partials'] + data['extras'] + data['undamped']:
-        hz = p['hz'] if 'hz' in p else pa.stiff(data['f1'], data['B'], p['order']) * 2 ** (p['cents'] / 1200)
+    for p in data['partials'] + data['extras']:
+        hz = pa.stiff(data['f1'], data['B'], p['order']) * 2 ** (p['cents'] / 1200)
         wave = np.zeros((samples, 2))
         for lane in p['lanes']:
             g = 10 ** (lane['level_db'][i] / 20) * np.exp(1j * lane['phase'][i])
@@ -315,145 +320,9 @@ def header_waves(data, i, sr, samples, contact):
     return np.array(waves), np.array(rises)
 
 
-def find_rings(results, strings):
-    """The undamped strings heard ringing: every recorded pitch's residual
-    peaks from the undamped strings' search span up, its own unison aside,
-    pooled and grouped where they agree within RING_CENTS of a group's lowest.
-    A group heard in RING_PITCHES recorded pitches or more is a string: kept
-    at its median frequency, by the key whose pitch (`strings`) it sits
-    nearest. Returns the strings ({key, cents, hz}, by frequency), the string
-    each peak joins, {(note, index): string}, and how many such groups the
-    same peaks form on average when each recorded pitch's are shifted by a
-    random amount up to 50 cents: the strings that may be chance alignments."""
-    import math
-    import numpy as np
-    import piano_analysis as pa
-    low = pa.HALO_LOW
-    peaks = sorted((float(f), r['note'], k) for r in results for k, f in enumerate(r['extra_freqs'])
-                   if f >= low and abs(1200 * math.log2(f / series(r)[0])) > HALO_CENTS)
-
-    def strings_in(peaks):
-        groups = []
-        for peak in sorted(peaks):
-            if groups and 1200 * math.log2(peak[0] / groups[-1][0][0]) <= RING_CENTS:
-                groups[-1].append(peak)
-            else:
-                groups.append([peak])
-        return [g for g in groups if len({note for _, note, _ in g}) >= RING_PITCHES]
-    rings, member = [], {}
-    for group in strings_in(peaks):
-        hz = float(np.median([f for f, _, _ in group]))
-        key = min(strings, key=lambda m: abs(math.log2(hz / strings[m])))
-        member.update({(note, k): len(rings) for _, note, k in group})
-        rings.append({'key': key, 'cents': 1200 * math.log2(hz / strings[key]), 'hz': hz})
-    rng = np.random.default_rng(0)
-    notes = sorted({note for _, note, _ in peaks})
-    chance = []
-    for _ in range(50):
-        shift = dict(zip(notes, rng.uniform(-50, 50, len(notes))))
-        chance.append(len(strings_in([(f * 2 ** (shift[note] / 1200), note, k) for f, note, k in peaks])))
-    return rings, member, float(np.mean(chance))
-
-
-def ring_rates(results, rings, member):
-    """Each string's `rate` (1/s): the median of its slower lane's over the
-    recorded pitches whose fits timed that lane (left it above the slowest
-    rate a fit allows)."""
-    import numpy as np
-    import piano_analysis as pa
-    rates = {}
-    for r in results:
-        for k in range(len(r['extra_freqs'])):
-            ring, fit = member.get((r['note'], k)), r['ring_fits'][k]
-            if ring is None or fit is None:
-                continue
-            slow = float(np.min(np.exp(fit['theta'][:2])))
-            if slow > pa.SLOWEST_RATE * 1.001:
-                rates.setdefault(ring, []).append(slow)
-    for ring, string in enumerate(rings):
-        string['rate'] = float(np.median(rates[ring]))
-
-
-# An undamped string's ring measured as a tone. The fit measures a string
-# through a window as wide as the gap to its neighbours, which also holds the
-# board's noise around a faint string, and a slow lane can take that noise for
-# the string ringing on. Through a 0.5 s Hann window the recording's largest
-# amplitude within 2 Hz of the string, from 1 s after contact every 0.25 s, is
-# the string's tone where it stands 10 dB over the median from 4 to 20 Hz
-# either side; elsewhere it is at most the string's.
-RING_LATE = tuple(1 + .25 * k for k in range(11))     # s after contact
-
-
-def ring_tones(result, shifts, hzs):
-    """Per layer, string and RING_LATE time: the recording's tone (dB) at each
-    of `hzs`, and whether it stands clear of the noise around it."""
-    import numpy as np
-    import piano_analysis as pa
-    tone = np.full((len(result['layers']), len(hzs), len(RING_LATE)), np.nan)
-    clear = np.zeros(tone.shape, bool)
-    for i, (case, L) in enumerate(zip(result['cases'], result['layers'])):
-        sr, x = pa.load(WAV / f'{case}.wav')
-        mono = x.mean(axis=1)
-        n = int(.5 * sr)
-        w = np.hanning(n)
-        f = np.fft.rfftfreq(8 * n, 1 / sr)
-        for k, t in enumerate(RING_LATE):
-            start = int(round((L['delay'] - shifts[i] + t - .25) * sr))
-            if start + n > len(mono):
-                break
-            spectrum = np.abs(np.fft.rfft(mono[start:start + n] * w, 8 * n)) * 2 / np.sum(w)
-            for j, hz in enumerate(hzs):
-                d = np.abs(f - hz)
-                tone[i, j, k] = 20 * np.log10(np.max(spectrum[d < 2]) + 1e-15)
-                clear[i, j, k] = tone[i, j, k] >= 20 * np.log10(np.median(spectrum[(d >= 4) & (d <= 20)]) + 1e-15) + 10
-    return tone, clear
-
-
-def time_ring(lanes, tone, clear, slowest, velocities, sr):
-    """An undamped string's lanes, fastest first, timed and held by its tone
-    (layers x RING_LATE, from ring_tones). Where the slower lane carries the
-    ring (10 dB over the faster as fitted) and the tone stands clear in two or
-    more frames of a layer, spanning a second in all, the tone's decay, shared
-    by the layers, times that lane and its level there sets the lane's, the
-    correction interpolated across velocity to the other layers. Otherwise no
-    lane decays more slowly than `slowest`. At no layer does the string then
-    sound over the tone, both lanes heard at once."""
-    import numpy as np
-    import piano_analysis as pa
-    t = np.array(RING_LATE)
-    n = int(.5 * sr)
-    u, w = (np.arange(n) - n / 2) / sr, np.hanning(n)
-
-    def heard(lane):
-        """dB, layers x RING_LATE, as the tone is measured."""
-        gain = abs(lane['left'] + lane['right']) / 2 * np.sum(w * np.exp(-lane['rate'] * u)) / np.sum(w)
-        return np.asarray(lane['level_db'])[:, None] + 20 * np.log10(gain + 1e-30) - 8.686 * lane['rate'] * t[None, :]
-
-    fast, slow = lanes[0], lanes[-1]
-    late = clear & np.isfinite(tone) & (heard(slow) >= heard(fast) + 10)
-    used = late.sum(axis=1) >= 2
-    span = max((float(np.ptp(t[row])) for row in late[used]), default=0.0)
-    if span >= 1:
-        dt = np.concatenate([t[row] - t[row].mean() for row in late[used]])
-        dy = np.concatenate([tone[i, row] - tone[i, row].mean() for i, row in zip(np.flatnonzero(used), late[used])])
-        slow['rate'] = max(pa.SLOWEST_RATE, -float(np.sum(dt * dy) / np.sum(dt * dt)) / 8.686)
-        error = np.where(late, tone - heard(slow), np.nan)
-        shift = np.array([np.nanmean(row) for row in error[used]])
-        slow['level_db'] = np.asarray(slow['level_db']) + np.interp(velocities, velocities[used], shift)
-    else:
-        for lane in lanes:
-            lane['rate'] = max(lane['rate'], slowest)
-    total = 20 * np.log10(sum(10 ** (heard(lane) / 20) for lane in lanes))
-    excess = np.nanmax(np.where(np.isfinite(tone), total - tone, -np.inf), axis=1)
-    for lane in lanes:
-        lane['level_db'] = np.asarray(lane['level_db']) - np.maximum(excess, 0)
-    lanes.sort(key=lambda lane: -lane['rate'])
-    return span >= 1
-
-
-def anchor_data(result, rings, member):
-    """The engine's data for one calibrated anchor; `rings` and `member` are
-    find_rings' strings and the string each residual peak joins."""
+def anchor_data(result, halo_hz):
+    """The engine's data for one calibrated anchor; `halo_hz` are the
+    undamped strings' frequencies (halo_pitches)."""
     import math
     import numpy as np
     from scipy import stats
@@ -523,25 +392,19 @@ def anchor_data(result, rings, member):
                          'lanes': lanes, 'explained': explained, 'phase_agreement': float(agreement[row]),
                          'error': float(np.median([e for e in fit['relative_error'] if e is not None]))})
     # The components beside the series, in the same frame. One within
-    # HALO_CENTS of the fundamental is the struck key's own unison, which the
-    # partial's lanes hold. One that joins a ringing string is kept as that
-    # string (the strongest, where several join one); the rest of the strings'
-    # search finds no string. The others sit at the order of the series
-    # nearest them, cents from there.
-    extras, ringing = [], {}
+    # UNISON_CENTS of the fundamental is the struck key's own unison, which
+    # the partial's lanes hold. One within HALO_UNISON of an undamped
+    # string, and every peak the strings' own search finds, is left to
+    # halo_data, which measures the strings across the recorded pitches. The
+    # others sit at the order of the series nearest them, cents from there.
+    extras = []
     orders_all = np.arange(1, 400)
     ladder = pa.stiff(f1, B, orders_all)
     extra_snr = np.array([L['extra_peak_db'] - L['extra_floor_db'] for L in result['layers']]) \
         if len(result.get('extra_freqs', [])) else None
-    def peak_db(lanes):
-        return max(float(np.max(lane['level_db'])) for lane in lanes)
-    tone_hz = sorted({rings[ring]['hz'] for (note, _), ring in member.items() if note == result['note']})
-    tones = ring_tones(result, shifts, tone_hz) if tone_hz else None
     for k, (f, fit) in enumerate(zip(result['extra_freqs'], result['extra_fits'])):
-        ring = member.get((result['note'], k))
-        if ring is not None:
-            fit = result['ring_fits'][k]
-        if fit is None or (ring is None and result['extra_halo'][k]):
+        if fit is None or result['extra_halo'][k] or \
+                min(abs(1200 * math.log2(f / hz)) for hz in halo_hz.values()) <= HALO_UNISON:
             continue
         layers = [i for i, a in enumerate(fit['amplitudes']) if a is not None]
         if len(layers) < 3:
@@ -549,37 +412,14 @@ def anchor_data(result, rings, member):
         u, mu, _ = lane_shapes([fit['amplitudes'][i] for i in layers])
         mu = mu * np.exp(2j * math.pi * f * (delays[layers] - shifts[layers]))[:, None]
         lanes = sorted(lanes_of(fit['theta'], u, mu, layers, extra_snr[layers, k]), key=lambda lane: -lane['rate'])
-        if peak_db(lanes) < -110 or abs(1200 * math.log2(f / f1)) <= HALO_CENTS:
-            continue
-        component = {'lanes': lanes, 'error': float(np.median([e for e in fit['relative_error'] if e is not None]))}
-        if ring is not None:
-            # A string decays at its own rates whichever key sets it ringing,
-            # but its measurement can outlast it: through a window as wide as
-            # the gap to its neighbours, a faint string's envelope also holds
-            # the board's noise, which a slow lane takes for the string ringing
-            # on. Its tone in the recording times the slower lane where it
-            # rings clear of that noise, and holds both lanes under it
-            # everywhere (time_ring; the rules compared are in
-            # Docs/decisions.md, 28 October).
-            j = tone_hz.index(rings[ring]['hz'])
-            component['timed'] = time_ring(lanes, tones[0][:, j], tones[1][:, j], rings[ring]['rate'], velocities,
-                                           result['sr'])
-            # It rings at one pitch too: its group's median, where the slower
-            # lane, the one that rings on, sits within a few tenths of a hertz.
-            # The fit's offsets refine this pitch's own peak, which may sit up
-            # to RING_CENTS from it, so the faster lane keeps only its spacing
-            # from the slower.
-            slow = lanes[-1]['offset_hz']
-            for lane in lanes:
-                lane['offset_hz'] -= slow
-            if ring not in ringing or peak_db(lanes) > peak_db(ringing[ring]['lanes']):
-                ringing[ring] = component | {'ring': ring, 'hz': rings[ring]['hz']}
+        peak = max(float(np.max(lane['level_db'])) for lane in lanes)
+        if peak < -110 or abs(1200 * math.log2(f / f1)) <= UNISON_CENTS:
             continue
         n = int(orders_all[np.argmin(np.abs(ladder - f))])
-        extras.append(component | {'order': n, 'cents': float(1200 * math.log2(f / ladder[n - 1]))})
+        extras.append({'lanes': lanes, 'error': float(np.median([e for e in fit['relative_error'] if e is not None])),
+                       'order': n, 'cents': float(1200 * math.log2(f / ladder[n - 1]))})
     data = {'note': result['note'], 'f1': f1, 'B': B, 'velocities': velocities.tolist(), 'partials': partials,
-            'extras': extras, 'undamped': [ringing[ring] for ring in sorted(ringing)],
-            'layer_shift_ms': [round(1000 * d, 3) for d in shifts]}
+            'extras': extras, 'layer_shift_ms': [round(1000 * d, 3) for d in shifts]}
     # The onset rise of every layer as the engine plays the data. Layer to
     # layer it scatters by a factor of several, more than any trend, so the
     # anchor keeps a straight line through it in log time over velocity:
@@ -594,6 +434,177 @@ def anchor_data(result, rings, member):
     line = intercept + slope * velocities
     data.update({'onset_rise': np.exp(line), 'layer_onset_rise_ms': [round(1000 * r, 3) for r in onsets]})
     return data
+
+
+# The strings from F6 up have no dampers, so every strike sets all of them
+# ringing through the bridge, and they ring on after the key is let go: a
+# second after contact they sound 40 to 80 dB under the note. Each string is
+# measured as a tone at one frequency (halo_pitches) through 0.5 s Hann
+# windows every 0.25 s from 1 to 2 s after contact (HALO_TIMES): the largest
+# amplitude within 1 Hz of it, both channels' mean power. It rings clear
+# where that stands HALO_CLEAR over the median from 4 to 20 Hz either side.
+# Later the strings fall more slowly, but by then the room's noise hides most
+# of them. Where a partial of the struck key's series lies within HALO_APART
+# of a string, the tone there is that partial's; below F#3 (HALO_LOWEST) the
+# tone at every string's pitch is the struck key's own dense series.
+HALO_TIMES = (1.0, 1.25, 1.5, 1.75, 2.0)   # s after contact
+HALO_CLEAR = 10.0                          # dB
+HALO_APART = 10.0                          # Hz
+HALO_LOWEST = 54
+# Where the noise hides a string the recording only bounds it: its level is
+# taken this far (dB) under the tone there.
+HALO_HIDDEN = 10.0
+
+
+def halo_spectra(result, i, windows):
+    """Layer i's stereo spectrum (the recording's units, zero-padded 8 times)
+    through each Hann window of `windows` (its centre in seconds after string
+    contact, its length in seconds), with its frequencies; (None, None) for a
+    window past the recording's end."""
+    import numpy as np
+    import piano_analysis as pa
+    L = result['layers'][i]
+    sr, x = pa.load(WAV / f'{result["cases"][i]}.wav')
+    contact = L['start'] + L['delay'] * sr
+    spectra = []
+    for centre, seconds in windows:
+        n = int(seconds * sr)
+        start = int(round(contact + centre * sr)) - n // 2
+        if start + n > len(x):
+            spectra.append((None, None))
+            continue
+        w = np.hanning(n)
+        spectra.append((np.fft.rfftfreq(8 * n, 1 / sr),
+                        np.fft.rfft(x[start:start + n] * w[:, None], 8 * n, axis=0) * 2 / np.sum(w)))
+    return spectra
+
+
+def halo_tone(f, z, hz):
+    """At `hz` in a stereo spectrum `z` (frequencies `f`): the tone (dB, both
+    channels' mean power, the largest within 1 Hz), how far it stands over the
+    median from 4 to 20 Hz either side (dB), and both channels there."""
+    import numpy as np
+    d = np.abs(f - hz)
+    power = np.mean(np.abs(z) ** 2, axis=1)
+    near = np.flatnonzero(d <= 1)
+    k = near[np.argmax(power[near])]
+    noise = np.median(power[(d >= 4) & (d <= 20)])
+    return 10 * np.log10(power[k] + 1e-30), 10 * np.log10(power[k] / (noise + 1e-30)), z[k]
+
+
+def halo_pitches(results, strings):
+    """Each undamped string's frequency (Hz), by key: through a Hann window
+    from 1 to 2 s after contact in the train recordings struck from C6 up,
+    the strongest peak within 30 cents of the pitch the engine gives the key
+    (`strings`), where it lies HALO_APART or more from every partial of the
+    struck key's series and rings clear 1 s after contact; the median over
+    those recordings."""
+    import numpy as np
+    import piano_analysis as pa
+    found = {key: [] for key in UNDAMPED}
+    for r in results:
+        if r['note'] < 84:
+            continue
+        ladder = pa.stiff(*series(r), np.arange(1, 400))
+        for i in range(len(r['layers'])):
+            (f, z), (g, y) = halo_spectra(r, i, [(1.5, 1.0), (1.0, .5)])
+            power = np.mean(np.abs(z) ** 2, axis=1)
+            for key in UNDAMPED:
+                span = (f >= strings[key] * 2 ** (-30 / 1200)) & (f <= strings[key] * 2 ** (30 / 1200))
+                hz = float(f[span][np.argmax(power[span])])
+                if key != r['note'] and np.min(np.abs(ladder - hz)) >= HALO_APART and halo_tone(g, y, hz)[1] >= HALO_CLEAR:
+                    found[key].append(hz)
+    return {key: float(np.median(hzs)) for key, hzs in found.items()}
+
+
+def halo_data(results, strings, hz):
+    """The undamped strings every strike sets ringing (see HALO_TIMES), at
+    their frequencies `hz` (halo_pitches) by key; `strings` are the pitches
+    the engine gives their keys.
+
+    Each string decays at one rate and is heard through one stereo pickup.
+    The pickup: the median right-over-left level and the mean phase between
+    the channels over every window where the string rings clear. The rate: the string's fall from 1 to 2 s where it
+    rings 20 dB clear at the start and 6 dB at the end, the median over the
+    recordings, drawn towards the median of all the strings' by ten
+    recordings' worth (most ring clear in dozens, a few in under five).
+    Brought back to contact at that rate, its level in a layer is the mean
+    over the windows where it rings clear, if two or more; otherwise the
+    recording only bounds it, at the 1 s window's tone. One slope across
+    velocity (dB per 64) serves every string and pitch, pooled within each
+    pitch and string that rings clear in three layers or more. A recorded
+    pitch's level for a string at velocity 64 is the mean over the layers
+    where it rings clear, if two or more do; otherwise HALO_HIDDEN under the
+    median bound. A string that the struck key's series or its own key
+    covers, and every string below HALO_LOWEST, takes the levels of the
+    recorded pitches around it, interpolated by key and held beyond them."""
+    import math
+    import numpy as np
+    import piano_analysis as pa
+    db = 20 / math.log(10)
+    t = np.array(HALO_TIMES)
+    keys = list(UNDAMPED)
+    measured = []
+    for a, r in enumerate(results):
+        if r['note'] < HALO_LOWEST:
+            continue
+        ladder = pa.stiff(*series(r), np.arange(1, 400))
+        shape = (len(r['layers']), len(keys), len(t))
+        m = {'anchor': a, 'velocities': np.array([L['velocity'] for L in r['layers']], float),
+             'apart': np.array([key != r['note'] and np.min(np.abs(ladder - hz[key])) >= HALO_APART for key in keys]),
+             'tone': np.full(shape, np.nan), 'margin': np.full(shape, np.nan),
+             'channels': np.zeros(shape + (2,), complex)}
+        for i in range(len(r['layers'])):
+            for k, (f, z) in enumerate(halo_spectra(r, i, [(c, .5) for c in t])):
+                if z is None:
+                    continue
+                for j, key in enumerate(keys):
+                    m['tone'][i, j, k], m['margin'][i, j, k], m['channels'][i, j, k] = halo_tone(f, z, hz[key])
+        m['clear'] = (m['margin'] >= HALO_CLEAR) & m['apart'][None, :, None]
+        measured.append(m)
+    pickups = []
+    for j in range(len(keys)):
+        pairs = np.concatenate([m['channels'][:, j][m['clear'][:, j]] for m in measured])
+        balance = float(np.median(20 * np.log10(np.abs(pairs[:, 1]) / np.abs(pairs[:, 0]))))
+        phase = float(np.angle(np.sum(pairs[:, 1] * np.conj(pairs[:, 0]) / np.abs(pairs[:, 1] * pairs[:, 0]))))
+        left = math.sqrt(2 / (1 + 10 ** (balance / 10)))
+        pickups.append((left, left * 10 ** (balance / 20) * complex(math.cos(phase), math.sin(phase))))
+    falls = [np.concatenate([(m['tone'][:, j, 0] - m['tone'][:, j, -1])
+                             [(m['margin'][:, j, 0] >= 20) & (m['margin'][:, j, -1] >= 6)]
+                             for m in measured if m['apart'][j]]) for j in range(len(keys))]
+    pooled = float(np.median([np.median(x) for x in falls if len(x)]))
+    rates = np.array([(len(x) * np.median(x) + 10 * pooled) / (len(x) + 10) if len(x) else pooled
+                      for x in falls]) / db / (t[-1] - t[0])
+    xs, ys = [], []
+    for m in measured:
+        back = m['tone'] + db * rates[None, :, None] * t
+        m['rang'] = m['clear'].sum(axis=2) >= 2
+        m['level'] = np.where(m['rang'], np.sum(np.where(m['clear'], back, 0), axis=2)
+                              / np.maximum(m['clear'].sum(axis=2), 1), back[:, :, 0])
+        for j in np.flatnonzero(m['apart']):
+            rang = m['rang'][:, j]
+            if rang.sum() >= 3:
+                xs += list((m['velocities'][rang] - m['velocities'][rang].mean()) / 64)
+                ys += list(m['level'][rang, j] - m['level'][rang, j].mean())
+    slope = float(np.dot(xs, ys) / np.dot(xs, xs))
+    levels = np.full((len(results), len(keys)), np.nan)
+    kinds = [['filled'] * len(keys) for _ in results]
+    for m in measured:
+        at64 = m['level'] - slope * (m['velocities'][:, None] - 64) / 64
+        for j in np.flatnonzero(m['apart']):
+            rang = m['rang'][:, j]
+            if rang.sum() >= 2:
+                levels[m['anchor'], j], kinds[m['anchor']][j] = np.mean(at64[rang, j]), 'clear'
+            else:
+                levels[m['anchor'], j], kinds[m['anchor']][j] = np.median(at64[~rang, j]) - HALO_HIDDEN, 'under'
+    notes = np.array([r['note'] for r in results], float)
+    for j in range(len(keys)):
+        known = np.isfinite(levels[:, j])
+        levels[~known, j] = np.interp(notes[~known], notes[known], levels[known, j])
+    return {'keys': keys, 'hz': [hz[key] for key in keys],
+            'cents': [1200 * math.log2(hz[key] / strings[key]) for key in keys], 'rates': rates.tolist(),
+            'rate_layers': [len(x) for x in falls], 'pickups': pickups, 'slope': slope, 'levels': levels,
+            'kinds': kinds}
 
 
 # The soundboard and case. Every strike also knocks the instrument's body,
@@ -977,7 +988,7 @@ def number(x):
     return value + ('f' if '.' in value or 'e' in value else '.f')
 
 
-def header(anchors, rings, body, noise, action):
+def header(anchors, halo, body, noise, action):
     velocities = anchors[0]['velocities']
     layers = len(velocities)
     total = sum(len(a['partials']) for a in anchors)
@@ -1004,31 +1015,16 @@ def header(anchors, rings, body, noise, action):
              '// at high orders and phantom partials): one lane at its place by the',
              '// series (cents from an order), starting at contact.',
              'struct Extra { int order; float cents; Lane lane; };',
-             '// A string from F6 up, which has no damper, ringing with every strike at',
-             '// its own frequency: the key it sits nearest and its cents from the pitch the',
-             '// engine gives that key. Some sit 20 to 45 cents from every key\'s pitch;',
-             '// they recur across the recorded pitches like the rest.',
-             'struct Ring { int key; float cents; };',
-             f'constexpr std::array<Ring,{len(rings)}> rings{{{{'
-             + ','.join('{' + str(r['key']) + ',' + number(r['cents']) + '}' for r in rings) + '}};',
-             '// A component within unisonCents of a pitch\'s fundamental is that key\'s',
-             '// own unison, which its partial\'s lanes hold.',
-             f'constexpr float unisonCents={number(HALO_CENTS)};',
-             '// A string as a recorded pitch sets it ringing: two lanes, fastest first.',
-             '// Driven through the bridge, it follows the strike\'s decay, then rings on',
-             '// at its own, slower one.',
-             'struct Undamped { int ring; std::array<Lane,2> lanes; };',
              'struct Anchor { int note; float f1, B; std::array<float,layers> onsetRise; int first, count, '
-             'extraFirst, extraCount, undampedFirst, undampedCount; };',
+             'extraFirst, extraCount; };',
              f'constexpr std::array<Anchor,{len(anchors)}> anchors{{{{']
-    first = extra = ring = 0
+    first = extra = 0
     for a in anchors:
         lines.append(f'  {{{a["note"]},{number(a["f1"])},{number(a["B"])},'
                      + '{{' + ','.join(number(x) for x in a['onset_rise']) + '}}'
-                     + f',{first},{len(a["partials"])},{extra},{len(a["extras"])},{ring},{len(a["undamped"])}}},')
+                     + f',{first},{len(a["partials"])},{extra},{len(a["extras"])}}},')
         first += len(a['partials'])
         extra += len(a['extras'])
-        ring += len(a['undamped'])
     lines.append('}};')
     lines.append(f'constexpr std::array<Partial,{total}> partials{{{{')
     for a in anchors:
@@ -1043,19 +1039,34 @@ def header(anchors, rings, body, noise, action):
             lines.append(f'  {{{p["order"]},' + ','.join(number(p[k]) for k in ('cents', 'rise_seconds', 'rise_slope'))
                          + ',{{' + ','.join(lanes) + '}}},')
     lines.append('}};')
-    for kind, field, count, place in (('Extra', 'extras', extra, ('order', 'cents')), ('Undamped', 'undamped', ring, ('ring',))):
-        lines.append(f'constexpr std::array<{kind},{count}> {field}{{{{')
-        for a in anchors:
-            if a[field]:
-                lines.append(f'  // MIDI {a["note"]}')
-            for p in a[field]:
-                lanes = ['{' + ','.join(number(x) for x in (lane['rate'], lane['offset_hz'], lane['left'],
-                                                            lane['right'].real, lane['right'].imag))
+    lines.append(f'constexpr std::array<Extra,{extra}> extras{{{{')
+    for a in anchors:
+        if a['extras']:
+            lines.append(f'  // MIDI {a["note"]}')
+        for p in a['extras']:
+            lane, = p['lanes']
+            lines.append(f'  {{{p["order"]},{number(p["cents"])},'
+                         + '{' + ','.join(number(x) for x in (lane['rate'], lane['offset_hz'], lane['left'],
+                                                              lane['right'].real, lane['right'].imag))
                          + ',{{' + ','.join(number(x) for x in lane['level_db']) + '}}'
-                         + ',{{' + ','.join(number(x) for x in lane['phase']) + '}}}' for lane in p['lanes']]
-                lines.append(f'  {{{p[place[0]]},' + ''.join(number(p[k]) + ',' for k in place[1:])
-                             + ('{{' + ','.join(lanes) + '}}' if len(lanes) > 1 else lanes[0]) + '},')
-        lines.append('}};')
+                         + ',{{' + ','.join(number(x) for x in lane['phase']) + '}}}},')
+    lines += ['}};',
+              '// The strings from F6 up, which have no dampers: every strike sets them',
+              '// ringing, and they ring on after the key is let go. Each string\'s',
+              '// frequency (cents from the pitch the engine gives its key), decay rate',
+              '// (1/s) and stereo pickup (left real; right complex; mean channel power 1).',
+              'struct HaloString { float cents, rate, left, rightRe, rightIm; };',
+              f'constexpr std::array<HaloString,{len(halo["keys"])}> haloStrings{{{{'
+              + ','.join('{' + ','.join(number(x) for x in (c, r, u[0], u[1].real, u[1].imag)) + '}'
+                         for c, r, u in zip(halo['cents'], halo['rates'], halo['pickups'])) + '}};',
+              '// How loudly each recorded pitch\'s strike sets each string ringing: the',
+              '// level (dB) at contact at velocity 64, and the slope of every level (dB per',
+              '// 64 velocity).',
+              f'constexpr float haloSlopeDb={number(halo["slope"])};',
+              f'constexpr std::array<std::array<float,{len(halo["keys"])}>,{len(anchors)}> haloLevels{{{{']
+    for a, levels in zip(anchors, halo['levels']):
+        lines += [f'  // MIDI {a["note"]}', '  {{' + ','.join(number(x) for x in levels) + '}},']
+    lines.append('}};')
     lines += ['// The soundboard and case: modes every strike knocks, shared by every key',
               '// and measured under the treble\'s fundamentals. Each has its frequency (Hz),',
               '// decay rate (1/s) and one stereo pickup (left real; right complex; mean',
@@ -1114,6 +1125,8 @@ def header(anchors, rings, body, noise, action):
 
 
 def generate():
+    import cmath
+    import math
     import numpy as np
     import scipy
     anchors_in = train_anchors()
@@ -1128,15 +1141,13 @@ def generate():
             raise SystemExit(f'anchor {note} was analysed from other inputs: run with --analyse')
         results.append(result)
     strings = string_pitches({r['note']: series(r)[0] for r in results})
-    rings, member, chance = find_rings(results, strings)
-    ring_rates(results, rings, member)
+    halo_hz = halo_pitches(results, strings)
     for (note, layers), result in zip(anchors_in.items(), results):
-        data = anchor_data(result, rings, member)
+        data = anchor_data(result, halo_hz)
         anchors.append(data)
         errors = [p['error'] for p in data['partials']]
         records.append({'note': note, 'cases': [case for case, _, _ in layers], 'f1_hz': data['f1'],
                         'stiffness': data['B'], 'partials': len(data['partials']), 'extras': len(data['extras']),
-                        'rings': [u['ring'] for u in data['undamped']],
                         'contact_delay_ms': [round(1000 * L['delay'], 3) for L in result['layers']],
                         'layer_shift_ms': data['layer_shift_ms'],
                         'median_phase_agreement': float(np.median([p['phase_agreement'] for p in data['partials']])),
@@ -1152,7 +1163,11 @@ def generate():
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
     action = action_data([a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
-    content = header(anchors, rings, body, noise, action)
+    halo = halo_data(results, strings, halo_hz)
+    for record, kinds in zip(records, halo['kinds']):
+        record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
+                                  for kind in ('clear', 'under', 'filled')}
+    content = header(anchors, halo, body, noise, action)
     metadata = {
         'schema_version': 4,
         'corpus': str(CORPUS.relative_to(ROOT)), 'corpus_sha256': sha256(CORPUS),
@@ -1167,20 +1182,22 @@ def generate():
                   'phase at string contact per layer, the layers shifted in time to one phase pattern across the '
                   'partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the '
                   'series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their '
-                  'surroundings (the 64 most powerful per anchor), and beside each undamped string\'s pitch (MIDI '
-                  '89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a '
-                  'window that parts it from its neighbours and fitted with one lane from contact. '
-                  'Peaks within 15 cents of the fundamental are left to the partial\'s lanes. Peaks from F6 up '
-                  'that recur within 1.5 cents in four or more anchors are undamped strings ringing, fitted '
-                  'with two lanes instead. Where a string\'s tone (the largest amplitude within 2 Hz through 0.5 s '
-                  'Hann windows every 0.25 s from 1 to 3.5 s after contact) stands 10 dB over the median 4 to 20 Hz '
-                  'either side in two or more windows of a layer, a second apart in all, its decay there times the '
-                  'slower lane and its level sets the lane\'s; elsewhere no lane is slower than the string\'s median '
-                  'slower lane where its fits timed one; at no layer do the two lanes together stand over the tone. '
-                  'Each string is kept at one frequency for its slower lane and interpolated between anchors by '
-                  'string, lanes fastest first; the rest of the strings\' search is '
-                  'dropped. The other peaks are placed by the series in cents from their nearest order and '
-                  'cross-faded in power between anchors. One bank of '
+                  'surroundings (the 64 most powerful per anchor), each measured through a window that parts it '
+                  'from its neighbours and fitted with one lane from contact, placed by the series in cents from '
+                  'its nearest order and cross-faded in power between anchors; peaks within 15 cents of the '
+                  'fundamental are left to the partial\'s lanes, and those beside the undamped strings\' pitches '
+                  '(MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: '
+                  'each at one frequency, the median of the strongest peak within 30 cents of its key\'s pitch 1 to '
+                  '2 s after contact in the train recordings from C6 up, where clear; measured as tones (the '
+                  'largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after '
+                  'contact, both channels\' mean power, clear where 10 dB over the median 4 to 20 Hz either side) '
+                  'in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: '
+                  'per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings\' median '
+                  'by ten recordings) and one stereo pickup (the median level difference and mean phase between '
+                  'the channels), one velocity slope pooled within pitch and string, and per anchor and string a '
+                  'level at contact at velocity 64: the mean over the layers clear in two or more windows, '
+                  'brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series '
+                  'or key covers and anchors below F#3 take the levels of the anchors around. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
                   'linear in velocity, modes hidden by an anchor\'s partials taken from its neighbours. The '
@@ -1191,13 +1208,13 @@ def generate():
                   'layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms '
                   'after contact; one left/right coherence per band.'),
         'anchors': records,
-        'rings': {'strings': [{'key': r['key'], 'cents': round(r['cents'], 2), 'hz': round(r['hz'], 2),
-                               'rate': round(r['rate'], 3),
-                               'anchors': [a['note'] for a in anchors if any(u['ring'] == i for u in a['undamped'])],
-                               'timed_by_tone': [a['note'] for a in anchors
-                                                 if any(u['ring'] == i and u['timed'] for u in a['undamped'])]}
-                              for i, r in enumerate(rings)],
-                  'by_chance': round(chance, 1)},
+        'halo': {'strings': [{'key': key, 'hz': round(hz, 2), 'cents': round(cents, 2), 'rate': round(rate, 3),
+                              'rate_layers': count, 'right_over_left_db': round(20 * math.log10(abs(u[1]) / u[0]), 2),
+                              'phase': round(cmath.phase(u[1]), 3)}
+                             for key, hz, cents, rate, count, u in zip(halo['keys'], halo['hz'], halo['cents'],
+                                                                       halo['rates'], halo['rate_layers'],
+                                                                       halo['pickups'])],
+                 'slope_db_per_64': round(halo['slope'], 3)},
         'body': {'modes': len(body['hz']), 'hz': [round(float(f), 2) for f in body['hz']],
                  't60_seconds': [round(6.907755 / float(r), 3) for r in body['rates']],
                  'pickup_explained': [round(k, 3) for k in body['pickup_explained']],

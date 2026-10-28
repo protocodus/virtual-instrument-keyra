@@ -651,9 +651,10 @@ def contact_delay(x, sr, start, window=.15, drop_db=20.0):
 # Most undamped strings ring too weakly for that search, 40 to 90 dB under
 # the strike, but at places known in advance. A second search takes the
 # strongest residual peak beside each one's pitch that stands HALO_PROMINENCE
-# over its surroundings. It also finds chance peaks of the residual; which
-# peaks are strings is left to the fit, which pools every recorded pitch: a
-# string rings at the same frequency whichever key is struck.
+# over its surroundings. It also finds chance peaks of the residual. The fit
+# plays none of these peaks: it measures each string as a tone at one pitch
+# in every recorded pitch (fit_realtime_modal.halo_data). The search keeps
+# the strings out of the residual, in which the board's noise is measured.
 
 EXTRA_PROMINENCE = 20.0  # dB over the residual's median across 60 Hz
 EXTRA_LAYERS = 4         # layers it must stand out in
