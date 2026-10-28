@@ -19,7 +19,8 @@ Metrics per case (lower is better):
   tuning_cents    absolute partial frequency error, partials 1-30
   decay_db_s      late decay slope (0.5 s to 3.5 s, Theil-Sen) per partial,
                   both over the frames where the recording, averaged over
-                  0.1 s, is 6 dB above its floor
+                  0.1 s, is 6 dB above its floor, where those frames span
+                  half a second or more; the render's with that floor added
   attack_db       third-octave level error, 0-100 ms (10 ms hops)
   early_db        third-octave level error, 0.1-0.5 s
   sustain_db      third-octave level error, 0.5-3.0 s; a band counts where
@@ -193,7 +194,11 @@ def compare(ref, mod):
             continue
         if n <= 30:
             tune_err.append(abs(1200 * math.log2(mod['hz'][j] / ref['hz'][i])))
-        mdb = 10 * np.log10(np.maximum(mod['env_power'][j], 1e-30))
+        # The render as the recording would hold it, over its floor. Without
+        # it, a partial that falls silent within the span (A7v3's second, at
+        # the recording's floor throughout, from 2 s) left the slope to
+        # rounding residue 150 dB under it.
+        mdb = 10 * np.log10(mod['env_power'][j] * g + 10 ** (ref['floor'][i] / 10))
         # Both slopes over the frames where the recording stands clear of its
         # floor: a two-stage decay measured over different spans differs even
         # when the model is exact. The frames are chosen on the envelope
@@ -203,6 +208,11 @@ def compare(ref, mod):
         rt = ref['env_t']
         smooth = ndimage.uniform_filter1d(ref['env_power'][i], max(1, round(.1 / (rt[1] - rt[0]))), mode='nearest')
         late = (rt >= .5) & (rt <= 3.5) & (10 * np.log10(np.maximum(smooth, 1e-30)) > ref['floor'][i] + 6)
+        # Over less than half a second a slope measures the unison beat, not
+        # the decay: C7v12's third partial stood clear of its floor for 45 ms
+        # after 0.5 s and scored -163 dB/s against a render's +66.
+        if not late.any() or rt[late][-1] - rt[late][0] < .5:
+            continue
         rs = slope(rt, rdb, late)
         ms = slope(rt, np.interp(rt, mod['env_t'], mdb), late)
         if rs is not None and ms is not None:
