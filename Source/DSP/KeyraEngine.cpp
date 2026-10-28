@@ -213,10 +213,28 @@ double keyPitch(int note) noexcept {
   auto cents=[](const measured::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
   return 440*std::pow(2.,(note-69+mix(cents(a),cents(b),static_cast<double>(note-a.note)/(b.note-a.note))/100)/12.);
 }
+// A key's stiffness B, between the recorded pitches around it like its pitch.
+double keyStiffness(int note) noexcept {
+  const auto& anchors=measured::anchors;
+  int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
+  const auto& a=anchors[upper-1];const auto& b=anchors[upper];
+  return std::exp(mix(std::log(a.B),std::log(b.B),static_cast<double>(note-a.note)/(b.note-a.note)));
+}
+// How far (Hz) `hz` lies from the nearest partial of the stiff-string series
+// on f1 with stiffness B.
+double detuning(double f1,double B,double hz) noexcept {
+  const auto at=[&](double n){return n*f1*std::sqrt((1+B*n*n)/(1+B));};
+  // The order at `hz`, from B n^4 + n^2 = (hz/f1)^2 (1 + B).
+  const double c=hz*hz/(f1*f1)*(1+B),n=std::max(1.,std::floor(std::sqrt(2*c/(1+std::sqrt(1+4*B*c)))));
+  return std::min(std::abs(hz-at(n)),std::abs(hz-at(n+1)));
+}
 }
 
 struct Engine::Impl {
   std::array<Voice,maxVoices> voices{};
+  // How far (Hz) each string a recorded pitch lists lies from that pitch's
+  // nearest partial.
+  std::array<double,measured::undamped.size()> ringDetuning{};
   std::array<Channel,16> channels{};
   std::array<Resonator,88> sympathetic{};
   std::array<double,88> openness{};
@@ -509,7 +527,7 @@ struct Engine::Impl {
     // Keys beyond the last recorded pitch keep its partials but follow the
     // stretch and stiffness trend of the last two.
     const double reach=static_cast<double>(note-a.note)/(b.note-a.note),t=std::max(0.,std::min(1.,reach));
-    const double f1=keyPitch(note),B=std::exp(mix(std::log(a.B),std::log(b.B),reach));
+    const double f1=keyPitch(note),B=keyStiffness(note);
     const double highest=std::min(17000.,sampleRate*.43);
     // No partial rises faster than its recorded pitch's onset builds up.
     const double shortestRise=std::exp(mix(onsetRiseAt(a,v),onsetRiseAt(b,v),t));
@@ -634,7 +652,7 @@ struct Engine::Impl {
     while((ua<endua||ub<endub)&&voice.count<maxPartials){
       const int ra=ua<endua?measured::undamped[ua].ring:1<<30,rb=ub<endub?measured::undamped[ub].ring:1<<30;
       // Either pitch's entry stands in for the other's where only one lists the string.
-      const auto& x=measured::undamped[ra<=rb?ua:ub];const auto& y=measured::undamped[rb<=ra?ub:ua];
+      const int ix=ra<=rb?ua:ub,iy=rb<=ra?ub:ua;const auto& x=measured::undamped[ix];const auto& y=measured::undamped[iy];
       const double weight=ra==rb?1:ra<rb?1-t:t;
       if(ra<=rb)++ua;
       if(rb<=ra)++ub;
@@ -642,8 +660,19 @@ struct Engine::Impl {
       const double frequency=keyPitch(ring.key)*std::pow(2.,ring.cents/1200);
       // The struck key's own strings are the series.
       if(weight<=0||frequency>highest||std::abs(1200*std::log2(frequency/f1))<=measured::unisonCents)continue;
+      // A string rings through the strike's partial nearest it, as a
+      // resonator driven off its pitch: by the strike's decay (the string's
+      // faster lane) over the distance between them, against the recorded
+      // pitch's. Never louder than that pitch rang it.
+      const double away=detuning(f1,B,frequency);
+      const auto offPitch=[&](int i){
+        const double rate=measured::undamped[i].lanes[0].rate;
+        return std::min(0.,20*std::log10(std::hypot(rate,2*pi*ringDetuning[i])/std::hypot(rate,2*pi*away)));};
+      const double cx=offPitch(ix),cy=offPitch(iy);
       for(int j=0;j<static_cast<int>(x.lanes.size())&&voice.count<maxPartials;++j){
-        LaneData l=blendLane(laneAt(x.lanes[j],v),laneAt(y.lanes[j],v),t);
+        LaneData lx=laneAt(x.lanes[j],v),ly=laneAt(y.lanes[j],v);
+        lx.level+=cx;ly.level+=cy;
+        LaneData l=blendLane(lx,ly,t);
         l.level+=20*std::log10(weight);
         add(frequency,std::max(1.,frequency/f1),l);
         if(filled==lanes)close(false);
@@ -749,7 +778,15 @@ struct Engine::Impl {
   static constexpr double outputScale=.21;
 };
 
-Engine::Engine(double sampleRate):impl(new Impl){prepare(sampleRate);}
+Engine::Engine(double sampleRate):impl(new Impl){
+  auto& p=*impl;
+  for(const auto& anchor:measured::anchors)
+    for(int i=anchor.undampedFirst;i<anchor.undampedFirst+anchor.undampedCount;++i){
+      const auto& ring=measured::rings[measured::undamped[i].ring];
+      p.ringDetuning[i]=detuning(keyPitch(anchor.note),keyStiffness(anchor.note),keyPitch(ring.key)*std::pow(2.,ring.cents/1200));
+    }
+  prepare(sampleRate);
+}
 Engine::~Engine()=default;
 void Engine::prepare(double sampleRate){
   auto& p=*impl;p.sampleRate=sampleRate==sampleRate?std::max(8000.,std::min(192000.,sampleRate)):48000.;

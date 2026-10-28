@@ -211,3 +211,26 @@ on these measurements, not by ear.
 Its dev strings 20 dB over the recordings after 2 s are almost all at D♯3 and
 D♯5: keys between recorded pitches that ring the strings their neighbours
 list, though their own partials pass far from them. That is the next change.
+
+## 2026-10-28 — ring the undamped strings as near as the struck key's partials come
+
+Between two recorded pitches a key rang every string either lists, faded
+towards the one that does not. But a string rings through the strike's
+partial nearest it, as a resonator driven off its pitch, and a key whose
+partials pass far from a string its neighbour had a partial on hardly sets it
+ringing. Each listed string is now scaled by the strike's decay (the string's
+faster lane) over its distance from the key's nearest partial, against the
+recorded pitch's distance, and never rung louder than the recorded pitch rang
+it; the recorded pitches are unchanged.
+
+On the dev cases, against the strings timed from their tone alone: strings
+10 dB over the recordings at 1, 2 and 3 s 2.9, 2.1 and 2.3 % (7.9, 7.0, 7.2 %;
+one lane 9.3, 4.6, 2.6 %), 20 dB over 1.3, 0.2 and 0.3 % (6.1, 4.6, 3.8 %; one
+lane 4.3, 0.2, 0.4 %), and the clear strings' error 7.9, 7.4 and 8.9 dB (8.6,
+7.2, 8.7 dB). Chosen on these measurements, not by ear.
+
+At 1 s it leaves 30 % of the dev cases' clear strings 10 dB or more under the
+recordings (the tone alone 21 %, one lane 25 %): strings the strike's knock
+sets ringing through the body, which no partial need come near, such as
+D♯5's at 2174 Hz, 295 Hz from its nearest partial, and D♯7's below its
+fundamental. That second drive is not modelled.

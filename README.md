@@ -51,8 +51,9 @@ musical passages through the same engine. Both are frozen evidence from
 - Beside its partials, a strike plays the components the recordings hold
   between them, 51 at A0 and a few or none from C4 up, and sets ringing the
   undamped strings from F6 up that its pitch is heard to excite (22 strings):
-  each falls fast at first and then rings on more slowly, and goes on ringing
-  after the key is let go.
+  each falls fast at first and then rings on more slowly, as strongly as the
+  struck key's partials come near it, and goes on ringing after the key is
+  let go.
 - Existing sessions sound different; the median note keeps 0.3.0's level. On
   the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
   partial levels sit 3.1 dB from the recordings (0.3.0: 9.3 dB), the attack
@@ -102,8 +103,11 @@ Beside its series, a strike plays the components the recordings hold between
 the partials, each one lane placed by the series and damped with it, and sets
 ringing the undamped strings from F6 up that its pitch is heard to excite.
 Those ring at their own pitches whichever key struck them, and on after the
-key is let go, each with two lanes: a fast first fall and a slower ring. All
-start at contact under the pitch's onset rise and share vectors four lanes to
+key is let go, each with two lanes: a fast first fall and a slower ring. A
+key between the recorded pitches rings each string they list through its own
+partial nearest it, as a resonator driven off its pitch: by the strike's decay
+over the distance between them, against the recorded pitch's, and never louder
+than that pitch rang it. All start at contact under the pitch's onset rise and share vectors four lanes to
 a slot, so a component costs a quarter of a partial and a string half of one.
 
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
@@ -199,10 +203,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB).
 - From C6 up, the partials' decay after half a second is 4.6 dB/s from the
   recordings' on the dev cases (0.3.0: 6.7 dB/s), but at A7 it is 1 to 2 dB/s
-  further than 0.3.0's. Between the recorded pitches a key rings the undamped
-  strings either neighbour lists, faded towards the other; where its own
-  partials pass far from them, as at D♯3 and D♯5, they stand 20 dB or more
-  over the recordings after 2 s (4.6 % of the strings the dev cases ring).
+  further than 0.3.0's. The undamped strings ring only through the struck
+  key's partials: the strike's knock through the body, which also sets
+  ringing strings no partial comes near, does not drive them, so at 1 s 30 %
+  of the strings that ring clear in the dev recordings sit 10 dB or more
+  under them.
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.

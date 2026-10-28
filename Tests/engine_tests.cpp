@@ -89,6 +89,16 @@ double spectralPeak(const Audio& audio,double low,double high){
   }
   return peak;
 }
+// The amplitude at one frequency, the channels' mean, through a Hann window.
+double amplitudeAt(const Audio& audio,double frequency){
+  constexpr double pi=3.14159265358979323846;
+  const std::size_t frames=audio.size()/2;
+  const double c=std::cos(2*pi*frequency/48000),s=std::sin(2*pi*frequency/48000);
+  double phaseC=1,phaseS=0,re=0,im=0;
+  for(std::size_t i=0;i<frames;++i){const double x=.5*(audio[2*i]+audio[2*i+1])*(.5-.5*std::cos(2*pi*i/(frames-1)));
+    re+=x*phaseC;im+=x*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
+  return std::hypot(re,im);
+}
 // The right channel's level against the left's, in dB, at the strongest
 // frequency between `low` and `high`.
 double levelDifference(const Audio& audio,double low,double high){
@@ -325,6 +335,33 @@ int main(int argc,char** argv){
       const double peak=spectralPeak(render(e,48000),ringHz(ring)-20,ringHz(ring)+20);
       check(std::abs(peak-ringHz(ring))<.5,"an undamped string rings on at its own pitch after the struck key is let go");
       std::cout<<"struck="<<note<<" undamped_key="<<m::rings[ring].key<<" string_hz="<<ringHz(ring)<<" peak_hz="<<peak<<'\n';
+    }
+  }
+  {
+    // A string rings through the struck key's partial nearest it. Next to a
+    // recorded pitch with a partial on a string it lists, a key whose partials
+    // all pass far from that string rings it far less. Taken: the loudest
+    // such string a recorded pitch below F6 lists, a second from 1.5 s on.
+    namespace m=keyra::measured;
+    auto nearest=[](int key,double hz){
+      int upper=1;while(upper<static_cast<int>(m::anchors.size())-1&&m::anchors[upper].note<key)++upper;
+      const auto& a=m::anchors[upper-1];const auto& b=m::anchors[upper];
+      const double f1=keyPitch(key),B=std::exp(std::log(a.B)+(std::log(b.B)-std::log(a.B))*(key-a.note)/(b.note-a.note));
+      double best=1e9;for(int n=1;n<400;++n)best=std::min(best,std::abs(n*f1*std::sqrt((1+B*n*n)/(1+B))-hz));
+      return best;};
+    int recorded=0,ring=-1;double loudest=-1e9;
+    for(const auto& a:m::anchors)if(a.note<89)for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k){
+      const int r=m::undamped[k].ring;
+      double top=-1e9;for(const auto& lane:m::undamped[k].lanes)top=std::max(top,static_cast<double>(lane.levelDb[m::layers-1]));
+      if(nearest(a.note,ringHz(r))<5&&nearest(a.note+1,ringHz(r))>100&&top>loudest){loudest=top;recorded=a.note;ring=r;}
+    }
+    check(ring>=0,"a recorded pitch below F6 has a partial on a string it lists that the next key's pass far from");
+    if(ring>=0){
+      auto level=[&](int note){keyra::Engine e;e.setParameters(dry());e.noteOn(note,m::layerVelocity[m::layers-1]/127.f);
+        render(e,72000);return amplitudeAt(render(e,48000),ringHz(ring));};
+      const double drop=20*std::log10(level(recorded+1)/level(recorded));
+      check(drop<-20,"a key whose partials pass far from a string rings it far less than a recorded pitch with a partial on it");
+      std::cout<<"recorded="<<recorded<<" string_hz="<<ringHz(ring)<<" next_key_db="<<drop<<'\n';
     }
   }
   for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
