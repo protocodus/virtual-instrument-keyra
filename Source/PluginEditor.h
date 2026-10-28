@@ -50,7 +50,8 @@ private:
     void handleNoteOff(juce::MidiKeyboardState*, int, int note, float) override;
     KeyraAudioProcessor& processor;
     KeyraLookAndFeel look;
-    juce::ComboBox program;
+    juce::ComboBox program, piano;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> pianoAttachment;
     std::array<juce::Slider, 9> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
     std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 9> attachments;

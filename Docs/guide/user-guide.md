@@ -1,7 +1,7 @@
 # Keyra development candidate
 
-Keyra generates an 88-key piano using a real-time reduced modal engine and
-numerical measurements of acoustic recordings. The preserved nonlinear
+Keyra generates an 88-key piano, a grand or an upright, using a real-time
+reduced modal engine and numerical measurements of acoustic recordings. The preserved nonlinear
 research renderer remains available separately. This candidate is for
 development and evaluation; host acceptance and commercial release are pending.
 
@@ -13,6 +13,7 @@ Each MIDI channel owns its key and controller state.
 
 | Control | Behavior |
 | --- | --- |
+| Piano | The grand or the upright. Switching silences what sounds; held keys and pedals keep their state |
 | Output | Master output level, smoothed during playback |
 | Hammer / Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
@@ -23,7 +24,10 @@ Each MIDI channel owns its key and controller state.
 | Sostenuto | Captures only keys held when the pedal crosses 50% upward; later notes release normally |
 | Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
 
-The DAW interface's on-screen keyboard is playable. Three brass pedal controls
+The factory presets choose the piano and set Hammer, Resonance, Width and
+Felt mute; Output, Tuning and the pedals keep their settings. Five play the
+grand and three the upright. The DAW interface's on-screen keyboard is
+playable. Three brass pedal controls
 show the effective soft, sostenuto and sustain positions, in the physical
 piano's left-to-right order. Hold a pedal to press it and release to lift it;
 the continuous travel controls remain available for half pedalling. The
@@ -77,9 +81,10 @@ the felt mute can damp them as well.
 
 ## Save and recall
 
-DAW state stores the nine panel parameters. Transient held notes and MIDI
+DAW state stores the ten panel parameters. Transient held notes and MIDI
 controller positions are performance state. Malformed, incomplete or unsupported
-state is rejected. The Rack Extension uses Reason patches for its panel state
+state is rejected; a session saved before the Piano control existed opens with
+the grand it was made with. Piano is not offered for automation. The Rack Extension uses Reason patches for its panel state
 and native host performance properties for pitch, mod and sustain.
 
 ## Scope of the sound model
@@ -96,3 +101,8 @@ full reciprocal soundboard network. Detailed key/damper noises and
 recording-room acoustics are not calibrated.
 The current isolated-note library cannot establish pedal realism because the
 recording pedal positions and timings are undocumented.
+
+The upright is measured the same way from another library's recordings, which
+hold no pedal recordings: its sustain pedal makes no sound of its own, and its
+soft pedal works as the grand's does rather than moving the hammers closer to
+the strings, as an upright's does.

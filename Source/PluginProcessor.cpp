@@ -5,7 +5,8 @@
 #include <cstdlib>
 
 namespace {
-constexpr std::array<const char*, 9> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft" }};
+constexpr std::array<const char*, 10> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "model" }};
+constexpr size_t modelIndex = 9;
 constexpr auto& programs = keyra::factoryPresets;
 }
 
@@ -18,7 +19,8 @@ void KeyraAudioProcessor::setCurrentProgram(int index)
 {
     if (index < 0 || index >= static_cast<int>(programs.size())) return;
     const auto& preset = programs[static_cast<size_t>(index)];
-    const std::array<std::pair<const char*, float>, 4> settings {{
+    const std::array<std::pair<const char*, float>, 5> settings {{
+        { "model", preset.piano == keyra::Piano::upright ? 1.0f : 0.0f },
         { "brightness", preset.brightness }, { "resonance", preset.resonance },
         { "width", preset.width }, { "mute", preset.mute }
     }};
@@ -45,6 +47,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     add("sustain", "Sustain pedal", 0.0f, 1.0f, 0.0f);
     add("sostenuto", "Sostenuto pedal", 0.0f, 1.0f, 0.0f);
     add("soft", "Soft pedal", 0.0f, 1.0f, 0.0f);
+    // The instrument, not a performance control: switching silences what
+    // sounds, so it is not offered for automation.
+    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "model", 1 }, "Piano",
+        juce::StringArray { "Grand", "Upright" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
     return layout;
 }
 
@@ -118,6 +124,7 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.sustain = values[6]->load(std::memory_order_relaxed);
     p.sostenuto = values[7]->load(std::memory_order_relaxed);
     p.soft = values[8]->load(std::memory_order_relaxed);
+    p.piano = values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand;
     engine.setParameters(p);
     auto read = keyboardRead.load(std::memory_order_relaxed);
     auto write = keyboardWrite.load(std::memory_order_acquire);
@@ -206,9 +213,10 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
     auto state = juce::ValueTree::fromXml(*xml);
     if (!state.isValid() || state.getProperty("schemaVersion", 1).toString() != "1") return;
     const auto programText = state.getProperty("program", 0).toString();
-    if (programText.length() != 1 || programText[0] < '0' || programText[0] > '4') return;
+    if (programText.length() != 1 || programText[0] < '0'
+        || programText[0] >= '0' + static_cast<int>(programs.size())) return;
     // Reject malformed or future state atomically. Never apply half a preset.
-    std::array<bool, 9> seen {};
+    std::array<bool, ids.size()> seen {};
     for (const auto child : state) {
         if (!child.hasType("PARAM")) return;
         const auto id = child.getProperty("id").toString();
@@ -228,7 +236,10 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
             || value > parameter->getNormalisableRange().end) return;
         seen[index] = true;
     }
-    for (const auto present : seen) if (!present) return;
+    // Sessions saved before the piano choice existed lack "model" and keep
+    // its default, the grand they were made with.
+    for (size_t i = 0; i < seen.size(); ++i)
+        if (!seen[i] && i != modelIndex) return;
     parameters.replaceState(state);
     currentProgram.store(programText.getIntValue(), std::memory_order_relaxed);
 }

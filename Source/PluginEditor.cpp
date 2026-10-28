@@ -147,6 +147,14 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     program.setColour(juce::ComboBox::arrowColourId, brass);
     program.onChange = [this] { processor.setCurrentProgram(program.getSelectedId() - 1); };
     addAndMakeVisible(program);
+    // The attachment selects item index + 1 of the choice, so the items go in first.
+    piano.addItemList({ "Grand", "Upright" }, 1);
+    for (const auto id : { juce::ComboBox::backgroundColourId, juce::ComboBox::textColourId,
+                           juce::ComboBox::outlineColourId, juce::ComboBox::arrowColourId })
+        piano.setColour(id, program.findColour(id));
+    piano.setTooltip("The piano that plays: the modelled grand or upright. Switching silences what sounds.");
+    addAndMakeVisible(piano);
+    pianoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "model", piano);
     for (size_t i = 0; i < controls.size(); ++i) {
         auto& slider = controls[i];
         slider.setName(captions[i]);
@@ -240,6 +248,7 @@ void KeyraAudioProcessorEditor::resized()
     for (size_t i = 0; i < order.size(); ++i)
         controls[static_cast<size_t>(order[i])].setBounds(74 + static_cast<int>(i) * 176, 170, 128, 126);
     controls[4].setBounds(794, 100, 112, 28);
+    piano.setBounds(520, 60, 184, 30);
     program.setBounds(520, 99, 184, 30);
     for (int i = 0; i < 3; ++i) {
         const auto x = 90 + i * 282;
@@ -274,7 +283,8 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(juce::Colours::white.withAlpha(.65f));
     g.drawRoundedRectangle(39, 29, 902, 502, 4, 1);
     text(g, "KEYRA", { 70, 52, 300, 50 }, 43, ink, juce::Justification::centredLeft, true);
-    text(g, "MODELLED GRAND PIANO", { 74, 103, 435, 22 }, 12, muted);
+    text(g, piano.getSelectedId() == 2 ? "MODELLED UPRIGHT PIANO" : "MODELLED GRAND PIANO", { 74, 103, 435, 22 }, 12, muted);
+    text(g, "PIANO", { 440, 63, 72, 25 }, 12, muted, juce::Justification::centredRight);
     text(g, "PROTOCODUS", { 718, 54, 188, 24 }, 15, ink, juce::Justification::centredRight, true);
     text(g, "A4", { 750, 101, 36, 25 }, 12, muted, juce::Justification::centredRight);
     g.setColour(brass.withAlpha(.4f));

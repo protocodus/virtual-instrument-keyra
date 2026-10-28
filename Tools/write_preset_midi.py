@@ -6,7 +6,10 @@ for: Concert Grand plays a full-range romantic phrase with legato pedalling,
 Studio Grand a pop ballad pattern, Warm Walnut jazz voicings with the soft
 pedal, Felt Nocturne a quiet nocturne whose felt the modulation wheel brings
 in, and Open Strings struck notes with the dampers raised so the undamped
-strings ring. The .mid files are the committed sources the demo renderer
+strings ring. On the upright, Rehearsal Upright plays a song accompaniment
+of broken chords under a tune, Felt Upright quiet repeated chords under a
+high line through its felt, and Pop Upright pumping chords over octave roots
+with the pedal up. The .mid files are the committed sources the demo renderer
 reads; this script only records how they were written. Re-run it only to
 change a phrase on purpose, and commit the changed .mid files on their own:
 
@@ -219,10 +222,92 @@ def open_strings():
     return p
 
 
+def rehearsal_upright():
+    # A song accompaniment in G: a bass note and broken chords in the left
+    # hand under a plain tune, the pedal changed with each chord, home to a
+    # spread G major.
+    p = Phrase(92)
+    bars = [
+        ["G2", "D3", "B3", "D3", "G3", "D3", "B3", "D3"],
+        ["E2", "B2", "G3", "B2", "E3", "B2", "G3", "B2"],
+        ["C3", "G3", "E4", "G3", "D3", "A3", "F#4", "A3"],
+    ]
+    tune = [
+        [("B4", 1), ("D5", 1), ("B4", 1), ("A4", 1)],
+        [("G4", 1.5), ("B4", 0.5), ("E5", 1), ("D5", 1)],
+        [("E5", 1), ("D5", 1), ("C5", 1), ("A4", 1)],
+    ]
+    p.cc(0, SUSTAIN, 127)
+    for bar, (arpeggio, line) in enumerate(zip(bars, tune)):
+        start = 4 * bar
+        if bar:
+            p.change_pedal(start)
+        p.arpeggio(start, 0.5, arpeggio, 0.5, 62)
+        p.line(start, line, 76)
+    p.change_pedal(12)
+    p.chord(12, 2, ["G1", "G2", "D3", "B3", "D4", "G4", "B4"], 84)
+    p.cc(14, SUSTAIN, 0)
+    return p
+
+
+def felt_upright():
+    # Through the felt, quietly: repeated broken chords in A minor at a soft
+    # touch under a high line, the pedal down and changed with the harmony.
+    p = Phrase(76)
+    harmony = [
+        ("A2", ["E3", "A3", "C4", "E4"]),
+        ("F2", ["C3", "F3", "A3", "C4"]),
+        ("C3", ["G3", "C4", "E4", "G4"]),
+        ("G2", ["D3", "G3", "B3", "D4"]),
+    ]
+    line = [("E5", 2), ("C5", 2), ("G5", 1.5), ("E5", 0.5), ("D5", 2)]
+    p.cc(0, SUSTAIN, 127)
+    for bar, (bass, chord) in enumerate(harmony):
+        start = 2 * bar
+        if bar:
+            p.change_pedal(start)
+        p.note(start, 1.9, bass, 46)
+        p.arpeggio(start + 0.5, 0.25, chord + chord[-2::-1][:2], 0.5, 40)
+    p.line(0, line, 52)
+    p.change_pedal(8)
+    p.chord(8, 2, ["A2", "E3", "A3", "C4", "E4", "A4"], 44)
+    p.cc(10, SUSTAIN, 0)
+    return p
+
+
+def pop_upright():
+    # Pumping eighth-note chords over octave roots, pushed into each bar on
+    # the last eighth before it, with the pedal up for a tight, percussive
+    # upright; only the final chord rings.
+    p = Phrase(116)
+    progression = [
+        (["C2", "C3"], ["E4", "G4", "C5"]),
+        (["B1", "B2"], ["D4", "G4", "B4"]),
+        (["A1", "A2"], ["C4", "E4", "A4"]),
+        (["F1", "F2"], ["C4", "F4", "A4"]),
+    ]
+    for bar, (bass, chord) in enumerate(progression):
+        start = 4 * bar
+        p.chord(start, 1.4, bass, 92)
+        p.chord(start + 1.5, 0.4, bass, 74)
+        p.chord(start + 2, 1.4, bass, 86)
+        for eighth in range(8):
+            if bar < 3 and eighth == 7:
+                continue
+            p.chord(start + eighth / 2, 0.35, chord, 90 if eighth % 2 == 0 else 70)
+        if bar < 3:
+            p.chord(start + 3.5, 0.45, progression[bar + 1][1], 94)
+    p.cc(16, SUSTAIN, 127)
+    p.chord(16, 1.5, ["C2", "C3", "G3", "E4", "G4", "C5"], 96)
+    p.cc(17.5, SUSTAIN, 0)
+    return p
+
+
 PRESETS = [
     ("concert-grand", concert_grand), ("studio-grand", studio_grand),
     ("warm-walnut", warm_walnut), ("felt-nocturne", felt_nocturne),
-    ("open-strings", open_strings),
+    ("open-strings", open_strings), ("rehearsal-upright", rehearsal_upright),
+    ("felt-upright", felt_upright), ("pop-upright", pop_upright),
 ]
 
 

@@ -194,6 +194,28 @@ int main()
             restored.setStateInformation(data.getData(), static_cast<int>(data.getSize()));
             require(restored.parameters.copyState().toXmlString() == before, "invalid state changed parameters");
         }
+        {
+            // An upright preset chooses the upright, which the session keeps. A
+            // session saved before the piano choice existed has no "model": it
+            // loads, and plays the grand it was made with.
+            KeyraAudioProcessor upright;
+            upright.setCurrentProgram(5);
+            require(upright.parameters.getRawParameterValue("model")->load() == 1, "an upright preset did not choose the upright");
+            juce::MemoryBlock saved;
+            upright.getStateInformation(saved);
+            KeyraAudioProcessor reopened;
+            reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
+            require(reopened.parameters.getRawParameterValue("model")->load() == 1, "the upright was not restored");
+            auto xml = juce::AudioProcessor::getXmlFromBinary(state.getData(), static_cast<int>(state.getSize()));
+            for (auto* parameter : xml->getChildIterator())
+                if (parameter->getStringAttribute("id") == "model") { xml->removeChildElement(parameter, true); break; }
+            juce::MemoryBlock older;
+            juce::AudioProcessor::copyXmlToBinary(*xml, older);
+            reopened.setStateInformation(older.getData(), static_cast<int>(older.getSize()));
+            require(reopened.parameters.getRawParameterValue("model")->load() == 0
+                && std::abs(reopened.parameters.getRawParameterValue("brightness")->load() - .83f) < 1e-5f,
+                "a session saved before the piano choice did not load as the grand");
+        }
         const auto large = render(8192), small = render(97);
         require(large == small, "MIDI/pedal render depends on host block size");
         double energy = 0;

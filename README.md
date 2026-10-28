@@ -65,6 +65,15 @@ musical passages through the same engine. Both are frozen evidence from
   spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.7 dB (10.2 dB) and the
   noise between partials 5.8 dB (25.9 dB); its regressions, C4's onset rise
   and D♯1's tuning first, are listed there.
+- Adds an upright beside the grand, chosen with the new Piano control and
+  three presets (Rehearsal Upright, Felt Upright, Pop Upright): a 1967
+  upright with worn hammers in a dry room, measured the grand's way from 137
+  recordings of the Helsinki 1967 Tube-Ribbon Edition (Mikko Patama, with his
+  permission; none of its recordings is distributed). Switching silences what
+  sounds; sessions saved before keep the grand. On the
+  [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
+  its attack, tuning and level sit closer to its never-fitted recordings than
+  the grand's data does; its treble does not yet (Known gaps).
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -218,13 +227,15 @@ a reset of the controllers lifts it without a sound.
 
 ### Controls, presets and MIDI
 
-Output, Brightness, Resonance, Width, Tuning, Felt mute and the three pedals
-are the nine saved parameters. The five factory presets in
-`Source/DSP/KeyraPresets.h` set Brightness, Resonance, Width and Felt mute and
-leave the rest alone. Notes, pedals and pitch bend (two semitones each way)
-are dispatched at their sample positions; each MIDI channel owns its keys and
-pedals, and CC120, CC121 and CC123 are honoured per channel. The
-[user guide](Docs/guide/user-guide.md) describes every control.
+Piano, Output, Brightness, Resonance, Width, Tuning, Felt mute and the three
+pedals are the ten saved parameters; Piano is not offered for automation, as
+switching silences what sounds, and a session saved before it existed plays
+the grand. The eight factory presets in `Source/DSP/KeyraPresets.h`, five on
+the grand and three on the upright, set the piano, Brightness, Resonance,
+Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend
+(two semitones each way) are dispatched at their sample positions; each MIDI
+channel owns its keys and pedals, and CC120, CC121 and CC123 are honoured per
+channel. The [user guide](Docs/guide/user-guide.md) describes every control.
 
 ### The full physical research
 
