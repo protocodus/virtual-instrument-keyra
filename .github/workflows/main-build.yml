@@ -43,7 +43,7 @@ jobs:
         run: |
           cmake -S . -B build-dsp -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DKEYRA_BUILD_PLUGIN=OFF -DBUILD_TESTING=ON
-          cmake --build build-dsp --parallel --target RenderKeyraPresetDemos
+          cmake --build build-dsp --parallel --target RenderKeyraPresetDemos KeyraLevels
           ctest --test-dir build-dsp -L '^audio$' --no-tests=error --output-on-failure
 
       # The renderer writes its WAVs without metadata, so an unchanged engine
