@@ -5,8 +5,10 @@ Helsinki 1967 recordings, which the renderer then plays.
 
 Each case renders one held note (50 ms of silence, then the note at its
 layer's velocity) through a `keyra_render` binary and measures the render and
-the recording with the same `piano_analysis` operators. One scalar gain, from
-the 50-750 ms RMS, is removed per case and kept for every later window.
+the recording with the same `piano_analysis` operators, at the recording's
+partials: the render's are its peaks nearest them, order by order
+(matched_partials). One scalar gain, from the 50-750 ms RMS, is removed per
+case and kept for every later window.
 Stereo channels are compared in power and as left/right relations, never as
 cancelling waveforms. These scores measure agreement with one recorded piano
 and microphone pair; they are not perceptual ratings.
@@ -107,12 +109,52 @@ def band_spectrogram(x, sr, start, seconds, hop=.01, win=.04):
     return level, left, right, cross
 
 
-def features(path, note):
-    """Everything the comparison needs from one note, measured identically for any audio."""
+def matched_partials(x, sr, note, start, reference):
+    """A render's partials where the recording (`reference`, its features) has
+    them: at each of its orders, the peak of the spectrum pa.partials searches
+    nearest the recording's frequency, within that search's width and
+    standing as clear of its surroundings (6 dB at the fundamental, 10
+    above), so that a recording matched against itself finds its own peaks.
+    pa.partials looks for each order where the stiff string through the
+    orders found so far puts it, and C7's second partial lies at the edge of
+    that search: a render whose fundamental sat 0.4 Hz sharper than the
+    recording's lost it there, and every order above it."""
+    nominal = pa.midi_hz(note)
+    seconds = 3.0 if nominal < 150 else 2.0 if nominal < 600 else 1.0
+    a = start + int(.03 * sr)
+    hz, p = pa._spectrum(x[a:min(len(x), a + int(seconds * sr))], sr)
+    db = 10 * np.log10(np.maximum(p, 1e-30))
+    orders, freqs = [], []
+    for n, target in zip(reference['n'], reference['hz']):
+        half = nominal * (2 ** (50 / 1200) - 1) if n == 1 else min(.25 * reference['f1'], 4.0 + .006 * target)
+        lo, hi = np.searchsorted(hz, [target - half, target + half])
+        if hi - lo < 5:
+            continue
+        k = np.arange(lo + 1, hi - 1)
+        k = k[(db[k] > db[k - 1]) & (db[k] >= db[k + 1])
+              & (db[k] - np.median(db[lo:hi]) >= (6 if n == 1 else 10))]
+        if not len(k):
+            continue
+        k = int(k[np.argmin(np.abs(hz[k] - target))])
+        y0, y1, y2 = db[k - 1:k + 2]
+        d = y0 - 2 * y1 + y2
+        orders.append(int(n))
+        freqs.append(hz[k] + float(np.clip(.5 * (y0 - y2) / d if d < 0 else 0.0, -1, 1)) * (hz[1] - hz[0]))
+    return orders, np.array(freqs)
+
+
+def features(path, note, reference=None):
+    """Everything the comparison needs from one note, measured identically for any audio;
+    a render's partials are sought where its `reference` recording's are."""
     sr, x = pa.load(path)
     start = pa.onset(x, sr)
-    f1, B, found = pa.partials(x, sr, note, start)
-    freqs = np.array([q['hz'] for q in found])
+    if reference is None:
+        f1, B, found = pa.partials(x, sr, note, start)
+        orders, freqs = [q['n'] for q in found], np.array([q['hz'] for q in found])
+    else:
+        # Measured through the recording's window, as its f1 sets the length.
+        f1, B = reference['f1'], reference['B']
+        orders, freqs = matched_partials(x, sr, note, start, reference)
     tracked = freqs if len(freqs) else np.array([pa.midi_hz(note)])
     seconds = min(3.6, (len(x) - start) / sr - .02)
     t, z = pa.envelopes(x, sr, tracked, f1, start, seconds)
@@ -156,7 +198,7 @@ def features(path, note):
     # fade, and so scored the room's rumble as the piano's tail there.
     total = np.cumsum(np.r_[0.0, np.mean(xh * xh, axis=1)[:max(sr, int(end * sr))]])
     quietest = float(np.min((total[sr:] - total[:-sr])[::int(.05 * sr)])) / sr
-    return {'sr': sr, 'f1': f1, 'B': B, 'n': [q['n'] for q in found], 'hz': freqs.tolist(),
+    return {'sr': sr, 'f1': f1, 'B': B, 'n': orders, 'hz': freqs.tolist(),
             'env_t': t, 'env_power': power, 'floor': partial_floor,
             'bands': level, 'band_floor': band_floor, 'left': left, 'right': right, 'cross': cross, 'noise': noise,
             'early_rms': float(np.sqrt(np.mean(early * early))),
@@ -290,7 +332,7 @@ def run_case(args):
         wav = Path(keep) / f'{case}.wav' if keep else Path(tmp) / 'render.wav'
         subprocess.run([renderer, '--events', str(events), '--output', str(wav),
                         '--duration', str(RENDER_SECONDS)] + extra, check=True, stdout=subprocess.DEVNULL)
-        mod = features(wav, note)
+        mod = features(wav, note, ref)
     result = compare(ref, mod)
     result.update({'case': case, 'note': note, 'layer': layer, 'velocity': velocity})
     return result
