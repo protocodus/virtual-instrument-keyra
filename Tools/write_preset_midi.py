@@ -13,7 +13,8 @@ with the pedal up. The .mid files are the committed sources the demo renderer
 reads; this script only records how they were written. Re-run it only to
 change a phrase on purpose, and commit the changed .mid files on their own:
 
-    python3 Tools/write_preset_midi.py Docs/audio/midi
+    python3 Tools/write_preset_midi.py           # write Docs/audio/midi
+    python3 Tools/write_preset_midi.py --check   # the committed files match
 
 Every file is format 0 on MIDI channel 1 at 480 PPQ, with a tempo and a track
 name, and its last event falls 5.5-9.5 s in, so with the renderer's 2.5 s
@@ -22,7 +23,13 @@ the piano's A0..C8: MIDI 12-14 are Keyra's pedal keyswitches.
 """
 import argparse
 from pathlib import Path
+import re
 import struct
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+MIDI_DIR = ROOT / "Docs/audio/midi"
+BANK = ROOT / "Source/DSP/KeyraPresets.h"
 
 PPQ = 480
 NAMES = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
@@ -311,21 +318,41 @@ PRESETS = [
 ]
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("output", type=Path)
-    args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=True)
+def files() -> dict[str, bytes]:
+    bank = [re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+            for name in re.findall(r'\{ "([^"]+)",', BANK.read_text(encoding="utf-8"))]
+    if [slug for slug, _ in PRESETS] != bank:
+        sys.exit(f"phrases {[slug for slug, _ in PRESETS]} do not match the bank {bank}")
+    result = {}
     for index, (slug, build) in enumerate(PRESETS, 1):
         phrase = build()
         last = max(beat for beat, _, _ in phrase.events)
         seconds = last * 60 / phrase.bpm
         if not 5.5 <= seconds <= 9.5:
             raise SystemExit(f"{slug}: {seconds:.1f} s is outside the 5.5-9.5 s phrase length")
-        path = args.output / f"{index:02d}-{slug}.mid"
-        path.write_bytes(phrase.smf(slug))
-        print(f"{path.name:28s} {seconds:5.1f} s")
+        result[f"{index:02d}-{slug}.mid"] = phrase.smf(slug)
+    return result
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--check", action="store_true", help="fail unless the committed files match")
+    args = parser.parse_args()
+    expected = files()
+    found = {path.name: path.read_bytes() for path in MIDI_DIR.glob("*.mid")}
+    if args.check:
+        stale = sorted(set(found) ^ set(expected) | {name for name in expected if found.get(name) != expected[name]})
+        if stale:
+            sys.exit(f"Docs/audio/midi differs from {Path(__file__).name} in: {', '.join(stale)}")
+        print(f"{len(expected)} demo phrases match {Path(__file__).name}")
+        return
+    MIDI_DIR.mkdir(parents=True, exist_ok=True)
+    for name in set(found) - set(expected):
+        (MIDI_DIR / name).unlink()
+    for name, data in expected.items():
+        (MIDI_DIR / name).write_bytes(data)
+        print(name)
 
 
 if __name__ == "__main__":

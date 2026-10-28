@@ -267,10 +267,14 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.RecordingParityPaths
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_parity_paths.py")
+        # The committed demo phrases are what the writer writes (G3a).
+        add_test(NAME Keyra.DemoMidiSources
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/write_preset_midi.py" --check)
     endif()
 
     if(KEYRA_BUILD_TOOLS)
-        # Every preset demo renders finite, audible, under the ceiling, 10-20 s
+        # Every preset demo renders finite, audible, under the ceiling, 8-12 s
         # long and bit-identical on a second render.
         add_test(NAME Keyra.AudioDemos
                  COMMAND RenderKeyraPresetDemos --jobs 4 --check
