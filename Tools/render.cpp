@@ -19,16 +19,17 @@ void u16(std::ofstream& f,std::uint16_t v){char b[2]={static_cast<char>(v),stati
 void u32(std::ofstream& f,std::uint32_t v){char b[4]={static_cast<char>(v),static_cast<char>(v>>8),static_cast<char>(v>>16),static_cast<char>(v>>24)};f.write(b,4);}
 }
 int main(int argc,char** argv){try {
-  std::string eventsPath,outputPath,metricsPath;int rate=48000;double duration=5;bool legacy=false;
+  std::string eventsPath,outputPath,metricsPath;int rate=48000;double duration=5;bool legacy=false,vary=false;
   keyra::Parameters parameters;
   for(int i=1;i<argc;++i){const std::string option=argv[i];
     auto value=[&](){if(++i>=argc)throw std::runtime_error("missing argument after "+option);return std::string(argv[i]);};
     if(option=="--help"){
-      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--model grand|upright] [--legacy-attack]\n"
+      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--model grand|upright] [--legacy-attack] [--vary]\n"
       <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain. Use cc for channel-specific pedal events.\n";return 0;
     }else if(option=="--events")eventsPath=value();else if(option=="--output")outputPath=value();
     else if(option=="--metrics")metricsPath=value();else if(option=="--sample-rate")rate=std::stoi(value());
     else if(option=="--duration")duration=std::stod(value());else if(option=="--legacy-attack")legacy=true;
+    else if(option=="--vary")vary=true;
     else if(option=="--gain")parameters.gain=std::stof(value());else if(option=="--brightness")parameters.brightness=std::stof(value());
     else if(option=="--resonance")parameters.resonance=std::stof(value());else if(option=="--mute")parameters.mute=std::stof(value());
     else if(option=="--sustain")parameters.sustain=std::stof(value());else if(option=="--soft")parameters.soft=std::stof(value());
@@ -76,6 +77,8 @@ int main(int argc,char** argv){try {
   }else{events.push_back({0,"on",60,80,1});events.push_back({1,"off",60,0,1});}
   std::stable_sort(events.begin(),events.end(),[](const Event&a,const Event&b){return a.time<b.time;});
   keyra::Engine engine(rate);engine.setParameters(parameters);engine.setLegacyAttackForComparison(legacy);
+  // Measurements play each strike at its velocity exactly; --vary plays them as the plug-in does.
+  engine.setSteadyStrikesForMeasurement(!vary);
   const auto frames=static_cast<std::uint64_t>(std::llround(duration*rate));
   if(frames*8>0xffffffffu-36u)throw std::runtime_error("WAV too large");
   std::ofstream out(outputPath,std::ios::binary);if(!out)throw std::runtime_error("cannot write "+outputPath);

@@ -13,6 +13,7 @@
 #include <limits>
 #include <new>
 #include <sstream>
+#include <utility>
 #include <string>
 #include <vector>
 
@@ -145,6 +146,20 @@ int main(int argc,char** argv){
     check(render(a,24000)==render(b,24000),"reset deterministic");
   }
   {
+    // No two strikes of a key land alike: each plays at a player's spread
+    // about its velocity, within a few dB. Steady strikes play the velocity
+    // itself, and an engine from its start replays the same strikes.
+    auto twice=[](bool steady){keyra::Engine e;e.setParameters(dry());e.setSteadyStrikesForMeasurement(steady);
+      e.noteOn(60,.7f);const auto first=render(e,24000);e.controlChange(120,0);render(e,4800);
+      e.noteOn(60,.7f);return std::make_pair(first,render(e,24000));};
+    const auto played=twice(false),steady=twice(true);
+    const double apart=20*std::log10(rms(played.second)/rms(played.first));
+    std::cout<<"second_strike_against_first_db="<<apart<<'\n';
+    check(played.first!=played.second&&std::abs(apart)<6,"no two strikes of a key land alike");
+    check(steady.first==steady.second,"steady strikes play their velocity exactly");
+    check(played==twice(false),"an engine from its start replays the same strikes");
+  }
+  {
     keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.noteOn(60,.7f,1);b.noteOn(60,.7f,1);
     render(a,12000);render(b,12000);a.noteOff(60,2);a.controlChange(1,127,2);
     check(render(a,24000)==render(b,24000),"foreign channel noteOff and mute preserve channel1 exactly");
@@ -267,7 +282,8 @@ int main(int argc,char** argv){
     // 100 ms they move no band's reading by more than about 1 dB.
     int fewest=bandCount;double worst=0;
     for(int layer=0;layer<m::layers;++layer){
-      keyra::Engine e(sr);e.setParameters(dry());e.noteOn(a.note,m::layerVelocity[layer]/127.f);
+      // At the layer's own velocity, not a player's spread about it.
+      keyra::Engine e(sr);e.setParameters(dry());e.setSteadyStrikesForMeasurement(true);e.noteOn(a.note,m::layerVelocity[layer]/127.f);
       Audio left(n+(frames-1)*hop),right(n+(frames-1)*hop);e.process(left.data(),right.data(),n+(frames-1)*hop);
       auto rendered=[&](int b){double sum=0;int points=0,all=0;
         for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=sr/n,++all){

@@ -102,6 +102,16 @@ constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::par
 // clear the strings (the contact in boundary()), so that a pedal which
 // never quite reaches an end still sounds and half-pedalling between does not.
 constexpr float pedalClear=.92f,pedalRest=.08f;
+// How far a player's strikes of one key at one intended force spread, in
+// velocity units. Twelve of the upright library's second takes at train
+// pitches, nine of them at its softest layer, are new strikes rather than
+// copies of the first (find_repeated_takes.py). They differ from their first
+// as a velocity change does, ten of them brighter where louder, by a median
+// 5.4 velocity units at their layers' level slopes (about 1 dB), so one
+// strike spreads 5.6 about its key's velocity: the median absolute difference
+// over 0.6745 and the square root of two. Their pitches differ by a median
+// 0.02 cents, so a strike keeps its tuning.
+constexpr double touchSpread=5.6;
 #if (defined(__clang__) || defined(__GNUC__)) && !defined(KEYRA_FORCE_SCALAR)
 // Explicit 128-bit lanes also survive the freestanding Rack compiler, whose
 // ordinary loops do not auto-vectorize. One vector holds a partial's lanes.
@@ -358,7 +368,8 @@ struct Engine::Impl {
   float previousBrightness=.5f;
   std::uint64_t serial=0,frame=0;
   std::uint64_t clock=0; // samples processed since reset, asleep or not
-  bool legacyAttack=false;
+  bool legacyAttack=false,steady=false;
+  std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset or a piano switch
   bool sleeping=true;
   bool pedalHeld=false;  // the sustain pedal's dampers off the strings
 
@@ -404,7 +415,7 @@ struct Engine::Impl {
     model=&next;
     for(auto& voice:voices)voice.active=false;
     for(auto& r:sympathetic){r.q=0;r.p=0;}
-    silenceBody();silenceNoise();
+    silenceBody();silenceNoise();touch=1;
     highpassL=highpassR=previousL=previousR=0;
     placeHalo();retuneSympathetic();prepareBody();prepareNoise();
   }
@@ -671,8 +682,12 @@ struct Engine::Impl {
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
     const double soft=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
     // MIDI velocity is a recording-layer coordinate, not measured hammer speed.
-    const double v=127*bounded(velocity);
-    channel.velocity[note-21]=bounded(velocity);channel.struck[note-21]=clock;
+    // No two strikes land alike: each moves its key's velocity by a draw of
+    // spread touchSpread (four uniform draws summed, within 3.5 spreads).
+    double draw=0;
+    for(int k=0;k<4;++k){touch^=touch<<13;touch^=touch>>17;touch^=touch<<5;draw+=touch*(1./4294967296.)-.5;}
+    const double v=std::max(1.,std::min(127.,127*bounded(velocity)+(steady?0.:touchSpread*std::sqrt(3.)*draw)));
+    channel.velocity[note-21]=static_cast<float>(v/127);channel.struck[note-21]=clock;
     const Model& m=*model;
     const int upper=upperAnchor(m,note);
     const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
@@ -979,7 +994,7 @@ void Engine::reset() noexcept {
   for(auto& channel:p.channels)channel=Channel{};
   for(auto& resonator:p.sympathetic){resonator.q=0;resonator.p=0;}
   p.silenceBody();p.silenceNoise();
-  p.serial=0;p.frame=0;p.clock=0;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
+  p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
@@ -1064,6 +1079,7 @@ PedalState Engine::pedalState(int channel) const noexcept {
   return state;
 }
 void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
+void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;

@@ -37,6 +37,9 @@ public:
   // Offline diagnostic: fixed 2ms rise versus training-recording rise. This
   // changes only future strikes; it is deliberately absent from product UIs.
   void setLegacyAttackForComparison(bool enabled) noexcept;
+  // Offline measurement: every strike at its key's velocity exactly, where
+  // strikes otherwise vary as a player's do. Also absent from product UIs.
+  void setSteadyStrikesForMeasurement(bool enabled) noexcept;
 private:
   struct Impl;
   std::unique_ptr<Impl> impl;

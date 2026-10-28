@@ -52,6 +52,12 @@ musical passages through the same engine. Both are frozen evidence from
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
   not this ring, which dies within a second.
+- No two strikes land alike: each plays a little harder or softer than its
+  velocity, as a player's do, by the spread the upright library's new
+  second strikes measure, 5.6 velocity units (about 1 dB), the harder one
+  the brighter. Repeated chords change level and colour from strike to
+  strike; tuning does not, as those strikes keep their pitch within
+  0.02 cents.
 - Beside its partials, a strike plays the components the recordings hold
   between them, 48 at A0 and a few or none from C4 up, and sets ringing every
   undamped string from F6 up but its own key's, each at its own measured
@@ -127,6 +133,12 @@ phase the recordings show at string contact and rises from zero, never faster
 than its pitch's recorded onset builds up. The lanes run four to a 128-bit
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
+
+No two strikes land alike. Each plays a little harder or softer than its
+velocity, by a random amount with a spread of 5.6 velocity units, which the
+upright library's new second strikes measure (below): a repeated chord
+changes level and colour from strike to strike, and keeps its tuning. The
+draws restart with the engine, so a render replays exactly.
 
 Beside its series, a strike plays the components the recordings hold between
 the partials, each one lane placed by the series and damped with it; in the
@@ -226,12 +238,17 @@ recordings, never fitted, are the first takes of D♯2, G♯3, C5 and E6 and B3'
 one take; F♯1, E4 and G♯5 stay sealed. The library's second take of a note
 repeats its first: 126 of the 143 share its hammer noise, nine in ten of those
 within 0.15 cents of it (`Tools/find_repeated_takes.py`), so no second take is
-fitted or scored.
+fitted or scored. The other 17 are new strikes. Twelve of them, at train
+pitches, set how far the engine's strikes spread: each differs from its first
+as a velocity change does, ten of them brighter where louder, by a median
+5.4 velocity units at their layers' level slopes, which is a spread of 5.6
+for one strike, and in pitch by a median 0.02 cents.
 
 `Tools/benchmark_recordings.py` scores a renderer against every train and dev
-recording. The dev recordings, D♯1, D♯3, D♯5 and D♯7 at every layer and four
-other layers of every calibrated pitch, are never fitted; D♯2, D♯4 and D♯6
-stay sealed until a candidate goes to the owner. `Tools/compare_benchmarks.py`
+recording, through `keyra_render`, which strikes every note at its velocity
+exactly unless given `--vary`. The dev recordings, D♯1, D♯3, D♯5 and D♯7 at
+every layer and four other layers of every calibrated pitch, are never fitted;
+D♯2, D♯4 and D♯6 stay sealed until a candidate goes to the owner. `Tools/compare_benchmarks.py`
 lists every note where a candidate is worse than the shipping engine. The [current report](Docs/validation/recording-benchmark-split-2026-10-27.md)
 compares this engine with 0.3.0; the [upright's](Docs/validation/upright-recording-benchmark-2026-10-28.md)
 scores the upright on its own recordings against the grand's data played on
@@ -311,6 +328,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - Every recording of each piano is from one instrument and one session, so
   the holdout does not establish how the fit generalises to another
   instrument.
+- How far strikes spread is measured from twelve of the upright's strikes,
+  nine of them at its softest layer, and plays at every velocity on both
+  pianos: the grand's library holds one take of each note, so its own spread
+  is unmeasured.
 - The upright's soft pedal is the grand's: it lowers the level and the high
   partials and moves energy to the slowest lane as an una corda does, where an
   upright's moves the hammers closer to the strings. Its pedals are silent

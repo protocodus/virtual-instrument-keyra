@@ -21,6 +21,23 @@ For every note and layer with two takes, aligned on the lag (within
                from 0.2 to 2.2 s
   copy         correlation 0.9 or more and impact 0.8 or more
 
+The second takes that are new strikes at train pitches also measure how far a
+player's strikes of one key at one force spread (touchSpread in
+Source/DSP/KeyraEngine.cpp). Each differs from its first in early level, both
+channels' power 50-750 ms after the onset as the benchmark's early_rms, which
+the level slope across the train layers around it reads as velocity:
+
+  velocity     that difference over the slope (dB per MIDI velocity unit)
+  touch_spread one strike's spread: the median absolute velocity difference
+               over 0.6745, as a normal spread's, and the square root of two,
+               as the difference of two strikes
+  tilt         how much more the second take's first eight partials gain per
+               octave up, 50-250 ms after the onset, as the benchmark measures
+               them: louder and brighter together are a velocity change
+
+A slope under 0.1 dB per unit reads no velocity from a level, so such a pair
+is left out.
+
   python3 Tools/find_repeated_takes.py   # the measurements and a summary, as JSON
 """
 from __future__ import annotations
@@ -35,6 +52,7 @@ import numpy as np
 from scipy import signal
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import benchmark_recordings as br  # noqa: E402
 import fit_realtime_modal as fit  # noqa: E402
 import piano_analysis as pa  # noqa: E402
 
@@ -79,6 +97,26 @@ def cents(x, y, sr, lag, note):
     return float(np.median(out))
 
 
+def early_db(x, sr):
+    start = pa.onset(x, sr)
+    seg = x[start + int(.05 * sr):start + int(.75 * sr)]
+    return float(10 * np.log10(np.mean(seg ** 2) + 1e-30))
+
+
+def tilt(first, take, note):
+    ref = br.features(first, note)
+    other = br.features(take, note, ref)
+    index = {n: j for j, n in enumerate(other['n'])}
+    orders, gains = [], []
+    for i, n in enumerate(ref['n'][:8]):
+        a = br.window_db(ref['env_t'], ref['env_power'][i], .05, .25)
+        b = br.window_db(other['env_t'], other['env_power'][index[n]], .05, .25) if n in index else None
+        if a is not None and b is not None:
+            orders.append(n)
+            gains.append(b - a)
+    return float(np.polyfit(np.log2(orders), gains, 1)[0]) if len(orders) >= 3 else None
+
+
 def main():
     argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter).parse_args()
     model = fit.MODELS['upright']
@@ -99,9 +137,37 @@ def main():
         row['copy'] = row['correlation'] >= .9 and row['impact'] >= .8
         rows.append(row)
     copies = [r for r in rows if r['copy']]
+    layers = fit.train_anchors(model)
+    anchor = {case: note for note, cases in layers.items() for case, _, _ in cases}
+    level = {}
+
+    def early(case):
+        if case not in level:
+            sr, x = pa.load(model['wav'] / f'{case}.wav')
+            level[case] = early_db(x, sr)
+        return level[case]
+
+    for r in rows:
+        if r['copy'] or r['of'] not in anchor or len(layers[anchor[r['of']]]) < 2:
+            continue
+        cases = layers[anchor[r['of']]]
+        k = [case for case, _, _ in cases].index(r['of'])
+        (lo, v_lo, _), (hi, v_hi, _) = cases[max(0, k - 1)], cases[min(len(cases) - 1, k + 1)]
+        slope = (early(hi) - early(lo)) / (v_hi - v_lo)
+        r['early_db'] = round(early(r['take']) - early(r['of']), 2)
+        r['slope_db'] = round(slope, 3)
+        if slope >= .1:
+            r['velocity'] = round(r['early_db'] / slope, 1)
+            r['tilt'] = tilt(model['wav'] / f"{r['of']}.wav", model['wav'] / f"{r['take']}.wav", anchor[r['of']])
+    strikes = [r for r in rows if 'velocity' in r]
     summary = {'pairs': len(rows), 'copies': len(copies),
                'least_correlation': min(r['correlation'] for r in rows),
-               'median_abs_cents_of_copies': float(np.median([abs(r['cents']) for r in copies if r['cents'] is not None]))}
+               'median_abs_cents_of_copies': float(np.median([abs(r['cents']) for r in copies if r['cents'] is not None])),
+               'new_strikes_measured': len(strikes),
+               'median_abs_velocity': float(np.median([abs(r['velocity']) for r in strikes])),
+               'touch_spread': float(np.median([abs(r['velocity']) for r in strikes]) / .6745 / np.sqrt(2)),
+               'brighter_where_louder': sum(r['tilt'] is not None and r['tilt'] * r['early_db'] > 0 for r in strikes),
+               'median_abs_cents_of_new_strikes': float(np.median([abs(r['cents']) for r in strikes if r['cents'] is not None]))}
     print(json.dumps({'summary': summary, 'pairs': rows}, indent=1))
 
 if __name__ == '__main__':

@@ -413,3 +413,24 @@ interpolates C7's new component. Three-note chords every 0.15 s from C6 to
 C8 under the sustain pedal, 6 s of them, render 1.6 % slower on both pianos
 (the median of seven paired rounds: upright 4.31 to 4.38 s, grand 5.55 to
 5.64 s). Chosen on these measurements, not by ear.
+
+## 2026-10-28 — no two strikes land alike
+
+The owner heard Pop Upright's repeated chords as mechanical and asked for
+every key press to differ a little, in velocity and perhaps in tuning. Of the
+upright library's 143 second takes, 17 are new strikes rather than copies
+(above); 13 are at train pitches, and twelve of those have layers whose
+levels read a velocity, a slope of 0.1 dB per unit or more. Each differs
+from its first take as a velocity change does: by a median 5.4 velocity
+units at its layers' level slope (about 1 dB), ten of the twelve brighter
+where louder over their first eight partials, and in pitch by a median
+0.02 cents (`Tools/find_repeated_takes.py`). Each strike now moves its key's
+velocity by a draw of spread 5.6, the median absolute difference over 0.6745
+and the square root of two; tuning does not vary. The draw sums four uniform
+ones, so it stays within 3.5 spreads, and its sequence restarts with the
+engine and on a piano switch, so a render replays exactly. `keyra_render`,
+and so every benchmark, strikes at the velocity exactly unless given
+`--vary`. Nine of the twelve strikes are at the softest layer, and the
+spread plays at every velocity and on the grand, whose library holds one
+take of each note. Measured, at the owner's request; Pop Upright's
+before/after went to the owner, with no listening verdict yet.
