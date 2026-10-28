@@ -156,17 +156,18 @@ def window_length(f1, sr):
     return length + length % 2
 
 
-def envelopes(x, sr, freqs, f1, start, seconds, hop=None, times=None):
+def envelopes(x, sr, freqs, f1, start, seconds, hop=None, times=None, length=None):
     """Complex amplitude of each partial in each channel.
 
     Returns (times after onset, z[partial, channel, frame]); |z| is the
-    sinusoid's amplitude. The window is centred on each frame time, so the
-    first frames see the pre-onset signal and the attack is smeared by about
-    a third of the window; the same holds for any audio measured this way.
-    Frames are every `hop` samples for `seconds`, or at the given `times`.
+    sinusoid's amplitude. The window (`length` samples, by default
+    `window_length`) is centred on each frame time, so the first frames see
+    the pre-onset signal and the attack is smeared by about a third of the
+    window; the same holds for any audio measured this way. Frames are every
+    `hop` samples for `seconds`, or at the given `times`.
     """
     freqs = np.asarray(freqs, float)
-    length = window_length(f1, sr)
+    length = length or window_length(f1, sr)
     w = blackman_harris(length)
     gain = 2.0 / np.sum(w)
     pad = np.zeros((length // 2, x.shape[1]))
@@ -232,10 +233,10 @@ def residual_bands(x, sr, freqs, f1, start, seconds=.5, hop_s=.005, win_s=.02):
     return times, out
 
 
-def window_profile(f1, sr, step):
+def window_profile(f1, sr, step, length=None):
     """The envelope window's normalised weights on a grid of `step` seconds,
     so a model envelope can be measured the way `envelopes` measures audio."""
-    length = window_length(f1, sr)
+    length = length or window_length(f1, sr)
     w = blackman_harris(length)
     t = (np.arange(length) - length // 2) / sr
     grid = np.arange(math.floor(t[0] / step), math.ceil(t[-1] / step) + 1) * step
@@ -295,25 +296,25 @@ class _WindowedExponentials:
         return B, D
 
 
-def fit_partial(times, power_db, floor_db, f1, sr):
+def fit_partial(times, power_db, floor_db, f1, sr, length=None):
     """Fit one partial's stereo-mean power envelope, through the measuring window.
 
     The model is a prompt and a late exponential, a second late component
     offset by `beat` Hz (unison and polarisation beating) and a rise component
     that cancels their sum at t = 0 and dies with time constant `rise`; zero
     before t = 0. `times`/`power_db` come from `envelopes` (frame times after
-    string contact, any spacing). Returns the seven parameters (amplitudes
-    linear, rates 1/s, beat Hz, rise s) and the fit's dB error, or None when
-    fewer than six frames stand clear of the floor. Its rates seed the joint
-    fit across layers.
+    string contact, any spacing, through a window of `length` samples).
+    Returns the seven parameters (amplitudes linear, rates 1/s, beat Hz,
+    rise s) and the fit's dB error, or None when fewer than six frames stand
+    clear of the floor. Its rates seed the joint fit across layers.
     """
     sel = _layer_frames(times, power_db, floor_db)
     if sel is None:
         return None
     end = times[int(np.flatnonzero(power_db > floor_db + 8)[-1])]
     tt, yy = times[sel], power_db[sel]
-    length = window_length(f1, sr) / sr
-    grid, profile = window_profile(f1, sr, min(.002, length / 24))
+    length = length or window_length(f1, sr)
+    grid, profile = window_profile(f1, sr, min(.002, length / sr / 24), length)
     response = _WindowedExponentials(tt, grid, profile)
     to_db = 10 / math.log(10)
 
@@ -409,10 +410,10 @@ def _fit_frames(times, power_db, floor_db, end):
 LANES = 4
 
 
-def lane_complex_rates(theta, velocity):
+def lane_complex_rates(theta, velocity, lanes=LANES):
     """Complex rates of the lanes and the rise rate at one MIDI velocity."""
-    rise = math.exp(theta[2 * LANES] + theta[2 * LANES + 1] * (velocity - 64) / 64)
-    return -np.exp(theta[:LANES]) + 2j * math.pi * np.asarray(theta[LANES:2 * LANES]), 1 / rise
+    rise = math.exp(theta[2 * lanes] + theta[2 * lanes + 1] * (velocity - 64) / 64)
+    return -np.exp(theta[:lanes]) + 2j * math.pi * np.asarray(theta[lanes:2 * lanes]), 1 / rise
 
 
 def _tail_rate(L):
@@ -433,12 +434,13 @@ def _layer_frames(times, power_db, floor_db):
     return sel if len(sel) >= 6 else None
 
 
-def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
+def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, length=None, rise=True):
     """Fit one partial jointly across velocity layers.
 
     `layers` is a list of dicts with `times` (seconds after that layer's
-    string contact), `z` (channels x frames complex envelope), `power_db`,
-    `floor_db` and `velocity`. Each frame is weighted by the inverse of the
+    string contact), `z` (channels x frames complex envelope, measured
+    through a window of `length` samples, by default `window_length`),
+    `power_db`, `floor_db` and `velocity`. Each frame is weighted by the inverse of the
     envelope's largest value within `beat` seconds plus the partial's floor,
     so the whole decay is fitted in relative terms down to the floor, frames
     near the floor count as the noise they hold, and a null between unison
@@ -449,12 +451,14 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
     layer's peak: without it, two lanes can merge into a cancelling pair of
     huge amplitudes that only float64 arithmetic reproduces, and that no
     interpolation between pitches survives.
-    Returns theta (four lane log rates, four lane offsets in Hz, the log rise
+    With `rise` false the rise is not fitted: the lanes start at contact, its
+    log held at the 0.2 ms bound and its slope at zero.
+    Returns theta (`lanes` lane log rates, as many lane offsets in Hz, the log rise
     at velocity 64 and its slope), per-layer amplitudes a[layer, channel,
     lane] and per-layer relative errors (of the envelope alone), or None.
     """
-    length = window_length(f1, sr) / sr
-    grid, profile = window_profile(f1, sr, min(.002, length / 24))
+    length = length or window_length(f1, sr)
+    grid, profile = window_profile(f1, sr, min(.002, length / sr / 24), length)
     prepared = []
     for L in layers:
         sel = _layer_frames(L['times'], L['power_db'], L['floor_db'])
@@ -468,12 +472,14 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
         w /= math.sqrt(len(sel))
         zw = L['z'][:, sel] * w
         prepared.append({'response': _WindowedExponentials(tt, grid, profile), 'w': w,
-                         'z': np.hstack([zw, np.zeros((len(zw), LANES))]), 'frames': len(sel),
+                         'z': np.hstack([zw, np.zeros((len(zw), lanes))]), 'frames': len(sel),
                          'penalty': ridge / amp.max(), 'velocity': L['velocity']})
     used = [p for p in prepared if p is not None]
     if len(used) < 2:
         return None
-    count = 2 * LANES + 2
+    count = 2 * lanes + 2
+    pinned = [] if rise else [math.log(2e-4), 0.0]
+    free = count - len(pinned)
 
     def evaluate(theta, jacobian=False):
         """Residuals of the variable projection and, optionally, their exact
@@ -481,10 +487,10 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
         res, amps, jac = [], [], []
         for p in used:
             x = (p['velocity'] - 64) / 64
-            s, rho = lane_complex_rates(theta, p['velocity'])
+            s, rho = lane_complex_rates(theta, p['velocity'], lanes)
             B, D = p['response'](np.r_[s, s - rho])                     # e^(st) and e^((s-rho)t)
             w = p['w'][:, None]
-            X = np.vstack([(B[:, :LANES] - B[:, LANES:]) * w, p['penalty'] * np.eye(LANES)])
+            X = np.vstack([(B[:, :lanes] - B[:, lanes:]) * w, p['penalty'] * np.eye(lanes)])
             q, r_ = np.linalg.qr(X)
             a = np.linalg.solve(r_, q.conj().T @ p['z'].T)              # lanes x channels
             r = X @ a - p['z'].T
@@ -493,12 +499,12 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
             if jacobian:
                 F = p['frames']                                           # the penalty rows are constant
                 dX = np.zeros((count,) + X.shape, complex)
-                both = D[:, :LANES] - D[:, LANES:]
-                for k in range(LANES):
+                both = D[:, :lanes] - D[:, lanes:]
+                for k in range(lanes):
                     dX[k, :F, k] = -math.exp(theta[k]) * both[:, k]
-                    dX[LANES + k, :F, k] = 2j * math.pi * both[:, k]
-                dX[2 * LANES, :F] = -rho * D[:, LANES:]
-                dX[2 * LANES + 1, :F] = -x * rho * D[:, LANES:]
+                    dX[lanes + k, :F, k] = 2j * math.pi * both[:, k]
+                dX[2 * lanes, :F] = -rho * D[:, lanes:]
+                dX[2 * lanes + 1, :F] = -x * rho * D[:, lanes:]
                 dX[:, :F] *= w[None]
                 v = dX @ a                                                # params x frames x channels
                 v -= q[None] @ (q.conj().T[None] @ v)
@@ -511,21 +517,21 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
             return res, amps, jac
         return res, amps
 
-    def residual(theta):
-        res, _ = evaluate(theta)
+    def residual(v):
+        res, _ = evaluate(np.r_[v, pinned])
         r = np.concatenate([x.ravel() for x in res])
         return np.r_[r.real, r.imag]
 
-    def jacobian(theta):
-        _, _, jac = evaluate(theta, True)
-        j = np.concatenate([v.reshape(count, -1) for v in jac], axis=1).T
+    def jacobian(v):
+        _, _, jac = evaluate(np.r_[v, pinned], True)
+        j = np.concatenate([x.reshape(count, -1) for x in jac], axis=1).T[:, :free]
         return np.r_[j.real, j.imag]
 
     # Start from the stereo-mean power fits and late slopes of the loudest layers.
     starts, tails = [], []
     for p, L in sorted(((p, L) for p, L in zip(prepared, layers) if p is not None),
                        key=lambda pl: -pl[1]['velocity'])[:3]:
-        fit = fit_partial(L['times'], L['power_db'], L['floor_db'], f1, sr)
+        fit = fit_partial(L['times'], L['power_db'], L['floor_db'], f1, sr, length)
         if fit:
             starts.append(fit)
         tail = _tail_rate(L)
@@ -536,29 +542,32 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
     sp = float(np.median([s['sp'] for s in starts]))
     sl = float(np.median([s['sl'] for s in starts]))
     beat = float(np.median([abs(s['beat']) for s in starts]))
-    rise = float(np.median([s['rise'] for s in starts]))
+    start_rise = float(np.median([s['rise'] for s in starts]))
     slow = min(float(np.median(tails)) if tails else sl / 3, sl)
     # Lanes may sit a few cents from the measured partial (unison strings).
     span = max(2.5, .2 * n, .0017 * hz)
-    lower = [math.log(.003)] * LANES + [-span] * LANES + [math.log(2e-4), -3.0]
-    upper = [math.log(500)] * LANES + [span] * LANES + [math.log(.5), 3.0]
+    lower = [math.log(.003)] * lanes + [-span] * lanes + [math.log(2e-4), -3.0]
+    upper = [math.log(500)] * lanes + [span] * lanes + [math.log(.5), 3.0]
+    # The beating pair at the late rate, or at the slow tail's; one lane
+    # starts from either rate.
+    seeds = ([seed for sign in (1.0, -1.0) for seed in (((sp, sl, sl, slow), (0, 0, sign * beat, 0)),
+                                                        ((sp, sl, slow, slow), (0, 0, 0, sign * beat)))]
+             if lanes == 4 else [((sl,), (0,)), ((slow,), (0,))])
     best = None
-    for sign in (1.0, -1.0):
-        # The beating pair at the late rate, or at the slow tail's.
-        for rates, offsets in (((sp, sl, sl, slow), (0, 0, sign * beat, 0)),
-                               ((sp, sl, slow, slow), (0, 0, 0, sign * beat))):
-            theta0 = np.clip([math.log(r) for r in rates] + list(offsets) + [math.log(rise), 0.0],
-                             np.add(lower, 1e-6), np.subtract(upper, 1e-6))
-            try:
-                fit = optimize.least_squares(residual, theta0, jac=jacobian, bounds=(lower, upper), max_nfev=200,
-                                             x_scale=[1] * LANES + [.1] * LANES + [1, 1])
-            except (ValueError, np.linalg.LinAlgError):
-                continue
-            if best is None or fit.cost < best.cost:
-                best = fit
+    for rates, offsets in seeds:
+        theta0 = np.clip([math.log(r) for r in rates] + list(offsets) + [math.log(start_rise), 0.0],
+                         np.add(lower, 1e-6), np.subtract(upper, 1e-6))[:free]
+        try:
+            fit = optimize.least_squares(residual, theta0, jac=jacobian, bounds=(lower[:free], upper[:free]),
+                                         max_nfev=200, x_scale=([1] * lanes + [.1] * lanes + [1, 1])[:free])
+        except (ValueError, np.linalg.LinAlgError):
+            continue
+        if best is None or fit.cost < best.cost:
+            best = fit
     if best is None:
         return None
-    res, amps = evaluate(best.x)
+    theta = np.r_[best.x, pinned]
+    res, amps = evaluate(theta)
     out_amps, errors, k = [], [], 0
     for p in prepared:
         if p is None:
@@ -569,7 +578,7 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03):
         errors.append(float(np.vdot(r, r).real / max(np.vdot(z, z).real, 1e-30)))
         out_amps.append(amps[k])
         k += 1
-    return {'theta': best.x, 'amplitudes': out_amps, 'relative_error': errors}
+    return {'theta': theta, 'amplitudes': out_amps, 'relative_error': errors}
 
 
 def layer_partial_waveform(theta, amplitudes, velocity, hz, sr, samples, delay):
@@ -579,7 +588,7 @@ def layer_partial_waveform(theta, amplitudes, velocity, hz, sr, samples, delay):
     tau = t - delay
     on = tau >= 0
     tau = np.where(on, tau, 0.0)
-    s, rho = lane_complex_rates(theta, velocity)
+    s, rho = lane_complex_rates(theta, velocity, amplitudes.shape[1])
     lane = np.exp(np.outer(tau, s)) * ((1 - np.exp(-rho * tau)) * on)[:, None]
     carrier = np.exp(2j * math.pi * hz * t)
     return np.real((lane @ amplitudes.T) * carrier[:, None])
@@ -621,6 +630,110 @@ def contact_delay(x, sr, start, window=.15, drop_db=20.0):
     seg = power[start:start + int(window * sr)]
     k = int(np.flatnonzero(seg >= seg.max() * 10 ** (-drop_db / 10))[0])
     return max(0.0, k / sr - .0005)
+
+
+# --- Components beside the series ----------------------------------------
+#
+# Below A3 the recordings hold strong partials beside the one series the
+# tracking follows: the unison strings' own series, which part at high
+# orders as each string's stiffness differs, and phantom partials, which the
+# string's stretching drives at sums of partial frequencies. At A0 they
+# carry as much power from 1 to 2 kHz as the series. From C6 up the
+# strongest are the undamped strings from F6 up, which ring with every strike
+# at their own pitches, below the struck key's fundamental as well as above
+# it. Each is a peak of the residual (the recording without the fitted
+# series) that several layers share, measured on that residual and fitted
+# with one lane.
+#
+# Most undamped strings ring too weakly for that search, 40 to 90 dB under
+# the strike, but at places known in advance. A second search takes the
+# strongest residual peak beside each one's pitch that stands HALO_PROMINENCE
+# over its surroundings. It also finds chance peaks of the residual; which
+# peaks are strings is left to the fit, which pools every recorded pitch: a
+# string rings at the same frequency whichever key is struck.
+
+EXTRA_PROMINENCE = 20.0  # dB over the residual's median across 60 Hz
+EXTRA_LAYERS = 4         # layers it must stand out in
+EXTRA_DEPTH = 60.0       # dB under the layer's strongest component, the deepest counted
+EXTRA_MAX = 64           # per anchor, the most powerful kept
+EXTRA_LOW = 1000.0       # Hz: below it the body's modes take what the partials leave
+HALO_KEYS = range(89, 109)   # MIDI: the keys without dampers (F6 up)
+HALO_SPAN = (-20.0, 70.0)    # cents from a key's equal-tempered pitch searched; the treble stretches +10 to +50
+HALO_PROMINENCE = 10.0       # dB over the residual's median across a semitone either side
+
+
+def residual_peaks(residual, x, sr, contact, exclude, low, seconds=.9):
+    """One layer's residual peaks from `low` Hz up, from 5 ms after string
+    contact (sample `contact`): (hz, power) of each that stands
+    EXTRA_PROMINENCE over the residual's median across 60 Hz, at most
+    EXTRA_DEPTH under the strongest component of the recording itself, and
+    clear of the `exclude` (lo, hi) spans the fitted partials' lanes may
+    occupy."""
+    a = contact + int(.005 * sr)
+    b = min(len(residual), a + int(seconds * sr))
+    hz, p = _spectrum(residual[a:b], sr)
+    _, px = _spectrum(x[a:b], sr)
+    db = 10 * np.log10(np.maximum(p, 1e-30))
+    df = hz[1] - hz[0]
+    median = ndimage.median_filter(db, size=int(60 / df) | 1)
+    k, _ = signal.find_peaks(db, distance=max(1, int(3 / df)))
+    top = 10 * math.log10(max(float(px.max()), 1e-30))
+    k = k[(db[k] - median[k] >= EXTRA_PROMINENCE) & (db[k] >= top - EXTRA_DEPTH) & (hz[k] >= low)
+          & (hz[k] < .45 * sr)]
+    clear = [i for i in k if not any(lo <= hz[i] <= hi for lo, hi in exclude)]
+    return [(float(hz[i]), float(p[i])) for i in clear]
+
+
+def halo_peaks(residual, sr, contact, exclude, note, seconds=.9):
+    """One layer's strongest residual peak beside each undamped string's
+    pitch (HALO_SPAN), struck key aside, from 5 ms after string contact
+    (sample `contact`) and clear of the `exclude` (lo, hi) spans: (hz,
+    power) of each that stands HALO_PROMINENCE over the residual's median
+    across a semitone either side."""
+    a = contact + int(.005 * sr)
+    b = min(len(residual), a + int(seconds * sr))
+    hz, p = _spectrum(residual[a:b], sr)
+    db = 10 * np.log10(np.maximum(p, 1e-30))
+    free = np.ones(len(hz), bool)
+    for lo, hi in exclude:
+        free &= (hz < lo) | (hz > hi)
+    out = []
+    for key in HALO_KEYS:
+        f = midi_hz(key)
+        lo, hi = f * 2 ** (HALO_SPAN[0] / 1200), f * 2 ** (HALO_SPAN[1] / 1200)
+        if key == note or hi >= .45 * sr:
+            continue
+        k = np.flatnonzero((hz >= lo) & (hz <= hi) & free)
+        if not len(k):
+            continue
+        k = k[np.argmax(db[k])]
+        around = (hz >= f * 2 ** (-1 / 12)) & (hz <= f * 2 ** (1 / 12))
+        if db[k] >= max(db[k - 1], db[k + 1]) and db[k] - np.median(db[around]) >= HALO_PROMINENCE:
+            out.append((float(hz[k]), float(p[k])))
+    return out
+
+
+def shared_peaks(layer_peaks, tolerance=5e-4):
+    """Peaks that at least EXTRA_LAYERS layers share within `tolerance` of
+    their frequency: (hz, total power), the most powerful EXTRA_MAX."""
+    hits = sorted((f, w, i) for i, peaks in enumerate(layer_peaks) for f, w in peaks)
+    groups, current = [], []
+    for hit in hits:
+        if current and hit[0] - current[-1][0] > max(.5, tolerance * hit[0]):
+            groups.append(current)
+            current = []
+        current.append(hit)
+    if current:
+        groups.append(current)
+    shared = []
+    for g in groups:
+        if len({i for _, _, i in g}) < EXTRA_LAYERS:
+            continue
+        f = np.array([h[0] for h in g])
+        w = np.array([h[1] for h in g])
+        shared.append((float(np.sum(f * w) / np.sum(w)), float(np.sum(w))))
+    shared.sort(key=lambda e: -e[1])
+    return sorted(shared[:EXTRA_MAX])
 
 
 def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16.0, min_layers=3):
@@ -665,19 +778,76 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
         fits.append(fit_partial_layers([{'times': L['times'], 'z': L['z'][k], 'power_db': L['power_db'][k],
                                          'floor_db': L['floor_db'][k], 'velocity': L['velocity']}
                                         for L in layers], f1, sr, n, freqs[k]))
-    out_layers = []
+    # Each layer's recording without its fitted partials, to the horizon.
     for i, L in enumerate(layers):
-        samples = min(len(L['x']) - L['start'], int(residual_seconds * sr))
-        residual = L['x'][L['start']:L['start'] + samples].copy()
+        samples = min(len(L['x']) - L['start'], int((L['horizon'] + 1.0) * sr))
+        residual = L['x'].copy()
         for k, fit in enumerate(fits):
             if fit is None or fit['amplitudes'][i] is None:
                 continue
-            residual -= layer_partial_waveform(fit['theta'], fit['amplitudes'][i], L['velocity'], freqs[k], sr,
+            residual[L['start']:L['start'] + samples] -= layer_partial_waveform(
+                fit['theta'], fit['amplitudes'][i], L['velocity'], freqs[k], sr, samples, L['delay'])
+        L['residual'] = residual
+    # The lanes of a partial may sit up to `span` from it (fit_partial_layers).
+    exclude = [(f - max(2.5, .2 * n, .0017 * f), f + max(2.5, .2 * n, .0017 * f)) for n, f in zip(orders, freqs)]
+    contacts = [L['start'] + int(L['delay'] * sr) for L in layers]
+    extras = shared_peaks([residual_peaks(L['residual'], L['x'], sr, c, exclude, EXTRA_LOW)
+                           for L, c in zip(layers, contacts)])
+    found = [(f - max(.5, 5e-4 * f), f + max(.5, 5e-4 * f)) for f, _ in extras]
+    halo = shared_peaks([halo_peaks(L['residual'], sr, c, exclude + found, note) for L, c in zip(layers, contacts)])
+    order = np.argsort([f for f, _ in extras + halo], kind='stable')
+    extra_freqs = np.array([f for f, _ in extras + halo])[order]
+    extra_halo = np.array([False] * len(extras) + [True] * len(halo))[order]
+    # Each component is measured through its own window, long enough that
+    # the main lobe (four bins of the Blackman-Harris window) ends where the
+    # nearest other component, of the series or beside it, begins. Through
+    # the series' window, six periods of the fundamental and at least 4 ms,
+    # the treble's undamped strings were read through a main lobe a
+    # kilohertz wide, which holds the fundamental's fit residual and each
+    # other: at F#6's softest layer, a string at 1772 Hz fitted 10 dB under
+    # the fundamental, which the recording holds 47 dB under. Each starts at
+    # contact, as a strike rings an undamped string at once, and its frames
+    # follow evenly at the window's resolution, each weighed against the
+    # envelope within one window of it, so that the strike's broadband first
+    # tenth of a second, which the board noise holds, counts for its length
+    # only. Fitted, the rise took that burst for a string swelling over
+    # seconds (A7's ring at 1578 Hz 20 dB under the recording throughout);
+    # weighed against the largest value within 0.3 s, as the partials' beats
+    # are, the frames after the burst counted for nothing, and F#6's
+    # components at 2.3 to 2.8 kHz fitted the burst as 0.1 s pings.
+    extra_fits = []
+    others = np.r_[freqs, extra_freqs]
+    for k, f in enumerate(extra_freqs):
+        gap = float(np.min(np.abs(np.delete(others, len(freqs) + k) - f)))
+        window = max(window_length(f1, sr), 2 * round(2 * sr / gap))
+        step = max(window / sr / 8, .02)
+        measured = []
+        for L in layers:
+            times = np.arange(0, L['horizon'], step)
+            t, z = envelopes(L['residual'], sr, [f], f1, L['start'], None, times=times, length=window)
+            power_db = 10 * np.log10(np.maximum(np.mean(np.abs(z[0]) ** 2, axis=0), 1e-30))
+            floor = float(envelope_floor(t, power_db[None])[0])
+            measured.append({'times': t - L['delay'], 'z': z[0], 'power_db': power_db, 'floor_db': floor,
+                             'velocity': L['velocity']})
+            L.setdefault('extra_peak_db', []).append(float(power_db.max()))
+            L.setdefault('extra_floor_db', []).append(floor)
+        extra_fits.append(fit_partial_layers(measured, f1, sr, max(1, int(round(f / f1))), f, lanes=1,
+                                             beat=window / sr, length=window, rise=False))
+    out_layers = []
+    for i, L in enumerate(layers):
+        samples = min(len(L['x']) - L['start'], int(residual_seconds * sr))
+        residual = L['residual'][L['start']:L['start'] + samples].copy()
+        for k, fit in enumerate(extra_fits):
+            if fit is None or fit['amplitudes'][i] is None:
+                continue
+            residual -= layer_partial_waveform(fit['theta'], fit['amplitudes'][i], L['velocity'], extra_freqs[k], sr,
                                                samples, L['delay'])
         pre = L['x'][max(0, L['start'] - int(.05 * sr)):L['start']]
         out_layers.append({k: L[k] for k in ('path', 'start', 'f1', 'B', 'found', 'velocity', 'horizon',
                                              'duration', 'early_rms_db', 'delay')}
                           | {'floor_db': L['floor_db'], 'peak_db': L['power_db'].max(axis=1),
+                             'extra_floor_db': np.array(L.get('extra_floor_db', [])),
+                             'extra_peak_db': np.array(L.get('extra_peak_db', [])),
                              'residual': residual.astype(np.float32), 'pre_onset': pre.astype(np.float32)})
     return {'note': int(note), 'sr': sr, 'f1': f1, 'orders': orders, 'freqs': freqs, 'fits': fits,
-            'layers': out_layers}
+            'extra_freqs': extra_freqs, 'extra_halo': extra_halo, 'extra_fits': extra_fits, 'layers': out_layers}

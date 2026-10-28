@@ -31,8 +31,36 @@ Audio render(keyra::Engine& engine,int frames,int block=127){
 }
 double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<double>(x)*x;return std::sqrt(sum/std::max<std::size_t>(1,audio.size()));}
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
-double released(float sustain){keyra::Engine e;e.setParameters(dry());e.controlChange(64,static_cast<int>(sustain*127));e.noteOn(60,.7f);render(e,12000);e.noteOff(60);render(e,24000);return rms(render(e,12000));}
-double sostenuto(bool beforeNote){keyra::Engine e;e.setParameters(dry());if(beforeNote)e.controlChange(66,127);e.noteOn(60,.7f);render(e,12000);if(!beforeNote)e.controlChange(66,127);e.noteOff(60);render(e,24000);return rms(render(e,12000));}
+// C4's own strings: the amplitude of its first four partials, in both
+// channels. They sit below F6, where the undamped strings its strike sets
+// ringing begin; no damper reaches those, so a key-up leaves them sounding.
+double c4Strings(const Audio& audio){
+  constexpr double pi=3.14159265358979323846;
+  const auto* a=&keyra::measured::anchors[0];for(const auto& x:keyra::measured::anchors)if(x.note==60)a=&x;
+  const std::size_t frames=audio.size()/2;double sum=0;
+  for(int n=1;n<=4;++n){
+    const double frequency=n*a->f1*std::sqrt((1+a->B*n*n)/(1+a->B));
+    const double c=std::cos(2*pi*frequency/48000),s=std::sin(2*pi*frequency/48000);
+    for(int channel=0;channel<2;++channel){
+      double phaseC=1,phaseS=0,re=0,im=0;
+      for(std::size_t i=0;i<frames;++i){const double x=audio[2*i+channel]*(.5-.5*std::cos(2*pi*i/(frames-1)));
+        re+=x*phaseC;im+=x*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
+      sum+=re*re+im*im;}
+  }
+  return std::sqrt(sum);
+}
+// The engine's fundamental for a key (A4 = 440 Hz): its cents from equal
+// temperament between the recorded pitches around it.
+double keyPitch(int key){
+  namespace m=keyra::measured;
+  int upper=1;while(upper<static_cast<int>(m::anchors.size())-1&&m::anchors[upper].note<key)++upper;
+  const auto& a=m::anchors[upper-1];const auto& b=m::anchors[upper];
+  auto cents=[](const m::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
+  return 440*std::pow(2.,(key-69+(cents(a)+(cents(b)-cents(a))*(key-a.note)/(b.note-a.note))/100)/12.);
+}
+double ringHz(int ring){const auto& r=keyra::measured::rings[ring];return keyPitch(r.key)*std::pow(2.,r.cents/1200);}
+double released(float sustain){keyra::Engine e;e.setParameters(dry());e.controlChange(64,static_cast<int>(sustain*127));e.noteOn(60,.7f);render(e,12000);e.noteOff(60);render(e,24000);return c4Strings(render(e,12000));}
+double sostenuto(bool beforeNote){keyra::Engine e;e.setParameters(dry());if(beforeNote)e.controlChange(66,127);e.noteOn(60,.7f);render(e,12000);if(!beforeNote)e.controlChange(66,127);e.noteOff(60);render(e,24000);return c4Strings(render(e,12000));}
 Audio sympatheticTail(float tuning,bool prepareAfterTuning){
   keyra::Engine wet,direct;auto wp=dry();wp.gain=.3f;wp.resonance=1;wp.sustain=1;
   if(prepareAfterTuning)wp.tuning=tuning;
@@ -176,13 +204,14 @@ int main(int argc,char** argv){
   {
     // The body's knock rings on at its own decay whatever damps the strings,
     // the same in all three engines: `c` releases the key where `a` takes
-    // CC1, so the differences from `c` hold only the strings.
+    // CC1, so the differences from `c` hold only the strings. CC1 damps the
+    // undamped strings too, which `c` leaves ringing above C4's partials.
     keyra::Engine a,b,c;a.setParameters(dry());b.setParameters(dry());c.setParameters(dry());
     a.noteOn(60,.7f);b.noteOn(60,.7f);c.noteOn(60,.7f);render(a,12000);render(b,12000);render(c,12000);
     a.controlChange(1,127);c.noteOff(60);render(a,24000);render(b,24000);render(c,24000);
     auto damped=render(a,12000),held=render(b,12000);const auto released=render(c,12000);
     for(std::size_t i=0;i<released.size();++i){damped[i]-=released[i];held[i]-=released[i];}
-    check(rms(damped)<rms(held)*.001,"CC1 physically damps held strings smoothly");
+    check(c4Strings(damped)<c4Strings(held)*.001,"CC1 physically damps held strings smoothly");
     a.controlChange(120,0);check(rms(render(a,512))==0,"all sound off clears owned voices and shared residue when last channel stops");
   }
   {
@@ -197,20 +226,36 @@ int main(int argc,char** argv){
     // either neighbour sounds within 6 dB of its measured level against the
     // 2.5 kHz band. (A deeper step is beyond what third-octave bands can
     // draw.) Second-order bands leaked 10-34 dB into the quiet bands above.
+    // The components beside the series are measured apart from the noise:
+    // as the fit measures it, a band leaves out the frequencies within 1.5
+    // main-lobe half-widths of them and counts where a quarter remains. With
+    // a few frequencies left, one frame's reading swung by 4 dB, so a band is
+    // read at every bin through four half-overlapping frames, each brought
+    // back to the strike at the band's measured decay.
     namespace m=keyra::measured;
     constexpr double pi=3.14159265358979323846,sr=48000;constexpr int layer=5,n=2048,reference=4;
     const int anchor=static_cast<int>(m::anchors.size())-1,bandCount=static_cast<int>(m::noiseBands.size());
     const auto& a=m::anchors[anchor];const auto& bands=m::noise[anchor];
     keyra::Engine e(sr);e.setParameters(dry());e.noteOn(a.note,m::layerVelocity[layer]/127.f);
-    Audio left(n),right(n);e.process(left.data(),right.data(),n);
+    constexpr int frames=4,hop=n/2;
+    Audio left(n+(frames-1)*hop),right(n+(frames-1)*hop);e.process(left.data(),right.data(),n+(frames-1)*hop);
     std::vector<double> w(n);double w2=0;for(int i=0;i<n;++i){w[i]=.5-.5*std::cos(2*pi*i/n);w2+=w[i]*w[i];}
     auto edge=[&](int b,double side){return m::noiseBands[b].hz*std::pow(2.,side/6);};
-    auto rendered=[&](int b){double sum=0;int points=0;
-      for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=50,++points)
-        for(const Audio* x:{&left,&right}){double re=0,im=0;
-          for(int i=0;i<n;++i){re+=(*x)[i]*w[i]*std::cos(2*pi*f*i/sr);im+=(*x)[i]*w[i]*std::sin(2*pi*f*i/sr);}
-          sum+=re*re+im*im;}
-      return 10*std::log10(sum/points);};
+    auto stiff=[&](int order,float cents){return order*a.f1*std::sqrt((1+a.B*order*order)/(1+a.B))*std::pow(2.,cents/1200);};
+    std::vector<double> beside;
+    for(int k=a.extraFirst;k<a.extraFirst+a.extraCount;++k)beside.push_back(stiff(m::extras[k].order,m::extras[k].cents));
+    for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k)beside.push_back(ringHz(m::undamped[k].ring));
+    auto rendered=[&](int b){double sum=0;int points=0,all=0;
+      for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=sr/n,++all){
+        bool clear=true;for(double hz:beside)clear=clear&&std::abs(f-hz)>3*sr/n;
+        if(!clear)continue;
+        ++points;
+        for(int frame=0;frame<frames;++frame){double first=0,later=0;
+          for(int i=0;i<n;++i){first+=w[i]*w[i]*std::exp(-2*bands[b].rate*i/sr);later+=w[i]*w[i]*std::exp(-2*bands[b].rate*(frame*hop+i)/sr);}
+          for(const Audio* x:{&left,&right}){double re=0,im=0;
+            for(int i=0;i<n;++i){const double y=(*x)[frame*hop+i]*w[i];re+=y*std::cos(2*pi*f*i/sr);im+=y*std::sin(2*pi*f*i/sr);}
+            sum+=(re*re+im*im)*first/later/frames;}}}
+      return 4*points>=all?10*std::log10(sum/points):std::numeric_limits<double>::quiet_NaN();};
     // A band's density at the strike, its mean over the window as it decays,
     // and both channels' share of it.
     auto measuredDb=[&](int b){const auto& x=bands[b];double decay=0;
@@ -220,12 +265,12 @@ int main(int argc,char** argv){
     int compared=0;
     for(int b=0;b<bandCount;++b){
       bool partial=false,step=false;
-      for(int k=a.first;k<a.first+a.count;++k){const auto& q=m::partials[k];
-        const double hz=q.order*a.f1*std::sqrt((1+a.B*q.order*q.order)/(1+a.B))*std::pow(2.,q.cents/1200);
+      for(int k=a.first;k<a.first+a.count;++k){const double hz=stiff(m::partials[k].order,m::partials[k].cents);
         partial=partial||(hz>edge(b,-1)-100&&hz<edge(b,1)+100);}
       for(int k:{b-1,b+1})if(k>=0&&k<bandCount)step=step||measuredDb(k)-measuredDb(b)>10;
-      if(partial||step||b==reference)continue;
-      const double error=rendered(b)-measuredDb(b)-offset;++compared;
+      const double level=rendered(b);
+      if(partial||step||b==reference||std::isnan(level))continue;
+      const double error=level-measuredDb(b)-offset;++compared;
       check(std::abs(error)<6,"board noise band follows its measured density where no partial sounds");
       std::cout<<"noise_band_hz="<<m::noiseBands[b].hz<<" error_db="<<error<<'\n';
     }
@@ -247,6 +292,29 @@ int main(int argc,char** argv){
       const double low=std::min(difference[0][k],difference[2][k]),high=std::max(difference[0][k],difference[2][k]);
       check(difference[1][k]>low-3&&difference[1][k]<high+3,"an interpolated pitch's partials sit between its recorded neighbours' stereo positions");
       std::cout<<"partial="<<k+1<<" c3_level_difference_db="<<difference[0][k]<<" d#3="<<difference[1][k]<<" f#3="<<difference[2][k]<<'\n';
+    }
+  }
+  {
+    // A damped key struck and let go leaves the undamped strings it set
+    // ringing, each at its own pitch whichever key struck it. Taken: the
+    // loudest string that two recorded pitches below F6 both hear, with no
+    // other within 10 Hz, half a second after the dampers fall.
+    namespace m=keyra::measured;
+    int ring=-1;std::array<int,2> struck{};double loudest=-1e9;
+    for(int r=0;r<static_cast<int>(m::rings.size());++r){
+      bool alone=true;for(int o=0;o<static_cast<int>(m::rings.size());++o)alone=alone&&(o==r||std::abs(ringHz(o)-ringHz(r))>10);
+      std::array<int,2> notes{};int found=0;double level=1e9;
+      for(const auto& a:m::anchors)for(int k=a.undampedFirst;k<a.undampedFirst+a.undampedCount;++k)
+        if(a.note<89&&found<2&&m::undamped[k].ring==r){notes[found++]=a.note;level=std::min(level,static_cast<double>(m::undamped[k].lane.levelDb[m::layers-1]));}
+      if(alone&&found==2&&level>loudest){loudest=level;ring=r;struck=notes;}
+    }
+    check(ring>=0,"two recorded pitches below F6 hear one undamped string ring");
+    for(const int note:struck)if(ring>=0){
+      keyra::Engine e;e.setParameters(dry());e.noteOn(note,m::layerVelocity[m::layers-1]/127.f);
+      render(e,14400);e.noteOff(note);render(e,24000);
+      const double peak=spectralPeak(render(e,48000),ringHz(ring)-20,ringHz(ring)+20);
+      check(std::abs(peak-ringHz(ring))<.5,"an undamped string rings on at its own pitch after the struck key is let go");
+      std::cout<<"struck="<<note<<" undamped_key="<<m::rings[ring].key<<" string_hz="<<ringHz(ring)<<" peak_hz="<<peak<<'\n';
     }
   }
   for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){

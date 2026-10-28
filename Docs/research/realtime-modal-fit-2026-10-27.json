@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "corpus": "Tools/corpus/salamander-v3.json",
   "corpus_sha256": "1496e60d81bbaf3aecdde3e2a87f0ca7dae1459e27c9ee5fc4aa2432b36e91a9",
   "split": "Tools/corpus/split-2026-10-27.json",
@@ -8,8 +8,8 @@
     "train"
   ],
   "dev_or_sealed_recordings_opened": false,
-  "analysis_source_sha256": "ce12012cb56dc3e117e9349ba46974008f3a6e42e053d53b8e9f6cfd3449bc60",
-  "fitter_source_sha256": "1798daa27404c1c1ad8c99edc1d96b35a101b3f2b506e8a4d9e1c369540ed34b",
+  "analysis_source_sha256": "119a939c4ef22a59ea83ce13efb2e59f4393ff35f61d9cfc1e07faa3af127d1f",
+  "fitter_source_sha256": "639324f8f520589651b445047b5906a93fbff9f2a6e1bfbb15aa694200994af4",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -28,7 +28,7 @@
     109.0,
     124.0
   ],
-  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), and beside each undamped string's pitch (MIDI 89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a window that parts it from its neighbours and fitted with one lane from contact. Peaks within 15 cents of the fundamental are left to the partial's lanes. Peaks from F6 up that recur within 1.5 cents in four or more anchors are undamped strings ringing, each kept at one frequency and interpolated between anchors by string; the rest of the strings' search is dropped. The other peaks are placed by the series in cents from their nearest order and cross-faded in power between anchors. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
   "anchors": [
     {
       "note": 21,
@@ -49,6 +49,11 @@
       "f1_hz": 27.238207126596603,
       "stiffness": 0.00022838882368081588,
       "partials": 78,
+      "extras": 51,
+      "rings": [
+        0,
+        10
+      ],
       "contact_delay_ms": [
         2.583,
         12.188,
@@ -79,16 +84,16 @@
       ],
       "median_phase_agreement": 0.9194248012483672,
       "onset_rise_ms": [
-        5.646,
+        6.489,
         2.815,
-        0.804,
+        0.925,
         0.804,
         0.804,
         13.015,
         13.015,
         11.324,
-        4.274,
-        2.449,
+        11.324,
+        2.815,
         2.815,
         2.815
       ],
@@ -102,13 +107,13 @@
         0.465,
         0.456,
         0.422,
-        0.429,
-        0.432,
-        0.462,
-        0.404
+        0.43,
+        0.433,
+        0.463,
+        0.405
       ],
       "body_modes_hidden": 26,
-      "body_phase_coherence": 0.9125707686236684,
+      "body_phase_coherence": 0.9126666772069808,
       "noise_bands_filled": 6
     },
     {
@@ -130,6 +135,12 @@
       "f1_hz": 32.434319029715525,
       "stiffness": 0.0001611303736634232,
       "partials": 82,
+      "extras": 35,
+      "rings": [
+        0,
+        8,
+        14
+      ],
       "contact_delay_ms": [
         19.479,
         27.729,
@@ -163,15 +174,15 @@
         3.236,
         9.852,
         0.925,
-        0.925,
+        0.804,
         1.063,
-        0.53,
+        0.461,
         2.131,
-        2.815,
+        13.015,
         2.449,
-        1.404,
-        0.925,
-        1.221
+        1.854,
+        1.063,
+        1.404
       ],
       "median_relative_error": 0.05889982932810277,
       "body_explained": [
@@ -189,7 +200,7 @@
         0.409
       ],
       "body_modes_hidden": 22,
-      "body_phase_coherence": 0.8511963288608208,
+      "body_phase_coherence": 0.8512124619548641,
       "noise_bands_filled": 7
     },
     {
@@ -211,6 +222,10 @@
       "f1_hz": 46.02630266444191,
       "stiffness": 8.730049380633085e-05,
       "partials": 87,
+      "extras": 23,
+      "rings": [
+        21
+      ],
       "contact_delay_ms": [
         11.917,
         11.542,
@@ -247,11 +262,11 @@
         0.401,
         4.274,
         6.489,
-        4.274,
+        4.913,
         5.646,
         4.274,
         3.719,
-        1.613,
+        1.404,
         4.274
       ],
       "median_relative_error": 0.03991634997391347,
@@ -264,13 +279,13 @@
         0.692,
         0.693,
         0.682,
-        0.69,
+        0.691,
         0.691,
         0.682,
         0.631
       ],
       "body_modes_hidden": 20,
-      "body_phase_coherence": 0.9257567733728388,
+      "body_phase_coherence": 0.9256638705565658,
       "noise_bands_filled": 8
     },
     {
@@ -292,6 +307,12 @@
       "f1_hz": 54.850990718487516,
       "stiffness": 8.746517697771951e-05,
       "partials": 93,
+      "extras": 29,
+      "rings": [
+        10,
+        12,
+        13
+      ],
       "contact_delay_ms": [
         3.792,
         9.167,
@@ -351,7 +372,7 @@
         0.505
       ],
       "body_modes_hidden": 12,
-      "body_phase_coherence": 0.8510793523848229,
+      "body_phase_coherence": 0.8510380073944352,
       "noise_bands_filled": 9
     },
     {
@@ -373,6 +394,11 @@
       "f1_hz": 65.18302762222687,
       "stiffness": 8.699497284695924e-05,
       "partials": 76,
+      "extras": 16,
+      "rings": [
+        19,
+        20
+      ],
       "contact_delay_ms": [
         6.438,
         5.812,
@@ -432,7 +458,7 @@
         0.534
       ],
       "body_modes_hidden": 12,
-      "body_phase_coherence": 0.9784946326484287,
+      "body_phase_coherence": 0.978494443145751,
       "noise_bands_filled": 9
     },
     {
@@ -454,6 +480,10 @@
       "f1_hz": 92.40186637254808,
       "stiffness": 6.872810587253189e-05,
       "partials": 65,
+      "extras": 14,
+      "rings": [
+        10
+      ],
       "contact_delay_ms": [
         10.771,
         9.292,
@@ -505,15 +535,15 @@
         0.724,
         0.749,
         0.745,
-        0.744,
-        0.742,
-        0.728,
-        0.72,
-        0.708,
-        0.68
+        0.745,
+        0.743,
+        0.729,
+        0.721,
+        0.71,
+        0.682
       ],
       "body_modes_hidden": 5,
-      "body_phase_coherence": 0.9822157397530459,
+      "body_phase_coherence": 0.9821766356754864,
       "noise_bands_filled": 9
     },
     {
@@ -535,6 +565,10 @@
       "f1_hz": 110.07316593950364,
       "stiffness": 7.25731320980057e-05,
       "partials": 63,
+      "extras": 7,
+      "rings": [
+        19
+      ],
       "contact_delay_ms": [
         10.854,
         7.604,
@@ -574,7 +608,7 @@
         4.913,
         4.913,
         4.913,
-        6.489,
+        5.646,
         5.646,
         6.489
       ],
@@ -586,7 +620,7 @@
         0.721,
         0.716,
         0.722,
-        0.707,
+        0.708,
         0.703,
         0.693,
         0.671,
@@ -594,7 +628,7 @@
         0.638
       ],
       "body_modes_hidden": 4,
-      "body_phase_coherence": 0.9885331572543296,
+      "body_phase_coherence": 0.9885343440946406,
       "noise_bands_filled": 10
     },
     {
@@ -616,6 +650,10 @@
       "f1_hz": 130.4648913892378,
       "stiffness": 0.00010960557239020144,
       "partials": 58,
+      "extras": 7,
+      "rings": [
+        11
+      ],
       "contact_delay_ms": [
         4.708,
         4.729,
@@ -648,10 +686,10 @@
       "onset_rise_ms": [
         13.015,
         8.572,
-        4.274,
+        4.913,
         5.646,
         6.489,
-        5.646,
+        6.489,
         6.489,
         5.646,
         5.646,
@@ -675,7 +713,7 @@
         0.561
       ],
       "body_modes_hidden": 8,
-      "body_phase_coherence": 0.9826928686133909,
+      "body_phase_coherence": 0.9826919330455526,
       "noise_bands_filled": 10
     },
     {
@@ -697,6 +735,11 @@
       "f1_hz": 184.51714220912808,
       "stiffness": 0.00017067171566673018,
       "partials": 43,
+      "extras": 4,
+      "rings": [
+        2,
+        20
+      ],
       "contact_delay_ms": [
         5.208,
         5.5,
@@ -737,7 +780,7 @@
         1.854,
         1.404,
         1.221,
-        0.804,
+        0.2,
         0.2
       ],
       "median_relative_error": 0.13353780870023596,
@@ -756,7 +799,7 @@
         0.583
       ],
       "body_modes_hidden": 3,
-      "body_phase_coherence": 0.9858408420397173,
+      "body_phase_coherence": 0.9858399325746792,
       "noise_bands_filled": 7
     },
     {
@@ -778,6 +821,13 @@
       "f1_hz": 220.00992168906856,
       "stiffness": 0.00021594810579635127,
       "partials": 37,
+      "extras": 4,
+      "rings": [
+        3,
+        7,
+        12,
+        13
+      ],
       "contact_delay_ms": [
         13.146,
         8.792,
@@ -808,12 +858,12 @@
       ],
       "median_phase_agreement": 0.980636771014798,
       "onset_rise_ms": [
-        0.2,
+        0.23,
         1.613,
         1.221,
-        0.2,
         1.221,
-        1.063,
+        1.221,
+        0.2,
         1.063,
         1.063,
         0.804,
@@ -837,7 +887,7 @@
         0.647
       ],
       "body_modes_hidden": 3,
-      "body_phase_coherence": 0.9862336493398106,
+      "body_phase_coherence": 0.9862326427919779,
       "noise_bands_filled": 0
     },
     {
@@ -859,6 +909,13 @@
       "f1_hz": 261.53865372499035,
       "stiffness": 0.00029075998494499907,
       "partials": 34,
+      "extras": 2,
+      "rings": [
+        2,
+        10,
+        13,
+        16
+      ],
       "contact_delay_ms": [
         8.583,
         5.729,
@@ -918,7 +975,7 @@
         0.469
       ],
       "body_modes_hidden": 3,
-      "body_phase_coherence": 0.9846792923186618,
+      "body_phase_coherence": 0.9846539700005907,
       "noise_bands_filled": 0
     },
     {
@@ -940,6 +997,12 @@
       "f1_hz": 369.5368629903435,
       "stiffness": 0.0005082418558528503,
       "partials": 25,
+      "extras": 0,
+      "rings": [
+        1,
+        3,
+        12
+      ],
       "contact_delay_ms": [
         6.0,
         5.229,
@@ -999,7 +1062,7 @@
         0.325
       ],
       "body_modes_hidden": 2,
-      "body_phase_coherence": 0.9850397297291541,
+      "body_phase_coherence": 0.9850339463880721,
       "noise_bands_filled": 0
     },
     {
@@ -1021,6 +1084,19 @@
       "f1_hz": 440.39640163454806,
       "stiffness": 0.0006359447285299903,
       "partials": 23,
+      "extras": 1,
+      "rings": [
+        1,
+        3,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16,
+        17,
+        18
+      ],
       "contact_delay_ms": [
         9.521,
         6.0,
@@ -1059,7 +1135,7 @@
         0.2,
         0.2,
         0.2,
-        0.461,
+        0.401,
         0.461,
         0.401,
         0.264
@@ -1080,7 +1156,7 @@
         0.398
       ],
       "body_modes_hidden": 2,
-      "body_phase_coherence": 0.9911827478997979,
+      "body_phase_coherence": 0.9911830588001463,
       "noise_bands_filled": 0
     },
     {
@@ -1102,6 +1178,15 @@
       "f1_hz": 524.2754694030106,
       "stiffness": 0.0008203530241764827,
       "partials": 19,
+      "extras": 0,
+      "rings": [
+        2,
+        7,
+        9,
+        16,
+        18,
+        20
+      ],
       "contact_delay_ms": [
         6.583,
         4.583,
@@ -1161,7 +1246,7 @@
         0.373
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9790882201344628,
+      "body_phase_coherence": 0.9790911201306699,
       "noise_bands_filled": 0
     },
     {
@@ -1183,6 +1268,15 @@
       "f1_hz": 741.556653387407,
       "stiffness": 0.0014256737737510295,
       "partials": 16,
+      "extras": 1,
+      "rings": [
+        1,
+        4,
+        8,
+        12,
+        20,
+        21
+      ],
       "contact_delay_ms": [
         6.396,
         0.958,
@@ -1242,7 +1336,7 @@
         0.357
       ],
       "body_modes_hidden": 1,
-      "body_phase_coherence": 0.9799613615127747,
+      "body_phase_coherence": 0.9799399785368224,
       "noise_bands_filled": 0
     },
     {
@@ -1264,6 +1358,13 @@
       "f1_hz": 883.1542812211852,
       "stiffness": 0.0018256476546931418,
       "partials": 11,
+      "extras": 2,
+      "rings": [
+        1,
+        8,
+        11,
+        13
+      ],
       "contact_delay_ms": [
         6.438,
         4.667,
@@ -1323,7 +1424,7 @@
         0.263
       ],
       "body_modes_hidden": 1,
-      "body_phase_coherence": 0.9627464737379331,
+      "body_phase_coherence": 0.962742371652918,
       "noise_bands_filled": 0
     },
     {
@@ -1345,6 +1446,16 @@
       "f1_hz": 1051.652421927172,
       "stiffness": 0.0023812662452260573,
       "partials": 10,
+      "extras": 3,
+      "rings": [
+        1,
+        2,
+        3,
+        5,
+        7,
+        8,
+        13
+      ],
       "contact_delay_ms": [
         15.917,
         18.917,
@@ -1383,8 +1494,8 @@
         2.449,
         3.236,
         3.719,
-        1.063,
-        1.063,
+        1.221,
+        1.613,
         1.221,
         1.404
       ],
@@ -1404,7 +1515,7 @@
         0.606
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.976443715006129,
+      "body_phase_coherence": 0.9764462990075529,
       "noise_bands_filled": 0
     },
     {
@@ -1426,6 +1537,16 @@
       "f1_hz": 1491.3302021580428,
       "stiffness": 0.004128826146873446,
       "partials": 6,
+      "extras": 5,
+      "rings": [
+        1,
+        4,
+        6,
+        9,
+        11,
+        16,
+        18
+      ],
       "contact_delay_ms": [
         9.292,
         10.042,
@@ -1457,10 +1578,10 @@
       "median_phase_agreement": 0.903410693727352,
       "onset_rise_ms": [
         0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
+        1.613,
+        1.613,
+        1.221,
+        1.221,
         0.2,
         0.2,
         0.2,
@@ -1485,7 +1606,7 @@
         0.849
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9507638693191197,
+      "body_phase_coherence": 0.9507770326858046,
       "noise_bands_filled": 0
     },
     {
@@ -1507,6 +1628,14 @@
       "f1_hz": 1771.773685791952,
       "stiffness": 0.005409734812195607,
       "partials": 5,
+      "extras": 2,
+      "rings": [
+        3,
+        6,
+        11,
+        14,
+        15
+      ],
       "contact_delay_ms": [
         11.75,
         5.167,
@@ -1539,8 +1668,8 @@
       "onset_rise_ms": [
         0.2,
         0.2,
-        0.2,
-        1.063,
+        1.613,
+        3.236,
         11.324,
         6.489,
         4.913,
@@ -1566,7 +1695,7 @@
         0.832
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9618669856359248,
+      "body_phase_coherence": 0.9618244968067573,
       "noise_bands_filled": 0
     },
     {
@@ -1588,6 +1717,17 @@
       "f1_hz": 2120.35068447718,
       "stiffness": 0.009558042755025666,
       "partials": 3,
+      "extras": 1,
+      "rings": [
+        0,
+        4,
+        5,
+        6,
+        14,
+        15,
+        17,
+        19
+      ],
       "contact_delay_ms": [
         8.542,
         11.438,
@@ -1621,15 +1761,15 @@
         7.458,
         7.458,
         0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2
+        0.609,
+        0.349,
+        0.349,
+        0.401,
+        0.304,
+        0.349,
+        0.264,
+        0.461,
+        0.349
       ],
       "median_relative_error": 0.2793789599927012,
       "body_explained": [
@@ -1638,7 +1778,7 @@
         0.759,
         0.708,
         0.671,
-        0.797,
+        0.796,
         0.798,
         0.791,
         0.792,
@@ -1647,7 +1787,7 @@
         0.811
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9435152259223534,
+      "body_phase_coherence": 0.9435214369911883,
       "noise_bands_filled": 0
     },
     {
@@ -1669,6 +1809,19 @@
       "f1_hz": 3010.344549421251,
       "stiffness": 0.012847383710163885,
       "partials": 3,
+      "extras": 8,
+      "rings": [
+        1,
+        4,
+        6,
+        9,
+        11,
+        14,
+        15,
+        17,
+        19,
+        21
+      ],
       "contact_delay_ms": [
         7.521,
         5.812,
@@ -1700,16 +1853,16 @@
       "median_phase_agreement": 0.8900483943665634,
       "onset_rise_ms": [
         9.852,
+        0.23,
         0.2,
+        0.23,
         0.2,
+        0.23,
         0.2,
+        0.264,
+        0.23,
         0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
+        0.264,
         0.2
       ],
       "median_relative_error": 0.599959224206089,
@@ -1728,7 +1881,7 @@
         0.782
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.8991429127815402,
+      "body_phase_coherence": 0.89912866000605,
       "noise_bands_filled": 0
     },
     {
@@ -1750,6 +1903,19 @@
       "f1_hz": 3599.81701317155,
       "stiffness": 0.015477888472003631,
       "partials": 2,
+      "extras": 6,
+      "rings": [
+        0,
+        1,
+        4,
+        6,
+        9,
+        11,
+        14,
+        15,
+        17,
+        21
+      ],
       "contact_delay_ms": [
         8.896,
         10.083,
@@ -1809,10 +1975,269 @@
         0.739
       ],
       "body_modes_hidden": 0,
-      "body_phase_coherence": 0.9309308732381463,
+      "body_phase_coherence": 0.9309085053004333,
       "noise_bands_filled": 0
     }
   ],
+  "rings": {
+    "strings": [
+      {
+        "key": 91,
+        "cents": -23.22,
+        "hz": 1558.46,
+        "anchors": [
+          21,
+          24,
+          96,
+          105
+        ]
+      },
+      {
+        "key": 91,
+        "cents": -1.65,
+        "hz": 1577.99,
+        "anchors": [
+          66,
+          69,
+          78,
+          81,
+          84,
+          90,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 91,
+        "cents": 2.14,
+        "hz": 1581.45,
+        "anchors": [
+          54,
+          60,
+          72,
+          84
+        ]
+      },
+      {
+        "key": 92,
+        "cents": 26.11,
+        "hz": 1698.3,
+        "anchors": [
+          57,
+          66,
+          69,
+          84,
+          93
+        ]
+      },
+      {
+        "key": 93,
+        "cents": 0.26,
+        "hz": 1772.04,
+        "anchors": [
+          78,
+          90,
+          96,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 93,
+        "cents": 2.91,
+        "hz": 1774.75,
+        "anchors": [
+          84,
+          96
+        ]
+      },
+      {
+        "key": 94,
+        "cents": 4.34,
+        "hz": 1885.8,
+        "anchors": [
+          90,
+          93,
+          96,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 94,
+        "cents": 32.58,
+        "hz": 1916.81,
+        "anchors": [
+          57,
+          69,
+          72,
+          84
+        ]
+      },
+      {
+        "key": 95,
+        "cents": 43.26,
+        "hz": 2047.67,
+        "anchors": [
+          24,
+          69,
+          78,
+          81,
+          84
+        ]
+      },
+      {
+        "key": 95,
+        "cents": 43.92,
+        "hz": 2048.45,
+        "anchors": [
+          69,
+          72,
+          90,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 96,
+        "cents": -2.9,
+        "hz": 2116.8,
+        "anchors": [
+          21,
+          33,
+          42,
+          60
+        ]
+      },
+      {
+        "key": 96,
+        "cents": 1.28,
+        "hz": 2121.92,
+        "anchors": [
+          48,
+          81,
+          90,
+          93,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 96,
+        "cents": 42.98,
+        "hz": 2173.65,
+        "anchors": [
+          33,
+          57,
+          66,
+          69,
+          78
+        ]
+      },
+      {
+        "key": 97,
+        "cents": -32.61,
+        "hz": 2205.95,
+        "anchors": [
+          33,
+          57,
+          60,
+          69,
+          81,
+          84
+        ]
+      },
+      {
+        "key": 97,
+        "cents": -4.73,
+        "hz": 2241.76,
+        "anchors": [
+          24,
+          93,
+          96,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 98,
+        "cents": -3.46,
+        "hz": 2378.36,
+        "anchors": [
+          93,
+          96,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 99,
+        "cents": -38.84,
+        "hz": 2470.41,
+        "anchors": [
+          60,
+          69,
+          72,
+          90
+        ]
+      },
+      {
+        "key": 100,
+        "cents": 0.38,
+        "hz": 2679.01,
+        "anchors": [
+          69,
+          96,
+          102,
+          105
+        ]
+      },
+      {
+        "key": 101,
+        "cents": -21.13,
+        "hz": 2805.09,
+        "anchors": [
+          69,
+          72,
+          90
+        ]
+      },
+      {
+        "key": 103,
+        "cents": -16.48,
+        "hz": 3164.98,
+        "anchors": [
+          36,
+          45,
+          96,
+          102
+        ]
+      },
+      {
+        "key": 106,
+        "cents": 39.22,
+        "hz": 3908.48,
+        "anchors": [
+          36,
+          54,
+          72,
+          78
+        ]
+      },
+      {
+        "key": 108,
+        "cents": -11.48,
+        "hz": 4276.26,
+        "anchors": [
+          30,
+          78,
+          102,
+          105
+        ]
+      }
+    ],
+    "by_chance": 2.7
+  },
   "body": {
     "modes": 91,
     "hz": [
@@ -1995,7 +2420,7 @@
       0.626,
       0.529,
       0.838,
-      0.997,
+      0.996,
       0.651,
       0.667,
       0.683,
@@ -2174,7 +2599,7 @@
         0.253,
         0.13,
         0.253,
-        0.17,
+        0.194,
         0.1,
         0.1,
         0.729,
@@ -2183,7 +2608,7 @@
       "93": [
         0.114,
         0.1,
-        0.289,
+        0.253,
         0.1,
         0.1,
         0.1,
@@ -2191,7 +2616,7 @@
         0.1,
         1.085,
         1.239,
-        1.239,
+        1.414,
         1.085
       ],
       "96": [
@@ -2201,7 +2626,7 @@
         0.429,
         0.1,
         0.1,
-        0.1,
+        0.114,
         0.1,
         0.1,
         1.085,
@@ -2256,18 +2681,18 @@
     ],
     "coherence": [
       0.378,
-      0.368,
-      0.262,
-      0.217,
-      0.177,
-      0.179,
-      0.24,
-      0.198,
+      0.369,
+      0.271,
+      0.22,
+      0.178,
+      0.187,
+      0.236,
+      0.23,
       0.189,
       0.143,
       0.084,
       0.092,
-      0.057
+      0.058
     ]
   },
   "uncalibrated_anchors": [
@@ -2276,5 +2701,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "683f4baee304bb17733da4e0336c6960c47c6f7fb741fe8ee51b045089320cf1"
+  "generated_header_sha256": "db1b1a87abd8a7d2ca8a64b39fe34e300c39ddb175c23f7dd07a33a505634f1e"
 }

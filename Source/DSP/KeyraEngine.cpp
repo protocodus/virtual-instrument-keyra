@@ -166,36 +166,52 @@ Complex phaseAt(const measured::Lane& lane,double velocity) noexcept {
   const Complex a{std::cos(ph[i]),std::sin(ph[i])},b{std::cos(ph[i+1]),std::sin(ph[i+1])};
   return unit({mix(a.re,b.re,t),mix(a.im,b.im,t)},t<.5?a:b);
 }
+LaneData laneAt(const measured::Lane& m,double velocity) noexcept {
+  LaneData l;l.rate=std::log(m.rate);l.offset=m.offsetHz;l.level=levelAt(m.levelDb,velocity);l.phase=phaseAt(m,velocity);
+  l.left={m.left,0};l.right={m.rightRe,m.rightIm};
+  return l;
+}
 PartialData single(const measured::Partial& p,double velocity) noexcept {
   PartialData d;d.order=p.order;d.cents=p.cents;
   d.rise=std::log(p.riseSeconds)+p.riseSlope*(velocity-64)/64;
-  for(int j=0;j<lanes;++j){const auto& m=p.lanes[j];auto& l=d.lane[j];
-    l.rate=std::log(m.rate);l.offset=m.offsetHz;l.level=levelAt(m.levelDb,velocity);l.phase=phaseAt(m,velocity);
-    l.left={m.left,0};l.right={m.rightRe,m.rightIm};}
+  for(int j=0;j<lanes;++j)d.lane[j]=laneAt(p.lanes[j],velocity);
   return d;
+}
+LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
+  LaneData l;
+  l.rate=mix(x.rate,y.rate,t);l.offset=mix(x.offset,y.offset,t);l.level=mix(x.level,y.level,t);
+  // Phases come from the nearer anchor: each is one measured pattern of
+  // the strike's arrival across the partials, and a blend of two is neither.
+  l.phase=t<.5?x.phase:y.phase;
+  // The pickup shape (left real, unit mean channel power) is blended as its
+  // channels' level difference in dB and their phase difference along the
+  // shorter arc. The microphones hear the board about 3.4 ms apart, so like
+  // partials of two recorded pitches can arrive half a turn apart in phase;
+  // blended as vectors they cancelled a channel, putting D#3's fundamental
+  // 12 dB further left than either C3 or F#3 has it.
+  const double ra=std::max(1e-6,std::hypot(x.right.re,x.right.im)),rb=std::max(1e-6,std::hypot(y.right.re,y.right.im));
+  const double g=std::exp(mix(std::log(ra/std::max(1e-6,x.left.re)),std::log(rb/std::max(1e-6,y.left.re)),t));
+  const double from=std::atan2(x.right.im,x.right.re),phase=from+t*std::remainder(std::atan2(y.right.im,y.right.re)-from,2*pi);
+  const double left=std::sqrt(2/(1+g*g));
+  l.left={left,0};l.right={left*g*std::cos(phase),left*g*std::sin(phase)};
+  return l;
 }
 PartialData blend(const PartialData& a,const PartialData& b,double t) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
   d.rise=mix(a.rise,b.rise,t);
-  for(int j=0;j<lanes;++j){const auto& x=a.lane[j];const auto& y=b.lane[j];auto& l=d.lane[j];
-    l.rate=mix(x.rate,y.rate,t);l.offset=mix(x.offset,y.offset,t);l.level=mix(x.level,y.level,t);
-    // Phases come from the nearer anchor: each is one measured pattern of
-    // the strike's arrival across the partials, and a blend of two is neither.
-    l.phase=t<.5?x.phase:y.phase;
-    // Lanes are stored fastest first, so like roles meet. The pickup shape
-    // (left real, unit mean channel power) is blended as its channels' level
-    // difference in dB and their phase difference along the shorter arc. The
-    // microphones hear the board about 3.4 ms apart, so like partials of two
-    // recorded pitches can arrive half a turn apart in phase; blended as
-    // vectors they cancelled a channel, putting D#3's fundamental 12 dB
-    // further left than either C3 or F#3 has it.
-    const double ra=std::max(1e-6,std::hypot(x.right.re,x.right.im)),rb=std::max(1e-6,std::hypot(y.right.re,y.right.im));
-    const double g=std::exp(mix(std::log(ra/std::max(1e-6,x.left.re)),std::log(rb/std::max(1e-6,y.left.re)),t));
-    const double from=std::atan2(x.right.im,x.right.re),phase=from+t*std::remainder(std::atan2(y.right.im,y.right.re)-from,2*pi);
-    const double left=std::sqrt(2/(1+g*g));
-    l.left={left,0};l.right={left*g*std::cos(phase),left*g*std::sin(phase)};
-  }
+  // Lanes are stored fastest first, so like roles meet.
+  for(int j=0;j<lanes;++j)d.lane[j]=blendLane(a.lane[j],b.lane[j],t);
   return d;
+}
+// The fundamental (Hz at A4 = 440 Hz) the engine gives a key: its cents from
+// equal temperament between the recorded pitches around it, continued from
+// the last two beyond them.
+double keyPitch(int note) noexcept {
+  const auto& anchors=measured::anchors;
+  int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
+  const auto& a=anchors[upper-1];const auto& b=anchors[upper];
+  auto cents=[](const measured::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
+  return 440*std::pow(2.,(note-69+mix(cents(a),cents(b),static_cast<double>(note-a.note)/(b.note-a.note))/100)/12.);
 }
 }
 
@@ -493,9 +509,8 @@ struct Engine::Impl {
     // Keys beyond the last recorded pitch keep its partials but follow the
     // stretch and stiffness trend of the last two.
     const double reach=static_cast<double>(note-a.note)/(b.note-a.note),t=std::max(0.,std::min(1.,reach));
-    auto cents=[](const measured::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
-    const double f1=440*std::pow(2.,(note-69+mix(cents(a),cents(b),reach)/100)/12.);
-    const double B=std::exp(mix(std::log(a.B),std::log(b.B),reach));
+    const double f1=keyPitch(note),B=std::exp(mix(std::log(a.B),std::log(b.B),reach));
+    const double highest=std::min(17000.,sampleRate*.43);
     // No partial rises faster than its recorded pitch's onset builds up.
     const double shortestRise=std::exp(mix(onsetRiseAt(a,v),onsetRiseAt(b,v),t));
     const double ratio=tuningRatio(ch);
@@ -536,7 +551,7 @@ struct Engine::Impl {
       if(weight<=0)continue;
       const int order=d.order;
       const double frequency=order*f1*std::sqrt((1+B*order*order)/(1+B))*std::pow(2.,d.cents/1200);
-      if(frequency>std::min(17000.,sampleRate*.43))break;
+      if(frequency>highest)break;
       // Una corda reduces high-frequency excitation progressively and moves
       // energy from the prompt lane to the slowest one, as the unstruck
       // string is driven only through the bridge.
@@ -563,26 +578,94 @@ struct Engine::Impl {
         partial.baseRightRe[k]=static_cast<float>(wr.re);partial.baseRightIm[k]=static_cast<float>(wr.im);
       }
       if(peak<1e-7)continue;
-      const double rise=legacyAttack?.002:std::max(std::exp(d.rise),shortestRise);
-      partial.riseStep=std::exp(-1/(rise*sampleRate));
-      partial.riseLeap=std::pow(partial.riseStep,chunk);
-      partial.riseExact=std::pow(partial.riseStep,ahead);
-      partial.riseRemaining=1;partial.riseDecay=static_cast<float>(partial.riseStep);
-      partial.rising=true;
-      for(int k=0;k<lanes;++k)
-        partial.energyWeight[k]=static_cast<double>(partial.baseLeftRe[k])*partial.baseLeftRe[k]+static_cast<double>(partial.baseLeftIm[k])*partial.baseLeftIm[k]
-                               +static_cast<double>(partial.baseRightRe[k])*partial.baseRightRe[k]+static_cast<double>(partial.baseRightIm[k])*partial.baseRightIm[k];
-      tunePartial(partial,ratio);
-      partial.audibility=partial.targetAudibility;
-      updateWeights(partial);
-      setRotation(partial,dampingFactor(voice,partial));
-      for(int k=0;k<lanes;++k){
-        setLane(partial.re,k,1.f);setLane(partial.im,k,0.f);
-        partial.exact[k]=power(partial.step[k],ahead);
-      }
+      launch(voice,partial,legacyAttack?.002:std::max(std::exp(d.rise),shortestRise),ahead,ratio);
       ++voice.count;
     }
+    // Single components (one measured lane each) share a slot four at a time,
+    // one to a lane, in order of frequency; the slot's damping and tint follow
+    // its members. Each starts at contact, under the pitch's onset rise.
+    int filled=0;double hzSum=0,orderSum=0,peak=0;
+    const auto add=[&](double frequency,double order,const LaneData& l){
+      auto& slot=voice.partials[voice.count];const int k=filled++;
+      const double amplitude=std::pow(10.,l.level/20)*softGain*std::exp(-soft*.115*(order-1));
+      const Complex g{l.phase.re*amplitude,l.phase.im*amplitude},wl=g*l.left,wr=g*l.right;
+      slot.decay[k]=std::exp(-std::exp(l.rate)/sampleRate);slot.hz[k]=frequency+l.offset;
+      slot.baseLeftRe[k]=static_cast<float>(wl.re);slot.baseLeftIm[k]=static_cast<float>(wl.im);
+      slot.baseRightRe[k]=static_cast<float>(wr.re);slot.baseRightIm[k]=static_cast<float>(wr.im);
+      hzSum+=frequency;orderSum+=order;peak+=amplitude;
+    };
+    const auto close=[&](bool damped){
+      auto& slot=voice.partials[voice.count];
+      for(int k=filled;k<lanes;++k){
+        slot.decay[k]=0;slot.hz[k]=hzSum/filled;
+        slot.baseLeftRe[k]=slot.baseLeftIm[k]=slot.baseRightRe[k]=slot.baseRightIm[k]=0;}
+      slot.frequency=hzSum/filled;
+      slot.damperScale=damped?(24+1.4*std::sqrt(slot.frequency)+.001*slot.frequency)/sampleRate:0;
+      slot.tintScale=std::min(4.,std::log2(orderSum/filled));
+      slot.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*slot.tintScale));
+      if(peak>=1e-7){
+        launch(voice,slot,legacyAttack?.002:shortestRise,ahead,ratio);
+        ++voice.count;}
+      filled=0;hzSum=orderSum=peak=0;
+    };
+    // The components beside the series pair with nothing at the other pitch,
+    // so each anchor's are cross-faded in power.
+    const double share[2]={std::sqrt(1-t),std::sqrt(t)};
+    const auto place=[&](const measured::Extra& e){
+      const double n=e.order;return n*f1*std::sqrt((1+B*n*n)/(1+B))*std::pow(2.,e.cents/1200);};
+    int ea=a.extraFirst,eb=b.extraFirst;
+    const int enda=a.extraFirst+a.extraCount,endb=b.extraFirst+b.extraCount;
+    while((ea<enda||eb<endb)&&voice.count<maxPartials){
+      const bool first=eb>=endb||(ea<enda&&place(measured::extras[ea])<=place(measured::extras[eb]));
+      const auto& e=measured::extras[first?ea++:eb++];
+      const double weight=share[first?0:1],frequency=place(e);
+      if(weight<=0||frequency>highest)continue;
+      LaneData l=laneAt(e.lane,v);l.level+=20*std::log10(weight);
+      add(frequency,e.order,l);
+      if(filled==lanes)close(true);
+    }
+    if(filled>0&&voice.count<maxPartials)close(true);
+    // The strings from F6 up have no dampers, and a strike sets them ringing
+    // at their own pitches, on after the key is let go. Each recorded pitch
+    // lists the ones it was heard to ring; a string both list blends like a
+    // partial, one that only one lists fades out towards the other.
+    int ua=a.undampedFirst,ub=b.undampedFirst;
+    const int endua=a.undampedFirst+a.undampedCount,endub=b.undampedFirst+b.undampedCount;
+    while((ua<endua||ub<endub)&&voice.count<maxPartials){
+      const int ra=ua<endua?measured::undamped[ua].ring:1<<30,rb=ub<endub?measured::undamped[ub].ring:1<<30;
+      LaneData l;double weight=1;
+      if(ra==rb)l=blendLane(laneAt(measured::undamped[ua++].lane,v),laneAt(measured::undamped[ub++].lane,v),t);
+      else{l=laneAt(measured::undamped[ra<rb?ua++:ub++].lane,v);weight=ra<rb?1-t:t;}
+      const auto& ring=measured::rings[std::min(ra,rb)];
+      const double frequency=keyPitch(ring.key)*std::pow(2.,ring.cents/1200);
+      // The struck key's own strings are the series.
+      if(weight<=0||frequency>highest||std::abs(1200*std::log2(frequency/f1))<=measured::unisonCents)continue;
+      l.level+=20*std::log10(weight);
+      add(frequency,std::max(1.,frequency/f1),l);
+      if(filled==lanes)close(false);
+    }
+    if(filled>0&&voice.count<maxPartials)close(false);
     if(voice.count==0)voice.active=false;
+  }
+  // A partial's rise, tuning, weights and state from its strike, `ahead`
+  // samples before the next chunk boundary.
+  void launch(const Voice& voice,Partial& partial,double rise,int ahead,double ratio) noexcept {
+    partial.riseStep=std::exp(-1/(rise*sampleRate));
+    partial.riseLeap=std::pow(partial.riseStep,chunk);
+    partial.riseExact=std::pow(partial.riseStep,ahead);
+    partial.riseRemaining=1;partial.riseDecay=static_cast<float>(partial.riseStep);
+    partial.rising=true;
+    for(int k=0;k<lanes;++k)
+      partial.energyWeight[k]=static_cast<double>(partial.baseLeftRe[k])*partial.baseLeftRe[k]+static_cast<double>(partial.baseLeftIm[k])*partial.baseLeftIm[k]
+                             +static_cast<double>(partial.baseRightRe[k])*partial.baseRightRe[k]+static_cast<double>(partial.baseRightIm[k])*partial.baseRightIm[k];
+    tunePartial(partial,ratio);
+    partial.audibility=partial.targetAudibility;
+    updateWeights(partial);
+    setRotation(partial,dampingFactor(voice,partial));
+    for(int k=0;k<lanes;++k){
+      setLane(partial.re,k,1.f);setLane(partial.im,k,0.f);
+      partial.exact[k]=power(partial.step[k],ahead);
+    }
   }
   void ringBody(Body& body,int frames) noexcept {
     for(auto& bank:body){

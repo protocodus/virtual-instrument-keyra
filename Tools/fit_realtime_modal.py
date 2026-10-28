@@ -53,6 +53,15 @@ def sha256(path: Path) -> str:
 # data on the stretch curve.
 UNCALIBRATED = {108: 'strongest components 90-100 cents above the stretch trend; no partial series explains '
                      'the recording'}
+# The keys from F6 up have no dampers: their strings ring with every strike
+# at their own pitches. The analysis searches beside each one's pitch; a
+# string is a residual peak that recurs, within RING_CENTS, in RING_PITCHES
+# recorded pitches or more (find_rings). A peak within HALO_CENTS of an
+# anchor's own fundamental is its unison, which the partial's lanes hold.
+UNDAMPED = range(89, 109)
+HALO_CENTS = 15.0
+RING_CENTS = 1.5
+RING_PITCHES = 4
 
 
 def train_anchors():
@@ -118,6 +127,33 @@ def stiff_fit(orders, freqs, weights):
     fit = optimize.least_squares(residual, [first, 1e-4], bounds=([first * .97, 0], [first * 1.03, .05]),
                                  loss='soft_l1', f_scale=2.0, x_scale=[first, 1e-3])
     return float(fit.x[0]), float(fit.x[1])
+
+
+def series(result):
+    """An anchor's f1 and B: the stiff-string series through its reliable
+    partials, each weighed by its signal to noise."""
+    import numpy as np
+    snr = np.array([L['peak_db'] - L['floor_db'] for L in result['layers']])
+    reliable = np.array([f is not None for f in result['fits']])
+    strength = np.clip(np.nanmax(snr, axis=0) / 30, .2, 1.5)
+    return stiff_fit(np.array(result['orders'])[reliable], result['freqs'][reliable], strength[reliable])
+
+
+def string_pitches(f1s):
+    """The fundamental (Hz) the engine gives each undamped key, from the
+    anchors' f1 ({note: f1}) as the engine interpolates them: cents from equal
+    temperament linear in the note between the anchors around it, continued
+    from the last two beyond them."""
+    import math
+    notes = sorted(f1s)
+    cents = {n: 1200 * math.log2(f1s[n] / (440 * 2 ** ((n - 69) / 12))) for n in notes}
+    pitches = {}
+    for key in UNDAMPED:
+        upper = next((k for k in range(1, len(notes)) if notes[k] >= key), len(notes) - 1)
+        a, b = notes[upper - 1], notes[upper]
+        c = cents[a] + (cents[b] - cents[a]) * (key - a) / (b - a)
+        pitches[key] = 440 * 2 ** ((key - 69 + c / 100) / 12)
+    return pitches
 
 
 def lane_shapes(amplitudes):
@@ -254,9 +290,10 @@ def onset_rise(x, sr, start, delay, f1, waves, rises, seconds=.03):
 
 
 def header_waves(data, i, sr, samples, contact):
-    """Each partial of an anchor's generated data as the engine plays it at
-    layer i, both channels from `contact` seconds into `samples`, without its
-    rise; and each partial's own rise (s) there."""
+    """Each partial, extra component and ringing undamped string of an
+    anchor's generated data as the engine plays it at layer i, both channels from `contact` seconds into
+    `samples`, without its rise; and each one's own rise (s) there, none for a
+    component beside the series, which starts at contact."""
     import math
     import numpy as np
     import piano_analysis as pa
@@ -265,8 +302,8 @@ def header_waves(data, i, sr, samples, contact):
     on = t >= contact
     x = (data['velocities'][i] - 64) / 64
     waves, rises = [], []
-    for p in data['partials']:
-        hz = pa.stiff(data['f1'], data['B'], p['order']) * 2 ** (p['cents'] / 1200)
+    for p in data['partials'] + [extra | {'lanes': [extra['lane']]} for extra in data['extras'] + data['undamped']]:
+        hz = p['hz'] if 'hz' in p else pa.stiff(data['f1'], data['B'], p['order']) * 2 ** (p['cents'] / 1200)
         wave = np.zeros((samples, 2))
         for lane in p['lanes']:
             g = 10 ** (lane['level_db'][i] / 20) * np.exp(1j * lane['phase'][i])
@@ -274,12 +311,53 @@ def header_waves(data, i, sr, samples, contact):
             wave[:, 0] += np.real(g * lane['left'] * z)
             wave[:, 1] += np.real(g * lane['right'] * z)
         waves.append(wave)
-        rises.append(p['rise_seconds'] * math.exp(p['rise_slope'] * x))
+        rises.append(p['rise_seconds'] * math.exp(p['rise_slope'] * x) if 'rise_seconds' in p else 0.0)
     return np.array(waves), np.array(rises)
 
 
-def anchor_data(result):
-    """The engine's data for one calibrated anchor."""
+def find_rings(results, strings):
+    """The undamped strings heard ringing: every recorded pitch's residual
+    peaks from the undamped strings' search span up, its own unison aside,
+    pooled and grouped where they agree within RING_CENTS of a group's lowest.
+    A group heard in RING_PITCHES recorded pitches or more is a string: kept
+    at its median frequency, by the key whose pitch (`strings`) it sits
+    nearest. Returns the strings ({key, cents, hz}, by frequency), the string
+    each peak joins, {(note, index): string}, and how many such groups the
+    same peaks form on average when each recorded pitch's are shifted by a
+    random amount up to 50 cents: the strings that may be chance alignments."""
+    import math
+    import numpy as np
+    import piano_analysis as pa
+    low = pa.midi_hz(UNDAMPED[0]) * 2 ** (pa.HALO_SPAN[0] / 1200)
+    peaks = sorted((float(f), r['note'], k) for r in results for k, f in enumerate(r['extra_freqs'])
+                   if f >= low and abs(1200 * math.log2(f / series(r)[0])) > HALO_CENTS)
+
+    def strings_in(peaks):
+        groups = []
+        for peak in sorted(peaks):
+            if groups and 1200 * math.log2(peak[0] / groups[-1][0][0]) <= RING_CENTS:
+                groups[-1].append(peak)
+            else:
+                groups.append([peak])
+        return [g for g in groups if len({note for _, note, _ in g}) >= RING_PITCHES]
+    rings, member = [], {}
+    for group in strings_in(peaks):
+        hz = float(np.median([f for f, _, _ in group]))
+        key = min(strings, key=lambda m: abs(math.log2(hz / strings[m])))
+        member.update({(note, k): len(rings) for _, note, k in group})
+        rings.append({'key': key, 'cents': 1200 * math.log2(hz / strings[key]), 'hz': hz})
+    rng = np.random.default_rng(0)
+    notes = sorted({note for _, note, _ in peaks})
+    chance = []
+    for _ in range(50):
+        shift = dict(zip(notes, rng.uniform(-50, 50, len(notes))))
+        chance.append(len(strings_in([(f * 2 ** (shift[note] / 1200), note, k) for f, note, k in peaks])))
+    return rings, member, float(np.mean(chance))
+
+
+def anchor_data(result, rings, member):
+    """The engine's data for one calibrated anchor; `rings` and `member` are
+    find_rings' strings and the string each residual peak joins."""
     import math
     import numpy as np
     from scipy import stats
@@ -288,9 +366,7 @@ def anchor_data(result):
     delays = np.array([L['delay'] for L in result['layers']])
     snr = np.array([L['peak_db'] - L['floor_db'] for L in result['layers']])      # layers x orders
     orders, freqs = result['orders'], result['freqs']
-    reliable = np.array([f is not None for f in result['fits']])
-    strength = np.clip(np.nanmax(snr, axis=0) / 30, .2, 1.5)
-    f1, B = stiff_fit(np.array(orders)[reliable], freqs[reliable], strength[reliable])
+    f1, B = series(result)
     shaped = []
     for k, (n, fit) in enumerate(zip(orders, result['fits'])):
         if fit is None:
@@ -314,17 +390,16 @@ def anchor_data(result):
     # slow onsets are detected late by up to that much).
     shifts, agreement = layer_alignment(phases, weights, np.array([freqs[k] for k, *_ in shaped]),
                                         int(np.argmax(velocities)), min(.003, .5 / f1))
-    partials = []
-    for row, (k, n, fit, layers, u, mu, explained) in enumerate(shaped):
-        mu = mu * np.exp(-2j * math.pi * freqs[k] * shifts[layers])[:, None]
-        theta = fit['theta']
+    def lanes_of(theta, u, mu, layers, snr_db):
+        """Each lane's rate, offset, pickup and smoothed level and phase per layer."""
+        count = mu.shape[1]
         lanes = []
-        for j in range(pa.LANES):
-            # A lane counts at a layer in proportion to the partial's signal
-            # to noise there and to the lane's share of the partial.
+        for j in range(count):
+            # A lane counts at a layer in proportion to the component's signal
+            # to noise there and to the lane's share of it.
             share = np.abs(mu[:, j]) / np.max(np.abs(mu), axis=1)
             w = np.full(len(velocities), 1e-3)
-            w[layers] = np.clip((snr[layers, k] - 15) / 15, .02, 1) * np.clip(share, .05, 1)
+            w[layers] = np.clip((snr_db - 15) / 15, .02, 1) * np.clip(share, .05, 1)
             measured = 20 * np.log10(np.maximum(np.abs(mu[:, j]), 1e-10))
             phase = np.exp(1j * np.angle(mu[:, j]))
             full_level = np.interp(velocities, velocities[layers], measured)
@@ -332,10 +407,17 @@ def anchor_data(result):
                           + 1j * np.interp(velocities, velocities[layers], phase.imag))
             smooth_phase = (smooth_levels(velocities, full_phase.real, w, .5)
                             + 1j * smooth_levels(velocities, full_phase.imag, w, .5))
-            lanes.append({'rate': math.exp(theta[j]), 'offset_hz': float(theta[pa.LANES + j]),
+            lanes.append({'rate': math.exp(theta[j]), 'offset_hz': float(theta[count + j]),
                           'left': float(u[0, j].real), 'right': complex(u[1, j]),
                           'level_db': smooth_levels(velocities, full_level, w),
                           'phase': np.angle(smooth_phase)})
+        return lanes
+
+    partials = []
+    for row, (k, n, fit, layers, u, mu, explained) in enumerate(shaped):
+        mu = mu * np.exp(-2j * math.pi * freqs[k] * shifts[layers])[:, None]
+        theta = fit['theta']
+        lanes = lanes_of(theta, u, mu, layers, snr[layers, k])
         peak = max(float(np.max(lane['level_db'])) for lane in lanes)
         if peak < -110:
             continue
@@ -344,7 +426,42 @@ def anchor_data(result):
                          'rise_seconds': math.exp(theta[2 * pa.LANES]), 'rise_slope': float(theta[2 * pa.LANES + 1]),
                          'lanes': lanes, 'explained': explained, 'phase_agreement': float(agreement[row]),
                          'error': float(np.median([e for e in fit['relative_error'] if e is not None]))})
+    # The components beside the series, in the same frame. One within
+    # HALO_CENTS of the fundamental is the struck key's own unison, which the
+    # partial's lanes hold. One that joins a ringing string is kept as that
+    # string (the strongest, where several join one); the rest of the strings'
+    # search finds no string. The others sit at the order of the series
+    # nearest them, cents from there.
+    extras, ringing = [], {}
+    orders_all = np.arange(1, 400)
+    ladder = pa.stiff(f1, B, orders_all)
+    extra_snr = np.array([L['extra_peak_db'] - L['extra_floor_db'] for L in result['layers']]) \
+        if len(result.get('extra_freqs', [])) else None
+    for k, (f, fit) in enumerate(zip(result['extra_freqs'], result['extra_fits'])):
+        ring = member.get((result['note'], k))
+        if fit is None or (ring is None and result['extra_halo'][k]):
+            continue
+        layers = [i for i, a in enumerate(fit['amplitudes']) if a is not None]
+        if len(layers) < 3:
+            continue
+        u, mu, _ = lane_shapes([fit['amplitudes'][i] for i in layers])
+        mu = mu * np.exp(2j * math.pi * f * (delays[layers] - shifts[layers]))[:, None]
+        lane = lanes_of(fit['theta'], u, mu, layers, extra_snr[layers, k])[0]
+        if float(np.max(lane['level_db'])) < -110 or abs(1200 * math.log2(f / f1)) <= HALO_CENTS:
+            continue
+        component = {'lane': lane, 'error': float(np.median([e for e in fit['relative_error'] if e is not None]))}
+        if ring is not None:
+            # A string rings at one pitch whichever key sets it ringing: its
+            # group's median. The fit's offset refines this pitch's own peak,
+            # which may sit up to RING_CENTS from it.
+            lane['offset_hz'] = 0.0
+            if ring not in ringing or np.max(lane['level_db']) > np.max(ringing[ring]['lane']['level_db']):
+                ringing[ring] = component | {'ring': ring, 'hz': rings[ring]['hz']}
+            continue
+        n = int(orders_all[np.argmin(np.abs(ladder - f))])
+        extras.append(component | {'order': n, 'cents': float(1200 * math.log2(f / ladder[n - 1]))})
     data = {'note': result['note'], 'f1': f1, 'B': B, 'velocities': velocities.tolist(), 'partials': partials,
+            'extras': extras, 'undamped': [ringing[ring] for ring in sorted(ringing)],
             'layer_shift_ms': [round(1000 * d, 3) for d in shifts]}
     # The onset rise of every layer as the engine plays the data. Layer to
     # layer it scatters by a factor of several, more than any trend, so the
@@ -679,7 +796,7 @@ def number(x):
     return value + ('f' if '.' in value or 'e' in value else '.f')
 
 
-def header(anchors, body, noise):
+def header(anchors, rings, body, noise):
     velocities = anchors[0]['velocities']
     layers = len(velocities)
     total = sum(len(a['partials']) for a in anchors)
@@ -702,14 +819,34 @@ def header(anchors, body, noise):
              '// A recorded pitch: its series (f1 at A4 = 440 Hz, stiffness B), per layer',
              '// the shortest rise its partials take (seconds), measured from the',
              '// recordings\' onsets, and its partials.',
-             'struct Anchor { int note; float f1, B; std::array<float,layers> onsetRise; int first, count; };',
+             '// A component beside the series (below A3: the unison strings\' own series',
+             '// at high orders and phantom partials): one lane at its place by the',
+             '// series (cents from an order), starting at contact.',
+             'struct Extra { int order; float cents; Lane lane; };',
+             '// A string from F6 up, which has no damper, ringing with every strike at',
+             '// its own frequency: the key it sits nearest and its cents from the pitch the',
+             '// engine gives that key. Some sit 20 to 45 cents from every key\'s pitch;',
+             '// they recur across the recorded pitches like the rest.',
+             'struct Ring { int key; float cents; };',
+             f'constexpr std::array<Ring,{len(rings)}> rings{{{{'
+             + ','.join('{' + str(r['key']) + ',' + number(r['cents']) + '}' for r in rings) + '}};',
+             '// A component within unisonCents of a pitch\'s fundamental is that key\'s',
+             '// own unison, which its partial\'s lanes hold.',
+             f'constexpr float unisonCents={number(HALO_CENTS)};',
+             '// A string as a recorded pitch sets it ringing: one lane, as an extra',
+             '// component\'s.',
+             'struct Undamped { int ring; Lane lane; };',
+             'struct Anchor { int note; float f1, B; std::array<float,layers> onsetRise; int first, count, '
+             'extraFirst, extraCount, undampedFirst, undampedCount; };',
              f'constexpr std::array<Anchor,{len(anchors)}> anchors{{{{']
-    first = 0
+    first = extra = ring = 0
     for a in anchors:
         lines.append(f'  {{{a["note"]},{number(a["f1"])},{number(a["B"])},'
                      + '{{' + ','.join(number(x) for x in a['onset_rise']) + '}}'
-                     + f',{first},{len(a["partials"])}}},')
+                     + f',{first},{len(a["partials"])},{extra},{len(a["extras"])},{ring},{len(a["undamped"])}}},')
         first += len(a['partials'])
+        extra += len(a['extras'])
+        ring += len(a['undamped'])
     lines.append('}};')
     lines.append(f'constexpr std::array<Partial,{total}> partials{{{{')
     for a in anchors:
@@ -724,6 +861,19 @@ def header(anchors, body, noise):
             lines.append(f'  {{{p["order"]},' + ','.join(number(p[k]) for k in ('cents', 'rise_seconds', 'rise_slope'))
                          + ',{{' + ','.join(lanes) + '}}},')
     lines.append('}};')
+    for kind, field, count, place in (('Extra', 'extras', extra, ('order', 'cents')), ('Undamped', 'undamped', ring, ('ring',))):
+        lines.append(f'constexpr std::array<{kind},{count}> {field}{{{{')
+        for a in anchors:
+            if a[field]:
+                lines.append(f'  // MIDI {a["note"]}')
+            for p in a[field]:
+                lane = p['lane']
+                lines.append(f'  {{{p[place[0]]},' + ''.join(number(p[k]) + ',' for k in place[1:])
+                             + '{' + ','.join(number(x) for x in (lane['rate'], lane['offset_hz'], lane['left'],
+                                                                   lane['right'].real, lane['right'].imag))
+                             + ',{{' + ','.join(number(x) for x in lane['level_db']) + '}}'
+                             + ',{{' + ','.join(number(x) for x in lane['phase']) + '}}}},')
+        lines.append('}};')
     lines += ['// The soundboard and case: modes every strike knocks, shared by every key',
               '// and measured under the treble\'s fundamentals. Each has its frequency (Hz),',
               '// decay rate (1/s) and one stereo pickup (left real; right complex; mean',
@@ -778,12 +928,16 @@ def generate():
             result = pickle.load(f)
         if result.get('cache_key') != cache_key(layers):
             raise SystemExit(f'anchor {note} was analysed from other inputs: run with --analyse')
-        data = anchor_data(result)
-        anchors.append(data)
         results.append(result)
+    strings = string_pitches({r['note']: series(r)[0] for r in results})
+    rings, member, chance = find_rings(results, strings)
+    for (note, layers), result in zip(anchors_in.items(), results):
+        data = anchor_data(result, rings, member)
+        anchors.append(data)
         errors = [p['error'] for p in data['partials']]
         records.append({'note': note, 'cases': [case for case, _, _ in layers], 'f1_hz': data['f1'],
-                        'stiffness': data['B'], 'partials': len(data['partials']),
+                        'stiffness': data['B'], 'partials': len(data['partials']), 'extras': len(data['extras']),
+                        'rings': [u['ring'] for u in data['undamped']],
                         'contact_delay_ms': [round(1000 * L['delay'], 3) for L in result['layers']],
                         'layer_shift_ms': data['layer_shift_ms'],
                         'median_phase_agreement': float(np.median([p['phase_agreement'] for p in data['partials']])),
@@ -798,9 +952,9 @@ def generate():
     noise = noise_data(results, anchors)
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
-    content = header(anchors, body, noise)
+    content = header(anchors, rings, body, noise)
     metadata = {
-        'schema_version': 3,
+        'schema_version': 4,
         'corpus': str(CORPUS.relative_to(ROOT)), 'corpus_sha256': sha256(CORPUS),
         'split': str(SPLIT.relative_to(ROOT)), 'split_sha256': sha256(SPLIT),
         'roles_used': ['train'], 'dev_or_sealed_recordings_opened': False,
@@ -811,7 +965,16 @@ def generate():
                   'that starts them from zero, never shorter than the anchor\'s onset rise measured from the '
                   'recordings\' build-up; per lane a velocity-independent pickup shape and a smoothed level and '
                   'phase at string contact per layer, the layers shifted in time to one phase pattern across the '
-                  'partials. Partials are interpolated between anchors by order, lanes fastest first. One bank of '
+                  'partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the '
+                  'series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their '
+                  'surroundings (the 64 most powerful per anchor), and beside each undamped string\'s pitch (MIDI '
+                  '89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a '
+                  'window that parts it from its neighbours and fitted with one lane from contact. '
+                  'Peaks within 15 cents of the fundamental are left to the partial\'s lanes. Peaks from F6 up '
+                  'that recur within 1.5 cents in four or more anchors are undamped strings ringing, each kept at '
+                  'one frequency and interpolated between anchors by string; the rest of the strings\' search is '
+                  'dropped. The other peaks are placed by the series in cents from their nearest order and '
+                  'cross-faded in power between anchors. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
                   'linear in velocity, modes hidden by an anchor\'s partials taken from its neighbours. Above the '
@@ -819,6 +982,10 @@ def generate():
                   'layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms '
                   'after contact; one left/right coherence per band.'),
         'anchors': records,
+        'rings': {'strings': [{'key': r['key'], 'cents': round(r['cents'], 2), 'hz': round(r['hz'], 2),
+                               'anchors': [a['note'] for a in anchors if any(u['ring'] == i for u in a['undamped'])]}
+                              for i, r in enumerate(rings)],
+                  'by_chance': round(chance, 1)},
         'body': {'modes': len(body['hz']), 'hz': [round(float(f), 2) for f in body['hz']],
                  't60_seconds': [round(6.907755 / float(r), 3) for r in body['rates']],
                  'pickup_explained': [round(k, 3) for k in body['pickup_explained']],
