@@ -304,3 +304,27 @@ cannot hold out the first take the fit used, so every second take is now
 of the pitches never fitted: D♯2, G♯3, C5, E6 and B3's one take, 21 cases.
 Train is unchanged. Decided on these measurements, after the first fit's
 benchmark had scored the second takes.
+
+## 2026-10-28 — a layer that does not hear a component bounds it
+
+A partial or component a velocity layer could not measure, as it did not
+stand clear of the recording's floor there, kept the level of the nearest
+layer that did. At the upright's softest layer that held C2's partials above
+2.4 kHz 30 to 45 dB over a recording that holds none of them, and the line
+each pitch's onset rise follows over velocity ran past every layer at its
+ends: at A♯6, 8.2 ms at the softest layer, where no layer measured over
+3.7 ms, and up to 190 ms in the upright's bass. In such a layer a component
+is now no louder than its recorded peak there, carried into the lanes' scale
+by the median difference over the layers that measured it, and the onset
+line is held within the range the layers measure. Both pianos are refitted.
+
+On the upright's benchmark against its first fit, the onset rise is 9.04 to
+6.53 ms from the recordings on train (bass 21.47 to 12.22 ms) and 10.27 to
+10.30 ms on dev, the attack spectrum 4.57 to 4.17 dB on train and 6.09 to
+5.64 dB on dev, and the early spectrum 4.40 to 4.04 and 6.89 to 6.48 dB. Two
+notes regress, both in the rise: C3 on train (10.84 to 13.55 ms) and G♯3 on
+dev (12.25 to 14.50 ms), where the recording's envelope reaches 90 % of its
+first-150-ms peak on a slow swell 25 to 55 ms after the strike and the
+render's now reaches it 12 to 39 ms after. The grand's benchmark moves by at
+most 0.05 dB or ms in any register mean, and none of its notes regresses.
+Chosen on these measurements, not by ear.

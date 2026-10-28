@@ -367,7 +367,8 @@ def anchor_data(result, halo_hz, wav):
     import piano_analysis as pa
     velocities = np.array([L['velocity'] for L in result['layers']], float)
     delays = np.array([L['delay'] for L in result['layers']])
-    snr = np.array([L['peak_db'] - L['floor_db'] for L in result['layers']])      # layers x orders
+    peaks = np.array([L['peak_db'] for L in result['layers']])                     # layers x orders
+    snr = peaks - np.array([L['floor_db'] for L in result['layers']])
     orders, freqs = result['orders'], result['freqs']
     f1, B = series(result)
     shaped = []
@@ -393,8 +394,9 @@ def anchor_data(result, halo_hz, wav):
     # slow onsets are detected late by up to that much).
     shifts, agreement = layer_alignment(phases, weights, np.array([freqs[k] for k, *_ in shaped]),
                                         int(np.argmax(velocities)), min(.003, .5 / f1))
-    def lanes_of(theta, u, mu, layers, snr_db):
-        """Each lane's rate, offset, pickup and smoothed level and phase per layer."""
+    def lanes_of(theta, u, mu, layers, snr_db, peak_db):
+        """Each lane's rate, offset, pickup and smoothed level and phase per
+        layer; `peak_db` is the component's recorded peak in every layer."""
         count = mu.shape[1]
         lanes = []
         for j in range(count):
@@ -414,13 +416,26 @@ def anchor_data(result, halo_hz, wav):
                           'left': float(u[0, j].real), 'right': complex(u[1, j]),
                           'level_db': smooth_levels(velocities, full_level, w),
                           'phase': np.angle(smooth_phase)})
+        # A layer where the component does not stand clear of its floor only
+        # bounds it: no louder there than its recorded peak, carried into the
+        # lanes' scale by the median difference over the layers that measured
+        # it. Held at the nearest measured layer's level instead, the softest
+        # layers took the first loud one's treble: at the upright's softest
+        # layer, C2's partials above 2.4 kHz sounded 30 to 45 dB over a
+        # recording that holds none of them.
+        total = 10 * np.log10(np.sum(np.abs(mu) ** 2, axis=1))
+        bound = peak_db + np.median(total - peak_db[layers])
+        played = 10 * np.log10(np.sum([10 ** (lane['level_db'] / 10) for lane in lanes], axis=0))
+        hidden = np.setdiff1d(np.arange(len(velocities)), layers)
+        for lane in lanes:
+            lane['level_db'][hidden] += np.minimum(0.0, bound[hidden] - played[hidden])
         return lanes
 
     partials = []
     for row, (k, n, fit, layers, u, mu, explained) in enumerate(shaped):
         mu = mu * np.exp(-2j * math.pi * freqs[k] * shifts[layers])[:, None]
         theta = fit['theta']
-        lanes = lanes_of(theta, u, mu, layers, snr[layers, k])
+        lanes = lanes_of(theta, u, mu, layers, snr[layers, k], peaks[:, k])
         peak = max(float(np.max(lane['level_db'])) for lane in lanes)
         if peak < -110:
             continue
@@ -438,8 +453,10 @@ def anchor_data(result, halo_hz, wav):
     extras = []
     orders_all = np.arange(1, 400)
     ladder = pa.stiff(f1, B, orders_all)
-    extra_snr = np.array([L['extra_peak_db'] - L['extra_floor_db'] for L in result['layers']]) \
+    extra_peaks = np.array([L['extra_peak_db'] for L in result['layers']]) \
         if len(result.get('extra_freqs', [])) else None
+    extra_snr = extra_peaks - np.array([L['extra_floor_db'] for L in result['layers']]) \
+        if extra_peaks is not None else None
     for k, (f, fit) in enumerate(zip(result['extra_freqs'], result['extra_fits'])):
         if fit is None or result['extra_halo'][k] or \
                 min(abs(1200 * math.log2(f / hz)) for hz in halo_hz.values()) <= HALO_UNISON:
@@ -449,7 +466,8 @@ def anchor_data(result, halo_hz, wav):
             continue
         u, mu, _ = lane_shapes([fit['amplitudes'][i] for i in layers])
         mu = mu * np.exp(2j * math.pi * f * (delays[layers] - shifts[layers]))[:, None]
-        lanes = sorted(lanes_of(fit['theta'], u, mu, layers, extra_snr[layers, k]), key=lambda lane: -lane['rate'])
+        lanes = sorted(lanes_of(fit['theta'], u, mu, layers, extra_snr[layers, k], extra_peaks[:, k]),
+                       key=lambda lane: -lane['rate'])
         peak = max(float(np.max(lane['level_db'])) for lane in lanes)
         if peak < -110 or abs(1200 * math.log2(f / f1)) <= UNISON_CENTS:
             continue
@@ -461,7 +479,10 @@ def anchor_data(result, halo_hz, wav):
     # The onset rise of every layer as the engine plays the data. Layer to
     # layer it scatters by a factor of several, more than any trend, so the
     # anchor keeps a straight line through it in log time over velocity:
-    # Theil-Sen, which a few outlying layers cannot tilt.
+    # Theil-Sen, which a few outlying layers cannot tilt, held within the
+    # range the layers measure. Through the upright's five layers the line
+    # ran past every one of them at the ends: at A#6, 8.2 ms at the softest
+    # layer, where none measured over 3.7 ms.
     sr, onsets = result['sr'], []
     for i, (case, L) in enumerate(zip(result['cases'], result['layers'])):
         _, x = pa.load(wav / f'{case}.wav')
@@ -469,7 +490,7 @@ def anchor_data(result, halo_hz, wav):
         waves, rises = header_waves(data, i, sr, int((contact + .05) * sr), contact)
         onsets.append(onset_rise(x, sr, L['start'], contact, result['f1'], waves, rises))
     slope, intercept = stats.theilslopes(np.log(onsets), velocities)[:2]
-    line = intercept + slope * velocities
+    line = np.clip(intercept + slope * velocities, math.log(min(onsets)), math.log(max(onsets)))
     data.update({'onset_rise': np.exp(line), 'layer_onset_rise_ms': [round(1000 * r, 3) for r in onsets]})
     return data
 
@@ -536,7 +557,8 @@ def halo_pitches(results, strings, wav):
     the strongest peak within 30 cents of the pitch the engine gives the key
     (`strings`), where it lies HALO_APART or more from every partial of the
     struck key's series and rings clear 1 s after contact; the median over
-    those recordings."""
+    those recordings. A string that rings clear in none keeps the pitch the
+    engine gives its key, as the upright's A#7 and B7 do."""
     import numpy as np
     import piano_analysis as pa
     found = {key: [] for key in UNDAMPED}
@@ -552,7 +574,7 @@ def halo_pitches(results, strings, wav):
                 hz = float(f[span][np.argmax(power[span])])
                 if key != r['note'] and np.min(np.abs(ladder - hz)) >= HALO_APART and halo_tone(g, y, hz)[1] >= HALO_CLEAR:
                     found[key].append(hz)
-    return {key: float(np.median(hzs)) for key, hzs in found.items()}
+    return {key: float(np.median(hzs)) if hzs else strings[key] for key, hzs in found.items()}
 
 
 def halo_data(results, strings, hz, wav):
@@ -562,7 +584,9 @@ def halo_data(results, strings, hz, wav):
 
     Each string decays at one rate and is heard through one stereo pickup.
     The pickup: the median right-over-left level and the mean phase between
-    the channels over every window where the string rings clear. The rate: the string's fall from 1 to 2 s where it
+    the channels over every window where the string rings clear; a string
+    that never does is heard through the pickup of the nearest string that
+    does. The rate: the string's fall from 1 to 2 s where it
     rings 20 dB clear at the start and 6 dB at the end, the median over the
     recordings, drawn towards the median of all the strings' by ten
     recordings' worth (most ring clear in dozens, a few in under five).
@@ -603,10 +627,15 @@ def halo_data(results, strings, hz, wav):
     pickups = []
     for j in range(len(keys)):
         pairs = np.concatenate([m['channels'][:, j][m['clear'][:, j]] for m in measured])
+        if not len(pairs):
+            pickups.append(None)
+            continue
         balance = float(np.median(20 * np.log10(np.abs(pairs[:, 1]) / np.abs(pairs[:, 0]))))
         phase = float(np.angle(np.sum(pairs[:, 1] * np.conj(pairs[:, 0]) / np.abs(pairs[:, 1] * pairs[:, 0]))))
         left = math.sqrt(2 / (1 + 10 ** (balance / 10)))
         pickups.append((left, left * 10 ** (balance / 20) * complex(math.cos(phase), math.sin(phase))))
+    heard = [j for j, pickup in enumerate(pickups) if pickup is not None]
+    pickups = [pickups[min(heard, key=lambda h: abs(h - j))] for j in range(len(keys))]
     falls = [np.concatenate([(m['tone'][:, j, 0] - m['tone'][:, j, -1])
                              [(m['margin'][:, j, 0] >= 20) & (m['margin'][:, j, -1] >= 6)]
                              for m in measured if m['apart'][j]]) for j in range(len(keys))]
@@ -750,7 +779,8 @@ def body_rise(result, contact, hz, rates, amplitudes, seconds=.03):
     """Each layer's body onset rise (s): the rise 1 - e^(-t/rise) under which
     the fitted modes' power below 0.8 f1 best builds up as the residual's
     does, from 2 ms before contact to `seconds` after, in dB at 0.25 ms steps
-    with 0.5 ms smoothing above the floor before the onset."""
+    with 0.5 ms smoothing above the floor before the onset where a take has
+    10 ms before it (as onset_rise measures it), else 50 dB under the peak."""
     import math
     import numpy as np
     from scipy import ndimage, signal
@@ -775,7 +805,9 @@ def body_rise(result, contact, hz, rates, amplitudes, seconds=.03):
         z = np.exp(np.outer(tau, -rates[known] + 2j * math.pi * hz[known])) * (t >= contact[i])[:, None]
         model = np.real(z @ amplitudes[i][known])
         recorded = power(x)
-        floor = max(float(recorded.max()) * 1e-5, float(np.median(recorded[:len(pre) - int(.005 * sr)])))
+        floor = float(recorded.max()) * 1e-5
+        if len(pre) >= int(.01 * sr):
+            floor = max(floor, float(np.median(recorded[:len(pre) - int(.005 * sr)])))
         frames = np.flatnonzero((t >= contact[i] - .002) & (t <= contact[i] + seconds))[::max(1, int(.00025 * sr))]
         target = 10 * np.log10(recorded[frames] + floor)
         errors = [float(np.mean((10 * np.log10(power(model * (1 - np.exp(-tau / r))[:, None])[frames] + floor)
@@ -913,6 +945,7 @@ def action_data(model, notes, hz, rates, shapes):
 # It is measured as band power in third octaves from 1 kHz, in the residual
 # the fitted partials leave, and played as band noise.
 NOISE_BANDS = [1000.0 * 2 ** (k / 3) for k in range(13)]   # Hz: 1 to 16 kHz
+NOISE_SILENT = -200.0                                     # dB re 1/Hz: a band no recording measures
 
 
 def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
@@ -930,7 +963,9 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     there. Where a take starts too close to its onset to measure the floor
     before it and runs on into the room's noise (`tail_floor`, the upright's
     takes), the floor is measured over its last frames instead (`wav` holds
-    the takes); Salamander's takes are faded out at their ends."""
+    the takes); Salamander's takes are faded out at their ends. Frames that
+    would start before the take, where it is cut at its onset and the layer's
+    contact falls before that, are left out of the line."""
     import math
     import numpy as np
     from scipy import signal, stats
@@ -959,7 +994,8 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
         def spectrum(t):
             a = int(round(zero + t * sr)) - length // 2
             return np.fft.rfft(x[a:a + length] * w[:, None], nfft, axis=0) if a >= 0 else None
-        frames = [spectrum(t) for t in times]
+        frames = [(t, z) for t in times if (z := spectrum(t)) is not None]
+        at = np.array([t for t, _ in frames])
         quiet = [z for z in (spectrum(-window / 2 - .005), spectrum(-window / 2)) if z is not None]
         if not quiet and tail_floor:
             _, take = pa.load(wav / f'{result["cases"][i]}.wav')
@@ -968,16 +1004,16 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
         for j, band in enumerate(bins):
             if band is None:
                 continue
-            density = 10 * np.log10(np.array([np.mean(np.abs(z[band]) ** 2) * scale for z in frames]) + 1e-30)
+            density = 10 * np.log10(np.array([np.mean(np.abs(z[band]) ** 2) * scale for _, z in frames]) + 1e-30)
             if quiet:
                 floor[i, j] = 10 * math.log10(np.mean([np.mean(np.abs(z[band]) ** 2) * scale for z in quiet]) + 1e-30)
             clear = density > (floor[i, j] if quiet else -np.inf) + 10
             if clear.sum() < 10:
                 continue
-            slope, intercept, _, _ = stats.theilslopes(density[clear], times[clear])
+            slope, intercept, _, _ = stats.theilslopes(density[clear], at[clear])
             level[i, j], decay[i, j] = intercept, slope
-            left = np.concatenate([z[band, 0] for z in frames])
-            right = np.concatenate([z[band, 1] for z in frames])
+            left = np.concatenate([z[band, 0] for _, z in frames])
+            right = np.concatenate([z[band, 1] for _, z in frames])
             balance[i, j] = 10 * math.log10(np.sum(np.abs(right) ** 2) / np.sum(np.abs(left) ** 2))
             coherence[i, j] = abs(np.sum(left * np.conj(right))) / math.sqrt(
                 np.sum(np.abs(left) ** 2) * np.sum(np.abs(right) ** 2))
@@ -993,7 +1029,9 @@ def noise_data(results, datas, wav, tail_floor):
     start 20 dB above their floor (over all measured layers if none does), so
     the floor does not flatten it; the right-over-left difference, the median
     over the measured layers. Bands an anchor cannot measure take the
-    neighbouring anchors' values, the nearest one's beyond them. The coherence
+    neighbouring anchors' values at its layers' velocities (as level_at plays
+    them), the nearest one's beyond them; a band no anchor measures stays
+    silent (NOISE_SILENT), as the upright's 16 kHz band does. The coherence
     is one per band, the median over every measured layer.
     """
     import numpy as np
@@ -1021,11 +1059,15 @@ def noise_data(results, datas, wav, tail_floor):
     for j in range(len(NOISE_BANDS)):
         known = [k for k, bands in enumerate(anchors) if bands[j] is not None]
         for k, bands in enumerate(anchors):
-            if bands[j] is None:
+            if bands[j] is None and not known:
+                bands[j] = {'level_db': np.full(len(datas[k]['velocities']), NOISE_SILENT),
+                            'decay_db_s': -400.0, 'balance_db': 0.0, 'filled': True}
+            elif bands[j] is None:
                 pick = lambda key: np.interp(notes[k], notes[known], [anchors[i][j][key] for i in known])
                 bands[j] = {'level_db': np.array([np.interp(notes[k], notes[known],
-                                                            [anchors[i][j]['level_db'][m] for i in known])
-                                                  for m in range(len(results[k]['layers']))]),
+                                                            [level_at(datas[i]['velocities'],
+                                                                      anchors[i][j]['level_db'], v) for i in known])
+                                                  for v in datas[k]['velocities']]),
                             'decay_db_s': float(pick('decay_db_s')), 'balance_db': float(pick('balance_db')),
                             'filled': True}
     coherence = [float(np.nanmedian(np.concatenate([m[4][:, j] for m in measured])))
@@ -1244,7 +1286,8 @@ def generate(model):
                   'that starts them from zero, never shorter than the anchor\'s onset rise measured from the '
                   'recordings\' build-up; per lane a velocity-independent pickup shape and a smoothed level and '
                   'phase at string contact per layer, the layers shifted in time to one phase pattern across the '
-                  'partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the '
+                  'partials; in a layer where a component does not stand clear of its floor, no louder than its '
+                  'recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the '
                   'series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their '
                   'surroundings (the 64 most powerful per anchor), each measured through a window that parts it '
                   'from its neighbours and fitted with one lane from contact, placed by the series in cents from '

@@ -138,8 +138,11 @@ from the train role of a locked split of the Salamander Grand Piano V3
 velocity layers, 264 recordings. Each partial is fitted jointly across its
 pitch's layers (`Tools/piano_analysis.py`), the lanes' rates shared and their
 levels and phases per layer, every moment of its decay weighed relative to its
-level down to the recording's floor; the layers' contact times are aligned so
-that the phases form one pattern across the partials. Beside the series, the
+level down to the recording's floor; in a layer where it does not stand clear
+of that floor, it is no louder than its recorded peak there. The layers'
+contact times are aligned so that the phases form one pattern across the
+partials, and a pitch's onset rise follows one line over velocity, held within
+the range its layers measure. Beside the series, the
 residual's peaks that four or more layers share are measured each through a
 window just long enough to part it from its nearest neighbour, from 30 ms to 2
 s, and fitted with one lane from contact; one within 3.5 cents of an undamped
