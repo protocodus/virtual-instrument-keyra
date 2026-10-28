@@ -1,5 +1,6 @@
 #include "KeyraEngine.h"
 #include "MeasuredModalData.h"
+#include "MeasuredUprightData.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -15,9 +16,11 @@ constexpr double pi=3.14159265358979323846;
 constexpr int maxVoices=128, maxPartials=128, chunk=32, sineSize=4096;
 constexpr int lanes=4; // a partial's measured lanes, one per vector lane
 namespace grand=measured::grand;
+namespace upright=measured::upright;
 // F6, the lowest key without a damper, and the undamped strings from it up.
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
+static_assert(upright::haloStrings.size()==grand::haloStrings.size(),"both pianos leave the same keys undamped");
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
 }
@@ -65,8 +68,28 @@ constexpr Model models[]{
    // median note as loud as version 0.3.0's (Tools/benchmark_recordings.py,
    // median gain 17.6 dB to the recordings).
    .21},
+  {upright::layers,upright::layerVelocity.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
+   upright::partials.data(),upright::extras.data(),
+   static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
+   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,
+   upright::bodyModes.data(),static_cast<int>(upright::bodyModes.size()),upright::bodyRise,upright::knocks.data(),
+   upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,
+   // The library's Stereo Ribbon preset plays every recording at its own
+   // level (ampVelTrack 0) and a key let go as the hammer noise recorded
+   // with that key, at its group's volume of 0.2 (-14 dB) whatever the
+   // velocity and however long the key was held. It has no pedal recordings.
+   -13.9794,0,0,0,0,0,
+   upright::noiseBands.data(),upright::noise.data(),
+   // The recordings' levels are their own. This scale makes the median note
+   // at velocity 127 as loud as the grand's (each key A0-C8 held, both
+   // channels' RMS from 50 to 750 ms after the strike, as the benchmark sets
+   // a case's gain), so both pianos' fortissimo leaves the output the same
+   // headroom. Below it the upright keeps the wider span its recordings
+   // have: at velocity 85 its median note is 6 dB under the grand's.
+   .502},
 };
-constexpr int partialCaches=static_cast<int>(grand::partials.size()),extraCaches=static_cast<int>(grand::extras.size());
+constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
+              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
 // The SFZ sounds the pedal at CC64 127 and 0. Here it sounds within .08 of
 // either end of its travel, the margin within which the dampers already
 // clear the strings (the contact in boundary()), so that a pedal which
@@ -122,7 +145,8 @@ struct alignas(16) BodyBank {
   V4 re{},im{},c{},s{},left{},rightRe{},rightIm{};
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{};
 };
-constexpr int bodyModes=static_cast<int>(grand::bodyModes.size()),bodyBanks=(bodyModes+lanes-1)/lanes;
+constexpr int bodyModes=static_cast<int>(std::max(grand::bodyModes.size(),upright::bodyModes.size())),
+              bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
   setLane(bank.re,j,lane(bank.re,j)+static_cast<float>(g.re));
@@ -145,6 +169,7 @@ bool advance(Body& body) noexcept {
 // strike's burst holds, per band, its left and right amplitude at the next
 // chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
+static_assert(upright::noiseBands.size()==grand::noiseBands.size(),"both pianos' noise has the same bands");
 struct Burst {
   double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
   std::uint64_t serial=0;
@@ -360,6 +385,19 @@ struct Engine::Impl {
   // Frequencies follow tuning and bends from the next chunk boundary, so the
   // exact state is never advanced with a rotation that was not used.
   void retune(int ch) noexcept {for(auto& voice:voices)if(voice.active&&voice.channel==ch)voice.retune=true;}
+  void placeHalo() noexcept {
+    for(int j=0;j<halo;++j)haloHz[j]=keyPitch(*model,firstHalo+j)*std::pow(2.,model->haloStrings[j].cents/1200);
+  }
+  // What sounds is the other piano's strings, body and noise, so a switch
+  // silences it, as all sound off does. Held keys and pedals keep their state.
+  void choose(const Model& next) noexcept {
+    model=&next;
+    for(auto& voice:voices)voice.active=false;
+    for(auto& r:sympathetic){r.q=0;r.p=0;}
+    silenceBody();silenceNoise();
+    highpassL=highpassR=previousL=previousR=0;
+    placeHalo();retuneSympathetic();prepareBody();prepareNoise();
+  }
   void retuneSympathetic() noexcept {
     // The shared open-string bank follows concert tuning, independently of
     // channel pitch bends. Rebuild coefficients without resetting its q/p.
@@ -886,7 +924,7 @@ Engine::Engine(double sampleRate):impl(new Impl){
     for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
       p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);
   }
-  for(int j=0;j<halo;++j)p.haloHz[j]=keyPitch(*p.model,firstHalo+j)*std::pow(2.,p.model->haloStrings[j].cents/1200);
+  p.placeHalo();
   prepare(sampleRate);
 }
 Engine::~Engine()=default;
@@ -920,6 +958,8 @@ void Engine::setParameters(const Parameters& input) noexcept {
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
   p.parameters.sustain=bounded(input.sustain);p.parameters.sostenuto=bounded(input.sostenuto);
   p.parameters.soft=bounded(input.soft);
+  const Model& chosen=models[input.piano==Piano::upright?1:0];
+  if(p.model!=&chosen)p.choose(chosen);
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
   p.pedalEdge();

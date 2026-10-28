@@ -17,6 +17,16 @@ those parameters; it does not load recorded note waveforms or impulse
 responses. This attribution
 does not imply endorsement by the recording author or instrument maker.
 
+The upright is measured the same way from the **Helsinki 1967 Tube-Ribbon
+Edition** recordings by **Mikko Patama**. Its author permits Keyra to derive
+numerical parameters from its recordings provided the recordings themselves
+are not distributed (his permission, as the project owner relayed it on 28
+October 2026). No recording of that library is in this repository, a Keyra
+build or any audio Keyra publishes; `Tools/corpus/helsinki-1967.json` pins the
+measured set by SHA256 and `Tools/decode_helsinki.py` reads it from a copy of
+the library. This attribution does not imply endorsement by the recording
+author.
+
 ## JUCE 8.0.14
 
 The DAW plug-in and standalone application use JUCE, Copyright (c) Raw

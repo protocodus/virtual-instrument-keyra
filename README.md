@@ -1,12 +1,13 @@
 # Keyra
 
-Keyra is a sample-free grand piano: a real-time modal engine whose strings,
-soundboard ring and stereo image are fitted from numerical measurements of
-acoustic piano recordings, with three visible pedals, momentary pedal
-keyswitches and felt muting from the modulation wheel. It builds as VST3 and
-CLAP plug-ins, an Audio Unit on macOS and a standalone application, and the
-Reason Rack Extension adapter plays the same engine. It is a development
-candidate: host acceptance and a commercial release are still to come.
+Keyra is a sample-free piano, a grand or an upright: a real-time modal engine
+whose strings, soundboard ring and stereo image are fitted from numerical
+measurements of acoustic piano recordings, with three visible pedals,
+momentary pedal keyswitches and felt muting from the modulation wheel. It
+builds as VST3 and CLAP plug-ins, an Audio Unit on macOS and a standalone
+application, and the Reason Rack Extension adapter plays the same engine's
+grand. It is a development candidate: host acceptance and a commercial release
+are still to come.
 
 ![Keyra](Docs/screenshots/keyra.png)
 
@@ -174,12 +175,33 @@ explains the recording, so the keys above A7 play A7's data on the stretch
 curve. Only fitted numbers enter the header; no recorded waveform or impulse
 response is loaded.
 
+The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
+(`--model upright`) and the train role of
+`Tools/corpus/split-helsinki-2026-10-28.json`: 28 pitches from C1 to G7 at the
+library's five velocity layers (four at A♯3, E7 and G7), one take each, and the
+hammer noise the library plays as each of those keys is let go
+(`Tools/decode_helsinki.py` verifies a copy of the library against its pins).
+Each layer is measured at the middle of its velocity range. The takes are cut
+at the strike, so a band's noise floor is read at a take's end, and the frames
+that would start before a take are left out. The library mixes the hammer
+noises at a fixed −14 dB against the notes, whatever the velocity or how long
+the key was held, and so do the upright's release knocks. It has no pedal
+recordings, so the upright's pedals make no sound of their own; no take shows
+the 16 kHz band's noise in three layers, so that band is silent. Its 21 dev
+recordings, never fitted, are the first takes of D♯2, G♯3, C5 and E6 and B3's
+one take; F♯1, E4 and G♯5 stay sealed. The library's second take of a note
+repeats its first: 126 of the 143 share its hammer noise, nine in ten of those
+within 0.15 cents of it (`Tools/find_repeated_takes.py`), so no second take is
+fitted or scored.
+
 `Tools/benchmark_recordings.py` scores a renderer against every train and dev
 recording. The dev recordings, D♯1, D♯3, D♯5 and D♯7 at every layer and four
 other layers of every calibrated pitch, are never fitted; D♯2, D♯4 and D♯6
 stay sealed until a candidate goes to the owner. `Tools/compare_benchmarks.py`
 lists every note where a candidate is worse than the shipping engine. The [current report](Docs/validation/recording-benchmark-split-2026-10-27.md)
-compares this engine with 0.3.0.
+compares this engine with 0.3.0; the [upright's](Docs/validation/upright-recording-benchmark-2026-10-28.md)
+scores the upright on its own recordings against the grand's data played on
+them.
 
 ### Pedals and keyswitches
 
@@ -244,8 +266,22 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
   measure the board noise in six to ten of the thirteen bands; those bands are
   interpolated between the nearest pitches that measured them.
-- Every recording is from one piano and one session, so the holdout does not
-  establish how the fit generalises to another instrument.
+- Every recording of each piano is from one instrument and one session, so
+  the holdout does not establish how the fit generalises to another
+  instrument.
+- The upright's soft pedal is the grand's: it lowers the level and the high
+  partials and moves energy to the slowest lane as an una corda does, where an
+  upright's moves the hammers closer to the strings. Its dampers take the
+  grand's felt loss; the library's release takes, which hold the damped
+  strings, are not yet measured. Its pedals are silent (above).
+- The upright's treble is fitted worse than its middle. A partial's lanes may
+  sit only 3 cents from it, while from C6 up the upright's unison strings
+  sound 6 to 20 cents apart (the grand's top octave up to 12), so the lanes
+  cannot follow them and its tails fall too fast: at the never-fitted E6 the
+  partials sit 8.9 dB from the recording, where the grand's data sits 3.5 dB.
+  Its noise between partials scores 10 dB, most of it above 6 kHz the
+  recordings' own steady floor, which that score does not part from the
+  piano's noise.
 - Only Linux VST3 and standalone builds have been validated
   ([pluginval](Docs/validation/pluginval-2026-10-26.txt)); CLAP, the Audio Unit,
   macOS, Windows and Reason are built by CI but not yet accepted in a host.
@@ -295,8 +331,11 @@ The research in `Experiments/` is configured on its own:
 
 Keyra's source is available under the [PolyForm Noncommercial License
 1.0.0](LICENSE), with an additional permission to use official builds for any
-purpose, commercial music included. The reference recordings are Salamander
-Grand Piano V3 by Alexander Holm under CC BY 3.0; JUCE, CLAP and the other
-dependencies keep their own licences. [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
-lists them, with the licence texts in `ThirdParty/`. The licensed Reason
-Jukebox SDK is not part of this repository.
+purpose, commercial music included. The grand's reference recordings are
+Salamander Grand Piano V3 by Alexander Holm under CC BY 3.0; the upright's are
+the Helsinki 1967 Tube-Ribbon Edition by Mikko Patama, whose author permits
+fitting numbers from them provided the recordings are not distributed. JUCE,
+CLAP and the other dependencies keep their own licences.
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists them, with the licence
+texts in `ThirdParty/`. The licensed Reason Jukebox SDK is not part of this
+repository.

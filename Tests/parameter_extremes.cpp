@@ -46,9 +46,10 @@ const Control controls[] {
     {"soft", &keyra::Parameters::soft, 0, .5f, 1}
 };
 
-Audio exercise(const Control& control, float value, double rate, bool automate) {
+Audio exercise(const Control& control, float value, double rate, bool automate, keyra::Piano piano) {
     auto engine = std::make_unique<keyra::Engine>(rate);
     keyra::Parameters parameters;
+    parameters.piano = piano;
     // Sostenuto needs keys present at its rising edge. Pressing it before all
     // notes correctly captures nothing, so that sequence cannot witness its
     // signal path (the engine contract separately checks that behavior).
@@ -69,22 +70,24 @@ Audio exercise(const Control& control, float value, double rate, bool automate) 
 
 int main() {
     unsigned cases = 0;
-    for (const double rate : {44100., 48000., 96000.}) {
-        for (const auto& control : controls) {
-            for (const bool automate : {false, true}) {
-                const auto low = exercise(control, control.low, rate, automate);
-                const auto middle = exercise(control, control.mid, rate, automate);
-                const auto high = exercise(control, control.high, rate, automate);
-                for (const auto* audio : {&low, &middle, &high}) {
-                    const bool safe = std::all_of(audio->begin(), audio->end(), [](float x) {
-                        return std::isfinite(x) && x >= -1 && x <= 1;
-                    });
-                    check(safe, "parameter endpoint/midpoint emitted unsafe audio");
-                    ++cases;
-                }
-                if (difference(low, high) <= 1e-14) {
-                    std::cerr << "Unwitnessed control: " << control.name << '\n';
-                    check(false, "control endpoints have no audible-path activation witness");
+    for (const auto piano : {keyra::Piano::grand, keyra::Piano::upright}) {
+        for (const double rate : {44100., 48000., 96000.}) {
+            for (const auto& control : controls) {
+                for (const bool automate : {false, true}) {
+                    const auto low = exercise(control, control.low, rate, automate, piano);
+                    const auto middle = exercise(control, control.mid, rate, automate, piano);
+                    const auto high = exercise(control, control.high, rate, automate, piano);
+                    for (const auto* audio : {&low, &middle, &high}) {
+                        const bool safe = std::all_of(audio->begin(), audio->end(), [](float x) {
+                            return std::isfinite(x) && x >= -1 && x <= 1;
+                        });
+                        check(safe, "parameter endpoint/midpoint emitted unsafe audio");
+                        ++cases;
+                    }
+                    if (difference(low, high) <= 1e-14) {
+                        std::cerr << "Unwitnessed control: " << control.name << '\n';
+                        check(false, "control endpoints have no audible-path activation witness");
+                    }
                 }
             }
         }

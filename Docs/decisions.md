@@ -290,6 +290,34 @@ spectrum is unchanged (5.53 to 5.52 dB). The paired CPU rounds show no change
 beyond their spread (`Docs/benchmarks/realtime-cpu-2026-10-27.json`). Chosen
 on these measurements, which decide it, not by ear.
 
+## 2026-10-28 — add an upright, fitted from the Helsinki 1967 recordings
+
+The owner asked for an upright beside the grand, chosen with a model switch,
+each fitted from the library that records it: the grand from Salamander, the
+upright from Mikko Patama's Helsinki 1967 Tube-Ribbon Edition, which the owner
+supplied and whose author permits fitting numbers from it provided its
+recordings are not distributed. A second library the owner supplied stays a
+private check: no number of it is published or fitted. The upright is
+measured with the grand's tool from its train recordings
+(`Tools/corpus/split-helsinki-2026-10-28.json`) and played by the same
+engine; the Piano control and three presets choose it. Switching silences
+what sounds, as both pianos' strings, body and noise differ, so Piano is not
+offered for automation, and a session saved before it existed keeps the
+grand.
+
+Its recordings carry their own levels. One scale sets the upright's median
+note at velocity 127 as loud as the grand's, so both pianos' fortissimo
+leaves the output the same headroom (the headroom tests play both); below
+it the upright keeps the wider span its recordings have, and at velocity 85
+its median note is 6 dB under the grand's. A mixing choice, not a
+measurement.
+
+The upright plays fewer fitted partials per note than the grand (23 against
+34 at middle C, 50 against 76 at C2), and on the engine tests' timing case it
+costs about half the grand's CPU: a second of 128 held notes takes 0.86 s of
+process CPU against the grand's 1.69 s, and 32 notes 0.26 s against 0.56 s
+(`Docs/benchmarks/realtime-cpu-2026-10-28.json`).
+
 ## 2026-10-28 — the upright's second takes repeat its first
 
 The upright's split made every second take dev. But 126 of the library's 143

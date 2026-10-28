@@ -2,9 +2,14 @@
 #include <memory>
 
 namespace keyra {
+// The piano that plays: the grand measured from the Salamander Grand Piano V3
+// recordings, or the upright measured from the Helsinki 1967 Tube-Ribbon
+// Edition's. Switching silences what sounds.
+enum class Piano {grand,upright};
 struct Parameters {
   float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
+  Piano piano=Piano::grand;
 };
 struct PedalState {float sustain=0,sostenuto=0,soft=0;};
 

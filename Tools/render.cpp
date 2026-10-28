@@ -24,7 +24,7 @@ int main(int argc,char** argv){try {
   for(int i=1;i<argc;++i){const std::string option=argv[i];
     auto value=[&](){if(++i>=argc)throw std::runtime_error("missing argument after "+option);return std::string(argv[i]);};
     if(option=="--help"){
-      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--legacy-attack]\n"
+      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--model grand|upright] [--legacy-attack]\n"
       <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain. Use cc for channel-specific pedal events.\n";return 0;
     }else if(option=="--events")eventsPath=value();else if(option=="--output")outputPath=value();
     else if(option=="--metrics")metricsPath=value();else if(option=="--sample-rate")rate=std::stoi(value());
@@ -32,7 +32,11 @@ int main(int argc,char** argv){try {
     else if(option=="--gain")parameters.gain=std::stof(value());else if(option=="--brightness")parameters.brightness=std::stof(value());
     else if(option=="--resonance")parameters.resonance=std::stof(value());else if(option=="--mute")parameters.mute=std::stof(value());
     else if(option=="--sustain")parameters.sustain=std::stof(value());else if(option=="--soft")parameters.soft=std::stof(value());
-    else if(option=="--sostenuto")parameters.sostenuto=std::stof(value());else throw std::runtime_error("unknown option "+option);
+    else if(option=="--sostenuto")parameters.sostenuto=std::stof(value());
+    else if(option=="--model"){const auto piano=value();
+      if(piano!="grand"&&piano!="upright")throw std::runtime_error("unknown model "+piano);
+      parameters.piano=piano=="upright"?keyra::Piano::upright:keyra::Piano::grand;}
+    else throw std::runtime_error("unknown option "+option);
   }
   if(outputPath.empty()||rate<8000||rate>192000||!std::isfinite(duration)||duration<=0||duration>600)throw std::runtime_error("invalid output/rate/duration");
   std::vector<Event> events;

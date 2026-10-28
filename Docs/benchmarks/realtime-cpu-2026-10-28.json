@@ -1,0 +1,103 @@
+{
+ "scope": "Native development machine, not Reason/DAW-host performance; no release acceptance implied.",
+ "sample_rate": 48000,
+ "block_size": 256,
+ "input": "Simultaneous velocity 0.6 strikes at notes 36+i%60, channel 1+i//88, one second held, resonance 0.0, other controls default (KeyraEngineTests timing), with Parameters::piano set to each piano.",
+ "protocol": "One build; seven rounds with the pianos alternating which runs first, three runs per case; reported: the median and range of the rounds' three-run medians, process CPU.",
+ "platform": "Linux-6.18.44-fc-v180-x86_64-with-glibc2.39",
+ "compiler": "g++ 13.3.0",
+ "flags": "g++ -std=c++17 -O3 -Wall -Wextra -Werror -I Source",
+ "version": "0.4.0 development",
+ "source_sha256": "0a49791c649abba36981453e9abcbd42024553a91a9c0f4d6b443e0ef9d532cf",
+ "header_sha256": "8ff8abfb75ec616d5e9ee91922463d472d3a778f06a2503d8cda2e3c25193c5b",
+ "measured_data_sha256": {
+  "grand": "dd2ff2b103a5831ac631f5f2525df8395a3355c809d29c67b4cdb435e8bacb91",
+  "upright": "e632972496a09b936ba56d6b39d665899f178df583f974f50dfadbc9485bc03b"
+ },
+ "fitted_partials": {
+  "grand": 839,
+  "upright": 573
+ },
+ "grand": [
+  {
+   "notes": 12,
+   "median_process_cpu_realtime_factor": 0.29,
+   "range_process_cpu_realtime_factor": [
+    0.271,
+    0.316
+   ],
+   "median_onset_process_cpu_ms": 0.71,
+   "range_onset_process_cpu_ms": [
+    0.66,
+    0.96
+   ]
+  },
+  {
+   "notes": 32,
+   "median_process_cpu_realtime_factor": 0.556,
+   "range_process_cpu_realtime_factor": [
+    0.414,
+    0.594
+   ],
+   "median_onset_process_cpu_ms": 1.35,
+   "range_onset_process_cpu_ms": [
+    1.06,
+    2.1
+   ]
+  },
+  {
+   "notes": 128,
+   "median_process_cpu_realtime_factor": 1.686,
+   "range_process_cpu_realtime_factor": [
+    1.656,
+    1.854
+   ],
+   "median_onset_process_cpu_ms": 4.28,
+   "range_onset_process_cpu_ms": [
+    3.94,
+    5.83
+   ]
+  }
+ ],
+ "upright": [
+  {
+   "notes": 12,
+   "median_process_cpu_realtime_factor": 0.133,
+   "range_process_cpu_realtime_factor": [
+    0.13,
+    0.162
+   ],
+   "median_onset_process_cpu_ms": 0.41,
+   "range_onset_process_cpu_ms": [
+    0.39,
+    0.55
+   ]
+  },
+  {
+   "notes": 32,
+   "median_process_cpu_realtime_factor": 0.256,
+   "range_process_cpu_realtime_factor": [
+    0.243,
+    0.289
+   ],
+   "median_onset_process_cpu_ms": 0.87,
+   "range_onset_process_cpu_ms": [
+    0.84,
+    0.95
+   ]
+  },
+  {
+   "notes": 128,
+   "median_process_cpu_realtime_factor": 0.863,
+   "range_process_cpu_realtime_factor": [
+    0.779,
+    1.017
+   ],
+   "median_onset_process_cpu_ms": 2.72,
+   "range_onset_process_cpu_ms": [
+    2.62,
+    4.22
+   ]
+  }
+ ]
+}

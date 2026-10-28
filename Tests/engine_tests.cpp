@@ -1,5 +1,6 @@
 #include "DSP/KeyraEngine.h"
 #include "DSP/MeasuredModalData.h"
+#include "DSP/MeasuredUprightData.h"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -31,6 +32,7 @@ Audio render(keyra::Engine& engine,int frames,int block=127){
 }
 double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<double>(x)*x;return std::sqrt(sum/std::max<std::size_t>(1,audio.size()));}
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
+keyra::Parameters dryUpright(){auto p=dry();p.piano=keyra::Piano::upright;return p;}
 // C4's own strings: the amplitude of its first four partials, in both
 // channels. They sit below F6, where the undamped strings its strike sets
 // ringing begin; no damper reaches those, so a key-up leaves them sounding.
@@ -382,8 +384,48 @@ int main(int argc,char** argv){
     const auto up=render(a,9600);
     check(up==render(b,9600)&&up!=render(c,9600),"the pedal sounds once coming up, and not when already lifted");
   }
-  for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
-    keyra::Engine e(rate);auto p=dry();p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
+  {
+    // Switching pianos silences what sounds at once: the grand's strings,
+    // body and noise would not belong to the upright. An engine switched so
+    // then plays as one that started on the upright.
+    keyra::Engine a,b;a.setParameters(dry());b.setParameters(dryUpright());
+    a.noteOn(60,.7f);a.noteOn(100,.7f);render(a,12000);a.noteOff(60);a.noteOff(100);render(a,2400);
+    a.setParameters(dryUpright());
+    check(rms(render(a,4800))==0,"switching pianos silences what sounds");
+    a.noteOn(60,.7f);b.noteOn(60,.7f);
+    check(render(a,24000)==render(b,24000),"a switched engine plays the upright as one that started on it");
+  }
+  {
+    // The upright sounds its own measured pitch, not the grand's: taken at
+    // C7, where the two pianos' tunings lie several hertz apart.
+    const auto c7=[](const auto& anchors){for(const auto& x:anchors)if(x.note==96)return x.f1;return 0.f;};
+    const double hz=c7(keyra::measured::upright::anchors),grandHz=c7(keyra::measured::grand::anchors);
+    check(std::abs(hz-grandHz)>4,"the pianos' C7s lie far enough apart to tell which plays");
+    keyra::Engine e;e.setParameters(dryUpright());e.noteOn(96,.7f);
+    auto audio=render(e,52800);audio.erase(audio.begin(),audio.begin()+9600);
+    const double peak=spectralPeak(audio,hz-12,hz+12);
+    check(std::abs(peak-hz)<2,"the upright sounds its own measured C7");
+    std::cout<<"upright_c7_hz="<<hz<<" grand_c7_hz="<<grandHz<<" peak_hz="<<peak<<'\n';
+  }
+  {
+    // An upright key let go sounds the hammer noise recorded with it at one
+    // level, however long the key was held, as the library plays it; from F6
+    // up no damper falls, so the key-up adds that noise alone. The library
+    // has no pedal recordings, so the pedal sounds nothing.
+    auto knock=[](double heldSeconds){
+      keyra::Engine a,b;a.setParameters(dryUpright());b.setParameters(dryUpright());a.noteOn(100,.7f);b.noteOn(100,.7f);
+      const int held=static_cast<int>(heldSeconds*48000);render(a,held);render(b,held);
+      a.noteOff(100);auto x=render(a,24000);const auto y=render(b,24000);
+      for(std::size_t i=0;i<x.size();++i)x[i]-=y[i];
+      return x;};
+    const auto early=knock(.5),late=knock(2);
+    check(rms(early)>1e-6,"an upright key let go knocks the body");
+    check(std::abs(20*std::log10(rms(late)/rms(early)))<.05,"an upright release knock does not fade with the time held");
+    keyra::Engine e;e.setParameters(dryUpright());e.controlChange(64,127);render(e,4800);e.controlChange(64,0);
+    check(rms(render(e,9600))==0,"the upright's pedal sounds nothing");
+  }
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
+    keyra::Engine e(rate);auto p=dry();p.piano=piano;p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
     for(int note:{21,60,108})e.noteOn(note,1);
     for(float bend:{-48.f,0.f,48.f}){e.pitchBend(bend);const auto a=render(e,4000);for(float x:a)check(std::isfinite(x)&&std::abs(x)<=1,"rate/bend/nonfinite parameter output finite and bounded");}
   }
@@ -409,14 +451,16 @@ int main(int argc,char** argv){
     e.noteOn(60,.8f);e.noteOn(72,.8f,2);e.noteOff(60);e.noteOn(12,.7f);e.noteOn(13,.7f);e.noteOn(14,.7f);e.noteOff(12);e.controlChange(64,80);e.controlChange(66,127);e.controlChange(67,64);e.pitchBend(.5f);auto p=dry();p.tuning=415;e.setParameters(p);
     const auto pedals=e.pedalState();(void)pedals;
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
+    p.piano=keyra::Piano::upright;e.setParameters(p);e.noteOn(48,.8f);e.noteOff(48);
+    for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
     e.reset();e.controlChange(120,0);trap=false;
     check(allocations==0,"all live event/render/reset APIs allocate zero bytes");
   }
-  for(int count:{3,6,10}){
-    keyra::Engine e;for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(int count:{3,6,10}){
+    keyra::Engine e;keyra::Parameters p;p.piano=piano;e.setParameters(p);for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));
     check(peak<.9f,"fortissimo chord has headroom before emergency hard ceiling");
-    std::cout<<"headroom_notes="<<count<<" peak_dbfs="<<20*std::log10(peak)<<'\n';
+    std::cout<<"headroom_piano="<<(piano==keyra::Piano::upright?"upright":"grand")<<" notes="<<count<<" peak_dbfs="<<20*std::log10(peak)<<'\n';
   }
   std::cout<<"engine_failures="<<failures<<" live_allocations="<<allocations<<'\n';return failures?1:0;
 }

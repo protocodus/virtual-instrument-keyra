@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Score a Keyra renderer against the Salamander recordings, note by note.
+"""Score a Keyra renderer against one piano's recordings, note by note: the
+grand's Salamander recordings or, with --model upright, the upright's
+Helsinki 1967 recordings, which the renderer then plays.
 
 Each case renders one held note (50 ms of silence, then the note at its
 layer's velocity) through a `keyra_render` binary and measures the render and
@@ -40,6 +42,8 @@ Metrics per case (lower is better):
 
   python3 Tools/benchmark_recordings.py --renderer build-dsp/keyra_render \\
       --roles train dev --out out/bench/candidate
+  python3 Tools/benchmark_recordings.py --model upright --renderer build-dsp/keyra_render \\
+      --roles train dev --out out/bench/upright-candidate
 """
 from __future__ import annotations
 
@@ -62,16 +66,19 @@ import numpy as np  # noqa: E402
 from scipy import ndimage, signal, stats  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import fit_realtime_modal as fit  # noqa: E402
 import piano_analysis as pa  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-CORPUS = ROOT / 'out/salamander/wav'
-SPLIT = ROOT / 'Tools/corpus/split-2026-10-27.json'
-MANIFEST = ROOT / 'Tools/corpus/salamander-v3.json'
-SEALED_LOG = ROOT / 'Tools/corpus/sealed-openings.json'
+# The grand's corpus, which the other tools score against.
+CORPUS = fit.MODELS['grand']['wav']
+SPLIT = fit.MODELS['grand']['split']
+MANIFEST = fit.MODELS['grand']['corpus']
+# Each piano's record of the openings of its sealed cases.
+SEALED_LOGS = {'grand': ROOT / 'Tools/corpus/sealed-openings.json',
+               'upright': ROOT / 'Tools/corpus/sealed-openings-helsinki.json'}
 WINDOWS = [(.05, .25), (.25, .75), (.75, 1.5), (1.5, 3.5)]
-# Rounded midpoints of the SFZ velocity bins of layers 1..16.
-LAYER_VELOCITY = [14, 31, 36, 40, 45, 49, 54, 61, 69, 77, 85, 93, 101, 109, 117, 124]
+LAYER_VELOCITY = fit.LAYER_VELOCITY
 RENDER_SECONDS = 4.6
 FEATURES = 'features 6'  # bump when features() changes, to refresh cached references
 LEAD = .05
@@ -261,8 +268,8 @@ def compare(ref, mod):
     return out
 
 
-def cached_reference(case, note, cache: Path):
-    wav = CORPUS / f'{case}.wav'
+def cached_reference(case, note, cache: Path, corpus: Path):
+    wav = corpus / f'{case}.wav'
     key = hashlib.sha256((Path(pa.__file__).read_text() + FEATURES).encode()).hexdigest()[:12]
     target = cache / f'{case}-{key}.npz'
     if target.exists():
@@ -275,9 +282,8 @@ def cached_reference(case, note, cache: Path):
 
 
 def run_case(args):
-    case, note, layer, renderer, extra, cache, keep = args
-    ref = cached_reference(case, note, cache)
-    velocity = LAYER_VELOCITY[layer - 1]
+    case, note, layer, velocity, renderer, extra, cache, corpus, keep = args
+    ref = cached_reference(case, note, cache, corpus)
     with tempfile.TemporaryDirectory(prefix='keyra-bench-') as tmp:
         events = Path(tmp) / 'note.events'
         events.write_text(f'{LEAD} on {note} {velocity}\n')
@@ -314,6 +320,7 @@ def register(note):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument('--model', choices=fit.MODELS, default='grand', help='the piano rendered and scored against')
     p.add_argument('--renderer', required=True)
     p.add_argument('--roles', nargs='+', default=['train', 'dev'])
     p.add_argument('--out', type=Path, required=True)
@@ -327,33 +334,38 @@ def main():
     a = p.parse_args()
     if a.rescore:
         old = json.loads((a.out / 'report.json').read_text())
-        a.renderer, a.roles = old['renderer'], list(old['summary'])
+        a.renderer, a.roles, a.model = old['renderer'], list(old['summary']), old.get('model', 'grand')
     if 'sealed' in a.roles and not a.open_sealed:
         p.error('sealed cases need --open-sealed REASON')
-    split = json.loads(SPLIT.read_text())['cases']
-    items = {i['id']: i for i in json.loads(MANIFEST.read_text())['files']}
-    cases = [(c, items[c]['midi'], items[c]['layer']) for c, r in split.items()
+    model = fit.MODELS[a.model]
+    split = json.loads(model['split'].read_text())['cases']
+    items = {i['id']: i for i in json.loads(model['corpus'].read_text())['files']}
+    cases = [(c, items[c]['midi'], items[c]['layer'], fit.layer_velocity(items[c])) for c, r in split.items()
              if r in a.roles and items[c]['kind'] == 'note' and (not a.layers or items[c]['layer'] in a.layers)]
     if a.open_sealed and not a.rescore:
-        log = json.loads(SEALED_LOG.read_text()) if SEALED_LOG.exists() else []
+        sealed_log = SEALED_LOGS[a.model]
+        log = json.loads(sealed_log.read_text()) if sealed_log.exists() else []
         log.append({'renderer': a.renderer, 'reason': a.open_sealed,
                     'renderer_sha256': hashlib.sha256(Path(a.renderer).read_bytes()).hexdigest()})
-        SEALED_LOG.write_text(json.dumps(log, indent=1) + '\n')
+        sealed_log.write_text(json.dumps(log, indent=1) + '\n')
     a.out.mkdir(parents=True, exist_ok=True)
     keep = a.out / 'renders' if a.keep_renders else None
     if keep:
         keep.mkdir(exist_ok=True)
-    extra = [x for x in a.renderer_args if x != '--']
+    # The renderer plays the piano it is scored against.
+    extra = (['--model', a.model] if a.model != 'grand' else []) + [x for x in a.renderer_args if x != '--']
     if a.rescore:
-        rows, extra = old['cases'], old['renderer_args']
+        # Under the split as it stands: a case it no longer gives these roles is dropped.
+        rows, extra = [r for r in old['cases'] if split[r['case']] in a.roles], old['renderer_args']
     else:
-        jobs = [(c, n, l, a.renderer, extra, a.cache, keep) for c, n, l in cases]
+        jobs = [(c, n, l, v, a.renderer, extra, a.cache, model['wav'], keep) for c, n, l, v in cases]
         with concurrent.futures.ProcessPoolExecutor(a.jobs) as pool:
             rows = list(pool.map(run_case, jobs))
     rows.sort(key=lambda r: (r['note'], r['layer']))
     add_levels(rows)
     roles = {r: [x for x in rows if split[x['case']] == r] for r in a.roles}
-    report = {'renderer': a.renderer, 'renderer_args': extra, 'split': str(SPLIT.relative_to(ROOT)),
+    report = {'renderer': a.renderer, 'renderer_args': extra, 'model': a.model,
+              'split': str(model['split'].relative_to(ROOT)),
               'summary': {r: summarise(v) for r, v in roles.items()},
               'by_register': {f'{r} / {g}': summarise([x for x in v if register(x['note']) == g])
                               for r, v in roles.items() for g in ('bass A0-B2', 'middle C3-B5', 'treble C6-C8')},
