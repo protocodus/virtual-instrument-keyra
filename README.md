@@ -41,7 +41,7 @@ musical passages through the same engine. Both are frozen evidence from
 
 ## Version history
 
-### Unreleased — 0.4.0 — measured strings, body and board noise
+### Unreleased — 0.4.1 — measured strings, body and board noise
 
 - Recalibrated from 264 recordings (every A, C and F♯ from A0 to A7 at twelve
   velocities) instead of ten. Each partial has four measured decay lanes with
@@ -76,7 +76,14 @@ musical passages through the same engine. Both are frozen evidence from
   sounds; sessions saved before keep the grand. On the
   [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
   its attack, tuning and level sit closer to its never-fitted recordings than
-  the grand's data does; its treble does not yet (Known gaps). Its dampers
+  the grand's data does; its treble does not yet (Known gaps). From C6 up it
+  now plays the unison strings that sound further from their partial than its
+  lanes reach: its first fit took them for the partial's own and left them
+  out, so its treble tails fell too fast. On the never-fitted E6 the partials
+  sit 7.7 dB from the recordings instead of 8.9 and the sustain spectrum
+  12.4 dB instead of 15.1
+  ([unisons](Docs/validation/upright-unison-benchmark-2026-10-28.md)); the
+  grand gains such a string at F♯6, A6 and C7. Its dampers
   leave ringing what the library's key-release takes show, a share of each
   partial that fades over seconds once the felt lands, 13 dB down at middle
   C and less higher up: on the never-fitted takes its releases sit 6.3 dB
@@ -122,7 +129,9 @@ vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 
 Beside its series, a strike plays the components the recordings hold between
-the partials, each one lane placed by the series and damped with it. They
+the partials, each one lane placed by the series and damped with it; in the
+treble they include the unison strings that sound further from their partial
+than its lanes reach. They
 start at contact under the pitch's onset rise and share vectors four lanes to
 a slot, so a component costs a quarter of a partial.
 
@@ -163,13 +172,14 @@ partials, and a pitch's onset rise follows one line over velocity, held within
 the range its layers measure. Beside the series, the
 residual's peaks that four or more layers share are measured each through a
 window just long enough to part it from its nearest neighbour, from 30 ms to 2
-s, and fitted with one lane from contact; one within 3.5 cents of an undamped
-string's pitch is that string. The undamped strings are measured as tones from
-F♯3 up, below which the struck key's series covers their pitches: through
-half-second windows from 1 to 2 s after contact, both channels' power at the
-strongest bin within 1 Hz of a string's pitch, where it stands 10 dB over the
-median 4–20 Hz either side and 10 Hz from every partial of the struck key. A
-string's pitch is the median of its strongest peak in the recordings from C6
+s, and fitted with one lane from contact; one within 3.5 cents of another
+key's undamped string is that string. The undamped strings are measured as
+tones from F♯3 up, below which the struck key's series covers their pitches:
+through half-second windows from 1 to 2 s after contact, both channels' power
+at the strongest bin within 1 Hz of a string's pitch, where it stands 10 dB
+over the median 4–20 Hz either side and 10 Hz from every partial of the
+struck key.
+A string's pitch is the median of its strongest peak in the recordings from C6
 up; its stereo pickup the median level difference and mean phase between the
 channels; its decay its fall from 1 to 2 s, drawn towards the strings' median;
 its level at a recorded pitch the mean over the layers where it rings clear,
@@ -312,14 +322,18 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   there (above): the never-fitted C5's third partial, 4 cents from G6's
   string, now releases 6.6 dB from its take, where it was 3.5 dB with the
   felt taking all of it ([dampers](Docs/research/upright-dampers-2026-10-28.md)).
-- The upright's treble is fitted worse than its middle. A partial's lanes may
-  sit only 3 cents from it, while from C6 up the upright's unison strings
-  sound 6 to 20 cents apart (the grand's top octave up to 12), so the lanes
-  cannot follow them and its tails fall too fast: at the never-fitted E6 the
-  partials sit 8.9 dB from the recording, where the grand's data sits 3.5 dB.
-  Its noise between partials scores 10 dB, most of it above 6 kHz the
-  recordings' own steady floor, which that score does not part from the
-  piano's noise.
+- The upright's treble is fitted worse than its middle. From C6 up its unison
+  strings sound 6 to 20 cents apart (the grand's top octave up to 12). A
+  partial's lanes hold those within about 3 cents of it; each one further out
+  plays as a component beside it, which has no rise of its own and takes the
+  pitch's shortest, so the fit lengthens that for every partial: D6's is now
+  20 ms, where it was 0.2 ms
+  ([unisons](Docs/validation/upright-unison-benchmark-2026-10-28.md)).
+  At the never-fitted E6, between the recorded pitches, the partials sit
+  7.7 dB from the recording and their decay 12.3 dB/s from its, where the
+  middle register's sit 5.7 dB and 3.3 dB/s. Its noise between partials
+  scores 9 to 10 dB, most of it above 6 kHz the recordings' own steady floor,
+  which that score does not part from the piano's noise.
 - Only Linux VST3 and standalone builds have been validated
   ([pluginval](Docs/validation/pluginval-2026-10-26.txt)); CLAP, the Audio Unit,
   macOS, Windows and Reason are built by CI but not yet accepted in a host.

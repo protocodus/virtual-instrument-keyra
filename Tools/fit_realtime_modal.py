@@ -91,13 +91,15 @@ MODELS = {
 # ringing at their own pitches (halo_data). The analysis also searches the
 # residual beside each one's pitch, so that the noise is measured clear of
 # them; a pitch's components leave those peaks out, and any other within
-# HALO_UNISON of a string's pitch, which is that string: 95 % of the peaks
-# halo_pitches takes for a string lie that close to it. (Within UNISON_CENTS
-# instead, a fifth of the bass's components fell near some string by
-# chance.) A peak within UNISON_CENTS of an anchor's own fundamental is its
-# unison, which the partial's lanes hold.
+# HALO_UNISON of another key's string, which is that string: 95 % of the
+# peaks halo_pitches takes for a string lie that close to it. (Within 15
+# cents instead, a fifth of the bass's components fell near some string by
+# chance.) A peak beside an anchor's own fundamental lies beyond its lanes'
+# reach (piano_analysis.fit_partial_layers) and is one of its own unison
+# strings: from C6 up the upright's sit 2 to 10 cents out, where the lanes
+# reach about 3. Taken for the partial's own and left out, they left G7's
+# fundamental 14 to 30 dB under the recordings from 0.25 to 1.5 s.
 UNDAMPED = range(89, 109)
-UNISON_CENTS = 15.0
 HALO_UNISON = 3.5
 
 
@@ -449,11 +451,11 @@ def anchor_data(result, halo_hz, wav):
                          'lanes': lanes, 'explained': explained, 'phase_agreement': float(agreement[row]),
                          'error': float(np.median([e for e in fit['relative_error'] if e is not None]))})
     # The components beside the series, in the same frame. One within
-    # UNISON_CENTS of the fundamental is the struck key's own unison, which
-    # the partial's lanes hold. One within HALO_UNISON of an undamped
-    # string, and every peak the strings' own search finds, is left to
-    # halo_data, which measures the strings across the recorded pitches. The
-    # others sit at the order of the series nearest them, cents from there.
+    # HALO_UNISON of another key's undamped string, and every peak the
+    # strings' own search finds, is left to halo_data, which measures the
+    # strings across the recorded pitches. The others, the struck key's own
+    # unison strings among them, sit at the order of the series nearest them,
+    # cents from there.
     extras = []
     orders_all = np.arange(1, 400)
     ladder = pa.stiff(f1, B, orders_all)
@@ -462,8 +464,8 @@ def anchor_data(result, halo_hz, wav):
     extra_snr = extra_peaks - np.array([L['extra_floor_db'] for L in result['layers']]) \
         if extra_peaks is not None else None
     for k, (f, fit) in enumerate(zip(result['extra_freqs'], result['extra_fits'])):
-        if fit is None or result['extra_halo'][k] or \
-                min(abs(1200 * math.log2(f / hz)) for hz in halo_hz.values()) <= HALO_UNISON:
+        if fit is None or result['extra_halo'][k] or min(
+                abs(1200 * math.log2(f / hz)) for key, hz in halo_hz.items() if key != result['note']) <= HALO_UNISON:
             continue
         layers = [i for i, a in enumerate(fit['amplitudes']) if a is not None]
         if len(layers) < 3:
@@ -473,7 +475,7 @@ def anchor_data(result, halo_hz, wav):
         lanes = sorted(lanes_of(fit['theta'], u, mu, layers, extra_snr[layers, k], extra_peaks[:, k]),
                        key=lambda lane: -lane['rate'])
         peak = max(float(np.max(lane['level_db'])) for lane in lanes)
-        if peak < -110 or abs(1200 * math.log2(f / f1)) <= UNISON_CENTS:
+        if peak < -110:
             continue
         n = int(orders_all[np.argmin(np.abs(ladder - f))])
         extras.append({'lanes': lanes, 'error': float(np.median([e for e in fit['relative_error'] if e is not None])),

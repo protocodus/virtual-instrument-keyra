@@ -381,3 +381,35 @@ against 0.42 for the same chords under the sustain pedal. The grand has no
 `measured::Damper`: its release recordings fade in over the damper's first
 tenth of a second, so it renders bit for bit as before. Chosen on these
 measurements, not by ear.
+
+## 2026-10-28 — the treble's own unison strings play beside its partials
+
+From C6 up the upright's unison strings sound 2 to 10 cents from their
+partial, where its lanes reach about 3 (`piano_analysis.fit_partial_layers`).
+The fit took any component within 15 cents of an anchor's fundamental for
+its unison, which it assumed the lanes held, and left it out: the strings
+beyond their reach did not sound, and G7's fundamental sat 14 to 30 dB under
+the recordings from 0.25 to 1.5 s. Those components now play like any other
+beside the series, each one lane at the order nearest it; one within 3.5
+cents of another key's undamped string is still that string. The upright
+gains 13 components from C6 to G7, the grand three, at F♯6, A6 and C7.
+
+On the [upright's benchmark](validation/upright-unison-benchmark-2026-10-28.md)
+the treble's train partials sit 4.88 to 3.88 dB from the recordings, their
+decay 5.06 to 3.54 dB/s and the sustain spectrum 10.55 to 9.17 dB; at the
+never-fitted E6, between the recorded pitches, 8.86 to 7.75 dB, 13.90 to
+12.34 dB/s and 15.11 to 12.43 dB. G7's fundamental now sits within 0.4 to
+9 dB of the recordings over those windows, except at the softest layer,
+still 17 to 21 dB under. The bass and middle do not move. The new components
+have no rise of their own and start under the pitch's shortest, so the onset
+fit lengthens that for every partial where they are loud: D6's goes from 0.2
+to 19.8 ms, and its attack spectrum moves 0.36 dB, within tolerance. C7's,
+refitted with its new components, goes from 2.3–2.4 to 4.0–4.3 ms, and its
+onset rise regresses on train, 0.44 to 1.82 ms from the recording. On the
+[grand's](validation/grand-unison-benchmark-2026-10-28.md) the dev treble's
+tuning moves 1.68 to 1.26 cents and the train treble's decay 3.90 to
+3.82 dB/s; D♯7's stereo balance regresses on dev, 2.18 to 2.69 dB, as it
+interpolates C7's new component. Three-note chords every 0.15 s from C6 to
+C8 under the sustain pedal, 6 s of them, render 1.6 % slower on both pianos
+(the median of seven paired rounds: upright 4.31 to 4.38 s, grand 5.55 to
+5.64 s). Chosen on these measurements, not by ear.

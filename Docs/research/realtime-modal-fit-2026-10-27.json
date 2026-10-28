@@ -9,7 +9,7 @@
   ],
   "dev_or_sealed_recordings_opened": false,
   "analysis_source_sha256": "bf945db135e2390692668990a84ea6806a51a3f853cda8497b4fc9f2c4049d1b",
-  "fitter_source_sha256": "26b66f615d2dbc30d51dc01f2c290db34e10db9d93267e9dedb9effa72c50697",
+  "fitter_source_sha256": "cc6c539a9627bb39b0de6d8697cc89278ed50011a1d9fcd26fa7a6a36c397a0d",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -1903,7 +1903,7 @@
       "f1_hz": 1491.3302021580428,
       "stiffness": 0.004128826146873446,
       "partials": 6,
-      "extras": 5,
+      "extras": 6,
       "contact_delay_ms": [
         9.292,
         10.042,
@@ -1939,12 +1939,12 @@
         0.2,
         0.2,
         0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
+        4.274,
+        4.913,
+        4.274,
+        3.719,
+        3.719,
+        2.131,
         0.2
       ],
       "median_relative_error": 0.24513634553927655,
@@ -2013,7 +2013,7 @@
       "f1_hz": 1771.773685791952,
       "stiffness": 0.005409734812195607,
       "partials": 5,
-      "extras": 2,
+      "extras": 3,
       "contact_delay_ms": [
         11.75,
         5.167,
@@ -2044,18 +2044,18 @@
       ],
       "median_phase_agreement": 0.884516820649943,
       "onset_rise_ms": [
-        0.2,
-        0.2,
-        0.609,
-        1.404,
+        5.646,
         11.324,
-        6.489,
-        4.913,
+        11.324,
+        7.458,
+        13.015,
         6.489,
         3.719,
-        2.815,
+        4.274,
         2.449,
-        2.449
+        2.131,
+        1.854,
+        2.131
       ],
       "median_relative_error": 0.2886064156171652,
       "body_explained": [
@@ -2123,7 +2123,7 @@
       "f1_hz": 2120.35068447718,
       "stiffness": 0.009558042755025666,
       "partials": 3,
-      "extras": 1,
+      "extras": 2,
       "contact_delay_ms": [
         8.542,
         11.438,
@@ -2155,17 +2155,17 @@
       "median_phase_agreement": 0.8453426312186907,
       "onset_rise_ms": [
         7.458,
-        7.458,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2,
-        0.2
+        8.572,
+        1.221,
+        6.489,
+        1.854,
+        2.449,
+        2.815,
+        2.131,
+        2.815,
+        1.854,
+        2.815,
+        2.449
       ],
       "median_relative_error": 0.2793789599927012,
       "body_explained": [
@@ -3135,5 +3135,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "dd2ff2b103a5831ac631f5f2525df8395a3355c809d29c67b4cdb435e8bacb91"
+  "generated_header_sha256": "16854762ed363508498a650b3a59343dbd4034ce58f9b463163b4ca20c74d71f"
 }
