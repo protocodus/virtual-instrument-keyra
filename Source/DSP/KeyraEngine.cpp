@@ -22,6 +22,25 @@ int switchIndex(int note) noexcept {return note>=12&&note<=14?note-12:-1;}
 float pedalLevel(float panel,float midi,std::uint16_t heldSwitches) noexcept {
   return heldSwitches?1.f:std::max(panel,midi);
 }
+// The action's noises against the notes, as the library's own SFZ mixes them
+// (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt and
+// Data/pedal.txt): a key let go at -37 dB with 82 % velocity tracking, 2 dB
+// quieter for each second since its strike (rt_decay); the sustain pedal at
+// -20 dB going down and -19 dB coming up. The notes track velocity at 73 %
+// there (CC99's default) but play at the recordings' own levels here, so a
+// release takes the ratio of the two trackings. The noise files were gained
+// up as a set, so this balance is the library's mixing choice, not a
+// measurement (Docs/research/release-recordings-2026-10-27.md).
+constexpr double releaseDb=-37,releaseTracking=.82,noteTracking=.73,releaseFadeDbPerSecond=2;
+constexpr double pedalDownDb=-20,pedalUpDb=-19;
+// The gain at velocity v (0..1) under an SFZ amp_veltrack of `tracking`, as
+// sfizz's Region::velocityCurve computes it.
+double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracking*v*v;}
+// The SFZ sounds the pedal at CC64 127 and 0. Here it sounds within .08 of
+// either end of its travel, the margin within which the dampers already
+// clear the strings (the contact in boundary()), so that a pedal which
+// never quite reaches an end still sounds and half-pedalling between does not.
+constexpr float pedalClear=.92f,pedalRest=.08f;
 #if (defined(__clang__) || defined(__GNUC__)) && !defined(KEYRA_FORCE_SCALAR)
 // Explicit 128-bit lanes also survive the freestanding Rack compiler, whose
 // ordinary loops do not auto-vectorize. One vector holds a partial's lanes.
@@ -120,6 +139,9 @@ struct Voice {
 struct Channel {
   std::array<std::uint16_t,88> presses{};
   std::array<bool,88> captured{};
+  // Each key's latest strike, which sets the noise of its release.
+  std::array<float,88> velocity{};
+  std::array<std::uint64_t,88> struck{};
   // Momentary C0/C#0/D0 switches have independent ownership from CC/panel.
   std::array<std::uint16_t,3> keySwitches{};
   float sustain=0,sostenuto=0,soft=0,mute=0,bend=0;
@@ -203,21 +225,25 @@ PartialData blend(const PartialData& a,const PartialData& b,double t) noexcept {
   for(int j=0;j<lanes;++j)d.lane[j]=blendLane(a.lane[j],b.lane[j],t);
   return d;
 }
+// The recorded pitch above a key, or the last one; the one below is upper - 1.
+int upperAnchor(int note) noexcept {
+  const auto& anchors=measured::anchors;
+  int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
+  return upper;
+}
 // The fundamental (Hz at A4 = 440 Hz) the engine gives a key: its cents from
 // equal temperament between the recorded pitches around it, continued from
 // the last two beyond them.
 double keyPitch(int note) noexcept {
-  const auto& anchors=measured::anchors;
-  int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
-  const auto& a=anchors[upper-1];const auto& b=anchors[upper];
+  const int upper=upperAnchor(note);
+  const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
   auto cents=[](const measured::Anchor& x){return 1200*std::log2(x.f1/(440*std::pow(2.,(x.note-69)/12.)));};
   return 440*std::pow(2.,(note-69+mix(cents(a),cents(b),static_cast<double>(note-a.note)/(b.note-a.note))/100)/12.);
 }
 // A key's stiffness B, between the recorded pitches around it like its pitch.
 double keyStiffness(int note) noexcept {
-  const auto& anchors=measured::anchors;
-  int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
-  const auto& a=anchors[upper-1];const auto& b=anchors[upper];
+  const int upper=upperAnchor(note);
+  const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
   return std::exp(mix(std::log(a.B),std::log(b.B),static_cast<double>(note-a.note)/(b.note-a.note)));
 }
 // How far (Hz) `hz` lies from the nearest partial of the stiff-string series
@@ -242,9 +268,11 @@ struct Engine::Impl {
   std::array<V4,chunk> mixLeft{},mixRight{};
   // The body rings in `ring`. `onset` holds the same modes decaying faster by
   // the measured body rise; each strike adds its knock to the one and takes
-  // it from the other, so their sum starts from zero.
-  Body ring{},onset{};
-  bool ringing=false,rising=false;
+  // it from the other, so their sum starts from zero. The action's knocks
+  // (keys let go, the sustain pedal) build up more slowly, by the action's
+  // rise in `actionOnset`.
+  Body ring{},onset{},actionOnset{};
+  bool ringing=false,rising=false,actionRising=false;
   std::array<Burst,maxBursts> bursts{};
   std::array<NoiseBand,noiseBands> noise{};
   std::array<double,chunk> noiseLeft{},noiseRight{};
@@ -255,8 +283,10 @@ struct Engine::Impl {
   double smooth=0,controlSmooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   float previousBrightness=.5f;
   std::uint64_t serial=0,frame=0;
+  std::uint64_t clock=0; // samples processed since reset, asleep or not
   bool legacyAttack=false;
   bool sleeping=true;
+  bool pedalHeld=false;  // the sustain pedal's dampers off the strings
 
   Complex rotation(double frequency) const noexcept {
     double phase=frequency/sampleRate;
@@ -301,15 +331,16 @@ struct Engine::Impl {
     }
   }
   void prepareBody() noexcept {
-    const double settle=std::exp(-1/(measured::bodyRise*sampleRate));
+    // Each bank's decay per sample beyond the ring's.
+    const double settle[3]={1,std::exp(-1/(measured::bodyRise*sampleRate)),std::exp(-1/(measured::actionRise*sampleRate))};
     for(int m=0;m<bodyBanks*lanes;++m){
       const int k=m/lanes,j=m%lanes;
       const bool real=m<bodyModes;const auto& mode=measured::bodyModes[real?m:0];
       const double d=real?std::exp(-mode.rate/sampleRate):0,w=2*pi*mode.hz/sampleRate;
       const Complex step{d*std::cos(w),d*std::sin(w)};
-      BodyBank* banks[2]={&ring[k],&onset[k]};
-      for(auto* bank:banks){
-        const Complex s=bank==&ring[k]?step:Complex{step.re*settle,step.im*settle};
+      BodyBank* banks[3]={&ring[k],&onset[k],&actionOnset[k]};
+      for(int b=0;b<3;++b){auto* bank=banks[b];
+        const Complex s=b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
         bank->step[j]=s;bank->leap[j]=power(s,chunk);
         setLane(bank->c,j,static_cast<float>(s.re));setLane(bank->s,j,static_cast<float>(s.im));
         setLane(bank->left,j,real?mode.left:0.f);
@@ -417,9 +448,9 @@ struct Engine::Impl {
     }
   }
   void silenceBody() noexcept {
-    Body* bodies[2]={&ring,&onset};
+    Body* bodies[3]={&ring,&onset,&actionOnset};
     for(auto* body:bodies)for(auto& bank:*body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
-    ringing=rising=false;
+    ringing=rising=actionRising=false;
   }
   double dampingFactor(const Voice& voice,const Partial& partial) const noexcept {
     const double m=channels[voice.channel].smoothedMute;
@@ -448,6 +479,7 @@ struct Engine::Impl {
       channel.smoothedMute+=controlSmooth*(std::max(parameters.mute,channel.mute)-channel.smoothedMute);
     if(ringing)ringing=advance(ring);
     if(rising)rising=advance(onset);
+    if(actionRising)actionRising=advance(actionOnset);
     if(hissing)advanceNoise();
     const bool tintChanged=previousBrightness!=parameters.brightness;
     previousBrightness=parameters.brightness;
@@ -521,9 +553,9 @@ struct Engine::Impl {
     const double soft=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
     // MIDI velocity is a recording-layer coordinate, not measured hammer speed.
     const double v=127*bounded(velocity);
-    const auto& anchors=measured::anchors;
-    int upper=1;while(upper<static_cast<int>(anchors.size())-1&&anchors[upper].note<note)++upper;
-    const auto& a=anchors[upper-1];const auto& b=anchors[upper];
+    channel.velocity[note-21]=bounded(velocity);channel.struck[note-21]=clock;
+    const int upper=upperAnchor(note);
+    const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
     // Keys beyond the last recorded pitch keep its partials but follow the
     // stretch and stiffness trend of the last two.
     const double reach=static_cast<double>(note-a.note)/(b.note-a.note),t=std::max(0.,std::min(1.,reach));
@@ -701,6 +733,41 @@ struct Engine::Impl {
       partial.exact[k]=power(partial.step[k],ahead);
     }
   }
+  // A knock of the action on the body between two recorded pitches' (levels
+  // mixed, phases from the nearer), building up under the action's rise.
+  void actionKnock(const std::array<measured::ActionKnock,bodyModes>& x,const std::array<measured::ActionKnock,bodyModes>& y,
+                   double t,double gainDb) noexcept {
+    sleeping=false;
+    const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
+    for(int m=0;m<bodyModes;++m){
+      const double amplitude=std::pow(10.,(mix(x[m].levelDb,y[m].levelDb,t)+gainDb)/20),phase=t<.5?x[m].phase:y[m].phase;
+      const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
+      knock(ring[m/lanes],m%lanes,g,ahead);knock(actionOnset[m/lanes],m%lanes,{-g.re,-g.im},ahead);
+    }
+    ringing=actionRising=true;
+  }
+  // A key let go: its damper falls back onto the strings unless a pedal holds
+  // it off them, and the key returns. From F6 up there is no damper to fall,
+  // so the key sounds alone; the recordings of those keys are that sound.
+  void release(int note,int ch) noexcept {
+    const auto& channel=channels[ch];const int key=note-21;
+    if(note<89&&(channel.captured[key]||pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])>=pedalClear))return;
+    const double v=channel.velocity[key],held=static_cast<double>(clock-channel.struck[key])/sampleRate;
+    const int upper=upperAnchor(note);
+    const auto& a=measured::anchors[upper-1];const auto& b=measured::anchors[upper];
+    const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
+    actionKnock(measured::releaseKnocks[upper-1],measured::releaseKnocks[upper],t,
+                releaseDb+20*std::log10(trackingGain(releaseTracking,v)/trackingGain(noteTracking,v))-releaseFadeDbPerSecond*held);
+  }
+  // After anything that moves the sustain pedal: at an end of its travel it
+  // sounds, unless `audible` is false for a reset.
+  void pedalEdge(bool audible=true) noexcept {
+    float level=0;
+    for(const auto& c:channels)level=std::max(level,pedalLevel(parameters.sustain,c.sustain,c.keySwitches[2]));
+    const bool held=level>=pedalClear||(pedalHeld&&level>pedalRest);
+    if(audible&&held!=pedalHeld){const auto& k=held?measured::pedalDown:measured::pedalUp;actionKnock(k,k,0,held?pedalDownDb:pedalUpDb);}
+    pedalHeld=held;
+  }
   void ringBody(Body& body,int frames) noexcept {
     for(auto& bank:body){
       V4 re=bank.re,im=bank.im;
@@ -736,6 +803,7 @@ struct Engine::Impl {
       }
     if(ringing)ringBody(ring,frames);
     if(rising)ringBody(onset,frames);
+    if(actionRising)ringBody(actionOnset,frames);
     const bool noisy=hissing;
     if(noisy)hiss(frames);
     for(int i=0;i<frames;++i){
@@ -803,11 +871,12 @@ void Engine::reset() noexcept {
   for(auto& channel:p.channels)channel=Channel{};
   for(auto& resonator:p.sympathetic){resonator.q=0;resonator.p=0;}
   p.silenceBody();p.silenceNoise();
-  p.serial=0;p.frame=0;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
+  p.serial=0;p.frame=0;p.clock=0;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
   for(int ch=0;ch<16;++ch)p.capture(ch);
+  p.pedalHeld=false;p.pedalEdge(false);
 }
 void Engine::setParameters(const Parameters& input) noexcept {
   auto& p=*impl;const float oldTune=p.parameters.tuning;
@@ -819,6 +888,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   p.parameters.soft=bounded(input.soft);
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
+  p.pedalEdge();
 }
 void Engine::noteOn(int note,float velocity,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
@@ -828,6 +898,7 @@ void Engine::noteOn(int note,float velocity,int channel) noexcept {
     auto& count=impl->channels[ch].keySwitches[sw];
     if(count<std::numeric_limits<std::uint16_t>::max())++count;
     if(sw==1)impl->capture(ch);
+    if(sw==2)impl->pedalEdge();
     return;
   }
   if(note<21||note>108)return;
@@ -839,28 +910,30 @@ void Engine::noteOff(int note,int channel) noexcept {
   if(sw>=0){
     auto& count=impl->channels[ch].keySwitches[sw];if(count>0)--count;
     if(sw==1)impl->capture(ch);
+    if(sw==2)impl->pedalEdge();
     return;
   }
   if(note<21||note>108)return;
-  auto& count=impl->channels[ch].presses[note-21];if(count>0)--count;
+  auto& count=impl->channels[ch].presses[note-21];
+  if(count>0&&--count==0)impl->release(note,ch);
 }
 void Engine::controlChange(int cc,int value,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   auto& p=*impl;auto& state=p.channels[ch];const float amount=bounded(value/127.f);
   if(cc==1)state.mute=amount;
-  else if(cc==64)state.sustain=amount;
+  else if(cc==64){state.sustain=amount;p.pedalEdge();}
   else if(cc==66){state.sostenuto=amount;p.capture(ch);}
   else if(cc==67)state.soft=amount;
-  else if(cc==123){state.presses.fill(0);state.keySwitches.fill(0);p.capture(ch);}
+  else if(cc==123){state.presses.fill(0);state.keySwitches.fill(0);p.capture(ch);p.pedalEdge(false);}
   else if(cc==120){
-    state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);
+    state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
     if(!any){for(auto& r:p.sympathetic){r.q=0;r.p=0;}p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;}
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
-    p.capture(ch);
+    p.capture(ch);p.pedalEdge(false);
     p.retune(ch);
   }
 }
@@ -884,6 +957,7 @@ void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAt
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;
+  p.clock+=static_cast<std::uint64_t>(frames);
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
@@ -898,7 +972,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     p.render(left+done,right+done,n);
     done+=n;p.frame+=static_cast<std::uint64_t>(n);
   }
-  bool any=p.ringing||p.rising||p.hissing;
+  bool any=p.ringing||p.rising||p.actionRising||p.hissing;
   for(const auto& voice:p.voices)any=any||voice.active;
   if(!any){
     double residue=std::abs(p.highpassL)+std::abs(p.highpassR);

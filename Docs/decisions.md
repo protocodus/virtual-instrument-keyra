@@ -234,3 +234,17 @@ recordings (the tone alone 21 %, one lane 25 %): strings the strike's knock
 sets ringing through the body, which no partial need come near, such as
 D♯5's at 2174 Hz, 295 Hz from its nearest partial, and D♯7's below its
 fundamental. That second drive is not modelled.
+
+## 2026-10-28 — play the action's knocks
+
+The listening test `2026-10-28-action-sounds` asked whether Keyra should play
+the action's own noises: a damper landing as a key is let go, and the sustain
+pedal going down and coming up. A was the engine at `1d61623`; B was A plus
+those knocks, synthesized on the 91 body modes every strike rings, each
+knock's level and phase per mode measured from the library's release and pedal
+recordings and set against the notes at the library's SFZ mix. One 12.5 s
+phrase of staccato chords, soft treble notes and pedal moves, with identical
+events and controls, level-matched on whole-file RMS (B trimmed by
+-0.001 dB). The owner chose B. Chosen by ear: it licenses playing the knocks
+at the SFZ's balance, a mixing choice rather than a measured level; no
+recorded waveform is played.

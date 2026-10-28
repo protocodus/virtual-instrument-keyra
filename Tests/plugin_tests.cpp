@@ -217,7 +217,18 @@ int main()
             for (int note = 12; note <= 14; ++note)
                 midi.addEvent(juce::MidiMessage::noteOn(1, note, 1.0f), 0);
             pedals.processBlock(audio, midi);
-            require(audio.getMagnitude(0, 128) < 1e-12f, "pedal keyswitches produced piano notes");
+            // The sustain switch moves the pedal as CC64 does, which sounds
+            // going down; no switch plays a note.
+            KeyraAudioProcessor sustained;
+            sustained.prepareToPlay(48000, 128);
+            juce::AudioBuffer<float> pedalAudio(2, 128);
+            juce::MidiBuffer pedalMidi;
+            pedalMidi.addEvent(juce::MidiMessage::controllerEvent(1, 64, 127), 0);
+            sustained.processBlock(pedalAudio, pedalMidi);
+            for (int channel = 0; channel < 2; ++channel)
+                for (int i = 0; i < 128; ++i)
+                    require(audio.getSample(channel, i) == pedalAudio.getSample(channel, i),
+                        "pedal keyswitches produced piano notes");
             require(pedals.softLevel.load() > .99f && pedals.sostenutoLevel.load() > .99f
                 && pedals.sustainLevel.load() > .99f, "keyswitch state was not published for visible pedals");
             require(pedals.parameters.getRawParameterValue("soft")->load() < .001f

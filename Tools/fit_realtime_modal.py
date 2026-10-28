@@ -791,6 +791,70 @@ def body_data(results, datas):
             'rise': float(np.median([r for layer in rises.values() for r in layer]))}
 
 
+# The action's knocks on the body: a key's damper landing as the key is let
+# go (Salamander's rel<k>, one take per key, the anchors' own keys) and the
+# sustain pedal going down and up (pedalD1, pedalU1). Their energy lies in the
+# body's modes, most of it from 100 to 300 Hz; what lies from 1 to 3 kHz, 20 dB
+# under it, the modes leave out. Each is fitted with the modes fixed from its
+# onset, where its power over 5 ms first comes within 30 dB of its peak, under
+# one rise 1 - e^(-t/rise) that every knock shares: they build up over tens of
+# milliseconds, where a strike's knock takes a fraction of one. The files were
+# gained up as a set, so the levels are in their own scale; the engine sets
+# them against the notes as the library's SFZ does.
+ACTION_SECONDS = 1.0
+
+
+def action_signal(name):
+    """A knock's recording from its onset for ACTION_SECONDS, BODY_LOW to
+    BODY_TOP, at BODY_RATE."""
+    import numpy as np
+    from scipy import ndimage, signal
+    import piano_analysis as pa
+    sr, x = pa.load(WAV / f'{name}.wav')
+    sos = signal.butter(6, [BODY_LOW, BODY_TOP], 'bandpass', fs=sr, output='sos')
+    y = signal.sosfiltfilt(sos, x, axis=0)
+    p = ndimage.uniform_filter1d(np.mean(y * y, axis=1), int(.005 * sr))
+    peak = int(np.argmax(p[:int(1.0 * sr)]))
+    onset = int(np.flatnonzero(p >= p[peak] * 1e-3)[0])
+    return signal.resample_poly(y[onset:onset + int(ACTION_SECONDS * sr)], BODY_RATE, sr, axis=0)
+
+
+def action_fit(y, hz, rates, shapes, rise, ridge=1e-3):
+    """One knock under `rise`: per mode its complex level on the mode's pickup
+    at the onset, and the fraction of the knock's energy left unexplained."""
+    import math
+    import numpy as np
+    t = np.arange(len(y)) / BODY_RATE
+    envelope = (1 - np.exp(-t / rise))[:, None] * np.exp(-np.outer(t, rates))
+    phase, hum = 2 * math.pi * np.outer(t, hz), 2 * math.pi * np.outer(t, BODY_HUM)
+    A = np.hstack([envelope * np.cos(phase), envelope * np.sin(phase), np.cos(hum), np.sin(hum)])
+    gram = A.T @ A
+    c = np.linalg.solve(gram + ridge * np.trace(gram) / len(gram) * np.eye(len(gram)), A.T @ y)
+    z = c[:len(hz)] - 1j * c[len(hz):2 * len(hz)]                 # modes x channels
+    levels = np.array([np.conj(shape) @ zm / 2 for shape, zm in zip(shapes, z)])
+    return levels, float(np.sum((y - A @ c) ** 2) / np.sum(y ** 2))
+
+
+def action_data(notes, hz, rates, shapes):
+    """The anchors' key releases and the pedal's down and up as knocks: their
+    shared rise (s), the one under which the modes leave least of them
+    unexplained, and per knock and mode the level (dB) and phase at the onset."""
+    import numpy as np
+    names = [f'rel{note - 20}' for note in notes] + ['pedalD1', 'pedalU1']
+    roles = json.loads(SPLIT.read_text())['cases']
+    if any(roles.get(name) != 'train' for name in names):
+        raise SystemExit('the action knocks are fitted on train recordings only')
+    signals = [action_signal(name) for name in names]
+    grid = np.geomspace(.005, .3, 25)
+    unexplained = [float(np.mean([action_fit(y, hz, rates, shapes, rise)[1] for y in signals])) for rise in grid]
+    rise = float(grid[int(np.argmin(unexplained))])
+    fits = [action_fit(y, hz, rates, shapes, rise) for y in signals]
+    knocks = [[{'level_db': float(20 * np.log10(abs(level) + 1e-12)), 'phase': float(np.angle(level))}
+               for level in levels] for levels, _ in fits]
+    return {'rise': rise, 'releases': knocks[:-2], 'pedal_down': knocks[-2], 'pedal_up': knocks[-1],
+            'cases': names, 'unexplained': [round(u, 3) for _, u in fits]}
+
+
 # Above the body modes the soundboard's response is too dense to resolve,
 # and every strike leaves a broadband, decorrelated ring between the partials.
 # It is measured as band power in third octaves from 1 kHz, in the residual
@@ -913,7 +977,7 @@ def number(x):
     return value + ('f' if '.' in value or 'e' in value else '.f')
 
 
-def header(anchors, rings, body, noise):
+def header(anchors, rings, body, noise, action):
     velocities = anchors[0]['velocities']
     layers = len(velocities)
     total = sum(len(a['partials']) for a in anchors)
@@ -1012,7 +1076,23 @@ def header(anchors, rings, body, noise):
         lines.append(f'  // MIDI {a["note"]}')
         lines.append('  {{' + ','.join('{' + ','.join(number(k[key]) for key in ('level_db', 'slope_db', 'phase'))
                                          + '}' for k in knocks) + '}},')
+
+    def action_knocks(knocks):
+        return '{{' + ','.join('{' + number(k['level_db']) + ',' + number(k['phase']) + '}' for k in knocks) + '}}'
     lines += ['}};',
+              '// The action\'s knocks on the same modes: each recorded pitch\'s key let go',
+              '// (its damper landing) and the sustain pedal going down and up, from one',
+              '// take each in those recordings\' own scale, gained up as a set. Per mode the',
+              '// level (dB) and phase (rad) at the knock\'s onset, and the rise',
+              '// 1 - e^(-t/rise) (seconds) they share.',
+              'struct ActionKnock { float levelDb, phase; };',
+              f'constexpr float actionRise={number(action["rise"])};',
+              f'constexpr std::array<std::array<ActionKnock,{len(body["hz"])}>,{len(anchors)}> releaseKnocks{{{{']
+    for a, knocks in zip(anchors, action['releases']):
+        lines += [f'  // MIDI {a["note"]}', '  ' + action_knocks(knocks) + ',']
+    lines += ['}};',
+              f'constexpr std::array<ActionKnock,{len(body["hz"])}> pedalDown{action_knocks(action["pedal_down"])};',
+              f'constexpr std::array<ActionKnock,{len(body["hz"])}> pedalUp{action_knocks(action["pedal_up"])};',
               '// Above the modes, the board\'s dense ring as noise in third-octave bands:',
               '// each band\'s centre (Hz) and its left/right coherence.',
               'struct NoiseBand { float hz, coherence; };',
@@ -1071,7 +1151,8 @@ def generate():
     noise = noise_data(results, anchors)
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
-    content = header(anchors, rings, body, noise)
+    action = action_data([a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
+    content = header(anchors, rings, body, noise, action)
     metadata = {
         'schema_version': 4,
         'corpus': str(CORPUS.relative_to(ROOT)), 'corpus_sha256': sha256(CORPUS),
@@ -1102,7 +1183,10 @@ def generate():
                   'cross-faded in power between anchors. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
-                  'linear in velocity, modes hidden by an anchor\'s partials taken from its neighbours. Above the '
+                  'linear in velocity, modes hidden by an anchor\'s partials taken from its neighbours. The '
+                  'action\'s knocks on the same modes (each anchor\'s key release, the sustain pedal down and up; '
+                  'one train take each, in those files\' own scale) fitted from their onsets under one shared rise. '
+                  'Above the '
                   'modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per '
                   'layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms '
                   'after contact; one left/right coherence per band.'),
@@ -1120,6 +1204,8 @@ def generate():
                  'rise_ms': round(1000 * body['rise'], 3),
                  'layer_rise_ms': {str(note): [round(1000 * r, 3) for r in rises]
                                    for note, rises in body['layer_rises'].items()}},
+        'action': {'cases': action['cases'], 'rise_ms': round(1000 * action['rise'], 3),
+                   'unexplained': dict(zip(action['cases'], action['unexplained']))},
         'noise': {'band_hz': [round(f, 1) for f in noise['hz']],
                   'coherence': [round(c, 3) for c in noise['coherence']]},
         'uncalibrated_anchors': [{'note': note, 'reason': reason} for note, reason in UNCALIBRATED.items()],

@@ -163,10 +163,15 @@ int main(int argc,char** argv){
   check(up>down*100,"sustain preserves released strings");
   check(sostenuto(false)>sostenuto(true)*100,"sostenuto rising edge captures only already held keys");
   {
-    keyra::Engine e;e.noteOn(12,.5f,1);e.noteOn(13,.5f,1);e.noteOn(14,.5f,1);
+    // The soft and sostenuto switches are silent; the sustain switch sounds
+    // its pedal going down, as CC64 does, and nothing more.
+    keyra::Engine e,pedal;e.noteOn(12,.5f,1);e.noteOn(13,.5f,1);
+    check(rms(render(e,4800))==0,"soft and sostenuto keyswitches make no sound");
+    e.noteOn(14,.5f,1);pedal.controlChange(64,127);
     const auto state=e.pedalState(1);
     check(state.soft==1&&state.sostenuto==1&&state.sustain==1,"keyswitch12/13/14 maps to soft/sostenuto/sustain below piano range");
-    check(rms(render(e,4800))==0,"keyswitches create no audible string voices");
+    const auto sounded=render(e,4800);
+    check(sounded==render(pedal,4800)&&rms(sounded)>0,"the sustain keyswitch sounds its pedal and creates no string voices");
     check(e.pedalState(2).soft==0&&e.pedalState(2).sustain==0&&e.pedalState(2).sostenuto==0,"keyswitch ownership is channel local");
     check(e.pedalState().soft==1&&e.pedalState().sustain==1,"aggregate pedal query publishes keyswitch activity");
     e.noteOff(12,2);check(e.pedalState(1).soft==1,"foreign channel keyswitch release preserves owner");
@@ -188,9 +193,14 @@ int main(int argc,char** argv){
     e.noteOn(sw,.8f);e.controlChange(120,0);check(level()==64/127.f,"CC120 clears transient switch ownership without resetting CC source");
   }
   {
-    keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.noteOn(14,.7f,2);
-    a.noteOn(60,.7f,1);b.noteOn(60,.7f,1);render(a,12000);render(b,12000);a.noteOff(60);b.noteOff(60);
-    check(render(a,24000)==render(b,24000),"another channel's sustain switch cannot hold channel1 voices");
+    // The pedal is one, so another channel's sustain switch sounds it; it
+    // adds that sound alone and holds nothing on channel 1.
+    keyra::Engine a,b,pedal;a.setParameters(dry());b.setParameters(dry());pedal.setParameters(dry());
+    a.noteOn(14,.7f,2);pedal.noteOn(14,.7f,2);
+    a.noteOn(60,.7f,1);b.noteOn(60,.7f,1);render(a,12000);render(b,12000);render(pedal,12000);a.noteOff(60);b.noteOff(60);
+    const auto x=render(a,24000),y=render(b,24000),z=render(pedal,24000);double error=0;
+    for(std::size_t i=0;i<x.size();++i)error=std::max(error,std::abs(static_cast<double>(x[i])-y[i]-z[i]));
+    check(error<1e-6,"another channel's sustain switch cannot hold channel1 voices");
   }
   {
     keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.noteOn(60,.7f);b.noteOn(60,.7f);
@@ -227,7 +237,9 @@ int main(int argc,char** argv){
   {
     keyra::Engine a,b;a.setParameters(dry());auto p=dry();p.soft=1;b.setParameters(p);a.noteOn(72,.7f);b.noteOn(72,.7f);
     check(rms(render(b,24000))<rms(render(a,24000)),"soft pedal changes hammer excitation");
+    // Both pedals go down and are reset alike, so both sound the pedal once.
     keyra::Engine c,d;c.setParameters(dry());d.setParameters(dry());c.controlChange(64,127);c.controlChange(66,127);c.controlChange(1,127);c.pitchBend(2);c.controlChange(121,0);
+    d.controlChange(64,127);d.controlChange(121,0);
     c.noteOn(60,.7f);d.noteOn(60,.7f);check(render(c,24000)==render(d,24000),"reset all controllers restores channel playing state");
   }
   {
@@ -363,6 +375,47 @@ int main(int argc,char** argv){
       check(drop<-20,"a key whose partials pass far from a string rings it far less than a recorded pitch with a partial on it");
       std::cout<<"recorded="<<recorded<<" string_hz="<<ringHz(ring)<<" next_key_db="<<drop<<'\n';
     }
+  }
+  {
+    // A key let go knocks the body. From F6 up no damper falls, so the strings
+    // ring on alike and what the key-up adds is the knock alone: building up
+    // rather than clicking, and 2 dB quieter for each second longer the key
+    // was held.
+    auto knock=[](double heldSeconds){
+      keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.noteOn(100,.7f);b.noteOn(100,.7f);
+      const int held=static_cast<int>(heldSeconds*48000);render(a,held);render(b,held);
+      a.noteOff(100);auto x=render(a,24000);const auto y=render(b,24000);
+      for(std::size_t i=0;i<x.size();++i)x[i]-=y[i];
+      return x;};
+    const auto early=knock(.5),late=knock(2);
+    float peak=0,start=0;for(std::size_t i=0;i<early.size();++i){peak=std::max(peak,std::abs(early[i]));if(i<96)start=std::max(start,std::abs(early[i]));}
+    check(peak>1e-5f,"a key let go knocks the body");
+    check(start<peak*.1f,"a release knock builds up over the action's rise");
+    const double ratio=rms(late)/rms(early);
+    check(std::abs(20*std::log10(ratio)+3)<.05,"a release knock fades 2 dB for each second the key was held");
+    std::cout<<"release_knock_peak_dbfs="<<20*std::log10(peak)<<" held_2s_against_0.5s_db="<<20*std::log10(ratio)<<'\n';
+  }
+  {
+    // Under the pedal a damper stays off the strings, so letting its key go
+    // sounds nothing: the same as holding it.
+    keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.controlChange(64,127);b.controlChange(64,127);
+    a.noteOn(60,.7f);b.noteOn(60,.7f);render(a,12000);render(b,12000);a.noteOff(60);
+    check(render(a,24000)==render(b,24000),"a key let go under the pedal knocks nothing");
+  }
+  {
+    // The pedal sounds at the ends of its travel, once each way: going down
+    // past .92 and coming back below .08, never as it moves between them. A
+    // reset of the controllers lifts it silently.
+    keyra::Engine a,b,c;a.setParameters(dry());b.setParameters(dry());c.setParameters(dry());
+    a.controlChange(64,64);a.controlChange(64,100);check(rms(render(a,4800))==0,"half pedalling sounds nothing");
+    a.controlChange(64,127);b.controlChange(64,127);c.controlChange(64,127);
+    a.controlChange(64,30);a.controlChange(64,120);c.controlChange(121,0);
+    const auto down=render(a,9600);
+    check(down==render(b,9600)&&rms(down)>0,"the pedal sounds once going down, not as it moves within its travel");
+    check(render(c,9600)==down,"a reset of the controllers lifts the pedal silently");
+    a.controlChange(64,0);b.controlChange(64,0);c.controlChange(64,0);
+    const auto up=render(a,9600);
+    check(up==render(b,9600)&&up!=render(c,9600),"the pedal sounds once coming up, and not when already lifted");
   }
   for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);

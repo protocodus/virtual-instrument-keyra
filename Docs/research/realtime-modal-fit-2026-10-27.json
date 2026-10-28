@@ -9,7 +9,7 @@
   ],
   "dev_or_sealed_recordings_opened": false,
   "analysis_source_sha256": "6d7ac1bb7a9d220b4bac27591b7975dae7061d0ea053c62dc6980e707bdba9b8",
-  "fitter_source_sha256": "7043b011d8c6ef3649123d968916f3d719b00269b5b633ab4ebdc485f59ac31e",
+  "fitter_source_sha256": "ba3935f791347bf811ba933d4f6ee2b3db4a3631a405685e57ea3fdb64e32165",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -28,7 +28,7 @@
     109.0,
     124.0
   ],
-  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), and beside each undamped string's pitch (MIDI 89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a window that parts it from its neighbours and fitted with one lane from contact. Peaks within 15 cents of the fundamental are left to the partial's lanes. Peaks from F6 up that recur within 1.5 cents in four or more anchors are undamped strings ringing, fitted with two lanes instead. Where a string's tone (the largest amplitude within 2 Hz through 0.5 s Hann windows every 0.25 s from 1 to 3.5 s after contact) stands 10 dB over the median 4 to 20 Hz either side in two or more windows of a layer, a second apart in all, its decay there times the slower lane and its level sets the lane's; elsewhere no lane is slower than the string's median slower lane where its fits timed one; at no layer do the two lanes together stand over the tone. Each string is kept at one frequency for its slower lane and interpolated between anchors by string, lanes fastest first; the rest of the strings' search is dropped. The other peaks are placed by the series in cents from their nearest order and cross-faded in power between anchors. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), and beside each undamped string's pitch (MIDI 89-108, the struck key excepted) the strongest 10 dB over them; each is measured through a window that parts it from its neighbours and fitted with one lane from contact. Peaks within 15 cents of the fundamental are left to the partial's lanes. Peaks from F6 up that recur within 1.5 cents in four or more anchors are undamped strings ringing, fitted with two lanes instead. Where a string's tone (the largest amplitude within 2 Hz through 0.5 s Hann windows every 0.25 s from 1 to 3.5 s after contact) stands 10 dB over the median 4 to 20 Hz either side in two or more windows of a layer, a second apart in all, its decay there times the slower lane and its level sets the lane's; elsewhere no lane is slower than the string's median slower lane where its fits timed one; at no layer do the two lanes together stand over the tone. Each string is kept at one frequency for its slower lane and interpolated between anchors by string, lanes fastest first; the rest of the strings' search is dropped. The other peaks are placed by the series in cents from their nearest order and cross-faded in power between anchors. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in velocity, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release, the sustain pedal down and up; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band.",
   "anchors": [
     {
       "note": 21,
@@ -2799,6 +2799,61 @@
       ]
     }
   },
+  "action": {
+    "cases": [
+      "rel1",
+      "rel4",
+      "rel10",
+      "rel13",
+      "rel16",
+      "rel22",
+      "rel25",
+      "rel28",
+      "rel34",
+      "rel37",
+      "rel40",
+      "rel46",
+      "rel49",
+      "rel52",
+      "rel58",
+      "rel61",
+      "rel64",
+      "rel70",
+      "rel73",
+      "rel76",
+      "rel82",
+      "rel85",
+      "pedalD1",
+      "pedalU1"
+    ],
+    "rise_ms": 54.478,
+    "unexplained": {
+      "rel1": 0.671,
+      "rel4": 0.364,
+      "rel10": 0.35,
+      "rel13": 0.556,
+      "rel16": 0.409,
+      "rel22": 0.573,
+      "rel25": 0.521,
+      "rel28": 0.361,
+      "rel34": 0.473,
+      "rel37": 0.374,
+      "rel40": 0.476,
+      "rel46": 0.406,
+      "rel49": 0.393,
+      "rel52": 0.261,
+      "rel58": 0.329,
+      "rel61": 0.289,
+      "rel64": 0.353,
+      "rel70": 0.281,
+      "rel73": 0.365,
+      "rel76": 0.323,
+      "rel82": 0.549,
+      "rel85": 0.303,
+      "pedalD1": 0.637,
+      "pedalU1": 0.487
+    }
+  },
   "noise": {
     "band_hz": [
       1000.0,
@@ -2837,5 +2892,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "abf50d5b72400bb670dfb5af0ac7f3d1bb9b36f387a64eba7925077706dddfa6"
+  "generated_header_sha256": "3564977d7242e56437f5e93e2c20524b04c0ff7fda6b639dabd1541b62d16df6"
 }
