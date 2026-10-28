@@ -20,14 +20,14 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
-| 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -11.6 dBFS |
-| 2 | Studio Grand | [02-studio-grand.wav](Docs/audio/02-studio-grand.wav) | 11.6 s | -16.0 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -21.7 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -22.9 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -13.3 dBFS |
-| 6 | Rehearsal Upright | [06-rehearsal-upright.wav](Docs/audio/06-rehearsal-upright.wav) | 11.6 s | -20.7 dBFS |
-| 7 | Felt Upright | [07-felt-upright.wav](Docs/audio/07-felt-upright.wav) | 10.4 s | -32.0 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -18.1 dBFS |
+| 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -10.8 dBFS |
+| 2 | Studio Grand | [02-studio-grand.wav](Docs/audio/02-studio-grand.wav) | 11.6 s | -16.7 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -23.2 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -25.5 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -12.7 dBFS |
+| 6 | Rehearsal Upright | [06-rehearsal-upright.wav](Docs/audio/06-rehearsal-upright.wav) | 11.6 s | -12.6 dBFS |
+| 7 | Felt Upright | [07-felt-upright.wav](Docs/audio/07-felt-upright.wav) | 10.4 s | -19.2 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -9.8 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -142,7 +142,7 @@ musical passages through the same engine. Both are frozen evidence from
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 7](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/40710782336/artifacts/12827605353)**, built from [`a96097a8d466`](https://github.com/protocodus/virtual-instrument-keyra/commit/a96097a8d46690f5616da03545a2422c629b8d0e). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 8](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/40773814083/artifacts/12855373956)**, built from [`7a078ac10162`](https://github.com/protocodus/virtual-instrument-keyra/commit/7a078ac1016226934bca566ffefb4b0fa36f5504). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
