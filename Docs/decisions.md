@@ -356,3 +356,28 @@ first-150-ms peak on a slow swell 25 to 55 ms after the strike and the
 render's now reaches it 12 to 39 ms after. The grand's benchmark moves by at
 most 0.05 dB or ms in any register mean, and none of its notes regresses.
 Chosen on these measurements, not by ear.
+
+## 2026-10-28 — the upright's felt leaves a share of each partial ringing
+
+The upright's dampers took the grand's felt loss, which takes all of a
+partial at hundreds of dB/s, while the library's key-release takes keep part
+of each partial ringing after the felt lands. A damped partial now keeps a
+share the felt holds only loosely, 10^((a + b x) / 10) of its power with x its
+octaves from middle C, falling at e^(c + d x) per second besides its own
+decay, and the felt takes the rest as before. Fitted on the 22 train takes
+below F6 (`damper_data`, [research note](research/upright-dampers-2026-10-28.md)):
+at middle C 13 dB under the partial and falling 6.2 dB/s, each octave up
+6.9 dB smaller and 1.43 times faster, and below 71.5 Hz all of the partial.
+
+On the new [release benchmark](validation/upright-release-benchmark-2026-10-28.md)
+the releases sit 8.64 to 4.42 dB from the train takes and 8.41 to 6.29 dB
+from the four dev takes, never fitted: D♯2 9.85 to 5.03 and G♯3 9.39 to
+4.91. Two dev takes regress: C5, 5.81 to 6.61 dB, on partials that lie on
+undamped strings, which its take holds far louder than the halo plays them,
+and E6, 8.58 to 8.62 dB. Held notes render bit for bit as before, so the
+recording benchmark does not move. Released upright passages cost 0.11 to
+0.12 of real time where they cost 0.06 to 0.07, as their tails now ring,
+against 0.42 for the same chords under the sustain pedal. The grand has no
+`measured::Damper`: its release recordings fade in over the damper's first
+tenth of a second, so it renders bit for bit as before. Chosen on these
+measurements, not by ear.

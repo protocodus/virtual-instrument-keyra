@@ -73,7 +73,12 @@ musical passages through the same engine. Both are frozen evidence from
   sounds; sessions saved before keep the grand. On the
   [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
   its attack, tuning and level sit closer to its never-fitted recordings than
-  the grand's data does; its treble does not yet (Known gaps).
+  the grand's data does; its treble does not yet (Known gaps). Its dampers
+  leave ringing what the library's key-release takes show, a share of each
+  partial that fades over seconds once the felt lands, 13 dB down at middle
+  C and less higher up: on the never-fitted takes its releases sit 6.3 dB
+  from the recordings, where the grand's felt left them 8.4 dB
+  ([release benchmark](Docs/validation/upright-release-benchmark-2026-10-28.md)).
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -194,7 +199,14 @@ Each layer is measured at the middle of its velocity range. The takes are cut
 at the strike, so a band's noise floor is read at a take's end, and the frames
 that would start before a take are left out. The library mixes the hammer
 noises at a fixed −14 dB against the notes, whatever the velocity or how long
-the key was held, and so do the upright's release knocks. It has no pedal
+the key was held, and so do the upright's release knocks. Its key-release
+takes, each a note dying under its damper from about the key-up, set what the
+dampers leave ringing: below F6, each train take's partials to the tenth that
+stand clear of its floor and of the undamped strings' partials, fitted under
+the engine's own damper as a share the felt takes at its loss and a share it
+holds loosely, each linear in octaves, with a key-up per take and a level per
+partial, as the takes carry no level against the notes
+([dampers](Docs/research/upright-dampers-2026-10-28.md)). It has no pedal
 recordings, so the upright's pedals make no sound of their own; no take shows
 the 16 kHz band's noise in three layers, so that band is silent. Its 21 dev
 recordings, never fitted, are the first takes of D♯2, G♯3, C5 and E6 and B3's
@@ -210,7 +222,8 @@ stay sealed until a candidate goes to the owner. `Tools/compare_benchmarks.py`
 lists every note where a candidate is worse than the shipping engine. The [current report](Docs/validation/recording-benchmark-split-2026-10-27.md)
 compares this engine with 0.3.0; the [upright's](Docs/validation/upright-recording-benchmark-2026-10-28.md)
 scores the upright on its own recordings against the grand's data played on
-them.
+them. `Tools/benchmark_releases.py` scores the upright's key releases against
+its train and dev key-release takes ([report](Docs/validation/upright-release-benchmark-2026-10-28.md)).
 
 ### Pedals and keyswitches
 
@@ -219,7 +232,12 @@ Sostenuto captures the keys held as it crosses halfway down and holds only
 those. Soft lowers the level and the high-partial excitation of later strikes.
 Each pedal takes the largest of its panel control, its MIDI controller (CC64,
 CC66, CC67) and its momentary keyswitch (MIDI 14, 13, 12, below the piano's
-A0). The top twenty keys have no dampers, as on a grand. The felt mute (CC1
+A0). The top twenty keys have no dampers, as on a grand. A damper's felt
+takes a partial down faster the higher it sounds, a released C4 at about
+500 dB/s. The upright's holds a share of each partial only loosely, as its
+release recordings show, so a released note fades over seconds: 13 dB under
+the partial at middle C, less higher up, and all of the fundamentals up to
+C♯2. The felt mute (CC1
 or its control) adds damping to sounding notes, held ones included. The
 sustain pedal sounds within 0.08 of either end of its travel, once each way,
 from whichever of its sources moves it; half pedalling between is silent, and
@@ -282,9 +300,15 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   instrument.
 - The upright's soft pedal is the grand's: it lowers the level and the high
   partials and moves energy to the slowest lane as an una corda does, where an
-  upright's moves the hammers closer to the strings. Its dampers take the
-  grand's felt loss; the library's release takes, which hold the damped
-  strings, are not yet measured. Its pedals are silent (above).
+  upright's moves the hammers closer to the strings. Its pedals are silent
+  (above). Its dampers all land alike, where from C1 to F♯2 the felt reaches
+  the strings 0.1 to 0.3 s later into the release takes than elsewhere,
+  whether those takes start earlier or those dampers land more slowly. Where a
+  damped partial lies on an undamped string, the takes hold that string
+  ringing far louder than the halo plays it, its level being interpolated
+  there (above): the never-fitted C5's third partial, 4 cents from G6's
+  string, now releases 6.6 dB from its take, where it was 3.5 dB with the
+  felt taking all of it ([dampers](Docs/research/upright-dampers-2026-10-28.md)).
 - The upright's treble is fitted worse than its middle. A partial's lanes may
   sit only 3 cents from it, while from C6 up the upright's unison strings
   sound 6 to 20 cents apart (the grand's top octave up to 12), so the lanes
