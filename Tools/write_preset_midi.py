@@ -7,11 +7,12 @@ Studio Grand a pop ballad pattern, Warm Walnut jazz voicings with the soft
 pedal, Felt Nocturne a quiet nocturne whose felt the modulation wheel brings
 in, and Open Strings struck notes with the dampers raised so the undamped
 strings ring. On the upright, Rehearsal Upright plays a song accompaniment
-of broken chords under a tune, Felt Upright quiet repeated chords under a
-high line through its felt, and Pop Upright pumping chords over octave roots
-with the pedal up. The .mid files are the committed sources the demo renderer
-reads; this script only records how they were written. Re-run it only to
-change a phrase on purpose, and commit the changed .mid files on their own:
+of broken chords under a tune, Felt Upright repeated chords under a high
+line at an ordinary touch, quietened by its felt, and Pop Upright pumping
+chords over octave roots with the pedal up. The .mid files are the
+committed sources the demo renderer reads; this script only records how
+they were written. Re-run it only to change a phrase on purpose, and commit
+the changed .mid files on their own:
 
     python3 Tools/write_preset_midi.py           # write Docs/audio/midi
     python3 Tools/write_preset_midi.py --check   # the committed files match
@@ -258,8 +259,10 @@ def rehearsal_upright():
 
 
 def felt_upright():
-    # Through the felt, quietly: repeated broken chords in A minor at a soft
-    # touch under a high line, the pedal down and changed with the harmony.
+    # Repeated broken chords in A minor under a high line, the pedal down and
+    # changed with the harmony, at the ordinary touch a practice felt is
+    # played with: the felt keeps it quiet. Played softly as well, its demo
+    # peaked 9 dB under the grand's Felt Nocturne.
     p = Phrase(76)
     harmony = [
         ("A2", ["E3", "A3", "C4", "E4"]),
@@ -273,11 +276,11 @@ def felt_upright():
         start = 2 * bar
         if bar:
             p.change_pedal(start)
-        p.note(start, 1.9, bass, 46)
-        p.arpeggio(start + 0.5, 0.25, chord + chord[-2::-1][:2], 0.5, 40)
-    p.line(0, line, 52)
+        p.note(start, 1.9, bass, 64)
+        p.arpeggio(start + 0.5, 0.25, chord + chord[-2::-1][:2], 0.5, 56)
+    p.line(0, line, 72)
     p.change_pedal(8)
-    p.chord(8, 2, ["A2", "E3", "A3", "C4", "E4", "A4"], 44)
+    p.chord(8, 2, ["A2", "E3", "A3", "C4", "E4", "A4"], 62)
     p.cc(10, SUSTAIN, 0)
     return p
 
