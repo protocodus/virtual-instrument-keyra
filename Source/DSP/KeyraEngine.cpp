@@ -678,6 +678,8 @@ struct Engine::Impl {
     Body* bodies[5]={&ring,&lateRing,&onset,&contactOnset,&actionOnset};
     for(auto* body:bodies)for(auto& bank:*body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
     ringing=rising=actionRising=false;
+    // As a fresh engine's: a key held through a reset leaves no felt behind.
+    bodyContact=1;
   }
   double dampingFactor(const Voice& voice,const Partial& partial) const noexcept {
     const double m=channels[voice.channel].smoothedMute;

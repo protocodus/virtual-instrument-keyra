@@ -163,7 +163,11 @@ int main(int argc,char** argv){
     a.noteOn(60,.7f);b.noteOn(60,.7f);
     check(render(a,24000,1)==render(b,24000,512),"block segmentation invariance");
     a.reset();b.reset();a.noteOn(60,.7f);b.noteOn(60,.7f);
-    check(render(a,24000)==render(b,24000),"reset deterministic");
+    const Audio replayed=render(a,24000);
+    check(replayed==render(b,24000),"reset deterministic");
+    // Reset with a key held: nothing of its felt contact may carry over.
+    keyra::Engine c;c.setParameters(dry());c.noteOn(60,.7f);
+    check(replayed==render(c,24000),"a reset engine plays as a fresh one");
   }
   {
     // No two strikes of a key land alike: each plays at a player's spread
