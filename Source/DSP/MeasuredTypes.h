@@ -33,13 +33,15 @@ struct Anchor { int note; float f1, B; std::array<float,maxLayers> onsetRise; in
 // pickup (left real; right complex; mean channel power 1).
 struct HaloString { float cents, rate, promptDb, left, rightRe, rightIm; };
 // A mode of the soundboard and case, which every strike knocks, measured
-// under the treble's fundamentals: its frequency (Hz), decay rate (1/s) and
-// one stereo pickup (left real; right complex; mean channel power 1).
-struct BodyMode { float hz, rate, left, rightRe, rightIm; };
-// How a recorded pitch's strike knocks a body mode: the level (dB) at the
-// loudest layer, its slope (dB per dB of the level the strike's layer plays
-// at, layerLevelDb) and the phase (rad) at string contact.
-struct Knock { float levelDb, slopeDb, phase; };
+// under the treble's fundamentals: its frequency (Hz), the decay rates (1/s)
+// of its ring's two stages, the first and the slower second, and one stereo
+// pickup (left real; right complex; mean channel power 1).
+struct BodyMode { float hz, rate, slowRate, left, rightRe, rightIm; };
+// How a recorded pitch's strike knocks a body mode, per stage of its ring:
+// the level (dB) at the loudest layer, its slope (dB per dB of the level the
+// strike's layer plays at, layerLevelDb) and the phase (rad) at string
+// contact; the second stage at -200 dB where a mode has none.
+struct Knock { float levelDb, slopeDb, phase, slowLevelDb, slowSlopeDb, slowPhase; };
 // A knock of the action on a body mode: the level (dB) and phase (rad) at
 // the knock's onset.
 struct ActionKnock { float levelDb, phase; };

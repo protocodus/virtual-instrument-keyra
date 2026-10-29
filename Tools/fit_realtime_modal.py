@@ -824,34 +824,84 @@ def halo_data(results, strings, hz, wav, grid, layer_level):
 # whose modes ring under the treble's fundamentals where no string sounds:
 # there the recordings measure them directly. The model is one bank of modes
 # shared by every key, each key exciting each mode with its own level and
-# phase, and each mode heard through one stereo pickup.
+# phase, and each mode heard through one stereo pickup. Each mode's ring
+# falls in two stages: under every note from C4 up the grand's recordings
+# fall at 55 to 90 dB/s over the first 0.4 s and then at 9 to 26 dB/s, where
+# one decay, measured over the first, left the body 10 dB under them by half
+# a second and 15 to 35 dB under by one.
 BODY_LOW, BODY_TOP = 25.0, 1000.0       # Hz: the band the body modes are measured in
-BODY_SKIP, BODY_SECONDS = .02, .6       # s after contact: past the partials' onset, to the residual's end
+BODY_SKIP, BODY_SECONDS = .02, .6       # s after contact: past the partials' onset, to the modes' search window's end
+BODY_TAIL = .95                         # s after contact: the end of the knocks' fit (the residual's end)
+BODY_LATE = (.4, 1.5)                   # s after contact: the second stage's frames, to the take's fade-out at most
 BODY_RATE = 4000                        # Hz: the measurement's sample rate
 BODY_HUM = [50.0 * k for k in range(1, 11)]  # the room's mains lines, fitted and discarded
 
 
-def body_signal(result, i, contact):
+def body_signal(result, i, contact, seconds=BODY_TAIL):
     """Layer i's residual with the partials removed, BODY_LOW to BODY_TOP, from
-    BODY_SKIP to BODY_SECONDS after string contact, at BODY_RATE."""
+    BODY_SKIP to `seconds` after string contact, at BODY_RATE."""
     from scipy import signal
     sr = result['sr']
     residual = result['layers'][i]['residual'].astype(float)
     sos = signal.butter(6, [BODY_LOW, BODY_TOP], 'bandpass', fs=sr, output='sos')
     y = signal.sosfiltfilt(sos, residual, axis=0)
-    y = y[int((contact + BODY_SKIP) * sr):int((contact + BODY_SECONDS) * sr)]
+    y = y[int((contact + BODY_SKIP) * sr):int((contact + seconds) * sr)]
     return signal.resample_poly(y, BODY_RATE, sr, axis=0)
 
 
-def body_modes(results, contacts):
-    """The shared modes (Hz) and their decay rates (1/s).
+def body_late(path, hz, top, contact):
+    """A take's ring per mode after its first stage: the +-3 Hz envelope power
+    (dB, channels' mean) every 10 ms over BODY_LATE from string contact
+    (`contact`, s into the take), as times and modes x frames, and each mode's
+    floor, its band's power over the take's quietest second before the
+    library's fade-out, as the benchmark reads a band's floor, on the
+    envelope's scale (twice the band's mean square). Under 0.8 f1 the take
+    holds none of its note's partials, so it is the residual there, and runs
+    on past the residual's end."""
+    import numpy as np
+    from scipy import signal
+    import piano_analysis as pa
+    sr, x = pa.load(path)
+    duration = len(x) / sr
+    end = duration - max(1.0, .25 * duration) if duration > 8 else duration - 1.0
+    sos = signal.butter(6, [BODY_LOW, BODY_TOP], 'bandpass', fs=sr, output='sos')
+    y = signal.resample_poly(signal.sosfiltfilt(sos, x[:max(sr, int(end * sr))], axis=0), BODY_RATE, sr, axis=0)
+    y = signal.sosfiltfilt(signal.butter(6, [BODY_LOW, top], 'bandpass', fs=BODY_RATE, output='sos'), y, axis=0)
+    frames = np.arange(int((contact + BODY_LATE[0]) * BODY_RATE), min(len(y), int((contact + BODY_LATE[1]) * BODY_RATE)),
+                       BODY_RATE // 100)
+    floors, late = [], []
+    for fm in hz:
+        band = signal.butter(2, [max(BODY_LOW, fm - 3), fm + 3], 'bandpass', fs=BODY_RATE, output='sos')
+        z = signal.sosfiltfilt(band, y, axis=0)
+        total = np.cumsum(np.r_[0.0, 2 * np.mean(z ** 2, axis=1)])
+        floors.append(10 * np.log10(max(float(np.min((total[BODY_RATE:] - total[:-BODY_RATE])[::200])) / BODY_RATE,
+                                        1e-30)))
+        late.append(10 * np.log10(np.mean(np.abs(signal.hilbert(z, axis=0)) ** 2, axis=1)[frames] + 1e-30))
+    return frames / BODY_RATE - contact, np.array(late), np.array(floors)
+
+
+def body_modes(results, contacts, wav):
+    """The shared modes (Hz) and the decay rates (1/s) of their two stages.
 
     Every anchor whose fundamental lies above 375 Hz contributes its layers
     below 0.8 f1, where no partial sounds. Modes are the peaks (2 dB
-    prominence, 3.5 Hz apart) of the mean of those spectra, each normalised
-    over its band, away from the mains lines; each mode's decay is the
-    energy-weighted median slope of its +-3 Hz envelope from 35 to 400 ms
-    over the layers whose band holds it.
+    prominence, 3.5 Hz apart) of the mean of those spectra to BODY_SECONDS,
+    each normalised over its band, away from the mains lines. A mode's second
+    stage is a Theil-Sen line through its +-3 Hz envelope every 10 ms from
+    BODY_LATE in the take (body_late), over the frames standing 6 dB over
+    its floor, as the benchmark reads a late decay (10 dB left most of the
+    grand's modes from 200 to 400 Hz unmeasured, which then fell 10 to 25 dB
+    under its recordings from 0.4 to 1.5 s), in each layer where thirty
+    frames do, the line falls 6 dB or
+    more across them (a +-3 Hz band's envelope swings about 3 dB from frame
+    to frame, and a mains line or the room's rumble near a mode, which stands
+    there as long as the take, had passed for rings falling 0.4 to 3 dB/s),
+    is slower than the first stage and starts 3 dB or more under it; the first
+    is the slope of the envelope from 35 to 400 ms, less the second's power
+    where a layer measures one. Each stage's decay is the energy-weighted
+    median over the layers whose band holds the mode (that measure the stage,
+    for the second, which a mode keeps where six layers measure it; NaN
+    elsewhere).
     """
     import numpy as np
     from scipy import signal, stats
@@ -862,11 +912,13 @@ def body_modes(results, contacts):
             continue
         sos = signal.butter(6, [BODY_LOW, top], 'bandpass', fs=BODY_RATE, output='sos')
         for i in range(len(result['layers'])):
-            signals.append((signal.sosfiltfilt(sos, body_signal(result, i, contact[i]), axis=0), top))
-    n = min(len(y) for y, _ in signals)
+            signals.append((signal.sosfiltfilt(sos, body_signal(result, i, contact[i], BODY_SECONDS), axis=0), top,
+                            signal.sosfiltfilt(sos, body_signal(result, i, contact[i]), axis=0),
+                            (wav / f'{result["cases"][i]}.wav', result['layers'][i]['start'] / result['sr'] + contact[i])))
+    n = min(len(y) for y, *_ in signals)
     f = np.fft.rfftfreq(8 * n, 1 / BODY_RATE)
     total, count = np.zeros(len(f)), np.zeros(len(f))
-    for y, top in signals:
+    for y, top, *_ in signals:
         power = np.sum(np.abs(np.fft.rfft(y[:n] * np.hanning(n)[:, None], 8 * n, axis=0)) ** 2, axis=1)
         band = (f > BODY_LOW) & (f < top)
         total[band] += power[band] / power[band].mean()
@@ -876,52 +928,89 @@ def body_modes(results, contacts):
     peaks, _ = signal.find_peaks(level, prominence=2.0, distance=int(3.5 / (f[1] - f[0])))
     hz = f[band][peaks]
     hz = hz[np.min(np.abs(hz[:, None] - np.array(BODY_HUM)[None]), axis=1) > 1.5]
-    t = np.arange(n) / BODY_RATE + BODY_SKIP
-    late = (t >= .035) & (t <= .4)
+    lates = [body_late(path, hz, top, at) for _, top, _, (path, at) in signals]
+    m = min(len(y) for _, _, y, _ in signals)
+    t = np.arange(m) / BODY_RATE + BODY_SKIP
+    early = (t >= .035) & (t <= .4)
+
+    def weighted_median(values, weights):
+        order = np.argsort(values)
+        cumulative = np.cumsum(np.array(weights)[order]) / np.sum(weights)
+        return float(np.array(values)[order][np.searchsorted(cumulative, .5)])
     modes = []
-    for fm in hz:
+    for k, fm in enumerate(hz):
         sos = signal.butter(2, [max(BODY_LOW, fm - 3), fm + 3], 'bandpass', fs=BODY_RATE, output='sos')
-        slopes, weights = [], []
-        for y, top in signals:
+        slopes, weights, seconds, held_weights = [], [], [], []
+        for (_, top, y, _), (lt, late, floor) in zip(signals, lates):
             if fm > .95 * top:
                 continue
-            env = np.sum(np.abs(signal.hilbert(signal.sosfiltfilt(sos, y[:n], axis=0), axis=0)) ** 2, axis=1)
-            slopes.append(stats.theilslopes(10 * np.log10(env[late][::8] + 1e-30), t[late][::8])[0])
-            weights.append(env[late].mean())
+            env = np.mean(np.abs(signal.hilbert(signal.sosfiltfilt(sos, y[:m], axis=0), axis=0)) ** 2, axis=1)
+            db = 10 * np.log10(env + 1e-30)
+            first, intercept, _, _ = stats.theilslopes(db[early][::8], t[early][::8])
+            held = late[k] > floor[k] + 6
+            if held.sum() >= 30:
+                second, start, _, _ = stats.theilslopes(late[k][held], lt[held])
+                rest = env - 10 ** ((start + second * t) / 10)
+                kept = early & (rest > .1 * env)
+                if (second * np.ptp(lt[held]) <= -6 and second > first and start < intercept - 3
+                        and kept[::8].sum() >= 20):
+                    first = stats.theilslopes(10 * np.log10(rest[kept][::8]), t[kept][::8])[0]
+                    seconds.append(second)
+                    held_weights.append(np.mean(10 ** (late[k][held] / 10)))
+            slopes.append(first)
+            weights.append(env[early].mean())
         if len(slopes) < 6:
             continue
-        order = np.argsort(slopes)
-        cumulative = np.cumsum(np.array(weights)[order]) / np.sum(weights)
-        modes.append((float(fm), max(.5, -float(np.array(slopes)[order][np.searchsorted(cumulative, .5)]) / 8.686)))
-    return np.array([m[0] for m in modes]), np.array([m[1] for m in modes])
+        slow = (max(.05, -weighted_median(seconds, held_weights) / 8.686) if len(seconds) >= 6 else np.nan)
+        modes.append((float(fm), max(.5, -weighted_median(slopes, weights) / 8.686), slow))
+    return np.array([m[0] for m in modes]), np.array([m[1] for m in modes]), np.array([m[2] for m in modes])
 
 
-def body_amplitudes(result, contact, hz, rates, ridge=1e-3):
+def body_amplitudes(result, contact, hz, rates, slow_rates, ridge=1e-3):
     """Each layer's complex amplitude per mode and channel at string contact
-    (layers x modes x channels), by least squares with the modes fixed; NaN
-    for modes within 4 Hz of one of the anchor's partials, whose misfit would
-    pass for them. Also each layer's fraction of the band's energy explained."""
+    (layers x modes x channels) for each of the ring's two stages, by least
+    squares with the modes fixed: the second stage first, from BODY_LATE to
+    BODY_TAIL, where the first has fallen about 30 dB or more, then the first, from
+    BODY_SKIP to BODY_TAIL, on what the second leaves. Fitted together, the
+    two stages of a mode, alike early, traded amplitude: the grand's 400 Hz to
+    1 kHz rang 8 to 10 dB over its recordings from 0.4 to 1 s. NaN for modes
+    within 4 Hz of one of the anchor's partials, whose misfit would pass for
+    them, and the second stage 0 where a mode has none. Also each layer's
+    fraction of the band's energy explained."""
     import math
     import numpy as np
     usable = np.min(np.abs(hz[:, None] - np.asarray(result['freqs'])[None]), axis=1) > 4.0
-    f, rate = hz[usable], rates[usable]
-    out, explained = [], []
+    staged = usable & np.isfinite(slow_rates)
+    f, rate, g, slow = hz[usable], rates[usable], hz[staged], slow_rates[staged]
+
+    def solve(A, y):
+        gram = A.T @ A
+        return np.linalg.solve(gram + ridge * np.trace(gram) / len(gram) * np.eye(len(gram)), A.T @ y)
+    out, outs, explained = [], [], []
     for i in range(len(result['layers'])):
         y = body_signal(result, i, contact[i])
         t = BODY_SKIP + np.arange(len(y)) / BODY_RATE
-        decay, phase = np.exp(-np.outer(t, rate)), 2 * math.pi * np.outer(t, f)
         hum = 2 * math.pi * np.outer(t, BODY_HUM)
+        decay, turn = np.exp(-np.outer(t, slow)), 2 * math.pi * np.outer(t, g)
+        S = np.hstack([decay * np.cos(turn), decay * np.sin(turn)])
+        late = t >= BODY_LATE[0]
+        c = solve(np.hstack([S, np.cos(hum), np.sin(hum)])[late], y[late])[:2 * len(g)]
+        rest = y - S @ c
+        decay, phase = np.exp(-np.outer(t, rate)), 2 * math.pi * np.outer(t, f)
         A = np.hstack([decay * np.cos(phase), decay * np.sin(phase), np.cos(hum), np.sin(hum)])
-        gram = A.T @ A
-        c = np.linalg.solve(gram + ridge * np.trace(gram) / len(gram) * np.eye(len(gram)), A.T @ y)
+        d = solve(A, rest)
         z = np.full((len(hz), 2), np.nan + 0j)
-        z[usable] = c[:len(f)] - 1j * c[len(f):2 * len(f)]      # Re(z e^(i w t)) = a cos - b sin
+        z[usable] = d[:len(f)] - 1j * d[len(f):2 * len(f)]      # Re(z e^(i w t)) = a cos - b sin
+        zs = np.full((len(hz), 2), np.nan + 0j)
+        zs[usable] = 0
+        zs[staged] = c[:len(g)] - 1j * c[len(g):]
         out.append(z)
-        explained.append(float(1 - np.sum((y - A @ c) ** 2) / np.sum(y ** 2)))
-    return np.array(out), np.array(explained)
+        outs.append(zs)
+        explained.append(float(1 - np.sum((rest - A @ d) ** 2) / np.sum(y ** 2)))
+    return np.array(out), np.array(outs), np.array(explained)
 
 
-def body_rise(result, contact, hz, rates, amplitudes, seconds=.03):
+def body_rise(result, contact, hz, rates, slow_rates, amplitudes, slow_amplitudes, seconds=.03):
     """Each layer's body onset rise (s): the rise 1 - e^(-t/rise) under which
     the fitted modes' power below 0.8 f1 best builds up as the residual's
     does, from 2 ms before contact to `seconds` after, in dB at 0.25 ms steps
@@ -950,6 +1039,9 @@ def body_rise(result, contact, hz, rates, amplitudes, seconds=.03):
         known = np.all(np.isfinite(amplitudes[i]), axis=1)
         z = np.exp(np.outer(tau, -rates[known] + 2j * math.pi * hz[known])) * (t >= contact[i])[:, None]
         model = np.real(z @ amplitudes[i][known])
+        staged = known & np.isfinite(slow_rates)
+        z = np.exp(np.outer(tau, -slow_rates[staged] + 2j * math.pi * hz[staged])) * (t >= contact[i])[:, None]
+        model += np.real(z @ slow_amplitudes[i][staged])
         recorded = power(x)
         floor = float(recorded.max()) * 1e-5
         if len(pre) >= int(.01 * sr):
@@ -962,8 +1054,10 @@ def body_rise(result, contact, hz, rates, amplitudes, seconds=.03):
     return rises
 
 
-def body_data(results, datas, grid, layer_level):
+def body_data(results, datas, grid, layer_level, wav):
     """The body bank and each anchor's excitation of it (see BODY_LOW).
+    Each stage of a mode's ring is knocked the same way, both heard through
+    the mode's one pickup; a mode without a second stage plays it silent.
 
     A knock's level (dB) is a line in the level its layer plays at
     (`layer_level` over the velocities `grid`, 0 dB at the loudest), weighted
@@ -981,11 +1075,12 @@ def body_data(results, datas, grid, layer_level):
     import numpy as np
     contacts = [np.array([L['delay'] for L in r['layers']]) - np.array(d['layer_shift_ms']) / 1000
                 for r, d in zip(results, datas)]
-    hz, rates = body_modes(results, contacts)
-    amplitudes, explained = zip(*(body_amplitudes(r, c, hz, rates) for r, c in zip(results, contacts)))
+    hz, rates, slow_rates = body_modes(results, contacts, wav)
+    amplitudes, slow_amplitudes, explained = zip(*(body_amplitudes(r, c, hz, rates, slow_rates)
+                                                   for r, c in zip(results, contacts)))
     # The body's rise, where its band below the fundamental is clear.
-    rises = {r['note']: body_rise(r, c, hz, rates, a) for r, c, a in zip(results, contacts, amplitudes)
-             if .8 * r['f1'] >= 300}
+    rises = {r['note']: body_rise(r, c, hz, rates, slow_rates, a, s)
+             for r, c, a, s in zip(results, contacts, amplitudes, slow_amplitudes) if .8 * r['f1'] >= 300}
     # One pickup per mode: the dominant stereo shape over every layer of every key.
     shapes, kept = [], []
     for m in range(len(hz)):
@@ -995,8 +1090,16 @@ def body_data(results, datas, grid, layer_level):
         shape = u[:, 0] * np.exp(-1j * np.angle(u[0, 0])) * math.sqrt(2)
         shapes.append(shape)
         kept.append(float(s[0] ** 2 / np.sum(s ** 2)))
+    def line(level, x):
+        db = 20 * np.log10(np.abs(level) + 1e-12)
+        root = np.sqrt(np.abs(level))                                 # rows weighted by amplitude
+        intercept, slope = np.linalg.lstsq(np.c_[np.ones_like(x), x] * root[:, None], db * root, rcond=None)[0]
+        # One phase, the louder layers' (theirs stands clearest of the noise).
+        weight = np.abs(level) ** 2
+        resultant = np.sum(level / np.maximum(np.abs(level), 1e-30) * weight)
+        return float(intercept), float(slope), float(np.angle(resultant)), float(np.abs(resultant) / np.sum(weight))
     anchors = []
-    for r, a in zip(results, amplitudes):
+    for r, a, b in zip(results, amplitudes, slow_amplitudes):
         x = np.interp([L['velocity'] for L in r['layers']], grid, layer_level)
         knocks = []
         for m, shape in enumerate(shapes):
@@ -1004,15 +1107,13 @@ def body_data(results, datas, grid, layer_level):
             if not np.all(np.isfinite(level)):
                 knocks.append(None)
                 continue
-            db = 20 * np.log10(np.abs(level) + 1e-12)
-            root = np.sqrt(np.abs(level))                             # rows weighted by amplitude
-            intercept, slope = np.linalg.lstsq(np.c_[np.ones_like(x), x] * root[:, None], db * root, rcond=None)[0]
-            # One phase, the louder layers' (theirs stands clearest of the noise).
-            weight = np.abs(level) ** 2
-            resultant = np.sum(level / np.maximum(np.abs(level), 1e-30) * weight)
-            knocks.append({'level_db': float(intercept), 'slope_db': float(slope),
-                           'phase': float(np.angle(resultant)),
-                           'coherence': float(np.abs(resultant) / np.sum(weight))})
+            intercept, slope, phase, coherence = line(level, x)
+            knock = {'level_db': float(intercept), 'slope_db': float(slope), 'phase': phase, 'coherence': coherence,
+                     'slow_level_db': -200.0, 'slow_slope_db': 0.0, 'slow_phase': 0.0}
+            if np.isfinite(slow_rates[m]):
+                intercept, slope, phase, _ = line(np.conj(shape) @ b[:, m].T / 2, x)
+                knock.update({'slow_level_db': intercept, 'slow_slope_db': slope, 'slow_phase': phase})
+            knocks.append(knock)
         anchors.append(knocks)
     # Modes a key's partials hide take the nearest measured keys' levels.
     notes = np.array([r['note'] for r in results], float)
@@ -1023,9 +1124,11 @@ def body_data(results, datas, grid, layer_level):
                 continue
             near = min(known, key=lambda j: abs(notes[j] - notes[k]))
             values = {key: float(np.interp(notes[k], notes[known], [anchors[j][m][key] for j in known]))
-                      for key in ('level_db', 'slope_db')}
-            knocks[m] = values | {'phase': anchors[near][m]['phase'], 'coherence': 0.0, 'filled': True}
-    return {'hz': hz, 'rates': rates, 'shapes': shapes, 'pickup_explained': kept, 'anchors': anchors,
+                      for key in ('level_db', 'slope_db', 'slow_level_db', 'slow_slope_db')}
+            knocks[m] = values | {'phase': anchors[near][m]['phase'], 'slow_phase': anchors[near][m]['slow_phase'],
+                                  'coherence': 0.0, 'filled': True}
+    return {'hz': hz, 'rates': rates, 'slow_rates': slow_rates, 'shapes': shapes, 'pickup_explained': kept,
+            'anchors': anchors,
             'explained': [list(e) for e in explained], 'layer_rises': rises,
             'rise': float(np.median([r for layer in rises.values() for r in layer]))}
 
@@ -1526,6 +1629,7 @@ def wrap(text, width=76):
 def header(model, grid, layer_level, anchors, halo, body, noise, action, damper):
     """The model's generated header: its data in the types of MeasuredTypes.h,
     in namespace keyra::measured::<name>."""
+    import math
     name = next(key for key, m in MODELS.items() if m is model)
     rows, total = len(anchors), sum(len(a['partials']) for a in anchors)
     modes, bands, strings = len(body['hz']), len(noise['hz']), len(halo['keys'])
@@ -1594,13 +1698,14 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
               f'constexpr float haloPromptRate={number(halo["prompt_rate"])};']
     lines += table('float', 'haloLevels', strings, [[number(x) for x in levels] for levels in halo['levels']])
     lines += [f'constexpr std::array<BodyMode,{modes}> bodyModes{{{{']
-    lines += ['  {' + ','.join(number(x) for x in (f, r, u[0].real, u[1].real, u[1].imag)) + '},'
-              for f, r, u in zip(body['hz'], body['rates'], body['shapes'])]
+    lines += ['  {' + ','.join(number(x) for x in (f, r, s if math.isfinite(s) else r, u[0].real, u[1].real, u[1].imag))
+              + '},' for f, r, s, u in zip(body['hz'], body['rates'], body['slow_rates'], body['shapes'])]
     lines += ['}};',
               '// The rise 1 - e^(-t/rise) (seconds) of the body\'s ring, measured from the',
               '// treble recordings\' onsets.',
               f'constexpr float bodyRise={number(body["rise"])};']
-    lines += table('Knock', 'knocks', modes, [['{' + ','.join(number(k[key]) for key in ('level_db', 'slope_db', 'phase')) + '}'
+    lines += table('Knock', 'knocks', modes, [['{' + ','.join(number(k[key]) for key in (
+                                         'level_db', 'slope_db', 'phase', 'slow_level_db', 'slow_slope_db', 'slow_phase')) + '}'
                                      for k in knocks] for knocks in body['anchors']])
     lines += wrap(model['actions'] + ' Each knock\'s level and phase per mode, and the rise '
                   '1 - e^(-t/rise) (seconds) the knocks share.')
@@ -1671,7 +1776,7 @@ def generate(model):
     layer_level = np.median(levels - levels[:, -1:], axis=0)
     if np.any(np.diff(layer_level) <= 0):
         raise SystemExit(f'the layers\' median levels do not rise with velocity: {np.round(layer_level, 2)}')
-    body = body_data(results, anchors, grid, layer_level)
+    body = body_data(results, anchors, grid, layer_level, model['wav'])
     for record, explained, knocks in zip(records, body['explained'], body['anchors']):
         record.update({'body_explained': [round(e, 3) for e in explained],
                        'body_modes_hidden': sum(1 for k in knocks if k.get('filled')),
@@ -1726,7 +1831,8 @@ def generate(model):
                   '(10 dB over the median 16 to 60 Hz either side), each string\'s level censored where the noise '
                   'hid it and drawn towards the strings\' median by ten layers\' worth of windows. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
-                  'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
+                  'one stereo pickup and a ring falling in two stages, the second\'s decay measured 0.4 to 1.5 s '
+                  'after contact and its level 0.4 to 0.95 s; per anchor, mode and stage a complex excitation at string contact whose dB level is '
                   'linear in the level its layer plays at, modes hidden by an anchor\'s partials taken from its neighbours. The '
                   'action\'s knocks on the same modes (each anchor\'s key release'
                   + (', the sustain pedal down and up' if model['pedal'] else '') + '; one train take each, in those files\' own scale) fitted from their onsets under one shared '
@@ -1753,6 +1859,8 @@ def generate(model):
                  'slope_db_per_layer_db': round(halo['slope'], 3), 'slope_rise_per_octave': round(halo['rise'], 3), 'prompt_rate': round(halo['prompt_rate'], 3)},
         'body': {'modes': len(body['hz']), 'hz': [round(float(f), 2) for f in body['hz']],
                  't60_seconds': [round(6.907755 / float(r), 3) for r in body['rates']],
+                 'second_stage_t60_seconds': [round(6.907755 / float(r), 3) if np.isfinite(r) else None
+                                              for r in body['slow_rates']],
                  'pickup_explained': [round(k, 3) for k in body['pickup_explained']],
                  'rise_ms': round(1000 * body['rise'], 3),
                  'layer_rise_ms': {str(note): [round(1000 * r, 3) for r in rises]

@@ -410,12 +410,13 @@ struct Engine::Impl {
   std::array<double,88> openness{};
   std::array<double,sineSize+1> sine{};
   std::array<V4,chunk> mixLeft{},mixRight{};
-  // The body rings in `ring`. `onset` holds the same modes decaying faster by
-  // the measured body rise; each strike adds its knock to the one and takes
-  // it from the other, so their sum starts from zero. The action's knocks
-  // (keys let go, the sustain pedal) build up more slowly, by the action's
-  // rise in `actionOnset`.
-  Body ring{},onset{},actionOnset{};
+  // The body rings in `ring`, and the slower second stage of each mode's ring
+  // in `lateRing`. `onset` holds the same modes decaying faster by the
+  // measured body rise; each strike adds its knock to the two rings and takes
+  // both from it, so their sum starts from zero. The action's knocks (keys
+  // let go, the sustain pedal) build up more slowly, by the action's rise in
+  // `actionOnset`, and ring in `ring` only, as they were measured.
+  Body ring{},lateRing{},onset{},actionOnset{};
   bool ringing=false,rising=false,actionRising=false;
   std::array<Burst,maxBursts> bursts{};
   std::array<NoiseBand,noiseBands> noise{};
@@ -497,16 +498,17 @@ struct Engine::Impl {
       prompt.c=string.c;prompt.s=string.s;prompt.decay=std::exp(-model->haloPromptRate/sampleRate);}
   }
   void prepareBody() noexcept {
-    // Each bank's decay per sample beyond the ring's.
+    // Each bank's decay per sample beyond the ring's; the late ring's is its own.
     const double settle[3]={1,std::exp(-1/(model->bodyRise*sampleRate)),std::exp(-1/(model->actionRise*sampleRate))};
     for(int m=0;m<bodyBanks*lanes;++m){
       const int k=m/lanes,j=m%lanes;
       const bool real=m<model->bodyModeCount;const auto& mode=model->bodyModes[real?m:0];
       const double d=real?std::exp(-mode.rate/sampleRate):0,w=2*pi*mode.hz/sampleRate;
-      const Complex step{d*std::cos(w),d*std::sin(w)};
-      BodyBank* banks[3]={&ring[k],&onset[k],&actionOnset[k]};
-      for(int b=0;b<3;++b){auto* bank=banks[b];
-        const Complex s=b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
+      const double e=real?std::exp(-mode.slowRate/sampleRate):0;
+      const Complex step{d*std::cos(w),d*std::sin(w)},lateStep{e*std::cos(w),e*std::sin(w)};
+      BodyBank* banks[4]={&ring[k],&onset[k],&actionOnset[k],&lateRing[k]};
+      for(int b=0;b<4;++b){auto* bank=banks[b];
+        const Complex s=b==3?lateStep:b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
         bank->step[j]=s;bank->leap[j]=power(s,chunk);
         setLane(bank->c,j,static_cast<float>(s.re));setLane(bank->s,j,static_cast<float>(s.im));
         setLane(bank->left,j,real?mode.left:0.f);
@@ -618,7 +620,7 @@ struct Engine::Impl {
     }
   }
   void silenceBody() noexcept {
-    Body* bodies[3]={&ring,&onset,&actionOnset};
+    Body* bodies[4]={&ring,&lateRing,&onset,&actionOnset};
     for(auto* body:bodies)for(auto& bank:*body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
     ringing=rising=actionRising=false;
   }
@@ -676,7 +678,7 @@ struct Engine::Impl {
     mute+=controlSmooth*(parameters.mute-mute);
     for(auto& channel:channels)
       channel.smoothedMute+=controlSmooth*(std::max(parameters.mute,channel.mute)-channel.smoothedMute);
-    if(ringing)ringing=advance(ring);
+    if(ringing){const bool early=advance(ring),late=advance(lateRing);ringing=early||late;}
     if(rising)rising=advance(onset);
     if(actionRising)actionRising=advance(actionOnset);
     if(hissing)advanceNoise();
@@ -784,7 +786,11 @@ struct Engine::Impl {
       const double level=mix(x.levelDb,y.levelDb,t)+mix(x.slopeDb,y.slopeDb,t)*layerDb;
       const double amplitude=std::pow(10.,level/20)*softGain,phase=t<.5?x.phase:y.phase;
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
-      knock(ring[k/lanes],k%lanes,g,ahead);knock(onset[k/lanes],k%lanes,{-g.re,-g.im},ahead);
+      const double lateLevel=mix(x.slowLevelDb,y.slowLevelDb,t)+mix(x.slowSlopeDb,y.slowSlopeDb,t)*layerDb;
+      const double late=std::pow(10.,lateLevel/20)*softGain,latePhase=t<.5?x.slowPhase:y.slowPhase;
+      const Complex h{late*std::cos(latePhase),late*std::sin(latePhase)};
+      knock(ring[k/lanes],k%lanes,g,ahead);knock(lateRing[k/lanes],k%lanes,h,ahead);
+      knock(onset[k/lanes],k%lanes,{-g.re-h.re,-g.im-h.im},ahead);
     }
     ringing=rising=true;
     // The undamped strings: the strike sets every one ringing but its own
@@ -1027,7 +1033,7 @@ struct Engine::Impl {
           }
         partial.re=re;partial.im=im;
       }
-    if(ringing)ringBody(ring,frames);
+    if(ringing){ringBody(ring,frames);ringBody(lateRing,frames);}
     if(rising)ringBody(onset,frames);
     if(actionRising)ringBody(actionOnset,frames);
     const bool noisy=hissing;

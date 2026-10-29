@@ -1019,3 +1019,69 @@ Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered treble passage on both pianos, the shipping
 engine against this fit, went to the owner level-matched with its key, and no
 verdict yet.
+
+## 2026-10-29 — the body's modes ring in two stages
+
+Asked for a grand that sounds full across the spectrum, the per-mode
+comparison of the train and dev renders from C4 up with their recordings
+(each take gained as the benchmark does, each mode's ±3 Hz envelope wherever
+the recording stands 6 dB over its floor) found the body falling away after
+the first 0.4 s: from 0.4 to 0.7 s the grand's regions from 25 Hz to 1 kHz
+sat 5 to 13 dB under the recordings, from 0.7 to 1.5 s 17 to 35 dB under,
+and the upright's 7 to 34 dB. The recordings' modes fall at 50 to 90 dB/s
+over the first 0.4 s and then at 9 to 26 dB/s; the fit drew one line through
+35 to 400 ms, which the engine played on at 50 to 70 dB/s. Room reverberation
+is too short to hold a 9 dB/s ring; the frame and the board's low-loss modes,
+which no damper touches, are a plausible source.
+
+Each mode now has a second stage. Through the raw take's ±3 Hz envelope
+every 10 ms from 0.4 to 1.5 s, the frames 6 dB over the take's quietest
+second give a line; a layer counts it where 30 or more frames hold, it falls
+6 dB or more across them, is slower than the first and starts 3 dB or more
+under it, and the first is refitted on what the second leaves of the frames
+from 35 to 400 ms. A mode takes the energy-weighted median of six or more
+layers' second rates, else none. Each anchor's knock on each stage is a line
+in its layers' level as before; the second stage's amplitudes are fitted on
+the residual after 0.4 s, the first's on what they leave. The engine plays a
+second bank on the same modes at the slower rate, knocked with the first;
+the onset bank cancels both at contact, and the action's knocks ring only the
+first. The grand measures a second stage on 86 of its 91 modes, a median 13
+to 22 dB/s by region; the upright on 88 of 89, 10 to 30 dB/s.
+
+Rejected on the way: a window of 0.4 to 0.95 s measured hum and rumble as
+0.4 dB/s rings; one of 0.4 to 3 s left 56 of the grand's 91 modes without a
+second stage; frames 10 dB over the floor left most of its modes from 200 to
+400 Hz unmeasured, still 10 to 25 dB under the recordings; fitting both
+stages' amplitudes jointly traded one against the other, so the grand's
+400 Hz to 1 kHz rang 8 to 10 dB over the recordings from 0.4 to 1 s.
+
+Now the grand's train takes sit 1.6 to 4.1 dB under the recordings from 0.4
+to 0.7 s, 2.5 to 6.7 dB from 0.7 to 1 s and 3.7 to 11.4 dB from 1 to 1.5 s
+(200 to 400 Hz the furthest), the never-fitted dev takes alike; before 0.4 s
+the regions move by 1.2 dB or less. The upright's train takes are within
+about 3 dB to 1.5 s, except 700 Hz to 1 kHz from 1 to 1.5 s (5.8 dB under;
+dev 10.2 dB). On the recording benchmark the grand's sustain spectrum sits
+0.31 dB closer to its train recordings and 0.27 dB to its dev ones (treble
+0.95 and 0.84 dB), its noise between partials 0.10 and 0.05 dB, its early
+spectrum 0.04 and 0.06 dB; its attack spectrum 0.06 and 0.02 dB further. The
+upright's sustain spectrum sits 0.45 and 0.38 dB closer (treble 0.97 and
+1.20 dB), its train noise 0.12 dB closer, its dev noise 0.26 dB further.
+
+Regressions, all listed
+([grand](validation/grand-body-tail-benchmark-2026-10-29.md),
+[upright](validation/upright-body-tail-benchmark-2026-10-29.md)): on the
+grand three rise times, F♯1 dev 1.8 to 5.3 ms, A4 train 3.0 to 5.6 ms and C2
+train 4.3 to 5.4 ms; on the upright six rise times (A1 train 21.9 to
+32.6 ms, C2 12.8 to 19.0, E5 7.6 to 11.6, G♯3 dev 14.3 to 15.8, C3 13.8 to
+15.1, A♯3 4.4 to 5.7), four noise scores 0.5 to 0.8 dB (G♯3 dev, C2, A1 and
+D3 train), F♯3's attack and early spectra 0.8 dB, the coherence of F♯6 and
+G7 (train) and C5 (dev) by 0.02 to 0.06, and the envelopes of G7 and F♯6 by 0.5 to
+0.7 dB. The rise times move in steps on single layers (the upright's C2 at
+velocity 15, 15.4 to 31.2 ms; the grand's A4 from velocity 101 up, 0.5 to
+8.2 ms): as the body's ripple near the onset's peak changes, the envelope's
+90 % crossing jumps from one ripple to another.
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A short lettered passage on both pianos, the shipping engine
+against this fit, went to the owner level-matched with its key, and no
+verdict yet.

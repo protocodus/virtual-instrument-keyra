@@ -51,7 +51,7 @@ musical passages through the same engine. Both are frozen evidence from
 - Every strike knocks a body of 91 measured soundboard and case modes and
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
-  not this ring, which dies within a second. The knock grows about decibel
+  not this ring. The knock grows about decibel
   for decibel with the level the strike's layer plays at, as the
   recordings' does: soft notes knocked the body 5 to 6 dB louder than
   theirs, and now about 1 dB, which brings the attack spectrum 0.1 dB
@@ -70,6 +70,15 @@ musical passages through the same engine. Both are frozen evidence from
   5 dB of them
   ([grand](Docs/validation/grand-board-ring-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-board-ring-benchmark-2026-10-29.md)).
+  The body's modes fall in two stages too: from 0.4 s after the strike each
+  rings on at its own slower rate, on the grand a median 13 to 22 dB/s by
+  region where one rate measured over the first 0.4 s played it at 70 to
+  100 dB/s. Under the notes from C4 up the body from 25 Hz to 1 kHz no
+  longer falls 5 to 35 dB under the recordings between 0.4 and 1.5 s but
+  stays within 2 to 11 dB of them, and the grand's sustain spectrum sits
+  0.3 dB closer to them (treble 0.9 dB)
+  ([grand](Docs/validation/grand-body-tail-benchmark-2026-10-29.md),
+  [upright](Docs/validation/upright-body-tail-benchmark-2026-10-29.md)).
 - Both pianos answer velocity alike, at the owner's request: a velocity asks
   for a level under the loudest recorded layer, halfway between a straight
   line and an S-curve, and plays the layer coordinate where that piano's
@@ -247,9 +256,11 @@ start at contact under the pitch's onset rise and share vectors four lanes to
 a slot, so a component costs a quarter of a partial.
 
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
-29 to 945 Hz, shared by every key, which rings for half a second to a second,
-with the level and phase measured for each recorded pitch; the knock grows
-about decibel for decibel with the level the strike's layer plays at.
+29 to 945 Hz, shared by every key, each ringing in two stages that add, a fast
+one over the first 0.4 s and then one about a fifth as fast, so the body
+lasts a second or two, with each stage's level and phase measured for each
+recorded pitch; the knock grows about decibel for decibel with the level the
+strike's layer plays at.
 Above the modes, the board's dense ring is band noise in 13 third-octave bands
 from 1 to 16 kHz, each a sixth-order band-pass so that the quiet top octaves
 keep their measured level: each strike starts its own burst with the density,
@@ -317,8 +328,15 @@ over the string's own line. One decay serves every string, fitted where they
 ring clear; each string's level counts the windows where the noise hides it as
 upper bounds and is drawn towards the strings' median by ten layers' worth of
 windows. The body modes are found below the treble's fundamentals, where no
-string sounds, and a pitch's knock on each is a line in the level of the layer
-that struck it, weighted by the knock's amplitude; the board noise is measured
+string sounds. Each mode's second stage is a line through its ±3 Hz envelope
+every 10 ms from 0.4 to 1.5 s after contact, in the frames that stand 6 dB
+over the take's quietest second; a layer counts where that line falls 6 dB or
+more, is the slower and starts 3 dB or more under the first, which is then
+refitted on what the second leaves of the frames from 35 to 400 ms, and a mode
+takes the energy-weighted median of six or more layers' rates. A pitch's knock
+on each stage is a line in the level of the layer that struck it, weighted by
+the knock's amplitude: the second stage's is fitted after 0.4 s first, the
+first's on what it leaves; the board noise is measured
 in the gaps between the partials the recordings show and, above the highest of
 them, across whole bands, as the benchmark measures it. In the bands below a
 note's fundamental, which hold other strings' tones but none of its own, a
@@ -520,11 +538,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.
-- Under the grand's notes from C6 up, the body's band from 400 to 800 Hz
-  falls away too soon: its modes' decays are measured from 35 to 400 ms
-  after contact, and the recordings' ring there slows after that, so from
-  0.5 to 0.8 s it sits 8 to 21 dB under them. In their first 50 ms the same
-  notes sit 2 to 8 dB under the recordings from 400 Hz to 2.5 kHz.
+- Under the notes from C4 up the body's modes still ring short of the
+  recordings late: from 0.7 to 1.5 s the grand's 200 to 400 Hz modes sit 7 to
+  11 dB under its train takes, and its other regions from 25 Hz to 1 kHz 4 to
+  9 dB under from 1 to 1.5 s; the upright's 700 Hz to 1 kHz sit 6 and 10 dB
+  under its train and dev takes there.
+  The body rings on after key-up; whether a real one stops sooner when the
+  dampers land is not measured. In their first 50 ms the notes from C6 up sit
+  2 to 8 dB under the recordings from 400 Hz to 2.5 kHz.
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
   measure the board noise in six to ten of the thirteen bands; those bands are
   interpolated between the nearest pitches that measured them.
