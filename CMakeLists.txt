@@ -42,7 +42,8 @@ set(KEYRA_CLAP_JUCE_EXTENSIONS_PATH "" CACHE PATH
 include(CTest)
 
 option(KEYRA_ENABLE_SANITIZERS "Instrument development builds with ASan and UBSan" OFF)
-option(KEYRA_BUILD_LIBFUZZER "Build KeyraDspFuzz as a Clang libFuzzer target" OFF)
+option(KEYRA_BUILD_FUZZER "Build KeyraDspFuzz as a Clang libFuzzer target" OFF)
+option(KEYRA_REQUIRE_PYTHON_TESTS "Fail to configure without the interpreter the Python checks need" OFF)
 if(KEYRA_ENABLE_SANITIZERS)
     if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
         message(FATAL_ERROR "KEYRA_ENABLE_SANITIZERS requires Clang or GCC")
@@ -236,7 +237,13 @@ if(KEYRA_BUILD_TOOLS)
 endif()
 
 if(BUILD_TESTING)
-    find_package(Python3 COMPONENTS Interpreter)
+    # CI requires the interpreter, so a missing one cannot silently register
+    # fewer tests.
+    if(KEYRA_REQUIRE_PYTHON_TESTS)
+        find_package(Python3 COMPONENTS Interpreter REQUIRED)
+    else()
+        find_package(Python3 COMPONENTS Interpreter)
+    endif()
 
     add_executable(KeyraEngineTests Tests/engine_tests.cpp)
     target_link_libraries(KeyraEngineTests PRIVATE KeyraDSP)
@@ -246,28 +253,35 @@ if(BUILD_TESTING)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.ParameterExtremes COMMAND KeyraParameterExtremesTests)
 
-    # U4 input fuzzing. With KEYRA_BUILD_LIBFUZZER (Clang) it is a libFuzzer
-    # target over coverage-instrumented DSP; otherwise FuzzHarness.h supplies
-    # a main that replays Tests/Fixtures/fuzz/ and then seeded inputs.
-    add_executable(KeyraDspFuzz Tests/DspFuzz.cpp)
-    target_include_directories(KeyraDspFuzz PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    if(KEYRA_BUILD_LIBFUZZER)
+    # U4/U8 input fuzzing, one harness built twice. KeyraDspFuzzReplay (any
+    # compiler, FuzzHarness.h's main) replays the fixed crashes committed in
+    # Tests/Fixtures/fuzz/ and then seeded inputs as a unit test;
+    # KeyraDspFuzz (KEYRA_BUILD_FUZZER, Clang) is the libFuzzer target over
+    # coverage-instrumented DSP.
+    add_executable(KeyraDspFuzzReplay Tests/DspFuzz.cpp)
+    target_include_directories(KeyraDspFuzzReplay PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_link_libraries(KeyraDspFuzzReplay PRIVATE KeyraDSP)
+    target_compile_definitions(KeyraDspFuzzReplay PRIVATE PROTOCODUS_FUZZ_MAIN)
+    file(GLOB KEYRA_FUZZ_REPRODUCERS CONFIGURE_DEPENDS
+         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/Fixtures/fuzz/*")
+    add_test(NAME Keyra.DspFuzzReplay
+             COMMAND KeyraDspFuzzReplay -seed=1 -runs=300 ${KEYRA_FUZZ_REPRODUCERS})
+    set_tests_properties(Keyra.DspFuzzReplay PROPERTIES TIMEOUT 600 LABELS unit)
+    if(KEYRA_BUILD_FUZZER)
         if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            message(FATAL_ERROR "KEYRA_BUILD_LIBFUZZER requires Clang")
+            message(FATAL_ERROR "KEYRA_BUILD_FUZZER requires Clang")
         endif()
-        target_sources(KeyraDspFuzz PRIVATE ${KEYRA_DSP_SOURCES})
+        add_executable(KeyraDspFuzz Tests/DspFuzz.cpp ${KEYRA_DSP_SOURCES})
+        target_include_directories(KeyraDspFuzz PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
         target_compile_options(KeyraDspFuzz PRIVATE
             -fsanitize=fuzzer,address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer)
         target_link_options(KeyraDspFuzz PRIVATE -fsanitize=fuzzer,address,undefined)
-    else()
-        target_link_libraries(KeyraDspFuzz PRIVATE KeyraDSP)
-        target_compile_definitions(KeyraDspFuzz PRIVATE PROTOCODUS_FUZZ_MAIN)
+        file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/fuzz-corpus")
+        add_test(NAME Keyra.DspFuzz
+                 COMMAND KeyraDspFuzz -seed=1 -max_total_time=120 -max_len=4096 -timeout=30 -rss_limit_mb=2048
+                         "${CMAKE_CURRENT_BINARY_DIR}/fuzz-corpus")
+        set_tests_properties(Keyra.DspFuzz PROPERTIES TIMEOUT 600 LABELS fuzz)
     endif()
-    file(GLOB KEYRA_FUZZ_REGRESSIONS CONFIGURE_DEPENDS
-         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/Fixtures/fuzz/*")
-    add_test(NAME Keyra.DspFuzz
-             COMMAND KeyraDspFuzz -seed=1 -runs=300 ${KEYRA_FUZZ_REGRESSIONS})
-    set_tests_properties(Keyra.DspFuzz PROPERTIES TIMEOUT 600 LABELS fuzz)
 
     if(Python3_Interpreter_FOUND)
         add_test(NAME Keyra.RecordingParityPaths
@@ -290,6 +304,14 @@ if(BUILD_TESTING)
         # out of the red (Tools/KeyraLevels.cpp).
         add_test(NAME Keyra.Levels COMMAND KeyraLevels --check --jobs 4)
         set_tests_properties(Keyra.Levels PROPERTIES TIMEOUT 900 LABELS audio)
+        # U7: the preset demos timed on one thread against the budget in
+        # Tools/RenderPresetDemos.cpp. Timing means nothing instrumented.
+        if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT KEYRA_ENABLE_SANITIZERS)
+            add_test(NAME Keyra.CpuBudget
+                     COMMAND RenderKeyraPresetDemos --cpu --json "${CMAKE_BINARY_DIR}/cpu.json"
+                             "${CMAKE_CURRENT_SOURCE_DIR}/Docs/audio/midi")
+            set_tests_properties(Keyra.CpuBudget PROPERTIES LABELS perf RUN_SERIAL TRUE TIMEOUT 1800)
+        endif()
     endif()
 
     if(KEYRA_BUILD_PLUGIN)

@@ -508,11 +508,17 @@ cmake -S . -B build-plugin -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
 cmake --build build-plugin --parallel && ctest --test-dir build-plugin --output-on-failure
 ```
 
-Every test carries one tier label, so `ctest -L unit`, `-L audio`, `-L render`
-or `-L fuzz` selects a tier. `KeyraDSPCxx17` compiles the engine as C++17,
-the Rack Extension toolchain's standard. `-DKEYRA_ENABLE_SANITIZERS=ON` builds
-everything under ASan and UBSan, and `-DKEYRA_BUILD_LIBFUZZER=ON` (Clang) makes
-`KeyraDspFuzz` a libFuzzer target.
+Every test carries one tier label, so `ctest -L unit`, `-L audio`, `-L render`,
+`-L fuzz` or `-L perf` selects a tier. `unit` includes `Keyra.DspFuzzReplay`,
+the fuzz harness replaying `Tests/Fixtures/fuzz/` and seeded inputs, and `perf`
+is `Keyra.CpuBudget`, the demos timed in a Release build; it fails only above a
+budget, which is unset until the CI runner's median is known.
+`KeyraDSPCxx17` compiles the engine as C++17, the Rack Extension toolchain's
+standard. `-DKEYRA_ENABLE_SANITIZERS=ON` builds everything under ASan and
+UBSan, and `-DKEYRA_BUILD_FUZZER=ON` (Clang) makes `KeyraDspFuzz` a libFuzzer
+target. `scripts/validate-plugins.sh build-plugin Keyra aumu Kyra Ptoc
+0x4b455952` runs pluginval, clap-validator and, on macOS, auval on a plug-in
+build.
 
 On macOS, `./scripts/build-macos.sh` drives the same build through Xcode as a
 universal binary and `./scripts/sign-and-package-macos.sh` packages it. On
@@ -521,8 +527,9 @@ package a `build-plugin` tree.
 
 Three workflows run in CI: `ci.yml` on every push to any branch (tiers per
 platform, sanitizers and the experiments), `main-build.yml` on every push to
-`main` and nightly (pluginval and auval, the collected download, and the
-committed screenshot, demos and README blocks), and `release.yml` on `v*` tags.
+`main` and nightly (pluginval, clap-validator and auval, the collected
+download, and the committed screenshot, demos and README blocks), and
+`release.yml` on `v*` tags.
 
 The research in `Experiments/` is configured on its own:
 `cmake -S Experiments -B Experiments/build`.

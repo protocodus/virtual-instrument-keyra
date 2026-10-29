@@ -172,15 +172,36 @@ it is the owner's step.
 ## Shared portfolio tools
 
 `Source/DSP/OutputStage.h`, `Tools/PresetDemoRenderer.h`,
-`Tools/update_readme_blocks.py`, `Tests/ParameterMatrix.h` and
-`Tests/FuzzHarness.h`, and the Documentation layout, A–Z listening tests and
-Demo songs sections above, are byte-identical copies of the portfolio masters
-in `reason-rack-extensions/Tools/portfolio/`. Change them there, never here.
+`Tools/update_readme_blocks.py`, `Tests/ParameterMatrix.h`,
+`Tests/FuzzHarness.h` and `scripts/validate-plugins.sh`, and the Documentation
+layout, A–Z listening tests, Demo songs and Testing sections, are
+byte-identical copies of the portfolio masters in
+`reason-rack-extensions/Tools/portfolio/`. Change them there, never here.
 Keyra's own parts are `Tools/RenderPresetDemos.cpp` (the demo voice),
 `Tools/write_preset_midi.py` (the phrases in `Docs/audio/midi/`),
 `Tests/ParameterMatrixTests.cpp` (the limits Keyra's design implies) and
 `Tools/KeyraLevels.cpp` (the playing level the engine's output scales are
 pinned to, on Reason's meter).
+
+## Testing
+
+Tests follow the portfolio testing standard (U1–U10); the `portfolio-testing`
+skill has the procedures. These hold in every session:
+
+- Every CTest test is `<Name>.<Suite>` with exactly one tier label: `unit`,
+  `audio`, `render`, `fuzz` or `perf`.
+- A test is never skipped, disabled, loosened or given a longer timeout to
+  get green. Diagnose a failure against the baseline first; when a fixture or
+  limit was wrong, fix it and say why beside it, in the same commit.
+- Checks run in Release builds: use the file's always-on helper, never a bare
+  `assert()`. Seeds, rates and block sizes are fixed.
+- No test outside the `perf` tier passes or fails on time, and `perf` never
+  runs in a Debug or sanitized build. CPU figures are development-machine
+  figures, never Reason or DAW CPU.
+- A fixed fuzz crash's input goes in `Tests/Fixtures/fuzz/`, which
+  `<Name>.DspFuzzReplay` replays in the `unit` tier.
+- A DSP change is done when the suites it touches, the `unit`, `audio` and
+  `perf` tiers and `<Name>DSPCxx17` pass.
 
 ## Build and verify
 
@@ -191,17 +212,16 @@ ctest --test-dir build-dsp -L unit --output-on-failure
 ```
 
 Use a separate `build-plugin` directory (`-DKEYRA_BUILD_PLUGIN=ON`, the
-default) for the processor, editor and packaging. Every test is
-`Keyra.<Suite>` with one tier label: `unit`, `audio` (`Keyra.AudioDemos`,
-every preset demo rendered twice), `render` (`Keyra.EditorRender`, the editor
-screenshot) or `fuzz` (`Keyra.DspFuzz`; `Keyra.ParameterMatrix` in the plug-in
-build). Select the suites that cover a change with `-R`, then run the full
-suite before a substantive DSP change is called done. A change under
-`Experiments/` runs that project's own suite.
-
-A test is never skipped, disabled or loosened to get green. Diagnose a failed
-contract against the baseline before changing a fixture, and document why an
-assumption was stale.
+default) for the processor, editor and packaging. Keyra's suites by tier:
+`unit` (including `Keyra.DspFuzzReplay`), `audio` (`Keyra.AudioDemos`, every
+preset demo rendered twice), `render` (`Keyra.EditorRender`, the editor
+screenshot), `fuzz` (`Keyra.DspFuzz` with `-DKEYRA_BUILD_FUZZER=ON` and Clang;
+`Keyra.ParameterMatrix` in the plug-in build, every case at one rate and block
+size, while the main build runs it in full across sixteen shards) and `perf`
+(`Keyra.CpuBudget`, Release builds without sanitizers). Select the suites that
+cover a change with `-R`. A change under `Experiments/` runs that project's own
+suite. `scripts/validate-plugins.sh build-plugin Keyra aumu Kyra Ptoc
+0x4b455952` runs the host validators on a plug-in build.
 
 ## Keyra specifics
 

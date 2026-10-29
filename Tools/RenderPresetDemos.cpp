@@ -59,6 +59,9 @@ int main (int argc, char** argv)
     instrument.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
     for (const auto& preset : keyra::factoryPresets)
         instrument.presets.push_back (preset.name);
+    // U7 perf budget: 0 reports without failing until the CI runner's median
+    // is measured.
+    instrument.cpuBudget = 0.0;
     instrument.open = [] (std::size_t preset, double sampleRate, int, std::uint32_t)
     {
         // The engine has no random source, so it takes no seed.
