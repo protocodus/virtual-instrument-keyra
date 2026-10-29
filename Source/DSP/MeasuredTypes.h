@@ -54,6 +54,11 @@ struct Damper { float shareDb, shareSlopeDb, logRate, logRateSlope; };
 struct NoiseBand { float hz, coherence; };
 // How a recorded pitch's strike excites a band: the decay rate (1/s), the
 // right-over-left level difference (dB) and per layer the noise density at
-// contact (dB re 1/Hz).
-struct Noise { float rate, balanceDb; std::array<float,maxLayers> densityDb; };
+// contact (dB re 1/Hz); then the ring's slower second stage, which the pitch
+// measures only under its fundamental: its decay rate and per layer its
+// density at contact (-200 dB where the pitch does not measure it).
+struct Noise {
+  float rate, balanceDb; std::array<float,maxLayers> densityDb;
+  float slowRate; std::array<float,maxLayers> slowDensityDb;
+};
 }} // namespace keyra::measured

@@ -334,8 +334,10 @@ int main(int argc,char** argv){
     // as the fit measures it, a band leaves out the frequencies within 1.5
     // main-lobe half-widths of them and counts where a quarter remains. With
     // a few frequencies left, one frame's reading swung by 4 dB, so a band is
-    // read at every bin through four half-overlapping frames, each brought
-    // back to the strike at the band's measured decay.
+    // read at every bin through four half-overlapping frames, against the
+    // measured density's mean over the same frames as both stages of the
+    // ring decay (frames were brought back to the strike at the band's one
+    // decay, which no longer holds where a second, slower stage takes over).
     namespace m=keyra::measured::grand;
     constexpr double pi=3.14159265358979323846,sr=48000;constexpr int n=2048,reference=4;
     const int anchor=static_cast<int>(m::anchors.size())-1,bandCount=static_cast<int>(m::noiseBands.size());
@@ -362,11 +364,10 @@ int main(int argc,char** argv){
         for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=sr/n,++all){
           bool clear=true;for(double hz:beside)clear=clear&&std::abs(f-hz)>3*sr/n;
           if(!clear)continue;
-          for(int frame=0;frame<frames;++frame){double first=0,later=0;
-            for(int i=0;i<n;++i){first+=w[i]*w[i]*std::exp(-2*bands[b].rate*i/sr);later+=w[i]*w[i]*std::exp(-2*bands[b].rate*(frame*hop+i)/sr);}
+          for(int frame=0;frame<frames;++frame)
             for(int c=0;c<2;++c){const Audio& x=c?right:left;double re=0,im=0;
               for(int i=0;i<n;++i){const double y=x[frame*hop+i]*w[i];re+=y*std::cos(2*pi*f*i/sr);im+=y*std::sin(2*pi*f*i/sr);}
-              bins[frame][c].push_back((re*re+im*im)*first/later);}}}
+              bins[frame][c].push_back(re*re+im*im);}}
         const std::size_t points=bins[0][0].size();
         if(points==0||4*static_cast<int>(points)<all)return std::numeric_limits<double>::quiet_NaN();
         const bool below=m::noiseBands[b].hz<a.f1;double sum=0;
@@ -374,11 +375,13 @@ int main(int argc,char** argv){
           if(below){std::nth_element(p.begin(),p.begin()+points/2,p.end());sum+=p[points/2]/std::log(2.);}
           else{for(double x:p)sum+=x/points;}}
         return 10*std::log10(sum/frames);};
-      // A band's density at the strike, its mean over the window as it decays,
-      // and both channels' share of it.
-      auto measuredDb=[&](int b){const auto& x=bands[b];double decay=0;
-        for(int i=0;i<n;++i)decay+=w[i]*w[i]*std::exp(-2*x.rate*i/sr);
-        return x.densityDb[layer]+10*std::log10(decay/w2)+10*std::log10(std::pow(10.,-x.balanceDb/20)+std::pow(10.,x.balanceDb/20));};
+      // A band's measured density, both stages, its mean over the frames as
+      // they decay, and both channels' share of it.
+      auto measuredDb=[&](int b){const auto& x=bands[b];double sum=0;
+        const double first=std::pow(10.,x.densityDb[layer]/10),second=std::pow(10.,x.slowDensityDb[layer]/10);
+        for(int frame=0;frame<frames;++frame)for(int i=0;i<n;++i){const double t=(frame*hop+i)/sr;
+          sum+=w[i]*w[i]*(first*std::exp(-2*x.rate*t)+second*std::exp(-2*x.slowRate*t));}
+        return 10*std::log10(sum/(frames*w2))+10*std::log10(std::pow(10.,-x.balanceDb/20)+std::pow(10.,x.balanceDb/20));};
       const double offset=rendered(reference)-measuredDb(reference);
       int compared=0;
       for(int b=0;b<bandCount;++b){

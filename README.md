@@ -63,6 +63,13 @@ musical passages through the same engine. Both are frozen evidence from
   octave no longer leaves a hiss ringing for seconds
   ([grand](Docs/validation/grand-treble-noise-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-treble-noise-benchmark-2026-10-29.md)).
+  There the ring falls in two stages, as the recordings' does: a fast one
+  over the first tenth of a second, then on the grand one of 40 to 57 dB/s,
+  so from C6 up the 1 to 2.5 kHz region under the fundamental no longer
+  drops 4 to 52 dB under the recordings within 0.8 s but stays within about
+  5 dB of them
+  ([grand](Docs/validation/grand-board-ring-benchmark-2026-10-29.md),
+  [upright](Docs/validation/upright-board-ring-benchmark-2026-10-29.md)).
 - Both pianos answer velocity alike, at the owner's request: a velocity asks
   for a level under the loudest recorded layer, halfway between a straight
   line and an S-curve, and plays the layer coordinate where that piano's
@@ -246,7 +253,9 @@ about decibel for decibel with the level the strike's layer plays at.
 Above the modes, the board's dense ring is band noise in 13 third-octave bands
 from 1 to 16 kHz, each a sixth-order band-pass so that the quiet top octaves
 keep their measured level: each strike starts its own burst with the density,
-decay and left/right balance measured for its pitch. A shared bank of 88 open-string
+decay and left/right balance measured for its pitch. Under a treble note's
+fundamental the burst falls in two stages that add in power, the second
+slower and quieter. A shared bank of 88 open-string
 resonators supplies the sympathetic response the Resonance control sets. Its
 top twenty are the undamped strings from F6 up, which every strike sets
 ringing whatever that control: each but the struck key's own, at the level the
@@ -313,7 +322,12 @@ that struck it, weighted by the knock's amplitude; the board noise is measured
 in the gaps between the partials the recordings show and, above the highest of
 them, across whole bands, as the benchmark measures it. In the bands below a
 note's fundamental, which hold other strings' tones but none of its own, a
-gap's level is the median of its bins, which passes over those tones. The
+gap's level is the median of its bins, which passes over those tones. There
+the ring falls in two stages: a second, slower line is fitted through the
+frames from 0.15 to 0.6 s after contact that stand 10 dB over the floor, and
+the first is refitted on what the second leaves of the early frames. Above
+the fundamental the late frames mix the ring with the note's own unresolved
+partials, so only the first is fitted there. The
 action's knocks are measured from each recorded pitch's key-release take and
 the sustain pedal's two: a level and phase per mode at the knock's onset,
 fitted on the same modes under one rise they share; the recordings were gained
@@ -506,6 +520,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.
+- Under the grand's notes from C6 up, the body's band from 400 to 800 Hz
+  falls away too soon: its modes' decays are measured from 35 to 400 ms
+  after contact, and the recordings' ring there slows after that, so from
+  0.5 to 0.8 s it sits 8 to 21 dB under them. In their first 50 ms the same
+  notes sit 2 to 8 dB under the recordings from 400 Hz to 2.5 kHz.
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
   measure the board noise in six to ten of the thirteen bands; those bands are
   interpolated between the nearest pitches that measured them.

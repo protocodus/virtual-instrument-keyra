@@ -969,3 +969,53 @@ Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage of soft and hard strikes on both pianos,
 the shipping engine against this fit, went to the owner level-matched with its
 key, and no verdict yet.
+
+## 2026-10-29 — the board's ring under a treble fundamental falls in two stages
+
+Asked whether the grand sounds full across the spectrum, the per-band
+comparison of the train and dev renders with their recordings (gain-matched
+as the benchmark does) found the bass and middle within about half a
+decibel from 80 Hz up after the attack, and one large gap: under the
+fundamentals from C6 up, where the board's ring sounds with none of the
+note's own partials, the 1 to 1.6 kHz bands sat 4 to 52 dB under the
+recordings from 0.1 to 0.8 s after contact, the gap growing with time, and
+the 2 and 2.5 kHz bands 5 to 16 dB under. The recordings' ring there falls in
+two stages, 100 to 170 dB/s over the first tenth of a second and then 40 to
+60 dB/s, and the fit drew one line through the first 120 ms, which the engine
+played on at 110 to 230 dB/s, 30 to 60 dB down by a quarter of a second.
+
+Under the fundamental the fit now draws a second line through the frames
+every 10 ms from 0.15 to 0.6 s that stand 10 dB over the floor, and refits
+the first on the early density less the second's power; the second stage is
+kept only where it is the slower, starts 3 dB or more under the first and
+both lines have ten frames. The grand measures it from C6 to A7, at 39 to
+57 dB/s starting 9 to 20 dB under the first; the upright from C6 to G7, at 18
+to 58 dB/s starting 15 to 46 dB under. Each burst plays the two stages
+adding in power; between a pitch that measures the second and one that
+cannot, its amplitude blends linearly, so a key plays it as far as it lies
+towards the pitch that measured it. Above the fundamental the late frames
+mix the ring with the note's own unresolved partials (in the grand's top
+bands they fall 0 to 10 dB/s), so only the first stage is fitted there.
+
+From C6 up the 1 to 1.6 kHz bands now sit within about 4.5 dB of the
+recordings from 0.1 to 0.8 s, the train and the never-fitted dev takes
+alike, and the 2 and 2.5 kHz bands 0 to 5 dB under. On the recording
+benchmark the grand's treble early spectrum sits 1.07 dB closer to its train
+recordings and 0.91 dB to its dev ones, its sustain spectrum 0.39 and
+0.27 dB, its noise between partials 0.56 and 0.50 dB; the upright's treble
+moves by 0.08 dB or less. Neither piano has a regression
+([grand](validation/grand-board-ring-benchmark-2026-10-29.md),
+[upright](validation/upright-board-ring-benchmark-2026-10-29.md)). The
+engine test's board-noise check now expects both stages' power over its
+frames, where it had brought each frame back to contact at the first stage's
+rate.
+
+Still open: in their first 50 ms these notes sit 2 to 8 dB under the
+recordings from 400 Hz to 2.5 kHz, and the body's 400 to 800 Hz band under
+them falls 8 to 21 dB under from 0.5 to 0.8 s, as its modes' decays are
+measured from 35 to 400 ms.
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A short lettered treble passage on both pianos, the shipping
+engine against this fit, went to the owner level-matched with its key, and no
+verdict yet.

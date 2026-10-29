@@ -1267,6 +1267,12 @@ def damper_data(model, results, halo_hz):
 # the fitted partials leave, and played as band noise.
 NOISE_BANDS = [1000.0 * 2 ** (k / 3) for k in range(13)]   # Hz: 1 to 16 kHz
 NOISE_SILENT = -200.0                                     # dB re 1/Hz: a band no recording measures
+# Under a note's fundamental the ring falls in two stages: in the grand's
+# treble 110 to 230 dB/s over the first tenth of a second, then 40 to 57 dB/s
+# from 5 to 18 dB under where the first starts. The first stage alone, played
+# on, put the 1 and 1.25 kHz bands under C6 to C8 14 to 32 dB under the
+# recordings from 0.2 to 0.5 s.
+NOISE_LATE = (.15, .6)                                    # s after contact: the second stage's frames
 
 
 def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
@@ -1295,6 +1301,15 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     note's own unresolved partials, which have no voice but the noise:
     measured by the median there too, the upright's 12.7 kHz band went silent
     and E3's 8 kHz band fell 16 dB further under its recording.
+    Under the fundamental a second line, the ring's slower second stage, is
+    fitted through the frames every 10 ms over NOISE_LATE that stand 10 dB
+    above the floor, and the first is refitted on the early density less the
+    second's power, so that the two together hold the early frames as the one
+    line did; NaN where fewer than ten frames of either stand clear, or where
+    the second line is not the slower one or starts within 3 dB of the first.
+    Above the fundamental the late frames mix the ring with the note's own
+    unresolved partials (in the grand's top bands they fall 0 to 10 dB/s), so
+    only the first stage is fitted there.
     Also the right-over-left level difference (dB) and left/right coherence
     there. Where a take starts too close to its onset to measure the floor
     before it and runs on into the room's noise (`tail_floor`, the upright's
@@ -1325,7 +1340,7 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
         p = np.abs(z) ** 2 * scale
         return float(np.mean(np.median(p, axis=0))) / math.log(2) if below[j] else float(np.mean(p))
     shape = (len(result['layers']), len(NOISE_BANDS))
-    level, decay, floor, balance, coherence = (np.full(shape, np.nan) for _ in range(5))
+    level, decay, floor, balance, coherence, slow, slow_decay = (np.full(shape, np.nan) for _ in range(7))
     times = np.arange(window / 2, window / 2 + .1001, hop)
     for i, L in enumerate(result['layers']):
         pre = L['pre_onset'].astype(float)
@@ -1334,9 +1349,11 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
 
         def spectrum(t):
             a = int(round(zero + t * sr)) - length // 2
-            return np.fft.rfft(x[a:a + length] * w[:, None], nfft, axis=0) if a >= 0 else None
+            return np.fft.rfft(x[a:a + length] * w[:, None], nfft, axis=0) if 0 <= a <= len(x) - length else None
         frames = [(t, z) for t in times if (z := spectrum(t)) is not None]
         at = np.array([t for t, _ in frames])
+        lates = [(t, z) for t in np.arange(NOISE_LATE[0], NOISE_LATE[1] + 1e-4, .01) if (z := spectrum(t)) is not None]
+        lt = np.array([t for t, _ in lates])
         quiet = [z for z in (spectrum(-window / 2 - .005), spectrum(-window / 2)) if z is not None]
         if not quiet and tail_floor:
             _, take = pa.load(wav / f'{result["cases"][i]}.wav')
@@ -1353,12 +1370,23 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
                 continue
             slope, intercept, _, _ = stats.theilslopes(density[clear], at[clear])
             level[i, j], decay[i, j] = intercept, slope
+            if below[j] and lates:
+                late = 10 * np.log10(np.array([power(z[band], j) for _, z in lates]) + 1e-30)
+                held = late > (floor[i, j] if quiet else -np.inf) + 10
+                if held.sum() >= 10:
+                    second, start, _, _ = stats.theilslopes(late[held], lt[held])
+                    rest = 10 ** (density / 10) - 10 ** ((start + second * at) / 10)
+                    first = clear & (rest > .1 * 10 ** (density / 10))
+                    if second > slope and start < intercept - 3 and first.sum() >= 10:
+                        slope, intercept, _, _ = stats.theilslopes(10 * np.log10(rest[first]), at[first])
+                        level[i, j], decay[i, j] = intercept, slope
+                        slow[i, j], slow_decay[i, j] = start, second
             left = np.concatenate([z[band, 0] for _, z in frames])
             right = np.concatenate([z[band, 1] for _, z in frames])
             balance[i, j] = 10 * math.log10(np.sum(np.abs(right) ** 2) / np.sum(np.abs(left) ** 2))
             coherence[i, j] = abs(np.sum(left * np.conj(right))) / math.sqrt(
                 np.sum(np.abs(left) ** 2) * np.sum(np.abs(right) ** 2))
-    return level, decay, floor, balance, coherence
+    return level, decay, floor, balance, coherence, slow, slow_decay
 
 
 def noise_data(results, datas, wav, tail_floor):
@@ -1373,7 +1401,13 @@ def noise_data(results, datas, wav, tail_floor):
     neighbouring anchors' values at its layers' velocities (as level_at plays
     them), the nearest one's beyond them; a band no anchor measures stays
     silent (NOISE_SILENT), as the upright's 16 kHz band does. The coherence
-    is one per band, the median over every measured layer.
+    is one per band, the median over every measured layer. The ring's second
+    stage, where three or more layers measure it under the fundamental, the
+    same way: its start per layer smoothed and its decay the median over the
+    strong layers that measure it. Elsewhere it is silent, and the engine
+    blends its amplitude, not its level, between the recorded pitches, so a
+    key brings it in as far as the pitches around it measure it; its decay
+    there is the neighbouring anchors' (the nearest one's beyond them).
     """
     import numpy as np
     measured = []
@@ -1381,7 +1415,7 @@ def noise_data(results, datas, wav, tail_floor):
         contact = np.array([L['delay'] for L in r['layers']]) - np.array(d['layer_shift_ms']) / 1000
         measured.append(noise_bands(r, contact, wav, tail_floor))
     anchors = []
-    for r, d, (level, decay, floor, balance, _) in zip(results, datas, measured):
+    for r, d, (level, decay, floor, balance, _, slow, slow_decay) in zip(results, datas, measured):
         velocities = np.array(d['velocities'])
         bands = []
         for j in range(len(NOISE_BANDS)):
@@ -1393,8 +1427,15 @@ def noise_data(results, datas, wav, tail_floor):
             levels = smooth_levels(velocities, target, np.where(known, 1.0, .1))
             strong = known & (level[:, j] >= floor[:, j] + 20)
             slopes = decay[strong if strong.any() else known, j]
-            bands.append({'level_db': levels, 'decay_db_s': float(np.clip(np.median(slopes), -400, -5)),
-                          'balance_db': float(np.median(balance[known, j]))})
+            band = {'level_db': levels, 'decay_db_s': float(np.clip(np.median(slopes), -400, -5)),
+                    'balance_db': float(np.median(balance[known, j]))}
+            held = np.isfinite(slow[:, j])
+            if held.sum() >= 3:
+                band['slow_db'] = smooth_levels(velocities, np.where(held, slow[:, j], floor[:, j] - 3),
+                                                np.where(held, 1.0, .1))
+                band['slow_decay_db_s'] = float(np.clip(np.median(slow_decay[held & strong if (held & strong).any()
+                                                                             else held, j]), -400, -5))
+            bands.append(band)
         anchors.append(bands)
     notes = np.array([r['note'] for r in results], float)
     for j in range(len(NOISE_BANDS)):
@@ -1411,6 +1452,12 @@ def noise_data(results, datas, wav, tail_floor):
                                                   for v in datas[k]['velocities']]),
                             'decay_db_s': float(pick('decay_db_s')), 'balance_db': float(pick('balance_db')),
                             'filled': True}
+        held = [k for k, bands in enumerate(anchors) if 'slow_db' in bands[j]]
+        for k, bands in enumerate(anchors):
+            if 'slow_db' not in bands[j]:
+                bands[j]['slow_db'] = np.full(len(datas[k]['velocities']), NOISE_SILENT)
+                bands[j]['slow_decay_db_s'] = float(np.interp(notes[k], notes[held], [anchors[i][j]['slow_decay_db_s']
+                                                                                     for i in held])) if held else -400.0
     coherence = [float(np.nanmedian(np.concatenate([m[4][:, j] for m in measured])))
                  for j in range(len(NOISE_BANDS))]
     return {'hz': NOISE_BANDS, 'coherence': coherence, 'anchors': anchors}
@@ -1461,6 +1508,7 @@ def on_grid(anchors, noise, grid):
         a['onset_rise'] = np.exp(np.interp(grid, v, np.log(a['onset_rise'])))
         for b in bands:
             b['level_db'] = np.array([level_at(v, b['level_db'], g) for g in grid])
+            b['slow_db'] = np.array([level_at(v, b['slow_db'], g) for g in grid])
         a['velocities'] = list(grid)
 
 
@@ -1570,7 +1618,9 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
               + ','.join('{' + number(f) + ',' + number(c) + '}' for f, c in zip(noise['hz'], noise['coherence']))
               + '}};']
     lines += table('Noise', 'noise', bands, [['{' + number(-b['decay_db_s'] / 8.685889638) + ',' + number(b['balance_db'])
-                                     + ',{{' + ','.join(number(x) for x in b['level_db']) + '}}}' for b in band_rows]
+                                     + ',{{' + ','.join(number(x) for x in b['level_db']) + '}},'
+                                     + number(-b['slow_decay_db_s'] / 8.685889638)
+                                     + ',{{' + ','.join(number(x) for x in b['slow_db']) + '}}}' for b in band_rows]
                                     for band_rows in noise['anchors']])
     lines.extend([f'}}}}}} // namespace keyra::measured::{name}', ''])
     return '\n'.join(lines)
@@ -1682,7 +1732,8 @@ def generate(model):
                   + (', the sustain pedal down and up' if model['pedal'] else '') + '; one train take each, in those files\' own scale) fitted from their onsets under one shared '
                   'rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density '
                   'at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 '
-                  'to 100 ms after contact; one left/right coherence per band. Anchors recorded at other '
+                  'to 100 ms after contact, and under the fundamental the ring\'s slower second stage, its start '
+                  'per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. Anchors recorded at other '
                   'velocities than the layers most have are carried onto those as the engine plays between and '
                   'beyond layers.'
                   + (' What the dampers leave ringing, from the train key-release takes below F6: their partials to '

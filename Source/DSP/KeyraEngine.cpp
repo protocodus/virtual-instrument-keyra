@@ -192,12 +192,13 @@ bool advance(Body& body) noexcept {
   return false;
 }
 // Above the body modes the board's ring is noise in third-octave bands. A
-// strike's burst holds, per band, its left and right amplitude at the next
-// chunk boundary and its decay per chunk.
+// strike's burst holds, per band and for each of the ring's two stages, its
+// left and right amplitude at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
 static_assert(upright::noiseBands.size()==grand::noiseBands.size(),"both pianos' noise has the same bands");
 struct Burst {
   double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
+  double slowLeft[noiseBands]{},slowRight[noiseBands]{},slowStep[noiseBands]{};
   std::uint64_t serial=0;
   bool active=false;
 };
@@ -576,14 +577,18 @@ struct Engine::Impl {
     return *chosen;
   }
   // At a chunk boundary: each band ramps from where the last chunk ended to
-  // the bursts' sum at this chunk's end; below -180 dB a burst ends.
+  // the bursts' sum at this chunk's end, a burst's two stages adding in
+  // power; below -180 dB a burst ends.
   void advanceNoise() noexcept {
     double target[2][noiseBands]{};bool any=false;
     for(auto& burst:bursts)if(burst.active){double energy=0;
       for(int b=0;b<noiseBands;++b){
         burst.left[b]*=burst.step[b];burst.right[b]*=burst.step[b];
-        target[0][b]+=burst.left[b];target[1][b]+=burst.right[b];
-        energy+=burst.left[b]*burst.left[b]+burst.right[b]*burst.right[b];}
+        burst.slowLeft[b]*=burst.slowStep[b];burst.slowRight[b]*=burst.slowStep[b];
+        const double l=burst.left[b]*burst.left[b]+burst.slowLeft[b]*burst.slowLeft[b];
+        const double r=burst.right[b]*burst.right[b]+burst.slowRight[b]*burst.slowRight[b];
+        target[0][b]+=std::sqrt(l);target[1][b]+=std::sqrt(r);
+        energy+=l+r;}
       burst.active=energy>=1e-18;any=any||burst.active;}
     for(int b=0;b<noiseBands;++b){auto& band=noise[b];
       band.left=band.leftEnd;band.right=band.rightEnd;
@@ -804,17 +809,25 @@ struct Engine::Impl {
       auto& first=sympathetic[88+j];first.q+=prompt*amplitude*std::cos(phase);first.p+=prompt*amplitude*std::sin(phase);
     }
     // The board's noise: each band's density between the pitches like the
-    // partials' levels, tinted and softened like a partial of its order.
+    // partials' levels, tinted and softened like a partial of its order. The
+    // ring's second stage, which a pitch measures only under its fundamental,
+    // blends in amplitude, so a key between a pitch that measures it and one
+    // that cannot plays it as far as it lies towards the first.
     auto& burst=claimBurst();
     const auto* na=m.noise+(upper-1)*noiseBands;const auto* nb=na+noiseBands;
     for(int k=0;k<noiseBands;++k){const auto& x=na[k];const auto& y=nb[k];
       const double density=mix(levelAt(m,x.densityDb.data(),v),levelAt(m,y.densityDb.data(),v),t);
       const double order=std::max(1.,m.noiseBands[k].hz/f1);
-      const double amplitude=std::pow(10.,density/20)*noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
-                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
-      const double balance=mix(x.balanceDb,y.balanceDb,t);
-      burst.left[k]=amplitude*std::pow(10.,-balance/40);burst.right[k]=amplitude*std::pow(10.,balance/40);
+      const double tint=noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
+                        *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
+      const double amplitude=std::pow(10.,density/20)*tint;
+      const double slow=mix(std::pow(10.,levelAt(m,x.slowDensityDb.data(),v)/20),
+                            std::pow(10.,levelAt(m,y.slowDensityDb.data(),v)/20),t)*tint;
+      const double balance=mix(x.balanceDb,y.balanceDb,t),left=std::pow(10.,-balance/40),right=std::pow(10.,balance/40);
+      burst.left[k]=amplitude*left;burst.right[k]=amplitude*right;
       burst.step[k]=std::exp(-std::exp(mix(std::log(x.rate),std::log(y.rate),t))*chunk/sampleRate);
+      burst.slowLeft[k]=slow*left;burst.slowRight[k]=slow*right;
+      burst.slowStep[k]=std::exp(-std::exp(mix(std::log(x.slowRate),std::log(y.slowRate),t))*chunk/sampleRate);
     }
     burst.active=true;burst.serial=serial;hissing=true;
     int i=a.first,j=b.first;const int ia=a.first+a.count,jb=b.first+b.count;
