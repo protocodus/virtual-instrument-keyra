@@ -420,20 +420,22 @@ The owner heard Pop Upright's repeated chords as mechanical and asked for
 every key press to differ a little, in velocity and perhaps in tuning. Of the
 upright library's 143 second takes, 17 are new strikes rather than copies
 (above); 13 are at train pitches, and twelve of those have layers whose
-levels read a velocity, a slope of 0.1 dB per unit or more. Each differs
-from its first take as a velocity change does: by a median 5.4 velocity
-units at its layers' level slope (about 1 dB), ten of the twelve brighter
-where louder over their first eight partials, and in pitch by a median
-0.02 cents (`Tools/find_repeated_takes.py`). Each strike now moves its key's
-velocity by a draw of spread 5.6, the median absolute difference over 0.6745
-and the square root of two; tuning does not vary. The draw sums four uniform
-ones, so it stays within 3.5 spreads, and its sequence restarts with the
-engine and on a piano switch, so a render replays exactly. `keyra_render`,
-and so every benchmark, strikes at the velocity exactly unless given
-`--vary`. Nine of the twelve strikes are at the softest layer, and the
-spread plays at every velocity and on the grand, whose library holds one
-take of each note. Measured, at the owner's request; Pop Upright's
-before/after went to the owner, with no listening verdict yet.
+levels read a velocity, a slope of 0.1 dB per unit or more. Each differs from
+its first take as a velocity change does: by a median 5.4 velocity units at
+its layers' level slope (about 1 dB), ten of the twelve brighter where louder
+over their first eight partials, and in pitch by a median 0.02 cents
+(`Tools/find_repeated_takes.py`). Each strike now moves its key's velocity by
+a draw of spread 5.6, the median absolute difference over 0.6745 and the
+square root of two; tuning does not vary. The draw sums four uniform ones, so
+it stays within 3.5 spreads, and its sequence restarts with the engine and on
+a piano switch, so a render replays exactly. `keyra_render`, and so every
+benchmark, strikes at the velocity exactly unless given `--vary`. Nine of the
+twelve strikes are at the softest layer, and the spread plays at every
+velocity and on the grand, whose library holds one take of each note.
+Measured, at the owner's request; Pop Upright's before/after went to the
+owner. On 2026-10-29 the owner adopted the spread under their standing rule
+that a lettered candidate wins over the shipping engine unless they say
+otherwise; no listening verdict was reported.
 
 ## 2026-10-28 — one velocity response for both pianos
 
@@ -457,18 +459,20 @@ output scale goes from .502 to .642, so that its median note at velocity 127
 stays as loud as the grand's.
 
 Over every key A0–C8 (RMS 50–750 ms, no spread), the median notes now sit
-within 1 dB of each other at velocities 1, 32, 64, 96 and 127, where they
-sat 7.0, 8.7, 9.9, 4.5 and 0 dB apart, and from velocity 64 to 127 the
-median key grows 10.6 dB on the grand and 9.9 dB on the upright (8.4 and
-17.4). Single keys keep their recordings' differences: a key of the upright
-sits from 4 dB under to 7 dB over the same key of the grand (the tenth to the
-ninetieth percentile). The upright's softest layer no longer plays on its
-own. The benchmarks strike at layer coordinates and do not move: their grand
-renders are bit-identical and their upright renders scale by the new output
-scale alone. The shape is the owner's choice, not a measurement. A lettered
-chord ramp went to the owner on both pianos: the shipping response, this
-halfway shape, a straight line and smoothstep, with the key beside them, and
-no verdict yet.
+within 1 dB of each other at velocities 1, 32, 64, 96 and 127, where they sat
+7.0, 8.7, 9.9, 4.5 and 0 dB apart, and from velocity 64 to 127 the median key
+grows 10.6 dB on the grand and 9.9 dB on the upright (8.4 and 17.4). Single
+keys keep their recordings' differences: a key of the upright sits from 4 dB
+under to 7 dB over the same key of the grand (the tenth to the ninetieth
+percentile). The upright's softest layer no longer plays on its own. The
+benchmarks strike at layer coordinates and do not move: their grand renders
+are bit-identical and their upright renders scale by the new output scale
+alone. The shape is the owner's choice, not a measurement. A lettered chord
+ramp went to the owner on both pianos: the shipping response, this halfway
+shape, a straight line and smoothstep, with the key beside them. On
+2026-10-29 the owner kept the halfway shape that ships, the shape they had
+asked for, under their standing rule that a candidate wins over the old
+response; no listening verdict was reported.
 
 ## 2026-10-28 — a partial's lanes reach its farther unison strings
 
@@ -624,15 +628,18 @@ audio-tier test `Keyra.Levels` holds these readings.
 
 The measurements render 20 dB under the default Output, where the stage
 passes every strike untouched (`benchmark_recordings.MEASURE`): both
-benchmarks score within 0.001 dB of before, with no regressions. The upright's
-dampers leave part of each partial ringing (above), so at the new level its
-released chords reach the matrix's −60 dBFS floor 2 s after the keys go up
-and 3 s at full Output; `Keyra.ParameterMatrix` allows the upright presets 3 s.
-The level and the stage are the portfolio's, chosen by measurement; whether
-the guard's cost to the hardest chords is worth keeping them out of the red is
-the owner's to hear. A lettered crescendo of chords on both pianos went to
-the owner, level-matched: the shipping engine, this stage, and the same level
-through the limiter alone, with the key beside them, and no verdict yet.
+benchmarks score within 0.001 dB of before, with no regressions. The
+upright's dampers leave part of each partial ringing (above), so at the new
+level its released chords reach the matrix's −60 dBFS floor 2 s after the
+keys go up and 3 s at full Output; `Keyra.ParameterMatrix` allows the upright
+presets 3 s. The level and the stage are the portfolio's, chosen by
+measurement; whether the guard's cost to the hardest chords is worth keeping
+them out of the red is the owner's to hear. A lettered crescendo of chords on
+both pianos went to the owner, level-matched: the shipping engine, this
+stage, and the same level through the limiter alone, with the key beside
+them. On 2026-10-29 the owner kept the stage that ships, guard and limiter,
+under their standing rule that a candidate wins over the old output; no
+listening verdict was reported.
 
 ## 2026-10-28 — a Quality choice leaves out what no band hears
 
@@ -667,8 +674,9 @@ keys whose bands changed the most.
 
 Chosen by measurement. Whether Light's largest change can be heard is the
 owner's to judge: a lettered passage on both pianos, the shipping Full
-against Balanced and Light, went to the owner level-matched with its key,
-and no verdict yet.
+against Balanced and Light, went to the owner level-matched with its key. On
+2026-10-29 the owner kept all three settings, Full the default, under their
+standing rule that candidates win; no listening verdict was reported.
 
 ## 2026-10-29 — the noise score counts what either sound puts over the recording's floor
 
@@ -740,8 +748,10 @@ recordings.
 
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage on both pianos, the shipping engine
-against this fit, went to the owner level-matched with its key, and no
-verdict yet.
+against this fit, went to the owner level-matched with its key. On 2026-10-29
+the owner adopted the candidate under their standing rule that a lettered
+candidate wins over the shipping engine unless they say otherwise; no
+listening verdict was reported.
 
 ## 2026-10-29 — a strike's knock grows with the level its layer plays at
 
@@ -807,7 +817,9 @@ to 19.67, 4.46 to 5.90 and 5.28 to 6.45).
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage of soft strikes on both pianos, the
 shipping engine against this fit, went to the owner level-matched with its
-key, and no verdict yet.
+key. On 2026-10-29 the owner adopted the candidate under their standing rule
+that a lettered candidate wins over the shipping engine unless they say
+otherwise; no listening verdict was reported.
 
 ## 2026-10-29 — each undamped string starts with its own prompt part
 
@@ -883,8 +895,10 @@ unchanged, and the shipping engine passes it read this way too.
 
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage on both pianos, the shipping engine
-against this fit, went to the owner level-matched with its key, and no
-verdict yet.
+against this fit, went to the owner level-matched with its key. On 2026-10-29
+the owner adopted the candidate under their standing rule that a lettered
+candidate wins over the shipping engine unless they say otherwise; no
+listening verdict was reported.
 
 ## 2026-10-29 — the undamped strings grow with the strike, fitted with hidden layers as bounds
 
@@ -967,8 +981,10 @@ is the only bass note the benchmark moves by more than its tolerance.
 
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage of soft and hard strikes on both pianos,
-the shipping engine against this fit, went to the owner level-matched with its
-key, and no verdict yet.
+the shipping engine against this fit, went to the owner level-matched with
+its key. On 2026-10-29 the owner adopted the candidate under their standing
+rule that a lettered candidate wins over the shipping engine unless they say
+otherwise; no listening verdict was reported.
 
 ## 2026-10-29 — the board's ring under a treble fundamental falls in two stages
 
@@ -1017,8 +1033,10 @@ measured from 35 to 400 ms.
 
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered treble passage on both pianos, the shipping
-engine against this fit, went to the owner level-matched with its key, and no
-verdict yet.
+engine against this fit, went to the owner level-matched with its key. On
+2026-10-29 the owner adopted the candidate under their standing rule that a
+lettered candidate wins over the shipping engine unless they say otherwise;
+no listening verdict was reported.
 
 ## 2026-10-29 — the body's modes ring in two stages
 
@@ -1083,5 +1101,7 @@ velocity 15, 15.4 to 31.2 ms; the grand's A4 from velocity 101 up, 0.5 to
 
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage on both pianos, the shipping engine
-against this fit, went to the owner level-matched with its key, and no
-verdict yet.
+against this fit, went to the owner level-matched with its key. On 2026-10-29
+the owner adopted the candidate under their standing rule that a lettered
+candidate wins over the shipping engine unless they say otherwise; no
+listening verdict was reported.
