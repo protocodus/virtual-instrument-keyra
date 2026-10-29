@@ -242,6 +242,16 @@ opened only for a candidate the owner is asked to approve. Report every regressi
 Salamander Grand Piano V3, Alexander Holm, CC BY 3.0; retain attribution and
 hashes. No recorded waveform or impulse response is loaded by the instrument.
 
+The owner's standing rule (2026-10-29): keep benchmarking and tuning against
+the real recordings. Every audible engine change runs
+`Tools/benchmark_recordings.py` against the shipping engine before it ships,
+the grand on Salamander (`Tools/fetch_salamander.py`) and, with
+`--model upright`, the upright on the Helsinki 1967 recordings
+(`Tools/decode_helsinki.py`, from the owner's copy of the library). Report the
+movement with the change; where the owner chooses by ear against the
+recordings, record both. When a piano's recordings are not in the session,
+ask the owner for them rather than ship that piano's change unmeasured.
+
 Pedal tests must cover continuous sustain and repedaling, sostenuto's rising
 edge capture, soft pedal excitation, channel ownership and reset. Mod wheel
 adds smooth damping to sounding strings, including held keys. Common-controller
