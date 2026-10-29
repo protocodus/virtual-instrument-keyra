@@ -480,9 +480,9 @@ struct Engine::Impl {
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset or a piano switch
   bool sleeping=true;
   bool pedalHeld=false;  // the sustain pedal's dampers off the strings
-  // The least felt contact (or mute) among the sounding keys that have a
-  // damper, from the last chunk boundary (1 with none sounding), and the one
-  // the body's rotations were set for.
+  // The least felt contact (or mute) among the sounding strings, an undamped
+  // one's being its mute alone, from the last chunk boundary (1 with none
+  // sounding), and the one the body's rotations were set for.
   double bodyContact=1,appliedBodyContact=-1;
   // The portfolio's shared output stage, with the guard the newer
   // instruments use: typical playing passes it untouched and the hardest
@@ -768,9 +768,10 @@ struct Engine::Impl {
       // Continuous felt contact, including partial engagement and re-pedaling.
       // The undamped top twenty keys do not acquire a fictitious key damper.
       voice.contact=voice.note>=89?0:std::pow(std::max(0.,(voice.damper-.08)/.92),2.5);
-      // The undamped strings are left out: they are far above the body's
-      // modes. CC1's mute damps the strings that drive it as the felt does.
-      if(voice.note<89)contact=std::min(contact,std::max(voice.contact,channel.smoothedMute*channel.smoothedMute));
+      // The body rings on while any sounding string is free: an undamped one
+      // keeps it up as a held key's does, whatever its key. CC1's mute damps
+      // the strings that drive it as the felt does.
+      contact=std::min(contact,std::max(voice.contact,channel.smoothedMute*channel.smoothedMute));
       const bool damping=voice.contact!=voice.appliedContact||channel.smoothedMute!=voice.appliedMute;
       voice.appliedContact=voice.contact;voice.appliedMute=channel.smoothedMute;
       const double ratio=voice.retune?tuningRatio(voice.channel):0;

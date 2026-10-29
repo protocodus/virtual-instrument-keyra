@@ -1236,3 +1236,28 @@ eight chords but −0.04 dB over five. `KeyraLevels` now plays each velocity's
 chords in five rounds of their own, where the shipping upright reads +0.35 dB
 and the capped one +0.24 dB. Chosen by the owner; the cap's time is a
 measurement, the choice to apply it by ear.
+
+## 2026-10-29 — the top strings keep the body ringing
+
+The grand's Salamander benchmark of the shipping engine with the upright's
+cap (`out/bench/cand-56dc43c` against `out/bench/base-89e5eb0`, the engine
+before the shared release) found its treble far from the recordings: from C6
+up, the training notes' early spectrum sat 13.4 dB from them and their board
+noise 13.2 dB, where 89e5eb0 had 4.3 and 5.4. The cause was the body's felt
+contact: it counted only the damped strings, so a strike above F6, whose
+strings have no damper, left the body falling at the felt's rate as if every
+key were let go. An undamped string now keeps the body ringing as a held
+key's does, and only CC1's mute damps it.
+
+With the fix the treble's early spectrum is back to 4.6 dB and its noise to
+5.6 dB (dev 4.6 and 5.5); over all training notes the early spectrum moves
+from 6.9 to 4.3 dB and the noise from 8.2 to 5.8 dB. One note moves the other
+way: A7's partials sit 3.7 dB from the recordings instead of 2.7 (dev 3.4
+instead of 2.5), now that the body rings under them. Decided by the
+measurement; no listening test.
+
+Variants of the same run separate what else moved the grand since 89e5eb0:
+the velocity colour accounts for the rest (training partials 1.7 → 4.6 dB,
+attack 3.7 → 4.7, early 2.7 → 4.3, sustain 3.2 → 4.6), the key-down knock
+for under 0.1 dB, and with both left out the run matches 89e5eb0 within
+0.1 dB on every metric but rise time (3.6 against 3.7 ms).

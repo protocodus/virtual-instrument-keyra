@@ -51,7 +51,8 @@ musical passages through the same engine. Both are frozen evidence from
 - Every strike knocks a body of 91 measured soundboard and case modes and
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
-  and the ring stops with them once every damper is down. The knock grows about decibel
+  and the ring stops with them once every sounding string is damped; the top
+  strings, which have no dampers, keep it ringing. The knock grows about decibel
   for decibel with the level the strike's layer plays at, as the
   recordings' does: soft notes knocked the body 5 to 6 dB louder than
   theirs, and now about 1 dB, which brings the attack spectrum 0.1 dB
@@ -190,9 +191,9 @@ musical passages through the same engine. Both are frozen evidence from
   2.2 ([grand](Docs/validation/grand-lane-reach-benchmark-2026-10-28.md)).
 - Notes end alike on both pianos, at the owner's ear: under the felt a
   small leftover of each partial at −46 dB at middle C, and the body's ring
-  stops with the strings once the dampers are down, so one second after
-  release both sit about 48 to 60 dB under the note. The upright no longer
-  rings on for seconds.
+  stops with the strings once the dampers are down (the top strings, which
+  have none, keep it ringing), so one second after release both sit about 48
+  to 60 dB under the note. The upright no longer rings on for seconds.
 - The upright speaks sooner: none of its partials rises slower than the
   hammer stays on the string, 2 ms at middle C and shorter higher up, where
   they had swelled over up to 116 ms.

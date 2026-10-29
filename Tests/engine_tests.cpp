@@ -321,6 +321,20 @@ int main(int argc,char** argv){
     a.controlChange(120,0);check(rms(render(a,512))==0,"all sound off clears owned voices and shared residue when last channel stops");
   }
   {
+    // A7's strings have no damper, so the body they keep up rings on after
+    // the strike until CC1 mutes them, on both pianos: below 400 Hz, far
+    // under the strings, half a second on. (While the felt counted only the
+    // damped strings, a lone top note's body fell as if every key were let
+    // go, within 6 dB of the muted one.)
+    const auto body=[](const keyra::Parameters& p,bool muted){
+      keyra::Engine e;e.setParameters(p);e.noteOn(105,.7f);render(e,12000);
+      if(muted)e.controlChange(1,127);
+      render(e,12000);const auto bands=thirdOctaves(render(e,24000));
+      double sum=0;for(int k=0;k<14;++k)sum+=bands[static_cast<std::size_t>(k)];return sum;};
+    for(const auto& p:{dry(),dryUpright()}){const double free=10*std::log10(body(p,false)/body(p,true));
+      check(free>20,"a top note's body rings on until CC1 mutes it");std::cout<<"top_note_body_db="<<free<<'\n';}
+  }
+  {
     keyra::Engine a,b;a.setParameters(dry());auto p=dry();p.soft=1;b.setParameters(p);a.noteOn(72,.7f);b.noteOn(72,.7f);
     check(rms(render(b,24000))<rms(render(a,24000)),"soft pedal changes hammer excitation");
     // Both pedals go down and are reset alike, so both sound the pedal once.
