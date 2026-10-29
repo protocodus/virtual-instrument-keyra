@@ -347,24 +347,33 @@ int main(int argc,char** argv){
     std::vector<double> beside;
     for(int k=a.extraFirst;k<a.extraFirst+a.extraCount;++k)beside.push_back(stiff(m::extras[k].order,m::extras[k].cents));
     // The undamped strings stay in: leaving out every one would leave the
-    // 2.5 kHz reference under a quarter of its bins, and in these first
-    // 100 ms they move no band's reading by more than about 1 dB.
+    // 2.5 kHz reference under a quarter of its bins. Their prompt parts put
+    // some up to 25 dB over their aftersound in these first 100 ms, so a band
+    // centred below the note's fundamental, where they lie and none of its
+    // own partials can, is read as the fit reads it: each frame's and
+    // channel's median bin over ln 2 (a noise bin's power is exponential),
+    // which passes over their tones.
     int fewest=bandCount;double worst=0;
     for(int layer=0;layer<m::layers;++layer){
       // At the layer's own velocity, not a player's spread about it.
       keyra::Engine e(sr);e.setParameters(dry());e.setSteadyStrikesForMeasurement(true);e.noteOn(a.note,m::layerVelocity[layer]/127.f);
       Audio left(n+(frames-1)*hop),right(n+(frames-1)*hop);e.process(left.data(),right.data(),n+(frames-1)*hop);
-      auto rendered=[&](int b){double sum=0;int points=0,all=0;
+      auto rendered=[&](int b){std::vector<double> bins[frames][2];int all=0;
         for(double f=edge(b,-1)+50;f<edge(b,1)-50;f+=sr/n,++all){
           bool clear=true;for(double hz:beside)clear=clear&&std::abs(f-hz)>3*sr/n;
           if(!clear)continue;
-          ++points;
           for(int frame=0;frame<frames;++frame){double first=0,later=0;
             for(int i=0;i<n;++i){first+=w[i]*w[i]*std::exp(-2*bands[b].rate*i/sr);later+=w[i]*w[i]*std::exp(-2*bands[b].rate*(frame*hop+i)/sr);}
-            for(const Audio* x:{&left,&right}){double re=0,im=0;
-              for(int i=0;i<n;++i){const double y=(*x)[frame*hop+i]*w[i];re+=y*std::cos(2*pi*f*i/sr);im+=y*std::sin(2*pi*f*i/sr);}
-              sum+=(re*re+im*im)*first/later/frames;}}}
-        return 4*points>=all?10*std::log10(sum/points):std::numeric_limits<double>::quiet_NaN();};
+            for(int c=0;c<2;++c){const Audio& x=c?right:left;double re=0,im=0;
+              for(int i=0;i<n;++i){const double y=x[frame*hop+i]*w[i];re+=y*std::cos(2*pi*f*i/sr);im+=y*std::sin(2*pi*f*i/sr);}
+              bins[frame][c].push_back((re*re+im*im)*first/later);}}}
+        const std::size_t points=bins[0][0].size();
+        if(points==0||4*static_cast<int>(points)<all)return std::numeric_limits<double>::quiet_NaN();
+        const bool below=m::noiseBands[b].hz<a.f1;double sum=0;
+        for(auto& frame:bins)for(auto& p:frame){
+          if(below){std::nth_element(p.begin(),p.begin()+points/2,p.end());sum+=p[points/2]/std::log(2.);}
+          else{for(double x:p)sum+=x/points;}}
+        return 10*std::log10(sum/frames);};
       // A band's density at the strike, its mean over the window as it decays,
       // and both channels' share of it.
       auto measuredDb=[&](int b){const auto& x=bands[b];double decay=0;

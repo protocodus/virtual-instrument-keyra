@@ -808,3 +808,80 @@ Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage of soft strikes on both pianos, the
 shipping engine against this fit, went to the owner level-matched with its
 key, and no verdict yet.
+
+## 2026-10-29 — each undamped string starts with its own prompt part
+
+The undamped strings from F6 up started at the level their fall from 1 to 2 s
+brings back to contact. In the recordings they stand far over that line in
+the first half second, and the strings that ring clear sat a median 8.0 dB
+over the engine at 0.125 s and 4.8 dB at 0.25 s on the grand's train notes
+(7.8 and 4.8 on its never-fitted ones), 5.0 and 7.8 dB on the upright's
+(9.5 and 10.9), measured as `Tools/compare_ring_levels.py` measures them:
+quarter-second windows where a string lies 60 Hz or more from every partial
+of the struck key. A struck unison first sounds a prompt part that the bridge
+drains fast, then its aftersound (Weinreich, "Coupled piano strings", 1977),
+and the strings a strike sets ringing do the same. Each now starts with a
+second resonator at its frequency, phase and pickup. Its level over the
+string's own at contact is the string's own; its decay, 103 dB/s on the grand
+and 75 dB/s on the upright, is shared, fitted on every window where a string
+rings clear. A string's level is measured in the early windows of the layers
+where it rings clear from 1 to 2 s, as its excess over its own line there: a
+window where it rings clear measures it and one where the strike's noise
+hides it bounds it from above (a censored fit), and each level is drawn
+towards the strings' median by ten layers' worth of windows, as their rates
+are. On the grand they run from too little to hear (nine strings at −24 dB
+or less) to 25 dB (C7), on the upright from −26 dB (C7) to 17 dB (B6).
+
+At 0.125 s the strings that ring clear now sit a median 4.0 dB under the
+grand's train recordings and 2.7 dB under its never-fitted ones (mean
+absolute error 7.7 to 4.7 dB and 7.4 to 4.6), and 1.8 and 6.4 dB under the
+upright's (6.7 to 5.2 and 9.4 to 8.0); at 0.25 s 3.1, 2.2, 4.5 and 7.7 dB
+under. The strings that ring 10 dB or more over the recordings at 0.125 s,
+counted at every string the windows can see, go from 0.7 to 1.0 % on the
+grand's train notes and 4.5 to 5.7 % on its never-fitted ones, 7.8 to 11.6 %
+and 5.5 to 10.5 % on the upright's. Nothing changes from a second on.
+
+Rejected, each scored the same way:
+
+- One prompt part shared by every string, fitted on the clear windows (20 dB
+  on the grand, 10 dB on the upright). It met the clear strings' median (0.1
+  dB over on the grand's train notes), but those are the strings that ring
+  loud early: strings the noise hides early, which come clear only later (on
+  the grand B6, C♯7 and G7 among them), rang 10 dB or more over the
+  recordings at 0.125 s at 8.9 % of the grand's train strings and 19.6 % of
+  its never-fitted ones, 15.3 and 11.3 % of the upright's. On the benchmark
+  it played the grand's never-fitted bass notes noisier (7.37 to 7.58 dB).
+- Each string's own level, not drawn towards the others. Closest on the
+  grand (2.8 and 1.2 dB under at 0.125 s), but the upright's strings that one
+  to ten strikes measure (D7, E7, F♯7, A7) came out 21 to 24 dB, and the
+  upright's never-fitted notes rang 17.2 % of their strings 10 dB over.
+- Each string's level against what the engine plays at every strike, every
+  layer counted. The soft layers, where one velocity slope already rings these
+  strings too loud (README, Known gaps), held the prompt parts at nothing for
+  17 of the grand's 20 strings, which left its never-fitted strings 5.3 dB
+  under at 0.125 s.
+- A free decay in the censored fit: the decay and level trade against each
+  other, and the fit ran off (51 dB falling at 184/s for one shared part).
+
+On the recording benchmark against the shipping engine (bd11277) the grand's
+treble early spectrum and noise between partials sit 0.05 to 0.06 dB closer
+to its train and never-fitted recordings, with no regressions
+([grand](validation/grand-halo-prompt-benchmark-2026-10-29.md)). The upright
+barely moves and has one regression
+([upright](validation/upright-halo-prompt-benchmark-2026-10-29.md)): F♯3's
+noise score on the train takes, 9.87 to 10.54 dB, at its softest layer, whose
+1.6 kHz band already sat 17.6 dB over the recording, where one velocity slope
+plays the strings too loud at soft strikes, and now sits 22.4 dB over for the
+first 0.3 s.
+
+`Keyra.Engine`'s check of the board noise under each recorded pitch's first
+100 ms read every bin's mean, which the prompt parts' tones raise in bands
+below the note's fundamental, where they lie and none of its own partials
+can. It now reads those bands as the fit does, each frame's and channel's
+median bin over ln 2, which passes over the tones: the check's limit is
+unchanged, and the shipping engine passes it read this way too.
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A short lettered passage on both pianos, the shipping engine
+against this fit, went to the owner level-matched with its key, and no
+verdict yet.

@@ -9,7 +9,7 @@
   ],
   "dev_or_sealed_recordings_opened": false,
   "analysis_source_sha256": "5c89aef61ce124c5389a578554ab74fc2bf41e9fb74c5fe0137e38da423b1020",
-  "fitter_source_sha256": "ea6098dff5ca498f73ddafb4dc24763b77974e3de0a789454271ffa601e59430",
+  "fitter_source_sha256": "f4b03b51e92a6f56fb3dd209809d189f33807f07b670bd2a0ca22a6154cec06c",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -42,7 +42,7 @@
     -2.574,
     0.0
   ],
-  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials; in a layer where a component does not stand clear of its floor, no louder than its recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one velocity slope pooled within pitch and string, and per anchor and string a level at contact at velocity 64: the mean over the layers clear in two or more windows, brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in the level its layer plays at, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release, the sustain pedal down and up; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band. Anchors recorded at other velocities than the layers most have are carried onto those as the engine plays between and beyond layers.",
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials; in a layer where a component does not stand clear of its floor, no louder than its recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one velocity slope pooled within pitch and string, and per anchor and string a level at contact at velocity 64: the mean over the layers clear in two or more windows, brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. Every string starts with its own prompt part, all decaying at one rate: through 0.25 s Hann windows from 0.125 to 0.5 s after contact, in the layers where a string 60 Hz from every partial rang clear from 1 to 2 s, its excess over its own line there; the rate fitted where strings rang clear then (10 dB over the median 16 to 60 Hz either side), each string's level censored where the noise hid it and drawn towards the strings' median by ten layers' worth of windows. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is linear in the level its layer plays at, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release, the sustain pedal down and up; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact; one left/right coherence per band. Anchors recorded at other velocities than the layers most have are carried onto those as the engine plays between and beyond layers.",
   "anchors": [
     {
       "note": 21,
@@ -2454,6 +2454,9 @@
         "cents": 3.09,
         "rate": 1.653,
         "rate_layers": 0,
+        "prompt_db": -33.51,
+        "prompt_windows": 160,
+        "prompt_clear": 6,
         "right_over_left_db": -2.06,
         "phase": 0.139
       },
@@ -2463,6 +2466,9 @@
         "cents": 1.21,
         "rate": 1.384,
         "rate_layers": 70,
+        "prompt_db": -36.91,
+        "prompt_windows": 380,
+        "prompt_clear": 52,
         "right_over_left_db": -3.93,
         "phase": -0.852
       },
@@ -2472,6 +2478,9 @@
         "cents": 3.15,
         "rate": 1.284,
         "rate_layers": 50,
+        "prompt_db": -37.25,
+        "prompt_windows": 432,
+        "prompt_clear": 171,
         "right_over_left_db": -4.58,
         "phase": -1.51
       },
@@ -2481,6 +2490,9 @@
         "cents": 1.81,
         "rate": 1.293,
         "rate_layers": 13,
+        "prompt_db": -8.52,
+        "prompt_windows": 312,
+        "prompt_clear": 29,
         "right_over_left_db": -0.25,
         "phase": -2.943
       },
@@ -2490,6 +2502,9 @@
         "cents": 2.3,
         "rate": 1.837,
         "rate_layers": 30,
+        "prompt_db": -36.55,
+        "prompt_windows": 336,
+        "prompt_clear": 174,
         "right_over_left_db": -1.98,
         "phase": 2.229
       },
@@ -2499,6 +2514,9 @@
         "cents": 2.8,
         "rate": 1.268,
         "rate_layers": 65,
+        "prompt_db": 17.23,
+        "prompt_windows": 340,
+        "prompt_clear": 224,
         "right_over_left_db": -1.9,
         "phase": 2.36
       },
@@ -2508,6 +2526,9 @@
         "cents": 0.1,
         "rate": 1.933,
         "rate_layers": 38,
+        "prompt_db": -36.14,
+        "prompt_windows": 296,
+        "prompt_clear": 76,
         "right_over_left_db": 14.39,
         "phase": -0.331
       },
@@ -2517,6 +2538,9 @@
         "cents": -2.02,
         "rate": 1.343,
         "rate_layers": 6,
+        "prompt_db": 25.35,
+        "prompt_windows": 180,
+        "prompt_clear": 125,
         "right_over_left_db": 9.93,
         "phase": 1.223
       },
@@ -2526,6 +2550,9 @@
         "cents": -4.45,
         "rate": 1.596,
         "rate_layers": 64,
+        "prompt_db": -31.75,
+        "prompt_windows": 312,
+        "prompt_clear": 215,
         "right_over_left_db": -5.8,
         "phase": 2.889
       },
@@ -2535,6 +2562,9 @@
         "cents": -4.35,
         "rate": 1.312,
         "rate_layers": 45,
+        "prompt_db": 11.19,
+        "prompt_windows": 344,
+        "prompt_clear": 202,
         "right_over_left_db": -6.93,
         "phase": -2.095
       },
@@ -2544,6 +2574,9 @@
         "cents": -5.12,
         "rate": 1.575,
         "rate_layers": 45,
+        "prompt_db": -6.6,
+        "prompt_windows": 356,
+        "prompt_clear": 168,
         "right_over_left_db": 2.2,
         "phase": -2.508
       },
@@ -2553,6 +2586,9 @@
         "cents": 1.02,
         "rate": 1.728,
         "rate_layers": 36,
+        "prompt_db": 6.62,
+        "prompt_windows": 204,
+        "prompt_clear": 120,
         "right_over_left_db": 2.84,
         "phase": -3.056
       },
@@ -2562,6 +2598,9 @@
         "cents": 5.99,
         "rate": 2.127,
         "rate_layers": 23,
+        "prompt_db": 5.94,
+        "prompt_windows": 192,
+        "prompt_clear": 122,
         "right_over_left_db": 2.83,
         "phase": 0.073
       },
@@ -2571,6 +2610,9 @@
         "cents": -3.94,
         "rate": 1.653,
         "rate_layers": 0,
+        "prompt_db": -24.78,
+        "prompt_windows": 60,
+        "prompt_clear": 11,
         "right_over_left_db": 3.68,
         "phase": 1.775
       },
@@ -2580,6 +2622,9 @@
         "cents": -5.36,
         "rate": 1.718,
         "rate_layers": 23,
+        "prompt_db": -34.77,
+        "prompt_windows": 208,
+        "prompt_clear": 72,
         "right_over_left_db": 10.67,
         "phase": -0.082
       },
@@ -2589,6 +2634,9 @@
         "cents": -9.44,
         "rate": 1.669,
         "rate_layers": 3,
+        "prompt_db": 14.22,
+        "prompt_windows": 168,
+        "prompt_clear": 143,
         "right_over_left_db": 1.64,
         "phase": -1.308
       },
@@ -2598,6 +2646,9 @@
         "cents": -13.55,
         "rate": 1.859,
         "rate_layers": 3,
+        "prompt_db": 4.76,
+        "prompt_windows": 76,
+        "prompt_clear": 50,
         "right_over_left_db": 11.51,
         "phase": -2.76
       },
@@ -2607,6 +2658,9 @@
         "cents": -7.17,
         "rate": 1.464,
         "rate_layers": 8,
+        "prompt_db": 13.73,
+        "prompt_windows": 136,
+        "prompt_clear": 84,
         "right_over_left_db": 7.49,
         "phase": 2.298
       },
@@ -2616,6 +2670,9 @@
         "cents": -11.45,
         "rate": 1.797,
         "rate_layers": 9,
+        "prompt_db": -28.48,
+        "prompt_windows": 104,
+        "prompt_clear": 61,
         "right_over_left_db": 8.49,
         "phase": -1.825
       },
@@ -2625,11 +2682,15 @@
         "cents": -8.91,
         "rate": 2.007,
         "rate_layers": 17,
+        "prompt_db": 4.8,
+        "prompt_windows": 60,
+        "prompt_clear": 41,
         "right_over_left_db": -0.39,
         "phase": -2.725
       }
     ],
-    "slope_db_per_64": 13.499
+    "slope_db_per_64": 13.499,
+    "prompt_rate": 11.866
   },
   "body": {
     "modes": 91,
@@ -3149,5 +3210,5 @@
       "reason": "strongest components 90-100 cents above the stretch trend; no partial series explains the recording"
     }
   ],
-  "generated_header_sha256": "4bf7132be6b7237af0b14a023b9759fbaa94c925306889f0121e41f36bfdffe1"
+  "generated_header_sha256": "264bf2b6d67e35ce4c85073033ef581ea88e467f23476b824d1c65cda438be14"
 }

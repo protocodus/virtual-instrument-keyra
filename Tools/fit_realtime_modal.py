@@ -519,6 +519,25 @@ HALO_LOWEST = 54
 # Where the noise hides a string the recording only bounds it: its level is
 # taken this far (dB) under the tone there.
 HALO_HIDDEN = 10.0
+# A struck unison first sounds a prompt part that the bridge drains fast, then
+# the aftersound that rings on (Weinreich, "Coupled piano strings", JASA 62,
+# 1977). The undamped strings do the same when a strike sets them ringing: in
+# the first half second they stand far over the line their fall from 1 to 2 s
+# brings back, the grand's a median 12.5 dB at 0.125 s and 6.2 dB at 0.25 s,
+# the upright's 7.9 and 4.7, and near it from 0.375 s. That is measured
+# through 0.25 s Hann windows at PROMPT_TIMES, where the string lies
+# PROMPT_APART or more from every partial of the struck key's series (the
+# short window's skirts reach that far under the partials' levels), and rings
+# clear where it stands HALO_CLEAR over the median 16 to 60 Hz either side,
+# past the window's main lobe. How much the bridge drains first differs from
+# string to string, as Weinreich's account has it vary with how each unison
+# is tuned: on the grand some strings start 20 to 30 dB over their
+# aftersound, while others stay under the strike's noise early on and come
+# clear only later, so one prompt shared by every string set those ringing
+# 10 dB over their recordings at 0.125 s.
+PROMPT_TIMES = (.125, .25, .375, .5)       # s after contact
+PROMPT_WINDOW = .25                         # s
+PROMPT_APART = 60.0                         # Hz
 
 
 def halo_spectra(result, i, windows, wav):
@@ -555,6 +574,60 @@ def halo_tone(f, z, hz):
     k = near[np.argmax(power[near])]
     noise = np.median(power[(d >= 4) & (d <= 20)])
     return 10 * np.log10(power[k] + 1e-30), 10 * np.log10(power[k] / (noise + 1e-30)), z[k]
+
+
+def prompt_tone(f, z, hz):
+    """At `hz` in a stereo PROMPT_WINDOW spectrum `z` (frequencies `f`): the
+    tone (dB, both channels' mean power, the largest within 2 Hz) and how far
+    it stands over the median from 16 to 60 Hz either side (dB)."""
+    import numpy as np
+    d = np.abs(f - hz)
+    power = np.mean(np.abs(z) ** 2, axis=1)
+    near = np.flatnonzero(d <= 2)
+    k = near[np.argmax(power[near])]
+    noise = np.median(power[(d >= 16) & (d <= 60)])
+    return 10 * np.log10(power[k] + 1e-30), 10 * np.log10(power[k] / (noise + 1e-30))
+
+
+def prompt_fit(windows, rates, strings):
+    """Each undamped string's prompt part, its level over the aftersound at
+    contact (dB), and the decay rate (1/s) they share, from `windows`, rows of
+    (string index, window centre, dB over the string's line from 1 to 2 s
+    there, whether the string rang clear there). Both parts start together at
+    contact; through a Hann window a part decaying at r has the mean of
+    e^(-r tau) over the window, which for the prompt is not its value at the
+    centre. The rate is one prompt's, fitted to the clear windows with a
+    robust loss, as the strings' own unisons beat through the windows. With
+    it, each string's level: a clear window measures it and a hidden one
+    bounds it from above (a censored fit with one spread for every window),
+    since fitting the clear windows alone raises the strings the noise mostly
+    hides. Levels lie from -40 dB, a prompt too small to hear, to 40 dB. As
+    the strings' rates are, each is drawn towards the median of all the
+    strings' by ten layers' worth of windows, which one with none takes: most
+    strings have dozens of layers, a few of the upright's one or two."""
+    import math
+    import numpy as np
+    from scipy import optimize, stats
+    tau = np.linspace(-PROMPT_WINDOW / 2, PROMPT_WINDOW / 2, 1001)
+    w = np.hanning(len(tau))
+    mean = lambda r: np.sum(w * np.exp(-np.outer(r, tau)), axis=1) / np.sum(w)
+    j, t, db, clear = (np.array(c) for c in zip(*windows))
+    j, clear = j.astype(int), clear.astype(bool)
+    slow = np.asarray(rates)[j]
+    after = mean(slow)
+    def line(level, rate):
+        return 20 * np.log10(after + 10 ** (level / 20) * np.exp(-(rate - slow) * t) * mean(np.array([rate]))[0])
+    rate = float(optimize.least_squares(lambda p: line(p[0], p[1])[clear] - db[clear], [10.0, 10.0], loss='soft_l1',
+                                        f_scale=3.0, bounds=([-20, 2], [40, 60])).x[1])
+    def loss(p):
+        level, spread = line(p[j], rate), math.exp(p[-1])
+        return (-np.sum(stats.norm.logpdf(db[clear], level[clear], spread))
+                - np.sum(stats.norm.logcdf((db[~clear] - level[~clear]) / spread)))
+    fit = optimize.minimize(loss, np.r_[np.zeros(strings), math.log(5)], method='L-BFGS-B',
+                            bounds=[(-40, 40)] * strings + [(math.log(.5), math.log(20))])
+    count = np.bincount(j, minlength=strings)
+    median = np.median(fit.x[:-1][count > 0])
+    return (count * fit.x[:-1] + 10 * len(PROMPT_TIMES) * median) / (count + 10 * len(PROMPT_TIMES)), rate
 
 
 def halo_pitches(results, strings, wav):
@@ -605,7 +678,10 @@ def halo_data(results, strings, hz, wav):
     where it rings clear, if two or more do; otherwise HALO_HIDDEN under the
     median bound. A string that the struck key's series or its own key
     covers, and every string below HALO_LOWEST, takes the levels of the
-    recorded pitches around it, interpolated by key and held beyond them."""
+    recorded pitches around it, interpolated by key and held beyond them.
+    Each string starts with its own prompt part (see PROMPT_TIMES and
+    prompt_fit), measured in the early windows of every layer where the
+    string rang clear from 1 to 2 s."""
     import math
     import numpy as np
     import piano_analysis as pa
@@ -660,6 +736,19 @@ def halo_data(results, strings, hz, wav):
                 xs += list((m['velocities'][rang] - m['velocities'][rang].mean()) / 64)
                 ys += list(m['level'][rang, j] - m['level'][rang, j].mean())
     slope = float(np.dot(xs, ys) / np.dot(xs, xs))
+    windows = []
+    for m in measured:
+        r = results[m['anchor']]
+        ladder = pa.stiff(*series(r), np.arange(1, 400))
+        apart = np.array([key != r['note'] and np.min(np.abs(ladder - hz[key])) >= PROMPT_APART for key in keys])
+        for i in range(len(r['layers'])):
+            spectra = halo_spectra(r, i, [(c, PROMPT_WINDOW) for c in PROMPT_TIMES], wav)
+            for j in np.flatnonzero(apart & m['rang'][i]):
+                for c, (f, z) in zip(PROMPT_TIMES, spectra):
+                    if z is not None:
+                        tone, margin = prompt_tone(f, z, hz[keys[j]])
+                        windows.append((j, c, tone - m['level'][i, j] + db * rates[j] * c, margin >= HALO_CLEAR))
+    prompts, prompt_rate = prompt_fit(windows, rates, len(keys))
     levels = np.full((len(results), len(keys)), np.nan)
     kinds = [['filled'] * len(keys) for _ in results]
     for m in measured:
@@ -677,7 +766,9 @@ def halo_data(results, strings, hz, wav):
     return {'keys': keys, 'hz': [hz[key] for key in keys],
             'cents': [1200 * math.log2(hz[key] / strings[key]) for key in keys], 'rates': rates.tolist(),
             'rate_layers': [len(x) for x in falls], 'pickups': pickups, 'slope': slope, 'levels': levels,
-            'kinds': kinds}
+            'kinds': kinds, 'prompts': prompts.tolist(), 'prompt_rate': prompt_rate,
+            'prompt_windows': np.bincount([row[0] for row in windows], minlength=len(keys)).tolist(),
+            'prompt_clear': np.bincount([row[0] for row in windows if row[3]], minlength=len(keys)).tolist()}
 
 
 # The soundboard and case. Every strike also knocks the instrument's body,
@@ -1393,12 +1484,14 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
             lines.append(f'  {{{p["order"]},{number(p["cents"])},{lane(only)}}},')
     lines += ['}};',
               f'constexpr std::array<HaloString,{strings}> haloStrings{{{{'
-              + ','.join('{' + ','.join(number(x) for x in (c, r, u[0], u[1].real, u[1].imag)) + '}'
-                         for c, r, u in zip(halo['cents'], halo['rates'], halo['pickups'])) + '}};',
+              + ','.join('{' + ','.join(number(x) for x in (c, r, d, u[0], u[1].real, u[1].imag)) + '}'
+                         for c, r, d, u in zip(halo['cents'], halo['rates'], halo['prompts'], halo['pickups'])) + '}};',
               '// How loudly each recorded pitch\'s strike sets each undamped string',
               '// ringing: the level (dB) at contact at velocity 64, and the slope of',
               '// every level (dB per 64 velocity).',
-              f'constexpr float haloSlopeDb={number(halo["slope"])};']
+              f'constexpr float haloSlopeDb={number(halo["slope"])};',
+              '// The decay rate (1/s) of the prompt part every undamped string starts with.',
+              f'constexpr float haloPromptRate={number(halo["prompt_rate"])};']
     lines += table('float', 'haloLevels', strings, [[number(x) for x in levels] for levels in halo['levels']])
     lines += [f'constexpr std::array<BodyMode,{modes}> bodyModes{{{{']
     lines += ['  {' + ','.join(number(x) for x in (f, r, u[0].real, u[1].real, u[1].imag)) + '},'
@@ -1523,7 +1616,12 @@ def generate(model):
                   'the channels), one velocity slope pooled within pitch and string, and per anchor and string a '
                   'level at contact at velocity 64: the mean over the layers clear in two or more windows, '
                   'brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series '
-                  'or key covers and anchors below F#3 take the levels of the anchors around. One bank of '
+                  'or key covers and anchors below F#3 take the levels of the anchors around. Every string '
+                  'starts with its own prompt part, all decaying at one rate: through 0.25 s Hann windows from '
+                  '0.125 to 0.5 s after contact, in the layers where a string 60 Hz from every partial rang clear '
+                  'from 1 to 2 s, its excess over its own line there; the rate fitted where strings rang clear then '
+                  '(10 dB over the median 16 to 60 Hz either side), each string\'s level censored where the noise '
+                  'hid it and drawn towards the strings\' median by ten layers\' worth of windows. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
                   'linear in the level its layer plays at, modes hidden by an anchor\'s partials taken from its neighbours. The '
@@ -1542,12 +1640,13 @@ def generate(model):
                      'partial a level.' if damper else '')),
         'anchors': records,
         'halo': {'strings': [{'key': key, 'hz': round(hz, 2), 'cents': round(cents, 2), 'rate': round(rate, 3),
-                              'rate_layers': count, 'right_over_left_db': round(20 * math.log10(abs(u[1]) / u[0]), 2),
+                              'rate_layers': count, 'prompt_db': round(prompt, 2), 'prompt_windows': windows,
+                              'prompt_clear': clear, 'right_over_left_db': round(20 * math.log10(abs(u[1]) / u[0]), 2),
                               'phase': round(cmath.phase(u[1]), 3)}
-                             for key, hz, cents, rate, count, u in zip(halo['keys'], halo['hz'], halo['cents'],
-                                                                       halo['rates'], halo['rate_layers'],
-                                                                       halo['pickups'])],
-                 'slope_db_per_64': round(halo['slope'], 3)},
+                             for key, hz, cents, rate, count, prompt, windows, clear, u
+                             in zip(halo['keys'], halo['hz'], halo['cents'], halo['rates'], halo['rate_layers'],
+                                    halo['prompts'], halo['prompt_windows'], halo['prompt_clear'], halo['pickups'])],
+                 'slope_db_per_64': round(halo['slope'], 3), 'prompt_rate': round(halo['prompt_rate'], 3)},
         'body': {'modes': len(body['hz']), 'hz': [round(float(f), 2) for f in body['hz']],
                  't60_seconds': [round(6.907755 / float(r), 3) for r in body['rates']],
                  'pickup_explained': [round(k, 3) for k in body['pickup_explained']],

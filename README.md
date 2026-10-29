@@ -100,7 +100,12 @@ musical passages through the same engine. Both are frozen evidence from
   between them, 48 at A0 and a few or none from C4 up, and sets ringing every
   undamped string from F6 up but its own key's, each at its own measured
   pitch, decay and stereo position, at the level the recorded pitches around
-  the key set it. They ring on after the key is let go.
+  the key set it. They ring on after the key is let go. Each starts with its
+  own prompt part, which a struck unison sounds before its aftersound and the
+  bridge drains within a few tenths of a second: in their first quarter
+  second the strings that ring clear sit a median 2 to 4 dB under the grand's
+  recordings, where they sat 5 to 8 dB under, and 2 to 8 dB under the
+  upright's, where they sat 5 to 11 dB under.
 - A key between two recorded pitches plays about as loud as they do. Its
   partials' lanes were blended one by one and, with offsets, phases and
   stereo pickups neither pitch has, beat and cancelled where neither pitch's
@@ -233,8 +238,11 @@ resonators supplies the sympathetic response the Resonance control sets. Its
 top twenty are the undamped strings from F6 up, which every strike sets
 ringing whatever that control: each but the struck key's own, at the level the
 recorded pitches around the key set it, and each at its own measured pitch,
-decay and stereo pickup whichever key struck it. They ring on after the key is
-let go; the felt mute damps them.
+decay and stereo pickup whichever key struck it. Each starts with its own
+prompt part, as a struck unison does, that is gone within a few tenths of a
+second: at contact from too little to hear up to 25 dB over the string's own
+on the grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. They
+ring on after the key is let go; the felt mute damps them.
 
 The action knocks the same modes. A key let go knocks them as its damper lands,
 building up over the 54 ms the release recordings show rather than clicking,
@@ -273,28 +281,35 @@ recordings from C6 up; its stereo pickup the median level difference and mean
 phase between the channels; its decay its fall from 1 to 2 s, drawn towards the
 strings' median; its level at a recorded pitch the mean over the layers where
 it rings clear, brought back to contact, or 10 dB under the tone where the
-noise hides it, with one velocity slope for every string. The body modes are
-found below the treble's fundamentals, where no string sounds, and a pitch's
-knock on each is a line in the level of the layer that struck it, weighted by
-the knock's amplitude; the board noise is measured in the gaps between the
-partials the recordings show and, above the highest of them, across whole
-bands, as the benchmark measures it. In the bands below a note's fundamental,
-which hold other strings' tones but none of its own, a gap's level is the
-median of its bins, which passes over those tones. The action's knocks are
-measured from each recorded pitch's key-release take and the sustain pedal's
-two: a level and phase per mode at the knock's onset, fitted on the same modes
-under one rise they share; the recordings were gained up as a set, so their
-level against the notes is the library's SFZ mix (a release at −37 dB tracking
-velocity and 2 dB quieter for each second held, the pedal at −20 dB down and
-−19 dB up), not a measurement. A strike interpolates between the recorded
-pitches by partial order and between the layers by velocity, taking phases from
-the nearer pitch; a partial's stereo pickup moves between the two pitches'
-channel level and phase differences, and its level is set so that its power
-over the first second or so, its lanes' beating included, sits between the two
-pitches' in dB. C8 is left out: its strongest components sit 90–100 cents above
-the stretch that F♯7 and A7 set and no partial series explains the recording,
-so the keys above A7 play A7's data on the stretch curve. Only fitted numbers
-enter the header; no recorded waveform or impulse response is loaded.
+noise hides it, with one velocity slope for every string. Their prompt parts
+are measured the same way through quarter-second windows at 0.125, 0.25, 0.375
+and 0.5 s, where a string stands 60 Hz from every partial of the struck key and
+rings clear 10 dB over the median 16–60 Hz either side: each window's excess
+over the string's own line. One decay serves every string, fitted where they
+ring clear; each string's level counts the windows where the noise hides it as
+upper bounds and is drawn towards the strings' median by ten layers' worth of
+windows. The body modes are found below the treble's fundamentals, where no
+string sounds, and a pitch's knock on each is a line in the level of the layer
+that struck it, weighted by the knock's amplitude; the board noise is measured
+in the gaps between the partials the recordings show and, above the highest of
+them, across whole bands, as the benchmark measures it. In the bands below a
+note's fundamental, which hold other strings' tones but none of its own, a
+gap's level is the median of its bins, which passes over those tones. The
+action's knocks are measured from each recorded pitch's key-release take and
+the sustain pedal's two: a level and phase per mode at the knock's onset,
+fitted on the same modes under one rise they share; the recordings were gained
+up as a set, so their level against the notes is the library's SFZ mix (a
+release at −37 dB tracking velocity and 2 dB quieter for each second held, the
+pedal at −20 dB down and −19 dB up), not a measurement. A strike interpolates
+between the recorded pitches by partial order and between the layers by
+velocity, taking phases from the nearer pitch; a partial's stereo pickup moves
+between the two pitches' channel level and phase differences, and its level is
+set so that its power over the first second or so, its lanes' beating included,
+sits between the two pitches' in dB. C8 is left out: its strongest components
+sit 90–100 cents above the stretch that F♯7 and A7 set and no partial series
+explains the recording, so the keys above A7 play A7's data on the stretch
+curve. Only fitted numbers enter the header; no recorded waveform or impulse
+response is loaded.
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of
@@ -445,17 +460,26 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
   further than 0.3.0's. Each undamped key rings as one string at one pitch,
-  without its unison's beating, and falls at its rate from 1 to 2 s
-  throughout, where the real strings fall faster at first and more slowly
-  later: on the dev cases the strings that ring clear sit a median 1.6 dB
-  over the recordings at 1 s and 1.5 dB under at 3 s, when 9 % of them are
-  10 dB or more under. In a strike's first half second a string can sound far
-  louder than its rate brings back from 1 s: the upright's G7 recordings hold
-  F♯7's string 14 to 15 dB under the fundamental through their first 0.6 s,
-  where the engine plays it more than 30 dB under. Where a recorded pitch's
-  own partials cover a string, its level there is interpolated from the
-  pitches around it; below F♯3 each string keeps the level of the lowest
-  pitch that measured it.
+  without its unison's beating, which dips the recordings' strings 3 to 10 dB
+  from half a second on, and past its prompt part falls at its rate from 1 to
+  2 s, where the real strings fall more slowly later: the strings that ring
+  clear sit a median 1.8 dB over the grand's never-fitted recordings at 1 s and
+  1.7 dB under at 3 s, when 8 % of them are 10 dB or more under, and 0.5 and
+  9 dB under the upright's train recordings. The prompt parts share one decay,
+  and a string that few strikes measure takes much of the strings' median
+  level: at 0.125 s 6 % of the strings ring 10 dB or more over the grand's
+  never-fitted recordings and 10 % over the upright's, against 5 and 6 %
+  without the prompt parts. The upright's G7 recording at velocity 51 holds
+  F♯7's string 30 to 35 dB under the fundamental in its first half second,
+  where the engine plays it 3 to 10 dB further under. Where a recorded pitch's
+  own partials cover a string, its level there is interpolated from the pitches
+  around it; below F♯3 each string keeps the level of the lowest pitch that
+  measured it. One velocity slope serves every string, fitted where they ring
+  clear, which in soft layers only the loudest do, so soft strikes ring them
+  too loud: the upright's F♯3 rings G♯6 27 dB over what its velocity-51
+  recording allows, and its soft bass notes' band around 1.6 kHz sits 8 to
+  22 dB over their recordings in the first 0.3 s, 4 to 5 dB of it from the
+  prompt parts.
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.

@@ -28,9 +28,10 @@ struct Extra { int order; float cents; Lane lane; };
 struct Anchor { int note; float f1, B; std::array<float,maxLayers> onsetRise; int first, count, extraFirst, extraCount; };
 // One of the strings from F6 up, which have no dampers: every strike sets
 // them ringing, and they ring on after the key is let go. Its frequency
-// (cents from the pitch the engine gives its key), decay rate (1/s) and
-// stereo pickup (left real; right complex; mean channel power 1).
-struct HaloString { float cents, rate, left, rightRe, rightIm; };
+// (cents from the pitch the engine gives its key), decay rate (1/s), the
+// level (dB) its prompt part starts at over its own at contact, and stereo
+// pickup (left real; right complex; mean channel power 1).
+struct HaloString { float cents, rate, promptDb, left, rightRe, rightIm; };
 // A mode of the soundboard and case, which every strike knocks, measured
 // under the treble's fundamentals: its frequency (Hz), decay rate (1/s) and
 // one stereo pickup (left real; right complex; mean channel power 1).

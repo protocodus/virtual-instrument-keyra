@@ -43,7 +43,7 @@ struct Model {
   int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;
   const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
-  const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb;
+  const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloPromptRate;
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb;
@@ -54,7 +54,7 @@ struct Model {
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
    grand::partials.data(),grand::extras.data(),0,0,
-   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,
+   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloPromptRate,
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
    grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,
    // The action's noises against the notes, as the library's own SFZ mixes
@@ -81,7 +81,7 @@ constexpr Model models[]{
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
-   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,
+   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloPromptRate,
    upright::bodyModes.data(),static_cast<int>(upright::bodyModes.size()),upright::bodyRise,upright::knocks.data(),
    upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,
    // The library's Stereo Ribbon preset plays every recording at its own
@@ -404,7 +404,8 @@ struct Engine::Impl {
   // Each undamped string's frequency (Hz at A4 = 440 Hz).
   std::array<double,halo> haloHz{};
   std::array<Channel,16> channels{};
-  std::array<Resonator,88> sympathetic{};
+  // The open strings, then each undamped string's prompt part.
+  std::array<Resonator,88+halo> sympathetic{};
   std::array<double,88> openness{};
   std::array<double,sineSize+1> sine{};
   std::array<V4,chunk> mixLeft{},mixRight{};
@@ -491,6 +492,8 @@ struct Engine::Impl {
       const Complex r=rotation(frequency);mode.c=r.re;mode.s=r.im;
       mode.decay=std::exp(-(j<0?.7+.001*frequency:model->haloStrings[j].rate)/sampleRate);
     }
+    for(int j=0;j<halo;++j){auto& prompt=sympathetic[88+j];const auto& string=sympathetic[firstHalo-21+j];
+      prompt.c=string.c;prompt.s=string.s;prompt.decay=std::exp(-model->haloPromptRate/sampleRate);}
   }
   void prepareBody() noexcept {
     // Each bank's decay per sample beyond the ring's.
@@ -783,8 +786,10 @@ struct Engine::Impl {
     // key's, which its partials play, at the level the two pitches around
     // the key set it (dB between them), softened and tinted like a
     // component of its order. They ring on in the shared bank whatever
-    // damps the strings. The recordings do not fix their phases, so each
-    // key gives each string a fixed one.
+    // damps the strings, each first with its own prompt part, which the
+    // bridge drains within a few tenths of a second, then its aftersound.
+    // The recordings do not fix their phases, so each key gives each string
+    // a fixed one.
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
       if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
       const double order=std::max(1.,haloHz[j]/f1);
@@ -793,6 +798,8 @@ struct Engine::Impl {
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);
       auto& mode=sympathetic[key-21];mode.q+=amplitude*std::cos(phase);mode.p+=amplitude*std::sin(phase);
+      const double prompt=std::pow(10.,m.haloStrings[j].promptDb/20);
+      auto& first=sympathetic[88+j];first.q+=prompt*amplitude*std::cos(phase);first.p+=prompt*amplitude*std::sin(phase);
     }
     // The board's noise: each band's density between the pitches like the
     // partials' levels, tinted and softened like a partial of its order.
@@ -1019,14 +1026,18 @@ struct Engine::Impl {
       // The undamped strings ring from their strikes alone (strike()),
       // heard through their measured pickups like the partials, whatever
       // the Resonance control.
-      for(int j=0;j<halo;++j){auto& mode=sympathetic[firstHalo-21+j];const auto& string=model->haloStrings[j];
-        const double d=mode.decay/(1+180*mute*mute/sampleRate);
-        const double q=mode.q,im=mode.p;
-        mode.q=d*(mode.c*q+mode.s*im);mode.p=d*(mode.c*im-mode.s*q);
-        if(mode.q<1e-30&&mode.q>-1e-30)mode.q=0;
-        if(mode.p<1e-30&&mode.p>-1e-30)mode.p=0;
+      for(int j=0;j<halo;++j){auto& mode=sympathetic[firstHalo-21+j];auto& first=sympathetic[88+j];
+        Resonator* parts[]{&mode,&first};
+        for(auto* part:parts){
+          const double d=part->decay/(1+180*mute*mute/sampleRate);
+          const double q=part->q,im=part->p;
+          part->q=d*(part->c*q+part->s*im);part->p=d*(part->c*im-part->s*q);
+          if(part->q<1e-30&&part->q>-1e-30)part->q=0;
+          if(part->p<1e-30&&part->p>-1e-30)part->p=0;
+        }
         // The bank turns the other way to the partials' lanes.
-        l+=string.left*mode.q;r+=string.rightRe*mode.q+string.rightIm*mode.p;
+        const auto& string=model->haloStrings[j];const double q=mode.q+first.q,im=mode.p+first.p;
+        l+=string.left*q;r+=string.rightRe*q+string.rightIm*im;
       }
       // The pickup's own image at the default width; narrower towards mono.
       const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
