@@ -79,6 +79,13 @@ musical passages through the same engine. Both are frozen evidence from
   0.3 dB closer to them (treble 0.9 dB)
   ([grand](Docs/validation/grand-body-tail-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-body-tail-benchmark-2026-10-29.md)).
+- A strike no longer clicks. Each rise started on a corner that put 8 to
+  20 dB more than the recordings from 8 to 22 kHz into the first 5 ms of the
+  grand's bass and middle notes; smoothed over 0.1 ms, as a felt hammer
+  presses in, it sits within 3 dB of them, and the grand's noise between
+  partials sits 1.2 dB closer to its calibration notes and 0.8 dB to the
+  never-fitted ones
+  ([grand](Docs/validation/grand-onset-smoothing-benchmark-2026-10-29.md)).
 - Both pianos answer velocity alike, at the owner's request: a velocity asks
   for a level under the loudest recorded layer, halfway between a straight
   line and an S-curve, and plays the layer coordinate where that piano's
@@ -221,7 +228,8 @@ its own rate, small frequency offset and stereo pickup: together they make a
 note's prompt fall, the beating of its unison strings, its slow aftersound and
 the way its balance moves between the microphones. A partial starts from the
 phase the recordings show at string contact and rises from zero, never faster
-than its pitch's recorded onset builds up. The lanes run four to a 128-bit
+than its pitch's recorded onset builds up, and like the body's knock without a
+corner: every rise is smoothed over 0.1 ms, as a felt hammer presses in. The lanes run four to a 128-bit
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 

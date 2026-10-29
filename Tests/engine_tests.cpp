@@ -463,6 +463,34 @@ int main(int argc,char** argv){
     }
   }
   {
+    // A strike starts without a click: from 8 kHz up (a fourth-order
+    // Butterworth high-pass) the 5 ms after contact hold no more power than
+    // 20 to 40 ms later. Measured so from their onsets, the grand's
+    // recordings of A1, F#2, C4, C6 and F#5 stay at or under 0 dB at every
+    // layer tried; the rises' corners, unsmoothed, reached 14 dB.
+    auto click=[](const Audio& audio,std::size_t contact){
+      constexpr double pi=3.14159265358979323846;
+      std::array<std::array<double,5>,2> sections{};
+      for(int k=0;k<2;++k){const double q=k?1.3065629648763766:.5411961001461970,w=2*pi*8000/48000;
+        const double alpha=std::sin(w)/(2*q),c=std::cos(w),a0=1+alpha;
+        sections[static_cast<std::size_t>(k)]={(1+c)/2/a0,-(1+c)/a0,(1+c)/2/a0,-2*c/a0,(1-alpha)/a0};}
+      std::vector<double> power(audio.size()/2);
+      for(std::size_t channel=0;channel<2;++channel){std::array<double,4> z{};
+        for(std::size_t i=0;i<power.size();++i){double x=audio[2*i+channel];
+          for(std::size_t k=0;k<2;++k){const auto& s=sections[k];
+            const double y=s[0]*x+z[2*k];z[2*k]=s[1]*x-s[3]*y+z[2*k+1];z[2*k+1]=s[2]*x-s[4]*y;x=y;}
+          power[i]+=x*x;}}
+      auto mean=[&](std::size_t from,std::size_t to){double sum=0;for(std::size_t i=from;i<to;++i)sum+=power[i];return sum/static_cast<double>(to-from);};
+      return 10*std::log10(mean(contact,contact+240)/mean(contact+960,contact+1920));};
+    for(const auto& piano:{dry(),dryUpright()})for(const int key:{33,42,60,84})for(const float velocity:{31.f,61.f,101.f}){
+      keyra::Engine e;e.setParameters(piano);e.noteOn(key,velocity/127);
+      const double db=click(render(e,2400),0);
+      check(db<3,"a strike starts without a click");
+      std::cout<<"model="<<(piano.piano==keyra::Piano::upright?"upright":"grand")<<" key="<<key<<" velocity="<<velocity
+               <<" onset_over_30ms_above_8khz_db="<<db<<'\n';
+    }
+  }
+  {
     // A key let go knocks the body. From F6 up no damper falls, so the strings
     // ring on alike and what the key-up adds is the knock alone: building up
     // rather than clicking, and 2 dB quieter for each second longer the key

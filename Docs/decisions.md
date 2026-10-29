@@ -1105,3 +1105,49 @@ against this fit, went to the owner level-matched with its key. On 2026-10-29
 the owner adopted the candidate under their standing rule that a lettered
 candidate wins over the shipping engine unless they say otherwise; no
 listening verdict was reported.
+## 2026-10-29 — a strike starts without a corner
+
+Every strike clicked. Each partial rises as 1 − e^(−t/rise) and the body's
+knock under its own rise of 0.3 ms, and each starts on a corner, a step in
+slope, whose spectrum reaches to 22 kHz. In the 5 ms after the onset, from 8
+to 22 kHz, each train and dev render stood a median 12 to 17 dB over its
+recording in the bass and 8 to 20 dB in the middle (render less recording,
+each against its 50 to 750 ms RMS, by band of 8 to 12, 12 to 16 and 16 to
+22 kHz), and up to 26 dB at the tenth worst. A felt hammer's force grows
+from zero slope as the felt is pressed in (a power law of its compression),
+so the recordings start without one.
+
+Every strike's rise is now smoothed by one more pole of 0.1 ms
+(`contactSmoothing` in the engine): the partials' through a one-pole on
+their rise, the body's by a second onset bank that cancels the first's slope
+at contact. The 5 ms after the onset now sit a median 2.1, 2.5 and −3.0 dB
+from the recordings in the bass and 2.6, 1.5 and 0.5 dB in the middle. In
+the treble the measure barely moves (17 to 15 dB, 15 to 11, 19 to 13): there
+the recordings' onset falls 2 to 4 ms before the hammer's contact, so their
+first 5 ms hold less of the strike than the render's, whose onset is its
+contact, and the treble's partials fill these bands themselves. At 0.05 ms
+A1's click stayed 3 to 7 dB over its recording at velocity 61, and the
+benchmark's bass noise 0.4 dB further from the recordings than at 0.1 ms.
+
+On the recording benchmark the grand's noise between partials sits 1.22 dB
+closer to its train recordings and 0.77 dB to its never-fitted dev ones (the
+bass 3.55 and 2.34 dB, the middle 0.49 and 0.25 dB); every other measure
+moves by 0.01 dB or less, and the rise times 0.01 ms (train) and 0.08 ms
+(dev) closer. No case regresses ([grand](validation/grand-onset-smoothing-benchmark-2026-10-29.md)).
+The upright's recordings were not in this session, so its benchmark was not
+run; the engine test `a strike starts without a click` holds both pianos:
+from 8 kHz up the 5 ms after contact hold no more than 3 dB over 20 to 40 ms
+later, where unsmoothed they reached 14 dB.
+
+The fits time every rise through 0.25 ms frames and 0.5 ms smoothing, under
+which a 0.1 ms pole is not seen: FITCHECK
+
+Rejected on the way: squaring each rise, (1 − e^(−t/rise))², which is
+smooth at contact without a new time, removed the click as well (noise
+5.38 dB on the train notes) but slowed every onset under rises fitted to the
+unsquared shape, the train rise times 3.70 to 4.51 ms from their recordings;
+it would need every rise of both pianos refitted to it.
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A lettered phrase on both pianos, the shipping engine against
+this one, went to the owner level-matched with its key.
