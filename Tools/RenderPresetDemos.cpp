@@ -59,9 +59,10 @@ int main (int argc, char** argv)
     instrument.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
     for (const auto& preset : keyra::factoryPresets)
         instrument.presets.push_back (preset.name);
-    // U7 perf budget: 0 reports without failing until the CI runner's median
-    // is measured.
-    instrument.cpuBudget = 0.0;
+    // U7 perf budget: about 3x the slowest demo's median realtime factor on
+    // the CI runner, 0.203 (08-pop-upright) in ci.yml run 58 (ubuntu-24.04,
+    // Intel Xeon Platinum 8573C, three repeats), 2026-10-29.
+    instrument.cpuBudget = 0.6;
     instrument.open = [] (std::size_t preset, double sampleRate, int, std::uint32_t)
     {
         // The engine has no random source, so it takes no seed.
