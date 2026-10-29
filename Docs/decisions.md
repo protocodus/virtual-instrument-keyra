@@ -669,3 +669,20 @@ Chosen by measurement. Whether Light's largest change can be heard is the
 owner's to judge: a lettered passage on both pianos, the shipping Full
 against Balanced and Light, went to the owner level-matched with its key,
 and no verdict yet.
+
+## 2026-10-29 — the noise score counts what either sound puts over the recording's floor
+
+The benchmark scored a band's noise between the partials where the
+recording's noise alone stood within 40 dB of its loudest. At a soft note that
+took the recording's own hiss, level to 20 kHz, for the piano's noise, and it
+left out any hiss a render added over a band the recording keeps quiet. A
+band now counts as it does in the band scores: where either sound stands
+within 40 dB of the recording's loudest and 10 dB above the recording's
+floor. Scored again under it, the engine at 98c6740 sits 6.90 dB
+from the grand's train recordings and 6.31 dB from its never-fitted ones
+(5.56 and 5.62 under the old rule), and 7.08 and 7.53 dB from the upright's
+(8.93 and 9.73); 0.3.0 sits 24.7 dB from the grand's never-fitted
+recordings, where the frozen 0.4.0 report, under the rules of its day, scored
+it 25.9. The README's comparison with 0.3.0 now comes from both versions
+scored by the benchmark as it stands
+(`Docs/validation/grand-recording-benchmark-2026-10-29.md`).

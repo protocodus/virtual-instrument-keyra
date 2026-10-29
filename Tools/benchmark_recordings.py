@@ -30,7 +30,9 @@ Metrics per case (lower is better):
   sustain_db      third-octave level error, 0.5-3.0 s; a band counts where
                   either sound is within 50 dB of the recording's peak and
                   10 dB above its floor
-  noise_db        third-octave level between partials, 0-300 ms
+  noise_db        third-octave level between partials, 0-300 ms; a band
+                  counts where either sound is within 40 dB of the
+                  recording's loudest and 10 dB above its floor
   ild_db / icc    per third-octave band left/right level difference and
                   inter-channel coherence error, 0.05-1.5 s
   envelope_db     5 ms RMS envelope error, 0.02-3.5 s, where the recording
@@ -286,8 +288,13 @@ def compare(ref, mod):
     for name, lo, hi in (('attack_db', 0, .1), ('early_db', .1, .5), ('sustain_db', .5, 3.0)):
         m = live & ((t >= lo) & (t < hi))[:, None]
         out[name] = float(np.mean(np.minimum(np.abs(rb - mb)[m], 30))) if m.any() else None
+    # Noise likewise. Scored where the recording's noise alone stood within
+    # 40 dB of its loudest, soft notes scored the recording's hiss, level to
+    # 20 kHz, as the piano's noise, and hiss a render added over a quiet
+    # band went unscored.
     rn, mn = ref['noise'], mod['noise'] + gain_db
-    m = np.isfinite(rn) & np.isfinite(mn) & (rn > np.nanmax(rn) - 40)
+    loud = np.fmax(rn, mn)
+    m = np.isfinite(rn) & np.isfinite(mn) & (loud > np.nanmax(rn) - 40) & (loud > ref['band_floor'][None, :] + 10)
     out['noise_db'] = float(np.mean(np.minimum(np.abs(rn - mn)[m], 30))) if m.any() else None
     # Stereo per band over 0.05-1.5 s.
     sel = (t >= .05) & (t < 1.5)

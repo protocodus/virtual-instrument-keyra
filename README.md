@@ -109,12 +109,12 @@ musical passages through the same engine. Both are frozen evidence from
   mode's level and phase is measured from the library's release and pedal
   recordings, and the knocks sit against the notes as the library's SFZ mixes
   them, since the recordings carry no level of their own.
-- Existing sessions sound different; the median note keeps 0.3.0's level. On
-  the 156 never-fitted cases of the [recording benchmark](Docs/validation/recording-benchmark-split-2026-10-27.md),
-  partial levels sit 3.1 dB from the recordings (0.3.0: 9.3 dB), the attack
-  spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.7 dB (10.2 dB) and the
-  noise between partials 5.8 dB (25.9 dB); its regressions, C4's onset rise
-  and D♯1's tuning first, are listed there.
+- Existing sessions sound different. On the 156 never-fitted cases of the
+  [recording benchmark](Docs/validation/grand-recording-benchmark-2026-10-29.md),
+  partial levels sit 3.1 dB from the recordings (0.3.0: 9.8 dB), the attack
+  spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.6 dB (10.2 dB) and the
+  noise between partials 6.3 dB (24.7 dB); its regressions, C4's and F♯4's
+  onset rise first, are listed there.
 - Adds an upright beside the grand, chosen with the new Piano control and
   three presets (Rehearsal Upright, Felt Upright, Pop Upright): a 1967
   upright with worn hammers in a dry room, measured the grand's way from 137
@@ -480,8 +480,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   At the never-fitted E6, between the recorded pitches, the partials sit
   6.8 dB from the recording and their decay 8.2 dB/s from its, where the
   middle register's sit 5.4 dB and 3.5 dB/s. Its noise between partials
-  scores 9 to 10 dB, most of it above 6 kHz the recordings' own steady floor,
-  which that score does not part from the piano's noise.
+  scores 7.5 to 8.4 dB: at its softest layer the board below 200 Hz sounds up
+  to 19 dB louder than the recording's, and at its loudest the residue
+  between the partials from 1.6 to 8 kHz sits 6 to 13 dB under the
+  recording's.
 - Only Linux VST3 and standalone builds have been validated
   ([pluginval](Docs/validation/pluginval-2026-10-26.txt)); CLAP, the Audio Unit,
   macOS, Windows and Reason are built by CI but not yet accepted in a host.
