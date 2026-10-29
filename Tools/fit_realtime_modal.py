@@ -630,6 +630,42 @@ def prompt_fit(windows, rates, strings):
     return (count * fit.x[:-1] + 10 * len(PROMPT_TIMES) * median) / (count + 10 * len(PROMPT_TIMES)), rate
 
 
+def halo_slope_fit(groups, start):
+    """How fast the strings grow with the strike, from `groups`, rows of (the
+    levels the layers play at, the string's levels there, both in dB, whether
+    each is clear, the octaves the string lies over the struck fundamental):
+    a slope (dB per dB) and how much it rises per octave, shared by every
+    group, and each group's level at 0 dB, its pitch's loudest layer. A clear
+    level measures it and a hidden one bounds it from above, with one spread
+    for every layer (a censored fit, from the slope `start`). Fitted on the
+    clear layers alone, with no rise, the slope came out about a quarter too
+    shallow, as in soft layers only the strings that ring loudest ring
+    clear."""
+    import math
+    import numpy as np
+    from scipy import optimize, special
+    g = np.concatenate([np.full(len(v), k) for k, (v, _, _, _) in enumerate(groups)])
+    x = np.concatenate([v for v, _, _, _ in groups])
+    o = np.concatenate([np.full(len(v), o) for v, _, _, o in groups])
+    y = np.concatenate([y for _, y, _, _ in groups])
+    clear = np.concatenate([c for _, _, c, _ in groups])
+    def loss(p):
+        spread = math.exp(p[2])
+        z = (y - p[3:][g] - (p[0] + p[1] * o) * x) / spread
+        hidden = special.log_ndtr(z[~clear])
+        mills = np.exp(-z[~clear] ** 2 / 2 - hidden) / math.sqrt(2 * math.pi)
+        dz = np.where(clear, z, 0.0)
+        dz[~clear] = -mills
+        return (np.sum(p[2] + z[clear] ** 2 / 2) - np.sum(hidden),
+                np.r_[-np.dot(dz, x), -np.dot(dz, x * o), np.sum(1 - z[clear] ** 2) + np.dot(mills, z[~clear]),
+                      -np.bincount(g, dz, minlength=len(groups))] / np.r_[spread, spread, 1, np.full(len(groups), spread)])
+    p = np.r_[start, 0, math.log(4), [np.mean(y[c] - start * v[c]) for v, y, c, _ in groups]]
+    fit = optimize.minimize(loss, p, jac=True, method='L-BFGS-B', options={'maxiter': 10000})
+    if not fit.success:
+        raise SystemExit(f'the halo slope fit did not converge: {fit.message}')
+    return float(fit.x[0]), float(fit.x[1]), fit.x[3:]
+
+
 def halo_pitches(results, strings, wav):
     """Each undamped string's frequency (Hz), by key: through a Hann window
     from 1 to 2 s after contact in the train recordings struck from C6 up,
@@ -656,29 +692,38 @@ def halo_pitches(results, strings, wav):
     return {key: float(np.median(hzs)) if hzs else strings[key] for key, hzs in found.items()}
 
 
-def halo_data(results, strings, hz, wav):
+def halo_data(results, strings, hz, wav, grid, layer_level):
     """The undamped strings every strike sets ringing (see HALO_TIMES), at
     their frequencies `hz` (halo_pitches) by key; `strings` are the pitches
     the engine gives their keys.
 
-    Each string decays at one rate and is heard through one stereo pickup.
-    The pickup: the median right-over-left level and the mean phase between
-    the channels over every window where the string rings clear; a string
-    that never does is heard through the pickup of the nearest string that
-    does. The rate: the string's fall from 1 to 2 s where it
-    rings 20 dB clear at the start and 6 dB at the end, the median over the
-    recordings, drawn towards the median of all the strings' by ten
-    recordings' worth (most ring clear in dozens, a few in under five).
-    Brought back to contact at that rate, its level in a layer is the mean
-    over the windows where it rings clear, if two or more; otherwise the
-    recording only bounds it, at the 1 s window's tone. One slope across
-    velocity (dB per 64) serves every string and pitch, pooled within each
-    pitch and string that rings clear in three layers or more. A recorded
-    pitch's level for a string at velocity 64 is the mean over the layers
-    where it rings clear, if two or more do; otherwise HALO_HIDDEN under the
-    median bound. A string that the struck key's series or its own key
-    covers, and every string below HALO_LOWEST, takes the levels of the
-    recorded pitches around it, interpolated by key and held beyond them.
+    Each string decays at one rate and is heard through one stereo pickup. The
+    pickup: the median right-over-left level and the mean phase between the
+    channels over every window where the string rings clear; a string that
+    never does is heard through the pickup of the nearest string that does.
+    The rate: the string's fall from 1 to 2 s where it rings 20 dB clear at
+    the start and 6 dB at the end, the median over the recordings, drawn
+    towards the median of all the strings' by ten recordings' worth (most ring
+    clear in dozens, a few in under five). Brought back to contact at that
+    rate, its level in a layer is the mean over the windows where it rings
+    clear, if two or more; otherwise the recording only bounds it, at the 1 s
+    window's tone. The strings ring louder as the strike plays louder, in dB
+    per dB of the level its layer plays at (`layer_level` over the velocities
+    `grid`, as the body's knock takes it): in dB of velocity they grow fastest
+    in soft playing, as the layers do. A harder strike is brighter, so the
+    slope rises with how many octaves a string lies over the struck
+    fundamental; the slope and its rise serve every string and pitch. Where a
+    string rings clear in two or more of a recorded pitch's layers, they and
+    its level there at the loudest layer are fitted together over all those
+    layers, the hidden ones as bounds (halo_slope_fit), from the slope pooled
+    within each pitch and string that rings clear in three layers or more.
+    Elsewhere the level is HALO_HIDDEN under the median bound brought to the
+    loudest layer at that slope, but never over the tightest, so that no layer
+    plays it over its recording: the steepest slopes bring the soft layers'
+    bounds so far up that their median stands over the loud layers' own. A
+    string that the struck key's series or its own key covers, and every
+    string below HALO_LOWEST, takes the levels of the recorded pitches around
+    it, interpolated by key and held beyond them.
     Each string starts with its own prompt part (see PROMPT_TIMES and
     prompt_fit), measured in the early windows of every layer where the
     string rang clear from 1 to 2 s."""
@@ -694,7 +739,8 @@ def halo_data(results, strings, hz, wav):
             continue
         ladder = pa.stiff(*series(r), np.arange(1, 400))
         shape = (len(r['layers']), len(keys), len(t))
-        m = {'anchor': a, 'velocities': np.array([L['velocity'] for L in r['layers']], float),
+        m = {'anchor': a, 'x': np.interp([L['velocity'] for L in r['layers']], grid, layer_level),
+             'octaves': np.log2(np.maximum(1, np.array([hz[key] for key in keys]) / series(r)[0])),
              'apart': np.array([key != r['note'] and np.min(np.abs(ladder - hz[key])) >= HALO_APART for key in keys]),
              'tone': np.full(shape, np.nan), 'margin': np.full(shape, np.nan),
              'channels': np.zeros(shape + (2,), complex)}
@@ -733,9 +779,11 @@ def halo_data(results, strings, hz, wav):
         for j in np.flatnonzero(m['apart']):
             rang = m['rang'][:, j]
             if rang.sum() >= 3:
-                xs += list((m['velocities'][rang] - m['velocities'][rang].mean()) / 64)
+                xs += list(m['x'][rang] - m['x'][rang].mean())
                 ys += list(m['level'][rang, j] - m['level'][rang, j].mean())
-    slope = float(np.dot(xs, ys) / np.dot(xs, xs))
+    rung = [(m, j) for m in measured for j in np.flatnonzero(m['apart']) if m['rang'][:, j].sum() >= 2]
+    slope, rise, loudest = halo_slope_fit([(m['x'], m['level'][:, j], m['rang'][:, j], m['octaves'][j])
+                                           for m, j in rung], float(np.dot(xs, ys) / np.dot(xs, xs)))
     windows = []
     for m in measured:
         r = results[m['anchor']]
@@ -751,21 +799,22 @@ def halo_data(results, strings, hz, wav):
     prompts, prompt_rate = prompt_fit(windows, rates, len(keys))
     levels = np.full((len(results), len(keys)), np.nan)
     kinds = [['filled'] * len(keys) for _ in results]
+    for (m, j), level in zip(rung, loudest):
+        levels[m['anchor'], j], kinds[m['anchor']][j] = level, 'clear'
     for m in measured:
-        at64 = m['level'] - slope * (m['velocities'][:, None] - 64) / 64
+        bounds = m['level'] - (slope + rise * m['octaves'][None, :]) * m['x'][:, None]
         for j in np.flatnonzero(m['apart']):
             rang = m['rang'][:, j]
-            if rang.sum() >= 2:
-                levels[m['anchor'], j], kinds[m['anchor']][j] = np.mean(at64[rang, j]), 'clear'
-            else:
-                levels[m['anchor'], j], kinds[m['anchor']][j] = np.median(at64[~rang, j]) - HALO_HIDDEN, 'under'
+            if rang.sum() < 2:
+                level = min(np.median(bounds[~rang, j]) - HALO_HIDDEN, np.min(bounds[~rang, j]))
+                levels[m['anchor'], j], kinds[m['anchor']][j] = level, 'under'
     notes = np.array([r['note'] for r in results], float)
     for j in range(len(keys)):
         known = np.isfinite(levels[:, j])
         levels[~known, j] = np.interp(notes[~known], notes[known], levels[known, j])
     return {'keys': keys, 'hz': [hz[key] for key in keys],
             'cents': [1200 * math.log2(hz[key] / strings[key]) for key in keys], 'rates': rates.tolist(),
-            'rate_layers': [len(x) for x in falls], 'pickups': pickups, 'slope': slope, 'levels': levels,
+            'rate_layers': [len(x) for x in falls], 'pickups': pickups, 'slope': slope, 'rise': rise, 'levels': levels,
             'kinds': kinds, 'prompts': prompts.tolist(), 'prompt_rate': prompt_rate,
             'prompt_windows': np.bincount([row[0] for row in windows], minlength=len(keys)).tolist(),
             'prompt_clear': np.bincount([row[0] for row in windows if row[3]], minlength=len(keys)).tolist()}
@@ -1487,9 +1536,12 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
               + ','.join('{' + ','.join(number(x) for x in (c, r, d, u[0], u[1].real, u[1].imag)) + '}'
                          for c, r, d, u in zip(halo['cents'], halo['rates'], halo['prompts'], halo['pickups'])) + '}};',
               '// How loudly each recorded pitch\'s strike sets each undamped string',
-              '// ringing: the level (dB) at contact at velocity 64, and the slope of',
-              '// every level (dB per 64 velocity).',
+              '// ringing: the level (dB) at contact at its loudest layer; how fast every',
+              '// level grows with the level the strike\'s layer plays at (dB per dB),',
+              '// and how much faster per octave the string lies over the struck key\'s',
+              '// fundamental, as a harder strike is brighter.',
               f'constexpr float haloSlopeDb={number(halo["slope"])};',
+              f'constexpr float haloSlopeRiseDb={number(halo["rise"])};',
               '// The decay rate (1/s) of the prompt part every undamped string starts with.',
               f'constexpr float haloPromptRate={number(halo["prompt_rate"])};']
     lines += table('float', 'haloLevels', strings, [[number(x) for x in levels] for levels in halo['levels']])
@@ -1579,7 +1631,7 @@ def generate(model):
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
     action = action_data(model, [a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
-    halo = halo_data(results, strings, halo_hz, model['wav'])
+    halo = halo_data(results, strings, halo_hz, model['wav'], grid, layer_level)
     for record, kinds in zip(records, halo['kinds']):
         record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
                                   for kind in ('clear', 'under', 'filled')}
@@ -1613,9 +1665,10 @@ def generate(model):
                   'in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: '
                   'per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings\' median '
                   'by ten recordings) and one stereo pickup (the median level difference and mean phase between '
-                  'the channels), one velocity slope pooled within pitch and string, and per anchor and string a '
-                  'level at contact at velocity 64: the mean over the layers clear in two or more windows, '
-                  'brought back at the rate, or else 10 dB under the median 1 s bound; strings the struck series '
+                  'the channels), one slope in the level the strike\'s layer plays at (dB per dB) rising by one step per octave the string lies over the struck fundamental, and per anchor and string a level at contact at its loudest layer: '
+                  'where the string rang clear in two or more windows of two or more layers, fitted with the slope '
+                  'over every layer, the clear ones\' mean level brought back at the rate and the others\' 1 s '
+                  'tone as an upper bound (one spread, censored), or else 10 dB under the median 1 s bound but never over the tightest; strings the struck series '
                   'or key covers and anchors below F#3 take the levels of the anchors around. Every string '
                   'starts with its own prompt part, all decaying at one rate: through 0.25 s Hann windows from '
                   '0.125 to 0.5 s after contact, in the layers where a string 60 Hz from every partial rang clear '
@@ -1646,7 +1699,7 @@ def generate(model):
                              for key, hz, cents, rate, count, prompt, windows, clear, u
                              in zip(halo['keys'], halo['hz'], halo['cents'], halo['rates'], halo['rate_layers'],
                                     halo['prompts'], halo['prompt_windows'], halo['prompt_clear'], halo['pickups'])],
-                 'slope_db_per_64': round(halo['slope'], 3), 'prompt_rate': round(halo['prompt_rate'], 3)},
+                 'slope_db_per_layer_db': round(halo['slope'], 3), 'slope_rise_per_octave': round(halo['rise'], 3), 'prompt_rate': round(halo['prompt_rate'], 3)},
         'body': {'modes': len(body['hz']), 'hz': [round(float(f), 2) for f in body['hz']],
                  't60_seconds': [round(6.907755 / float(r), 3) for r in body['rates']],
                  'pickup_explained': [round(k, 3) for k in body['pickup_explained']],

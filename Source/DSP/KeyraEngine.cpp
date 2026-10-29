@@ -43,7 +43,7 @@ struct Model {
   int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;
   const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
-  const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloPromptRate;
+  const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloSlopeRiseDb,haloPromptRate;
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb;
@@ -54,7 +54,7 @@ struct Model {
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
    grand::partials.data(),grand::extras.data(),0,0,
-   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloPromptRate,
+   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
    grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,
    // The action's noises against the notes, as the library's own SFZ mixes
@@ -81,7 +81,7 @@ constexpr Model models[]{
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
-   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloPromptRate,
+   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloSlopeRiseDb,upright::haloPromptRate,
    upright::bodyModes.data(),static_cast<int>(upright::bodyModes.size()),upright::bodyRise,upright::knocks.data(),
    upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,
    // The library's Stereo Ribbon preset plays every recording at its own
@@ -784,16 +784,18 @@ struct Engine::Impl {
     ringing=rising=true;
     // The undamped strings: the strike sets every one ringing but its own
     // key's, which its partials play, at the level the two pitches around
-    // the key set it (dB between them), softened and tinted like a
-    // component of its order. They ring on in the shared bank whatever
-    // damps the strings, each first with its own prompt part, which the
-    // bridge drains within a few tenths of a second, then its aftersound.
-    // The recordings do not fix their phases, so each key gives each string
-    // a fixed one.
+    // the key set it (dB between them), growing faster than the level the
+    // strike's layer plays at, the faster the higher its order, softened and
+    // tinted like a component of that order. They ring on in the shared bank
+    // whatever damps the strings, each first with its own prompt part, which
+    // the bridge drains within a few tenths of a second, then its
+    // aftersound. The recordings do not fix their phases, so each key gives
+    // each string a fixed one.
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
       if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
       const double order=std::max(1.,haloHz[j]/f1);
-      const double level=mix(m.haloLevels[(upper-1)*halo+j],m.haloLevels[upper*halo+j],t)+m.haloSlopeDb*(v-64)/64;
+      const double level=mix(m.haloLevels[(upper-1)*halo+j],m.haloLevels[upper*halo+j],t)
+                         +(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*layerDb;
       const double amplitude=std::pow(10.,level/20)*softGain*std::exp(-soft*.115*(order-1))
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);

@@ -885,3 +885,87 @@ Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage on both pianos, the shipping engine
 against this fit, went to the owner level-matched with its key, and no
 verdict yet.
+
+## 2026-10-29 — the undamped strings grow with the strike, fitted with hidden layers as bounds
+
+Soft strikes rang the undamped strings from F6 up too loud. One slope in
+velocity served every string, fitted on the layers where a string rings clear
+from 1 to 2 s, and in soft layers only the strings that ring loudest do, so it
+came out about a quarter too shallow and soft strikes rang strings the
+recordings leave under the noise. Measured as `Tools/compare_ring_levels.py`
+measures them, at their two softest layers the grand's never-fitted notes rang
+17 and 25 % of these strings 10 dB or more over the recordings at 1 s, and the
+upright's F♯3 at velocity 51 rang G♯6 27.6 dB over.
+
+The fit now reads every layer of a pitch and string that rings clear in two or
+more of them: a layer where the string rings clear measures its level, brought
+back to contact at its rate, and one where the noise hides it bounds it from
+above at its 1 s tone, with one spread for every layer (a censored fit). The
+level grows in dB per dB of the level the strike's layer plays at, as the
+knock's does, and the slope rises with the octaves the string lies over the
+struck fundamental, as a harder strike is brighter: 1.48 dB per dB and 0.38
+more per octave on the grand, 1.39 and 0.47 on the upright. Over those
+strings' layers the censored fit's negative log-likelihood is 2478.0 (grand)
+and 548.2 (upright) with velocity as the regressor, 2427.6 and 551.8 with the
+layer level and 2184.1 and 518.4 with the rise, one parameter more. A string
+hidden in all but one layer of a pitch sits 10 dB under its median bound,
+brought to the loudest layer at that slope, but never over its tightest: the
+steep slopes of the high strings bring the soft layers' bounds so far up that
+the median alone played 40 % of these strings over their own recording in the
+grand's three loudest layers and 45 % in the upright's.
+
+At 1 s the strings ring 10 dB or more over the grand's never-fitted recordings
+at 2.7 % of them (6.0 % before), none and 6 % at the two softest layers, and
+over its train recordings at 1.5 % (2.2); the upright's at 0.7 % of its train
+strings (2.5), and F♯3's G♯6 1.7 dB over. At 0.125 s, prompt parts included,
+4.1 % of the grand's never-fitted strings ring 10 dB over (5.7) and 5.5 % of
+the upright's (10.5). The strings that ring clear sit a median 1.2 dB over the
+grand's never-fitted recordings at 1 s (1.8), mean absolute error 3.7 dB
+(3.8), and 5.7 dB under the upright's (7.9), 8.7 dB (10.3). The upright's
+never-fitted pitches ring 16 of their 295 strings 10 dB or more over at 1 s,
+where one rang: at the two loudest layers of G♯3, B3, C5 and E6 the pitches
+around them set a hidden string at its tightest bound, which those notes'
+recordings hold under.
+
+Rejected, each scored the same way:
+
+- The censored slope in velocity (dB per 64). The soft layers came right, but
+  in velocity the layers' levels curve, and the loudest layers rang 19 % of the
+  grand's never-fitted strings at its loudest layer 10 dB over at 2 s (8 %
+  before).
+- The slope in the layer level with no rise. Soft strikes came right on both
+  pianos, and on the benchmark it had no regressions, but the steeper slope
+  brought hidden strings' median bounds up: at the loudest layer 11 % of the
+  grand's never-fitted strings rang 10 dB over at 1 s, against 3 % before and
+  with the rise.
+- The rise with each hidden string 10 dB under its median bound. Over F♯3
+  the upright's C8 string grows 3.5 dB per dB, which brings the soft layers'
+  bounds up so far that at its loudest layer 31 % of its train strings and
+  47 % of its never-fitted ones rang 10 dB over at 1 s.
+- The rise with each hidden string 10 dB under its tightest bound. Nothing
+  rings over, but the pitches between such a string and one ringing clear
+  play it too quietly: on the upright the strings that ring clear sat a median
+  11.4 dB under its never-fitted recordings at 1 s (7.9 before), half of them
+  10 dB or more under, and 9.3 dB under its train recordings at 0.25 s (4.5).
+
+On the recording benchmark against the shipping engine (badc9d7) the grand
+barely moves and has no regressions; its train treble's early and sustain
+spectra sit 0.08 and 0.07 dB further from the recordings
+([grand](validation/grand-halo-velocity-benchmark-2026-10-29.md)). The
+upright's noise between partials sits 0.09 dB closer to its train recordings
+and 0.10 dB to its never-fitted ones, and F♯3's at its softest layer 11.30 dB
+from the recording, where it sat 19.21
+([upright](validation/upright-halo-velocity-benchmark-2026-10-29.md)). One
+regression: A1's noise score on the train takes, 7.26 to 7.95 dB, from its
+velocity-51 layer, where the score counts the 2.5 kHz band in four time cells
+under the shipping engine and in one under this fit. The strings no longer
+lift the render's band over the count's threshold in the other three, and the
+one left, where the board noise sits 12.7 dB over the recording, decides it.
+Below F♯3 no recorded pitch measures the strings, so a bass note's strings
+take F♯3's levels and the rise runs on past the 4.5 octaves the fit saw; A1
+is the only bass note the benchmark moves by more than its tolerance.
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A short lettered passage of soft and hard strikes on both pianos,
+the shipping engine against this fit, went to the owner level-matched with its
+key, and no verdict yet.

@@ -106,6 +106,19 @@ musical passages through the same engine. Both are frozen evidence from
   second the strings that ring clear sit a median 2 to 4 dB under the grand's
   recordings, where they sat 5 to 8 dB under, and 2 to 8 dB under the
   upright's, where they sat 5 to 11 dB under.
+- The undamped strings grow with the strike as the recordings' do. Fitted only
+  where they ring clear, which in soft layers only the loudest strings do,
+  they grew too slowly, so soft strikes rang strings the recordings leave
+  under the noise: at the two softest layers of the grand's never-fitted
+  notes 17 and 25 % of them rang 10 dB or more over the recordings a second
+  after the strike, and the upright's F♯3 at velocity 51 rang G♯6 27.6 dB
+  over. The fit now takes a hidden string's tone as a bound, and the strings
+  grow faster than the level the strike's layer plays at, the faster the
+  further they lie over the struck note: those shares are now none and 6 %,
+  2.7 % of the grand's never-fitted strings at every layer (6.0 %), and G♯6
+  rings 1.7 dB over
+  ([grand](Docs/validation/grand-halo-velocity-benchmark-2026-10-29.md),
+  [upright](Docs/validation/upright-halo-velocity-benchmark-2026-10-29.md)).
 - A key between two recorded pitches plays about as loud as they do. Its
   partials' lanes were blended one by one and, with offsets, phases and
   stereo pickups neither pitch has, beat and cancelled where neither pitch's
@@ -279,11 +292,17 @@ stands 10 dB over the median 4–20 Hz either side and 10 Hz from every partial
 of the struck key. A string's pitch is the median of its strongest peak in the
 recordings from C6 up; its stereo pickup the median level difference and mean
 phase between the channels; its decay its fall from 1 to 2 s, drawn towards the
-strings' median; its level at a recorded pitch the mean over the layers where
-it rings clear, brought back to contact, or 10 dB under the tone where the
-noise hides it, with one velocity slope for every string. Their prompt parts
-are measured the same way through quarter-second windows at 0.125, 0.25, 0.375
-and 0.5 s, where a string stands 60 Hz from every partial of the struck key and
+strings' median. Its level at a recorded pitch is fitted over every layer where
+it rings clear in two or more: a layer where it rings clear measures it,
+brought back to contact, and one where the noise hides it bounds it from above
+at that tone (a censored fit, one spread for every layer); elsewhere it sits 10
+dB under the median bound but never over the tightest. One slope serves every
+string and pitch, in dB per dB of the level the strike's layer plays at, as the
+knock's does, and rises with the octaves the string lies over the struck
+fundamental, as a harder strike is brighter: 1.48 dB per dB and 0.38 more per
+octave on the grand, 1.39 and 0.47 on the upright. Their prompt parts are
+measured the same way through quarter-second windows at 0.125, 0.25, 0.375 and
+0.5 s, where a string stands 60 Hz from every partial of the struck key and
 rings clear 10 dB over the median 16–60 Hz either side: each window's excess
 over the string's own line. One decay serves every string, fitted where they
 ring clear; each string's level counts the windows where the noise hides it as
@@ -463,23 +482,27 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   without its unison's beating, which dips the recordings' strings 3 to 10 dB
   from half a second on, and past its prompt part falls at its rate from 1 to
   2 s, where the real strings fall more slowly later: the strings that ring
-  clear sit a median 1.8 dB over the grand's never-fitted recordings at 1 s and
-  1.7 dB under at 3 s, when 8 % of them are 10 dB or more under, and 0.5 and
-  9 dB under the upright's train recordings. The prompt parts share one decay,
-  and a string that few strikes measure takes much of the strings' median
-  level: at 0.125 s 6 % of the strings ring 10 dB or more over the grand's
-  never-fitted recordings and 10 % over the upright's, against 5 and 6 %
-  without the prompt parts. The upright's G7 recording at velocity 51 holds
-  F♯7's string 30 to 35 dB under the fundamental in its first half second,
-  where the engine plays it 3 to 10 dB further under. Where a recorded pitch's
-  own partials cover a string, its level there is interpolated from the pitches
-  around it; below F♯3 each string keeps the level of the lowest pitch that
-  measured it. One velocity slope serves every string, fitted where they ring
-  clear, which in soft layers only the loudest do, so soft strikes ring them
-  too loud: the upright's F♯3 rings G♯6 27 dB over what its velocity-51
-  recording allows, and its soft bass notes' band around 1.6 kHz sits 8 to
-  22 dB over their recordings in the first 0.3 s, 4 to 5 dB of it from the
-  prompt parts.
+  clear sit a median 1.2 dB over the grand's never-fitted recordings at 1 s
+  and 1.0 dB under at 3 s, when 10 % of them are 10 dB or more under, and 0.7
+  and 9 dB under the upright's train recordings. The prompt parts share one
+  decay, and a string that few strikes measure takes much of the strings'
+  median level: at 0.125 s 4 % of the strings ring 10 dB or more over the
+  grand's never-fitted recordings and 6 % over the upright's. The upright's G7
+  recording at velocity 51 holds F♯7's string 30 to 35 dB under the
+  fundamental in its first half second, where the engine plays it 3 to 10 dB
+  further under. Where a recorded pitch's own partials cover a string, its
+  level there is interpolated from the pitches around it; below F♯3 each
+  string keeps the level of the lowest pitch that measured it, and the slope
+  by which they grow with the strike, which the fit sees rise over 4.5 octaves
+  of the struck note, rises on past them under the bass notes. Where the noise
+  hides a string in all but one of a recorded pitch's layers, the recordings
+  only bound it: the string sits 10 dB under its median bound, never over its
+  tightest, and at their two loudest layers the upright's never-fitted G♯3,
+  B3, C5 and E6 ring 16 of their 295 strings 10 dB or more over their
+  recordings at 1 s, where the pitches around them set such a string at that
+  bound. In their first 0.3 s soft bass strikes still ring the upright's band
+  around 1.6 kHz off its recordings: F♯3's softest layer 9 dB over (22 dB
+  before this fit) and D♯1's two softest 6 to 13 dB under (8 to 9 dB over).
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.
