@@ -7,5 +7,19 @@
   ],
   "date": "2026-10-27",
   "reason": "accidental read, not a candidate evaluation: an exploratory probe of the partials' inter-channel phase across ten recordings included the sealed D#2v7 among them; the probe was re-run without it and only that result was used"
+ },
+ {
+  "renderer": "keyra_render at badc9d7, the shipping engine",
+  "renderer_sha256": "afe305cbc260c2986a6855e327fc4cfffc59f8803179b2f59fdddbdf992adad8",
+  "cases": [
+   "D#4v6",
+   "D#4v10",
+   "D#4v14",
+   "D#6v6",
+   "D#6v10",
+   "D#6v14"
+  ],
+  "date": "2026-10-29",
+  "reason": "accidental read, not a candidate evaluation: an exploratory probe of the spectrum below 250 Hz under every third note from C4 to C7 at layers 6, 10 and 14, recording against the shipping engine, chose its cases from the corpus without the split and so included the sealed D#4 and D#6 among them (run twice); the probe was re-run on train and dev cases only and only that result was used"
  }
 ]
