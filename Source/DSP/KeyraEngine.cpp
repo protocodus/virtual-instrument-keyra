@@ -22,6 +22,20 @@ namespace upright=measured::upright;
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
 static_assert(upright::haloStrings.size()==grand::haloStrings.size(),"both pianos leave the same keys undamped");
+// A felt hammer's force grows from zero slope as the felt is pressed in (a
+// power law of its compression, exponent 2.2 to 3.5: Hall, JASA 92(1),
+// 1992; Stulov, JASA 97(4), 1995), so a strike's sound starts without a
+// corner. The rises the fits measure, 1 - e^(-t/rise), start on one, and
+// played as they are they put a click into every strike: from 8 to 22 kHz,
+// in the 5 ms after the onset, the grand's bass and middle stood a median 8
+// to 20 dB over their recordings (Docs/decisions.md, 2026-10-29). Every
+// strike's rise is therefore smoothed by one more pole of this time, which
+// brings them within 3 dB; at 0.05 ms A1 stays 3 to 7 dB over. It lies under
+// the 0.25 ms frames and 0.5 ms smoothing through which the fits time the
+// rises.
+constexpr double contactSmoothing=1e-4;
+static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing,
+              "the body's rise is slower than the contact's smoothing");
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
 }
@@ -145,7 +159,8 @@ Complex power(Complex base,int exponent) noexcept {
 }
 // One partial: four complex lanes, each a damped rotation at its own rate and
 // frequency, under one rise 1 - d, d = e^(-t/rise), that starts them from
-// zero. Each microphone hears the real part of a complex weighted sum.
+// zero, smoothed by contactSmoothing. Each microphone hears the real part of
+// a complex weighted sum.
 struct alignas(16) Partial {
   V4 re{},im{},c{},s{};
   V4 leftRe{},leftIm{},rightRe{},rightIm{};
@@ -161,6 +176,7 @@ struct alignas(16) Partial {
   double slowShare=0,slowScale=0;
   double riseExact=0,riseStep=0,riseLeap=0; // d at the next chunk boundary, per sample and per chunk
   float riseRemaining=0,riseDecay=0;        // d's float copy, run one chunk from riseExact
+  float riseSmoothed=0;                     // the rise through contactSmoothing
   float tint=1,audibility=1,targetAudibility=1;
   bool rising=false;
 };
@@ -412,11 +428,13 @@ struct Engine::Impl {
   std::array<V4,chunk> mixLeft{},mixRight{};
   // The body rings in `ring`, and the slower second stage of each mode's ring
   // in `lateRing`. `onset` holds the same modes decaying faster by the
-  // measured body rise; each strike adds its knock to the two rings and takes
-  // both from it, so their sum starts from zero. The action's knocks (keys
-  // let go, the sustain pedal) build up more slowly, by the action's rise in
-  // `actionOnset`, and ring in `ring` only, as they were measured.
-  Body ring{},lateRing{},onset{},actionOnset{};
+  // measured body rise and `contactOnset` faster by contactSmoothing; each
+  // strike takes its knock on the two rings from them, so that their sum
+  // starts from zero under the body's rise smoothed by contactSmoothing. The
+  // action's knocks (keys let go, the sustain pedal) build up more slowly, by
+  // the action's rise in `actionOnset`, and ring in `ring` only, as they were
+  // measured.
+  Body ring{},lateRing{},onset{},contactOnset{},actionOnset{};
   bool ringing=false,rising=false,actionRising=false;
   std::array<Burst,maxBursts> bursts{};
   std::array<NoiseBand,noiseBands> noise{};
@@ -425,6 +443,7 @@ struct Engine::Impl {
   bool hissing=false;
   Parameters parameters{};
   double sampleRate=48000,gain=.7,width=.75,mute=0;
+  float contactShare=1; // a sample's step of the rise's smoothing
   double smooth=0,controlSmooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   float previousBrightness=.5f;
   std::uint64_t serial=0,frame=0;
@@ -499,16 +518,17 @@ struct Engine::Impl {
   }
   void prepareBody() noexcept {
     // Each bank's decay per sample beyond the ring's; the late ring's is its own.
-    const double settle[3]={1,std::exp(-1/(model->bodyRise*sampleRate)),std::exp(-1/(model->actionRise*sampleRate))};
+    const double settle[4]={1,std::exp(-1/(model->bodyRise*sampleRate)),std::exp(-1/(model->actionRise*sampleRate)),
+                            std::exp(-1/(contactSmoothing*sampleRate))};
     for(int m=0;m<bodyBanks*lanes;++m){
       const int k=m/lanes,j=m%lanes;
       const bool real=m<model->bodyModeCount;const auto& mode=model->bodyModes[real?m:0];
       const double d=real?std::exp(-mode.rate/sampleRate):0,w=2*pi*mode.hz/sampleRate;
       const double e=real?std::exp(-mode.slowRate/sampleRate):0;
       const Complex step{d*std::cos(w),d*std::sin(w)},lateStep{e*std::cos(w),e*std::sin(w)};
-      BodyBank* banks[4]={&ring[k],&onset[k],&actionOnset[k],&lateRing[k]};
-      for(int b=0;b<4;++b){auto* bank=banks[b];
-        const Complex s=b==3?lateStep:b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
+      BodyBank* banks[5]={&ring[k],&onset[k],&actionOnset[k],&contactOnset[k],&lateRing[k]};
+      for(int b=0;b<5;++b){auto* bank=banks[b];
+        const Complex s=b==4?lateStep:b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
         bank->step[j]=s;bank->leap[j]=power(s,chunk);
         setLane(bank->c,j,static_cast<float>(s.re));setLane(bank->s,j,static_cast<float>(s.im));
         setLane(bank->left,j,real?mode.left:0.f);
@@ -620,7 +640,7 @@ struct Engine::Impl {
     }
   }
   void silenceBody() noexcept {
-    Body* bodies[4]={&ring,&lateRing,&onset,&actionOnset};
+    Body* bodies[5]={&ring,&lateRing,&onset,&contactOnset,&actionOnset};
     for(auto* body:bodies)for(auto& bank:*body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
     ringing=rising=actionRising=false;
   }
@@ -679,7 +699,7 @@ struct Engine::Impl {
     for(auto& channel:channels)
       channel.smoothedMute+=controlSmooth*(std::max(parameters.mute,channel.mute)-channel.smoothedMute);
     if(ringing){const bool early=advance(ring),late=advance(lateRing);ringing=early||late;}
-    if(rising)rising=advance(onset);
+    if(rising){const bool body=advance(onset),contact=advance(contactOnset);rising=body||contact;}
     if(actionRising)actionRising=advance(actionOnset);
     if(hissing)advanceNoise();
     const bool tintChanged=previousBrightness!=parameters.brightness;
@@ -790,7 +810,10 @@ struct Engine::Impl {
       const double late=std::pow(10.,lateLevel/20)*softGain,latePhase=t<.5?x.slowPhase:y.slowPhase;
       const Complex h{late*std::cos(latePhase),late*std::sin(latePhase)};
       knock(ring[k/lanes],k%lanes,g,ahead);knock(lateRing[k/lanes],k%lanes,h,ahead);
-      knock(onset[k/lanes],k%lanes,{-g.re-h.re,-g.im-h.im},ahead);
+      // 1 - (rise e^(-t/rise) - s e^(-t/s)) / (rise - s), s = contactSmoothing.
+      const double rise=m.bodyRise,body=-rise/(rise-contactSmoothing),contact=contactSmoothing/(rise-contactSmoothing);
+      knock(onset[k/lanes],k%lanes,{body*(g.re+h.re),body*(g.im+h.im)},ahead);
+      knock(contactOnset[k/lanes],k%lanes,{contact*(g.re+h.re),contact*(g.im+h.im)},ahead);
     }
     ringing=rising=true;
     // The undamped strings: the strike sets every one ringing but its own
@@ -949,7 +972,7 @@ struct Engine::Impl {
     partial.riseStep=std::exp(-1/(rise*sampleRate));
     partial.riseLeap=std::pow(partial.riseStep,chunk);
     partial.riseExact=std::pow(partial.riseStep,ahead);
-    partial.riseRemaining=1;partial.riseDecay=static_cast<float>(partial.riseStep);
+    partial.riseRemaining=1;partial.riseSmoothed=0;partial.riseDecay=static_cast<float>(partial.riseStep);
     partial.rising=true;
     for(int k=0;k<lanes;++k)
       partial.energyWeight[k]=static_cast<double>(partial.baseLeftRe[k])*partial.baseLeftRe[k]+static_cast<double>(partial.baseLeftIm[k])*partial.baseLeftIm[k]
@@ -1019,13 +1042,14 @@ struct Engine::Impl {
         V4 re=partial.re,im=partial.im;
         const V4 c=partial.c,s=partial.s,lr=partial.leftRe,li=partial.leftIm,rr=partial.rightRe,ri=partial.rightIm;
         if(partial.rising){
-          float d=partial.riseRemaining;const float decay=partial.riseDecay;
+          float d=partial.riseRemaining,smoothed=partial.riseSmoothed;const float decay=partial.riseDecay;
           for(int i=0;i<frames;++i){
-            const V4 g=splat(1-d);d*=decay;
+            smoothed+=contactShare*(1-d-smoothed);
+            const V4 g=splat(smoothed);d*=decay;
             mixLeft[i]+=(lr*re-li*im)*g;mixRight[i]+=(rr*re-ri*im)*g;
             const V4 next=re*c-im*s;im=re*s+im*c;re=next;
           }
-          partial.riseRemaining=d;
+          partial.riseRemaining=d;partial.riseSmoothed=smoothed;
         }else
           for(int i=0;i<frames;++i){
             mixLeft[i]+=lr*re-li*im;mixRight[i]+=rr*re-ri*im;
@@ -1034,7 +1058,7 @@ struct Engine::Impl {
         partial.re=re;partial.im=im;
       }
     if(ringing){ringBody(ring,frames);ringBody(lateRing,frames);}
-    if(rising)ringBody(onset,frames);
+    if(rising){ringBody(onset,frames);ringBody(contactOnset,frames);}
     if(actionRising)ringBody(actionOnset,frames);
     const bool noisy=hissing;
     if(noisy)hiss(frames);
@@ -1108,7 +1132,7 @@ Engine::~Engine()=default;
 void Engine::prepare(double sampleRate){
   auto& p=*impl;p.sampleRate=sampleRate==sampleRate?std::max(8000.,std::min(192000.,sampleRate)):48000.;
   for(int i=0;i<=sineSize;++i)p.sine[i]=std::sin(2*pi*i/sineSize);
-  p.smooth=1-std::exp(-1/(.012*p.sampleRate));p.controlSmooth=1-std::exp(-chunk/(.018*p.sampleRate));
+  p.smooth=1-std::exp(-1/(.012*p.sampleRate));p.contactShare=static_cast<float>(1-std::exp(-1/(contactSmoothing*p.sampleRate)));p.controlSmooth=1-std::exp(-chunk/(.018*p.sampleRate));
   p.highpassCoefficient=std::exp(-2*pi*10/p.sampleRate);
   p.retuneSympathetic();
   p.prepareBody();
