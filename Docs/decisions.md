@@ -686,3 +686,59 @@ recordings, where the frozen 0.4.0 report, under the rules of its day, scored
 it 25.9. The README's comparison with 0.3.0 now comes from both versions
 scored by the benchmark as it stands
 (`Docs/validation/grand-recording-benchmark-2026-10-29.md`).
+
+## 2026-10-29 — the board noise under a top note passes over other strings' tones
+
+Through the upright's top octave each strike left a hiss ringing on for
+seconds. The fit measured each noise band as the mean power of its bins
+between the partials, and in the bands centred below the struck note's
+fundamental, where none of its own partials lie, those bins also hold other
+strings' tones: chiefly the undamped treble strings' detuned unisons, which
+the engine rings at one pitch each and which a one-pitch fit leaves partly in
+the residual (B6's span 1957 to 1992 Hz). The mean took them for noise
+decaying at their rate: the upright's 2 kHz band after C7 fell at 2 per
+second (17 dB/s), where the noise between them falls at 20 (174 dB/s). In
+those bands a frame's density is now the median of the band's bin powers
+over ln 2 (a noise bin's power is exponential, whose median is ln 2 times its
+mean, and the median passes over the few bins a tone holds), each channel's,
+then the channels' mean, so that the result does not depend on how alike the
+channels are.
+
+Only the bands below a fundamental change, from C6 up. The upright's 2 kHz
+band now starts 9.7 dB louder at C7 and falls 17 dB in a tenth of a second
+instead of ringing on (its decay rate 2 to 20 per second at C7, 4 to 18 at
+E7, 9 to 21 at G7); the grand's bands moved by −3.4 to +1.7 dB at contact,
+in the mean over the layers, and their decays by at most 4 per second. On the upright's train recordings from C6 up
+the spectrum sits 0.21 dB closer to the recordings from 0.1 to 0.5 s and
+0.12 dB closer from 0.5 to 3 s, at C7 1.6 and 0.9 dB closer; on the grand's
+it sits 0.05 to 0.10 dB further in the attack and the early spectrum, where
+its attack already sits under the recordings from 400 Hz to 3 kHz
+([grand](validation/grand-treble-noise-benchmark-2026-10-29.md),
+[upright](validation/upright-treble-noise-benchmark-2026-10-29.md)).
+
+Three regressions. The grand's F♯7 onset rise moves from 3.6 to 5.7 ms from
+its recordings (3.55 to 5.86 on the never-fitted takes): at its softer layers
+the envelope rises through ripples within a decibel of its peak, so a
+fraction of a decibel moves its first 90 % crossing by tens of milliseconds.
+At velocity 14 the first ripple, at 4 ms, falls from 0.6 to 1.1 dB under the
+peak, past the 90 % line, and the measured rise goes from 4.7 to 27.5 ms (the
+recording's 10.8). The upright's G7 noise moves from 5.85 to 6.62 dB:
+through its first 0.6 s the recording holds a tone at 3.0 kHz, where F♯7's
+undamped string sounds (2989.5 Hz), 14 to 15 dB under G7's fundamental and
+falling with it at about 50 dB/s. The engine plays that string more than
+30 dB under, at a level measured from 1 to 2 s and brought back to contact at the
+strings' median 19 dB/s; the mean had measured the tone as slow noise in the
+3.2 kHz band and so stood in for the string.
+
+Rejected: the median in every band, under which the upright's 12.7 kHz band
+went silent and E3's 8 kHz band fell 16 dB further under its recording,
+since above a fundamental the residue between the partials is mostly the
+note's own unresolved partials, which have no other voice than the noise;
+and the median everywhere but above the highest partial, under which the
+bass and middle registers' noise sat up to 1.2 dB further from the train
+recordings.
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A short lettered passage on both pianos, the shipping engine
+against this fit, went to the owner level-matched with its key, and no
+verdict yet.

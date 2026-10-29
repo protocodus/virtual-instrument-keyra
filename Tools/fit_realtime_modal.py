@@ -1128,6 +1128,21 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     Above the highest of them a band is measured whole, as the benchmark
     measures it: excluding every partial the stiff string could have left no
     band to measure below A3, whose keys then took the treble's louder noise.
+    A frame's density is the band's mean bin power, except in the bands
+    centred below the struck note's fundamental, where none of its own
+    partials can lie: there it is the median of the band's bin powers over
+    ln 2, each channel's, then the channels' mean (a noise bin's power is
+    exponential, whose median is ln 2 times its mean, and the median passes
+    over the few bins a tone holds). The tones there are other strings',
+    chiefly the undamped treble strings' detuned unisons, which the engine
+    rings at one pitch each and a one-pitch fit leaves partly in the residual
+    (B6's span 1957 to 1992 Hz). The mean took them for noise decaying at
+    their rate: the upright's 2 kHz band after C7 decayed at 17 dB/s, where
+    the noise between them falls at 170, and rang on as a hiss for seconds.
+    Above the fundamental the residue between the partials is mostly the
+    note's own unresolved partials, which have no voice but the noise:
+    measured by the median there too, the upright's 12.7 kHz band went silent
+    and E3's 8 kHz band fell 16 dB further under its recording.
     Also the right-over-left level difference (dB) and left/right coherence
     there. Where a take starts too close to its onset to measure the floor
     before it and runs on into the room's noise (`tail_floor`, the upright's
@@ -1151,7 +1166,12 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     for centre in NOISE_BANDS:
         band = (hz >= centre * 2 ** (-1 / 6)) & (hz < centre * 2 ** (1 / 6))
         bins.append(band & keep if band.sum() and (band & keep).sum() >= .25 * band.sum() else None)
+    below = [centre < result['f1'] for centre in NOISE_BANDS]
     scale = 2 / (sr * np.sum(w * w))                         # one-sided density per bin
+
+    def power(z, j):
+        p = np.abs(z) ** 2 * scale
+        return float(np.mean(np.median(p, axis=0))) / math.log(2) if below[j] else float(np.mean(p))
     shape = (len(result['layers']), len(NOISE_BANDS))
     level, decay, floor, balance, coherence = (np.full(shape, np.nan) for _ in range(5))
     times = np.arange(window / 2, window / 2 + .1001, hop)
@@ -1173,9 +1193,9 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
         for j, band in enumerate(bins):
             if band is None:
                 continue
-            density = 10 * np.log10(np.array([np.mean(np.abs(z[band]) ** 2) * scale for _, z in frames]) + 1e-30)
+            density = 10 * np.log10(np.array([power(z[band], j) for _, z in frames]) + 1e-30)
             if quiet:
-                floor[i, j] = 10 * math.log10(np.mean([np.mean(np.abs(z[band]) ** 2) * scale for z in quiet]) + 1e-30)
+                floor[i, j] = 10 * math.log10(np.mean([power(z[band], j) for z in quiet]) + 1e-30)
             clear = density > (floor[i, j] if quiet else -np.inf) + 10
             if clear.sum() < 10:
                 continue
