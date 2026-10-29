@@ -1139,9 +1139,6 @@ run; the engine test `a strike starts without a click` holds both pianos:
 from 8 kHz up the 5 ms after contact hold no more than 3 dB over 20 to 40 ms
 later, where unsmoothed they reached 14 dB.
 
-The fits time every rise through 0.25 ms frames and 0.5 ms smoothing, under
-which a 0.1 ms pole is not seen: FITCHECK
-
 Rejected on the way: squaring each rise, (1 − e^(−t/rise))², which is
 smooth at contact without a new time, removed the click as well (noise
 5.38 dB on the train notes) but slowed every onset under rises fitted to the
