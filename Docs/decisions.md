@@ -1214,3 +1214,25 @@ first 5 ms against 20–40 ms, where the limit is 3 dB. The cap sits at that
 limit and makes Rehearsal Upright's velocity-127 chords no louder than at 110
 through the output guard (HEAD's margin is 0.16 dB). Neither ships until the
 owner says which check to give up or recalibrate.
+
+## 2026-10-29 — the upright's partials rise within the hammer's contact
+
+The owner chose, among the options above, to cap the upright's rises at the
+hammer's contact time and re-trim its level. No partial of the upright now
+rises slower than the hammer stays on the string: 2 ms at C4, halving every
+two octaves up (about 4 ms at C2 and 0.7 ms at C7, Askenfelt and Jansson);
+a partial whose fitted rise is shorter keeps it, and none rises faster than
+its pitch's recorded onset. The grand's rises stay as fitted. The cap applies
+the contact time itself rather than shortening each rise by its
+mezzo-forte ratio, which kept C6's click measure at 3.05 dB at velocity 101;
+now the highest is 2.38 dB (C4, velocity 31) under the 3 dB limit. The
+upright's outputScale is re-pinned from 2.3548 to 2.2691 for −9 VU.
+
+The level check's 110-to-127 step read −0.06 dB with the cap, and no level
+trim within the target moved it: through the guard the upright's top two
+velocities differ by about a tenth of a decibel, so each strike's spread
+decided the sign, and the shipping upright read +0.08 dB over one round of
+eight chords but −0.04 dB over five. `KeyraLevels` now plays each velocity's
+chords in five rounds of their own, where the shipping upright reads +0.35 dB
+and the capped one +0.24 dB. Chosen by the owner; the cap's time is a
+measurement, the choice to apply it by ear.

@@ -15,8 +15,9 @@
 //    eight chords, four around middle C and four for two hands, at
 //    velocities 70, 90 and 110. Its reading is the median over events of
 //    each event's highest reading.
-//  - the loudest chords: the same chords at velocity 127, read as the
-//    highest of their readings and the output's sample peak.
+//  - the loudest chords: the same chords at velocity 127, five rounds of
+//    them, read as the highest of their readings and the output's sample
+//    peak, and against five rounds at velocity 110.
 //
 // A piano's calibration reads its default sound 20 dB down, below the output
 // stage, and adds the 20 dB back; the factor --report prints brings it to
@@ -62,9 +63,15 @@ std::vector<Event> typicalPlaying(){
   }
   return events;
 }
-std::vector<Event> loudestChords(){
+// The chords at one velocity, five rounds of them: every strike lands at its
+// own spread (touchSpreadDb), and through the guard the uprights' chords at
+// 127 and 110 differ by about a tenth of a decibel, so one round's draws
+// decided the step's sign (the shipping upright read +0.08 dB over one round
+// and -0.04 dB over five).
+constexpr int rounds=5;
+std::vector<Event> chordRounds(int velocity){
   std::vector<Event> events;
-  for(const auto& chord:chords)events.push_back({chord,127});
+  for(int round=0;round<rounds;++round)for(const auto& chord:chords)events.push_back({chord,velocity});
   return events;
 }
 
@@ -123,10 +130,10 @@ int run(int jobs,bool check){
   const auto& presets=keyra::factoryPresets;
   const keyra::Piano pianos[]{keyra::Piano::grand,keyra::Piano::upright};
   const char* const pianoNames[]{"grand","upright"};
-  const auto typicalEvents=typicalPlaying(),loudestEvents=loudestChords();
+  const auto typicalEvents=typicalPlaying(),loudestEvents=chordRounds(127),strongEvents=chordRounds(110);
   // Tasks: each piano's default sound below the stage, then each preset's
-  // typical playing and loudest chords as heard.
-  const std::size_t calibrations=2,count=calibrations+2*presets.size();
+  // typical playing, loudest chords and the same chords at 110 as heard.
+  const std::size_t calibrations=2,count=calibrations+3*presets.size();
   std::vector<Reading> readings(count);
   parallel(count,jobs,[&](std::size_t task){
     if(task<calibrations){
@@ -135,9 +142,9 @@ int run(int jobs,bool check){
       readings[task]=play(parameters,typicalEvents);
       return;
     }
-    const std::size_t preset=(task-calibrations)/2;
+    const std::size_t preset=(task-calibrations)/3,kind=(task-calibrations)%3;
     const auto parameters=keyra::withPreset(keyra::Parameters{},presets[preset]);
-    readings[task]=play(parameters,(task-calibrations)%2?loudestEvents:typicalEvents);
+    readings[task]=play(parameters,kind==0?typicalEvents:kind==1?loudestEvents:strongEvents);
   });
 
   int failures=0;
@@ -151,16 +158,15 @@ int run(int jobs,bool check){
                 reading,std::pow(10.,(targetVu-reading)/20),targetVu-reading,targetVu);
     expect(std::abs(reading-targetVu)<=.5,pianoNames[piano],"its default sound is not at the target",reading);
   }
-  const int strongest=2*(singles+static_cast<int>(chords.size()))+singles;  // the first chord at velocity 110
   for(std::size_t preset=0;preset<presets.size();++preset){
-    const auto& typical=readings[calibrations+2*preset];const auto& loudest=readings[calibrations+2*preset+1];
+    const auto& typical=readings[calibrations+3*preset];const auto& loudest=readings[calibrations+3*preset+1];
+    const auto& strong=readings[calibrations+3*preset+2];
     const double reading=median(typical.events);
     const double loud=*std::max_element(loudest.events.begin(),loudest.events.end());
     std::vector<double> steps;
-    for(std::size_t chord=0;chord<chords.size();++chord)
-      steps.push_back(loudest.events[chord]-typical.events[static_cast<std::size_t>(strongest)+chord]);
+    for(std::size_t chord=0;chord<loudest.events.size();++chord)steps.push_back(loudest.events[chord]-strong.events[chord]);
     const double step=median(steps),least=*std::min_element(steps.begin(),steps.end());
-    const double peak=std::max(typical.peakDbfs,loudest.peakDbfs);
+    const double peak=std::max({typical.peakDbfs,loudest.peakDbfs,strong.peakDbfs});
     std::printf("%-18s typical %6.2f VU  loudest chords %6.2f VU  velocity 110 to 127 %+.2f dB (least %+.2f)  peak %6.2f dBFS\n",
                 presets[preset].name,reading,loud,step,least,peak);
     const char* name=presets[preset].name;

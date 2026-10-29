@@ -76,6 +76,7 @@ struct Model {
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb,keyDownDb;
+  double contactTime;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
   double outputScale;
 };
@@ -100,6 +101,8 @@ constexpr Model models[]{
    // landing, the same knock growing with the strike's layer, about 30 dB
    // under it, at -26 dB.
    -22,.82,.73,2,-20,-19,-26,
+   // The grand's partials rise as fitted.
+   0,
    grand::noiseBands.data(),grand::noise.data(),
    // The measured levels are the recordings' own. This scale brings typical
    // playing on the default controls to -9 VU on Reason's channel meter at
@@ -121,6 +124,13 @@ constexpr Model models[]{
    // grand's velocity tracking and without its fade. It has no pedal
    // recordings.
    15.4,.82,0,0,0,0,16.5,
+   // No partial rises slower than the hammer stays on the string: about
+   // 4 ms at C2, 2 ms at C4 and 0.7 ms at C7 at mezzo-forte
+   // (Askenfelt and Jansson, JASA 88(1), 1990, Fig. 7), halving every two
+   // octaves. The fits time the partials' rises past the contact, and played
+   // that way the upright swelled over up to 116 ms. The owner chose the cap
+   // by ear (Docs/decisions.md, 2026-10-29).
+   .002,
    upright::noiseBands.data(),upright::noise.data(),
    // The recordings' levels are their own. This scale brings its typical
    // playing to the grand's, -9 VU (Tools/KeyraLevels.cpp), which also keeps
@@ -129,7 +139,7 @@ constexpr Model models[]{
    // strike, as the benchmark sets a case's gain). Below it the shared
    // velocity response (responseAt) keeps the two medians within 1 dB of each
    // other.
-   2.3548},
+   2.2691},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
@@ -835,7 +845,8 @@ struct Engine::Impl {
     const double f1=keyPitch(m,note),B=keyStiffness(m,note);
     const double highest=std::min(17000.,sampleRate*.43);
     // No partial rises faster than its recorded pitch's onset builds up.
-    const double shortestRise=std::exp(mix(onsetRiseAt(m,a,v),onsetRiseAt(m,b,v),t));
+    const double shortestRise=std::exp(mix(onsetRiseAt(m,a,v),onsetRiseAt(m,b,v),t)),
+                 contactTime=m.contactTime*std::pow(2.,-(note-60)/24.);
     const double ratio=tuningRatio(ch);
     const double softGain=1-.28*soft;
     // Samples until the next chunk boundary: the exact state is kept there.
@@ -942,7 +953,8 @@ struct Engine::Impl {
         partial.baseRightRe[k]=static_cast<float>(wr.re);partial.baseRightIm[k]=static_cast<float>(wr.im);
       }
       if(peak<1e-7)continue;
-      launch(voice,partial,legacyAttack?.002:std::max(std::exp(d.rise),shortestRise),ahead,ratio);
+      const double rise=contactTime>0?std::min(std::exp(d.rise),contactTime):std::exp(d.rise);
+      launch(voice,partial,legacyAttack?.002:std::max(rise,shortestRise),ahead,ratio);
       const double c=colour(order);
       for(int k=0;k<lanes;++k){const double e=partial.energyWeight[k]/(1-partial.decay[k]*partial.decay[k]);coloured+=e;plain+=e/(c*c);}
       ++voice.count;

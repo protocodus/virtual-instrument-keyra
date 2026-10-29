@@ -193,6 +193,9 @@ musical passages through the same engine. Both are frozen evidence from
   stops with the strings once the dampers are down, so one second after
   release both sit about 48 to 60 dB under the note. The upright no longer
   rings on for seconds.
+- The upright speaks sooner: none of its partials rises slower than the
+  hammer stays on the string, 2 ms at middle C and shorter higher up, where
+  they had swelled over up to 116 ms.
 - The keys are heard: a key going down knocks the body about 30 dB under a
   velocity-80 note and a key coming up about 32 dB under it, on both pianos.
 - Velocity changes the tone more than the recordings' layers alone: softer
@@ -234,8 +237,9 @@ its own rate, small frequency offset and stereo pickup: together they make a
 note's prompt fall, the beating of its unison strings, its slow aftersound and
 the way its balance moves between the microphones. A partial starts from the
 phase the recordings show at string contact and rises from zero, never faster
-than its pitch's recorded onset builds up, and like the body's knock without a
-corner: every rise is smoothed over 0.1 ms, as a felt hammer presses in. The lanes run four to a 128-bit
+than its pitch's recorded onset builds up and, on the upright, never slower
+than the hammer stays on the string (2 ms at middle C, halving every two
+octaves up), and like the body's knock without a corner: every rise is smoothed over 0.1 ms, as a felt hammer presses in. The lanes run four to a 128-bit
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 
@@ -526,11 +530,6 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   more slowly than the strings, which the engine does not play: the grand's
   noise score at F♯3, A3 and C4 sits up to 6 dB from it at the softest layers
   ([knock benchmark](Docs/validation/grand-knock-benchmark-2026-10-29.md)).
-- The upright's partials swell over their fitted rises, up to 116 ms at
-  A2's fundamental, so its notes reach 90 % of their early peak 14 to 50 ms
-  after the strike. Faster rises either click at contact or leave its
-  velocity-127 chords no louder than at 110 through the output guard; see
-  [decisions](Docs/decisions.md).
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
