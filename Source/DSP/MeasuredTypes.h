@@ -35,9 +35,9 @@ struct HaloString { float cents, rate, left, rightRe, rightIm; };
 // under the treble's fundamentals: its frequency (Hz), decay rate (1/s) and
 // one stereo pickup (left real; right complex; mean channel power 1).
 struct BodyMode { float hz, rate, left, rightRe, rightIm; };
-// How a recorded pitch's strike knocks a body mode: the level (dB at
-// velocity 64), its slope (dB per 64 velocity) and the phase (rad) at
-// string contact.
+// How a recorded pitch's strike knocks a body mode: the level (dB) at the
+// loudest layer, its slope (dB per dB of the level the strike's layer plays
+// at, layerLevelDb) and the phase (rad) at string contact.
 struct Knock { float levelDb, slopeDb, phase; };
 // A knock of the action on a body mode: the level (dB) and phase (rad) at
 // the knock's onset.

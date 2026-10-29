@@ -51,10 +51,16 @@ musical passages through the same engine. Both are frozen evidence from
 - Every strike knocks a body of 91 measured soundboard and case modes and
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
-  not this ring, which dies within a second. Under a top note's fundamental
-  the noise is measured past the other strings' tones there, which it used to
-  take for noise ringing on, so the upright's top octave no longer leaves a
-  hiss ringing for seconds
+  not this ring, which dies within a second. The knock grows about decibel
+  for decibel with the level the strike's layer plays at, as the
+  recordings' does: soft notes knocked the body 5 to 6 dB louder than
+  theirs, and now about 1 dB, which brings the attack spectrum 0.1 dB
+  (grand) and 0.4 dB (upright) closer to the calibration notes
+  ([grand](Docs/validation/grand-knock-benchmark-2026-10-29.md),
+  [upright](Docs/validation/upright-knock-benchmark-2026-10-29.md)). Under a
+  top note's fundamental the noise is measured past the other strings' tones
+  there, which it used to take for noise ringing on, so the upright's top
+  octave no longer leaves a hiss ringing for seconds
   ([grand](Docs/validation/grand-treble-noise-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-treble-noise-benchmark-2026-10-29.md)).
 - Both pianos answer velocity alike, at the owner's request: a velocity asks
@@ -217,7 +223,8 @@ a slot, so a component costs a quarter of a partial.
 
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, which rings for half a second to a second,
-with the level, phase and velocity response measured for each recorded pitch.
+with the level and phase measured for each recorded pitch; the knock grows
+about decibel for decibel with the level the strike's layer plays at.
 Above the modes, the board's dense ring is band noise in 13 third-octave bands
 from 1 to 16 kHz, each a sixth-order band-pass so that the quiet top octaves
 keep their measured level: each strike starts its own burst with the density,
@@ -249,46 +256,45 @@ level down to the recording's floor; in a layer where it does not stand clear
 of that floor, it is no louder than its recorded peak there. The layers'
 contact times are aligned so that the phases form one pattern across the
 partials, and a pitch's onset rise follows one line over velocity, held within
-the range its layers measure. A partial's lanes sit within about 3 cents of
-it; where one settles at that bound, the partial is fitted again with lanes
-up to about 10 cents out, seeded from the components its envelopes resolve
-and keeping the first fit's rise, and the closer of the two fits is kept.
-Beside the series, the
-residual's peaks that four or more layers share are measured each through a
-window just long enough to part it from its nearest neighbour, from 30 ms to 2
-s, and fitted with one lane from contact; one within 3.5 cents of another
-key's undamped string is that string. The undamped strings are measured as
-tones from F♯3 up, below which the struck key's series covers their pitches:
-through half-second windows from 1 to 2 s after contact, both channels' power
-at the strongest bin within 1 Hz of a string's pitch, where it stands 10 dB
-over the median 4–20 Hz either side and 10 Hz from every partial of the
-struck key.
-A string's pitch is the median of its strongest peak in the recordings from C6
-up; its stereo pickup the median level difference and mean phase between the
-channels; its decay its fall from 1 to 2 s, drawn towards the strings' median;
-its level at a recorded pitch the mean over the layers where it rings clear,
-brought back to contact, or 10 dB under the tone where the noise hides it, with
-one velocity slope for every string. The body modes are found below the
-treble's fundamentals, where no string sounds; the board noise is measured in
-the gaps between the partials the recordings show and, above the highest of
-them, across whole bands, as the benchmark measures it. In the bands below a
-note's fundamental, which hold other strings' tones but none of its own, a
-gap's level is the median of its bins, which passes over those tones. The
-action's knocks are measured from each recorded pitch's key-release take and
-the sustain pedal's two: a level and phase per mode at the knock's onset,
-fitted on the same modes under one rise they share; the recordings were gained
-up as a set, so their level against the notes is the library's SFZ mix (a
-release at −37 dB tracking velocity and 2 dB quieter for each second held, the
-pedal at −20 dB down and −19 dB up), not a measurement. A strike interpolates
-between the recorded pitches by partial order and between the layers by
-velocity, taking phases from the nearer pitch; a partial's stereo pickup moves
-between the two pitches' channel level and phase differences, and its level is
-set so that its power over the first second or so, its lanes' beating included,
-sits between the two pitches' in dB. C8 is left out: its strongest components
-sit 90–100 cents above the stretch that F♯7 and A7 set and no partial series
-explains the recording, so the keys above A7 play A7's data on the stretch
-curve. Only fitted numbers enter the header; no recorded waveform or impulse
-response is loaded.
+the range its layers measure. A partial's lanes sit within about 3 cents of it;
+where one settles at that bound, the partial is fitted again with lanes up to
+about 10 cents out, seeded from the components its envelopes resolve and
+keeping the first fit's rise, and the closer of the two fits is kept. Beside
+the series, the residual's peaks that four or more layers share are measured
+each through a window just long enough to part it from its nearest neighbour,
+from 30 ms to 2 s, and fitted with one lane from contact; one within 3.5 cents
+of another key's undamped string is that string. The undamped strings are
+measured as tones from F♯3 up, below which the struck key's series covers their
+pitches: through half-second windows from 1 to 2 s after contact, both
+channels' power at the strongest bin within 1 Hz of a string's pitch, where it
+stands 10 dB over the median 4–20 Hz either side and 10 Hz from every partial
+of the struck key. A string's pitch is the median of its strongest peak in the
+recordings from C6 up; its stereo pickup the median level difference and mean
+phase between the channels; its decay its fall from 1 to 2 s, drawn towards the
+strings' median; its level at a recorded pitch the mean over the layers where
+it rings clear, brought back to contact, or 10 dB under the tone where the
+noise hides it, with one velocity slope for every string. The body modes are
+found below the treble's fundamentals, where no string sounds, and a pitch's
+knock on each is a line in the level of the layer that struck it, weighted by
+the knock's amplitude; the board noise is measured in the gaps between the
+partials the recordings show and, above the highest of them, across whole
+bands, as the benchmark measures it. In the bands below a note's fundamental,
+which hold other strings' tones but none of its own, a gap's level is the
+median of its bins, which passes over those tones. The action's knocks are
+measured from each recorded pitch's key-release take and the sustain pedal's
+two: a level and phase per mode at the knock's onset, fitted on the same modes
+under one rise they share; the recordings were gained up as a set, so their
+level against the notes is the library's SFZ mix (a release at −37 dB tracking
+velocity and 2 dB quieter for each second held, the pedal at −20 dB down and
+−19 dB up), not a measurement. A strike interpolates between the recorded
+pitches by partial order and between the layers by velocity, taking phases from
+the nearer pitch; a partial's stereo pickup moves between the two pitches'
+channel level and phase differences, and its level is set so that its power
+over the first second or so, its lanes' beating included, sits between the two
+pitches' in dB. C8 is left out: its strongest components sit 90–100 cents above
+the stretch that F♯7 and A7 set and no partial series explains the recording,
+so the keys above A7 play A7's data on the stretch curve. Only fitted numbers
+enter the header; no recorded waveform or impulse response is loaded.
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of
@@ -422,6 +428,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   library's balance ([release recordings](Docs/research/release-recordings-2026-10-27.md)).
   The room is not calibrated, and the key noise the recordings carry 1 to
   28 ms before string contact is not played: a note sounds from contact.
+  Under the lowest body mode (29 Hz) the middle register's recordings hold a
+  low thud in their first 0.3 s, 6 to 22 dB over the room's floor and growing
+  more slowly than the strings, which the engine does not play: the grand's
+  noise score at F♯3, A3 and C4 sits up to 6 dB from it at the softest layers
+  ([knock benchmark](Docs/validation/grand-knock-benchmark-2026-10-29.md)).
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the

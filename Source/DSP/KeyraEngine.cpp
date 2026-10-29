@@ -249,7 +249,7 @@ LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
   return c;
 }
 
-double levelAt(const Model& model,const std::array<float,measured::maxLayers>& db,double velocity) noexcept {
+double levelAt(const Model& model,const float* db,double velocity) noexcept {
   // Piecewise linear in dB between the recorded layers, continued with the
   // end segments' slopes (never rising toward softer playing).
   const float* v=model.layerVelocity;
@@ -306,7 +306,7 @@ Complex phaseAt(const Model& model,const LaneCache& lane,double velocity) noexce
   return unit({mix(a.re,b.re,t),mix(a.im,b.im,t)},t<.5?a:b);
 }
 LaneData laneAt(const Model& model,const measured::Lane& m,const LaneCache& c,double velocity) noexcept {
-  LaneData l;l.rate=c.logRate;l.offset=m.offsetHz;l.level=levelAt(model,m.levelDb,velocity);l.phase=phaseAt(model,c,velocity);
+  LaneData l;l.rate=c.logRate;l.offset=m.offsetHz;l.level=levelAt(model,m.levelDb.data(),velocity);l.phase=phaseAt(model,c,velocity);
   l.ratio=c.ratio;l.angle=c.angle;l.left={m.left,0};l.right={m.rightRe,m.rightIm};
   return l;
 }
@@ -768,10 +768,12 @@ struct Engine::Impl {
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     // The body's knock: levels between the two pitches like the partials',
-    // phases from the nearer one.
+    // growing with the level the strike's layer plays at, phases from the
+    // nearer pitch.
+    const double layerDb=levelAt(m,m.layerLevelDb,v);
     const auto* ka=m.knocks+(upper-1)*m.bodyModeCount;const auto* kb=ka+m.bodyModeCount;
     for(int k=0;k<m.bodyModeCount;++k){const auto& x=ka[k];const auto& y=kb[k];
-      const double level=mix(x.levelDb,y.levelDb,t)+mix(x.slopeDb,y.slopeDb,t)*(v-64)/64;
+      const double level=mix(x.levelDb,y.levelDb,t)+mix(x.slopeDb,y.slopeDb,t)*layerDb;
       const double amplitude=std::pow(10.,level/20)*softGain,phase=t<.5?x.phase:y.phase;
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
       knock(ring[k/lanes],k%lanes,g,ahead);knock(onset[k/lanes],k%lanes,{-g.re,-g.im},ahead);
@@ -797,7 +799,7 @@ struct Engine::Impl {
     auto& burst=claimBurst();
     const auto* na=m.noise+(upper-1)*noiseBands;const auto* nb=na+noiseBands;
     for(int k=0;k<noiseBands;++k){const auto& x=na[k];const auto& y=nb[k];
-      const double density=mix(levelAt(m,x.densityDb,v),levelAt(m,y.densityDb,v),t);
+      const double density=mix(levelAt(m,x.densityDb.data(),v),levelAt(m,y.densityDb.data(),v),t);
       const double order=std::max(1.,m.noiseBands[k].hz/f1);
       const double amplitude=std::pow(10.,density/20)*noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));

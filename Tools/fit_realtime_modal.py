@@ -822,8 +822,21 @@ def body_rise(result, contact, hz, rates, amplitudes, seconds=.03):
     return rises
 
 
-def body_data(results, datas):
-    """The body bank and each anchor's excitation of it (see BODY_LOW)."""
+def body_data(results, datas, grid, layer_level):
+    """The body bank and each anchor's excitation of it (see BODY_LOW).
+
+    A knock's level (dB) is a line in the level its layer plays at
+    (`layer_level` over the velocities `grid`, 0 dB at the loudest), weighted
+    by the knock's amplitude: it grows with the strike as the strings do, a
+    median 0.93 dB per dB on the grand and 0.96 on the upright. A line in
+    velocity weighted by power, where the knocks' levels curve down toward
+    the softest layers, played the softest layer's knock a median 5.9 dB
+    (grand) and 5.0 dB (upright) over its recordings, summed over the modes;
+    this one plays it 1.1 and 0.8 dB over. Weighting every layer alike lets
+    the soft layers pull the loudest layer's third-octave levels a median
+    2.0 dB off on both pianos, against 1.3 (grand) and 0.7 (upright) here. A
+    quadratic in the level, fitted without a layer, predicted it within
+    0.1 dB of this line inside the recorded layers and far worse past them."""
     import math
     import numpy as np
     contacts = [np.array([L['delay'] for L in r['layers']]) - np.array(d['layer_shift_ms']) / 1000
@@ -844,8 +857,7 @@ def body_data(results, datas):
         kept.append(float(s[0] ** 2 / np.sum(s ** 2)))
     anchors = []
     for r, a in zip(results, amplitudes):
-        velocity = np.array([L['velocity'] for L in r['layers']], float)
-        x = (velocity - 64) / 64
+        x = np.interp([L['velocity'] for L in r['layers']], grid, layer_level)
         knocks = []
         for m, shape in enumerate(shapes):
             level = np.conj(shape) @ a[:, m].T / 2                    # complex level per layer
@@ -853,10 +865,10 @@ def body_data(results, datas):
                 knocks.append(None)
                 continue
             db = 20 * np.log10(np.abs(level) + 1e-12)
+            root = np.sqrt(np.abs(level))                             # rows weighted by amplitude
+            intercept, slope = np.linalg.lstsq(np.c_[np.ones_like(x), x] * root[:, None], db * root, rcond=None)[0]
+            # One phase, the louder layers' (theirs stands clearest of the noise).
             weight = np.abs(level) ** 2
-            # Level linear in velocity (dB), weighted to the louder layers; one phase.
-            X = np.c_[np.ones_like(x), x] * np.sqrt(weight)[:, None]
-            intercept, slope = np.linalg.lstsq(X, db * np.sqrt(weight), rcond=None)[0]
             resultant = np.sum(level / np.maximum(np.abs(level), 1e-30) * weight)
             knocks.append({'level_db': float(intercept), 'slope_db': float(slope),
                            'phase': float(np.angle(resultant)),
@@ -1449,20 +1461,6 @@ def generate(model):
                         'median_phase_agreement': float(np.median([p['phase_agreement'] for p in data['partials']])),
                         'onset_rise_ms': data['layer_onset_rise_ms'],
                         'median_relative_error': float(np.median(errors)) if errors else None})
-    body = body_data(results, anchors)
-    for record, explained, knocks in zip(records, body['explained'], body['anchors']):
-        record.update({'body_explained': [round(e, 3) for e in explained],
-                       'body_modes_hidden': sum(1 for k in knocks if k.get('filled')),
-                       'body_phase_coherence': float(np.median([k['coherence'] for k in knocks
-                                                                if not k.get('filled')]))})
-    noise = noise_data(results, anchors, model['wav'], model.get('tail_floor', False))
-    for record, bands in zip(records, noise['anchors']):
-        record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
-    action = action_data(model, [a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
-    halo = halo_data(results, strings, halo_hz, model['wav'])
-    for record, kinds in zip(records, halo['kinds']):
-        record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
-                                  for kind in ('clear', 'under', 'filled')}
     # The layers most recorded pitches have; the others are carried onto them.
     grid = list(statistics.mode(tuple(a['velocities']) for a in anchors))
     for record, a in zip(records, anchors):
@@ -1478,6 +1476,20 @@ def generate(model):
     layer_level = np.median(levels - levels[:, -1:], axis=0)
     if np.any(np.diff(layer_level) <= 0):
         raise SystemExit(f'the layers\' median levels do not rise with velocity: {np.round(layer_level, 2)}')
+    body = body_data(results, anchors, grid, layer_level)
+    for record, explained, knocks in zip(records, body['explained'], body['anchors']):
+        record.update({'body_explained': [round(e, 3) for e in explained],
+                       'body_modes_hidden': sum(1 for k in knocks if k.get('filled')),
+                       'body_phase_coherence': float(np.median([k['coherence'] for k in knocks
+                                                                if not k.get('filled')]))})
+    noise = noise_data(results, anchors, model['wav'], model.get('tail_floor', False))
+    for record, bands in zip(records, noise['anchors']):
+        record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
+    action = action_data(model, [a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
+    halo = halo_data(results, strings, halo_hz, model['wav'])
+    for record, kinds in zip(records, halo['kinds']):
+        record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
+                                  for kind in ('clear', 'under', 'filled')}
     on_grid(anchors, noise, grid)
     damper = damper_data(model, results, halo_hz) if model.get('damper') else None
     content = header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
@@ -1514,7 +1526,7 @@ def generate(model):
                   'or key covers and anchors below F#3 take the levels of the anchors around. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup; per anchor and mode a complex excitation at string contact whose dB level is '
-                  'linear in velocity, modes hidden by an anchor\'s partials taken from its neighbours. The '
+                  'linear in the level its layer plays at, modes hidden by an anchor\'s partials taken from its neighbours. The '
                   'action\'s knocks on the same modes (each anchor\'s key release'
                   + (', the sustain pedal down and up' if model['pedal'] else '') + '; one train take each, in those files\' own scale) fitted from their onsets under one shared '
                   'rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density '

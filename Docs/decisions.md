@@ -742,3 +742,69 @@ Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A short lettered passage on both pianos, the shipping engine
 against this fit, went to the owner level-matched with its key, and no
 verdict yet.
+
+## 2026-10-29 — a strike's knock grows with the level its layer plays at
+
+Soft notes knocked the body too loud. Each body mode's knock was a line in
+velocity (dB against (v − 64)/64), weighted by each layer's power, so the
+loudest layers set it; in velocity the knocks' levels curve down toward the
+softest layers, and the line played the softest layer's knock a median 5.9 dB
+(grand) and 5.0 dB (upright) over its recordings, summed over the modes.
+Against the level the strike's layer plays at (the fit's layer levels, 0 dB
+at the loudest) the knocks lie on a line, a median 0.93 dB per dB on the
+grand and 0.96 on the upright: the body is knocked as hard as the strings
+are struck. Each mode's level is now a line in that level, weighted by the
+knock's amplitude, and the engine reads the layer level at the strike's
+velocity as the strings' levels do. The softest layer's knock sits 1.1 and
+0.8 dB over its recordings.
+
+The weighting was chosen on the knocks' third-octave band levels, each layer
+predicted by a line fitted without it (the median over the anchors of the
+mean error over the bands within 30 dB of the loudest, averaged over the
+layers between the softest and the loudest): 1.85 dB on the grand and 3.78 on
+the upright for the line in velocity, 1.63 and 2.57 for a line in the layer
+level weighting every layer alike, 1.41 and 2.81 weighted by amplitude.
+Weighting every layer alike was tried first: it lets the soft layers pull the
+loudest layer's band levels a median 2.0 dB off on both pianos (1.0 and 0.5
+under the shipping line, 1.3 and 0.7 under this one), and on the benchmark it
+played the louder layers' attack up to 0.6 dB further from their recordings
+and moved the grand's train level from 0.54 to 0.66 dB. A quadratic in the
+layer level predicted the left-out layers within 0.1 dB of the line inside
+the recorded layers and far worse past them (the softest, left out: 4.4
+against 3.5 dB on the grand, 11.3 against 5.9 on the upright).
+
+On the recording benchmark against the shipping engine (39032f0) the attack
+spectrum sits 0.12 dB (grand) and 0.43 dB (upright) closer to the train
+recordings and 0.05 and 0.22 dB closer to the never-fitted ones; the
+upright's early spectrum 0.33 and 0.23 dB closer, its noise between partials
+0.22 and 0.34, and its level 0.07 dB closer on the train notes; the grand's
+level 0.04 dB further
+([grand](validation/grand-knock-benchmark-2026-10-29.md),
+[upright](validation/upright-knock-benchmark-2026-10-29.md)).
+
+Nineteen regressions. The grand's noise score at F♯3, A3 and C4 (8.16 to
+9.63 dB, 7.44 to 8.56 and 6.03 to 6.70 on the train takes, 9.05 to 10.45,
+6.62 to 7.46 and 6.15 to 6.69 on the never-fitted), up to 6 dB at the
+softest layers, lies wholly in the 25 Hz band (22 to 28 Hz). The recordings
+fill it 6 to 22 dB over their floor, growing more slowly than the strings,
+under the lowest body mode (29.3 Hz), so the engine plays nothing
+there but that mode's skirt; the louder knock had covered part of it. C8's
+level moves from 3.05 to 3.88 dB: C8 already sat 2.5 to 6 dB under its
+recordings from its softest layer to velocity 61, and its softest layer's
+knock had covered part of that (2.5 to 7.7 dB under). The upright's
+A♯6 sustain moves from 5.21 to 6.20 dB: at its two softest layers the knock
+had carried up to 58 % of the render's power from 50 to 750 ms, by which the
+benchmark matches the recording's level, so the strings are now scaled
+3.8 dB further up. Its noise scores at A2, C3 and D3 (5.71 to 7.84, 8.24 to
+9.61, 11.74 to 12.47) each rest on one or two time cells of a band near the
+recording's floor, far above the knock's modes (2 kHz at C3's softest layer,
+6.3 kHz at A2's third); its G♯6 and C7 interchannel coherence moves by 0.06
+and 0.02. Six onset-rise scores move between two crossings of a rippling
+envelope (the grand's C3 and F♯2 on the never-fitted takes, 7.27 to 10.73 ms
+and 7.51 to 9.96; the upright's A1, C1, F♯2 and A♯5, 13.90 to 21.87, 13.54
+to 19.67, 4.46 to 5.90 and 5.28 to 6.45).
+
+Chosen by measurement; the owner's standing direction is to adopt such
+candidates. A short lettered passage of soft strikes on both pianos, the
+shipping engine against this fit, went to the owner level-matched with its
+key, and no verdict yet.
