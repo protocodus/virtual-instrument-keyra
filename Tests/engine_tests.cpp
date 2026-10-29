@@ -186,9 +186,10 @@ int main(int argc,char** argv){
     // in 3 s of each, no third-octave band within 40 dB of the strongest
     // moves by more than 0.1 dB at balanced quality or 1 dB at light, and
     // light leaves something out.
+    // (Rescanned on 2026-10-29: the velocity colour moved them.)
     struct Key {keyra::Piano piano;int note;float velocity;};
-    const std::array<Key,4> keys{{{keyra::Piano::grand,51,80/127.f},{keyra::Piano::grand,93,1},
-                                  {keyra::Piano::upright,33,40/127.f},{keyra::Piano::upright,42,110/127.f}}};
+    const std::array<Key,3> keys{{{keyra::Piano::grand,51,1},{keyra::Piano::grand,42,1},
+                                  {keyra::Piano::upright,42,80/127.f}}};
     double worst[3]{};bool lighter=true;
     for(const auto& key:keys){
       std::array<Audio,3> audio;std::array<std::array<double,31>,3> bands;
@@ -272,14 +273,16 @@ int main(int argc,char** argv){
     e.noteOn(sw,.8f);e.controlChange(120,0);check(level()==64/127.f,"CC120 clears transient switch ownership without resetting CC source");
   }
   {
-    // The pedal is one, so another channel's sustain switch sounds it; it
-    // adds that sound alone and holds nothing on channel 1.
-    keyra::Engine a,b,pedal;a.setParameters(dry());b.setParameters(dry());pedal.setParameters(dry());
-    a.noteOn(14,.7f,2);pedal.noteOn(14,.7f,2);
-    a.noteOn(60,.7f,1);b.noteOn(60,.7f,1);render(a,12000);render(b,12000);render(pedal,12000);a.noteOff(60);b.noteOff(60);
-    const auto x=render(a,24000),y=render(b,24000),z=render(pedal,24000);double error=0;
-    for(std::size_t i=0;i<x.size();++i)error=std::max(error,std::abs(static_cast<double>(x[i])-y[i]-z[i]));
-    check(error<1e-6,"another channel's sustain switch cannot hold channel1 voices");
+    // The pedal is one, so another channel's sustain switch sounds it, but
+    // it holds nothing on channel 1: C4's strings fall there as without it.
+    // (The pedal's knock rings the body, which stops with the strings, so
+    // the two sounds no longer simply add.)
+    keyra::Engine a,b,held;a.setParameters(dry());b.setParameters(dry());held.setParameters(dry());
+    a.noteOn(14,.7f,2);
+    a.noteOn(60,.7f,1);b.noteOn(60,.7f,1);held.noteOn(60,.7f,1);render(a,12000);render(b,12000);render(held,12000);
+    a.noteOff(60);b.noteOff(60);render(a,24000);render(b,24000);render(held,24000);
+    const double switched=c4Strings(render(a,12000)),plain=c4Strings(render(b,12000)),ringing=c4Strings(render(held,12000));
+    check(switched<ringing*.01&&switched<plain*1.1,"another channel's sustain switch cannot hold channel1 voices");
   }
   {
     keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.noteOn(60,.7f);b.noteOn(60,.7f);
@@ -301,13 +304,13 @@ int main(int argc,char** argv){
     a.noteOff(60);b.noteOff(60);check(render(a,24000)==render(b,24000),"CC121 never creates an edge on an unchanged panel sostenuto pedal");
   }
   {
-    // The body's knock rings on at its own decay whatever damps the strings,
-    // the same in all three engines: `c` releases the key where `a` takes
-    // CC1, so the differences from `c` hold only the strings. CC1 damps the
-    // undamped strings too, which `c` leaves ringing above C4's partials.
+    // The body stops with the strings whether the felt or CC1 damps them, so
+    // it is the same in all three engines: `c` releases the key under CC1
+    // where `a` takes CC1 alone (CC1 also takes the faint share the felt
+    // leaves), so the differences from `c` hold only the strings.
     keyra::Engine a,b,c;a.setParameters(dry());b.setParameters(dry());c.setParameters(dry());
     a.noteOn(60,.7f);b.noteOn(60,.7f);c.noteOn(60,.7f);render(a,12000);render(b,12000);render(c,12000);
-    a.controlChange(1,127);c.noteOff(60);render(a,24000);render(b,24000);render(c,24000);
+    a.controlChange(1,127);c.controlChange(1,127);c.noteOff(60);render(a,24000);render(b,24000);render(c,24000);
     auto damped=render(a,12000),held=render(b,12000);const auto released=render(c,12000);
     for(std::size_t i=0;i<released.size();++i){damped[i]-=released[i];held[i]-=released[i];}
     check(c4Strings(damped)<c4Strings(held)*.001,"CC1 physically damps held strings smoothly");
@@ -572,19 +575,21 @@ int main(int argc,char** argv){
     check(rms(render(e,9600))==0,"the upright's pedal sounds nothing");
   }
   {
-    // The upright's felt holds a share of each partial only loosely
-    // (measured::Damper), so C4's strings still ring half a second after the
-    // key-up, falling on, where the grand's felt has taken them. At middle C
-    // the share is 13 dB under the partial and falls about 6 dB/s.
+    // Both pianos' felt holds the same small share of each partial only
+    // loosely (leftover), so C4's strings still ring faintly half a second
+    // after the key-up, falling on: at middle C the share is 46 dB under the
+    // partial and falls about 6 dB/s. The upright's own measured share, 13 dB
+    // under, rang on for seconds.
     const auto fall=[](const keyra::Parameters& p,const auto& anchors){
       keyra::Engine e;e.setParameters(p);e.noteOn(60,.7f);render(e,60000);
       const double before=c4Strings(render(e,12000),anchors);e.noteOff(60);render(e,24000);
       const double half=c4Strings(render(e,12000),anchors);render(e,36000);
       return std::array<double,3>{before,half,c4Strings(render(e,12000),anchors)};};
     const auto upright=fall(dryUpright(),keyra::measured::upright::anchors),grand=fall(dry(),keyra::measured::grand::anchors);
-    check(upright[1]>upright[0]*.03,"the upright's felt leaves a share of a released C4 ringing");
-    check(upright[2]<upright[1]*.7,"what the upright's felt leaves keeps falling");
-    check(grand[1]<grand[0]*.01,"the grand's felt takes all of a released C4");
+    for(const auto& piano:{upright,grand}){
+      check(piano[1]>piano[0]*1e-4&&piano[1]<piano[0]*.01,"the felt leaves a faint share of a released C4 ringing");
+      check(piano[2]<piano[1]*.7,"what the felt leaves keeps falling");}
+    check(std::abs(20*std::log10(upright[1]/upright[0]*grand[0]/grand[1]))<6,"both pianos' felt leaves the same share");
     std::cout<<"upright_released_c4_db="<<20*std::log10(upright[1]/upright[0])<<','<<20*std::log10(upright[2]/upright[0])
              <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])<<'\n';
   }

@@ -51,7 +51,7 @@ musical passages through the same engine. Both are frozen evidence from
 - Every strike knocks a body of 91 measured soundboard and case modes and
   starts a burst of board noise in 13 bands, measured for its pitch, so
   repeated notes differ as real strikes do. The felt mute damps the strings,
-  not this ring. The knock grows about decibel
+  and the ring stops with them once every damper is down. The knock grows about decibel
   for decibel with the level the strike's layer plays at, as the
   recordings' does: soft notes knocked the body 5 to 6 dB louder than
   theirs, and now about 1 dB, which brings the attack spectrum 0.1 dB
@@ -188,11 +188,17 @@ musical passages through the same engine. Both are frozen evidence from
   grand's lanes reach as far: its never-fitted treble's decay sits 3.3 dB/s
   from the recordings instead of 4.5, and F♯6's envelope 5.3 dB instead of
   2.2 ([grand](Docs/validation/grand-lane-reach-benchmark-2026-10-28.md)).
-  Its dampers leave ringing what the library's key-release takes show, a
-  share of each partial that fades over seconds once the felt lands, 13 dB
-  down at middle C and less higher up: on the never-fitted takes its
-  releases sit 6.3 dB from the recordings, where the grand's felt left them
-  8.4 dB ([release benchmark](Docs/validation/upright-release-benchmark-2026-10-28.md)).
+- Notes end alike on both pianos, at the owner's ear: under the felt a
+  small leftover of each partial at −46 dB at middle C, and the body's ring
+  stops with the strings once the dampers are down, so one second after
+  release both sit about 48 to 60 dB under the note. The upright no longer
+  rings on for seconds.
+- The keys are heard: a key going down knocks the body about 30 dB under a
+  velocity-80 note and a key coming up about 32 dB under it, on both pianos.
+- Velocity changes the tone more than the recordings' layers alone: softer
+  strikes are darker and the hardest keep their brightness, at the same
+  loudness. Middle C's spectral centroid from velocity 20 to 120 now spans
+  349 to 711 Hz on the grand and 265 to 472 Hz on the upright.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -285,7 +291,19 @@ second: at contact from too little to hear up to 25 dB over the string's own
 on the grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. They
 ring on after the key is let go; the felt mute damps them.
 
-The action knocks the same modes. A key let go knocks them as its damper lands,
+A strike's tone moves with velocity beyond its layer: each partial gains
+0.4 dB per octave of its order (up to four) for every decibel its layer plays
+over the layer at velocity 100, and loses as much below it, and the strike's
+partials are then rescaled to the energy the layer plays, so velocity moves
+the colour without moving the level.
+
+Once a key is let go, the felt leaves the same small share on both pianos,
+the upright's measured leftover shape at −46 dB at middle C, and while every
+damped key is down the body's modes damp at the felt's rate for their
+frequency, so the board stops with the strings.
+
+The action knocks the same modes. A key going down knocks them about 30 dB
+under a velocity-80 note, growing with the strike's layer. A key let go knocks them as its damper lands,
 building up over the 54 ms the release recordings show rather than clicking,
 and quieter the longer the key was held; under the sustain pedal or sostenuto
 no damper falls and the key-up is silent, while from F6 up, where there is
@@ -421,10 +439,10 @@ Each pedal takes the largest of its panel control, its MIDI controller (CC64,
 CC66, CC67) and its momentary keyswitch (MIDI 14, 13, 12, below the piano's
 A0). The top twenty keys have no dampers, as on a grand. A damper's felt
 takes a partial down faster the higher it sounds, a released C4 at about
-500 dB/s. The upright's holds a share of each partial only loosely, as its
-release recordings show, so a released note fades over seconds: 13 dB under
-the partial at middle C, less higher up, and all of the fundamentals up to
-C♯2. The felt mute (CC1
+500 dB/s, and on both pianos leaves the small share described under
+**The modal engine**. The upright's release recordings hold more, 13 dB under the
+partial at middle C ([release benchmark](Docs/validation/upright-release-benchmark-2026-10-28.md));
+the owner chose the subtler ending by ear. The felt mute (CC1
 or its control) adds damping to sounding notes, held ones included. The
 sustain pedal sounds within 0.08 of either end of its travel, once each way,
 from whichever of its sources moves it; half pedalling between is silent, and
@@ -495,8 +513,9 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   soundboard; the full physical model in `Experiments/` does, but it is several
   times slower than real time.
 - Pedal behaviour is not validated against recordings: the training recordings
-  do not document pedal positions or timings. The release and pedal knocks
-  play at the library's mix, not a measured level, and only as far as the
+  do not document pedal positions or timings. The pedal knocks play at the
+  library's mix and the key knocks at a level the owner chose by ear, not a
+  measured level, and only as far as the
   body's modes hold them: 26 to 67 % of each recorded knock below 1 kHz, and
   all of it above, is left out, so a released C4 knocks 4 to 5 dB under the
   library's balance ([release recordings](Docs/research/release-recordings-2026-10-27.md)).
@@ -507,6 +526,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   more slowly than the strings, which the engine does not play: the grand's
   noise score at F♯3, A3 and C4 sits up to 6 dB from it at the softest layers
   ([knock benchmark](Docs/validation/grand-knock-benchmark-2026-10-29.md)).
+- The upright's partials swell over their fitted rises, up to 116 ms at
+  A2's fundamental, so its notes reach 90 % of their early peak 14 to 50 ms
+  after the strike. Faster rises either click at contact or leave its
+  velocity-127 chords no louder than at 110 through the output guard; see
+  [decisions](Docs/decisions.md).
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the

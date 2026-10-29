@@ -38,6 +38,21 @@ static_assert(upright::haloStrings.size()==grand::haloStrings.size(),"both piano
 constexpr double contactSmoothing=1e-4;
 static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
+// What the felt leaves ringing once it lands, the same on both pianos: the
+// upright's measured shape over the keys and its slow rates
+// (Docs/research/upright-dampers-2026-10-28.md) at a share the owner chose by
+// ear (Docs/decisions.md, 2026-10-29). The upright's own share, 13 dB under
+// the note at C4, rang on for seconds after every release.
+constexpr measured::Damper leftover{-46.f,upright::damper.shareSlopeDb,upright::damper.logRate,upright::damper.logRateSlope};
+// How much more the partials' colour follows the strike than the recordings'
+// layers show, as dB per octave of a partial's order (up to four, like the
+// Brightness control) for each dB the strike's layer plays over or under the
+// layer at velocity 100, so mostly softer strikes darken and the hardest keep
+// their headroom (Tools/KeyraLevels.cpp). The owner asked for the tone to
+// answer velocity more strongly than the recordings do (Docs/decisions.md,
+// 2026-10-29); a felt hammer stiffens as it is pressed in, so a harder blow is
+// brighter (Hall, JASA 92(1), 1992).
+constexpr double velocityColour=.4;
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
 }
@@ -50,11 +65,9 @@ float pedalLevel(float panel,float midi,std::uint16_t heldSwitches) noexcept {
 // sfizz's Region::velocityCurve computes it.
 double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracking*v*v;}
 // A piano: its fitted data (MeasuredTypes.h), where its lanes start in the
-// engine's caches, how its library mixes the action's noises against the
-// notes, what its dampers leave ringing and the scale of its levels. Tables
-// over the recorded pitches hold a row per pitch; one without pedal
-// recordings has no pedal knocks, and one whose release recordings cannot
-// show what its dampers leave has its felt take all of every partial.
+// engine's caches, how loud the action's noises play against the notes and
+// the scale of its levels. Tables over the recorded pitches hold a row per
+// pitch; one without pedal recordings has no pedal knocks.
 struct Model {
   int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;
@@ -62,9 +75,8 @@ struct Model {
   const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloSlopeRiseDb,haloPromptRate;
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
-  double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb;
+  double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb,keyDownDb;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
-  const measured::Damper* damper;
   double outputScale;
 };
 constexpr Model models[]{
@@ -73,27 +85,28 @@ constexpr Model models[]{
    grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
    grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,
-   // The action's noises against the notes, as the library's own SFZ mixes
-   // them (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt
-   // and Data/pedal.txt): a key let go at -37 dB with 82 % velocity tracking,
-   // 2 dB quieter for each second since its strike (rt_decay); the sustain
-   // pedal at -20 dB going down and -19 dB coming up. The notes track velocity
-   // at 73 % there (CC99's default) but play at the recordings' own levels
-   // here, so a release takes the ratio of the two trackings. The noise files
-   // were gained up as a set, so this balance is the library's mixing choice,
-   // not a measurement (Docs/research/release-recordings-2026-10-27.md).
-   -37,.82,.73,2,-20,-19,
+   // The action's noises against the notes. The library's own SFZ
+   // (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt and
+   // Data/pedal.txt) mixes a key let go at -37 dB with 82 % velocity
+   // tracking, 2 dB quieter for each second since its strike (rt_decay), and
+   // the sustain pedal at -20 dB going down and -19 dB coming up. The notes
+   // track velocity at 73 % there (CC99's default) but play at the
+   // recordings' own levels here, so a release takes the ratio of the two
+   // trackings. That balance is a mixing choice, not a measurement
+   // (Docs/research/release-recordings-2026-10-27.md), and the owner chose
+   // louder keys by ear (Docs/decisions.md, 2026-10-29): a key let go about
+   // 32 dB under a velocity-80 note (its knock's first 100 ms against the
+   // note's 50 to 750 ms, C2, C4 and C6 averaged), so at -22 dB, and the key
+   // landing, the same knock growing with the strike's layer, about 30 dB
+   // under it, at -26 dB.
+   -22,.82,.73,2,-20,-19,-26,
    grand::noiseBands.data(),grand::noise.data(),
-   // Its release recordings fade in over the damper's first tenth of a
-   // second and carry no level against the notes'
-   // (Docs/research/release-recordings-2026-10-27.md).
-   nullptr,
    // The measured levels are the recordings' own. This scale brings typical
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
    // the output stage's guard keeping the loudest chords out of the red
    // (Tools/KeyraLevels.cpp).
-   .7887},
+   .7707},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -102,10 +115,13 @@ constexpr Model models[]{
    upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,
    // The library's Stereo Ribbon preset plays every recording at its own
    // level (ampVelTrack 0) and a key let go as the hammer noise recorded
-   // with that key, at its group's volume of 0.2 (-14 dB) whatever the
-   // velocity and however long the key was held. It has no pedal recordings.
-   -13.9794,0,0,0,0,0,
-   upright::noiseBands.data(),upright::noise.data(),&upright::damper,
+   // with that key at a fixed -14 dB, which played 50 to 72 dB under the
+   // notes. Its keys now play as loud against the notes as the grand's,
+   // measured the same way (+15.4 dB let go, +16.5 dB landing), with the
+   // grand's velocity tracking and without its fade. It has no pedal
+   // recordings.
+   15.4,.82,0,0,0,0,16.5,
+   upright::noiseBands.data(),upright::noise.data(),
    // The recordings' levels are their own. This scale brings its typical
    // playing to the grand's, -9 VU (Tools/KeyraLevels.cpp), which also keeps
    // its median note at velocity 127 within 0.1 dB as loud as the grand's
@@ -113,7 +129,7 @@ constexpr Model models[]{
    // strike, as the benchmark sets a case's gain). Below it the shared
    // velocity response (responseAt) keeps the two medians within 1 dB of each
    // other.
-   2.387},
+   2.3548},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
@@ -187,7 +203,7 @@ struct alignas(16) Partial {
 // lanes, the float state runs one chunk from the exact state.
 struct alignas(16) BodyBank {
   V4 re{},im{},c{},s{},left{},rightRe{},rightIm{};
-  Complex exact[lanes]{},step[lanes]{},leap[lanes]{};
+  Complex exact[lanes]{},step[lanes]{},leap[lanes]{},natural[lanes]{};
 };
 constexpr int bodyModes=static_cast<int>(std::max(grand::bodyModes.size(),upright::bodyModes.size())),
               bodyBanks=(bodyModes+lanes-1)/lanes;
@@ -454,6 +470,10 @@ struct Engine::Impl {
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset or a piano switch
   bool sleeping=true;
   bool pedalHeld=false;  // the sustain pedal's dampers off the strings
+  // The least felt contact (or mute) among the sounding keys that have a
+  // damper, from the last chunk boundary (1 with none sounding), and the one
+  // the body's rotations were set for.
+  double bodyContact=1,appliedBodyContact=-1;
   // The portfolio's shared output stage, with the guard the newer
   // instruments use: typical playing passes it untouched and the hardest
   // chords stay out of the red (Tools/KeyraLevels.cpp).
@@ -531,12 +551,25 @@ struct Engine::Impl {
       BodyBank* banks[5]={&ring[k],&onset[k],&actionOnset[k],&contactOnset[k],&lateRing[k]};
       for(int b=0;b<5;++b){auto* bank=banks[b];
         const Complex s=b==4?lateStep:b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
-        bank->step[j]=s;bank->leap[j]=power(s,chunk);
+        bank->natural[j]=bank->step[j]=s;bank->leap[j]=power(s,chunk);
         setLane(bank->c,j,static_cast<float>(s.re));setLane(bank->s,j,static_cast<float>(s.im));
         setLane(bank->left,j,real?mode.left:0.f);
         setLane(bank->rightRe,j,real?mode.rightRe:0.f);setLane(bank->rightIm,j,real?mode.rightIm:0.f);
       }
     }
+    appliedBodyContact=-1;
+  }
+  void dampBody() noexcept {
+    for(int m=0;m<model->bodyModeCount;++m){const int j=m%lanes;
+      const double d=1/(1+bodyContact*feltRate(model->bodyModes[m].hz)/sampleRate);
+      BodyBank* banks[2]={&ring[m/lanes],&lateRing[m/lanes]};
+      for(auto* bank:banks){
+        const Complex s{bank->natural[j].re*d,bank->natural[j].im*d};
+        bank->step[j]=s;bank->leap[j]=power(s,chunk);
+        setLane(bank->c,j,static_cast<float>(s.re));setLane(bank->s,j,static_cast<float>(s.im));
+      }
+    }
+    appliedBodyContact=bodyContact;
   }
   // The power response at w (rad/sample) of one section, b0 (1 - z^-2) over
   // 1 + a1 z^-1 + a2 z^-2.
@@ -667,17 +700,17 @@ struct Engine::Impl {
   // Measured C4-C5 terminations on a Yamaha C7 fall 220-470 dB/s after a
   // quick key release (Taguti et al., Acoust. Sci. & Tech. 23(5), 2002,
   // Table 6). The Salamander release recordings cannot set it
-  // (Docs/research/release-recordings-2026-10-27.md). A piano whose
-  // recordings show what the felt leaves ringing holds that share of the
-  // partial only loosely (measured::Damper).
-  void setDamper(const Model& m,Partial& partial) const noexcept {
+  // (Docs/research/release-recordings-2026-10-27.md). The felt holds a small
+  // share of each partial only loosely (leftover). The body's ring, which the
+  // strings keep up, falls at the same rate at each mode's frequency once
+  // every damper is down: its measured rates are those of held notes.
+  static double feltRate(double f) noexcept {return 24+1.4*std::sqrt(f)+.001*f;}
+  void setDamper(Partial& partial) const noexcept {
     const double f=partial.frequency;
-    partial.damperScale=(24+1.4*std::sqrt(f)+.001*f)/sampleRate;
-    partial.slowShare=partial.slowScale=0;
-    if(!m.damper)return;
+    partial.damperScale=feltRate(f)/sampleRate;
     const double x=std::log2(f/261.63);
-    partial.slowShare=std::min(1.,std::pow(10.,(m.damper->shareDb+m.damper->shareSlopeDb*x)/10));
-    partial.slowScale=std::exp(m.damper->logRate+m.damper->logRateSlope*x)/sampleRate;
+    partial.slowShare=std::min(1.,std::pow(10.,(leftover.shareDb+leftover.shareSlopeDb*x)/10));
+    partial.slowScale=std::exp(leftover.logRate+leftover.logRateSlope*x)/sampleRate;
   }
   static void setRotation(Partial& partial,double damping) noexcept {
     for(int j=0;j<lanes;++j){
@@ -700,6 +733,7 @@ struct Engine::Impl {
     mute+=controlSmooth*(parameters.mute-mute);
     for(auto& channel:channels)
       channel.smoothedMute+=controlSmooth*(std::max(parameters.mute,channel.mute)-channel.smoothedMute);
+    if(bodyContact!=appliedBodyContact)dampBody();
     if(ringing){const bool early=advance(ring),late=advance(lateRing);ringing=early||late;}
     if(rising){const bool body=advance(onset),contact=advance(contactOnset);rising=body||contact;}
     if(actionRising)actionRising=advance(actionOnset);
@@ -711,6 +745,7 @@ struct Engine::Impl {
       for(const auto& channel:channels){sustain=std::max(sustain,static_cast<double>(pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])));open=open||channel.presses[note]>0||channel.captured[note];}
       openness[note]=open?1:sustain*sustain;
     }
+    double contact=1;
     for(auto& voice:voices)if(voice.active){
       const auto& channel=channels[voice.channel];
       const int key=voice.note-21;
@@ -721,6 +756,9 @@ struct Engine::Impl {
       // Continuous felt contact, including partial engagement and re-pedaling.
       // The undamped top twenty keys do not acquire a fictitious key damper.
       voice.contact=voice.note>=89?0:std::pow(std::max(0.,(voice.damper-.08)/.92),2.5);
+      // The undamped strings are left out: they are far above the body's
+      // modes. CC1's mute damps the strings that drive it as the felt does.
+      if(voice.note<89)contact=std::min(contact,std::max(voice.contact,channel.smoothedMute*channel.smoothedMute));
       const bool damping=voice.contact!=voice.appliedContact||channel.smoothedMute!=voice.appliedMute;
       voice.appliedContact=voice.contact;voice.appliedMute=channel.smoothedMute;
       const double ratio=voice.retune?tuningRatio(voice.channel):0;
@@ -754,6 +792,7 @@ struct Engine::Impl {
       voice.retune=false;
       if(voice.count==0||energy<1e-15)voice.active=false;
     }
+    bodyContact=contact;
   }
   void strike(int note,float velocity,int ch) noexcept {
     sleeping=false;
@@ -803,6 +842,9 @@ struct Engine::Impl {
     // growing with the level the strike's layer plays at, phases from the
     // nearer pitch.
     const double layerDb=levelAt(m,m.layerLevelDb,v);
+    const double colourDb=velocityColour*(layerDb-levelAt(m,m.layerLevelDb,100));
+    const auto colour=[colourDb](double order){return std::pow(10.,colourDb*std::min(4.,std::log2(order))/20);};
+    double plain=0,coloured=0; // the strike's energy without and with its colour
     const auto* ka=m.knocks+(upper-1)*m.bodyModeCount;const auto* kb=ka+m.bodyModeCount;
     for(int k=0;k<m.bodyModeCount;++k){const auto& x=ka[k];const auto& y=kb[k];
       const double level=mix(x.levelDb,y.levelDb,t)+mix(x.slopeDb,y.slopeDb,t)*layerDb;
@@ -818,6 +860,10 @@ struct Engine::Impl {
       knock(contactOnset[k/lanes],k%lanes,{contact*(g.re+h.re),contact*(g.im+h.im)},ahead);
     }
     ringing=rising=true;
+    // The key landing on the keybed knocks the body as its return does,
+    // growing with the strike's layer.
+    const auto* keyKnock=m.releaseKnocks+(upper-1)*m.bodyModeCount;
+    actionKnock(keyKnock,keyKnock+m.bodyModeCount,t,m.keyDownDb+layerDb);
     // The undamped strings: the strike sets every one ringing but its own
     // key's, which its partials play, at the level the two pitches around
     // the key set it (dB between them), growing faster than the level the
@@ -876,11 +922,11 @@ struct Engine::Impl {
       // Una corda reduces high-frequency excitation progressively and moves
       // energy from the prompt lane to the slowest one, as the unstruck
       // string is driven only through the bridge.
-      const double felt=std::exp(-soft*.115*(order-1))*softGain*weight;
+      const double felt=std::exp(-soft*.115*(order-1))*softGain*weight*colour(order);
       const double laneSoft[lanes]={1-.28*soft,1,1,1+.08*soft};
       auto& partial=voice.partials[voice.count];
       partial.frequency=frequency;
-      setDamper(m,partial);
+      setDamper(partial);
       partial.tintScale=std::min(4.,std::log2(static_cast<double>(order)));
       partial.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
       double peak=0;
@@ -895,15 +941,18 @@ struct Engine::Impl {
       }
       if(peak<1e-7)continue;
       launch(voice,partial,legacyAttack?.002:std::max(std::exp(d.rise),shortestRise),ahead,ratio);
+      const double c=colour(order);
+      for(int k=0;k<lanes;++k){const double e=partial.energyWeight[k]/(1-partial.decay[k]*partial.decay[k]);coloured+=e;plain+=e/(c*c);}
       ++voice.count;
     }
     // Single components (one measured lane each) share a slot four at a time,
     // one to a lane, in order of frequency; the slot's damping and tint follow
     // its members. Each starts at contact, under the pitch's onset rise.
-    int filled=0;double hzSum=0,orderSum=0,peak=0;
+    int filled=0;double hzSum=0,orderSum=0,peak=0,laneColour[lanes]{};
     const auto add=[&](double frequency,double order,const LaneData& l){
       auto& slot=voice.partials[voice.count];const int k=filled++;
-      const double amplitude=std::pow(10.,l.level/20)*softGain*std::exp(-soft*.115*(order-1));
+      laneColour[k]=colour(order);
+      const double amplitude=std::pow(10.,l.level/20)*softGain*std::exp(-soft*.115*(order-1))*laneColour[k];
       const Complex g{l.phase.re*amplitude,l.phase.im*amplitude},wl=g*l.left,wr=g*l.right;
       slot.decay[k]=std::exp(-std::exp(l.rate)/sampleRate);slot.hz[k]=frequency+l.offset;
       slot.baseLeftRe[k]=static_cast<float>(wl.re);slot.baseLeftIm[k]=static_cast<float>(wl.im);
@@ -916,12 +965,13 @@ struct Engine::Impl {
         slot.decay[k]=0;slot.hz[k]=hzSum/filled;
         slot.baseLeftRe[k]=slot.baseLeftIm[k]=slot.baseRightRe[k]=slot.baseRightIm[k]=0;}
       slot.frequency=hzSum/filled;
-      if(damped)setDamper(m,slot);
+      if(damped)setDamper(slot);
       else slot.damperScale=slot.slowShare=slot.slowScale=0;
       slot.tintScale=std::min(4.,std::log2(orderSum/filled));
       slot.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*slot.tintScale));
       if(peak>=1e-7){
         launch(voice,slot,legacyAttack?.002:shortestRise,ahead,ratio);
+        for(int k=0;k<filled;++k){const double e=slot.energyWeight[k]/(1-slot.decay[k]*slot.decay[k]);coloured+=e;plain+=e/(laneColour[k]*laneColour[k]);}
         ++voice.count;}
       filled=0;hzSum=orderSum=peak=0;
     };
@@ -942,6 +992,17 @@ struct Engine::Impl {
       if(filled==lanes)close(true);
     }
     if(filled>0&&voice.count<maxPartials)close(true);
+    // The colour moves the strike's energy between its partials and leaves
+    // its sum, each lane's to silence, where the recordings put it, so
+    // velocity sets the level as it did and the loudest chords keep their
+    // headroom.
+    if(coloured>0){const double scale=std::sqrt(plain/coloured);
+      for(int k=0;k<voice.count;++k){auto& x=voice.partials[k];
+        for(int j=0;j<lanes;++j){
+          x.baseLeftRe[j]*=static_cast<float>(scale);x.baseLeftIm[j]*=static_cast<float>(scale);
+          x.baseRightRe[j]*=static_cast<float>(scale);x.baseRightIm[j]*=static_cast<float>(scale);
+          x.energyWeight[j]*=scale*scale;}
+        updateWeights(x);}}
     if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
     if(voice.count==0)voice.active=false;
   }

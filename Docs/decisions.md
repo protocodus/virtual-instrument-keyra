@@ -1158,3 +1158,59 @@ it would need every rise of both pianos refitted to it.
 Chosen by measurement; the owner's standing direction is to adopt such
 candidates. A lettered phrase on both pianos, the shipping engine against
 this one, went to the owner level-matched with its key.
+
+## 2026-10-29 — one subtle release for both pianos, the body stopping with the strings
+
+The owner heard the upright's release ring on far too long and asked for both
+pianos to end alike, "something very subtle". A lettered set on staccato
+notes and a released chord (`rel.ev`, RMS-matched) put the shipping engine
+(A) against the body's ring stopping with the strings once every damper is
+down, plus one shared leftover under the felt at −40 dB (B), −46 dB (C) or
+none (D).
+
+Chosen: **C**, under the owner's standing direction to adopt the candidate.
+Both pianos now leave the upright's measured leftover shape and rates under
+the felt at −46 dB at C4 (`leftover` in the engine), and the body's modes damp
+at the felt's rate for their frequency while every key below the top damper
+is muted. One second after release both pianos sit about 48 to 60 dB under
+the note. The upright's release benchmark (2026-10-28) measured its leftover
+at about −13 dB; that measurement still stands, and the owner's ear overrules
+it here. Recorded as chosen by ear.
+
+## 2026-10-29 — the action's key noise at −30 dB
+
+The owner asked for key-down and key-up noise that is audible but not
+overstated. Set `key.ev` (RMS-matched): A shipping (key-up only, grand about
+−38 dB under the note, upright inaudible), B a key-down knock about −30 dB
+and key-up about −32 dB under a velocity-80 note on both pianos, C 6 dB
+louder. Chosen: **B**, as the less overstated of the two candidates. The
+key-down knock is the action's measured knock on the body's modes, growing
+with the strike's layer (`keyDownDb`). Chosen by ear.
+
+## 2026-10-29 — more colour with velocity, at the same loudness
+
+The owner asked for tone, not level, to follow velocity more. Set `col.ev`
+(RMS-matched): A shipping, B and C each partial gaining 0.2 or 0.4 dB per
+octave of its order (up to four octaves) for every dB the strike's layer sits
+over a pivot layer. Chosen: **C**, 0.4 dB (`velocityColour`). As listened it
+pivoted on velocity 64 and kept each partial's own level; that lifted the
+loud chords into the output guard and broke the Levels check's
+velocity-127-over-110 rule on Felt Upright. Shipped pivoting on the layer at
+velocity 100, with each strike's partial energy rescaled to what the
+recordings' layer plays, so loudness stays calibrated and only the balance
+moves. C4's spectral centroid from velocity 20 to 120: grand 349→711 Hz
+(was 419→504), upright 265→472 Hz (was 272→292). Chosen by ear; the amount
+is a by-ear pinning, not a measurement.
+
+## 2026-10-29 — the upright's faster attack waits for the owner
+
+Asked to improve the upright's attack. Its partials swell over their fitted
+rises, up to 116 ms at A2's fundamental, reaching 90 % of their early peak
+14 to 50 ms after the strike. Two candidates were tried: every partial rising
+with its pitch's measured whole-note onset (set `att.ev`, B), and each rise
+capped at the hammer's contact time, about 2 ms at C4 halving per two octaves
+up (Askenfelt and Jansson). B clicks: 8 to 10 dB of energy over 8 kHz in the
+first 5 ms against 20–40 ms, where the limit is 3 dB. The cap sits at that
+limit and makes Rehearsal Upright's velocity-127 chords no louder than at 110
+through the output guard (HEAD's margin is 0.16 dB). Neither ships until the
+owner says which check to give up or recalibrate.
