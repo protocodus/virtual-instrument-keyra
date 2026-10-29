@@ -424,8 +424,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   to 7.5 dB over the line through F♯3's and D4's levels at every layer, and
   the never-fitted B3 beside it plays 1.7 dB louder against its recording
   than the median note does.
-- From C6 up, the partials' decay after half a second is 4.5 dB/s from the
-  recordings' on the dev cases (0.3.0: 6.7 dB/s), but at A7 it is 1 to 2 dB/s
+- From C6 up, the partials' decay after half a second is 3.3 dB/s from the
+  recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
   further than 0.3.0's. Each undamped key rings as one string at one pitch,
   without its unison's beating, and falls at its rate from 1 to 2 s
   throughout, where the real strings fall faster at first and more slowly
