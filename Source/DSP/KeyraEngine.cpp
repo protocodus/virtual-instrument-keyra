@@ -30,9 +30,11 @@ static_assert(upright::haloStrings.size()==grand::haloStrings.size(),"both piano
 // in the 5 ms after the onset, the grand's bass and middle stood a median 8
 // to 20 dB over their recordings (Docs/decisions.md, 2026-10-29). Every
 // strike's rise is therefore smoothed by one more pole of this time, which
-// brings them within 3 dB; at 0.05 ms A1 stays 3 to 7 dB over. It lies under
-// the 0.25 ms frames and 0.5 ms smoothing through which the fits time the
-// rises.
+// brings them within 3 dB; at 0.05 ms A1 stays 3 to 7 dB over. The fits
+// time the rises without it: refitted with it, the grand's onset rises move
+// at 14 of its 22 pitches (most chosen among near-ties) and its body rise
+// from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
+// stay as fitted.
 constexpr double contactSmoothing=1e-4;
 static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");

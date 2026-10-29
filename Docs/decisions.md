@@ -1139,6 +1139,16 @@ run; the engine test `a strike starts without a click` holds both pianos:
 from 8 kHz up the 5 ms after contact hold no more than 3 dB over 20 to 40 ms
 later, where unsmoothed they reached 14 dB.
 
+The fits time every rise without this pole. Refitted with it in their
+model, the grand's onset rises move at 14 of its 22 anchors (A0 from 2.8 to
+1.7–3.8 ms over its layers, F♯5 from 5.6–7.3 to 1.0 ms; the fit keeps the
+shortest of the candidates within 1 % of the best, so many are near-ties)
+and its body rise from 0.31 to 0.24 ms. Played, that refit scores no closer
+to the recordings: the rise times 0.07 ms (train) and 0.09 ms (dev)
+further, the noise between partials 0.01 and 0.03 dB further, every other
+measure within 0.01 dB. So the rises stay as fitted without the pole, and
+the fit is unchanged; the upright's could not be refitted here in any case.
+
 Rejected on the way: squaring each rise, (1 − e^(−t/rise))², which is
 smooth at contact without a new time, removed the click as well (noise
 5.38 dB on the train notes) but slowed every onset under rises fitted to the
