@@ -1682,16 +1682,17 @@ recorded pitches like its balance; both reproduce every other value of both
 headers, and neither ships.
 
 - The first stage's coherence per pitch: the treble's own is no lower than
-  the pool (0.14 to 0.58 from 1 to 1.6 kHz at C6 to A7, against 0.29 to
-  0.38 pooled). The grand's treble dev cases moved the wrong way at
-  1.26 kHz (side 4.7 to 5.3 dB under the recordings', coherence 0.25 to
-  0.32 over) and by under 0.5 dB elsewhere.
+  the pool (0.08 to 0.58 from 1 to 1.6 kHz at C6 to A7, median 0.36,
+  against 0.29 to 0.38 pooled). The grand's treble dev cases moved the
+  wrong way at 1.26 kHz (side 4.7 to 5.3 dB under the recordings',
+  coherence 0.25 to 0.32 over) and at 2, 4, 8 and 10 kHz, 0.6 to 2.7 dB
+  further under.
 - Adding the second stage's own coherence, measured over the late frames it
   is fitted on (150 to 600 ms; 0.04 to 0.33 at those pitches): from 1 to
   1.6 kHz the treble's side came 0.3 to 1.2 dB closer and its coherence
-  0.02 to 0.12, but from 2 to 4 kHz it fell 0.4 to 0.6 dB further under, at
-  8 and 10 kHz 1.4 and 2.7 dB, and the upright's treble lost 0.4 and 1.0 dB
-  at 1 and 1.26 kHz.
+  0.02 to 0.12, but at 2 and 4 kHz it fell 0.4 and 0.6 dB further under,
+  at 8 and 10 kHz 1.4 and 2.7 dB, and the upright's treble train cases lost
+  0.4 and 1.0 dB at 1 and 1.26 kHz.
 
 So the ring's coherence is not what holds the treble's image narrow; what
 does is not identified, and it stays a known gap.
