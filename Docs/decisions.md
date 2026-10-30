@@ -1694,5 +1694,12 @@ headers, and neither ships.
   at 8 and 10 kHz 1.4 and 2.7 dB, and the upright's treble train cases lost
   0.4 and 1.0 dB at 1 and 1.26 kHz.
 
-So the ring's coherence is not what holds the treble's image narrow; what
-does is not identified, and it stays a known gap.
+So fitting the ring's coherence per pitch does not widen the treble. In
+probe builds that silence the board's noise, C7's and F♯7's bands from 1 to
+1.6 kHz fall 10 to 22 dB at velocity 80, so the noise is what those bands
+hold. Heard alone, it reads a coherence of 0.45 to 0.54 there over 0.05 to
+1.5 s, where those bands mix their sources at 0.29 to 0.38; silencing the
+undamped strings or the open strings' resonance moves none of it. Why the
+noise reads more coherent than it is mixed, whether the short burst biases
+the estimate, which the fit's own measurement over 2 to 100 ms would share,
+is the next question. It stays a known gap.
