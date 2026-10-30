@@ -81,7 +81,7 @@ struct Model {
   const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
   const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloSlopeRiseDb,haloPromptRate;
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
-  const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise;
+  const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise,actionDecay;
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb,keyDownDb;
   double contactTime;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
@@ -92,7 +92,7 @@ constexpr Model models[]{
    grand::partials.data(),grand::extras.data(),0,0,
    grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
-   grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,
+   grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,grand::actionDecay,
    // The action's noises against the notes. The library's own SFZ
    // (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt and
    // Data/pedal.txt) mixes a key let go at -37 dB with 82 % velocity
@@ -102,12 +102,14 @@ constexpr Model models[]{
    // recordings' own levels here, so a release takes the ratio of the two
    // trackings. That balance is a mixing choice, not a measurement
    // (Docs/research/release-recordings-2026-10-27.md), and the owner chose
-   // louder keys by ear (Docs/decisions.md, 2026-10-29): a key let go about
-   // 32 dB under a velocity-80 note (its knock's first 100 ms against the
-   // note's 50 to 750 ms, C2, C4 and C6 averaged), so at -22 dB, and the key
-   // landing, the same knock growing with the strike's layer, about 30 dB
-   // under it, at -26 dB.
-   -22,.82,.73,2,-20,-19,-26,
+   // louder keys by ear (Docs/decisions.md, 2026-10-29). A key let go half a
+   // second after its strike and the key landing, the same knock growing
+   // with the strike's layer, each play about 28 dB under a velocity-80 note,
+   // as they did when the owner chose them: the knock's first 100 ms against
+   // the note's 50 to 750 ms, in dB, C2, C4 and C6 averaged (31 to 33 dB
+   // under at C2 and C4, 19 to 20 dB at C6). The levels here are in the
+   // fit's scale, which its rise and decay set.
+   -33.65,.82,.73,2,-20,-19,-41.92,
    // The grand's partials rise as fitted.
    0,
    grand::noiseBands.data(),grand::noise.data(),
@@ -122,15 +124,15 @@ constexpr Model models[]{
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
    upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloSlopeRiseDb,upright::haloPromptRate,
    upright::bodyModes.data(),static_cast<int>(upright::bodyModes.size()),upright::bodyRise,upright::knocks.data(),
-   upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,
+   upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,upright::actionDecay,
    // The library's Stereo Ribbon preset plays every recording at its own
    // level (ampVelTrack 0) and a key let go as the hammer noise recorded
    // with that key at a fixed -14 dB, which played 50 to 72 dB under the
-   // notes. Its keys now play as loud against the notes as the grand's,
-   // measured the same way (+15.4 dB let go, +16.5 dB landing), with the
-   // grand's velocity tracking and without its fade. It has no pedal
-   // recordings.
-   15.4,.82,0,0,0,0,16.5,
+   // notes. Its keys play with the grand's velocity tracking and without its
+   // fade, measured as the grand's: a key let go about 36 dB and the key
+   // landing about 30 dB under a velocity-80 note, as when the owner chose
+   // them. It has no pedal recordings.
+   5.65,.82,0,0,0,0,4.29,
    // No partial rises slower than the hammer stays on the string: about
    // 4 ms at C2, 2 ms at C4 and 0.7 ms at C7 at mezzo-forte
    // (Askenfelt and Jansson, JASA 88(1), 1990, Fig. 7), halving every two
@@ -580,7 +582,11 @@ struct Engine::Impl {
   double haloPromptRate=0;
   std::array<measured::BodyMode,bodyModes> bodyMode{};
   int bodyModeCount=0;
-  double bodyRise=0,actionRise=0;
+  double bodyRise=0,actionRise=0,actionDecay=1;
+  // What a knock on a ring puts into `onset` and `contactOnset`, as shares
+  // of it, for the sum to build up as 1 - (rise e^(-t/rise) - s e^(-t/s)) /
+  // (rise - s), rise the body's, s = contactSmoothing.
+  double struckOnset=0,struckContact=0;
   std::array<double,noiseBands> coherence{};
   // A strike's partials on each piano before the build combines them, the
   // weights they play at, and its components beside the series (strike()).
@@ -624,11 +630,13 @@ struct Engine::Impl {
   // measured body rise and `contactOnset` faster by contactSmoothing; each
   // strike takes its knock on the two rings from them, so that their sum
   // starts from zero under the body's rise smoothed by contactSmoothing. The
-  // action's knocks (keys let go, the sustain pedal) build up more slowly, by
-  // the action's rise in `actionOnset`, and ring in `ring` only, as they were
-  // measured.
-  Body ring{},lateRing{},onset{},contactOnset{},actionOnset{};
-  bool ringing=false,rising=false,actionRising=false;
+  // action's knocks (keys landing and let go, the sustain pedal) ring in
+  // `actionRing`, each mode actionDecay times as fast as the board's ring,
+  // whatever the dampers do, and build up more slowly, by the action's rise
+  // in `actionOnset`, as they were measured; a key landing with its strike
+  // builds up as the strike's knock does, from `onset` and `contactOnset`.
+  Body ring{},lateRing{},onset{},contactOnset{},actionRing{},actionOnset{};
+  bool ringing=false,rising=false,actionRinging=false;
   // The body modes' pickups as built (pickupTarget) and as heard (pickup).
   // A build changed while the body sounds glides them to the new board's
   // over pickupGlide more samples, by pickupStep each sample: set at once,
@@ -747,6 +755,8 @@ struct Engine::Impl {
       z.left=static_cast<float>(p.left);z.rightRe=static_cast<float>(p.rightRe);z.rightIm=static_cast<float>(p.rightIm);
     }
     bodyRise=pickLog(g.bodyRise,u.bodyRise,b);actionRise=pickLog(g.actionRise,u.actionRise,build.action);
+    actionDecay=pickLog(g.actionDecay,u.actionDecay,build.action);
+    struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)coherence[k]=pick(g.noiseBands[k].coherence,u.noiseBands[k].coherence,b);
     for(int j=0;j<halo;++j)haloHz[j]=builtPitch(firstHalo+j)*std::pow(2.,haloString[j].cents/1200);
     // The open strings are the keys' own: each partial where a strike of its
@@ -811,7 +821,8 @@ struct Engine::Impl {
     return residue;
   }
   void prepareBody(bool glide=false) noexcept {
-    // Each bank's decay per sample beyond the ring's; the late ring's is its own.
+    // Each onset's decay per sample beyond its ring's (the action's beyond
+    // the action's ring); the rings' are their own.
     const double settle[4]={1,std::exp(-1/(bodyRise*sampleRate)),std::exp(-1/(actionRise*sampleRate)),
                             std::exp(-1/(contactSmoothing*sampleRate))};
     // A mode the build no longer has fades over 5 ms as its pickup glides
@@ -821,11 +832,12 @@ struct Engine::Impl {
       const int k=m/lanes,j=m%lanes;
       const bool real=m<bodyModeCount;const auto& mode=bodyMode[real?m:0];
       const double d=real?std::exp(-mode.rate/sampleRate):gone,w=2*pi*mode.hz/sampleRate;
-      const double e=real?std::exp(-mode.slowRate/sampleRate):gone;
-      const Complex step{d*std::cos(w),d*std::sin(w)},lateStep{e*std::cos(w),e*std::sin(w)};
-      BodyBank* banks[5]={&ring[k],&onset[k],&actionOnset[k],&contactOnset[k],&lateRing[k]};
-      for(int b=0;b<5;++b){auto* bank=banks[b];
-        const Complex s=b==4?lateStep:b==0?step:Complex{step.re*settle[b],step.im*settle[b]};
+      const double e=real?std::exp(-mode.slowRate/sampleRate):gone,a=real?std::exp(-mode.rate*actionDecay/sampleRate):gone;
+      const Complex step{d*std::cos(w),d*std::sin(w)},lateStep{e*std::cos(w),e*std::sin(w)},actionStep{a*std::cos(w),a*std::sin(w)};
+      BodyBank* banks[6]={&ring[k],&onset[k],&actionOnset[k],&contactOnset[k],&lateRing[k],&actionRing[k]};
+      for(int b=0;b<6;++b){auto* bank=banks[b];
+        const Complex& from=b==2?actionStep:step;
+        const Complex s=b==4?lateStep:b==5?actionStep:b==0?step:Complex{from.re*settle[b],from.im*settle[b]};
         bank->natural[j]=bank->step[j]=s;bank->leap[j]=power(s,chunk);
         setLane(bank->c,j,static_cast<float>(s.re));setLane(bank->s,j,static_cast<float>(s.im));
       }
@@ -960,9 +972,9 @@ struct Engine::Impl {
     }
   }
   void silenceBody() noexcept {
-    Body* bodies[5]={&ring,&lateRing,&onset,&contactOnset,&actionOnset};
+    Body* bodies[6]={&ring,&lateRing,&onset,&contactOnset,&actionRing,&actionOnset};
     for(auto* body:bodies)for(auto& bank:*body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
-    ringing=rising=actionRising=false;
+    ringing=rising=actionRinging=false;
     // As a fresh engine's: a key held through a reset leaves no felt behind.
     bodyContact=1;
   }
@@ -1023,7 +1035,7 @@ struct Engine::Impl {
     if(bodyContact!=appliedBodyContact)dampBody();
     if(ringing){const bool early=advance(ring),late=advance(lateRing);ringing=early||late;}
     if(rising){const bool body=advance(onset),contact=advance(contactOnset);rising=body||contact;}
-    if(actionRising)actionRising=advance(actionOnset);
+    if(actionRinging){const bool action=advance(actionRing),onset=advance(actionOnset);actionRinging=action||onset;}
     if(hissing)advanceNoise();
     const bool tintChanged=previousBrightness!=parameters.brightness;
     previousBrightness=parameters.brightness;
@@ -1203,19 +1215,18 @@ struct Engine::Impl {
       }
       const Complex g=stage[0],slow=stage[1];
       knock(ring[k/lanes],k%lanes,g,ahead);knock(lateRing[k/lanes],k%lanes,slow,ahead);
-      // 1 - (rise e^(-t/rise) - s e^(-t/s)) / (rise - s), s = contactSmoothing.
-      const double body=-bodyRise/(bodyRise-contactSmoothing),contact=contactSmoothing/(bodyRise-contactSmoothing);
-      knock(onset[k/lanes],k%lanes,{body*(g.re+slow.re),body*(g.im+slow.im)},ahead);
-      knock(contactOnset[k/lanes],k%lanes,{contact*(g.re+slow.re),contact*(g.im+slow.im)},ahead);
+      knock(onset[k/lanes],k%lanes,{struckOnset*(g.re+slow.re),struckOnset*(g.im+slow.im)},ahead);
+      knock(contactOnset[k/lanes],k%lanes,{struckContact*(g.re+slow.re),struckContact*(g.im+slow.im)},ahead);
     }
     ringing=rising=true;
-    // The key landing on the keybed knocks the body as its return does,
-    // growing with the strike's layer.
+    // The key landing on the keybed knocks the body's modes as its return
+    // does, growing with the strike's layer, but as an impact, with the
+    // strike: under the body's rise rather than the release's slower build.
     ActionSide keys[2];
     for(int p=0;p<2;++p){const auto& x=sides[p];const Model& m=*x.m;
       keys[p]={m.releaseKnocks+(x.upper-1)*m.bodyModeCount,m.releaseKnocks+x.upper*m.bodyModeCount,x.t,
                m.keyDownDb+x.layerDb+x.scaleDb,m.bodyModeCount};}
-    actionKnock(keys);
+    actionKnock(keys,true);
     // The undamped strings: the strike sets every one ringing but its own
     // key's, which its partials play, at the level the two pitches around
     // the key set it (dB between them), growing faster than the level the
@@ -1442,8 +1453,10 @@ struct Engine::Impl {
   }
   // A knock of the action on the body: on each piano between its two
   // recorded pitches' (levels mixed, phases from the nearer), between the
-  // pianos by the action's build, building up under the action's rise.
-  void actionKnock(const ActionSide (&side)[2]) noexcept {
+  // pianos by the action's build, ringing at the action's decay. It builds
+  // up under the action's rise, or, `struck` with a strike, under the
+  // body's as the strike's knock does.
+  void actionKnock(const ActionSide (&side)[2],bool struck=false) noexcept {
     if(!(parameters.mechanics>0))return;
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     const int counts[2]={side[0].count,side[1].count};
@@ -1453,10 +1466,13 @@ struct Engine::Impl {
            l=mix(x.x[k].levelDb,x.y[k].levelDb,x.t)+x.gainDb;ph=x.t<.5?x.x[k].phase:x.y[k].phase;},level,phase))continue;
       const double amplitude=parameters.mechanics*std::pow(10.,level/20);
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
-      knock(ring[k/lanes],k%lanes,g,ahead);knock(actionOnset[k/lanes],k%lanes,{-g.re,-g.im},ahead);
+      knock(actionRing[k/lanes],k%lanes,g,ahead);
+      if(!struck)knock(actionOnset[k/lanes],k%lanes,{-g.re,-g.im},ahead);
+      else{knock(onset[k/lanes],k%lanes,{struckOnset*g.re,struckOnset*g.im},ahead);
+           knock(contactOnset[k/lanes],k%lanes,{struckContact*g.re,struckContact*g.im},ahead);}
       any=true;
     }
-    if(any){sleeping=false;ringing=actionRising=true;}
+    if(any){sleeping=false;actionRinging=true;rising=rising||struck;}
   }
   // A key let go: its damper falls back onto the strings unless a pedal holds
   // it off them, and the key returns. From F6 up there is no damper to fall,
@@ -1586,7 +1602,7 @@ struct Engine::Impl {
     }
     if(ringing){ringBody(ring,frames);ringBody(lateRing,frames);}
     if(rising){ringBody(onset,frames);ringBody(contactOnset,frames);}
-    if(actionRising)ringBody(actionOnset,frames);
+    if(actionRinging){ringBody(actionRing,frames);ringBody(actionOnset,frames);}
     glidePickups(frames);
     const bool noisy=hissing;
     if(noisy)hiss(frames);
@@ -1703,7 +1719,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
          modifier(input.build.stiffness),modifier(input.build.unisons),modifier(input.build.ring)};
   if(old.strings!=build.strings||old.hammers!=build.hammers||old.soundboard!=build.soundboard||old.action!=build.action
      ||old.stiffness!=build.stiffness||old.unisons!=build.unisons||old.ring!=build.ring){
-    p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRising);p.prepareNoise();}
+    p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();}
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
   p.pedalEdge();
@@ -1795,7 +1811,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     p.render(left+done,right+done,n);
     done+=n;p.frame+=static_cast<std::uint64_t>(n);
   }
-  bool any=p.ringing||p.rising||p.actionRising||p.hissing;
+  bool any=p.ringing||p.rising||p.actionRinging||p.hissing;
   for(const auto& voice:p.voices)any=any||voice.active;
   if(!any){
     double residue=std::abs(p.highpassL)+std::abs(p.highpassR);

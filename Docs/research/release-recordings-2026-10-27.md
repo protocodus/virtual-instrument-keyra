@@ -63,6 +63,8 @@ release and the pedal's, whose energy spreads beyond the modes; the 1–3 kHz
 part, 20 dB under the rest, is left out. A decay shared by every knock on top
 of the modes' own improved the mean only from 42 % to 40 % (a 200 ms decay
 under a 120 ms rise), so the knocks ring with the modes' own decays.
+(Superseded on 2026-10-30: the knocks now fall 1.5 times as fast as the modes
+ring, which their bands' decays show; see `Docs/decisions.md`.)
 
 The engine sets them against the notes as the SFZ does: a release at −37 dB
 with 82 % velocity tracking where the notes track 73 % (the notes play at the

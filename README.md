@@ -190,6 +190,19 @@ musical passages through the same engine. Both are frozen evidence from
 - A Mechanics control sets how loud the action plays, from silent to twice as
   loud: the keys landing and coming back, the dampers falling, the sustain
   pedal's knocks and the strings its going down sets ringing.
+- The action's knocks ring as the release recordings' do, each body mode
+  falling 1.5 times as fast as the board's own ring of it whatever the
+  dampers do, and a key lands with its strike, as an impact. Ringing on the
+  board's own ring, the landing boomed under the treble: 0.1 to 0.5 s after
+  the strike the grand's notes from C6 up stood a median 5 to 7 dB over their
+  recordings at 200 and 250 Hz and the upright's 5 to 6 dB at 80 and 100 Hz,
+  now 1 to 2 dB. The keys play as loud as before in their first 100 ms,
+  except that a key let go from F6 up, which has no damper, no longer rings
+  on where the felt cut the knock below it: up to 11 dB quieter. The sustain
+  pedal's knock now stands against the strings it frees as Salamander's
+  pedal-down takes' does, about 3 dB louder than before ([grand](Docs/validation/grand-action-decay-benchmark-2026-10-30.md),
+  [upright](Docs/validation/upright-action-decay-benchmark-2026-10-30.md),
+  [pedal](Docs/validation/grand-action-decay-pedal-benchmark-2026-10-30.md)).
 - Full sustain pedal rings as 80 % of the pedal did, at the owner's request:
   the dampers stop short of clearing the strings, so the felt grazes them,
   and a chord of C3, C4, C5 and C6 let go under it falls 60 dB in 8.7 s on the
@@ -373,15 +386,18 @@ the upright's measured leftover shape at −46 dB at middle C, and while every
 damped key is down the body's modes damp at the felt's rate for their
 frequency, so the board stops with the strings.
 
-The action knocks the same modes. A key going down knocks them about 30 dB
-under a velocity-80 note, growing with the strike's layer. A key let go knocks them as its damper lands,
-building up over the 54 ms the release recordings show rather than clicking,
-and quieter the longer the key was held; under the sustain pedal or sostenuto
-no damper falls and the key-up is silent, while from F6 up, where there is
-no damper, the key's own return knocks them whatever the pedals do. The
-sustain pedal knocks them going down and coming up. The Mechanics control
-scales every knock of the action, and the ring the pedal sets going down,
-from silent at 0 to twice as loud at 200 %.
+The action knocks the same modes, each falling 1.5 times as fast as the
+board's own ring of it whatever the dampers do, as the release recordings'
+knocks fall. A key going down knocks them with its strike, about 28 dB under a
+velocity-80 note at C2, C4 and C6 (30 dB on the upright), growing with the
+strike's layer. A key let go knocks them as its damper lands, building up over
+the 152 ms the release recordings show (108 ms on the upright) rather than
+clicking, and quieter the longer the key was held; under the sustain pedal or
+sostenuto no damper falls and the key-up is silent, while from F6 up, where
+there is no damper, the key's own return knocks them whatever the pedals do.
+The sustain pedal knocks them going down and coming up. The Mechanics control
+scales every knock of the action, and the ring the pedal sets going down, from
+silent at 0 to twice as loud at 200 %.
 
 ### Two pianos, one model
 
@@ -490,26 +506,26 @@ the median of its layers' slopes, and per layer its density at contact under
 it. The
 action's knocks are measured from each recorded pitch's key-release take and
 the sustain pedal's two: a level and phase per mode at the knock's onset,
-fitted on the same modes under one rise they share; the recordings were gained
-up as a set, so their level against the notes is the library's SFZ mix (a
-release at −37 dB tracking velocity and 2 dB quieter for each second held, the
-pedal at −20 dB down and −19 dB up), not a measurement. The open strings'
-decay comes from the train pedal-down take, which rings them for seconds once
-the pedal's knock has passed: each string peak from 60 Hz to 5 kHz that stands
-6 dB over its floor for 0.8 s or more and clearly falls, 99 of them, its slope
-over 0.5 s frames, and over them the rate's log linear in octaves. Per
-third-octave band from 63 Hz to 5 kHz, the level every freed partial starts at
-as the dampers lift is the one that rings the take's energy there from 0.3 to
-2.3 s, in the take's own scale. A strike interpolates
+fitted on the same modes under one rise and one decay they share; the
+recordings were gained up as a set, so their level against the notes is the
+library's SFZ mix (a release at −37 dB tracking velocity and 2 dB quieter for
+each second held, the pedal at −20 dB down and −19 dB up), not a measurement.
+The open strings' decay comes from the train pedal-down take, which rings them
+for seconds once the pedal's knock has passed: each string peak from 60 Hz to
+5 kHz that stands 6 dB over its floor for 0.8 s or more and clearly falls, 99
+of them, its slope over 0.5 s frames, and over them the rate's log linear in
+octaves. Per third-octave band from 63 Hz to 5 kHz, the level every freed
+partial starts at as the dampers lift is the one that rings the take's energy
+there from 0.3 to 2.3 s, in the take's own scale. A strike interpolates
 between the recorded pitches by partial order and between the layers by
 velocity, taking phases from the nearer pitch; a partial's stereo pickup moves
 between the two pitches' channel level and phase differences, and its level is
-set so that its power over the first second or so, its lanes' beating included,
-sits between the two pitches' in dB. C8 is left out: its strongest components
-sit 90–100 cents above the stretch that F♯7 and A7 set and no partial series
-explains the recording, so the keys above A7 play A7's data on the stretch
-curve. Only fitted numbers enter the header; no recorded waveform or impulse
-response is loaded.
+set so that its power over the first second or so, its lanes' beating
+included, sits between the two pitches' in dB. C8 is left out: its strongest
+components sit 90–100 cents above the stretch that F♯7 and A7 set and no
+partial series explains the recording, so the keys above A7 play A7's data on
+the stretch curve. Only fitted numbers enter the header; no recorded waveform
+or impulse response is loaded.
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of
@@ -555,6 +571,9 @@ its train and dev key-release takes ([report](Docs/validation/upright-release-be
 and `Tools/benchmark_pedal.py` the grand's sustain pedal going down against
 its train and dev pedal-down takes, band by band, the strings' ring against
 the knock and its fall ([report](Docs/validation/grand-open-strings-benchmark-2026-10-30.md)).
+`Tools/tone_survey.py` measures the benchmark's cases signed, per
+third-octave band: where each register's tone and stereo image stand over or
+under the recordings, in the attack, early and sustain windows.
 
 ### Pedals and keyswitches
 
@@ -664,9 +683,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   pedal knocks play at the
   library's mix and the key knocks at a level the owner chose by ear, not a
   measured level, and only as far as the
-  body's modes hold them: 26 to 67 % of each recorded knock below 1 kHz, and
-  all of it above, is left out, so a released C4 knocks 4 to 5 dB under the
-  library's balance ([release recordings](Docs/research/release-recordings-2026-10-27.md)).
+  body's modes hold them: 24 to 70 % of each of the grand's recorded knocks
+  below 1 kHz (the upright's 38 to 86 %), and all of it above, is left out,
+  so a released C4 knocks 4 to 5 dB under the library's balance
+  ([release recordings](Docs/research/release-recordings-2026-10-27.md)).
   The room is not calibrated, and the key noise the recordings carry 1 to
   28 ms before string contact is not played: a note sounds from contact.
   Under the lowest body mode (29 Hz) the middle register's recordings hold a

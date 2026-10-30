@@ -361,13 +361,16 @@ int main(int argc,char** argv){
     // the strike until CC1 mutes them, on both pianos: below 400 Hz, far
     // under the strings, half a second on. (While the felt counted only the
     // damped strings, a lone top note's body fell as if every key were let
-    // go, within 6 dB of the muted one.)
+    // go, within 6 dB of the muted one.) The action is silent: the key's
+    // landing rings at its own decay whatever the felt does, as the release
+    // recordings' knocks do, and its tail stood 17 dB under the upright's
+    // free ring here.
     const auto body=[](const keyra::Parameters& p,bool muted){
       keyra::Engine e;e.setParameters(p);e.noteOn(105,.7f);render(e,12000);
       if(muted)e.controlChange(1,127);
       render(e,12000);const auto bands=thirdOctaves(render(e,24000));
       double sum=0;for(int k=0;k<14;++k)sum+=bands[static_cast<std::size_t>(k)];return sum;};
-    for(const auto& p:{dry(),dryUpright()}){const double free=10*std::log10(body(p,false)/body(p,true));
+    for(auto p:{dry(),dryUpright()}){p.mechanics=0;const double free=10*std::log10(body(p,false)/body(p,true));
       check(free>20,"a top note's body rings on until CC1 mutes it");std::cout<<"top_note_body_db="<<free<<'\n';}
   }
   {
@@ -861,9 +864,11 @@ int main(int argc,char** argv){
     // The sustain pedal going down knocks, and the strings its dampers free
     // ring: in the grand's pedal-down takes the energy from 0.3 to 2.3 s
     // after the onset stands 4.7 dB (pedalD1, train) and 4.4 dB (pedalD2,
-    // dev) over the first 0.3 s. The engine rang them at 6.9 dB until the
-    // owner had full pedal leave the felt grazing the strings (dampersLift),
-    // which grazes these too, so they fall faster: 2.8 dB.
+    // dev) over the first 0.3 s. With the dampers clear of the strings the
+    // engine rings them at 4.1 dB (6.9 dB while the action's knocks rang at
+    // the board's rates, too quiet against their take), but full pedal
+    // leaves the felt grazing the strings at the owner's request
+    // (dampersLift), which grazes these too, so they fall faster: -0.2 dB.
     keyra::Engine e;e.controlChange(64,127);
     const auto audio=render(e,48000*3);
     std::vector<double> power;

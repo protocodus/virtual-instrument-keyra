@@ -1141,11 +1141,16 @@ def body_data(results, datas, grid, layer_level, wav):
 # body's modes, most of it from 100 to 300 Hz; what lies from 1 to 3 kHz, 20 dB
 # under it, the modes leave out. Each is fitted with the modes fixed from its
 # onset, where its power over 5 ms first comes within 30 dB of its peak, under
-# one rise 1 - e^(-t/rise) that every knock shares: they build up over tens of
-# milliseconds, where a strike's knock takes a fraction of one. The files were
-# gained up as a set, so the levels are in their own scale; the engine sets
-# them against the notes as the library's SFZ does.
+# one rise 1 - e^(-t/rise) and one decay that every knock shares: they build up
+# over tens of milliseconds, where a strike's knock takes a fraction of one, and
+# each mode falls `decay` times as fast as the board's own ring of it. The
+# grand's takes fall 1.3 to 3 times as fast from 63 to 800 Hz as its modes ring
+# there (each third-octave band's median over the takes), those of keys with
+# no damper about as fast as the rest. The files were gained up as a set, so
+# the levels are in their own scale; the engine sets them against the notes
+# as the library's SFZ does.
 ACTION_SECONDS = 1.0
+ACTION_DECAYS = (1.0, 3.0, .05)         # the decays tried: from, to, step
 
 
 def action_signal(path):
@@ -1163,40 +1168,64 @@ def action_signal(path):
     return signal.resample_poly(y[onset:onset + int(ACTION_SECONDS * sr)], BODY_RATE, sr, axis=0)
 
 
-def action_fit(y, hz, rates, shapes, rise, ridge=1e-3):
-    """One knock under `rise`: per mode its complex level on the mode's pickup
-    at the onset, and the fraction of the knock's energy left unexplained."""
+def action_design(waves, rates, rise):
+    """The knocks' design: each mode's ring under `rise` at `rates`, then the
+    mains lines, over action_waves' times."""
+    import numpy as np
+    t, cos, sin, hum = waves
+    envelope = (1 - np.exp(-t / rise))[:, None] * np.exp(-np.outer(t, rates))
+    return np.hstack([envelope * cos, envelope * sin, hum])
+
+
+def action_waves(n, hz):
+    """The times of n samples at BODY_RATE and the modes' and the mains lines'
+    rotations over them, which every design shares."""
     import math
     import numpy as np
-    t = np.arange(len(y)) / BODY_RATE
-    envelope = (1 - np.exp(-t / rise))[:, None] * np.exp(-np.outer(t, rates))
+    t = np.arange(n) / BODY_RATE
     phase, hum = 2 * math.pi * np.outer(t, hz), 2 * math.pi * np.outer(t, BODY_HUM)
-    A = np.hstack([envelope * np.cos(phase), envelope * np.sin(phase), np.cos(hum), np.sin(hum)])
+    return t, np.cos(phase), np.sin(phase), np.hstack([np.cos(hum), np.sin(hum)])
+
+
+def action_fit(y, design, shapes, ridge=1e-3):
+    """One knock on a design's first len(y) rows: per mode its complex level
+    on the mode's pickup at the onset, and the fraction of the knock's energy
+    left unexplained."""
+    import numpy as np
+    A = design[:len(y)]
     gram = A.T @ A
     c = np.linalg.solve(gram + ridge * np.trace(gram) / len(gram) * np.eye(len(gram)), A.T @ y)
-    z = c[:len(hz)] - 1j * c[len(hz):2 * len(hz)]                 # modes x channels
+    modes = len(shapes)
+    z = c[:modes] - 1j * c[modes:2 * modes]                         # modes x channels
     levels = np.array([np.conj(shape) @ zm / 2 for shape, zm in zip(shapes, z)])
     return levels, float(np.sum((y - A @ c) ** 2) / np.sum(y ** 2))
 
 
 def action_data(model, notes, hz, rates, shapes):
     """The anchors' key releases and, where the corpus records it, the pedal's
-    down and up as knocks (MODELS): their shared rise (s), the one under which
-    the modes leave least of them unexplained, and per knock and mode the
-    level (dB) and phase at the onset."""
+    down and up as knocks (MODELS): their shared rise (s) and decay (times the
+    board's rates), the pair under which the modes leave least of them
+    unexplained, and per knock and mode the level (dB) and phase at the
+    onset."""
     import numpy as np
     names = [model['release'].format(key=note - 20, note=note) for note in notes] + list(model['pedal'])
     roles = json.loads(model['split'].read_text())['cases']
     if any(roles.get(name) != 'train' for name in names):
         raise SystemExit('the action knocks are fitted on train recordings only')
     signals = [action_signal(model['wav'] / f'{name}.wav') for name in names]
-    grid = np.geomspace(.005, .3, 25)
-    unexplained = [float(np.mean([action_fit(y, hz, rates, shapes, rise)[1] for y in signals])) for rise in grid]
-    rise = float(grid[int(np.argmin(unexplained))])
-    fits = [action_fit(y, hz, rates, shapes, rise) for y in signals]
+    waves = action_waves(max(len(y) for y in signals), hz)
+    rises = np.geomspace(.005, .3, 25)
+    first, last, step = ACTION_DECAYS
+    decays = first + step * np.arange(round((last - first) / step) + 1)
+    trials = [(float(np.mean([action_fit(y, design, shapes)[1] for y in signals])), decay, rise)
+              for decay in decays for rise in rises
+              for design in [action_design(waves, decay * np.asarray(rates), rise)]]
+    _, decay, rise = min(trials, key=lambda trial: trial[0])
+    design = action_design(waves, decay * np.asarray(rates), rise)
+    fits = [action_fit(y, design, shapes) for y in signals]
     knocks = [[{'level_db': float(20 * np.log10(abs(level) + 1e-12)), 'phase': float(np.angle(level))}
                for level in levels] for levels, _ in fits]
-    out = {'rise': rise, 'releases': knocks[:len(notes)], 'cases': names,
+    out = {'rise': float(rise), 'decay': float(round(decay, 6)), 'releases': knocks[:len(notes)], 'cases': names,
            'unexplained': [round(u, 3) for _, u in fits]}
     if model['pedal']:
         out.update({'pedal_down': knocks[len(notes)], 'pedal_up': knocks[len(notes) + 1]})
@@ -2088,8 +2117,10 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper,
                                          'level_db', 'slope_db', 'phase', 'slow_level_db', 'slow_slope_db', 'slow_phase')) + '}'
                                      for k in knocks] for knocks in body['anchors']])
     lines += wrap(model['actions'] + ' Each knock\'s level and phase per mode, and the rise '
-                  '1 - e^(-t/rise) (seconds) the knocks share.')
-    lines += [f'constexpr float actionRise={number(action["rise"])};']
+                  '1 - e^(-t/rise) (seconds) the knocks share and how many times as fast as the board\'s '
+                  'ring each mode of theirs falls.')
+    lines += [f'constexpr float actionRise={number(action["rise"])};',
+              f'constexpr float actionDecay={number(action["decay"])};']
     lines += table('ActionKnock', 'releaseKnocks', modes, [[action_knock(k) for k in knocks] for knocks in action['releases']])
     for edge in ('pedal_down', 'pedal_up'):
         if edge in action:
@@ -2278,7 +2309,7 @@ def generate(model):
                  'rise_ms': round(1000 * body['rise'], 3),
                  'layer_rise_ms': {str(note): [round(1000 * r, 3) for r in rises]
                                    for note, rises in body['layer_rises'].items()}},
-        'action': {'cases': action['cases'], 'rise_ms': round(1000 * action['rise'], 3),
+        'action': {'cases': action['cases'], 'rise_ms': round(1000 * action['rise'], 3), 'decay': action['decay'],
                    'unexplained': dict(zip(action['cases'], action['unexplained']))},
         **({'damper': {'share_db': round(damper['law'][0], 3), 'share_db_per_octave': round(damper['law'][1], 3),
                        'slow_rate_per_s': round(math.exp(damper['law'][2]), 4),

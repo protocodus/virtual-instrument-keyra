@@ -1525,3 +1525,85 @@ and coming up) and the ring the pedal sets going down. A strike's own knock
 on the body and its contact noise are the hammer's, not the action's, and do
 not move. At 1 the engine plays as before, sample for sample. The plug-in's
 presets leave it, as they leave Output.
+
+## 2026-10-30 — the action's knocks ring at their own decay; a key lands with its strike
+
+The owner asked for the tonal balance to be refined and unwanted resonance
+removed. Surveyed signed per third-octave band against the recordings
+(`Tools/tone_survey.py`), the treble boomed: 0.1 to 0.5 s after the strike
+the grand's train notes from C6 up stood a median 5.1 dB over their
+recordings at 200 Hz and 7.3 dB at 250 Hz (dev 6.9 and 9.8 dB), the
+upright's 5.4 and 6.5 dB at 80 and 100 Hz and 4.3 and 5.1 dB at 250 and
+315 Hz. Most of it was the key landing: a knock about 28 dB under a
+velocity-80 note at C2, C4 and C6, but 4 to 10 dB under the quiet notes from
+C7 up, building up over the release recordings' 54 ms rise and ringing at the
+board's own rates on a body that a top note keeps free.
+
+The release recordings' knocks fall faster than the board rings: per
+third-octave band from 63 to 800 Hz the grand's train takes fall a median
+1.3 to 3 times as fast as its modes ring there, the 19 takes of keys without
+a damper about as fast as the 62 with one. The fit now finds one decay with
+the knocks' shared rise, each mode falling that many times as fast as the
+board's ring of it: 1.5 on both pianos, under a 152 ms rise on the grand
+(40.3 % of the knocks' energy left unexplained, 41.4 % at the board's rates
+under the 54 ms it found then) and 108 ms on the upright (58.8 %, 59.6 %).
+The engine rings every knock of the action on its own bank at that decay,
+whatever the dampers do, and a key landing knocks with its strike, building
+up under the body's rise as the strike's knock does: the landing is an
+impact, where the release recordings' slower build is the key and the damper
+coming back. Rejected on the way: the measured decay with the landing still
+building up over the knocks' rise, which the refit lengthens, left most of
+the boom (grand treble 4.8 and 6.6 dB at 200 and 250 Hz, upright 4.5 and
+5.8 dB at 80 and 100 Hz).
+
+The owner chose the keys' loudness by ear (2026-10-29), so their levels are
+re-pinned to play as before in their first 100 ms against a velocity-80
+note's 50 to 750 ms, C2, C4 and C6 averaged in dB: the grand's landing and
+let-go knocks −27.9 and −28.0 dB, the upright's −30.1 and −36.1 dB, each
+within 0.03 dB of the shipping engine. The old felt damped the board's ring
+once every damped key was down, so a key let go below F6 lost most of its
+knock to it while one above, with no damper, rang on: the grand's C7 to C8
+let go 1 to 7 dB over their notes and the keys below 20 to 33 dB under. Now
+every key's let-go knocks as the release recordings' do, at the level the
+owner chose for the keys below F6 (C8 −3.7 dB, C7 −9.9 dB). The sustain
+pedal's knocks stay at the library's mix and now stand against the strings
+the pedal frees as Salamander's pedal-down takes do: with the dampers clear
+the energy from 0.3 to 2.3 s sits 4.1 dB over the first 0.3 s against the
+takes' 4.7 and 4.4 dB (it sat 6.9 dB), so the knock sounds about 3 dB
+louder, and under the owner's grazing felt −0.2 dB (2.8 dB)
+([pedal](validation/grand-action-decay-pedal-benchmark-2026-10-30.md)).
+
+Surveyed again, the treble's boom 0.1 to 0.5 s after the strike is a median
+1.0 and 1.7 dB over the grand's train recordings at 200 and 250 Hz (dev 1.6
+and 3.7 dB) and 0.8, 1.8, 1.3 and 1.6 dB over the upright's at 80, 100, 250
+and 315 Hz; the grand's middle register, 2.2, 1.9 and 1.1 dB over from 125
+to 200 Hz, is 0.5, 0.0 and −0.6 dB. On the recording benchmarks against
+e9411bb, the grand's early spectrum moves closer on 175 of its 432 train and
+dev notes and further on 39 (train 4.25 → 4.16 dB, dev 4.62 → 4.52; treble
+4.63 → 4.41 and 4.60 → 4.28) and its noise between partials 5.70 → 5.63 and
+5.41 → 5.38 dB. Its regressions: C8, which plays A7's data, now sits 5 to
+7 dB under its recordings from 62 to 315 Hz in that window, where the
+landing's long ring had filled them (early 6.27 → 6.94 dB train, 5.88 → 6.53
+dev, its noise and dev partials 0.5 dB further); A3's onset rise
+(0.94 → 2.49 ms train, 0.69 → 2.29 ms dev); and F♯1's dev noise
+(3.81 → 4.70 dB) ([grand](validation/grand-action-decay-benchmark-2026-10-30.md)).
+The upright's early spectrum moves closer on 70 of its 158 notes and further
+on 16 (train 5.24 → 5.05, dev 7.28 → 7.31; treble 6.01 → 5.50 and
+7.82 → 7.93) and its noise 6.56 → 6.42 and 6.92 → 7.01 dB, with F♯6's and
+G7's train envelopes (3.50 → 4.03, 3.92 → 4.49 dB) and G♯6's train
+coherence (0.32 → 0.37) its regressions
+([upright](validation/upright-action-decay-benchmark-2026-10-30.md)). On the
+upright's key-release takes (`Tools/benchmark_releases.py`) the partials'
+release shapes sit 5.15 dB from the train takes (5.03 dB) and 6.65 dB from
+the dev takes (6.74 dB): the let-go knock the felt no longer cuts short rings
+on through A♯3's, F♯4's and F♯5's partials, 1.1 to 1.2 dB further from their
+takes, and D6's sits 1.3 dB nearer.
+
+The action's own bank costs CPU: on the development machine the README
+demos render 5 to 13 % slower on six presets and within 3 % on Felt Upright
+and Pop Upright (`RenderKeyraPresetDemos --cpu`, shipping and candidate run
+twice, alternated, medians of six).
+
+Chosen by measurement, under the owner's standing direction to adopt such
+candidates; a before/after phrase of treble notes, a chord and the pedal went
+to the owner for both pianos.
