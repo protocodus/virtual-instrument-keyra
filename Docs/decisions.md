@@ -1667,3 +1667,31 @@ benchmarked against 0.4.1 at dba37b9; neither ships.
 With the action's knocks silenced the upright's middle register still
 stands 3 dB over its recordings at 80 to 100 Hz in the first 0.1 s, so that
 low thump is the strike's knock, not the keys landing. Both stay known gaps.
+
+## 2026-10-30 — rejected: the board's ring at each pitch's own coherence
+
+From C6 up the grand's image is narrower than Salamander's: from 800 Hz to
+4 kHz its side stands a median 2.4 to 4.7 dB further under its mid than the
+recordings' on the dev cases, and its channels' coherence 0.2 to 0.3 higher
+(`Tools/tone_survey.py` at dba37b9's engine). The board's ring plays one
+left/right coherence per band, pooled over every recorded pitch and measured
+on its first stage, 2 to 100 ms after contact; the recordings of the notes
+from C7 up hold a median 0.17 from 1 to 1.6 kHz over 0.05 to 1.5 s. Two
+refits gave the ring its own pitch's coherence, interpolated between the
+recorded pitches like its balance; both reproduce every other value of both
+headers, and neither ships.
+
+- The first stage's coherence per pitch: the treble's own is no lower than
+  the pool (0.14 to 0.58 from 1 to 1.6 kHz at C6 to A7, against 0.29 to
+  0.38 pooled). The grand's treble dev cases moved the wrong way at
+  1.26 kHz (side 4.7 to 5.3 dB under the recordings', coherence 0.25 to
+  0.32 over) and by under 0.5 dB elsewhere.
+- Adding the second stage's own coherence, measured over the late frames it
+  is fitted on (150 to 600 ms; 0.04 to 0.33 at those pitches): from 1 to
+  1.6 kHz the treble's side came 0.3 to 1.2 dB closer and its coherence
+  0.02 to 0.12, but from 2 to 4 kHz it fell 0.4 to 0.6 dB further under, at
+  8 and 10 kHz 1.4 and 2.7 dB, and the upright's treble lost 0.4 and 1.0 dB
+  at 1 and 1.26 kHz.
+
+So the ring's coherence is not what holds the treble's image narrow; what
+does is not identified, and it stays a known gap.

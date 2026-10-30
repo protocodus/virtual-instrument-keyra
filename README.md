@@ -752,11 +752,9 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   up the grand's image is narrower than its recordings': from 800 Hz to
   4 kHz its side stands a median 2.4 to 4.7 dB further under its mid on the
   dev cases, and its channels' coherence 0.2 to 0.3 higher
-  (`Tools/tone_survey.py`). Under the notes from C7 up, from 1 to 1.6 kHz,
-  the board's ring plays one coherence per band, the median over every
-  measured pitch (0.29 to 0.38), and the render's channels a median 0.44
-  there, where those notes' recordings hold 0.17: fitting the coherence per
-  pitch, as the ring's level is, is the open fix. A key
+  (`Tools/tone_survey.py`). Giving the board's ring each pitch's own
+  left/right coherence, for its first stage and its second, does not close
+  it ([decisions](Docs/decisions.md)). A key
   between two recorded pitches follows one that is louder or quieter than
   its neighbours, where its own recording may not: the upright's C4 sits 3
   to 7.5 dB over the line through F♯3's and D4's levels at every layer, and
