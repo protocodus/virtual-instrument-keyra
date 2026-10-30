@@ -25,8 +25,8 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -12.4 dBFS |
 | 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -15.3 dBFS |
 | 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -1.5 dBFS |
-| 6 | Rehearsal Upright | [06-rehearsal-upright.wav](Docs/audio/06-rehearsal-upright.wav) | 11.6 s | -2.9 dBFS |
-| 7 | Felt Upright | [07-felt-upright.wav](Docs/audio/07-felt-upright.wav) | 10.4 s | -7.9 dBFS |
+| 6 | Rehearsal Upright | [06-rehearsal-upright.wav](Docs/audio/06-rehearsal-upright.wav) | 11.6 s | -1.5 dBFS |
+| 7 | Felt Upright | [07-felt-upright.wav](Docs/audio/07-felt-upright.wav) | 10.4 s | -6.2 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
 
 <!-- audio-demos-end -->
@@ -220,7 +220,7 @@ musical passages through the same engine. Both are frozen evidence from
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 24](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/40934271528/artifacts/12923914415)**, built from [`0ec80374ae25`](https://github.com/protocodus/virtual-instrument-keyra/commit/0ec80374ae25bce79492966193ec8ebe886ccbbc). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 26](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/40981421737/artifacts/12945342493)**, built from [`2df5f1bf7645`](https://github.com/protocodus/virtual-instrument-keyra/commit/2df5f1bf7645ed9a32ddc77afe3d238ab4ce9d84). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
