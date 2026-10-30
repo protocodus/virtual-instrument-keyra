@@ -1699,7 +1699,13 @@ probe builds that silence the board's noise, C7's and F♯7's bands from 1 to
 1.6 kHz fall 10 to 22 dB at velocity 80, so the noise is what those bands
 hold. Heard alone, it reads a coherence of 0.45 to 0.54 there over 0.05 to
 1.5 s, where those bands mix their sources at 0.29 to 0.38; silencing the
-undamped strings or the open strings' resonance widens none of them. Why the
-noise reads more coherent than it is mixed, whether the short burst biases
-the estimate, which the fit's own measurement over 2 to 100 ms would share,
-is the next question. It stays a known gap.
+undamped strings or the open strings' resonance widens none of them. In a
+probe whose noise does not decay it reads 0.38, 0.37 and 0.28 at 1, 1.26 and
+1.6 kHz, the coherence it is mixed at: the engine mixes as measured, and the
+higher reading is the short burst's, an estimate from few independent
+samples. The recordings read 0.17 there over the same window, with their
+energy in those bands within 3.5 dB of the render's in the first 0.1 s and
+within 1.3 dB after it, so their sound is less coherent there than the 2 to
+100 ms frames the coherence is measured on. What the noise should be mixed at
+over its whole ring, not its first 0.1 s, is the open question; it stays a
+known gap.
