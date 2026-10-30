@@ -427,10 +427,13 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
   // partials of two recorded pitches can arrive half a turn apart in phase;
   // blended as vectors they cancelled a channel, putting D#3's fundamental
   // 12 dB further left than either C3 or F#3 has it.
-  const double g=std::exp(mix(x.ratio,y.ratio,t));
-  const double phase=x.angle+t*std::remainder(y.angle-x.angle,2*pi);
-  const double left=std::sqrt(2/(1+g*g));
-  l.left={left,0};l.right={left*g*std::cos(phase),left*g*std::sin(phase)};
+  // The result carries its own ratio and angle: a lane blended between two
+  // recorded pitches is blended again between the pianos by the strings'
+  // build, and without them it took both pianos' channels as alike and
+  // played every strike of an in-between build in mono.
+  l.ratio=mix(x.ratio,y.ratio,t);l.angle=x.angle+t*std::remainder(y.angle-x.angle,2*pi);
+  const double g=std::exp(l.ratio),left=std::sqrt(2/(1+g*g));
+  l.left={left,0};l.right={left*g*std::cos(l.angle),left*g*std::sin(l.angle)};
   return l;
 }
 // A partial's power as the first second or so hears it: every pair of its

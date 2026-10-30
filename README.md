@@ -241,6 +241,8 @@ musical passages through the same engine. Both are frozen evidence from
   The two measured pianos play as before, and switching Piano plays from the
   next note while what sounds rings on, where it silenced the instrument. The
   voicing knob that read Hammer reads Brightness, beside the build's Hammers.
+  A Strings setting between the two pianos keeps their stereo image, between
+  theirs; at first every one of them played in mono.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research

@@ -638,6 +638,24 @@ int main(int argc,char** argv){
     check(worst<2,"the halfway build plays between the two pianos' levels");
   }
   {
+    // The strings' build carries each partial's stereo pickup between the
+    // pianos': a chord's side against its mid at a quarter, half and three
+    // quarters stays within the two pianos' own, 2 dB aside. (Blended without
+    // their ratio and angle, every in-between build played in mono, its side
+    // 24 dB under its mid.)
+    const auto image=[](float strings){auto p=dry();p.build={strings,0,0,0,0,0,0};
+      keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);
+      for(const int note:{48,55,64,72})e.noteOn(note,.7f);
+      const auto audio=render(e,48000);double mid=0,side=0;
+      for(std::size_t i=0;i<audio.size();i+=2){
+        const double m=.5*(audio[i]+audio[i+1]),d=.5*(audio[i]-audio[i+1]);mid+=m*m;side+=d*d;}
+      return 10*std::log10(side/mid);};
+    const double grand=image(0),upright=image(1);
+    for(const float strings:{.25f,.5f,.75f}){const double db=image(strings);
+      check(db>std::min(grand,upright)-2&&db<std::max(grand,upright)+2,"an in-between strings build keeps the pianos' stereo image");
+      std::cout<<"strings="<<strings<<" side_over_mid_db="<<db<<" grand_db="<<grand<<" upright_db="<<upright<<'\n';}
+  }
+  {
     // Stiffness scales each key's inharmonicity B by 4^stiffness: C2's 12th
     // partial moves as B times a quarter and four times puts it, from each
     // piano's measured f1 and B at C2.
