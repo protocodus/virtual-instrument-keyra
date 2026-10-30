@@ -81,7 +81,7 @@ musical passages through the same engine. Both are frozen evidence from
   ([grand](Docs/validation/grand-body-tail-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-body-tail-benchmark-2026-10-29.md)).
 - From F♯4 up (G♯4 on the upright) a strike knocks from the moment the hammer
-  meets the strings: band noise in up to 15 third-octave bands from 630 Hz to
+  meets the strings: band noise in up to 17 third-octave bands from 400 Hz to
   16 kHz, at the level and decay measured for its pitch, layer and band over
   the first 35 ms after contact, falling at a median 480 to 900 dB/s by pitch,
   where the recordings stood 5 to 16 dB over everything the engine played
@@ -209,6 +209,21 @@ musical passages through the same engine. Both are frozen evidence from
   pedal-down takes' does, about 3 dB louder than before ([grand](Docs/validation/grand-action-decay-benchmark-2026-10-30.md),
   [upright](Docs/validation/upright-action-decay-benchmark-2026-10-30.md),
   [pedal](Docs/validation/grand-action-decay-pedal-benchmark-2026-10-30.md)).
+- The body no longer rings a strike's knock on as its own. Fitted from 20 ms
+  after contact, the soundboard's modes took up the knock, which falls far
+  faster than they do, and kept ringing it: the upright's treble sounded
+  boxy, its notes from C6 up standing a median 3.4 to 8.3 dB over their
+  recordings from 400 Hz to 800 Hz 0.1 to 0.5 s after the strike. Where the
+  knock is measured, the modes are now fitted after it, from 45 ms, and the
+  knock plays from 400 Hz up where it started at 630 Hz: those bands stand
+  2.1 to 4.5 dB over, and the attack spectrum moves closer on both pianos
+  with no note further from its recordings than the benchmark's tolerance
+  ([grand](Docs/validation/grand-body-after-knock-benchmark-2026-10-30.md),
+  [upright](Docs/validation/upright-body-after-knock-benchmark-2026-10-30.md)).
+  The cost is under the treble's fundamental: from 400 to 800 Hz its image
+  narrows, its side up to 5 dB further under its mid, and the grand's 500 Hz
+  to 1 kHz sits 0.4 to 1.2 dB further under its recordings from 0.1 to
+  0.5 s.
 - Full sustain pedal rings as 80 % of the pedal did, at the owner's request:
   the dampers stop short of clearing the strings, so the felt grazes them,
   and a chord of C3, C4, C5 and C6 let go under it falls 60 dB in 8.7 s on the
@@ -357,7 +372,7 @@ keep their measured level: each strike starts its own burst with the density,
 decay and left/right balance measured for its pitch. Under a treble note's
 fundamental the burst falls in two stages that add in power, the second
 slower and quieter. From F♯4 up (G♯4 on the upright) the same burst carries
-the strike's knock, in up to 15 bands from 630 Hz to 16 kHz: from contact, at
+the strike's knock, in up to 17 bands from 400 Hz to 16 kHz: from contact, at
 the density, decay and balance measured for its pitch and layer, falling
 faster than the ring, mostly within a few tens of milliseconds.
 
@@ -527,7 +542,10 @@ refitted on what the second leaves of the frames from 35 to 400 ms, and a mode
 takes the energy-weighted median of six or more layers' rates. A pitch's knock
 on each stage is a line in the level of the layer that struck it, weighted by
 the knock's amplitude: the second stage's is fitted after 0.4 s first, the
-first's on what it leaves; the board noise is measured
+first's on what it leaves from 20 ms on, and again from 45 ms for the modes
+in the bands where the pitch's knock is found (by a first such fit in every
+band it can be measured in), which the knock's bands then play; the board
+noise is measured
 in the gaps between the partials the recordings show and, above the highest of
 them, across whole bands, as the benchmark measures it. In the bands below a
 note's fundamental, which hold other strings' tones but none of its own, a
@@ -537,7 +555,7 @@ frames from 0.15 to 0.6 s after contact that stand 10 dB over the floor, and
 the first is refitted on what the second leaves of the early frames. Above
 the fundamental the late frames mix the ring with the note's own unresolved
 partials, so only the first is fitted there. The strike's knock is measured
-from contact, in third-octave bands from 630 Hz to 16 kHz: through 20 ms
+from contact, in third-octave bands from 400 Hz to 16 kHz: through 20 ms
 frames centred 10 to 35 ms after contact, between the partials, what the
 residual holds beyond the body's modes and the ring, where it stands over the
 ring in four frames or more and falls faster; per pitch and band one decay,
@@ -795,11 +813,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   11 dB under its train takes, and its other regions from 25 Hz to 1 kHz 4 to
   9 dB under from 1 to 1.5 s; the upright's 700 Hz to 1 kHz sit 6 and 10 dB
   under its train and dev takes there. Earlier they ring over them: from
-  0.1 to 0.5 s after the strike the upright's notes from C6 up stand 3 to
-  8 dB over their recordings from 400 Hz to 1 kHz, and in the first 0.1 s
+  0.1 to 0.5 s after the strike the upright's notes from C6 up stand 2 to
+  4.5 dB over their recordings from 400 Hz to 800 Hz, and in the first 0.1 s
   its middle register's knock stands 3 dB over at 80 to 100 Hz. Letting
   the knock fall faster at first trades one for the other
-  ([decisions](Docs/decisions.md)).
+  ([decisions](Docs/decisions.md)). Under the treble's fundamental, from 400
+  to 800 Hz, the side stands up to 6 dB further under the mid than the
+  recordings' over their first 1.5 s: the knock that plays there is mixed at
+  the coherence of its first frames, centred 10 to 17.5 ms after contact.
   The body rings on after key-up; whether a real one stops sooner when the
   dampers land is not measured. In their first 50 ms the notes from C6 up sit
   2 to 8 dB under the recordings from 400 Hz to 2.5 kHz. At the top the knock

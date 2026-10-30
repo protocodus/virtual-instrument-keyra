@@ -968,17 +968,25 @@ def body_modes(results, contacts, wav):
     return np.array([m[0] for m in modes]), np.array([m[1] for m in modes]), np.array([m[2] for m in modes])
 
 
-def body_amplitudes(result, contact, hz, rates, slow_rates, ridge=1e-3):
+def body_amplitudes(result, contact, hz, rates, slow_rates, refit, ridge=1e-3):
     """Each layer's complex amplitude per mode and channel at string contact
     (layers x modes x channels) for each of the ring's two stages, by least
     squares with the modes fixed: the second stage first, from BODY_LATE to
     BODY_TAIL, where the first has fallen about 30 dB or more, then the first, from
     BODY_SKIP to BODY_TAIL, on what the second leaves. Fitted together, the
     two stages of a mode, alike early, traded amplitude: the grand's 400 Hz to
-    1 kHz rang 8 to 10 dB over its recordings from 0.4 to 1 s. NaN for modes
+    1 kHz rang 8 to 10 dB over its recordings from 0.4 to 1 s. The first
+    stage of the modes in the bands of KNOCK_BANDS `refit` marks, where the
+    knock's bands play the anchor's knock, is then fitted again, from the end
+    of the knock's last frame, on what the other modes leave: fitted from
+    BODY_SKIP, they took up the strike's knock, which falls faster than they
+    do, and rang it on at their own rates, so that 0.1 to 0.3 s after the
+    strike the upright's notes from C6 up stood a median 5.6 to 9 dB over
+    their recordings from 500 to 800 Hz. NaN for modes
     within 4 Hz of one of the anchor's partials, whose misfit would pass for
     them, and the second stage 0 where a mode has none. Also each layer's
-    fraction of the band's energy explained."""
+    fraction of the band's energy explained, and the first stage as fitted
+    from BODY_SKIP, by which body_rise times the onset."""
     import math
     import numpy as np
     usable = np.min(np.abs(hz[:, None] - np.asarray(result['freqs'])[None]), axis=1) > 4.0
@@ -988,7 +996,10 @@ def body_amplitudes(result, contact, hz, rates, slow_rates, ridge=1e-3):
     def solve(A, y):
         gram = A.T @ A
         return np.linalg.solve(gram + ridge * np.trace(gram) / len(gram) * np.eye(len(gram)), A.T @ y)
-    out, outs, explained = [], [], []
+    band = np.searchsorted(np.array(KNOCK_BANDS) * 2 ** (-1 / 6), f, side='right') - 1
+    knocked = np.array([j >= 0 and refit[j] for j in band], bool)
+    lower = np.r_[np.tile(~knocked, 2), np.zeros(2 * len(BODY_HUM), bool)]
+    out, outs, explained, onsets = [], [], [], []
     for i in range(len(result['layers'])):
         y = body_signal(result, i, contact[i])
         t = BODY_SKIP + np.arange(len(y)) / BODY_RATE
@@ -1003,13 +1014,18 @@ def body_amplitudes(result, contact, hz, rates, slow_rates, ridge=1e-3):
         d = solve(A, rest)
         z = np.full((len(hz), 2), np.nan + 0j)
         z[usable] = d[:len(f)] - 1j * d[len(f):2 * len(f)]      # Re(z e^(i w t)) = a cos - b sin
+        onsets.append(z)
+        after = t >= KNOCK_TIMES[1] + KNOCK_WINDOW / 2
+        d[~lower] = solve(A[after][:, ~lower], (rest - A[:, lower] @ d[lower])[after])
+        z = np.full((len(hz), 2), np.nan + 0j)
+        z[usable] = d[:len(f)] - 1j * d[len(f):2 * len(f)]
         zs = np.full((len(hz), 2), np.nan + 0j)
         zs[usable] = 0
         zs[staged] = c[:len(g)] - 1j * c[len(g):]
         out.append(z)
         outs.append(zs)
         explained.append(float(1 - np.sum((rest - A @ d) ** 2) / np.sum(y ** 2)))
-    return np.array(out), np.array(outs), np.array(explained)
+    return np.array(out), np.array(outs), np.array(explained), np.array(onsets)
 
 
 def body_rise(result, contact, hz, rates, slow_rates, amplitudes, slow_amplitudes, seconds=.03):
@@ -1056,7 +1072,7 @@ def body_rise(result, contact, hz, rates, slow_rates, amplitudes, slow_amplitude
     return rises
 
 
-def body_data(results, datas, grid, layer_level, wav):
+def body_data(results, datas, grid, layer_level, wav, refit):
     """The body bank and each anchor's excitation of it (see BODY_LOW).
     Each stage of a mode's ring is knocked the same way, both heard through
     the mode's one pickup; a mode without a second stage plays it silent.
@@ -1078,11 +1094,15 @@ def body_data(results, datas, grid, layer_level, wav):
     contacts = [np.array([L['delay'] for L in r['layers']]) - np.array(d['layer_shift_ms']) / 1000
                 for r, d in zip(results, datas)]
     hz, rates, slow_rates = body_modes(results, contacts, wav)
-    amplitudes, slow_amplitudes, explained = zip(*(body_amplitudes(r, c, hz, rates, slow_rates)
-                                                   for r, c in zip(results, contacts)))
-    # The body's rise, where its band below the fundamental is clear.
+    amplitudes, slow_amplitudes, explained, onsets = zip(*(body_amplitudes(r, c, hz, rates, slow_rates, b)
+                                                           for r, c, b in zip(results, contacts, refit)))
+    # The body's rise, where its band below the fundamental is clear, timed on
+    # the first stage as fitted from BODY_SKIP, knock and all, as the recording
+    # builds up: on the modes fitted again after the knock it came out at the
+    # grid's 0.1 ms on the upright, under the 0.2 ms the engine's onset needs
+    # (twice KeyraEngine.cpp's contactSmoothing).
     rises = {r['note']: body_rise(r, c, hz, rates, slow_rates, a, s)
-             for r, c, a, s in zip(results, contacts, amplitudes, slow_amplitudes) if .8 * r['f1'] >= 300}
+             for r, c, a, s in zip(results, contacts, onsets, slow_amplitudes) if .8 * r['f1'] >= 300}
     # One pickup per mode: the dominant stereo shape over every layer of every key.
     shapes, kept = [], []
     for m in range(len(hz)):
@@ -1738,7 +1758,7 @@ def noise_data(results, datas, wav, tail_floor):
 # over everything else the engine played from 250 Hz to 10 kHz; from 35 ms
 # on the body and the board's noise ring as recorded. It is measured from
 # contact, where the engine plays it: per layer and third-octave band from
-# 630 Hz to 16 kHz, the residual's density between the partials through
+# 400 Hz to 16 kHz, the residual's density between the partials through
 # 20 ms Hann frames every 2.5 ms whose centres run KNOCK_TIMES after
 # contact, each frame wholly after it, less what the body modes and the
 # ring's two stages play there (as the engine plays them, averaged over
@@ -1756,11 +1776,33 @@ def noise_data(results, datas, wav, tail_floor):
 # anchors took the treble's slow upper bands (about 180 dB/s at 16 kHz)
 # while the bass's own fell at 1000 to 2700 dB/s, and the bass's knock,
 # met 9 ms before contact by the key and action, sat 15 to 25 dB over its
-# recordings through the first 0.1 s. Under 630 Hz what the frames find
-# falls as the body modes ring, not as a knock (16 to 120 dB/s on the grand).
-KNOCK_BANDS = [1000.0 * 2 ** (k / 3) for k in range(-2, 13)]   # Hz: 630 Hz to 16 kHz
+# recordings through the first 0.1 s. At 400 and 500 Hz the frames find the
+# knock, falling at 170 to 400 dB/s in the treble, only once the body modes
+# there are fitted after it (body_amplitudes): fitted through it, the modes
+# took it up, and what the frames found fell as they ring (16 to 120 dB/s on
+# the grand).
+KNOCK_BANDS = [1000.0 * 2 ** (k / 3) for k in range(-4, 13)]   # Hz: 400 Hz to 16 kHz
 KNOCK_WINDOW, KNOCK_HOP = .02, .0025                         # s
 KNOCK_TIMES = (.01, .035)                                    # s after contact: the frames' centres
+
+
+def knock_bins(result):
+    """The knock frames' FFT length and, per band of KNOCK_BANDS, the bins
+    they measure it on: those 1.5 main-lobe half-widths (150 Hz) or more
+    from the partials and the components found beside them, None where that
+    leaves under a quarter of the band."""
+    import math
+    import numpy as np
+    nfft = 1 << int(math.ceil(math.log2(2 * int(KNOCK_WINDOW * result['sr']))))
+    hz = np.fft.rfftfreq(nfft, 1 / result['sr'])
+    keep = np.ones(len(hz), bool)
+    for f in np.r_[result['freqs'], [q['hz'] for L in result['layers'] for q in L['found']]]:
+        keep &= np.abs(hz - f) > 1.5 * 2 / KNOCK_WINDOW
+    bins = []
+    for centre in KNOCK_BANDS:
+        band = (hz >= centre * 2 ** (-1 / 6)) & (hz < centre * 2 ** (1 / 6))
+        bins.append(band & keep if band.sum() and (band & keep).sum() >= .25 * band.sum() else None)
+    return nfft, bins
 
 
 def ring_density(body_knocks, body, noise_band, i, x_level, lo, hi, tau):
@@ -1801,16 +1843,8 @@ def knock_bands(result, data, body, body_knocks, noise_bands_of, grid, layer_lev
     from scipy import signal, stats
     sr = result['sr']
     length = int(KNOCK_WINDOW * sr)
-    nfft = 1 << int(math.ceil(math.log2(2 * length)))
     w = signal.windows.hann(length, sym=False)
-    hz = np.fft.rfftfreq(nfft, 1 / sr)
-    keep = np.ones(len(hz), bool)
-    for f in np.r_[result['freqs'], [q['hz'] for L in result['layers'] for q in L['found']]]:
-        keep &= np.abs(hz - f) > 1.5 * 2 / KNOCK_WINDOW
-    bins = []
-    for centre in KNOCK_BANDS:
-        band = (hz >= centre * 2 ** (-1 / 6)) & (hz < centre * 2 ** (1 / 6))
-        bins.append(band & keep if band.sum() and (band & keep).sum() >= .25 * band.sum() else None)
+    nfft, bins = knock_bins(result)
     scale = 2 / (sr * np.sum(w * w))
     weights = w * w / np.sum(w * w)                     # where in a frame its power comes from
     offsets = (np.arange(length) - length // 2) / sr
@@ -2200,13 +2234,24 @@ def generate(model):
     layer_level = np.median(levels - levels[:, -1:], axis=0)
     if np.any(np.diff(layer_level) <= 0):
         raise SystemExit(f'the layers\' median levels do not rise with velocity: {np.round(layer_level, 2)}')
-    body = body_data(results, anchors, grid, layer_level, model['wav'])
+    noise = noise_data(results, anchors, model['wav'], model.get('tail_floor', False))
+    # The body's modes leave the knock to the knock's bands where those play
+    # it: first wherever the partials leave a band to measure it in, then,
+    # fitted again, only where it was found, so that no strike loses it.
+    # Refitted in every band it can be measured in, the grand's middle
+    # register lost 1 to 2 dB from 400 Hz to 1 kHz 0.1 to 0.5 s after the
+    # strike, where no knock was found to take it.
+    refit = [[b is not None for b in knock_bins(r)[1]] for r in results]
+    body = body_data(results, anchors, grid, layer_level, model['wav'], refit)
+    knock = knock_data(results, anchors, body, noise, grid, layer_level)
+    refit = [[not b.get('filled') and np.max(b['level_db']) > NOISE_SILENT for b in bands]
+             for bands in knock['anchors']]
+    body = body_data(results, anchors, grid, layer_level, model['wav'], refit)
     for record, explained, knocks in zip(records, body['explained'], body['anchors']):
         record.update({'body_explained': [round(e, 3) for e in explained],
                        'body_modes_hidden': sum(1 for k in knocks if k.get('filled')),
                        'body_phase_coherence': float(np.median([k['coherence'] for k in knocks
                                                                 if not k.get('filled')]))})
-    noise = noise_data(results, anchors, model['wav'], model.get('tail_floor', False))
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
     knock = knock_data(results, anchors, body, noise, grid, layer_level)
@@ -2263,7 +2308,9 @@ def generate(model):
                   'hid it and drawn towards the strings\' median by ten layers\' worth of windows. One bank of '
                   'body modes shared by every key, found in the treble anchors\' residuals below 0.8 f1, each with '
                   'one stereo pickup and a ring falling in two stages, the second\'s decay measured 0.4 to 1.5 s '
-                  'after contact and its level 0.4 to 0.95 s; per anchor, mode and stage a complex excitation at string contact whose dB level is '
+                  'after contact and its level 0.4 to 0.95 s, the first\'s from 20 ms, and from 45 ms, after the '
+                  'knock, for the modes in the bands where a first such fit, in every band the anchor can measure the '
+                  'knock in, finds it; per anchor, mode and stage a complex excitation at string contact whose dB level is '
                   'linear in the level its layer plays at, modes hidden by an anchor\'s partials taken from its neighbours. The '
                   'action\'s knocks on the same modes (each anchor\'s key release'
                   + (', the sustain pedal down and up' if model['pedal'] else '') + '; one train take each, in those files\' own scale) fitted from their onsets under one shared '
@@ -2271,7 +2318,7 @@ def generate(model):
                   'at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 '
                   'to 100 ms after contact, and under the fundamental the ring\'s slower second stage, its start '
                   'per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. '
-                  'The strike\'s knock in third-octave bands from 630 Hz to 16 kHz: through 20 ms Hann frames every '
+                  'The strike\'s knock in third-octave bands from 400 Hz to 16 kHz: through 20 ms Hann frames every '
                   '2.5 ms centred 10 to 35 ms after contact, between the partials, what the residual holds beyond the '
                   'body modes and the ring, where it stands over the ring in four frames or more and falls faster than '
                   'it; per anchor and band one decay, the median of its layers\' slopes, and per layer a density at '

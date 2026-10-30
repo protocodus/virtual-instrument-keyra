@@ -1709,3 +1709,47 @@ within 1.3 dB after it, so their sound is less coherent there than the 2 to
 100 ms frames the coherence is measured on. What the noise should be mixed at
 over its whole ring, not its first 0.1 s, is the open question; it stays a
 known gap.
+
+## 2026-10-30 — the body is fitted after the knock where the knock plays
+
+The upright's treble rang boxy: 0.1 to 0.5 s after the strike its train
+notes from C6 up stood a median 3.4, 5.5, 6.3 and 8.3 dB over their
+recordings at 400, 500, 630 and 800 Hz (`Tools/tone_survey.py`, early
+window, at 027ac85's engine). The recordings fall there at 190 to 250 dB/s
+from 50 to 200 ms; the body's modes, fitted from 20 ms after contact, fall
+at their own measured rates, 100 to 130 dB/s, so their fit took up the
+strike's fast knock and rang it on. Where the knock's bands play it, the
+modes are now fitted again from 45 ms, the end of the knock's last frame,
+on what the other modes leave, and the knock is measured from 400 Hz where
+it started at 630 Hz: in the treble those two bands find it falling at 170
+to 400 dB/s. A first fit refits the modes in every band whose gaps between
+the partials can measure the knock; the second only where that one found
+it. Refitted at every pitch from 354 Hz up, the modes lost the knock
+wherever no band played it: the upright's F♯3 and A♯4 and the grand's C5
+and F♯5 rose 5 to 11 ms off their recordings, where they had been within
+1.4 ms. Refitted in every band the knock could be measured in, the grand's
+never-fitted middle notes stood 2.4 dB further under their recordings at
+500 Hz in the first 0.1 s, and the upright's treble 1.5 dB at 1 kHz. The
+body's rise is still timed on the first fit from 20 ms, knock and all, as
+the recording builds up: on the refitted modes it fell to the grid's
+0.1 ms, under the 0.2 ms the engine's onset needs.
+
+On the upright the boxy bands now stand 2.6, 2.1, 3.9 and 4.5 dB over, and
+the dev notes' 630 and 800 Hz 3.4 and 1.5 dB where they stood 5.5 and
+5.3. Against 0.4.1 at 027ac85 the benchmark lists no note or role worse
+than its tolerance on either piano; the upright's early score moves from
+5.05 to 4.94 dB (train) and 7.31 to 7.29 (dev), its noise 6.42 to 6.31 and
+7.01 to 6.98, and the grand's attack 4.48 to 4.44 and 4.83 to 4.80, its
+early score 4.16 to 4.19 (train) and 4.52 (dev) unchanged
+([grand](validation/grand-body-after-knock-benchmark-2026-10-30.md),
+[upright](validation/upright-body-after-knock-benchmark-2026-10-30.md)).
+Per band the costs are under the treble's fundamental: from 400 to 800 Hz
+the side falls up to 5 dB further under the mid on both pianos (the knock
+is mixed at the coherence of its first frames, 0.53 to 0.82 at 400 and
+500 Hz), and the grand's 500 Hz to 1 kHz stands 0.4 to 1.2 dB further under
+its recordings from 0.1 to 0.5 s. The preset demos time 0.8 % slower in
+total, the two new bands, within run-to-run spread (−1.9 to +2.2 % per
+preset); typical playing still reads −9 VU on both pianos.
+
+Chosen by measurement, as the owner's standing direction asks; no one has
+listened to it yet.
