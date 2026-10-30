@@ -53,6 +53,13 @@ enum class Quality {full,balanced,light};
 struct Parameters {
   float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
+  // Where the piano is heard from: 0 the stereo pair each piano is fitted
+  // from (the upright's ribbons in player position, the grand's pair over
+  // the strings), 1 the upright recordings' other microphone, a mono tube
+  // further off on the same strikes, by its difference from the ribbons
+  // (MeasuredMicData.h); between them the two mixed. It applies at once, to
+  // everything sounding.
+  float mic=0.f;
   // How loud the action plays, as an amplitude: the keys landing and coming
   // back, the dampers falling, the sustain pedal's knocks and the strings its
   // lifting sets ringing. 0 silent, 1 as calibrated, 2 twice as loud.

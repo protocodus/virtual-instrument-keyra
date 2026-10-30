@@ -3,10 +3,10 @@
 
 namespace {
 const juce::Colour ink(0xff302c26), ivory(0xffeee8dc), brass(0xffa48448), muted(0xff7c766b), footer(0xffc6ad89);
-constexpr std::array<const char*, 10> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics" }};
-constexpr std::array<const char*, 10> captions {{ "OUTPUT", "BRIGHTNESS", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS" }};
+constexpr std::array<const char*, 11> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics", "mic" }};
+constexpr std::array<const char*, 11> captions {{ "OUTPUT", "BRIGHTNESS", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS", "TUBE MIC" }};
 // The voicing view's knobs, left to right.
-constexpr std::array<int, 6> voicing {{ 1, 2, 3, 9, 5, 0 }};
+constexpr std::array<int, 7> voicing {{ 1, 2, 3, 10, 9, 5, 0 }};
 constexpr std::array<const char*, 7> buildIds {{ "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
 constexpr std::array<const char*, 7> buildCaptions {{ "STRINGS", "HAMMERS", "SOUNDBOARD", "ACTION", "STIFFNESS", "UNISONS", "RING" }};
 constexpr std::array<const char*, 7> buildHints {{
@@ -236,6 +236,9 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     controls[8].setTooltip("Soft pedal (CC67). Changes hammer excitation and unison balance.");
     controls[9].setTooltip("How loud the action plays: the keys landing and coming back, the dampers falling and "
                            "the sustain pedal, from silent to twice as loud as calibrated.");
+    controls[10].setTooltip("Where the piano is heard from: the stereo pair close over the strings, or a vintage tube "
+                            "microphone at shin height, mono, its colour measured on the upright's recordings. "
+                            "Between, the two are mixed.");
     upright = value("model") >= .5f;
     for (size_t i = 0; i < build.size(); ++i) {
         auto& slider = build[i];
@@ -266,7 +269,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         }
         slider.updateText();
     }
-    voicingTab.setTooltip("Brightness, resonance, width, mechanics, felt mute and output.");
+    voicingTab.setTooltip("Brightness, resonance, width, tube mic, mechanics, felt mute and output.");
     buildTab.setTooltip("The piano's build: its strings, hammers, soundboard and action moved toward the other piano's, "
                         "and its strings' stiffness, unisons and ring.");
     voicingTab.onClick = [this] { showBuild(false); };
@@ -349,7 +352,7 @@ float KeyraAudioProcessorEditor::value(const char* id) const
 void KeyraAudioProcessorEditor::resized()
 {
     for (size_t i = 0; i < voicing.size(); ++i)
-        controls[static_cast<size_t>(voicing[i])].setBounds(74 + static_cast<int>(i) * 704 / 5, 170, 128, 126);
+        controls[static_cast<size_t>(voicing[i])].setBounds(74 + static_cast<int>(i) * 120, 170, 112, 126);
     // The four parts, then past a divider the three modifiers.
     for (size_t i = 0; i < build.size(); ++i)
         build[i].setBounds((i < 4 ? 74 : 122) + static_cast<int>(i) * 112, 170, 112, 126);

@@ -1,0 +1,5770 @@
+{
+ "title": "Helsinki 1967 Tube-Ribbon Edition",
+ "author": "Mikko Patama",
+ "instrument": "an upright piano with worn hammers (the library does not name its make), in a rehearsal space treated to sound dry",
+ "license": "the author permits fitting numeric data from the recordings provided the recordings are not distributed (as the project owner relayed it, 28 October 2026)",
+ "capture": "the Mono Tube preset: a tube condenser microphone (a modified CV-12, cardioid) at shin height from the left, aimed at the string crossover, further from the hammers; the same strikes as the Stereo Ribbon preset's, by the same ids; 48 kHz/24-bit FLAC, its one channel on both sides",
+ "pitch_names": "the library names middle C (MIDI 60) C3, an octave under the scientific pitch used here; files are named by MIDI number",
+ "velocity_layers": "Decent Sampler ranges 0-30, 31-70, 71-99, 100-115, 116-127; E7 and G7 (MIDI 100, 103) 0-30, 31-70, 71-99, 100-127; B3 (MIDI 59) only 116-127",
+ "mixing": "the preset plays notes and release takes at their recorded levels (ampVelTrack 0); release takes sound on key release at group volume 0.2, release takes 6 dB quieter for each second the key was held (releaseTriggerDecay)",
+ "decoding": "ffmpeg to PCM24 WAV, no gain, trim, resampling, denoising or EQ",
+ "files": [
+  {
+   "id": "n24v1r1",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C0_C0-D0_0-30_RR01CV.flac",
+   "flac_sha256": "d31d59e8c57f4109540ba1b8cea71d0c93981f49d373ced2df421cc130374e1d"
+  },
+  {
+   "id": "n24v1r2",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C0_C0-D0_0-30_RR02CV.flac",
+   "flac_sha256": "d3af780c0732e759c224eee4f3e5670c257ddb72c73dea84897751cea9b9773a"
+  },
+  {
+   "id": "n24v2r1",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C0_C0-D0_31-70_RR01CV.flac",
+   "flac_sha256": "e5d5985d3891a2fd6b0ee4b309ae2b1f0759df3eb274abe9187ce76b2b97f3c2"
+  },
+  {
+   "id": "n24v2r2",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C0_C0-D0_31-70_RR02CV.flac",
+   "flac_sha256": "3d75786d4d2542d755b66aadb69122da8a80a84b1567f548936f59217ff0dc2f"
+  },
+  {
+   "id": "n24v3r1",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C0_C0-D0_71-99_RR01CV.flac",
+   "flac_sha256": "6e7ffc705c425ac484369bb3b5441822108704e8978943fbd650bed46171d38f"
+  },
+  {
+   "id": "n24v3r2",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C0_C0-D0_71-99_RR02CV.flac",
+   "flac_sha256": "7e3111e90b31c4aec896ef362142c7ebf3ea6d7b6196e6ab12e857c10a1c4856"
+  },
+  {
+   "id": "n24v4r1",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C0_C0-D0_100-115_RR01CV.flac",
+   "flac_sha256": "b983f844991a49def910c798b773e072430371cae67cca133df6a3e3f24f31aa"
+  },
+  {
+   "id": "n24v4r2",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C0_C0-D0_100-115_RR02CV.flac",
+   "flac_sha256": "474aaf4be3f9622e171716d2b1d20bbb0c25c1f7c12671f98ebc9b01009152ad"
+  },
+  {
+   "id": "n24v5r1",
+   "kind": "note",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C0_C0-D0_116-127_RR01CV.flac",
+   "flac_sha256": "f5bade37cea29a8d1ec3f4f579b2e6a4c096eac009939e02a511897f0ba17109"
+  },
+  {
+   "id": "n27v1r1",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#0_D#0-F0_0-30_RR01CV.flac",
+   "flac_sha256": "eca4f40167d619b648e4af4ef53ea39984ee1d560386380e2c70d7814e3d4f09"
+  },
+  {
+   "id": "n27v1r2",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#0_D#0-F0_0-30_RR02CV.flac",
+   "flac_sha256": "578289fa19cf9f7e1679335fd35a64e8f3313bc6cce234a3df76caec4567c7c1"
+  },
+  {
+   "id": "n27v2r1",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#0_D#0-F0_31-70_RR01CV.flac",
+   "flac_sha256": "0ee43af6070741041aaf83eea5955de58167b4298368a3b54f39b961a75ef5a4"
+  },
+  {
+   "id": "n27v2r2",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#0_D#0-F0_31-70_RR02CV.flac",
+   "flac_sha256": "21aad9ef7cded4494df71411ff2363f0b99902992748a7b495daff9ac2d3065b"
+  },
+  {
+   "id": "n27v3r1",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#0_D#0-F0_71-99_RR01CV.flac",
+   "flac_sha256": "1b20399b973a28ecc9f867f2b09d46997fdc07f04ba9faf8cc47e773d89af6ef"
+  },
+  {
+   "id": "n27v3r2",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#0_D#0-F0_71-99_RR02CV.flac",
+   "flac_sha256": "c21d2d0c464234f85c6bbe628ff169e96aac9a28451770f575dfaa53c3525f55"
+  },
+  {
+   "id": "n27v4r1",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#0_D#0-F0_100-115_RR01CV.flac",
+   "flac_sha256": "1ea59b145c85c44be5f401d6b313b08ec8629ee1cb1e77783d39af0e53590e6a"
+  },
+  {
+   "id": "n27v4r2",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#0_D#0-F0_100-115_RR02CV.flac",
+   "flac_sha256": "f935d741e9f0c949bc7108ecdca1695f472c5248b6b98968215b8376346c5bdd"
+  },
+  {
+   "id": "n27v5r1",
+   "kind": "note",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#0_D#0-F0_116-127_RR01CV.flac",
+   "flac_sha256": "4d655e1c36fb84db66bdddc87460cac9b34c0dd4707b20b5de740692fea30e8e"
+  },
+  {
+   "id": "n30v1r1",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#0_F#0-G#0_0-30_RR01CV.flac",
+   "flac_sha256": "3101b4f7c0d8d80e590c6dfe9c0c543d2ccaee19ed5897d6e7186ceb76b28305"
+  },
+  {
+   "id": "n30v1r2",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#0_F#0-G#0_0-30_RR02CV.flac",
+   "flac_sha256": "ead0ef0259f576b92c196b97458a7c738de7bc53ef1d24861434722570f68a3a"
+  },
+  {
+   "id": "n30v2r1",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#0_F#0-G#0_31-70_RR01CV.flac",
+   "flac_sha256": "3ab9f7a6c8b3544236100afd2a4af97beb515464a776a71e4fe0b7f8279d642f"
+  },
+  {
+   "id": "n30v2r2",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#0_F#0-G#0_31-70_RR02CV.flac",
+   "flac_sha256": "50b24968257344b6586600f73e1d1853bb0203f5e2c01906aae9a7dc1e05c7cb"
+  },
+  {
+   "id": "n30v3r1",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#0_F#0-G#0_71-99_RR01CV.flac",
+   "flac_sha256": "0563ab77e98e821ced247ca53d77a8a3d0469399729d404092b4e03f824df0b5"
+  },
+  {
+   "id": "n30v3r2",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#0_F#0-G#0_71-99_RR02CV.flac",
+   "flac_sha256": "72e34376a3f2c7554a1dcc03c64810e3fecfc41852947526354c89c798485a91"
+  },
+  {
+   "id": "n30v4r1",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#0_F#0-G#0_100-115_RR01CV.flac",
+   "flac_sha256": "0af9a256719905b3954be04f936510e11e2ebd394a426c5bffcb7c1060e3bfb7"
+  },
+  {
+   "id": "n30v4r2",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#0_F#0-G#0_100-115_RR02CV.flac",
+   "flac_sha256": "9dd20c9c1def6a541e62ca38e5d70b9b759f22f6d810a1b33d3bbb5b131c600d"
+  },
+  {
+   "id": "n30v5r1",
+   "kind": "note",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#0_F#0-G#0_116-127_RR01CV.flac",
+   "flac_sha256": "68fb39b8a61c9ed4b7549d1870d952210c556a74f4fcaac58b5b7b3fd7d706ea"
+  },
+  {
+   "id": "n33v1r1",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/A0_A0-B0_0-30_RR01CV.flac",
+   "flac_sha256": "b7e680d89a7bab3c697b5f698d0ed55368f6e33f986c2e06448205067d4e0ac6"
+  },
+  {
+   "id": "n33v1r2",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/A0_A0-B0_0-30_RR02CV.flac",
+   "flac_sha256": "9aac7ff5ae8165be105992176dabbdd8a46f71f25c5c08ffce87c81797c26189"
+  },
+  {
+   "id": "n33v2r1",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/A0_A0-B0_31-70_RR01CV.flac",
+   "flac_sha256": "d02514df3f6bc36e57a4a19da2d62a83292ba66e44a66ab210560bd532a7ded4"
+  },
+  {
+   "id": "n33v2r2",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/A0_A0-B0_31-70_RR02CV.flac",
+   "flac_sha256": "7ed69e930cae0e6e2abb2a55eadbcea4de5b96f86185f37fb4e862200de2460a"
+  },
+  {
+   "id": "n33v3r1",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/A0_A0-B0_71-99_RR01CV.flac",
+   "flac_sha256": "7f08a54e9a32a8ed20c90450b18c8e8f140d73a06c16b105a47e702573cd1fbe"
+  },
+  {
+   "id": "n33v3r2",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/A0_A0-B0_71-99_RR02CV.flac",
+   "flac_sha256": "0a8c021c311f1013781dca4a6d9646bdbb584b4191af50f3e7a01236ea7f0de0"
+  },
+  {
+   "id": "n33v4r1",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/A0_A0-B0_100-115_RR01CV.flac",
+   "flac_sha256": "bb373fc55d7672525850c4a4c2b64c47927e3d1949f414adf870d282f91c0712"
+  },
+  {
+   "id": "n33v4r2",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/A0_A0-B0_100-115_RR02CV.flac",
+   "flac_sha256": "81745426668766ec4b4007d2d0a8e723b5d6c6b2ad969157fda9901bc5745a07"
+  },
+  {
+   "id": "n33v5r1",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/A0_A0-B0_116-127_RR01CV.flac",
+   "flac_sha256": "d12d5bcc4994a76d5f3119cad53066b485ac9ef109a25260109c6e15e209cf28"
+  },
+  {
+   "id": "n33v5r2",
+   "kind": "note",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 2,
+   "source": "Samples/A0_A0-B0_116-127_RR02CV.flac",
+   "flac_sha256": "36dc9bdcdf47f074b8592e1c0456e0554153f5db81f06eb28e3af69db1c60e9c"
+  },
+  {
+   "id": "n36v1r1",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C1_C1-D1_0-30_RR01CV.flac",
+   "flac_sha256": "7695f0cd06ef00ac6b400745e8ccd144b522d7a136e9aad0c891e23133d50e78"
+  },
+  {
+   "id": "n36v1r2",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C1_C1-D1_0-30_RR02CV.flac",
+   "flac_sha256": "0b663d262ffd60c2bdc04d58b26446cf6a2581b089d5264adf1240fcd250ff76"
+  },
+  {
+   "id": "n36v2r1",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C1_C1-D1_31-70_RR01CV.flac",
+   "flac_sha256": "ab09d9ec2f423b68ec656ad8b3f84d918202b13286c6340484ac39470ff72794"
+  },
+  {
+   "id": "n36v2r2",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C1_C1-D1_31-70_RR02CV.flac",
+   "flac_sha256": "dd8bd3ab8573bfd5c690c9a9554e705c1dd1ca89876551661b4cb275ad3ad0e8"
+  },
+  {
+   "id": "n36v3r1",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C1_C1-D1_71-99_RR01CV.flac",
+   "flac_sha256": "b5bf36b8eb9ba4fb6d37fc464a55067478fb6539b7c42ba5812694524c8a720f"
+  },
+  {
+   "id": "n36v3r2",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C1_C1-D1_71-99_RR02CV.flac",
+   "flac_sha256": "ed95ab107af21b844de7ba0e8b68df4c0372c750f404842bb5aea11e0eb62e89"
+  },
+  {
+   "id": "n36v4r1",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C1_C1-D1_100-115_RR01CV.flac",
+   "flac_sha256": "efd2dcb7550a406ffd7111cecabde6834c9133bcb591f02b9846272253e3f170"
+  },
+  {
+   "id": "n36v4r2",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C1_C1-D1_100-115_RR02CV.flac",
+   "flac_sha256": "48f056b44c0ccae8fc4d1fee78401e71550be9cb49e8430d89212ee178cdb765"
+  },
+  {
+   "id": "n36v5r1",
+   "kind": "note",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C1_C1-D1_116-127_RR01CV.flac",
+   "flac_sha256": "b289451b3cc9789daecda46aa1230a4d638f830d6e9e5b6d337ed98af654db35"
+  },
+  {
+   "id": "n39v1r1",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#1_D#1-F1_0-30_RR01CV.flac",
+   "flac_sha256": "d08efe61d0ebf7f125fc54aee275ba2a68cf67496fad2c155df7bdde3ccc2080"
+  },
+  {
+   "id": "n39v1r2",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#1_D#1-F1_0-30_RR02CV.flac",
+   "flac_sha256": "65bc55e607115087494cabbf221295a4c7990ff2ab2e5dc01562b30bfa0c9167"
+  },
+  {
+   "id": "n39v2r1",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#1_D#1-F1_31-70_RR01CV.flac",
+   "flac_sha256": "b60c22e567eae7544c625bb0f24c73268ce95e2f3c8a2c5a21a94ebf2c74a69e"
+  },
+  {
+   "id": "n39v2r2",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#1_D#1-F1_31-70_RR02CV.flac",
+   "flac_sha256": "b74dbcfcfd0e5c1d5746eaaeecba1a6573de074abff95b1f13b5ca711e211c7d"
+  },
+  {
+   "id": "n39v3r1",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#1_D#1-F1_71-99_RR01CV.flac",
+   "flac_sha256": "87f3fc1541b9c1253f5090e3bf0e78482c06ee2135e4b37bb7e0d6df6ad78704"
+  },
+  {
+   "id": "n39v3r2",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#1_D#1-F1_71-99_RR02CV.flac",
+   "flac_sha256": "94593a5b7c6173d4dab685f5c54e541df36e9ccffb71cab1ee713623e33df1dc"
+  },
+  {
+   "id": "n39v4r1",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#1_D#1-F1_100-115_RR01CV.flac",
+   "flac_sha256": "cfce26f1623b62c730f2a90c7a41747b7835b057ebba554eaf7e3334f7d2308d"
+  },
+  {
+   "id": "n39v4r2",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#1_D#1-F1_100-115_RR02CV.flac",
+   "flac_sha256": "3156ca078fe0446ab32d6360727d2204fab5c3e345c7c90dca8bf35b188818b8"
+  },
+  {
+   "id": "n39v5r1",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/D#1_D#1-F1_116-127_RR01CV.flac",
+   "flac_sha256": "0a99f5cba421e361c5fa36bfed8dbf3569d49957fff0930e24722d422ec69ac0"
+  },
+  {
+   "id": "n39v5r2",
+   "kind": "note",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 2,
+   "source": "Samples/D#1_D#1-F1_116-127_RR02CV.flac",
+   "flac_sha256": "b090e4f66667f8f9dc2f67f921c09ba16e50472aead64ef16fdeabade5e3baa4"
+  },
+  {
+   "id": "n42v1r1",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#1_F#1-G#1_0-30_RR01CV.flac",
+   "flac_sha256": "0782fec5e49d42aac9ea3bfce4ebc726c2550d22a0e57ee4bf520084fd62722c"
+  },
+  {
+   "id": "n42v1r2",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#1_F#1-G#1_0-30_RR02CV.flac",
+   "flac_sha256": "22f586a5990d36fadfdbd3ce222f0fa0ec506f58396a48925cdc7f1a7f9714aa"
+  },
+  {
+   "id": "n42v2r1",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#1_F#1-G#1_31-70_RR01CV.flac",
+   "flac_sha256": "baa7d59d4b20b802961df2402d020c5033a28556b9627c59c121f226aa8f0682"
+  },
+  {
+   "id": "n42v2r2",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#1_F#1-G#1_31-70_RR02CV.flac",
+   "flac_sha256": "43b895303b63c8f7e2d4da7f50b827ba49671ac77b7b803c027d5520e6bea511"
+  },
+  {
+   "id": "n42v3r1",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#1_F#1-G#1_71-99_RR01CV.flac",
+   "flac_sha256": "2faf228e16950e7e58451588c23e1ea8c2453fe9c6e2f9de9ff936c06f925ae7"
+  },
+  {
+   "id": "n42v3r2",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#1_F#1-G#1_71-99_RR02CV.flac",
+   "flac_sha256": "f5e8b8917f5b53725fd058e34030785db4b217fc000dc844ddb533e56057c767"
+  },
+  {
+   "id": "n42v4r1",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#1_F#1-G#1_100-115_RR01CV.flac",
+   "flac_sha256": "6bee5463ac0a1bebf639f88628bc25c90de9dc1abf54fb9c5381cfdd60114563"
+  },
+  {
+   "id": "n42v4r2",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#1_F#1-G#1_100-115_RR02CV.flac",
+   "flac_sha256": "41d60a815b8a5669b32eeb5947c041ea20ac54364f7f5400f12b6d3dc773bb90"
+  },
+  {
+   "id": "n42v5r1",
+   "kind": "note",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#1_F#1-G#1_116-127_RR01CV.flac",
+   "flac_sha256": "0738f90ef627e9dc409e0f96d6e3b1c39f9f42c7b5093c436f66b90db0f28d38"
+  },
+  {
+   "id": "n45v1r1",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/A1_A1-B1_0-30_RR01CV.flac",
+   "flac_sha256": "f58ec610a8bdf37dce787dfcef2842a6158bc0a18893c3930643000bcc77b3d0"
+  },
+  {
+   "id": "n45v1r2",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/A1_A1-B1_0-30_RR02CV.flac",
+   "flac_sha256": "ae1be365f58788b22b4c6d3a8f94b256313d9becde080e24850cf73a41bf4482"
+  },
+  {
+   "id": "n45v2r1",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/A1_A1-B1_31-70_RR01CV.flac",
+   "flac_sha256": "692089db2fe16cf1db75761039a1d53b0b308dd40bb2080ba97cf9ea29a1bfa4"
+  },
+  {
+   "id": "n45v2r2",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/A1_A1-B1_31-70_RR02CV.flac",
+   "flac_sha256": "6a911029fd8f224309c32db27cbf44d661c3c77211429ab3aada252b833611ad"
+  },
+  {
+   "id": "n45v3r1",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/A1_A1-B1_71-99_RR01CV.flac",
+   "flac_sha256": "95fc38ab142626999b49bd0a73f4a792f9f1fc33b0f36c4d8d3b1a9d54e6cd93"
+  },
+  {
+   "id": "n45v3r2",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/A1_A1-B1_71-99_RR02CV.flac",
+   "flac_sha256": "bd7ccbea2f3c9e713f9c8379c282a2147060dc41de208c1eb3882ee352ad960b"
+  },
+  {
+   "id": "n45v4r1",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/A1_A1-B1_100-115_RR01CV.flac",
+   "flac_sha256": "a45232e55de3de96085a3e3a0c16bcf9967fba0eed692db26822d166da995e91"
+  },
+  {
+   "id": "n45v4r2",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/A1_A1-B1_100-115_RR02CV.flac",
+   "flac_sha256": "7aa44a105ccddbffd31e1f24175b441a3df554c9f6d2b4ee387da5fd473c060f"
+  },
+  {
+   "id": "n45v5r1",
+   "kind": "note",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/A1_A1-B1_116-127_RR01CV.flac",
+   "flac_sha256": "d46d5a9fe736760b0d8772b65255fd00f75514eca5542e206b5a3a60ad7a9915"
+  },
+  {
+   "id": "n48v1r1",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C2_C2-C#2_0-30_RR01CV.flac",
+   "flac_sha256": "805044c3ecad8b574a80d82190dcda7d49893025374eb4abdc72932fd372f901"
+  },
+  {
+   "id": "n48v1r2",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C2_C2-C#2_0-30_RR02CV.flac",
+   "flac_sha256": "f5a526e42c3b91f42f2fbc4d5132f79dd440c282f27a3da5ab8d6bdb8ce78804"
+  },
+  {
+   "id": "n48v2r1",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C2_C2-C#2_31-70_RR01CV.flac",
+   "flac_sha256": "78e6d0c77ebbeb09488c9cf06e5bf4e207639e5676fef55a60c96125c6da8d69"
+  },
+  {
+   "id": "n48v2r2",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C2_C2-C#2_31-70_RR02CV.flac",
+   "flac_sha256": "56117354f5ff2c5dcbf2fadf7f430591993e8d8784d83d4009fd12f60ae1edf3"
+  },
+  {
+   "id": "n48v3r1",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C2_C2-C#2_71-99_RR01CV.flac",
+   "flac_sha256": "44bcabb7e6caef908a1414e29d5cd7f3128693f58bba02c3ae7f80cc45432952"
+  },
+  {
+   "id": "n48v3r2",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C2_C2-C#2_71-99_RR02CV.flac",
+   "flac_sha256": "105b53ee38a7485312afbf212353e1febe4cf78d9e96f16c77a614c9354d1371"
+  },
+  {
+   "id": "n48v4r1",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C2_C2-C#2_100-115_RR01CV.flac",
+   "flac_sha256": "0f454c59a09230e779741aeb9c523e75c7cec650def361bb2c2049db66429294"
+  },
+  {
+   "id": "n48v4r2",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C2_C2-C#2_100-115_RR02CV.flac",
+   "flac_sha256": "ffa6534e0e7217dcea8d86cf67e4ad06b37ad8e1ffb876f6fc50c6f4359c1205"
+  },
+  {
+   "id": "n48v5r1",
+   "kind": "note",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C2_C2-C#2_116-127_RR01CV.flac",
+   "flac_sha256": "288a5601127d0c30a0d5e2323aa075bb07f2f0d779ab293bfca34544f5d268b5"
+  },
+  {
+   "id": "n50v1r1",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/D2_D2-D#2_0-30_RR01CV.flac",
+   "flac_sha256": "a50d1d3c47b01c438317acd0cc2a418e49597d5b31d35f0c3434c916dd4e26bb"
+  },
+  {
+   "id": "n50v1r2",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/D2_D2-D#2_0-30_RR02CV.flac",
+   "flac_sha256": "7cfd5ad427d88542a84611fc13ee00bf637faa184a5d2fdb147cca4634aefed2"
+  },
+  {
+   "id": "n50v2r1",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/D2_D2-D#2_31-70_RR01CV.flac",
+   "flac_sha256": "634e66c34ccf9abd835de525dd70836134b88645de9620cec1194a53506a25ca"
+  },
+  {
+   "id": "n50v2r2",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/D2_D2-D#2_31-70_RR02CV.flac",
+   "flac_sha256": "f189325398b19ee95902d1726632a812e2cde9d6b8826bfb1a7a98050b6a1a1c"
+  },
+  {
+   "id": "n50v3r1",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/D2_D2-D#2_71-99_RR01CV.flac",
+   "flac_sha256": "ddc8a1c717da1a49d8991116ba0ee9219dde13ddcc8d9c5c81171840b86a8de0"
+  },
+  {
+   "id": "n50v3r2",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/D2_D2-D#2_71-99_RR02CV.flac",
+   "flac_sha256": "441b06e03df8de87c15aaeb3fe3ec1066080a4310d838b89cefbb4d51627a94d"
+  },
+  {
+   "id": "n50v4r1",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/D2_D2-D#2_100-115_RR01CV.flac",
+   "flac_sha256": "88e6737554a1abe5127e8a019f92eaca841ccf8d91d93fe4f1d2d5485dcdf329"
+  },
+  {
+   "id": "n50v4r2",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/D2_D2-D#2_100-115_RR02CV.flac",
+   "flac_sha256": "0ed0ec5bb4a37096ee6ecc2202bf5de23f9b37feb9f18205a4a66d7cc50517b0"
+  },
+  {
+   "id": "n50v5r1",
+   "kind": "note",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/D2_D2-D#2_116-127_RR01CV.flac",
+   "flac_sha256": "8c5066e42cefcbee289acdfabd1efc249d6cadf4fcbc09ee86395f81c26164c3"
+  },
+  {
+   "id": "n52v1r1",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/E2_E2-F2_0-30_RR01CV.flac",
+   "flac_sha256": "a0bc76edfcc7c531c7e7d5cba150bb52df401750dc00b71a42bfeebcd58cea60"
+  },
+  {
+   "id": "n52v1r2",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/E2_E2-F2_0-30_RR02CV.flac",
+   "flac_sha256": "953cd33508b1018759cc9181f0d4b84e5acbeb7b723362d375a34b54ad9059ed"
+  },
+  {
+   "id": "n52v2r1",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/E2_E2-F2_31-70_RR01CV.flac",
+   "flac_sha256": "86e078e7fb3a1bd806f8a7ac8c425c5baf66435d1b6b69679e8f8e7015197294"
+  },
+  {
+   "id": "n52v2r2",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/E2_E2-F2_31-70_RR02CV.flac",
+   "flac_sha256": "417d761fa1d21976aae62c0f285366fccfe523c98862d35d18369e67e456289c"
+  },
+  {
+   "id": "n52v3r1",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/E2_E2-F2_71-99_RR01CV.flac",
+   "flac_sha256": "cdc04e32937946851f4fa6468cd3a0d85fb0cba147dfc4c028607dcdd834a0e4"
+  },
+  {
+   "id": "n52v3r2",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/E2_E2-F2_71-99_RR02CV.flac",
+   "flac_sha256": "0513aab179ccb7dd2365eff8926c9555f9d9102b921fa730124062e1edab6b6a"
+  },
+  {
+   "id": "n52v4r1",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/E2_E2-F2_100-115_RR01CV.flac",
+   "flac_sha256": "382a2c01fc70d2939c956c4cae79540b95863a05f0c74882865b542048908e76"
+  },
+  {
+   "id": "n52v4r2",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/E2_E2-F2_100-115_RR02CV.flac",
+   "flac_sha256": "ec5c67a5d197b31625c16b5e7afc9dace8756f058b8bd51bc0252b429b7ab45e"
+  },
+  {
+   "id": "n52v5r1",
+   "kind": "note",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/E2_E2-F2_116-127_RR01CV.flac",
+   "flac_sha256": "7862f794fc4a1a28787ee93cad6c9c47ff7f6fe979bc68e57800ae3544411796"
+  },
+  {
+   "id": "n54v1r1",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#2_F#2-G2_0-30_RR01CV.flac",
+   "flac_sha256": "220d810a7a09639aea3295f7faa3d20af3f054490adc53acfeba516728854eb4"
+  },
+  {
+   "id": "n54v1r2",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#2_F#2-G2_0-30_RR02CV.flac",
+   "flac_sha256": "f3b78477128e8e46c215f4f1af5e54a7de0ae2a4fa036b57df81bcb0ee289ab9"
+  },
+  {
+   "id": "n54v2r1",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#2_F#2-G2_31-70_RR01CV.flac",
+   "flac_sha256": "9ac403a9b31028699a6194a651dfba68d3026a1a7242f85513df9d02db617fff"
+  },
+  {
+   "id": "n54v2r2",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#2_F#2-G2_31-70_RR02CV.flac",
+   "flac_sha256": "77754fcbe6d2d5cca0c0fabd0ab3b1dc178e2b228d25c4db568fb55dfcef5f8b"
+  },
+  {
+   "id": "n54v3r1",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#2_F#2-G2_71-99_RR01CV.flac",
+   "flac_sha256": "82949f43553833a5391ffd523aa572999a92aa6f50eab2438fb63603c668ee3d"
+  },
+  {
+   "id": "n54v3r2",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#2_F#2-G2_71-99_RR02CV.flac",
+   "flac_sha256": "04df9ac06d497947f7ace5884088e2a7ac36b53bf75d2658455fc8212298fbe1"
+  },
+  {
+   "id": "n54v4r1",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#2_F#2-G2_100-115_RR01CV.flac",
+   "flac_sha256": "c3943cf014bd955fb04eae67150e9e411f75b699f61be6311c1d096688987b61"
+  },
+  {
+   "id": "n54v4r2",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#2_F#2-G2_100-115_RR02CV.flac",
+   "flac_sha256": "cf08a810df6ec9e489af6ab7571665d98d031b196d7059a94791e3b847b61e40"
+  },
+  {
+   "id": "n54v5r1",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#2_F#2-G2_116-127_RR01CV.flac",
+   "flac_sha256": "77e552cc50545d1829fb57d1af75cd65716f3f110993b03c390e66c0edaf1a52"
+  },
+  {
+   "id": "n54v5r2",
+   "kind": "note",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#2_F#2-G2_116-127_RR02CV.flac",
+   "flac_sha256": "3ab8c7091470fd110372fbf4e764596130445e395f4b18e89faadc1814688e3a"
+  },
+  {
+   "id": "n56v1r1",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#2_G#2-A2_0-30_RR01CV.flac",
+   "flac_sha256": "d51c1bc025b5586aa3d62c0f168a8e834274075c3385148ebe75e5b73adfd53b"
+  },
+  {
+   "id": "n56v1r2",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#2_G#2-A2_0-30_RR02CV.flac",
+   "flac_sha256": "7fb6222a1f3c158d296ba4064c634d12e3aa2cdff093da10af46953c110775aa"
+  },
+  {
+   "id": "n56v2r1",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#2_G#2-A2_31-70_RR01CV.flac",
+   "flac_sha256": "36df8adef1487349d83cbdde8e818708def6f6291e797c2af652760bb8d340e9"
+  },
+  {
+   "id": "n56v2r2",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#2_G#2-A2_31-70_RR02CV.flac",
+   "flac_sha256": "9534d1a0d1ea4baa529c7953f98e344997f7542c606b459b2e084692c07df018"
+  },
+  {
+   "id": "n56v3r1",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#2_G#2-A2_71-99_RR01CV.flac",
+   "flac_sha256": "e051c4f242ebe2fe4c2bc9cb8ed9c5de7b67b8cc35e8fe02ea9ecf5e4be31e62"
+  },
+  {
+   "id": "n56v3r2",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#2_G#2-A2_71-99_RR02CV.flac",
+   "flac_sha256": "3525cf7cd4c5ba19441acc2e5695c8311d65eab73acaaeca8203eacec4648bae"
+  },
+  {
+   "id": "n56v4r1",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#2_G#2-A2_100-115_RR01CV.flac",
+   "flac_sha256": "28828992d98b943fade10bf4f4987987bb90c00ec868b41f4baf175baf5cf3d3"
+  },
+  {
+   "id": "n56v4r2",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#2_G#2-A2_100-115_RR02CV.flac",
+   "flac_sha256": "2b02920e5313826a64f23eeb0c30e70c6cd73e950efb4b2ae7a87381ca9bfcfe"
+  },
+  {
+   "id": "n56v5r1",
+   "kind": "note",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#2_G#2-A2_116-127_RR01CV.flac",
+   "flac_sha256": "1284eb76270b84176b2598b22cfc6b2d62c3442190c24c0633407c32fc8f8a30"
+  },
+  {
+   "id": "n58v1r1",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#2_A#2-B2_0-30_RR01CV.flac",
+   "flac_sha256": "fdb4f8c9f22ffd999180889fed3973547c19af0015435dbcc784004ad8cf88d8"
+  },
+  {
+   "id": "n58v1r2",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#2_A#2-B2_0-30_RR02CV.flac",
+   "flac_sha256": "73e2d51d05f15c469c018619965cd3f380b3f22f6f485af7deca377b2190cace"
+  },
+  {
+   "id": "n58v2r1",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#2_A#2-B2_31-70_RR01CV.flac",
+   "flac_sha256": "fc5ef7208059b8e2da9d42096bb9f2e369789ac1e7d21c75ef66f0c5f01df60c"
+  },
+  {
+   "id": "n58v2r2",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#2_A#2-B2_31-70_RR02CV.flac",
+   "flac_sha256": "d2dec77bb132990afdfe14b0c4b610f76245b424ffcb0d1a8c119249fd92be85"
+  },
+  {
+   "id": "n58v3r1",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#2_A#2-B2_71-99_RR01CV.flac",
+   "flac_sha256": "2959cb7873884aa22ff31cad17b0c56a14d169739c0c297b25440abe89fa4cf9"
+  },
+  {
+   "id": "n58v3r2",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#2_A#2-B2_71-99_RR02CV.flac",
+   "flac_sha256": "2f6cedcbb769e44bfa52e40650b2d0847b3c97f2fd49ffc9ba5c378127e9a750"
+  },
+  {
+   "id": "n58v4r1",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#2_A#2-B2_100-115_RR01CV.flac",
+   "flac_sha256": "ca8d4f6f2085cd8c6bb8e17c385aa58f265afcc03512f5ecf38e78f8b21db1af"
+  },
+  {
+   "id": "n58v4r2",
+   "kind": "note",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#2_A#2-B2_100-115_RR02CV.flac",
+   "flac_sha256": "14c893e09ff653d23a86da172da84056e0356a4dd8308f4c8d8c4a4cca1a85f8"
+  },
+  {
+   "id": "n59v5r1",
+   "kind": "note",
+   "midi": 59,
+   "keys": [
+    58,
+    59
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/B2_A#2-B2_116-127_RR01CV.flac",
+   "flac_sha256": "93c8e4cda5252a1b4392d5573eb835e14f9dfb0e6f1f37f8675d5f7346de81df"
+  },
+  {
+   "id": "n60v1r1",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C3_C3-C#3_0-30_RR01CV.flac",
+   "flac_sha256": "da083c0668feb75a278715d923009d49d6c3d6f1b9994cfa2a72f5a619a49ebc"
+  },
+  {
+   "id": "n60v1r2",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C3_C3-C#3_0-30_RR02CV.flac",
+   "flac_sha256": "51385ece74a5286a95689c6059924c3a4f3139696211d6b0623384cc5380a62e"
+  },
+  {
+   "id": "n60v2r1",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C3_C3-C#3_31-70_RR01CV.flac",
+   "flac_sha256": "0b481cac7c7079d72668cefece11a9eca52bacab36e7828488c75528871df4ce"
+  },
+  {
+   "id": "n60v2r2",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C3_C3-C#3_31-70_RR02CV.flac",
+   "flac_sha256": "64c40dea3b4947302b7e458654a884a4060342bcfc6a83669571d09035d364fd"
+  },
+  {
+   "id": "n60v3r1",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C3_C3-C#3_71-99_RR01CV.flac",
+   "flac_sha256": "26949221036b25da82d128e9402231cf2e8dd79cc12c9b563e9b6670aee49a24"
+  },
+  {
+   "id": "n60v3r2",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C3_C3-C#3_71-99_RR02CV.flac",
+   "flac_sha256": "6e4e7a13283bf0b085e48154203c20875b621df9478ca9381e87145053d1d795"
+  },
+  {
+   "id": "n60v4r1",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C3_C3-C#3_100-115_RR01CV.flac",
+   "flac_sha256": "5fbbde5831a61b39423b22932c45bde61b7a9f17cf1f839da45c5a1e7c2addd9"
+  },
+  {
+   "id": "n60v4r2",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C3_C3-C#3_100-115_RR02CV.flac",
+   "flac_sha256": "b489ce5d6a5e984fbd9df2e9f6a6eff1eace6aa050a05ccbbe2992df45d42d56"
+  },
+  {
+   "id": "n60v5r1",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C3_C3-C#3_116-127_RR01CV.flac",
+   "flac_sha256": "202ba58a525359231574b61ad6669caa3c68333cd29a9009a99dd55a60b0d921"
+  },
+  {
+   "id": "n60v5r2",
+   "kind": "note",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 2,
+   "source": "Samples/C3_C3-C#3_116-127_RR02CV.flac",
+   "flac_sha256": "ed4cfc8efb0bc3422ff875f97cc5ca4ee6d94e02ee8b2f8e15e1ca60fd72bb49"
+  },
+  {
+   "id": "n62v1r1",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/D3_D3-D#3_0-30_RR01CV.flac",
+   "flac_sha256": "48340f1e8ad4384114371770b6f001680085d1e521dabac4eb42551194ccb658"
+  },
+  {
+   "id": "n62v1r2",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/D3_D3-D#3_0-30_RR02CV.flac",
+   "flac_sha256": "7d7200dc8357428ef5981b26f88e31c7394182e2dd5dc69547b1d3a428588a63"
+  },
+  {
+   "id": "n62v2r1",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/D3_D3-D#3_31-70_RR01CV.flac",
+   "flac_sha256": "863e44d374bdbcdb123f897bc8cde537658c68b0b37a99c201bfd6bb70ad876e"
+  },
+  {
+   "id": "n62v2r2",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/D3_D3-D#3_31-70_RR02CV.flac",
+   "flac_sha256": "a84cf4000be663b0432b172ebb85ff7b699a69cf366d280ab58bc7abef3c5399"
+  },
+  {
+   "id": "n62v3r1",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/D3_D3-D#3_71-99_RR01CV.flac",
+   "flac_sha256": "97b8508a63e4d44d9fa364d99781d7156c49aa3bddb42d60518f4582505c55a3"
+  },
+  {
+   "id": "n62v3r2",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/D3_D3-D#3_71-99_RR02CV.flac",
+   "flac_sha256": "0defa1d4605de916bf4e4b72214443ae2d426dcbeee1c452d14c299c0050bf28"
+  },
+  {
+   "id": "n62v4r1",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/D3_D3-D#3_100-115_RR01CV.flac",
+   "flac_sha256": "7e8246ed3e7c5a35f6e7ea96233385ccc194f45d4e9ae209dff9c08ac49441a8"
+  },
+  {
+   "id": "n62v4r2",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/D3_D3-D#3_100-115_RR02CV.flac",
+   "flac_sha256": "89fc8a3b66fab83246d0bc63c0f8c58e2265fc393dda8c594938739c3e22cc39"
+  },
+  {
+   "id": "n62v5r1",
+   "kind": "note",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/D3_D3-D#3_116-127_RR01CV.flac",
+   "flac_sha256": "6fedbcef411b43be5288e026f0f74707bb2b16b78b1a186d2e6e9789a9944c09"
+  },
+  {
+   "id": "n64v1r1",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/E3_E3-F3_0-30_RR01CV.flac",
+   "flac_sha256": "d2f65b61819a3743f5ddf0a5d244af3035526f46061616e850576102176bb27a"
+  },
+  {
+   "id": "n64v1r2",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/E3_E3-F3_0-30_RR02CV.flac",
+   "flac_sha256": "3f4ed4e13e81ca0c410848de95960501a13537a7865743b19b825d80ade80964"
+  },
+  {
+   "id": "n64v2r1",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/E3_E3-F3_31-70_RR01CV.flac",
+   "flac_sha256": "a2561f8564b0c3408ac3820d67c4c2d6e3046e116a0ad4633213b7cb61f57827"
+  },
+  {
+   "id": "n64v2r2",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/E3_E3-F3_31-70_RR02CV.flac",
+   "flac_sha256": "649f580df273e3fe6d6b40b308542a9473c6d73d69159873412ddd66feb7be7a"
+  },
+  {
+   "id": "n64v3r1",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/E3_E3-F3_71-99_RR01CV.flac",
+   "flac_sha256": "f07cced61a882682658d8fbade6658026d05991a02fff987ac224dd67e68e8d0"
+  },
+  {
+   "id": "n64v3r2",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/E3_E3-F3_71-99_RR02CV.flac",
+   "flac_sha256": "c7a49ddb91a2aa1599b86c04b5dba04073daf307bf1115e70251e304ff0f0e33"
+  },
+  {
+   "id": "n64v4r1",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/E3_E3-F3_100-115_RR01CV.flac",
+   "flac_sha256": "1b1cbf2e2f6dcdcde9e2c5c7fd0cd340a95dfddf332e2d4faa1d71371c2d20cc"
+  },
+  {
+   "id": "n64v4r2",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/E3_E3-F3_100-115_RR02CV.flac",
+   "flac_sha256": "128311a8fbb8a65cce43722dfae808b9e812b6ba7df130b66f2297ddb4b5bcec"
+  },
+  {
+   "id": "n64v5r1",
+   "kind": "note",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/E3_E3-F3_116-127_RR01CV.flac",
+   "flac_sha256": "24cfd3d60d60a797a3189ff307fdcab15147fc93e01f915599ec82ec47e4cd06"
+  },
+  {
+   "id": "n66v1r1",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#3_F#3-G3_0-30_RR01CV.flac",
+   "flac_sha256": "4fee50b54094d3a12e4d90f457b7d1ea6e42b2e31df6331e25e1eac515c76caf"
+  },
+  {
+   "id": "n66v1r2",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#3_F#3-G3_0-30_RR02CV.flac",
+   "flac_sha256": "cf142e99c39b6575e128e6c2fecca45a2297ab59fd62587b879c9dfabdd38ad5"
+  },
+  {
+   "id": "n66v2r1",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#3_F#3-G3_31-70_RR01CV.flac",
+   "flac_sha256": "9a6c91b3b692581c940eeac5a04afee1b63f4a0fec1e948b6cb45d7a85574a1e"
+  },
+  {
+   "id": "n66v2r2",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#3_F#3-G3_31-70_RR02CV.flac",
+   "flac_sha256": "c70e460181861e70113759717bbecd1a370497741ae8ebd798369c5604b914db"
+  },
+  {
+   "id": "n66v3r1",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#3_F#3-G3_71-99_RR01CV.flac",
+   "flac_sha256": "d32a3efca6cefddd4da83299abac3bff1d13434836b1a1f249561e19052ef8cd"
+  },
+  {
+   "id": "n66v3r2",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#3_F#3-G3_71-99_RR02CV.flac",
+   "flac_sha256": "cc499a0ee431145f3a55d04171c232fc6e4c4053eddf29011334093b1b345a89"
+  },
+  {
+   "id": "n66v4r1",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#3_F#3-G3_100-115_RR01CV.flac",
+   "flac_sha256": "d1b94180d7f0ac25ebcf80d5f0fd4a100bd54ba5ac1b53e8b6de7d1ef4639eb2"
+  },
+  {
+   "id": "n66v4r2",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#3_F#3-G3_100-115_RR02CV.flac",
+   "flac_sha256": "880023c82fdcf8303b7048fd4336758f2bda2287d6dbebf1628c2df6598b1368"
+  },
+  {
+   "id": "n66v5r1",
+   "kind": "note",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#3_F#3-G3_116-127_RR01CV.flac",
+   "flac_sha256": "31df8995f5d05b04700bdbbd301a13bd9a5e61b232bc977ccf91cf708f10e459"
+  },
+  {
+   "id": "n68v1r1",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#3_G#3-A3_0-30_RR01CV.flac",
+   "flac_sha256": "69b61ed1b18aa96b7cb0a02db7cae62cb6310d933516883b4934aa9fbdbfb79d"
+  },
+  {
+   "id": "n68v1r2",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#3_G#3-A3_0-30_RR02CV.flac",
+   "flac_sha256": "35bee521013f29dcb0f11fcc38ec9e4a7a4169bca905eb94f0d6fc83cafbd3cb"
+  },
+  {
+   "id": "n68v2r1",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#3_G#3-A3_31-70_RR01CV.flac",
+   "flac_sha256": "d254e96de578d909d768dc5f0ae8d38356251f47d5c6f77e212d74c3b4e1f361"
+  },
+  {
+   "id": "n68v2r2",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#3_G#3-A3_31-70_RR02CV.flac",
+   "flac_sha256": "72218ae3b401898d425dc19a4c0189c82eee0456508b13076b87712e87b6fd54"
+  },
+  {
+   "id": "n68v3r1",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#3_G#3-A3_71-99_RR01CV.flac",
+   "flac_sha256": "f2d46becd639d4b08f00b9a633442faa2954b84077aab374ae45de1408ab6be7"
+  },
+  {
+   "id": "n68v4r1",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#3_G#3-A3_100-115_RR01CV.flac",
+   "flac_sha256": "0df6c6452b44235e4d88a4d259aedf7b6157b62572fc69e2c19a8be093ba7241"
+  },
+  {
+   "id": "n68v4r2",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#3_G#3-A3_100-115_RR02CV.flac",
+   "flac_sha256": "060cf4a73301b6db5b31c52f5d350697adfaf5541974be48aae15d599604017b"
+  },
+  {
+   "id": "n68v5r1",
+   "kind": "note",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#3_G#3-A3_116-127_RR01CV.flac",
+   "flac_sha256": "cbc49a4af385321ffd0c6bdbbcc8550f051634881376be39d7b4a2160333fa78"
+  },
+  {
+   "id": "n70v1r1",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#3_A#3-B3_0-30_RR01CV.flac",
+   "flac_sha256": "49a1c0f524601f0e87d6b3376c47118808b4abdd3adc2d18e162bdfe320787b3"
+  },
+  {
+   "id": "n70v1r2",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#3_A#3-B3_0-30_RR02CV.flac",
+   "flac_sha256": "927d78fef104dccd7faee9a9c69966989320304678365bcb0d255a0d656bb78d"
+  },
+  {
+   "id": "n70v2r1",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#3_A#3-B3_31-70_RR01CV.flac",
+   "flac_sha256": "295ac7dac5f79f48aab85f6935e709789cf731d934b8709fffdfa971c000944f"
+  },
+  {
+   "id": "n70v2r2",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#3_A#3-B3_31-70_RR02CV.flac",
+   "flac_sha256": "8c51c0c81dd1829fa694cafd992906114fa2748abbdc9127a796827df17904de"
+  },
+  {
+   "id": "n70v3r1",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#3_A#3-B3_71-99_RR01CV.flac",
+   "flac_sha256": "e50eac919dbdabb5440d1d985d3b40a9ab6bd9d94b5a5a8d750b56c3fe239faa"
+  },
+  {
+   "id": "n70v3r2",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#3_A#3-B3_71-99_RR02CV.flac",
+   "flac_sha256": "258654852cfeb779dff53d8cfeebda856b35bfa7474ffea2a5dde69095961e59"
+  },
+  {
+   "id": "n70v4r1",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#3_A#3-B3_100-115_RR01CV.flac",
+   "flac_sha256": "38309309e7c5b4aa971ab973e0a455fb3a91253a08cf971b6bb18c466ebf4010"
+  },
+  {
+   "id": "n70v4r2",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#3_A#3-B3_100-115_RR02CV.flac",
+   "flac_sha256": "079e7c00619ee199eca99c13c94806956fddf88ac340a1bc47b4d90cee52e2dc"
+  },
+  {
+   "id": "n70v5r1",
+   "kind": "note",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#3_A#3-B3_116-127_RR01CV.flac",
+   "flac_sha256": "02ed9f2a9b09d717bb8a17fc1b16231f50981a7bd00c016b2e6e9b06354d3714"
+  },
+  {
+   "id": "n72v1r1",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C4_C4-C#4_0-30_RR01CV.flac",
+   "flac_sha256": "ef2dd56f69d17efde8673e774c9b8d13a4b1b43f845dfbe765054184b82af133"
+  },
+  {
+   "id": "n72v1r2",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C4_C4-C#4_0-30_RR02CV.flac",
+   "flac_sha256": "d6d28ed4a9bdc172ad321a80400142247cc2c7804f31d6fc1fc11fc34b53c563"
+  },
+  {
+   "id": "n72v2r1",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C4_C4-C#4_31-70_RR01CV.flac",
+   "flac_sha256": "486f716642f386e3cf48bd078732f5add2515f2e1bcb3116ad96836c9e144e66"
+  },
+  {
+   "id": "n72v2r2",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C4_C4-C#4_31-70_RR02CV.flac",
+   "flac_sha256": "7dd9d306a1ca16058672d6d146a2f6ec666173e2f715ce0e5ef6027faa38e1f2"
+  },
+  {
+   "id": "n72v3r1",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C4_C4-C#4_71-99_RR01CV.flac",
+   "flac_sha256": "5bcbe02ab7d4a4c5fceacfef7b4c22386f0682b3fc56aaa8671a5b3ec8af9411"
+  },
+  {
+   "id": "n72v3r2",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C4_C4-C#4_71-99_RR02CV.flac",
+   "flac_sha256": "6484fc759a1c9db376a7e23224688606c08b5c9ec8b402657bab54d9b2118a7e"
+  },
+  {
+   "id": "n72v4r1",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C4_C4-C#4_100-115_RR01CV.flac",
+   "flac_sha256": "58cf08c1627855ede449642e073412324fa8b7c07f76f72babef1241da0f3875"
+  },
+  {
+   "id": "n72v4r2",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C4_C4-C#4_100-115_RR02CV.flac",
+   "flac_sha256": "e38713d0b1f9026fc156cc6548805dbebb62a0f8c72d3852d3133884245ec023"
+  },
+  {
+   "id": "n72v5r1",
+   "kind": "note",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C4_C4-C#4_116-127_RR01CV.flac",
+   "flac_sha256": "6780471fa747fca322dddfae6239bd4c09b506341f685554aaa3f581fa700e5d"
+  },
+  {
+   "id": "n74v1r1",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/D4_D4-D#4_0-30_RR01CV.flac",
+   "flac_sha256": "624df8dedca206a4b4a75c265caa0de511261be733bd98c14365f5860a8e2c9c"
+  },
+  {
+   "id": "n74v1r2",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/D4_D4-D#4_0-30_RR02CV.flac",
+   "flac_sha256": "a206186046af83d67d18a3119022b97583e86e94d8a7ad3cde298f0737710168"
+  },
+  {
+   "id": "n74v2r1",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/D4_D4-D#4_31-70_RR01CV.flac",
+   "flac_sha256": "3cf0b91caef7edd84aa69e0810d2b0c9e3010166efd33c81d591aacc7fa03e08"
+  },
+  {
+   "id": "n74v2r2",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/D4_D4-D#4_31-70_RR02CV.flac",
+   "flac_sha256": "2c7bddc2326d4de99f21698f5091d3206673c53e2acfe5bbca40e0b990d83d6d"
+  },
+  {
+   "id": "n74v3r1",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/D4_D4-D#4_71-99_RR01CV.flac",
+   "flac_sha256": "3daa3fc126197bc4928626fc63e8b0f303c27195e33d8e5d1567ca525f897b26"
+  },
+  {
+   "id": "n74v3r2",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/D4_D4-D#4_71-99_RR02CV.flac",
+   "flac_sha256": "d3249b19d73540b756ded79b3b9fdbef1b0934821609582490bbacf9958b2ab5"
+  },
+  {
+   "id": "n74v4r1",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/D4_D4-D#4_100-115_RR01CV.flac",
+   "flac_sha256": "acae60c1cfbedbc67b9d3c2f71cb9f91f4b0d33e95859195db29d2a962378c1f"
+  },
+  {
+   "id": "n74v4r2",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/D4_D4-D#4_100-115_RR02CV.flac",
+   "flac_sha256": "6f9aba5c2bd9d3071b4ee02ffb6f30b8958ca97d93d22e08017a6fac4e97de29"
+  },
+  {
+   "id": "n74v5r1",
+   "kind": "note",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/D4_D4-D#4_116-127_RR01CV.flac",
+   "flac_sha256": "d4a5eff08f8ca96e169149b492ff4621345a33220f049092904c720fd23d9417"
+  },
+  {
+   "id": "n76v1r1",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/E4_E4-F4_0-30_RR01CV.flac",
+   "flac_sha256": "f098df797cadacb2281cd34e8d08f775ec7b6a231342bedd7016119029bddc5e"
+  },
+  {
+   "id": "n76v1r2",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/E4_E4-F4_0-30_RR02CV.flac",
+   "flac_sha256": "60f855adbbf8ce55651c67439d01a3aa644c7ea9d2782aea67b65982bfd4c3b6"
+  },
+  {
+   "id": "n76v2r1",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/E4_E4-F4_31-70_RR01CV.flac",
+   "flac_sha256": "20548b31ccae2c5977745b986a5d1208878dd63c1e56aacb55527e184db8e152"
+  },
+  {
+   "id": "n76v2r2",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/E4_E4-F4_31-70_RR02CV.flac",
+   "flac_sha256": "3e9b80bedd4f7324c9d87a0abdbc24667ba9620fa175ec257ecaeb71ccc5be29"
+  },
+  {
+   "id": "n76v3r1",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/E4_E4-F4_71-99_RR01CV.flac",
+   "flac_sha256": "0a9397c2969c657caaa5f750a3586dc967bcadcfaa13f299321713c234f23dbd"
+  },
+  {
+   "id": "n76v3r2",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/E4_E4-F4_71-99_RR02CV.flac",
+   "flac_sha256": "beee7734be865818cc87c437089ef1eaf6b6705a1c0cb9710edf3164a3b5debf"
+  },
+  {
+   "id": "n76v4r1",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/E4_E4-F4_100-115_RR01CV.flac",
+   "flac_sha256": "686921c8bec555209dfec07e218240482dd4b1d39d99759f731f0e29cc76e9fb"
+  },
+  {
+   "id": "n76v4r2",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/E4_E4-F4_100-115_RR02CV.flac",
+   "flac_sha256": "26d2177dcef432367bdceb91a22d3f8fabc9bb029f0359808980ed109ab3d9d8"
+  },
+  {
+   "id": "n76v5r1",
+   "kind": "note",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/E4_E4-F4_116-127_RR01CV.flac",
+   "flac_sha256": "53cd15001747030a3971a05881717cb6e4c50c54715ced029fb4bfef76b91262"
+  },
+  {
+   "id": "n78v1r1",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#4_F#4-G4_0-30_RR01CV.flac",
+   "flac_sha256": "333cc854082363ac57420fb341ff368189006b2765a72410794cb36b4339f5a5"
+  },
+  {
+   "id": "n78v1r2",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#4_F#4-G4_0-30_RR02CV.flac",
+   "flac_sha256": "06302a2f9eef908bdd35394feae9a589506535fd86dbc2c2765ce55751348be6"
+  },
+  {
+   "id": "n78v2r1",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#4_F#4-G4_31-70_RR01CV.flac",
+   "flac_sha256": "35a2a1705a6c5fbe6df7f82d75c2fbac2c695a520c4054657b8f6727602cd1ce"
+  },
+  {
+   "id": "n78v2r2",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#4_F#4-G4_31-70_RR02CV.flac",
+   "flac_sha256": "cde7019b6d22412cd91cad4774403ea75671f5613dba1ae6e322c735951170bb"
+  },
+  {
+   "id": "n78v3r1",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#4_F#4-G4_71-99_RR01CV.flac",
+   "flac_sha256": "ef88ca98d349c3ee7db2697c23cc1809fb2827f687b448b7902911bbc363d00f"
+  },
+  {
+   "id": "n78v3r2",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#4_F#4-G4_71-99_RR02CV.flac",
+   "flac_sha256": "c037ebeef62983a15bce98146171b93e5cfd134b810dd4036bd03e44ead9d9f4"
+  },
+  {
+   "id": "n78v4r1",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#4_F#4-G4_100-115_RR01CV.flac",
+   "flac_sha256": "fefc29ea4bcf3f31ab16543f8d323d19fe748a35593d9dfc95902acd63b811e7"
+  },
+  {
+   "id": "n78v4r2",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#4_F#4-G4_100-115_RR02CV.flac",
+   "flac_sha256": "0a295870d87c384b5aff2e5b433aa358e4ed5e9b71d86d7dcde53c1ce7f7beba"
+  },
+  {
+   "id": "n78v5r1",
+   "kind": "note",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#4_F#4-G4_116-127_RR01CV.flac",
+   "flac_sha256": "9fad3711e6fc61ab8f5a28da34959758d0c1cdf07e1a7fbade3b5edf8f1e91cd"
+  },
+  {
+   "id": "n80v1r1",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#4_G#4-A4_0-30_RR01CV.flac",
+   "flac_sha256": "1fcdff4fac2b08fc19803642db2d93e15008b21b509807b27e9c171480b131e1"
+  },
+  {
+   "id": "n80v1r2",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#4_G#4-A4_0-30_RR02CV.flac",
+   "flac_sha256": "3d0455fa2f0666fb9a712dfe0d44d3c0b8955b5b92ef9e77a9e0af88c24e2486"
+  },
+  {
+   "id": "n80v2r1",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#4_G#4-A4_31-70_RR01CV.flac",
+   "flac_sha256": "a4746897bbdd3f9ddead42a90857bc53830a318eafeb115e31da86323b809c84"
+  },
+  {
+   "id": "n80v2r2",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#4_G#4-A4_31-70_RR02CV.flac",
+   "flac_sha256": "c1308f8dcfd30598ea8ba9d4a7a80b025e6b9cf5c0d77e88735b5d2e5bbd4bd3"
+  },
+  {
+   "id": "n80v3r1",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#4_G#4-A4_71-99_RR01CV.flac",
+   "flac_sha256": "7819000ef56481c5aeee5c7edb9ff8ebaadbfea513036fc6cde33500080c0287"
+  },
+  {
+   "id": "n80v3r2",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#4_G#4-A4_71-99_RR02CV.flac",
+   "flac_sha256": "1506343c3823e85bda88ee83b167fd1706a2776773b580873bc455f39389f1be"
+  },
+  {
+   "id": "n80v4r1",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#4_G#4-A4_100-115_RR01CV.flac",
+   "flac_sha256": "1b327d83cdeb4f822eb3017227d11a48f97630a76d1a121e51dbce6ac3f10836"
+  },
+  {
+   "id": "n80v4r2",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#4_G#4-A4_100-115_RR02CV.flac",
+   "flac_sha256": "458a07b24f8497d37e63b1999159f09d2dd7479911ac626acc54a431bf613ba8"
+  },
+  {
+   "id": "n80v5r1",
+   "kind": "note",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#4_G#4-A4_116-127_RR01CV.flac",
+   "flac_sha256": "e8d84af77b43a067275100fb59d7be7445b4c21f87ef2cec1128b9b5ae885a26"
+  },
+  {
+   "id": "n82v1r1",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#4_A#4-B4_0-30_RR01CV.flac",
+   "flac_sha256": "1eb4ed4a3551d45126f72542345532889044bf6f8e0a4f8e3af4f1b1b0f0157e"
+  },
+  {
+   "id": "n82v1r2",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#4_A#4-B4_0-30_RR02CV.flac",
+   "flac_sha256": "5e894b49d541df9ee225537baca3d89b56b9557e25349ef94c79aac82d34f8f4"
+  },
+  {
+   "id": "n82v2r1",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#4_A#4-B4_31-70_RR01CV.flac",
+   "flac_sha256": "fefe20af2820de46ea1be5b5605bd32e0039ebb5e60241cb3660dc3cf811eaf6"
+  },
+  {
+   "id": "n82v2r2",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#4_A#4-B4_31-70_RR02CV.flac",
+   "flac_sha256": "e71bb1a5393a95f0e11cf955f1b2fcedee3e8d78cce0d0c977acc25d12c0f0ea"
+  },
+  {
+   "id": "n82v3r1",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#4_A#4-B4_71-99_RR01CV.flac",
+   "flac_sha256": "b70ac211ad6438b54acff02483c9de9c988f57472ffa66b09c9957de0182d997"
+  },
+  {
+   "id": "n82v3r2",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#4_A#4-B4_71-99_RR02CV.flac",
+   "flac_sha256": "60498ef359c1c98fe231ddd111180ce18f9fc51768a6366214906b060028a71d"
+  },
+  {
+   "id": "n82v4r1",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#4_A#4-B4_100-115_RR01CV.flac",
+   "flac_sha256": "204602febaccaa47bd2714b6db9578a0a0278464b545297eaf8dcbbb20c005b0"
+  },
+  {
+   "id": "n82v4r2",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#4_A#4-B4_100-115_RR02CV.flac",
+   "flac_sha256": "bd4e40f125e581b934fe5df2aa954cc067e1b43daf1042f969035f56b3d955c5"
+  },
+  {
+   "id": "n82v5r1",
+   "kind": "note",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#4_A#4-B4_116-127_RR01CV.flac",
+   "flac_sha256": "d32f5a76bf1583056acc10778c6d8476b575bb5c4f82418d839399413e46b3fd"
+  },
+  {
+   "id": "n84v1r1",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C5_C5-C#5_0-30_RR01CV.flac",
+   "flac_sha256": "e155b2aea91966a8fdff7d2cbf0910eda96ae2695229986f3f48fb7134ee1ee5"
+  },
+  {
+   "id": "n84v1r2",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C5_C5-C#5_0-30_RR02CV.flac",
+   "flac_sha256": "5a0883d2586e9ba395cd2a26846dcceb87448342548110a2ad7b0e83d131f3c5"
+  },
+  {
+   "id": "n84v2r1",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C5_C5-C#5_31-70_RR01CV.flac",
+   "flac_sha256": "873d9af2c6605147ca0fd8f21f4943e2c52f3ffb6af088a6002d06054c769265"
+  },
+  {
+   "id": "n84v2r2",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C5_C5-C#5_31-70_RR02CV.flac",
+   "flac_sha256": "813b8e0887811240f05723330a4c084806f9c877b521e840c2cf513ce22802e6"
+  },
+  {
+   "id": "n84v3r1",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C5_C5-C#5_71-99_RR01CV.flac",
+   "flac_sha256": "251b60811718a2ad3a1ba51aa159706fd62c8d26b042c7c291abbeb13969c81b"
+  },
+  {
+   "id": "n84v3r2",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C5_C5-C#5_71-99_RR02CV.flac",
+   "flac_sha256": "225ee9f52367b084f6bf451bbe2e6e3d96d5193bc7f34e359aa887cf0d96199e"
+  },
+  {
+   "id": "n84v4r1",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C5_C5-C#5_100-115_RR01CV.flac",
+   "flac_sha256": "8d4e81f924633ff22d580291fdd3315b8f335c60847ed143c0ddfb1e75ba4521"
+  },
+  {
+   "id": "n84v4r2",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C5_C5-C#5_100-115_RR02CV.flac",
+   "flac_sha256": "8dc3002fdf44c5b3064255fa083be12373b0ee567d41133b8b2c9823aa052154"
+  },
+  {
+   "id": "n84v5r1",
+   "kind": "note",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C5_C5-C#5_116-127_RR01CV.flac",
+   "flac_sha256": "b84213a41ae066e2b65d2b3da0e25a5982b584f06486323a251f050c51297e13"
+  },
+  {
+   "id": "n86v1r1",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/D5_D5-D#5_0-30_RR01CV.flac",
+   "flac_sha256": "0e7ffb305cf3d4a34995b6a5ec0dafcb3d8fef1790941d374664ca580dcc5587"
+  },
+  {
+   "id": "n86v1r2",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/D5_D5-D#5_0-30_RR02CV.flac",
+   "flac_sha256": "e4e8a8d8009659c0ec5b8a7fa9a3c01d0ef6806a578ff6b8c7829e1b1977bc3d"
+  },
+  {
+   "id": "n86v2r1",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/D5_D5-D#5_31-70_RR01CV.flac",
+   "flac_sha256": "663ed38f15e4500efd4de4ecb0f36c7945060c3cc6bdfc528f98f0aa0b581f90"
+  },
+  {
+   "id": "n86v2r2",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/D5_D5-D#5_31-70_RR02CV.flac",
+   "flac_sha256": "8b9c5145325b227b12791e52c2e3e2fc6a9505ef1ccd55f16a9ab3dc65698c46"
+  },
+  {
+   "id": "n86v3r1",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/D5_D5-D#5_71-99_RR01CV.flac",
+   "flac_sha256": "6f7f90db0fb319182cf536323024bc091e65efda395ee6c2dae81b6ded5b06ce"
+  },
+  {
+   "id": "n86v3r2",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/D5_D5-D#5_71-99_RR02CV.flac",
+   "flac_sha256": "bc770906dcec856de9b94fa716a2f7fd8b0cbf05c63b4d10c99214810395cc07"
+  },
+  {
+   "id": "n86v4r1",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/D5_D5-D#5_100-115_RR01CV.flac",
+   "flac_sha256": "3a23a56d0178a9eddb982819e6e30d95d0b38f319e2e223dcf03dabf1a1af027"
+  },
+  {
+   "id": "n86v4r2",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/D5_D5-D#5_100-115_RR02CV.flac",
+   "flac_sha256": "3fd41e7ea95bbe24b9f2e1ff7f56aa23ea0c1675b96ae5b83a6c3eda7b3bcc91"
+  },
+  {
+   "id": "n86v5r1",
+   "kind": "note",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/D5_D5-D#5_116-127_RR01CV.flac",
+   "flac_sha256": "2e162b0735dfd215ce3901f46ae0468839dc9dcdeb6be4436e7f500825362ade"
+  },
+  {
+   "id": "n88v1r1",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/E5_E5-F5_0-30_RR01CV.flac",
+   "flac_sha256": "07e41a2d4a031cfd6ba6191d52b4f8f288955981c2e83741258bbe96c730a06a"
+  },
+  {
+   "id": "n88v1r2",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/E5_E5-F5_0-30_RR02CV.flac",
+   "flac_sha256": "9b84a484594a7dd6ca1b5e1d954f15cd788d232bb1c8d85e5402679c51daa5e8"
+  },
+  {
+   "id": "n88v2r1",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/E5_E5-F5_31-70_RR01CV.flac",
+   "flac_sha256": "75366d96b3d1d267a0171da23fa15fd2515357672eb69cb0a12610982e5fd248"
+  },
+  {
+   "id": "n88v2r2",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/E5_E5-F5_31-70_RR02CV.flac",
+   "flac_sha256": "45572f7d9ba5a2699ace35cdbe2c92f09d9770abbddc83d351065288db484c48"
+  },
+  {
+   "id": "n88v3r1",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/E5_E5-F5_71-99_RR01CV.flac",
+   "flac_sha256": "a594421a596edfa8b416441f20f08cc33547d27930ae23eaf2f67010cacf9155"
+  },
+  {
+   "id": "n88v3r2",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/E5_E5-F5_71-99_RR02CV.flac",
+   "flac_sha256": "fc4afc9370c2339b87e169315d7eaa834fa4815fa9caa612db936590ad535964"
+  },
+  {
+   "id": "n88v4r1",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/E5_E5-F5_100-115_RR01CV.flac",
+   "flac_sha256": "1f1915029c17d056254db117fc896ebfe7f54d1cb4b9a7996e892d4190acde40"
+  },
+  {
+   "id": "n88v4r2",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/E5_E5-F5_100-115_RR02CV.flac",
+   "flac_sha256": "e788d7b021fbc435a4e98479883a7b6557fa36088fdc0e0f1a413c1bc55c0c70"
+  },
+  {
+   "id": "n88v5r1",
+   "kind": "note",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/E5_E5-F5_116-127_RR01CV.flac",
+   "flac_sha256": "2e356a2168094eda4187cf220fdbaaea2d3ef185c1cb4d87a126f44dcb9c5f14"
+  },
+  {
+   "id": "n90v1r1",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#5_F#5-G5_0-30_RR01CV.flac",
+   "flac_sha256": "23fd9586940259269b5ec5ece19764ea9dfff025be5a07220eb77ba6ccf504da"
+  },
+  {
+   "id": "n90v1r2",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#5_F#5-G5_0-30_RR02CV.flac",
+   "flac_sha256": "76a29df1cae116a64a5eeaa3765015a8df778c44f682e72db1893bba5c26f9a6"
+  },
+  {
+   "id": "n90v2r1",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#5_F#5-G5_31-70_RR01CV.flac",
+   "flac_sha256": "54e6e9940f9946ad727ccfe16c76aabf3622d5f9d03868e15a10e9969e4e3ef7"
+  },
+  {
+   "id": "n90v2r2",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#5_F#5-G5_31-70_RR02CV.flac",
+   "flac_sha256": "f6d7ccfb443a13cde1320a94d352ce0a509d9f544635442e2c5fdba1a85adf9e"
+  },
+  {
+   "id": "n90v3r1",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#5_F#5-G5_71-99_RR01CV.flac",
+   "flac_sha256": "8f37e063be9cd07830ce2765529d0c7265ce670bc965785a8682a01d7d06e806"
+  },
+  {
+   "id": "n90v3r2",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#5_F#5-G5_71-99_RR02CV.flac",
+   "flac_sha256": "9d7a1beac8a1814e2eb7d91e4f3fac9d38ffe00c3a2fd1405bfbaf597037a7e7"
+  },
+  {
+   "id": "n90v4r1",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#5_F#5-G5_100-115_RR01CV.flac",
+   "flac_sha256": "f4d64ef7f0bc306695019d53138790e8d66431a5ae0ea4d229cca934088ac5aa"
+  },
+  {
+   "id": "n90v4r2",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/F#5_F#5-G5_100-115_RR02CV.flac",
+   "flac_sha256": "95f59b77bf55b6178cb8ded9c45ba68a8d84c84f492a63d15207fe217aad55ef"
+  },
+  {
+   "id": "n90v5r1",
+   "kind": "note",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/F#5_F#5-G5_116-127_RR01CV.flac",
+   "flac_sha256": "6deef926a817022f493c761a3da458778182f024d792215f32933dc3efc3ae70"
+  },
+  {
+   "id": "n92v1r1",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#5_G#5-A5_0-30_RR01CV.flac",
+   "flac_sha256": "aa0c4dc7cd722c9307945184dbe908604ed81bb8f05d1eab92882d839bb70a10"
+  },
+  {
+   "id": "n92v1r2",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#5_G#5-A5_0-30_RR02CV.flac",
+   "flac_sha256": "3a6ac4869371dba05c71f72061fdd018c0b739164090299cdf72a5426a163836"
+  },
+  {
+   "id": "n92v2r1",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#5_G#5-A5_31-70_RR01CV.flac",
+   "flac_sha256": "06789e0ce76245b8c904c74027e7079ddcbc091f39345175b07b51ab591dbbb4"
+  },
+  {
+   "id": "n92v2r2",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#5_G#5-A5_31-70_RR02CV.flac",
+   "flac_sha256": "cfbfdc323fdc15dc067d1aebe27a9c50388aec511f4805ca3de2c6bc6d31a648"
+  },
+  {
+   "id": "n92v3r1",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#5_G#5-A5_71-99_RR01CV.flac",
+   "flac_sha256": "947480f2aa3a08bd41d3f02118395c4bc39bd378b13332d6736d949d1ead1a2f"
+  },
+  {
+   "id": "n92v3r2",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#5_G#5-A5_71-99_RR02CV.flac",
+   "flac_sha256": "bc817e776438f97a63442cc7c5bf11abd7da2bbc002f03b94fc1273aa50c079c"
+  },
+  {
+   "id": "n92v4r1",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#5_G#5-A5_100-115_RR01CV.flac",
+   "flac_sha256": "6dc8cb25189ceb9e28448dcb7f0b13c36d6198533f867cdb5003c1134f4280c8"
+  },
+  {
+   "id": "n92v4r2",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/G#5_G#5-A5_100-115_RR02CV.flac",
+   "flac_sha256": "3f689420809d1d7742cde7fd53ce646fa915455e4132ad9073e436673cf9f1ab"
+  },
+  {
+   "id": "n92v5r1",
+   "kind": "note",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/G#5_G#5-A5_116-127_RR01CV.flac",
+   "flac_sha256": "4747f4c0231a07441fd23e58f0b95e6b332745b407efb667c0fd743dbbe57204"
+  },
+  {
+   "id": "n94v1r1",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#5_A#5-B5_0-30_RR01CV.flac",
+   "flac_sha256": "adde504c1291c19d80ab19cf36b489a572cdd9f465621b3701bd8de5b99b0032"
+  },
+  {
+   "id": "n94v1r2",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#5_A#5-B5_0-30_RR02CV.flac",
+   "flac_sha256": "64efae6177e58f2fe90015289ceefbd13a01898fa5cb501f63e850c4a037ad30"
+  },
+  {
+   "id": "n94v2r1",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#5_A#5-B5_31-70_RR01CV.flac",
+   "flac_sha256": "3656da29293f676874c02ccb35dc529d6fcb6fd706c287652794af1c40780186"
+  },
+  {
+   "id": "n94v2r2",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#5_A#5-B5_31-70_RR02CV.flac",
+   "flac_sha256": "cb5f205fd15c2e1940c3d6921fa66f1eb009d2d34ad1cc98350f2742b54c94ce"
+  },
+  {
+   "id": "n94v3r1",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#5_A#5-B5_71-99_RR01CV.flac",
+   "flac_sha256": "b1c9996d051c8f31244bb82fff21c7af32c6bee8b33f8e382ae9a4705386e273"
+  },
+  {
+   "id": "n94v3r2",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#5_A#5-B5_71-99_RR02CV.flac",
+   "flac_sha256": "a83170bc3af1180916618c0ed1d25eb1831c545ac27773852b5dc57c5b3aae36"
+  },
+  {
+   "id": "n94v4r1",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#5_A#5-B5_100-115_RR01CV.flac",
+   "flac_sha256": "607db325ad6e01dabc6785e9293ee36ed8553baeaf3e8a0daa224eed40a8f765"
+  },
+  {
+   "id": "n94v4r2",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/A#5_A#5-B5_100-115_RR02CV.flac",
+   "flac_sha256": "0325295c9203d9f6cfe7c0548cdc60edb626b4a1e9a388082876943663364b5e"
+  },
+  {
+   "id": "n94v5r1",
+   "kind": "note",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/A#5_A#5-B5_116-127_RR01CV.flac",
+   "flac_sha256": "9556dd79a677aa9989897f7dc74635b7b722f669546f29f4988527ec76db26fa"
+  },
+  {
+   "id": "n96v1r1",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/C6_C6-D#6_0-30_RR01CV.flac",
+   "flac_sha256": "6776875b5cac7e263599f5cdafedea0df1caf7ffd5421ef843becc82a6eeaadb"
+  },
+  {
+   "id": "n96v1r2",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/C6_C6-D#6_0-30_RR02CV.flac",
+   "flac_sha256": "c15a482d30968639ab3533e106c6cf47cd169433cc8465847ba9a230a331ca1a"
+  },
+  {
+   "id": "n96v2r1",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/C6_C6-D#6_31-70_RR01CV.flac",
+   "flac_sha256": "5fc1c977832026c8883875c5dbc801854eea253c31fe6570fdb81cfedcde7420"
+  },
+  {
+   "id": "n96v2r2",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/C6_C6-D#6_31-70_RR02CV.flac",
+   "flac_sha256": "80b839824814011e86ddf1019d4e39ef6a8f582fa4a3f2b63bc6b1a9707545b5"
+  },
+  {
+   "id": "n96v3r1",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/C6_C6-D#6_71-99_RR01CV.flac",
+   "flac_sha256": "4c51343a21d2c171c40128ae6587e686bf02ee8843f15632e3566f295701cc6e"
+  },
+  {
+   "id": "n96v3r2",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/C6_C6-D#6_71-99_RR02CV.flac",
+   "flac_sha256": "527a9254a98df597335ac6ec8077fc31adcb5df2585ab70012b34a3bc49e7313"
+  },
+  {
+   "id": "n96v4r1",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 1,
+   "source": "Samples/C6_C6-D#6_100-115_RR01CV.flac",
+   "flac_sha256": "6e7d58df396abfe0777425a523c4223e08f464e2be7b2c18ded628509a5ac7fc"
+  },
+  {
+   "id": "n96v4r2",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    115
+   ],
+   "round_robin": 2,
+   "source": "Samples/C6_C6-D#6_100-115_RR02CV.flac",
+   "flac_sha256": "061944a0e438b1d6f7e471b823cf7b52f944a6c6ef08463389d2ec84daba8f0f"
+  },
+  {
+   "id": "n96v5r1",
+   "kind": "note",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "layer": 5,
+   "velocity": [
+    116,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/C6_C6-D#6_116-127_RR01CV.flac",
+   "flac_sha256": "76b98528e466faafa77b72cb6307efd7afe7b3082986ba0dfdc034d8401bbae5"
+  },
+  {
+   "id": "n100v1r1",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/E6_E6-F#6_0-30_RR01CV.flac",
+   "flac_sha256": "eb18fb747604937fc37d40bf3471eab84bf376bd4629ee4d95d5a59ca509efab"
+  },
+  {
+   "id": "n100v1r2",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/E6_E6-F#6_0-30_RR02CV.flac",
+   "flac_sha256": "5a68e515d20a759c0f95a1b8168f19033df766af5c2e3a75ded24707b492a80e"
+  },
+  {
+   "id": "n100v2r1",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/E6_E6-F#6_31-70_RR01CV.flac",
+   "flac_sha256": "eaf7a0b6321b07bd93180f06f50986d854cf0032bda12e7b6e7d42349f19514e"
+  },
+  {
+   "id": "n100v2r2",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/E6_E6-F#6_31-70_RR02CV.flac",
+   "flac_sha256": "accaf53e498a5028c7609372d1d5c564252a0ad4cfcd4dc54228619e4794b90b"
+  },
+  {
+   "id": "n100v3r1",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/E6_E6-F#6_71-99_RR01CV.flac",
+   "flac_sha256": "8a55f70e0755db1d2ff0199d059f889cb73a065be77974fc7258cfdf9e7441c9"
+  },
+  {
+   "id": "n100v3r2",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/E6_E6-F#6_71-99_RR02CV.flac",
+   "flac_sha256": "ee060e0dd4260dee9ce06ea894ae5d28a53c456c8a14a214bead21cc771632e6"
+  },
+  {
+   "id": "n100v4r1",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/E6_E6-F#6_100-127_RR01CV.flac",
+   "flac_sha256": "fde2ccacbf9e69f665d38c6ee4f5f42c1e467c30f39fc54d386ecc9863497339"
+  },
+  {
+   "id": "n100v4r2",
+   "kind": "note",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    127
+   ],
+   "round_robin": 2,
+   "source": "Samples/E6_E6-F#6_100-127_RR02CV.flac",
+   "flac_sha256": "78257b0f8d640cd42b4b1e39c599bccf1a13f940a8ba7f493afd343a937e6eff"
+  },
+  {
+   "id": "n103v1r1",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 1,
+   "source": "Samples/G6_G6-C7_0-30_RR01CV.flac",
+   "flac_sha256": "c9353c2d8c52970723c4c1d94e955c06e972be64655695fce1b0c0a84ec6ff37"
+  },
+  {
+   "id": "n103v1r2",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 1,
+   "velocity": [
+    0,
+    30
+   ],
+   "round_robin": 2,
+   "source": "Samples/G6_G6-C7_0-30_RR02CV.flac",
+   "flac_sha256": "dc0c70b5dee860303f93731af7ae0c0c52398b25c3c5a0e7523c7e9892fb9ffb"
+  },
+  {
+   "id": "n103v2r1",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 1,
+   "source": "Samples/G6_G6-C7_31-70_RR01CV.flac",
+   "flac_sha256": "4b5f089e37c846473d2beb70d49454c7d8d4a265f1ce5ffcbd2d767ecff32ca8"
+  },
+  {
+   "id": "n103v2r2",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 2,
+   "velocity": [
+    31,
+    70
+   ],
+   "round_robin": 2,
+   "source": "Samples/G6_G6-C7_31-70_RR02CV.flac",
+   "flac_sha256": "e4c9b0b7a6b8ab11dbaa5e0449c94eab773cb1071e3e1d0c23dabf8d29f06093"
+  },
+  {
+   "id": "n103v3r1",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 1,
+   "source": "Samples/G6_G6-C7_71-99_RR01CV.flac",
+   "flac_sha256": "1501137378e63547bfb017d08fdf8be25420ecb95efdf878e1c547a63c42db70"
+  },
+  {
+   "id": "n103v3r2",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 3,
+   "velocity": [
+    71,
+    99
+   ],
+   "round_robin": 2,
+   "source": "Samples/G6_G6-C7_71-99_RR02CV.flac",
+   "flac_sha256": "e85a003341a148f2598117f5ea02492b51e9fdbf3fc4c49062b7f2e2495365f5"
+  },
+  {
+   "id": "n103v4r1",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    127
+   ],
+   "round_robin": 1,
+   "source": "Samples/G6_G6-C7_100-127_RR01CV.flac",
+   "flac_sha256": "c4ddb7c34e315fddec52f0f485b1ceaa8af9e28bfbc591811b6c9e9dfde44219"
+  },
+  {
+   "id": "n103v4r2",
+   "kind": "note",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "layer": 4,
+   "velocity": [
+    100,
+    127
+   ],
+   "round_robin": 2,
+   "source": "Samples/G6_G6-C7_100-127_RR02CV.flac",
+   "flac_sha256": "ca7a30d056d29dcbabf503986d47a75c20545094f9138430443d7c9fc60699b5"
+  },
+  {
+   "id": "rel24",
+   "kind": "key-release",
+   "midi": 24,
+   "keys": [
+    21,
+    26
+   ],
+   "source": "Samples/C0_C0-D0_0-127_RELCV.flac",
+   "flac_sha256": "dc1604cca3f384bac18ff75c912ab1d2cc13c3c3b40a1dea1485693c60d795e4"
+  },
+  {
+   "id": "rel27",
+   "kind": "key-release",
+   "midi": 27,
+   "keys": [
+    27,
+    29
+   ],
+   "source": "Samples/D#0_D#0-F0_0-127_RELCV.flac",
+   "flac_sha256": "8fa8bddec2b07174f9169fc70f7c37719f716e2d2103ca61ee297b59bcf54250"
+  },
+  {
+   "id": "rel30",
+   "kind": "key-release",
+   "midi": 30,
+   "keys": [
+    30,
+    32
+   ],
+   "source": "Samples/F#0_F#0-G#0_0-127_RELCV.flac",
+   "flac_sha256": "b4564533f7775aeb3bf54ce5d1e6ee086e9e27f0fbbb8e5ed56b949567e230cf"
+  },
+  {
+   "id": "rel33",
+   "kind": "key-release",
+   "midi": 33,
+   "keys": [
+    33,
+    35
+   ],
+   "source": "Samples/A0_A0-B0_0-127_RELCV.flac",
+   "flac_sha256": "c6e80453cc22324f4b7668be8c5bcd176432f1b5c3d10fd358d9d2ef585f9e0f"
+  },
+  {
+   "id": "rel36",
+   "kind": "key-release",
+   "midi": 36,
+   "keys": [
+    36,
+    38
+   ],
+   "source": "Samples/C1_C1-D1_0-127_RELCV.flac",
+   "flac_sha256": "f18fd65e818f6ab5c9b3de77e325e0128fb5d7cd316a1a3d488c3d4b890c7d98"
+  },
+  {
+   "id": "rel39",
+   "kind": "key-release",
+   "midi": 39,
+   "keys": [
+    39,
+    41
+   ],
+   "source": "Samples/D#1_D#1-F1_0-127_RELCV.flac",
+   "flac_sha256": "fd3127f500316d726ac8fd724acccf06adeb50c73141024dd8006e265ec6e9b0"
+  },
+  {
+   "id": "rel42",
+   "kind": "key-release",
+   "midi": 42,
+   "keys": [
+    42,
+    44
+   ],
+   "source": "Samples/F#1_F#1-G#1_0-127_RELCV.flac",
+   "flac_sha256": "7364a2e80ec3bc1da80ef3d75650fc3c49564ef25213d462e8c96a83c3589cea"
+  },
+  {
+   "id": "rel45",
+   "kind": "key-release",
+   "midi": 45,
+   "keys": [
+    45,
+    47
+   ],
+   "source": "Samples/A1_A1-B1_0-127_RELCV.flac",
+   "flac_sha256": "56e56841a5d06b7dc4e83b996f342351e13c0fd2d3c093ae291e8a97f42a0cd7"
+  },
+  {
+   "id": "rel48",
+   "kind": "key-release",
+   "midi": 48,
+   "keys": [
+    48,
+    49
+   ],
+   "source": "Samples/C2_C2-C#2_0-127_RELCV.flac",
+   "flac_sha256": "cf37fa3ba131abc0ada6444b45eaeadc8fce00c7c8d7365006a17ed3a7ff65df"
+  },
+  {
+   "id": "rel50",
+   "kind": "key-release",
+   "midi": 50,
+   "keys": [
+    50,
+    51
+   ],
+   "source": "Samples/D2_D2-D#2_0-127_RELCV.flac",
+   "flac_sha256": "64e0e5f3bc9e4decbcbd21f84c5dc6d44c85bcdcaa407f6bc79d99f556344bec"
+  },
+  {
+   "id": "rel52",
+   "kind": "key-release",
+   "midi": 52,
+   "keys": [
+    52,
+    53
+   ],
+   "source": "Samples/E2_E2-F2_0-127_RELCV.flac",
+   "flac_sha256": "dd02c0910253e61b32e46867df307724e231e2ad8b63b6b08d33325b2304fbc9"
+  },
+  {
+   "id": "rel54",
+   "kind": "key-release",
+   "midi": 54,
+   "keys": [
+    54,
+    55
+   ],
+   "source": "Samples/F#2_F#2-G2_0-127_RELCV.flac",
+   "flac_sha256": "28d3eaafba1be1fbab0a66b10b34c9213c571b035bdf0bee7d5e762e0d2894a9"
+  },
+  {
+   "id": "rel56",
+   "kind": "key-release",
+   "midi": 56,
+   "keys": [
+    56,
+    57
+   ],
+   "source": "Samples/G#2_G#2-A2_0-127_RELCV.flac",
+   "flac_sha256": "f49d375932391a17377621426bdcfabfe8a8b69388d5b06eb835346b4038a8eb"
+  },
+  {
+   "id": "rel58",
+   "kind": "key-release",
+   "midi": 58,
+   "keys": [
+    58,
+    59
+   ],
+   "source": "Samples/A#2_A#2-B2_0-127_RELCV.flac",
+   "flac_sha256": "8883acbffb3cb9c1c0b1b70c94f3718d8a3bd2181d143cda45cd6580deabeb00"
+  },
+  {
+   "id": "rel60",
+   "kind": "key-release",
+   "midi": 60,
+   "keys": [
+    60,
+    61
+   ],
+   "source": "Samples/C3_C3-C#3_0-127_RELCV.flac",
+   "flac_sha256": "9ca19d05f2bd795b66dd3e94caf4bd1052e5bace198d274e994d32a386247a63"
+  },
+  {
+   "id": "rel62",
+   "kind": "key-release",
+   "midi": 62,
+   "keys": [
+    62,
+    63
+   ],
+   "source": "Samples/D3_D3-D#3_0-127_RELCV.flac",
+   "flac_sha256": "97ef4688bb1a04bc60287445d2a5e286f9a23dcf8ae348e743418b02c1ac075a"
+  },
+  {
+   "id": "rel64",
+   "kind": "key-release",
+   "midi": 64,
+   "keys": [
+    64,
+    65
+   ],
+   "source": "Samples/E3_E3-F3_0-127_RELCV.flac",
+   "flac_sha256": "bb1663b283a6f8081ea20f53fae39418b50e4da2ff983b8b54526eb542f4527e"
+  },
+  {
+   "id": "rel66",
+   "kind": "key-release",
+   "midi": 66,
+   "keys": [
+    66,
+    67
+   ],
+   "source": "Samples/F#3_F#3-G3_0-127_RELCV.flac",
+   "flac_sha256": "1dccdce0780ead2366ca5303236cf42a757e28cd328b1068901d1f539ef2194e"
+  },
+  {
+   "id": "rel68",
+   "kind": "key-release",
+   "midi": 68,
+   "keys": [
+    68,
+    69
+   ],
+   "source": "Samples/G#3_G#3-A3_0-127_RELCV.flac",
+   "flac_sha256": "1efd1830a1a3e39aa63599b1809bd084768c38b83544af1cf54cf31faa37806b"
+  },
+  {
+   "id": "rel70",
+   "kind": "key-release",
+   "midi": 70,
+   "keys": [
+    70,
+    71
+   ],
+   "source": "Samples/A#3_A#3-B3_0-127_RELCV.flac",
+   "flac_sha256": "2b4fae3eb1c8ee1812cbe98fdf438f255add42f67bb0b10c90ced5c96af84e8b"
+  },
+  {
+   "id": "rel72",
+   "kind": "key-release",
+   "midi": 72,
+   "keys": [
+    72,
+    73
+   ],
+   "source": "Samples/C4_C4-C#4_0-127_RELCV.flac",
+   "flac_sha256": "877bc5594b9e740108476b8fade006c0053e646deac30d486bf1e82f6a4d1262"
+  },
+  {
+   "id": "rel74",
+   "kind": "key-release",
+   "midi": 74,
+   "keys": [
+    74,
+    75
+   ],
+   "source": "Samples/D4_D4-D#4_0-127_RELCV.flac",
+   "flac_sha256": "709fcc2db86679403d07b477db1f63af1dedfa8a539018ac1a15ef398a0e13bb"
+  },
+  {
+   "id": "rel76",
+   "kind": "key-release",
+   "midi": 76,
+   "keys": [
+    76,
+    77
+   ],
+   "source": "Samples/E4_E4-F4_0-127_RELCV.flac",
+   "flac_sha256": "c56a3859c60fbd8ab0c179fce745f545dca475793832e8d6337a757c95d33b99"
+  },
+  {
+   "id": "rel78",
+   "kind": "key-release",
+   "midi": 78,
+   "keys": [
+    78,
+    79
+   ],
+   "source": "Samples/F#4_F#4-G4_0-127_RELCV.flac",
+   "flac_sha256": "b1f963bb8af41f769d4203ff48b2ff6f2685c059f1a03caf5f06be01eeb7dd71"
+  },
+  {
+   "id": "rel80",
+   "kind": "key-release",
+   "midi": 80,
+   "keys": [
+    80,
+    81
+   ],
+   "source": "Samples/G#4_G#4-A4_0-127_RELCV.flac",
+   "flac_sha256": "a533148464918513fce1356de856ae013fd9b3ed59e7efb92a765a6648633ab0"
+  },
+  {
+   "id": "rel82",
+   "kind": "key-release",
+   "midi": 82,
+   "keys": [
+    82,
+    83
+   ],
+   "source": "Samples/A#4_A#4-B4_0-127_RELCV.flac",
+   "flac_sha256": "5c0832e4e12a0aa37973057d3f83533c9bdc7ae9d426771332264da28a26ec10"
+  },
+  {
+   "id": "rel84",
+   "kind": "key-release",
+   "midi": 84,
+   "keys": [
+    84,
+    85
+   ],
+   "source": "Samples/C5_C5-C#5_0-127_RELCV.flac",
+   "flac_sha256": "a1811be030445d6b9081d20ccdf8ab04728103d6ad69ad5aa4a2408ed8605d4d"
+  },
+  {
+   "id": "rel86",
+   "kind": "key-release",
+   "midi": 86,
+   "keys": [
+    86,
+    87
+   ],
+   "source": "Samples/D5_D5-D#5_0-127_RELCV.flac",
+   "flac_sha256": "e0101c2fda751fc60c9a4969a92fff8ad08f07cd643f89fb6681395959f368cb"
+  },
+  {
+   "id": "rel88",
+   "kind": "key-release",
+   "midi": 88,
+   "keys": [
+    88,
+    89
+   ],
+   "source": "Samples/E5_E5-F5_0-127_RELCV.flac",
+   "flac_sha256": "00ddc3c69d15724f15c2da692afef6fadec479d730c86ce38f72a322ec27f5f4"
+  },
+  {
+   "id": "rel90",
+   "kind": "key-release",
+   "midi": 90,
+   "keys": [
+    90,
+    91
+   ],
+   "source": "Samples/F#5_F#5-G5_0-127_RELCV.flac",
+   "flac_sha256": "30cffefdc0a36d749e6db844b4d31dda8c3a4b29a9a9103a5c7aeb06ee7d2c6f"
+  },
+  {
+   "id": "rel92",
+   "kind": "key-release",
+   "midi": 92,
+   "keys": [
+    92,
+    93
+   ],
+   "source": "Samples/G#5_G#5-A5_0-127_RELCV.flac",
+   "flac_sha256": "4f664d278d3267b08feecd9d77b41e70bf339211e2f068de9342a6e9f036d30e"
+  },
+  {
+   "id": "rel94",
+   "kind": "key-release",
+   "midi": 94,
+   "keys": [
+    94,
+    95
+   ],
+   "source": "Samples/A#5_A#5-B5_0-127_RELCV.flac",
+   "flac_sha256": "4b5c8f29181ec3408fef09de6656ef203c883e9cf63647a40b33900682609bef"
+  },
+  {
+   "id": "rel96",
+   "kind": "key-release",
+   "midi": 96,
+   "keys": [
+    96,
+    99
+   ],
+   "source": "Samples/C6_C6-D#6_0-127_RELCV.flac",
+   "flac_sha256": "72f2c20866d7c09ad0eef6278424fa871cc7dd9986db3e348c8bd5c9c7fef503"
+  },
+  {
+   "id": "rel100",
+   "kind": "key-release",
+   "midi": 100,
+   "keys": [
+    100,
+    102
+   ],
+   "source": "Samples/E6_E6-F#6_0-127_RELCV.flac",
+   "flac_sha256": "7c0fe2f7cf2a74ed26fb6511a2e1035a8b3f1d1c978392ad5fc40248b29eba3d"
+  },
+  {
+   "id": "rel103",
+   "kind": "key-release",
+   "midi": 103,
+   "keys": [
+    103,
+    108
+   ],
+   "source": "Samples/G6_G6-C7_0-127_RELCV.flac",
+   "flac_sha256": "ce098513d6b1480f41fccefdecf9c2614ee609b47bf34a6be20ca1e11e37c444"
+  }
+ ]
+}

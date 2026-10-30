@@ -59,8 +59,14 @@ public:
         // way (control(): target 1 - 0.8 sustain), and a sostenuto at or above
         // its 0.5 threshold catches the held chord when the ramp brings it
         // back up (capture()), so those strings ring on after the keys go up.
+        // But with the felt on as well it damps them (about 80 dB/s on C4
+        // at the bank's lightest, Felt Nocturne's 0.32), while the keys
+        // coming back knock the body at the Mechanics level whatever the
+        // felt does: up to 30 dB over the muted chord a quarter of a second
+        // later through the Tube Mic, under -100 dBFS a second after that.
+        // So the felt's silence is due, not a tail as loud as the chord.
         if (value (c.values, "sustain") > 0.0 || value (c.values, "sostenuto") >= 0.5)
-            limits.releaseSeconds = -1.0;
+            limits.releaseSeconds = value (c.values, "mute") > 0.0 ? 1.5 : -1.0;
         // The upright's dampers hold part of each partial only loosely, as its
         // release takes show (setDamper(), measured::Damper): C4's keeps 12.9 dB
         // under the partial and falls about 6 dB a second, lower keys more of

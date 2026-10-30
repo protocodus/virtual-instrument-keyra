@@ -1,4 +1,5 @@
 #include "KeyraEngine.h"
+#include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
 #include "OutputStage.h"
@@ -85,7 +86,7 @@ struct Model {
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb,keyDownDb;
   double contactTime;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
-  double outputScale;
+  double outputScale,tubeScale;
 };
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
@@ -118,7 +119,13 @@ constexpr Model models[]{
    // the default Output, where the portfolio's newer instruments play, with
    // the output stage's guard keeping the loudest chords out of the red
    // (Tools/KeyraLevels.cpp).
-   .7707},
+   .7707,
+   // The tube's level against the pair's. The recordings' levels are each
+   // microphone's preamp's, so this sets typical playing through the tube
+   // alone (Mic at 1) to the pair's reading on Reason's meter
+   // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
+   // typical playing than from the upright's, so the grand needs less.
+   1.5882},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -148,7 +155,8 @@ constexpr Model models[]{
    // strike, as the benchmark sets a case's gain). Below it the shared
    // velocity response (responseAt) keeps the two medians within 1 dB of each
    // other.
-   2.2691},
+   2.2691,
+   2.4395},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
@@ -649,7 +657,14 @@ struct Engine::Impl {
   std::uint32_t seed=1;
   bool hissing=false;
   Parameters parameters{};
-  double sampleRate=48000,gain=.7,width=.75,mute=0;
+  double sampleRate=48000,gain=.7,width=.75,mute=0,mic=0;
+  // The tube's response (MeasuredMicData.h) designed at the engine's rate,
+  // each section in transposed direct form II, and its level on the built
+  // piano. It hears the stereo pair's mid only while the Mic control is over
+  // 0, and starts from silence when it leaves 0.
+  struct Section {double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;};
+  std::array<Section,measured::tubeSections> tube{};
+  double tubeScale=1;
   float contactShare=1; // a sample's step of the rise's smoothing
   double smooth=0,controlSmooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   float previousBrightness=.5f;
@@ -732,7 +747,8 @@ struct Engine::Impl {
   // by the build: the undamped strings by the strings', the body's modes (the
   // two pianos' lowest with lowest, those only one has fading with its
   // share) and the board's noise by the soundboard's, the action's rise by
-  // the action's. Then their sample-rate coefficients follow (prepare()).
+  // the action's; and the tube's level by the hammers', which mix the
+  // partials' levels. Then their sample-rate coefficients follow (prepare()).
   void assemble() noexcept {
     const Model& g=models[0];const Model& u=models[1];const Build& build=parameters.build;
     const double s=build.strings,b=build.soundboard,ring=std::pow(2.,-static_cast<double>(build.ring));
@@ -756,6 +772,7 @@ struct Engine::Impl {
     }
     bodyRise=pickLog(g.bodyRise,u.bodyRise,b);actionRise=pickLog(g.actionRise,u.actionRise,build.action);
     actionDecay=pickLog(g.actionDecay,u.actionDecay,build.action);
+    tubeScale=pickLog(g.tubeScale,u.tubeScale,build.hammers);
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)coherence[k]=pick(g.noiseBands[k].coherence,u.noiseBands[k].coherence,b);
     for(int j=0;j<halo;++j)haloHz[j]=builtPitch(firstHalo+j)*std::pow(2.,haloString[j].cents/1200);
@@ -913,6 +930,34 @@ struct Engine::Impl {
       band.scale=std::sqrt(3*sampleRate/2/overlap);
     }
   }
+  void prepareTube() noexcept {
+    for(int i=0;i<measured::tubeSections;++i){
+      const auto& design=measured::tube[i];auto& section=tube[i];section=Section{};
+      // A peak or high shelf over 0.45 of the rate shapes nothing the engine
+      // plays; the fit keeps its low shelf under 300 Hz.
+      if(design.hz>=.45*sampleRate)continue;
+      const double a=std::pow(10.,design.gainDb/40),w=2*pi*design.hz/sampleRate,c=std::cos(w);
+      const double alpha=std::sin(w)/(2*design.q),root=2*std::sqrt(a)*alpha;
+      double b0,b1,b2,a0,a1,a2;
+      if(design.shape==measured::MicShape::peak){b0=1+alpha*a;b1=-2*c;b2=1-alpha*a;a0=1+alpha/a;a1=-2*c;a2=1-alpha/a;}
+      else if(design.shape==measured::MicShape::lowShelf){
+        b0=a*((a+1)-(a-1)*c+root);b1=2*a*((a-1)-(a+1)*c);b2=a*((a+1)-(a-1)*c-root);
+        a0=(a+1)+(a-1)*c+root;a1=-2*((a-1)+(a+1)*c);a2=(a+1)+(a-1)*c-root;
+      }else{
+        b0=a*((a+1)+(a-1)*c+root);b1=-2*a*((a-1)+(a+1)*c);b2=a*((a+1)+(a-1)*c-root);
+        a0=(a+1)-(a-1)*c+root;a1=2*((a-1)-(a+1)*c);a2=(a+1)-(a-1)*c-root;
+      }
+      section={b0/a0,b1/a0,b2/a0,a1/a0,a2/a0};
+    }
+  }
+  double tubeHears(double x) noexcept {
+    for(auto& section:tube){
+      const double y=section.b0*x+section.z1;
+      section.z1=section.b1*x-section.a1*y+section.z2;section.z2=section.b2*x-section.a2*y;x=y;
+    }
+    return x;
+  }
+  void silenceTube() noexcept {for(auto& section:tube)section.z1=section.z2=0;}
   void silenceNoise() noexcept {
     for(auto& burst:bursts)burst.active=false;
     for(auto& band:noise){
@@ -1651,7 +1696,16 @@ struct Engine::Impl {
       const V4 s4=openSum[i],p4=openPan[i];
       const double sum=static_cast<double>(lane(s4,0))+lane(s4,1)+lane(s4,2)+lane(s4,3);
       const double panned=(static_cast<double>(lane(p4,0))+lane(p4,1)+lane(p4,2)+lane(p4,3))*openWidth[i];
-      const double outL=dryLeft[i]+(sum-panned)*parameters.resonance*.35,outR=dryRight[i]+(sum+panned)*parameters.resonance*.35;
+      double outL=dryLeft[i]+(sum-panned)*parameters.resonance*.35,outR=dryRight[i]+(sum+panned)*parameters.resonance*.35;
+      // The tube hears the pair's mid through its response, the same on both
+      // sides, and the Mic control mixes it in.
+      if(mic>0||parameters.mic>0){
+        mic+=smooth*(parameters.mic-mic);
+        if(std::abs(parameters.mic-mic)<1e-6)mic=parameters.mic;
+        const double heard=tubeScale*tubeHears(.5*(outL+outR));
+        outL+=mic*(heard-outL);outR+=mic*(heard-outR);
+        if(mic==0)silenceTube();
+      }
       // DC blocker, a memoryless emergency bound where the clip at full scale
       // used to be, then the output stage. The bound, +12 dBFS, keeps extreme
       // 128-strike stacks finite and within the range the limiter holds
@@ -1687,6 +1741,7 @@ void Engine::prepare(double sampleRate){
   p.prepareBody();
   p.prepareNoise();
   p.output.Prepare(p.sampleRate,protocodus::kVuGuard);
+  p.prepareTube();
   reset();
 }
 void Engine::reset() noexcept {
@@ -1695,6 +1750,7 @@ void Engine::reset() noexcept {
   p.silenceStrings();
   p.silenceBody();p.silenceNoise();
   p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
+  p.mic=p.parameters.mic;p.silenceTube();
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
@@ -1705,7 +1761,7 @@ void Engine::reset() noexcept {
 void Engine::setParameters(const Parameters& input) noexcept {
   auto& p=*impl;const float oldTune=p.parameters.tuning;
   p.parameters.gain=bounded(input.gain,0,2);p.parameters.brightness=bounded(input.brightness);
-  p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);
+  p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);p.parameters.mic=bounded(input.mic);
   p.parameters.mechanics=bounded(input.mechanics,0,2);
   // Wrappers combine their 400..480 Hz user range with host master tuning.
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
@@ -1800,7 +1856,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
-    p.mute=p.parameters.mute;
+    p.mute=p.parameters.mute;p.mic=p.parameters.mic;
     for(auto& channel:p.channels)channel.smoothedMute=std::max(p.parameters.mute,channel.mute);
     return;
   }
@@ -1822,7 +1878,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
       // restarts empty too: its look-ahead holds only the last 2 ms, which
       // are as quiet as the residue.
       p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-      p.silenceStrings();
+      p.silenceStrings();p.silenceTube();
       p.silenceNoise();
       p.output.Reset();
     }

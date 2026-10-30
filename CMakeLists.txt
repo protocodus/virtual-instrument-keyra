@@ -58,6 +58,7 @@ set(KEYRA_DSP_HEADERS
     Source/DSP/KeyraEngine.h
     Source/DSP/KeyraPresets.h
     Source/DSP/MeasuredTypes.h
+    Source/DSP/MeasuredMicData.h
     Source/DSP/MeasuredModalData.h
     Source/DSP/MeasuredUprightData.h
     Source/DSP/OutputStage.h)

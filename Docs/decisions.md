@@ -1607,3 +1607,33 @@ twice, alternated, medians of six).
 Chosen by measurement, under the owner's standing direction to adopt such
 candidates; a before/after phrase of treble notes, a chord and the pedal went
 to the owner for both pianos.
+
+## 2026-10-30 — a Tube Mic: from the pair to the vintage tube
+
+The owner asked for microphone positions to choose the sound's colour, from
+vintage to close to distant to floor, and for a way to balance or mix them.
+Of the recordings the owner provided, only the Helsinki library took the
+same strikes with more than one microphone: the Blumlein ribbon pair in
+player position that the upright is fitted from, and a mono tube condenser
+(a modified CV-12) at shin height to the left. A card offered the close pair
+and the vintage tube, mixable (recommended); adding a modelled distant
+position chosen by ear from lettered candidates; or waiting for recordings
+from further off. It is unanswered, so the recommended option is built and
+the other two stay open.
+
+The tube's colour is measured, not chosen: per third octave, the tube's
+level over the ribbons' mid on the 137 train takes, fitted with two shelves
+and five peaks, 1.5 dB from the 21 dev takes' medians where a flat response
+sits 3.8 dB from them (`Tools/fit_mic.py`). No grand was recorded through
+it, so on the grand the same response is a colour, not a measurement. Its
+level is each piano's calibration on Reason's meter, so that typical playing
+reads −9 VU through the tube as through the pair: ×1.588 on the grand and
+×2.440 on the upright against the response's own level, between them by the
+hammers' build. Through the tube a soft note loses more than a loud chord,
+since its dip at 250 to 315 Hz holds much of a soft middle note, so the
+loudest chords press the output stage's guard harder: they read −0.8 and
+−0.3 VU (the pair's −0.9 and −0.8 VU on the default presets) and still play
+0.6 and 0.3 dB louder at velocity 127 than at 110. Between 0 and 1 the two
+are mixed in amplitude and the image narrows; at 1 the sound is mono and
+Width does nothing. Presets leave the control, as they leave Output and
+Mechanics: it says where the listener stands, not how the piano is voiced.

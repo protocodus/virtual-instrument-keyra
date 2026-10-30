@@ -1,4 +1,5 @@
 #include "DSP/KeyraEngine.h"
+#include "DSP/MeasuredMicData.h"
 #include "DSP/MeasuredModalData.h"
 #include "DSP/MeasuredUprightData.h"
 #include <algorithm>
@@ -886,8 +887,63 @@ int main(int argc,char** argv){
     std::cout<<"pedal_down_ring_over_knock_db="<<ring<<'\n';
   }
   {
+    // The Mic control. At 1 the output is the tube's alone, the same on both
+    // sides, and every partial plays through the tube's response
+    // (MeasuredMicData.h, its sections designed here from the RBJ cookbook as
+    // the fit designs them): C3's first twelve partials and C6's first seven
+    // at 1 against the pair's mid at 0, each against their median, which
+    // cancels the tube's level. Back at 0, once the control and the output's
+    // filters settle, the output is the pair's again, sample for sample.
+    constexpr double pi=3.14159265358979323846;
+    const auto responseDb=[&](double hz){
+      std::complex<double> h=1;const auto z=std::polar(1.,-2*pi*hz/48000);
+      for(const auto& d:keyra::measured::tube){
+        const double a=std::pow(10.,d.gainDb/40),w=2*pi*d.hz/48000,c=std::cos(w),alpha=std::sin(w)/(2*d.q),k=2*std::sqrt(a)*alpha;
+        std::array<double,3> b{},den{};
+        if(d.shape==keyra::measured::MicShape::peak){b={1+alpha*a,-2*c,1-alpha*a};den={1+alpha/a,-2*c,1-alpha/a};}
+        else if(d.shape==keyra::measured::MicShape::lowShelf){
+          b={a*((a+1)-(a-1)*c+k),2*a*((a-1)-(a+1)*c),a*((a+1)-(a-1)*c-k)};den={(a+1)+(a-1)*c+k,-2*((a-1)+(a+1)*c),(a+1)+(a-1)*c-k};}
+        else{b={a*((a+1)+(a-1)*c+k),-2*a*((a-1)+(a+1)*c),a*((a+1)+(a-1)*c-k)};den={(a+1)-(a-1)*c+k,2*((a-1)-(a+1)*c),(a+1)-(a-1)*c-k};}
+        h*=(b[0]+b[1]*z+b[2]*z*z)/(den[0]+den[1]*z+den[2]*z*z);
+      }
+      return 20*std::log10(std::abs(h));};
+    // Hann-windowed amplitude at `hz` of the left channel or both channels' mean.
+    const auto amplitude=[&](const Audio& audio,double hz,bool mid){
+      const std::size_t frames=audio.size()/2;double re=0,im=0;
+      for(std::size_t i=0;i<frames;++i){const double x=(mid?.5*(audio[2*i]+audio[2*i+1]):audio[2*i])*(.5-.5*std::cos(2*pi*i/(frames-1)));
+        re+=x*std::cos(2*pi*hz*i/48000);im+=x*std::sin(2*pi*hz*i/48000);}
+      return std::hypot(re,im);};
+    auto quiet=dry();quiet.gain=.1f; // the output stage passes it untouched
+    for(const auto& [key,count]:{std::pair{48,12},std::pair{84,7}}){
+      keyra::Engine pair,tube;auto heard=quiet;heard.mic=1;pair.setParameters(quiet);tube.setParameters(heard);tube.reset();
+      pair.noteOn(key,.5f);tube.noteOn(key,.5f);render(pair,2400);render(tube,2400);
+      const auto ribbons=render(pair,48000),alone=render(tube,48000);
+      bool mono=true;for(std::size_t i=0;i<alone.size();i+=2)mono=mono&&alone[i]==alone[i+1];
+      check(mono,"the tube alone is the same on both sides");
+      std::vector<double> played;
+      for(int n=1;n<=count;++n){
+        const double estimate=n*keyPitch(key)*std::sqrt((1+keyStiffness(key)*n*n)/(1+keyStiffness(key)));
+        const double hz=spectralPeak(ribbons,estimate*.98,estimate*1.02);
+        played.push_back(20*std::log10(amplitude(alone,hz,false)/amplitude(ribbons,hz,true))-responseDb(hz));
+      }
+      auto sorted=played;std::sort(sorted.begin(),sorted.end());const double level=sorted[sorted.size()/2];
+      double worst=0;for(const double x:played)worst=std::max(worst,std::abs(x-level));
+      // C3's fundamental reads 0.12 dB off: it sits where the response falls
+      // 0.16 dB per hertz, across its unison strings' spread.
+      check(worst<.15,"each partial plays through the tube's response");
+      std::cout<<"mic_key="<<key<<" partials="<<count<<" worst_response_error_db="<<worst<<'\n';
+    }
+    keyra::Engine pair,moved;moved.setParameters(dry());pair.setParameters(dry());
+    pair.noteOn(60,.6f);moved.noteOn(60,.6f);auto heard=dry();heard.mic=1;moved.setParameters(heard);
+    render(pair,12000);render(moved,12000);moved.setParameters(dry());render(pair,12000);render(moved,12000);
+    const auto settled=render(pair,12000),returned=render(moved,12000);Audio difference(settled.size());
+    for(std::size_t i=0;i<settled.size();++i)difference[i]=settled[i]-returned[i];
+    std::cout<<"mic_returned_difference_db="<<20*std::log10(rms(difference)/rms(settled)+1e-30)<<'\n';
+    check(render(pair,12000)==render(moved,12000),"back at 0 the Mic control leaves the pair's output as it was");
+  }
+  {
     keyra::Engine e;std::array<float,64> l{},r{};trap=true;
-    e.noteOn(60,.8f);e.noteOn(72,.8f,2);e.noteOff(60);e.noteOn(12,.7f);e.noteOn(13,.7f);e.noteOn(14,.7f);e.noteOff(12);e.controlChange(64,80);e.controlChange(66,127);e.controlChange(67,64);e.pitchBend(.5f);auto p=dry();p.tuning=415;e.setParameters(p);
+    e.noteOn(60,.8f);e.noteOn(72,.8f,2);e.noteOff(60);e.noteOn(12,.7f);e.noteOn(13,.7f);e.noteOn(14,.7f);e.noteOff(12);e.controlChange(64,80);e.controlChange(66,127);e.controlChange(67,64);e.pitchBend(.5f);auto p=dry();p.tuning=415;p.mic=.5f;e.setParameters(p);
     const auto pedals=e.pedalState();(void)pedals;
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
     p.build=keyra::measuredBuild(keyra::Piano::upright);e.setParameters(p);e.noteOn(48,.8f);e.noteOff(48);
