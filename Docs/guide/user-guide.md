@@ -18,9 +18,11 @@ Each MIDI channel owns its key and controller state.
 | Control | Behavior |
 | --- | --- |
 | Piano | The grand or the upright. A switch plays from the next note: what sounds rings on, and held keys and pedals keep their state |
+| Strings, Hammers, Soundboard, Action | In the Build view: each part of the piano moved toward the other piano's, from the piano's own at 0 to the other's at 100%. The value reads whose part it is (Grand, 30% upright, Upright). Strings set the tuning stretch, stiffness, unisons and how the partials ring; Hammers how hard each partial is struck, how fast it rises and how the tone follows velocity; Soundboard the body's modes, the strike's knock and the board's noise; Action the knocks of keys, dampers and pedals. A change applies from the next note; the soundboard's modes move at once. Double-click returns a part to the piano's own |
+| Stiffness, Unisons, Ring | In the Build view: the strings' inharmonicity from ×0.25 to ×4, how far each note's unison strings sit apart from ×0 (one pitch) to ×3, and how long the strings ring from ×0.5 to ×2, each ×1.00 as built. A change applies from the next note |
 | Quality | How much of each note plays, for CPU on slower machines. Full, the default, plays all of it; Balanced and Light leave out the partials 60 and 50 dB under the note's strongest, which changes no third of an octave of its spectrum by more than 0.04 and 0.74 dB. A change applies from the next note |
 | Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2 ms, which the plug-in reports to the host |
-| Hammer / Brightness | Changes partial balance; the neutral setting is 50% |
+| Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
 | Width | Stereo spread, from centered to wide |
 | Tuning | Concert A frequency; the DAW interface shows hertz |
@@ -29,8 +31,9 @@ Each MIDI channel owns its key and controller state.
 | Sostenuto | Captures only keys held when the pedal crosses 50% upward; later notes release normally |
 | Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
 
-The factory presets choose the piano and set Hammer, Resonance, Width and
-Felt mute; Output, Tuning, Quality and the pedals keep their settings. Five
+The factory presets choose the piano as built and set Brightness,
+Resonance, Width and Felt mute; Output, Tuning, Quality and the pedals keep
+their settings. Five
 play the grand and three the upright. The DAW interface's on-screen keyboard
 is playable. Three brass pedal controls
 show the effective soft, sostenuto and sustain positions, in the physical

@@ -28,13 +28,22 @@ struct Build {
   // How far the unison strings sit apart: -1 pure, 0 as built, 1 three times
   // as far.
   float unisons=0;
-  // How long the strings ring, times 2^sustain (-1 to 1: half to twice).
-  float sustain=0;
+  // How long the strings ring, times 2^ring (-1 to 1: half to twice).
+  float ring=0;
 };
 // Each measured piano's build: every part its own, the modifiers at 0.
 constexpr Build measuredBuild(Piano piano) noexcept {
   const float part=piano==Piano::upright?1.f:0.f;
   return {part,part,part,part,0.f,0.f,0.f};
+}
+// The build the front ends' controls describe: a measured piano with each
+// part moved toward the other piano's by its control (0 its own, 1 the
+// other's), and the modifiers. A song or patch saved before the controls
+// existed has them at 0, so it plays the piano it chose.
+constexpr Build buildToward(Piano piano,float strings,float hammers,float soundboard,float action,
+                            float stiffness,float unisons,float ring) noexcept {
+  const float own=piano==Piano::upright?1.f:0.f,way=1-2*own;
+  return {own+way*strings,own+way*hammers,own+way*soundboard,own+way*action,stiffness,unisons,ring};
 }
 // How much of each strike plays, for CPU: every partial, or only those that
 // come within 60 dB (balanced) or 50 dB (light) of the strike's strongest,

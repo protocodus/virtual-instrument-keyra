@@ -1357,3 +1357,19 @@ struck with, and the body, undamped strings and noise take the new build at
 once. The body's pickups glide to the new board's over 10 ms (set at once,
 they put 4 dB more over 8 kHz into the next 5 ms than the ring has), and a
 mode the new board lacks fades over 5 ms.
+
+## 2026-10-30 — the build's controls move each part toward the other piano
+
+The front ends show the build as the chosen piano with each part moved
+toward the other piano's (`keyra::buildToward`), not as four absolute
+grand-to-upright positions. Every song, session and Rack patch saved before
+the controls existed carries its Piano and no build, and loads the controls
+at 0, so it plays the piano it chose; with absolute parts an upright saved
+then would have loaded as the grand. A Rack panel cannot set four knobs from
+one button either, so absolute parts would have cost Reason the one-click
+choice of a measured piano. The price is that each measured piano has two
+settings: the grand with every part at 100 % is the upright, which the
+plug-in's processor test checks sample for sample. The plug-in shows the
+parts as whose they are (Grand, 30 % upright, Upright) and the modifiers as
+their factors, in a Build view beside the voicing knobs, so the editor keeps
+its size and the main build's screenshot its view.

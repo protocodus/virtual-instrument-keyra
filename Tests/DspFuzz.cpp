@@ -38,10 +38,15 @@ extern "C" int LLVMFuzzerTestOneInput (const std::uint8_t* data, std::size_t siz
             case 4: engine->pitchBend (input.Scalar() * 96.0f - 48.0f, input.Byte() % 18); break;
             case 5:
             {
-                // One raw write, which may be any float, to any control.
+                // One raw write, which may be any float, to any control,
+                // the build's included.
                 float* fields[] { &parameters.gain, &parameters.brightness, &parameters.resonance,
                                   &parameters.width, &parameters.tuning, &parameters.mute,
-                                  &parameters.sustain, &parameters.sostenuto, &parameters.soft };
+                                  &parameters.sustain, &parameters.sostenuto, &parameters.soft,
+                                  &parameters.build.strings, &parameters.build.hammers,
+                                  &parameters.build.soundboard, &parameters.build.action,
+                                  &parameters.build.stiffness, &parameters.build.unisons,
+                                  &parameters.build.ring };
                 *fields[input.Pick (std::size(fields))] = input.Scalar();
                 engine->setParameters (parameters);
                 break;

@@ -648,7 +648,7 @@ struct Engine::Impl {
   // the action's. Then their sample-rate coefficients follow (prepare()).
   void assemble() noexcept {
     const Model& g=models[0];const Model& u=models[1];const Build& build=parameters.build;
-    const double s=build.strings,b=build.soundboard,ring=std::pow(2.,-static_cast<double>(build.sustain));
+    const double s=build.strings,b=build.soundboard,ring=std::pow(2.,-static_cast<double>(build.ring));
     for(int j=0;j<halo;++j){const auto& x=g.haloStrings[j];const auto& y=u.haloStrings[j];auto& z=haloString[j];
       z.cents=static_cast<float>(pick(x.cents,y.cents,s));
       z.rate=static_cast<float>(pickLog(x.rate,y.rate,s)*ring);
@@ -1135,7 +1135,7 @@ struct Engine::Impl {
     // so the halfway build sounds about as loud as either piano. The modifiers
     // then stretch the unisons and the ring.
     const int count[2]={s<1||h<1?series(sides[0],0):0,s>0||h>0?series(sides[1],1):0};
-    const double ring=-static_cast<double>(build.sustain)*std::log(2.);
+    const double ring=-static_cast<double>(build.ring)*std::log(2.);
     const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
     int i=0,j=0;
     while((i<count[0]||j<count[1])&&voice.count<maxPartials){
@@ -1503,9 +1503,9 @@ void Engine::setParameters(const Parameters& input) noexcept {
   const auto modifier=[](float x){return x!=x?0.f:bounded(x,-1,1);};
   const Build old=p.parameters.build;auto& build=p.parameters.build;
   build={bounded(input.build.strings),bounded(input.build.hammers),bounded(input.build.soundboard),bounded(input.build.action),
-         modifier(input.build.stiffness),modifier(input.build.unisons),modifier(input.build.sustain)};
+         modifier(input.build.stiffness),modifier(input.build.unisons),modifier(input.build.ring)};
   if(old.strings!=build.strings||old.hammers!=build.hammers||old.soundboard!=build.soundboard||old.action!=build.action
-     ||old.stiffness!=build.stiffness||old.unisons!=build.unisons||old.sustain!=build.sustain){
+     ||old.stiffness!=build.stiffness||old.unisons!=build.unisons||old.ring!=build.ring){
     p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRising);p.prepareNoise();}
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();

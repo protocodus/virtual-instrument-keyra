@@ -5,8 +5,10 @@
 #include <cstdlib>
 
 namespace {
-constexpr std::array<const char*, 11> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "model", "quality" }};
-constexpr size_t modelIndex = 9, qualityIndex = 10;
+constexpr std::array<const char*, 18> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
+    "model", "quality", "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
+// The build's seven controls follow Quality, in keyra::buildToward's order.
+constexpr size_t modelIndex = 9, qualityIndex = 10, buildIndex = 11;
 constexpr auto& programs = keyra::factoryPresets;
 }
 
@@ -19,9 +21,11 @@ void KeyraAudioProcessor::setCurrentProgram(int index)
 {
     if (index < 0 || index >= static_cast<int>(programs.size())) return;
     const auto& preset = programs[static_cast<size_t>(index)];
-    const std::array<std::pair<const char*, float>, 5> settings {{
-        // Every factory preset is one of the two measured builds.
-        { "model", preset.build.strings >= .5f ? 1.0f : 0.0f },
+    // Every factory preset is one of the two measured pianos, as built.
+    const std::array<std::pair<const char*, float>, 12> settings {{
+        { "model", preset.piano == keyra::Piano::upright ? 1.0f : 0.0f },
+        { "strings", 0.0f }, { "hammers", 0.0f }, { "soundboard", 0.0f }, { "action", 0.0f },
+        { "stiffness", 0.0f }, { "unisons", 0.0f }, { "ring", 0.0f },
         { "brightness", preset.brightness }, { "resonance", preset.resonance },
         { "width", preset.width }, { "mute", preset.mute }
     }};
@@ -55,6 +59,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     // A CPU setting, which presets leave alone; it applies from the next strike.
     layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "quality", 1 }, "Quality",
         juce::StringArray { "Full", "Balanced", "Light" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
+    // The piano's build (keyra::buildToward): each part moved toward the
+    // other piano's, from 0 (the piano's own) to 1 (the other's), and three
+    // modifiers from -1 to 1. Part of the instrument like the piano, so not
+    // offered for automation either.
+    const auto build = [&layout](const char* id, const char* name, float lo) {
+        layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { id, 1 }, name,
+            juce::NormalisableRange<float>(lo, 1.0f), 0.0f, juce::AudioParameterFloatAttributes().withAutomatable(false)));
+    };
+    build("strings", "Strings", 0.0f);
+    build("hammers", "Hammers", 0.0f);
+    build("soundboard", "Soundboard", 0.0f);
+    build("action", "Action", 0.0f);
+    build("stiffness", "Stiffness", -1.0f);
+    build("unisons", "Unisons", -1.0f);
+    build("ring", "Ring", -1.0f);
     return layout;
 }
 
@@ -129,7 +148,9 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.sustain = values[6]->load(std::memory_order_relaxed);
     p.sostenuto = values[7]->load(std::memory_order_relaxed);
     p.soft = values[8]->load(std::memory_order_relaxed);
-    p.build = keyra::measuredBuild(values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand);
+    const auto build = [this](size_t i) { return values[buildIndex + i]->load(std::memory_order_relaxed); };
+    p.build = keyra::buildToward(values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand,
+        build(0), build(1), build(2), build(3), build(4), build(5), build(6));
     p.quality = static_cast<keyra::Quality>(juce::jlimit(0, 2, juce::roundToInt(values[qualityIndex]->load(std::memory_order_relaxed))));
     engine.setParameters(p);
     auto read = keyboardRead.load(std::memory_order_relaxed);
@@ -242,11 +263,11 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
             || value > parameter->getNormalisableRange().end) return;
         seen[index] = true;
     }
-    // Sessions saved before the piano and quality choices existed lack
-    // "model" and "quality" and keep their defaults: the grand they were made
-    // with, at full quality.
-    for (size_t i = 0; i < seen.size(); ++i)
-        if (!seen[i] && i != modelIndex && i != qualityIndex) return;
+    // Sessions saved before the piano, quality and build controls existed
+    // lack them and keep their defaults: the grand they were made with, at
+    // full quality, as it was built.
+    for (size_t i = 0; i < modelIndex; ++i)
+        if (!seen[i]) return;
     parameters.replaceState(state);
     currentProgram.store(programText.getIntValue(), std::memory_order_relaxed);
 }

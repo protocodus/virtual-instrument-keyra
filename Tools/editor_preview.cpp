@@ -7,8 +7,9 @@ int main(int argc, char** argv)
 {
     juce::ScopedJuceInitialiser_GUI initialiser;
     KeyraAudioProcessor processor;
-    std::unique_ptr<juce::AudioProcessorEditor> editor(processor.createEditor());
     const auto mode = argc > 2 ? juce::String(argv[2]) : juce::String();
+    processor.editorShowsBuild = mode == "--build";
+    std::unique_ptr<juce::AudioProcessorEditor> editor(processor.createEditor());
     if (mode == "--pedals-down" || mode == "--half-sustain") {
         processor.prepareToPlay(48000, 256);
         juce::AudioBuffer<float> audio(2, 256);

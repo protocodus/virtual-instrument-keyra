@@ -237,6 +237,60 @@ int main()
             require(reopened.parameters.getRawParameterValue("quality")->load() == 0,
                 "a session saved before the quality choice did not load at full quality");
         }
+        {
+            // The build's controls move the chosen piano's parts toward the
+            // other piano's: the upright with every part all the way is the
+            // grand, sample for sample. A preset puts them back to the piano
+            // as built, the session keeps them, and a session saved before
+            // they existed loads them at 0.
+            const auto play = [](KeyraAudioProcessor& processor) {
+                processor.prepareToPlay(48000, 128);
+                juce::AudioBuffer<float> audio(2, 128);
+                juce::MidiBuffer midi;
+                midi.addEvent(juce::MidiMessage::noteOn(1, 60, .8f), 0);
+                std::vector<float> result;
+                for (int block = 0; block < 100; ++block) {
+                    processor.processBlock(audio, midi);
+                    midi.clear();
+                    for (int channel = 0; channel < 2; ++channel)
+                        for (int frame = 0; frame < 128; ++frame) result.push_back(audio.getSample(channel, frame));
+                }
+                return result;
+            };
+            constexpr std::array<const char*, 7> build {{ "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
+            KeyraAudioProcessor grand, rebuilt, upright;
+            grand.setCurrentProgram(0);
+            rebuilt.setCurrentProgram(5);
+            upright.setCurrentProgram(5);
+            for (size_t i = 0; i < 4; ++i) set(rebuilt, build[i], 1.0f);
+            const auto rebuiltPlays = play(rebuilt);
+            require(play(grand) == rebuiltPlays, "the upright with every part the grand's did not play the grand");
+            require(play(upright) != rebuiltPlays, "the build's controls did not reach the engine");
+            set(rebuilt, "soundboard", .4f);
+            set(rebuilt, "ring", -.5f);
+            juce::MemoryBlock saved;
+            rebuilt.getStateInformation(saved);
+            KeyraAudioProcessor reopened;
+            reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
+            require(std::abs(reopened.parameters.getRawParameterValue("soundboard")->load() - .4f) < 1e-5f
+                && std::abs(reopened.parameters.getRawParameterValue("ring")->load() + .5f) < 1e-5f,
+                "the build was not restored");
+            rebuilt.setCurrentProgram(1);
+            for (const auto* id : build)
+                require(rebuilt.parameters.getRawParameterValue(id)->load() == 0, "a preset left the build changed");
+            auto xml = juce::AudioProcessor::getXmlFromBinary(saved.getData(), static_cast<int>(saved.getSize()));
+            for (const auto* id : build)
+                for (auto* parameter : xml->getChildIterator())
+                    if (parameter->getStringAttribute("id") == id) { xml->removeChildElement(parameter, true); break; }
+            juce::MemoryBlock older;
+            juce::AudioProcessor::copyXmlToBinary(*xml, older);
+            reopened.setStateInformation(older.getData(), static_cast<int>(older.getSize()));
+            for (const auto* id : build)
+                require(reopened.parameters.getRawParameterValue(id)->load() == 0,
+                    "a session saved before the build controls did not load the piano as built");
+            require(reopened.parameters.getRawParameterValue("model")->load() == 1,
+                "a session saved before the build controls lost its piano");
+        }
         const auto large = render(8192), small = render(97);
         require(large == small, "MIDI/pedal render depends on host block size");
         double energy = 0;

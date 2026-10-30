@@ -626,21 +626,21 @@ int main(int argc,char** argv){
     }
   }
   {
-    // Sustain scales every string's decay time by 2^sustain. With the unisons
-    // pure, so that no beat moves it, C4's fundamental falls 20 dB from its
-    // peak in half the time at -1 and twice the time at 1, within 10 % (the
-    // onset and the body are not scaled).
+    // Ring scales every string's decay time by 2^ring. With the unisons pure,
+    // so that no beat moves it, C4's fundamental falls 20 dB from its peak in
+    // half the time at -1 and twice the time at 1, within 10 % (the onset and
+    // the body are not scaled).
     for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright}){
-      const auto fall=[&](float sustain){
-        auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.sustain=sustain;
+      const auto fall=[&](float ring){
+        auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.ring=ring;
         keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
         const auto track=partialTrack(render(e,144000),keyPitch(60));
         const auto peak=std::max_element(track.begin(),track.end());
         const auto fallen=std::find_if(peak,track.end(),[&](double x){return x<=*peak-20;});
         return fallen==track.end()?0.:.01*static_cast<double>(fallen-track.begin());};
       const double built=fall(0),shorter=fall(-1)/built,longer=fall(1)/built;
-      check(std::abs(shorter-.5)<.05&&std::abs(longer-2)<.2,"sustain scales the strings' decay times");
-      std::cout<<"sustain_fall_20db_s="<<built<<" at_-1="<<shorter<<"x at_1="<<longer<<"x\n";
+      check(std::abs(shorter-.5)<.05&&std::abs(longer-2)<.2,"ring scales the strings' decay times");
+      std::cout<<"ring_fall_20db_s="<<built<<" at_-1="<<shorter<<"x at_1="<<longer<<"x\n";
     }
   }
   {

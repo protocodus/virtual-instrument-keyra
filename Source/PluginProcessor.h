@@ -39,13 +39,15 @@ public:
     // Single GUI producer, single audio consumer; keyboard gestures never
     // acquire a message-thread lock or grow a MIDI buffer on the audio thread.
     void enqueueKeyboard(bool down, int note, float velocity) noexcept;
+    // The editor's view, kept while it is closed; not saved with the session.
+    bool editorShowsBuild = false;
 
 private:
     static juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
     void dispatch(const juce::MidiMessage&) noexcept;
     void publishPedals() noexcept;
     keyra::Engine engine;
-    std::array<std::atomic<float>*, 11> values {};
+    std::array<std::atomic<float>*, 18> values {};
     bool prepared = false;
     std::atomic<int> currentProgram { 0 };
     struct KeyboardEvent { bool down; int note; float velocity; };

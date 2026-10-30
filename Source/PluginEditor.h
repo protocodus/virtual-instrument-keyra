@@ -13,6 +13,14 @@ public:
     juce::Font getComboBoxFont(juce::ComboBox&) override;
 };
 
+// One of the two views above the pedals: the voicing knobs or the build's.
+class KeyraTab final : public juce::Button
+{
+public:
+    explicit KeyraTab(const juce::String& name);
+    void paintButton(juce::Graphics&, bool highlighted, bool down) override;
+};
+
 class KeyraPedal final : public juce::Button
 {
 public:
@@ -49,6 +57,8 @@ private:
     void timerCallback() override;
     void handleNoteOn(juce::MidiKeyboardState*, int, int note, float velocity) override;
     void handleNoteOff(juce::MidiKeyboardState*, int, int note, float) override;
+    void showBuild(bool);
+    float value(const char* id) const;
     KeyraAudioProcessor& processor;
     KeyraLookAndFeel look;
     juce::ComboBox program, piano, quality;
@@ -56,6 +66,10 @@ private:
     std::array<juce::Slider, 9> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
     std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 9> attachments;
+    KeyraTab voicingTab { "VOICING" }, buildTab { "BUILD" };
+    std::array<juce::Slider, 7> build; // keyra::buildToward's order
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 7> buildAttachments;
+    bool upright = false;
     juce::MidiKeyboardState keyboardState;
     juce::MidiKeyboardComponent keyboard { keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard };
     juce::TooltipWindow tooltips { this, 750 };

@@ -172,9 +172,8 @@ musical passages through the same engine. Both are frozen evidence from
   three presets (Rehearsal Upright, Felt Upright, Pop Upright): a 1967
   upright with worn hammers in a dry room, measured the grand's way from 137
   recordings of the Helsinki 1967 Tube-Ribbon Edition (Mikko Patama, with his
-  permission; none of its recordings is distributed). A switch plays from the
-  next note while what sounds rings on; sessions saved before keep the grand.
-  On the [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
+  permission; none of its recordings is distributed). Sessions saved before
+  keep the grand. On the [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
   its attack, tuning and level sit closer to its never-fitted recordings than
   the grand's data does; its treble does not yet (Known gaps). From C6 up its
   unison strings sound up to 20 cents from their partial: its first fit took
@@ -203,6 +202,15 @@ musical passages through the same engine. Both are frozen evidence from
   strikes are darker and the hardest keep their brightness, at the same
   loudness. Middle C's spectral centroid from velocity 20 to 120 now spans
   349 to 711 Hz on the grand and 265 to 472 Hz on the upright.
+- The grand and the upright are two builds of one model, at the owner's
+  request. A Build view beside the voicing knobs moves the piano's strings,
+  hammers, soundboard and action each toward the other piano's, so the grand
+  with the upright's hammers, or a piano halfway between, plays; halfway,
+  each key sits within 1.6 dB of between the two pianos' levels. Stiffness,
+  Unisons and Ring scale the strings' inharmonicity, unison spread and decay.
+  The two measured pianos play as before, and switching Piano plays from the
+  next note while what sounds rings on, where it silenced the instrument. The
+  voicing knob that read Hammer reads Brightness, beside the build's Hammers.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -327,12 +335,19 @@ body's modes, a strike's knock on them and the board's noise) and the
 **action** (the knocks of keys, dampers and pedals). Three modifiers stretch
 what the parts build: stiffness scales every key's inharmonicity B by
 4^stiffness, unisons sets how far each partial's unison strings sit apart
-(−1 one pitch, 0 as built, 1 three times as far) and sustain scales every
-string's decay time by 2^sustain. At 0 and 1 a part plays its piano's
+(−1 one pitch, 0 as built, 1 three times as far) and ring scales every
+string's decay time by 2^ring. At 0 and 1 a part plays its piano's
 measurements exactly, so `measuredBuild(Piano::grand)` and
-`measuredBuild(Piano::upright)` are the two measured pianos. The plug-in's
-Piano control and the Rack device choose one of them; `keyra_render --build`
-plays any build.
+`measuredBuild(Piano::upright)` are the two measured pianos.
+
+The plug-in's Build view shows the parts as the chosen piano's, moved toward
+the other piano's (`keyra::buildToward`): Strings, Hammers, Soundboard and
+Action read Grand on the grand at 0, a share of the upright between and
+Upright at 100 %, and the other way round on the upright. Stiffness, Unisons
+and Ring show their factors, ×1.00 as built. So the grand with every part at
+100 % is the upright, sample for sample, and every song saved before the
+build existed, its controls at 0, plays the piano it chose.
+`keyra_render --build` plays any build.
 
 A built partial rings as the strings have it and is struck as the hammers
 have it: its lanes blend as between two recorded pitches, and its power over
@@ -485,14 +500,15 @@ a reset of the controllers lifts it without a sound.
 
 ### Controls, presets and MIDI
 
-Piano, Quality, Output, Brightness, Resonance, Width, Tuning, Felt mute and
-the three pedals are the eleven saved parameters. Piano and Quality are not
-offered for automation: the piano is chosen for a part, not played, and
-Quality is a setting for the machine, not the music. A session saved before
-either existed plays the grand at full quality. The eight factory presets in
+Piano, its seven build controls, Quality, Output, Brightness, Resonance,
+Width, Tuning, Felt mute and the three pedals are the eighteen saved
+parameters. Piano, its build and Quality are not offered for automation: the
+piano is chosen for a part, not played, and Quality is a setting for the
+machine, not the music. A session saved before they existed plays the grand
+as built at full quality. The eight factory presets in
 `Source/DSP/KeyraPresets.h`, five on the grand and three on the upright, set
-the piano, Brightness, Resonance, Width and Felt mute and leave the rest
-alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
+the piano as built, Brightness, Resonance, Width and Felt mute and leave the
+rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
 their sample positions; each MIDI channel owns its keys and pedals, and CC120,
 CC121 and CC123 are honoured per channel. The
 [user guide](Docs/guide/user-guide.md) describes every control.

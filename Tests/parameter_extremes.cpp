@@ -53,7 +53,7 @@ const Control controls[] {
     {"action", [](keyra::Parameters& p) -> float& { return p.build.action; }, 0, .5f, 1},
     {"stiffness", [](keyra::Parameters& p) -> float& { return p.build.stiffness; }, -1, 0, 1},
     {"unisons", [](keyra::Parameters& p) -> float& { return p.build.unisons; }, -1, 0, 1},
-    {"string sustain", [](keyra::Parameters& p) -> float& { return p.build.sustain; }, -1, 0, 1}
+    {"ring", [](keyra::Parameters& p) -> float& { return p.build.ring; }, -1, 0, 1}
 };
 
 Audio exercise(const Control& control, float value, double rate, bool automate, keyra::Piano piano) {
