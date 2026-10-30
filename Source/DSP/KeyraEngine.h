@@ -2,10 +2,40 @@
 #include <memory>
 
 namespace keyra {
-// The piano that plays: the grand measured from the Salamander Grand Piano V3
-// recordings, or the upright measured from the Helsinki 1967 Tube-Ribbon
-// Edition's. Switching silences what sounds.
+// The two measured pianos: the grand from the Salamander Grand Piano V3
+// recordings, the upright from the Helsinki 1967 Tube-Ribbon Edition's.
 enum class Piano {grand,upright};
+// The piano that plays, built part by part. Each part sits between the two
+// measured pianos' (0 the grand's, 1 the upright's); between them it blends
+// the two, a piano neither recording is. The modifiers scale what the parts
+// give, 0 leaving them as built. A change applies from the next strike, and
+// the soundboard's modes and the undamped strings move at once.
+struct Build {
+  // The strings: their stretch and stiffness, unisons, decays and pickups,
+  // the undamped top strings and the components beside the series.
+  float strings=0;
+  // The hammers: what a strike excites, each partial's level and phase at
+  // contact, the tone's change with velocity, the onset and the contact.
+  float hammers=0;
+  // The soundboard and case: their modes, a strike's knock on them and the
+  // board's noise.
+  float soundboard=0;
+  // The action: the knocks of keys, dampers and pedals.
+  float action=0;
+  // The strings' inharmonicity, times 4^stiffness (-1 to 1: a quarter to four
+  // times as built).
+  float stiffness=0;
+  // How far the unison strings sit apart: -1 pure, 0 as built, 1 three times
+  // as far.
+  float unisons=0;
+  // How long the strings ring, times 2^sustain (-1 to 1: half to twice).
+  float sustain=0;
+};
+// Each measured piano's build: every part its own, the modifiers at 0.
+constexpr Build measuredBuild(Piano piano) noexcept {
+  const float part=piano==Piano::upright?1.f:0.f;
+  return {part,part,part,part,0.f,0.f,0.f};
+}
 // How much of each strike plays, for CPU: every partial, or only those that
 // come within 60 dB (balanced) or 50 dB (light) of the strike's strongest,
 // which no third-octave band of the note misses by more than 0.04 or 0.74 dB
@@ -14,7 +44,7 @@ enum class Quality {full,balanced,light};
 struct Parameters {
   float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
-  Piano piano=Piano::grand;
+  Build build{};
   Quality quality=Quality::full;
 };
 struct PedalState {float sustain=0,sostenuto=0,soft=0;};
@@ -56,6 +86,7 @@ private:
   std::unique_ptr<Impl> impl;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
-// plays on `piano` before its player's spread: one response for both pianos.
+// plays on a measured piano before its player's spread: one response for both
+// pianos.
 float responseVelocity(Piano piano,float velocity) noexcept;
 }

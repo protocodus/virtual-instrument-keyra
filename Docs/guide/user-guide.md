@@ -17,7 +17,7 @@ Each MIDI channel owns its key and controller state.
 
 | Control | Behavior |
 | --- | --- |
-| Piano | The grand or the upright. Switching silences what sounds; held keys and pedals keep their state |
+| Piano | The grand or the upright. A switch plays from the next note: what sounds rings on, and held keys and pedals keep their state |
 | Quality | How much of each note plays, for CPU on slower machines. Full, the default, plays all of it; Balanced and Light leave out the partials 60 and 50 dB under the note's strongest, which changes no third of an octave of its spectrum by more than 0.04 and 0.74 dB. A change applies from the next note |
 | Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2 ms, which the plug-in reports to the host |
 | Hammer / Brightness | Changes partial balance; the neutral setting is 50% |

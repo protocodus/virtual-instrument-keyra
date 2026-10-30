@@ -20,7 +20,8 @@ void KeyraAudioProcessor::setCurrentProgram(int index)
     if (index < 0 || index >= static_cast<int>(programs.size())) return;
     const auto& preset = programs[static_cast<size_t>(index)];
     const std::array<std::pair<const char*, float>, 5> settings {{
-        { "model", preset.piano == keyra::Piano::upright ? 1.0f : 0.0f },
+        // Every factory preset is one of the two measured builds.
+        { "model", preset.build.strings >= .5f ? 1.0f : 0.0f },
         { "brightness", preset.brightness }, { "resonance", preset.resonance },
         { "width", preset.width }, { "mute", preset.mute }
     }};
@@ -47,8 +48,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     add("sustain", "Sustain pedal", 0.0f, 1.0f, 0.0f);
     add("sostenuto", "Sostenuto pedal", 0.0f, 1.0f, 0.0f);
     add("soft", "Soft pedal", 0.0f, 1.0f, 0.0f);
-    // The instrument, not a performance control: switching silences what
-    // sounds, so it is not offered for automation.
+    // The instrument, not a performance control: the piano is chosen for a
+    // part, not played, so it is not offered for automation.
     layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "model", 1 }, "Piano",
         juce::StringArray { "Grand", "Upright" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
     // A CPU setting, which presets leave alone; it applies from the next strike.
@@ -128,7 +129,7 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.sustain = values[6]->load(std::memory_order_relaxed);
     p.sostenuto = values[7]->load(std::memory_order_relaxed);
     p.soft = values[8]->load(std::memory_order_relaxed);
-    p.piano = values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand;
+    p.build = keyra::measuredBuild(values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand);
     p.quality = static_cast<keyra::Quality>(juce::jlimit(0, 2, juce::roundToInt(values[qualityIndex]->load(std::memory_order_relaxed))));
     engine.setParameters(p);
     auto read = keyboardRead.load(std::memory_order_relaxed);

@@ -137,7 +137,7 @@ int run(int jobs,bool check){
   std::vector<Reading> readings(count);
   parallel(count,jobs,[&](std::size_t task){
     if(task<calibrations){
-      keyra::Parameters parameters;parameters.piano=pianos[task];
+      keyra::Parameters parameters;parameters.build=keyra::measuredBuild(pianos[task]);
       parameters.gain*=static_cast<float>(std::pow(10.,-belowDb/20));
       readings[task]=play(parameters,typicalEvents);
       return;

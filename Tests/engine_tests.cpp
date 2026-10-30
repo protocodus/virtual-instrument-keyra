@@ -34,7 +34,7 @@ Audio render(keyra::Engine& engine,int frames,int block=127){
 }
 double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<double>(x)*x;return std::sqrt(sum/std::max<std::size_t>(1,audio.size()));}
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
-keyra::Parameters dryUpright(){auto p=dry();p.piano=keyra::Piano::upright;return p;}
+keyra::Parameters dryUpright(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::upright);return p;}
 // C4's own strings: the amplitude of its first four partials, in both
 // channels, at a piano's measured pitch (the grand's unless given). They sit
 // below F6, where the undamped strings its strike sets ringing begin; no
@@ -95,6 +95,35 @@ double spectralPeak(const Audio& audio,double low,double high){
     const double candidate=re*re+im*im;if(candidate>power){power=candidate;peak=frequency;}
   }
   return peak;
+}
+// From 8 kHz up (a fourth-order Butterworth high-pass), the power of the
+// 5 ms from `at` against that of 20 to 40 ms later, in dB.
+double click(const Audio& audio,std::size_t at){
+  constexpr double pi=3.14159265358979323846;
+  std::array<std::array<double,5>,2> sections{};
+  for(int k=0;k<2;++k){const double q=k?1.3065629648763766:.5411961001461970,w=2*pi*8000/48000;
+    const double alpha=std::sin(w)/(2*q),c=std::cos(w),a0=1+alpha;
+    sections[static_cast<std::size_t>(k)]={(1+c)/2/a0,-(1+c)/a0,(1+c)/2/a0,-2*c/a0,(1-alpha)/a0};}
+  std::vector<double> power(audio.size()/2);
+  for(std::size_t channel=0;channel<2;++channel){std::array<double,4> z{};
+    for(std::size_t i=0;i<power.size();++i){double x=audio[2*i+channel];
+      for(std::size_t k=0;k<2;++k){const auto& s=sections[k];
+        const double y=s[0]*x+z[2*k];z[2*k]=s[1]*x-s[3]*y+z[2*k+1];z[2*k+1]=s[2]*x-s[4]*y;x=y;}
+      power[i]+=x*x;}}
+  auto mean=[&](std::size_t from,std::size_t to){double sum=0;for(std::size_t i=from;i<to;++i)sum+=power[i];return sum/static_cast<double>(to-from);};
+  return 10*std::log10(mean(at,at+240)/mean(at+960,at+1920));
+}
+// A partial's level in dB every 10 ms, at `hz`, in 40 ms Hann frames of
+// both channels' mean.
+std::vector<double> partialTrack(const Audio& audio,double hz){
+  constexpr double pi=3.14159265358979323846;constexpr std::size_t length=1920,hop=480;
+  std::vector<double> window(length),track;
+  for(std::size_t i=0;i<length;++i)window[i]=.5-.5*std::cos(2*pi*static_cast<double>(i)/length);
+  for(std::size_t start=0;start+length<=audio.size()/2;start+=hop){double re=0,im=0;
+    for(std::size_t i=0;i<length;++i){const double x=window[i]*.5*(audio[2*(start+i)]+audio[2*(start+i)+1]),turn=2*pi*hz*static_cast<double>(start+i)/48000;
+      re+=x*std::cos(turn);im-=x*std::sin(turn);}
+    track.push_back(10*std::log10(re*re+im*im+1e-300));}
+  return track;
 }
 // Each third-octave band's power over the whole render, both channels: band
 // k is centred on 20 * 2^(k/3) Hz.
@@ -197,7 +226,7 @@ int main(int argc,char** argv){
     double worst[3]{};bool lighter=true;
     for(const auto& key:keys){
       std::array<Audio,3> audio;std::array<std::array<double,31>,3> bands;
-      for(std::size_t q=0;q<3;++q){keyra::Engine e;keyra::Parameters p;p.piano=key.piano;p.quality=static_cast<keyra::Quality>(q);
+      for(std::size_t q=0;q<3;++q){keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(key.piano);p.quality=static_cast<keyra::Quality>(q);
         e.setParameters(p);e.noteOn(key.note,key.velocity);audio[q]=render(e,144000);bands[q]=thirdOctaves(audio[q]);}
       const double top=*std::max_element(bands[0].begin(),bands[0].end());
       for(std::size_t q=1;q<3;++q)for(std::size_t b=0;b<bands[0].size();++b)
@@ -446,7 +475,7 @@ int main(int argc,char** argv){
     // Every such key on both pianos, at one layer coordinate, 50-750 ms.
     double worst=0;
     const auto scan=[&](keyra::Piano piano,const auto& anchors){
-      auto p=dry();p.piano=piano;
+      auto p=dry();p.build=keyra::measuredBuild(piano);
       const auto early=[&](int note){keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(note,.7f);
         auto audio=render(e,36000);audio.erase(audio.begin(),audio.begin()+4800);return 20*std::log10(rms(audio));};
       for(std::size_t i=1;i<anchors.size();++i){
@@ -484,30 +513,15 @@ int main(int argc,char** argv){
     }
   }
   {
-    // A strike starts without a click: from 8 kHz up (a fourth-order
-    // Butterworth high-pass) the 5 ms after contact hold no more power than
-    // 20 to 40 ms later. Measured so from their onsets, the grand's
+    // A strike starts without a click: from 8 kHz up the 5 ms after contact
+    // hold no more power than 20 to 40 ms later (click). Measured so from their onsets, the grand's
     // recordings of A1, F#2, C4, C6 and F#5 stay at or under 0 dB at every
     // layer tried; the rises' corners, unsmoothed, reached 14 dB.
-    auto click=[](const Audio& audio,std::size_t contact){
-      constexpr double pi=3.14159265358979323846;
-      std::array<std::array<double,5>,2> sections{};
-      for(int k=0;k<2;++k){const double q=k?1.3065629648763766:.5411961001461970,w=2*pi*8000/48000;
-        const double alpha=std::sin(w)/(2*q),c=std::cos(w),a0=1+alpha;
-        sections[static_cast<std::size_t>(k)]={(1+c)/2/a0,-(1+c)/a0,(1+c)/2/a0,-2*c/a0,(1-alpha)/a0};}
-      std::vector<double> power(audio.size()/2);
-      for(std::size_t channel=0;channel<2;++channel){std::array<double,4> z{};
-        for(std::size_t i=0;i<power.size();++i){double x=audio[2*i+channel];
-          for(std::size_t k=0;k<2;++k){const auto& s=sections[k];
-            const double y=s[0]*x+z[2*k];z[2*k]=s[1]*x-s[3]*y+z[2*k+1];z[2*k+1]=s[2]*x-s[4]*y;x=y;}
-          power[i]+=x*x;}}
-      auto mean=[&](std::size_t from,std::size_t to){double sum=0;for(std::size_t i=from;i<to;++i)sum+=power[i];return sum/static_cast<double>(to-from);};
-      return 10*std::log10(mean(contact,contact+240)/mean(contact+960,contact+1920));};
     for(const auto& piano:{dry(),dryUpright()})for(const int key:{33,42,60,84})for(const float velocity:{31.f,61.f,101.f}){
       keyra::Engine e;e.setParameters(piano);e.noteOn(key,velocity/127);
       const double db=click(render(e,2400),0);
       check(db<3,"a strike starts without a click");
-      std::cout<<"model="<<(piano.piano==keyra::Piano::upright?"upright":"grand")<<" key="<<key<<" velocity="<<velocity
+      std::cout<<"model="<<(piano.build.hammers==1?"upright":"grand")<<" key="<<key<<" velocity="<<velocity
                <<" onset_over_30ms_above_8khz_db="<<db<<'\n';
     }
   }
@@ -553,15 +567,97 @@ int main(int argc,char** argv){
     check(up==render(b,9600)&&up!=render(c,9600),"the pedal sounds once coming up, and not when already lifted");
   }
   {
-    // Switching pianos silences what sounds at once: the grand's strings,
-    // body and noise would not belong to the upright. An engine switched so
-    // then plays as one that started on the upright.
-    keyra::Engine a,b;a.setParameters(dry());b.setParameters(dryUpright());
-    a.noteOn(60,.7f);a.noteOn(100,.7f);render(a,12000);a.noteOff(60);a.noteOff(100);render(a,2400);
+    // A build changes from the next strike. What sounds rings on, the
+    // strings as they were struck and the body, the undamped strings and the
+    // noise as built now: a grand's C4 and A7 go on under the upright's build
+    // as loud as on the grand, and from 8 kHz up the 5 ms after the change
+    // are no stronger than they are without it. An engine so changed and
+    // reset plays as one built so from its start.
+    keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());
+    for(auto* e:{&a,&b}){e->noteOn(60,.7f);e->noteOn(105,.7f);}
+    auto changed=render(a,12000),kept=render(b,12000);
     a.setParameters(dryUpright());
-    check(rms(render(a,4800))==0,"switching pianos silences what sounds");
-    a.noteOn(60,.7f);b.noteOn(60,.7f);
-    check(render(a,24000)==render(b,24000),"a switched engine plays the upright as one that started on it");
+    const auto after=render(a,12000),still=render(b,12000);
+    changed.insert(changed.end(),after.begin(),after.end());kept.insert(kept.end(),still.begin(),still.end());
+    const double level=20*std::log10(rms(after)/rms(still)),edge=click(changed,12000)-click(kept,12000);
+    check(std::abs(level)<1,"a build change leaves what sounds ringing");
+    check(edge<1,"a build change does not click");
+    std::cout<<"build_change_level_db="<<level<<" click_over_unchanged_db="<<edge<<'\n';
+    a.reset();keyra::Engine c;c.setParameters(dryUpright());a.noteOn(60,.7f);c.noteOn(60,.7f);
+    check(render(a,24000)==render(c,24000),"a changed and reset engine plays as one built so from its start");
+  }
+  {
+    // Grand and upright are two builds of one model, each part (strings,
+    // hammers, soundboard, action) running from the grand at 0 to the
+    // upright at 1. Halfway, every third key plays between the two pianos'
+    // levels (50-750 ms, at the velocity itself) within 2 dB, soft, middle
+    // and full. (Mixed lane by lane and mode by mode in dB, the halfway build
+    // had put E7 and the soft top octave 3 to 4 dB outside both.)
+    double worst=0;int at=0;
+    for(const float velocity:{.25f,.7f,1.f})for(int note=21;note<=108;note+=3){
+      double level[3];
+      for(int k=0;k<3;++k){const float x=.5f*static_cast<float>(k);auto p=dry();p.build={x,x,x,x,0,0,0};
+        keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(note,velocity);
+        auto audio=render(e,36000);audio.erase(audio.begin(),audio.begin()+4800);level[k]=20*std::log10(rms(audio));}
+      const double outside=std::max(std::min(level[0],level[2])-level[1],level[1]-std::max(level[0],level[2]));
+      if(outside>worst){worst=outside;at=note;}
+    }
+    std::cout<<"halfway_build_outside_db="<<worst<<" key="<<at<<'\n';
+    check(worst<2,"the halfway build plays between the two pianos' levels");
+  }
+  {
+    // Stiffness scales each key's inharmonicity B by 4^stiffness: C2's 12th
+    // partial moves as B times a quarter and four times puts it, from each
+    // piano's measured f1 and B at C2.
+    const auto c2=[](const auto& anchors){for(const auto& x:anchors)if(x.note==36)return std::array<double,2>{x.f1,x.B};return std::array<double,2>{};};
+    const std::array<std::pair<keyra::Piano,std::array<double,2>>,2> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
+                                                                           {keyra::Piano::upright,c2(keyra::measured::upright::anchors)}}};
+    for(const auto& [piano,anchor]:pianos){
+      const auto twelfth=[&](float stiffness){
+        auto p=dry();p.build=keyra::measuredBuild(piano);p.build.stiffness=stiffness;
+        keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(36,.7f);render(e,4800);
+        const double B=anchor[1]*std::pow(4.,stiffness),hz=12*anchor[0]*std::sqrt((1+144*B)/(1+B));
+        return std::array<double,2>{spectralPeak(render(e,96000),hz-15,hz+15),hz};};
+      const auto built=twelfth(0);
+      for(const float stiffness:{-1.f,1.f}){const auto moved=twelfth(stiffness);
+        const double error=(moved[0]-built[0])-(moved[1]-built[1]);
+        check(std::abs(error)<.3,"stiffness moves a partial as the inharmonicity it scales");
+        std::cout<<"stiffness="<<stiffness<<" c2_12th_shift_hz="<<moved[0]-built[0]<<" predicted="<<moved[1]-built[1]<<'\n';}
+    }
+  }
+  {
+    // Sustain scales every string's decay time by 2^sustain. With the unisons
+    // pure, so that no beat moves it, C4's fundamental falls 20 dB from its
+    // peak in half the time at -1 and twice the time at 1, within 10 % (the
+    // onset and the body are not scaled).
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright}){
+      const auto fall=[&](float sustain){
+        auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.sustain=sustain;
+        keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
+        const auto track=partialTrack(render(e,144000),keyPitch(60));
+        const auto peak=std::max_element(track.begin(),track.end());
+        const auto fallen=std::find_if(peak,track.end(),[&](double x){return x<=*peak-20;});
+        return fallen==track.end()?0.:.01*static_cast<double>(fallen-track.begin());};
+      const double built=fall(0),shorter=fall(-1)/built,longer=fall(1)/built;
+      check(std::abs(shorter-.5)<.05&&std::abs(longer-2)<.2,"sustain scales the strings' decay times");
+      std::cout<<"sustain_fall_20db_s="<<built<<" at_-1="<<shorter<<"x at_1="<<longer<<"x\n";
+    }
+  }
+  {
+    // Unisons -1 tunes each partial's unison strings to one pitch. The
+    // grand's C4 as built beats: its fundamental, 10 ms at a time, climbs
+    // back 10 dB from a trough before 4 s; with the unisons pure it only
+    // falls.
+    const auto rebound=[](float unisons){
+      auto p=dry();p.build.unisons=unisons;
+      keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
+      const auto track=partialTrack(render(e,192000),keyPitch(60));
+      double most=0,low=track[30];
+      for(std::size_t i=30;i<track.size();++i){most=std::max(most,track[i]-low);low=std::min(low,track[i]);}
+      return most;};
+    const double built=rebound(0),pure=rebound(-1);
+    check(built>5&&pure<.5,"pure unisons take out the beats the unison strings make");
+    std::cout<<"c4_fundamental_rebound_db built="<<built<<" pure="<<pure<<'\n';
   }
   {
     // The upright sounds its own measured pitch, not the grand's: taken at
@@ -612,7 +708,7 @@ int main(int argc,char** argv){
              <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])<<'\n';
   }
   for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
-    keyra::Engine e(rate);auto p=dry();p.piano=piano;p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
+    keyra::Engine e(rate);auto p=dry();p.build=keyra::measuredBuild(piano);p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
     for(int note:{21,60,108})e.noteOn(note,1);
     for(float bend:{-48.f,0.f,48.f}){e.pitchBend(bend);const auto a=render(e,4000);for(float x:a)check(std::isfinite(x)&&std::abs(x)<=1,"rate/bend/nonfinite parameter output finite and bounded");}
   }
@@ -638,7 +734,8 @@ int main(int argc,char** argv){
     e.noteOn(60,.8f);e.noteOn(72,.8f,2);e.noteOff(60);e.noteOn(12,.7f);e.noteOn(13,.7f);e.noteOn(14,.7f);e.noteOff(12);e.controlChange(64,80);e.controlChange(66,127);e.controlChange(67,64);e.pitchBend(.5f);auto p=dry();p.tuning=415;e.setParameters(p);
     const auto pedals=e.pedalState();(void)pedals;
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
-    p.piano=keyra::Piano::upright;e.setParameters(p);e.noteOn(48,.8f);e.noteOff(48);
+    p.build=keyra::measuredBuild(keyra::Piano::upright);e.setParameters(p);e.noteOn(48,.8f);e.noteOff(48);
+    p.build={.5f,.5f,.5f,.5f,.25f,-.5f,.5f};e.setParameters(p);e.noteOn(50,.8f);e.noteOff(50);
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
     e.reset();e.controlChange(120,0);trap=false;
     check(allocations==0,"all live event/render/reset APIs allocate zero bytes");
@@ -647,7 +744,7 @@ int main(int argc,char** argv){
   // bound ahead of it (4, +12 dBFS): read 24 dB down, where the stage passes
   // it untouched, its peak at the default Output stays 3 dB under the bound.
   for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(int count:{3,6,10}){
-    keyra::Engine e;keyra::Parameters p;p.piano=piano;p.gain/=16;e.setParameters(p);e.reset();
+    keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.gain/=16;e.setParameters(p);e.reset();
     for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));
     peak*=16;

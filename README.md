@@ -172,9 +172,9 @@ musical passages through the same engine. Both are frozen evidence from
   three presets (Rehearsal Upright, Felt Upright, Pop Upright): a 1967
   upright with worn hammers in a dry room, measured the grand's way from 137
   recordings of the Helsinki 1967 Tube-Ribbon Edition (Mikko Patama, with his
-  permission; none of its recordings is distributed). Switching silences what
-  sounds; sessions saved before keep the grand. On the
-  [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
+  permission; none of its recordings is distributed). A switch plays from the
+  next note while what sounds rings on; sessions saved before keep the grand.
+  On the [upright's benchmark](Docs/validation/upright-recording-benchmark-2026-10-28.md)
   its attack, tuning and level sit closer to its never-fitted recordings than
   the grand's data does; its treble does not yet (Known gaps). From C6 up its
   unison strings sound up to 20 cents from their partial: its first fit took
@@ -314,6 +314,36 @@ and quieter the longer the key was held; under the sustain pedal or sostenuto
 no damper falls and the key-up is silent, while from F6 up, where there is
 no damper, the key's own return knocks them whatever the pedals do. The
 sustain pedal knocks them going down and coming up.
+
+### Two pianos, one model
+
+The grand and the upright are two builds of one model (`keyra::Build`). Each
+of its four parts runs from the grand's measurements at 0 to the upright's at
+1: the **strings** (their stretch and stiffness, unison offsets, decays and
+pickups, the undamped top strings and the components beside the series), the
+**hammers** (how hard each partial is struck and how fast it rises, the
+components' levels, the tone's change with velocity), the **soundboard** (the
+body's modes, a strike's knock on them and the board's noise) and the
+**action** (the knocks of keys, dampers and pedals). Three modifiers stretch
+what the parts build: stiffness scales every key's inharmonicity B by
+4^stiffness, unisons sets how far each partial's unison strings sit apart
+(−1 one pitch, 0 as built, 1 three times as far) and sustain scales every
+string's decay time by 2^sustain. At 0 and 1 a part plays its piano's
+measurements exactly, so `measuredBuild(Piano::grand)` and
+`measuredBuild(Piano::upright)` are the two measured pianos. The plug-in's
+Piano control and the Rack device choose one of them; `keyra_render --build`
+plays any build.
+
+A built partial rings as the strings have it and is struck as the hammers
+have it: its lanes blend as between two recorded pitches, and its power over
+the window the layers' levels are measured over (50 to 750 ms) lies between
+the two pianos' in dB, at the hammers' share. The body's modes pass between
+the pianos mode by mode in power, since the two boards' modes of one index
+are not one mode. So the halfway build, every part at 0.5, plays each key
+within 1.6 dB of between the two pianos' levels at soft, middle and full
+velocity. A build changes from the next strike: what sounds rings on, the
+strings as they were struck and the body as the new board has it, its pickups
+gliding to the new board's over 10 ms.
 
 ### Calibration from recordings
 
@@ -457,9 +487,9 @@ a reset of the controllers lifts it without a sound.
 
 Piano, Quality, Output, Brightness, Resonance, Width, Tuning, Felt mute and
 the three pedals are the eleven saved parameters. Piano and Quality are not
-offered for automation: switching the piano silences what sounds, and Quality
-is a setting for the machine, not the music. A session saved before either
-existed plays the grand at full quality. The eight factory presets in
+offered for automation: the piano is chosen for a part, not played, and
+Quality is a setting for the machine, not the music. A session saved before
+either existed plays the grand at full quality. The eight factory presets in
 `Source/DSP/KeyraPresets.h`, five on the grand and three on the upright, set
 the piano, Brightness, Resonance, Width and Felt mute and leave the rest
 alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at

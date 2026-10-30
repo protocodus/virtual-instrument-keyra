@@ -67,7 +67,7 @@ public:
         // it and slower. At -9 VU typical playing (Tools/KeyraLevels.cpp) the
         // chord's strings sit at the -60 dBFS floor 2 s after the release, and
         // at full Output 3 dB over it, so silence is due a second later.
-        else if (c.preset >= 0 && keyra::factoryPresets[static_cast<std::size_t> (c.preset)].piano == keyra::Piano::upright)
+        else if (c.preset >= 0 && keyra::factoryPresets[static_cast<std::size_t> (c.preset)].build.strings >= 0.5f)
             limits.releaseSeconds = 3.0;
         return limits;
     }

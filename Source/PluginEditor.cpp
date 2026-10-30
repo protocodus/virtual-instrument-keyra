@@ -158,7 +158,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     for (const auto id : { juce::ComboBox::backgroundColourId, juce::ComboBox::textColourId,
                            juce::ComboBox::outlineColourId, juce::ComboBox::arrowColourId })
         piano.setColour(id, program.findColour(id));
-    piano.setTooltip("The piano that plays: the modelled grand or upright. Switching silences what sounds.");
+    piano.setTooltip("The piano that plays: the modelled grand or upright. A switch plays from the next note; what sounds rings on.");
     addAndMakeVisible(piano);
     pianoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "model", piano);
     quality.addItemList({ "Full", "Balanced", "Light" }, 1);

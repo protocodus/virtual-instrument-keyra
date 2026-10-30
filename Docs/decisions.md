@@ -1298,3 +1298,62 @@ envelope takes 58 ms from 10 to 90 % of its peak; the fitted rises gave
 57.5 ms and the cap gives 5.5 ms. The owner chose the cap by ear before these
 recordings were measured; this record stands beside that choice, not in its
 place.
+
+## 2026-10-30 — grand and upright are two builds of one model
+
+The owner asked for the grand and the upright to be two sets of parameters
+of one model, with parameters to explore others. `keyra::Build` replaces the
+Piano choice in the engine: four parts (strings, hammers, soundboard,
+action), each from the grand's measurements at 0 to the upright's at 1, and
+three modifiers (stiffness, B × 4^x; unisons, offsets × (1 + x) below 0 and
+(1 + 2x) above; sustain, decay times × 2^x). At 0 and 1 every part takes its
+piano's measurements exactly, so the measured builds play as the two pianos
+did: a phrase of chords, pedal, mute and releases renders within −123 dB of
+the shipping engine on the grand and −115 dB on the upright, where the
+upright's noise draws follow a burst that ends one chunk apart. Levels moved
+into output units (each piano's output scale added to its levels), so the
+engine's absolute silence thresholds now read in them. Every third key at
+velocities 15, 64 and 110, rendered at the benchmark's Output 0.07, differs
+from the shipping engine by no more than −125 dBFS over any 100 ms on the
+grand (C8 and A7 at velocity 15, a partial falling under a threshold 0.1 s
+sooner) and −142 dBFS on the upright.
+
+On the recording benchmarks the measured builds score as the shipping engine
+did. All 432 Salamander train and dev notes score identically on the grand.
+On the upright 156 of the 158 Helsinki notes do; the other two's noise score
+moves 2.8 and 1.4 dB, and dev note 39's mean 0.7 dB, the one regression
+`Tools/compare_benchmarks.py` lists. The scorer seeks a render's partials by
+threshold and masks them out of the noise between them; in renders whose
+difference sat 120 and 89 dB under them it found 39 partials where it had
+found 40, and 22 where 19.
+
+A strike between the pianos reads both pianos' series and sums three window
+powers per partial: a ten-note chord's 64-frame callback took 1.9 ms on the
+development machine at the halfway build, against 1.1 ms on either measured
+build, whose strikes cost what the shipping engine's did. The demos' CPU
+budget passes.
+
+Between the builds, levels are blended on measured grounds, not by ear:
+
+- A partial's lanes (decays, offsets, pickups, phases, shares) come from the
+  strings, blended as between two recorded pitches, and its power over the
+  layers' 50–750 ms window lies between the two pianos' partials' at the
+  hammers' share. Lane levels mixed by the hammers put one piano's strike on
+  the other's lanes, and the power from contact counted the upright's top
+  notes' fastest lanes, which die within 50 ms: either put the upright's
+  hammers on the grand's strings 5 to 7 dB over both pianos at E7.
+- The body's modes pass between the pianos mode by mode in power, and a mode
+  or partial only one piano has plays at its share in power. The two boards'
+  modes of one index are not one mode, so their dB mean fell under both:
+  the halfway build's soft top octave, nearly all knock, sat 4 dB under both
+  pianos.
+- Scanned over every key at velocities 0.25, 0.7 and 1, the halfway build
+  now plays within 1.6 dB of between the two pianos' levels (was 3.9 dB);
+  the engine test reads every third key.
+
+A build change no longer silences what sounds, as the Piano switch did: the
+build applies from the next strike, the sounding strings keep what they were
+struck with, and the body, undamped strings and noise take the new build at
+once. The body's pickups glide to the new board's over 10 ms (set at once,
+they put 4 dB more over 8 kHz into the next 5 ms than the ring has), and a
+mode the new board lacks fades over 5 ms.

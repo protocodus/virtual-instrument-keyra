@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstring>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -33,32 +34,41 @@ double difference(const Audio& a, const Audio& b) {
     }
     return sum / a.size();
 }
-struct Control { const char* name; float keyra::Parameters::*field; float low, mid, high; };
+// Each control as a field of the parameters, including the build's parts and
+// modifiers.
+struct Control { const char* name; float& (*field)(keyra::Parameters&); float low, mid, high; };
 const Control controls[] {
-    {"gain", &keyra::Parameters::gain, 0, .5f, 1},
-    {"brightness", &keyra::Parameters::brightness, 0, .5f, 1},
-    {"resonance", &keyra::Parameters::resonance, 0, .5f, 1},
-    {"width", &keyra::Parameters::width, 0, .5f, 1},
-    {"tuning", &keyra::Parameters::tuning, 400, 440, 480},
-    {"mute", &keyra::Parameters::mute, 0, .5f, 1},
-    {"sustain", &keyra::Parameters::sustain, 0, .5f, 1},
-    {"sostenuto", &keyra::Parameters::sostenuto, 0, .5f, 1},
-    {"soft", &keyra::Parameters::soft, 0, .5f, 1}
+    {"gain", [](keyra::Parameters& p) -> float& { return p.gain; }, 0, .5f, 1},
+    {"brightness", [](keyra::Parameters& p) -> float& { return p.brightness; }, 0, .5f, 1},
+    {"resonance", [](keyra::Parameters& p) -> float& { return p.resonance; }, 0, .5f, 1},
+    {"width", [](keyra::Parameters& p) -> float& { return p.width; }, 0, .5f, 1},
+    {"tuning", [](keyra::Parameters& p) -> float& { return p.tuning; }, 400, 440, 480},
+    {"mute", [](keyra::Parameters& p) -> float& { return p.mute; }, 0, .5f, 1},
+    {"sustain", [](keyra::Parameters& p) -> float& { return p.sustain; }, 0, .5f, 1},
+    {"sostenuto", [](keyra::Parameters& p) -> float& { return p.sostenuto; }, 0, .5f, 1},
+    {"soft", [](keyra::Parameters& p) -> float& { return p.soft; }, 0, .5f, 1},
+    {"strings", [](keyra::Parameters& p) -> float& { return p.build.strings; }, 0, .5f, 1},
+    {"hammers", [](keyra::Parameters& p) -> float& { return p.build.hammers; }, 0, .5f, 1},
+    {"soundboard", [](keyra::Parameters& p) -> float& { return p.build.soundboard; }, 0, .5f, 1},
+    {"action", [](keyra::Parameters& p) -> float& { return p.build.action; }, 0, .5f, 1},
+    {"stiffness", [](keyra::Parameters& p) -> float& { return p.build.stiffness; }, -1, 0, 1},
+    {"unisons", [](keyra::Parameters& p) -> float& { return p.build.unisons; }, -1, 0, 1},
+    {"string sustain", [](keyra::Parameters& p) -> float& { return p.build.sustain; }, -1, 0, 1}
 };
 
 Audio exercise(const Control& control, float value, double rate, bool automate, keyra::Piano piano) {
     auto engine = std::make_unique<keyra::Engine>(rate);
     keyra::Parameters parameters;
-    parameters.piano = piano;
+    parameters.build = keyra::measuredBuild(piano);
     // Sostenuto needs keys present at its rising edge. Pressing it before all
     // notes correctly captures nothing, so that sequence cannot witness its
     // signal path (the engine contract separately checks that behavior).
-    if (!automate && control.field != &keyra::Parameters::sostenuto)
-        parameters.*(control.field) = value;
+    if (!automate && std::strcmp(control.name, "sostenuto") != 0)
+        control.field(parameters) = value;
     engine->setParameters(parameters);
     engine->noteOn(48, .8f); engine->noteOn(60, .7f);
     play(*engine, 4096);
-    parameters.*(control.field) = value;
+    control.field(parameters) = value;
     engine->setParameters(parameters);
     // A later strike witnesses Soft, and released notes witness both pedals.
     engine->noteOn(72, .75f);
