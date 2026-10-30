@@ -2238,9 +2238,9 @@ def generate(model):
     # The body's modes leave the knock to the knock's bands where those play
     # it: first wherever the partials leave a band to measure it in, then,
     # fitted again, only where it was found, so that no strike loses it.
-    # Refitted in every band it can be measured in, the grand's middle
-    # register lost 1 to 2 dB from 400 Hz to 1 kHz 0.1 to 0.5 s after the
-    # strike, where no knock was found to take it.
+    # Refitted in every band it can be measured in, the grand's never-fitted
+    # middle notes stood 2.4 dB further under their recordings at 500 Hz in
+    # the first 0.1 s, where no knock was found to take it.
     refit = [[b is not None for b in knock_bins(r)[1]] for r in results]
     body = body_data(results, anchors, grid, layer_level, model['wav'], refit)
     knock = knock_data(results, anchors, body, noise, grid, layer_level)
