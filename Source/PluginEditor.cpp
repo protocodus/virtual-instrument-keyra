@@ -16,20 +16,6 @@ constexpr std::array<const char*, 7> buildHints {{
     "How far each note's unison strings sit apart, from one pitch to three times as far as built. Applies from the next note.",
     "How long the strings ring, from half to twice as long as built. Applies from the next note."
 }};
-const juce::String times(juce::CharPointer_UTF8("\xc3\x97"));
-
-// The modifiers' factors (keyra::Build): stiffness 4^x, unisons 1 + x below
-// 0 and 1 + 2x above, ring 2^x.
-double factor(size_t modifier, double x)
-{
-    return modifier == 1 ? (x < 0 ? 1 + x : 1 + 2 * x) : std::pow(modifier == 0 ? 4.0 : 2.0, x);
-}
-double fromFactor(size_t modifier, double f)
-{
-    if (modifier == 1) return f < 1 ? f - 1 : (f - 1) / 2;
-    return f > 0 ? std::log(f) / std::log(modifier == 0 ? 4.0 : 2.0) : -1;
-}
-
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {
@@ -261,6 +247,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         slider.setColour(juce::Slider::textBoxTextColourId, ink);
         slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::transparentBlack);
         slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
+        // A modifier reads as its parameter does, the factor it scales by.
         if (i < 4) {
             // A part reads as whose it is: the piano's own at 0, the other
             // piano's at 1, and the share of the other's between.
@@ -271,12 +258,6 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
             };
             slider.valueFromTextFunction = [this](const juce::String& text) {
                 return text.trim().equalsIgnoreCase(upright ? "Grand" : "Upright") ? 1.0 : text.getDoubleValue() * .01;
-            };
-        } else {
-            const auto modifier = i - 4;
-            slider.textFromValueFunction = [modifier](double x) { return times + juce::String(factor(modifier, x), 2); };
-            slider.valueFromTextFunction = [modifier](const juce::String& text) {
-                return fromFactor(modifier, text.trim().trimCharactersAtStart(times + "xX").getDoubleValue());
             };
         }
         slider.updateText();

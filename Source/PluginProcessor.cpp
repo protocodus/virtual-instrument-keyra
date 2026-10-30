@@ -63,17 +63,38 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     // other piano's, from 0 (the piano's own) to 1 (the other's), and three
     // modifiers from -1 to 1. Part of the instrument like the piano, so not
     // offered for automation either.
-    const auto build = [&layout](const char* id, const char* name, float lo) {
+    const auto part = [&layout](const char* id, const char* name) {
         layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { id, 1 }, name,
-            juce::NormalisableRange<float>(lo, 1.0f), 0.0f, juce::AudioParameterFloatAttributes().withAutomatable(false)));
+            juce::NormalisableRange<float>(0.0f, 1.0f), 0.0f, juce::AudioParameterFloatAttributes().withAutomatable(false)));
     };
-    build("strings", "Strings", 0.0f);
-    build("hammers", "Hammers", 0.0f);
-    build("soundboard", "Soundboard", 0.0f);
-    build("action", "Action", 0.0f);
-    build("stiffness", "Stiffness", -1.0f);
-    build("unisons", "Unisons", -1.0f);
-    build("ring", "Ring", -1.0f);
+    part("strings", "Strings");
+    part("hammers", "Hammers");
+    part("soundboard", "Soundboard");
+    part("action", "Action");
+    // A modifier reads as the factor it scales the build by: stiffness 4^x,
+    // unisons 1 + x below 0 and 1 + 2x above, ring 2^x. Two decimals give a
+    // host back the value it read; seven, the default, do not on -1..1 once
+    // the range's scaling rounds (clap-validator's param-conversions). The
+    // number is read from its first digit: clap-juce-extensions hands a
+    // host's text back as ASCII, so the × arrives as two other characters.
+    const auto modifier = [&layout](const char* id, const char* name, double (*factor)(double), double (*fromFactor)(double)) {
+        layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { id, 1 }, name,
+            juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f, juce::AudioParameterFloatAttributes()
+                .withAutomatable(false)
+                .withStringFromValueFunction([factor](float x, int length) {
+                    const auto text = juce::String(juce::CharPointer_UTF8("\xc3\x97")) + juce::String(factor(x), 2);
+                    return length > 0 ? text.substring(0, length) : text;
+                })
+                .withValueFromStringFunction([fromFactor](const juce::String& text) {
+                    return static_cast<float>(fromFactor(text.substring(text.indexOfAnyOf("0123456789.")).getDoubleValue()));
+                })));
+    };
+    modifier("stiffness", "Stiffness", [](double x) { return std::pow(4.0, x); },
+        [](double f) { return f > 0 ? std::log(f) / std::log(4.0) : -1.0; });
+    modifier("unisons", "Unisons", [](double x) { return x < 0 ? 1 + x : 1 + 2 * x; },
+        [](double f) { return f < 1 ? f - 1 : (f - 1) / 2; });
+    modifier("ring", "Ring", [](double x) { return std::pow(2.0, x); },
+        [](double f) { return f > 0 ? std::log2(f) : -1.0; });
     return layout;
 }
 

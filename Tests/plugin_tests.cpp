@@ -290,6 +290,28 @@ int main()
                     "a session saved before the build controls did not load the piano as built");
             require(reopened.parameters.getRawParameterValue("model")->load() == 1,
                 "a session saved before the build controls lost its piano");
+            // A host reads a parameter's text, gives it back and reads again
+            // (clap-validator's param-conversions): every value must read the
+            // same both times, also when the text comes back as the CLAP
+            // wrapper passes it, its UTF-8 read as ASCII. The modifiers read
+            // as their factors.
+            for (auto* parameter : reopened.getParameters())
+                for (int step = 0; step <= 2000; ++step) {
+                    const auto value = static_cast<float>((step + .37) / 2000.37);
+                    const auto text = parameter->getText(value, 0);
+                    const juce::String asClap(juce::CharPointer_ASCII(text.toRawUTF8()));
+                    require(parameter->getText(parameter->getValueForText(text), 0) == text
+                        && parameter->getText(parameter->getValueForText(asClap), 0) == text,
+                        "a parameter's text did not give back the value it read");
+                }
+            const auto read = [&reopened](const char* id, float value) {
+                auto* parameter = reopened.parameters.getParameter(id);
+                return parameter->getText(parameter->convertTo0to1(value), 0);
+            };
+            const juce::String times(juce::CharPointer_UTF8("\xc3\x97"));
+            require(read("stiffness", -1) == times + "0.25" && read("unisons", 0) == times + "1.00"
+                && read("unisons", 1) == times + "3.00" && read("ring", 1) == times + "2.00",
+                "a modifier did not read as its factor");
         }
         const auto large = render(8192), small = render(97);
         require(large == small, "MIDI/pedal render depends on host block size");
