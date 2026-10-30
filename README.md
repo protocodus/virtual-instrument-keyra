@@ -785,7 +785,12 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   recordings late: from 0.7 to 1.5 s the grand's 200 to 400 Hz modes sit 7 to
   11 dB under its train takes, and its other regions from 25 Hz to 1 kHz 4 to
   9 dB under from 1 to 1.5 s; the upright's 700 Hz to 1 kHz sit 6 and 10 dB
-  under its train and dev takes there.
+  under its train and dev takes there. Earlier they ring over them: from
+  0.1 to 0.5 s after the strike the upright's notes from C6 up stand 3 to
+  8 dB over their recordings from 400 Hz to 1 kHz, and in the first 0.1 s
+  its middle register's knock stands 3 dB over at 80 to 100 Hz. Letting
+  the knock fall faster at first trades one for the other
+  ([decisions](Docs/decisions.md)).
   The body rings on after key-up; whether a real one stops sooner when the
   dampers land is not measured. In their first 50 ms the notes from C6 up sit
   2 to 8 dB under the recordings from 400 Hz to 2.5 kHz. At the top the knock
