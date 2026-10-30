@@ -1261,3 +1261,39 @@ the velocity colour accounts for the rest (training partials 1.7 → 4.6 dB,
 attack 3.7 → 4.7, early 2.7 → 4.3, sustain 3.2 → 4.6), the key-down knock
 for under 0.1 dB, and with both left out the run matches 89e5eb0 within
 0.1 dB on every metric but rise time (3.6 against 3.7 ms).
+
+## 2026-10-30 — the upright's two changes against the Helsinki recordings
+
+The upright's benchmark (`Tools/benchmark_recordings.py --model upright`,
+every train and dev note of the Helsinki split, lower is better) of the
+shipping engine (0ec8037), the hammer-contact cap alone (56dc43c) and the cap
+with the body fix (0ecf932):
+
+| run | attack dB | early dB | sustain dB | noise dB | rise ms | partials dB |
+|---|---|---|---|---|---|---|
+| shipping, train | 5.90 | 7.54 | 6.71 | 8.65 | 9.53 | 5.87 |
+| cap, train | 6.07 | 7.56 | 6.75 | 8.62 | 8.60 | 5.92 |
+| cap and fix, train | 5.10 | 5.24 | 5.56 | 6.60 | 8.60 | 6.00 |
+| shipping, dev | 6.66 | 7.26 | 8.78 | 6.88 | 10.14 | 8.80 |
+| cap and fix, dev | 6.64 | 7.27 | 8.78 | 6.83 | 6.59 | 8.81 |
+
+The body fix is the upright's largest move toward its recordings: from C6 up
+the training notes' early spectrum moves from 14.4 to 6.0 dB, their noise from
+12.8 to 6.0 dB, their sustain from 10.2 to 5.9 dB and their attack from 8.2
+to 4.7 dB, and no note's attack or early spectrum moves away. Its four
+regressions: E7's partials (2.8 → 5.7 dB, from its softest layer), the
+interchannel coherence of C7 (0.16 → 0.20) and F#6 (0.10 → 0.12), and G7's
+level difference between the channels (1.8 → 2.7 dB).
+
+The cap brings the mean 10–90 % rise closer (train 9.5 → 8.6 ms, dev
+10.1 → 6.6 ms, the training bass 26.0 → 13.0 ms), but moves more strikes'
+rise away from the recordings (82 of 158) than toward them (66), and its
+attack spectrum is 0.14 dB further on average. Its regressions are rises, at
+C4 (9.8 → 32.0 ms), D5, G#4, D6, F#6, A2, E7, A#3, F#5, D4, C3, G#3 (dev)
+and A#5, and the attack spectra of A2 (4.7 → 6.7 dB), A1 (4.4 → 5.7) and D3
+(5.3 → 6.2), with A2's partials, envelope, level, sustain and early spectrum
+each 0.5 to 0.7 dB further. At C4's loudest layer the recording's broadband
+envelope takes 58 ms from 10 to 90 % of its peak; the fitted rises gave
+57.5 ms and the cap gives 5.5 ms. The owner chose the cap by ear before these
+recordings were measured; this record stands beside that choice, not in its
+place.
