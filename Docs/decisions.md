@@ -1637,3 +1637,33 @@ loudest chords press the output stage's guard harder: they read −0.8 and
 are mixed in amplitude and the image narrows; at 1 the sound is mono and
 Width does nothing. Presets leave the control, as they leave Output and
 Mechanics: it says where the listener stands, not how the piano is voiced.
+
+## 2026-10-30 — rejected: a strike's knock falling faster at first
+
+Under the upright's treble the body still rings boxy: 0.1 to 0.5 s after the
+strike the train notes from C6 up stand a median 3.4, 5.5, 6.3, 8.3 and
+5.0 dB over their recordings from 400 Hz to 1 kHz. Fitted from 20 ms on with
+each mode's measured rate, a knock's first stage takes up its early fall and
+rings on over the recordings. Two ways of letting part of it fall 1.5 times
+as fast, the action's knocks' decay, were refitted on both pianos and
+benchmarked against 0.4.1 at dba37b9; neither ships.
+
+- A free fast part took about twice the first stage's amplitude in opposite
+  phase in nine modes of ten, a notch in each mode's ring. It cut the boxy
+  band 4 to 6 dB toward the upright's recordings but put 2 to 4 dB more
+  knock below 160 Hz into the first 0.1 s on both pianos, where the renders
+  already stood over theirs; the attack score fell from 5.02 to 5.36 dB
+  (train) and 6.56 to 7.05 dB (dev) on the upright and from 4.48 to 4.75 dB
+  and 4.83 to 5.13 dB on the grand.
+- A share of the first stage in its own phase, 0 to 1 per mode, met its
+  bound of 1 in 77 to 88 % of the upright's modes: the data asks for the
+  whole knock to fall faster, which, extrapolated back to contact, starts it
+  3 to 4 dB louder. The upright's boxy band came 2.5 to 3 dB closer and its
+  early score 5.05 to 4.91 dB (train) but 7.31 to 7.34 dB (dev); the
+  grand's early score fell from 4.16 to 4.39 dB (train) and 4.52 to 4.71 dB
+  (dev), its treble's band going 1 to 3 dB under its recordings, with 28
+  notes and roles regressing.
+
+With the action's knocks silenced the upright's middle register still
+stands 3 dB over its recordings at 80 to 100 Hz in the first 0.1 s, so that
+low thump is the strike's knock, not the keys landing. Both stay known gaps.
