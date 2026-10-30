@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 7,
   "corpus": "Tools/corpus/helsinki-1967.json",
   "corpus_sha256": "e7bf0035e2de39b205f75427cb2cdfafb5d23b074b7abf05f7801e19c524f328",
   "split": "Tools/corpus/split-helsinki-2026-10-28.json",
@@ -9,7 +9,7 @@
   ],
   "dev_or_sealed_recordings_opened": false,
   "analysis_source_sha256": "5c89aef61ce124c5389a578554ab74fc2bf41e9fb74c5fe0137e38da423b1020",
-  "fitter_source_sha256": "1fcdec3c3fac6092e2439d3b190f674752a21de83846e6dfa36a469f5747cf67",
+  "fitter_source_sha256": "5e5141bcbaa35b46b4eea59f1cd2c26a169d32da01d9d37606d71eb210309bfc",
   "tool_versions": {
     "numpy": "2.5.3",
     "scipy": "1.18.1"
@@ -28,7 +28,7 @@
     -4.29,
     0.0
   ],
-  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials; in a layer where a component does not stand clear of its floor, no louder than its recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one slope in the level the strike's layer plays at (dB per dB) rising by one step per octave the string lies over the struck fundamental, and per anchor and string a level at contact at its loudest layer: where the string rang clear in two or more windows of two or more layers, fitted with the slope over every layer, the clear ones' mean level brought back at the rate and the others' 1 s tone as an upper bound (one spread, censored), or else 10 dB under the median 1 s bound but never over the tightest; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. Every string starts with its own prompt part, all decaying at one rate: through 0.25 s Hann windows from 0.125 to 0.5 s after contact, in the layers where a string 60 Hz from every partial rang clear from 1 to 2 s, its excess over its own line there; the rate fitted where strings rang clear then (10 dB over the median 16 to 60 Hz either side), each string's level censored where the noise hid it and drawn towards the strings' median by ten layers' worth of windows. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup and a ring falling in two stages, the second's decay measured 0.4 to 1.5 s after contact and its level 0.4 to 0.95 s; per anchor, mode and stage a complex excitation at string contact whose dB level is linear in the level its layer plays at, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact, and under the fundamental the ring's slower second stage, its start per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. Anchors recorded at other velocities than the layers most have are carried onto those as the engine plays between and beyond layers. What the dampers leave ringing, from the train key-release takes below F6: their partials to the tenth, 25 dB over their floor and clear of the undamped strings' first three partials, every 10 ms to 3 s, under the engine's damper landing as a share the felt loss takes and a loosely held share r falling at S, both besides the lanes' own decay at velocity 85 from 1.5 s; r (dB) and ln S linear in octaves from 261.63 Hz, per take a key-up time and per partial a level.",
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials; in a layer where a component does not stand clear of its floor, no louder than its recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one slope in the level the strike's layer plays at (dB per dB) rising by one step per octave the string lies over the struck fundamental, and per anchor and string a level at contact at its loudest layer: where the string rang clear in two or more windows of two or more layers, fitted with the slope over every layer, the clear ones' mean level brought back at the rate and the others' 1 s tone as an upper bound (one spread, censored), or else 10 dB under the median 1 s bound but never over the tightest; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. Every string starts with its own prompt part, all decaying at one rate: through 0.25 s Hann windows from 0.125 to 0.5 s after contact, in the layers where a string 60 Hz from every partial rang clear from 1 to 2 s, its excess over its own line there; the rate fitted where strings rang clear then (10 dB over the median 16 to 60 Hz either side), each string's level censored where the noise hid it and drawn towards the strings' median by ten layers' worth of windows. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup and a ring falling in two stages, the second's decay measured 0.4 to 1.5 s after contact and its level 0.4 to 0.95 s; per anchor, mode and stage a complex excitation at string contact whose dB level is linear in the level its layer plays at, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact, and under the fundamental the ring's slower second stage, its start per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. The strike's knock in third-octave bands from 630 Hz to 16 kHz: through 20 ms Hann frames every 2.5 ms centred 10 to 35 ms after contact, between the partials, what the residual holds beyond the body modes and the ring, where it stands over the ring in four frames or more and falls faster than it; per anchor and band one decay, the median of its layers' slopes, and per layer a density at contact under that decay, smoothed across velocity, and one left/right balance; none where fewer than three layers find it, and where the partials leave too few bins, the levels of the anchors on either side that measure it, none beyond them. Anchors recorded at other velocities than the layers most have are carried onto those as the engine plays between and beyond layers. What the dampers leave ringing, from the train key-release takes below F6: their partials to the tenth, 25 dB over their floor and clear of the undamped strings' first three partials, every 10 ms to 3 s, under the engine's damper landing as a share the felt loss takes and a loosely held share r falling at S, both besides the lanes' own decay at velocity 85 from 1.5 s; r (dB) and ln S linear in octaves from 261.63 Hz, per take a key-up time and per partial a level.",
   "anchors": [
     {
       "note": 24,
@@ -76,6 +76,8 @@
       "body_modes_hidden": 21,
       "body_phase_coherence": 0.8604835960439724,
       "noise_bands_filled": 9,
+      "knock_bands_filled": 6,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -149,6 +151,8 @@
       "body_modes_hidden": 16,
       "body_phase_coherence": 0.7252049025012776,
       "noise_bands_filled": 8,
+      "knock_bands_filled": 7,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -222,6 +226,8 @@
       "body_modes_hidden": 14,
       "body_phase_coherence": 0.9121983365432119,
       "noise_bands_filled": 12,
+      "knock_bands_filled": 9,
+      "knock_measured": 3,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -295,6 +301,8 @@
       "body_modes_hidden": 12,
       "body_phase_coherence": 0.8790852795758065,
       "noise_bands_filled": 13,
+      "knock_bands_filled": 10,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -368,6 +376,8 @@
       "body_modes_hidden": 9,
       "body_phase_coherence": 0.982482302058409,
       "noise_bands_filled": 13,
+      "knock_bands_filled": 11,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -441,6 +451,8 @@
       "body_modes_hidden": 9,
       "body_phase_coherence": 0.9030262296666818,
       "noise_bands_filled": 12,
+      "knock_bands_filled": 11,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -514,6 +526,8 @@
       "body_modes_hidden": 5,
       "body_phase_coherence": 0.9721155054729872,
       "noise_bands_filled": 13,
+      "knock_bands_filled": 11,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -587,6 +601,8 @@
       "body_modes_hidden": 5,
       "body_phase_coherence": 0.9883473631780489,
       "noise_bands_filled": 11,
+      "knock_bands_filled": 11,
+      "knock_measured": 3,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -660,6 +676,8 @@
       "body_modes_hidden": 5,
       "body_phase_coherence": 0.9673602756480305,
       "noise_bands_filled": 11,
+      "knock_bands_filled": 12,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [],
@@ -733,6 +751,8 @@
       "body_modes_hidden": 4,
       "body_phase_coherence": 0.9820910722705072,
       "noise_bands_filled": 8,
+      "knock_bands_filled": 12,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [
           89,
@@ -809,6 +829,8 @@
       "body_modes_hidden": 3,
       "body_phase_coherence": 0.9950708888480598,
       "noise_bands_filled": 4,
+      "knock_bands_filled": 12,
+      "knock_measured": 3,
       "halo_strings": {
         "clear": [],
         "under": [
@@ -883,6 +905,8 @@
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.9810491574699018,
       "noise_bands_filled": 3,
+      "knock_bands_filled": 12,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [],
         "under": [
@@ -957,6 +981,8 @@
       "body_modes_hidden": 2,
       "body_phase_coherence": 0.9025804027422817,
       "noise_bands_filled": 4,
+      "knock_bands_filled": 13,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [
           96
@@ -1032,6 +1058,8 @@
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.9679841636913278,
       "noise_bands_filled": 4,
+      "knock_bands_filled": 6,
+      "knock_measured": 0,
       "halo_strings": {
         "clear": [
           91
@@ -1107,6 +1135,8 @@
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.9404811735407761,
       "noise_bands_filled": 1,
+      "knock_bands_filled": 2,
+      "knock_measured": 6,
       "halo_strings": {
         "clear": [
           96
@@ -1182,6 +1212,8 @@
       "body_modes_hidden": 2,
       "body_phase_coherence": 0.8084873211048699,
       "noise_bands_filled": 2,
+      "knock_bands_filled": 1,
+      "knock_measured": 3,
       "halo_strings": {
         "clear": [
           90,
@@ -1257,6 +1289,8 @@
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.9498739270569719,
       "noise_bands_filled": 3,
+      "knock_bands_filled": 1,
+      "knock_measured": 4,
       "halo_strings": {
         "clear": [
           98
@@ -1332,6 +1366,8 @@
       "body_modes_hidden": 1,
       "body_phase_coherence": 0.8408365447847158,
       "noise_bands_filled": 2,
+      "knock_bands_filled": 2,
+      "knock_measured": 11,
       "halo_strings": {
         "clear": [
           89,
@@ -1407,6 +1443,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.9423864191928633,
       "noise_bands_filled": 4,
+      "knock_bands_filled": 1,
+      "knock_measured": 11,
       "halo_strings": {
         "clear": [
           89,
@@ -1482,6 +1520,8 @@
       "body_modes_hidden": 2,
       "body_phase_coherence": 0.9609233661051421,
       "noise_bands_filled": 2,
+      "knock_bands_filled": 1,
+      "knock_measured": 19,
       "halo_strings": {
         "clear": [
           89,
@@ -1557,6 +1597,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.6710242271803682,
       "noise_bands_filled": 4,
+      "knock_bands_filled": 1,
+      "knock_measured": 20,
       "halo_strings": {
         "clear": [
           89,
@@ -1632,6 +1674,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.6397034580212282,
       "noise_bands_filled": 2,
+      "knock_bands_filled": 0,
+      "knock_measured": 13,
       "halo_strings": {
         "clear": [
           89,
@@ -1707,6 +1751,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.7839725067326474,
       "noise_bands_filled": 2,
+      "knock_bands_filled": 0,
+      "knock_measured": 23,
       "halo_strings": {
         "clear": [
           89,
@@ -1782,6 +1828,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.7226348080041735,
       "noise_bands_filled": 3,
+      "knock_bands_filled": 0,
+      "knock_measured": 19,
       "halo_strings": {
         "clear": [
           89,
@@ -1857,6 +1905,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.8355184187378848,
       "noise_bands_filled": 3,
+      "knock_bands_filled": 0,
+      "knock_measured": 19,
       "halo_strings": {
         "clear": [
           89,
@@ -1932,6 +1982,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.8637713433948383,
       "noise_bands_filled": 1,
+      "knock_bands_filled": 0,
+      "knock_measured": 10,
       "halo_strings": {
         "clear": [
           89,
@@ -2008,6 +2060,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.7736394568288423,
       "noise_bands_filled": 4,
+      "knock_bands_filled": 0,
+      "knock_measured": 15,
       "halo_strings": {
         "clear": [
           89,
@@ -2084,6 +2138,8 @@
       "body_modes_hidden": 0,
       "body_phase_coherence": 0.8463089373444077,
       "noise_bands_filled": 2,
+      "knock_bands_filled": 0,
+      "knock_measured": 14,
       "halo_strings": {
         "clear": [
           89,
@@ -3173,6 +3229,8 @@
   },
   "noise": {
     "band_hz": [
+      630.0,
+      793.7,
       1000.0,
       1259.9,
       1587.4,
@@ -3188,6 +3246,8 @@
       16000.0
     ],
     "coherence": [
+      0.391,
+      0.365,
       0.453,
       0.425,
       0.286,
@@ -3204,5 +3264,5 @@
     ]
   },
   "uncalibrated_anchors": [],
-  "generated_header_sha256": "27bd0b298ba95e2e4904bc82e938fd64ff42cca5a139172cd6526340ff568247"
+  "generated_header_sha256": "82cc0938e012baf539515f91922646952617cb493907bd92648ea7f4bc0fc0e8"
 }

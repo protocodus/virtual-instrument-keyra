@@ -80,6 +80,19 @@ musical passages through the same engine. Both are frozen evidence from
   0.3 dB closer to them (treble 0.9 dB)
   ([grand](Docs/validation/grand-body-tail-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-body-tail-benchmark-2026-10-29.md)).
+- From F♯4 up (G♯4 on the upright) a strike knocks from the moment the hammer
+  meets the strings: band noise in up to 15 third-octave bands from 630 Hz to
+  16 kHz, at the level and decay measured for its pitch, layer and band over
+  the first 35 ms after contact, falling at a median 480 to 900 dB/s by pitch,
+  where the recordings stood 5 to 16 dB over everything the engine played
+  between the partials. Below, the fit finds too little of it in the gaps
+  between the partials to play. The grand's attack spectrum sits 0.24 dB
+  closer to its calibration notes and 0.16 dB to the never-fitted ones (its
+  treble 0.62 and 0.32 dB), its noise between partials 0.12 and 0.09 dB, and
+  the upright's attack 0.07 and 0.09 dB. F♯6, F♯7 and A7 now reach their peak
+  in about 5 ms, sooner than their recordings' 6.6 to 10.8 ms
+  ([grand](Docs/validation/grand-knock-from-contact-benchmark-2026-10-30.md),
+  [upright](Docs/validation/upright-knock-from-contact-benchmark-2026-10-30.md)).
 - A strike no longer clicks. Each rise started on a corner that put 8 to
   20 dB more than the recordings from 8 to 22 kHz into the first 5 ms of the
   grand's bass and middle notes; smoothed over 0.1 ms, as a felt hammer
@@ -143,6 +156,18 @@ musical passages through the same engine. Both are frozen evidence from
   rings 1.7 dB over
   ([grand](Docs/validation/grand-halo-velocity-benchmark-2026-10-29.md),
   [upright](Docs/validation/upright-halo-velocity-benchmark-2026-10-29.md)).
+- The strings whose dampers are off ring in sympathy at their own partials:
+  each key from A0 to E6 rings its first eight where its strike plays them,
+  so a C4 under the pedal sets C3's second partial and F2's third ringing,
+  and they decay as Salamander's pedal-down recording measures, 2.8 dB/s at
+  middle C and a third faster per octave up, where one resonator per key at
+  its fundamental decayed three times as fast at middle C. Pressing the pedal
+  sets the freed strings ringing as the dampers lift, as the recording does:
+  the ring against the pedal's knock sits 2.7 dB per band from the train take
+  and 2.8 dB from the never-fitted one, where it sat 55 and 60 dB from them
+  ([pedal benchmark](Docs/validation/grand-open-strings-benchmark-2026-10-30.md)).
+  The upright has no pedal recordings: its strings ring at the grand's rates
+  and its pedal lifts none.
 - A key between two recorded pitches plays about as loud as they do. Its
   partials' lanes were blended one by one and, with offsets, phases and
   stereo pickups neither pitch has, beat and cancelled where neither pitch's
@@ -162,6 +187,11 @@ musical passages through the same engine. Both are frozen evidence from
   mode's level and phase is measured from the library's release and pedal
   recordings, and the knocks sit against the notes as the library's SFZ mixes
   them, since the recordings carry no level of their own.
+- The upright's soft pedal works as an upright's does (half-blow): it brings
+  the hammers halfway to the strings, so a strike plays as one √½ as fast,
+  quieter and darker, on every string of its unison. At middle C, velocity
+  100, it takes 6.8 dB off and moves the spectral centroid from 296 to
+  268 Hz, where the grand's una corda it played before moved it to 293 Hz.
 - Existing sessions sound different. On the 156 never-fitted cases of the
   [recording benchmark](Docs/validation/grand-recording-benchmark-2026-10-29.md),
   partial levels sit 3.1 dB from the recordings (0.3.0: 9.8 dB), the attack
@@ -293,16 +323,28 @@ from 1 to 16 kHz, each a sixth-order band-pass so that the quiet top octaves
 keep their measured level: each strike starts its own burst with the density,
 decay and left/right balance measured for its pitch. Under a treble note's
 fundamental the burst falls in two stages that add in power, the second
-slower and quieter. A shared bank of 88 open-string
-resonators supplies the sympathetic response the Resonance control sets. Its
-top twenty are the undamped strings from F6 up, which every strike sets
-ringing whatever that control: each but the struck key's own, at the level the
-recorded pitches around the key set it, and each at its own measured pitch,
-decay and stereo pickup whichever key struck it. Each starts with its own
-prompt part, as a struck unison does, that is gone within a few tenths of a
-second: at contact from too little to hear up to 25 dB over the string's own
-on the grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. They
-ring on after the key is let go; the felt mute damps them.
+slower and quieter. From F♯4 up (G♯4 on the upright) the same burst carries
+the strike's knock, in up to 15 bands from 630 Hz to 16 kHz: from contact, at
+the density, decay and balance measured for its pitch and layer, falling
+faster than the ring, mostly within a few tens of milliseconds.
+
+The undamped strings from F6 up ring with every strike, whatever the
+Resonance control: each but the struck key's own, at the level the recorded
+pitches around the key set it, and each at its own measured pitch, decay and
+stereo pickup whichever key struck it. Each starts with its own prompt part,
+as a struck unison does, that is gone within a few tenths of a second: at
+contact from too little to hear up to 25 dB over the string's own on the
+grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. They ring
+on after the key is let go; the felt mute damps them. The damped strings, A0
+to E6, ring in sympathy as far as their dampers are off, under the sustain
+pedal or a held key, at the level the Resonance control sets: each key's
+first eight partials under 5 kHz, at the frequencies a strike of that key
+plays them, driven by the piano's output at unity gain at resonance and heard
+at the key's place in the image. A key's own strikes do not drive its
+string: they are its sound. They decay at the rate the grand's pedal-down
+recording measures for their frequency, 0.32/s at middle C (2.8 dB/s) and a
+third faster per octave up, and the pedal going down sets the strings it frees
+ringing, at the level per third-octave band that recording rings them with.
 
 A strike's tone moves with velocity beyond its layer: each partial gains
 0.4 dB per octave of its order (up to four) for every decibel its layer plays
@@ -421,13 +463,26 @@ the ring falls in two stages: a second, slower line is fitted through the
 frames from 0.15 to 0.6 s after contact that stand 10 dB over the floor, and
 the first is refitted on what the second leaves of the early frames. Above
 the fundamental the late frames mix the ring with the note's own unresolved
-partials, so only the first is fitted there. The
+partials, so only the first is fitted there. The strike's knock is measured
+from contact, in third-octave bands from 630 Hz to 16 kHz: through 20 ms
+frames centred 10 to 35 ms after contact, between the partials, what the
+residual holds beyond the body's modes and the ring, where it stands over the
+ring in four frames or more and falls faster; per pitch and band one decay,
+the median of its layers' slopes, and per layer its density at contact under
+it. The
 action's knocks are measured from each recorded pitch's key-release take and
 the sustain pedal's two: a level and phase per mode at the knock's onset,
 fitted on the same modes under one rise they share; the recordings were gained
 up as a set, so their level against the notes is the library's SFZ mix (a
 release at −37 dB tracking velocity and 2 dB quieter for each second held, the
-pedal at −20 dB down and −19 dB up), not a measurement. A strike interpolates
+pedal at −20 dB down and −19 dB up), not a measurement. The open strings'
+decay comes from the train pedal-down take, which rings them for seconds once
+the pedal's knock has passed: each string peak from 60 Hz to 5 kHz that stands
+6 dB over its floor for 0.8 s or more and clearly falls, 99 of them, its slope
+over 0.5 s frames, and over them the rate's log linear in octaves. Per
+third-octave band from 63 Hz to 5 kHz, the level every freed partial starts at
+as the dampers lift is the one that rings the take's energy there from 0.3 to
+2.3 s, in the take's own scale. A strike interpolates
 between the recorded pitches by partial order and between the layers by
 velocity, taking phases from the nearer pitch; a partial's stereo pickup moves
 between the two pitches' channel level and phase differences, and its level is
@@ -478,13 +533,21 @@ lists every note where a candidate is worse than the shipping engine. The [curre
 compares this engine with 0.3.0; the [upright's](Docs/validation/upright-recording-benchmark-2026-10-28.md)
 scores the upright on its own recordings against the grand's data played on
 them. `Tools/benchmark_releases.py` scores the upright's key releases against
-its train and dev key-release takes ([report](Docs/validation/upright-release-benchmark-2026-10-28.md)).
+its train and dev key-release takes ([report](Docs/validation/upright-release-benchmark-2026-10-28.md)),
+and `Tools/benchmark_pedal.py` the grand's sustain pedal going down against
+its train and dev pedal-down takes, band by band, the strings' ring against
+the knock and its fall ([report](Docs/validation/grand-open-strings-benchmark-2026-10-30.md)).
 
 ### Pedals and keyswitches
 
-Sustain lifts the dampers continuously, so half pedalling damps part way.
+Sustain lifts the dampers continuously, so half pedalling damps part way;
+going down it sets the strings it frees ringing (**The modal engine**).
 Sostenuto captures the keys held as it crosses halfway down and holds only
-those. Soft lowers the level and the high-partial excitation of later strikes.
+those. Soft acts on later strikes as each piano's action does: the grand's
+shifts the hammers to fewer strings (una corda), lowering the level and the
+high partials and moving energy to the slowest lane, and the upright's brings
+them halfway to the strings (half-blow), so that a strike plays as one √½ as
+fast, as a hammer thrown as hard over half the distance arrives.
 Each pedal takes the largest of its panel control, its MIDI controller (CC64,
 CC66, CC67) and its momentary keyswitch (MIDI 14, 13, 12, below the piano's
 A0). The top twenty keys have no dampers, as on a grand. A damper's felt
@@ -563,8 +626,16 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - The modal engine does not model nonlinear hammer contact or a reciprocal
   soundboard; the full physical model in `Experiments/` does, but it is several
   times slower than real time.
-- Pedal behaviour is not validated against recordings: the training recordings
-  do not document pedal positions or timings. The pedal knocks play at the
+- Of the pedals only the grand's sustain pedal going down, alone, is scored
+  against recordings, its strings' ring and fall (above). The recordings do
+  not document pedal positions or timings, so half pedalling, repedalling and
+  the pedal coming up are not validated, and the strings sound alike however
+  fast the pedal goes down. No recording plays notes under the pedal, so how
+  loud the open strings ring in sympathy with what is played is the Resonance
+  control's, not a measurement, and how they ring on from 1 to 4 s is fitted
+  on one decay law: from 250 Hz to 1 kHz they fall 2 to 5 dB further over
+  those seconds than the pedal-down takes, from 3 to 5 kHz 2 to 5 dB less. The
+  pedal knocks play at the
   library's mix and the key knocks at a level the owner chose by ear, not a
   measured level, and only as far as the
   body's modes hold them: 26 to 67 % of each recorded knock below 1 kHz, and
@@ -623,7 +694,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   under its train and dev takes there.
   The body rings on after key-up; whether a real one stops sooner when the
   dampers land is not measured. In their first 50 ms the notes from C6 up sit
-  2 to 8 dB under the recordings from 400 Hz to 2.5 kHz.
+  2 to 8 dB under the recordings from 400 Hz to 2.5 kHz. At the top the knock
+  brings a strike to its peak sooner than the recordings: F♯6, F♯7 and A7
+  rise from 10 to 90 % of it in 4 to 5 ms at every layer, where the grand's
+  recordings take 6.6 to 10.8 ms (A7's softest 15 ms)
+  ([benchmark](Docs/validation/grand-knock-from-contact-benchmark-2026-10-30.md)).
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
   measure the board noise in six to ten of the thirteen bands; those bands are
   interpolated between the nearest pitches that measured them.
@@ -644,10 +719,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   bass and treble than the grand's: its velocity-127 chords lose a median
   4.7 dB (above), and their attacks, which would peak 5.8 dB over full
   scale, meet the limiter.
-- The upright's soft pedal is the grand's: it lowers the level and the high
-  partials and moves energy to the slowest lane as an una corda does, where an
-  upright's moves the hammers closer to the strings. Its pedals are silent
-  (above). Its dampers all land alike, where from C1 to F♯2 the felt reaches
+- No recording plays the upright's soft pedal: its half-blow assumes the rail
+  brings the hammers halfway to the strings and that the key accelerates
+  them evenly. It has no pedal recordings at all, so its pedals make no sound
+  of their own (above) and its open strings ring at the grand's rates. Its
+  dampers all land alike, where from C1 to F♯2 the felt reaches
   the strings 0.1 to 0.3 s later into the release takes than elsewhere,
   whether those takes start earlier or those dampers land more slowly. Where a
   damped partial lies on an undamped string, the takes hold that string

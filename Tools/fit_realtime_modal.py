@@ -13,9 +13,11 @@ layers, with lanes whose rates and frequencies the strings fix and whose
 complex amplitude per microphone the hammer and the pickup set. What the
 partials leave below the treble's fundamentals gives the body modes every
 strike knocks, and the undamped strings from F6 up, which every strike sets
-ringing, are measured as tones at their own pitches across the anchors. The
-upright's key-release takes give what its dampers leave ringing. The
-fitted numbers go into the piano's header in Source/DSP (MeasuredModalData.h,
+ringing, are measured as tones at their own pitches across the anchors.
+Between the partials, the board's ring and the strike's knock are band
+noise. The upright's key-release takes give what its dampers leave ringing,
+and the grand's pedal-down take how fast the strings the pedal frees ring on.
+The fitted numbers go into the piano's header in Source/DSP (MeasuredModalData.h,
 MeasuredUprightData.h), in the types of MeasuredTypes.h; no recorded waveform
 or impulse response enters a header.
 
@@ -1201,6 +1203,142 @@ def action_data(model, notes, hz, rates, shapes):
     return out
 
 
+# The strings the sustain pedal leaves free ring on in sympathy with what the
+# piano plays (the engine's open strings). A pedal-down take holds them: once
+# the pedal's knock has passed, the strings ring at their own pitches for
+# seconds. From OPEN_START after its onset (where its power over 5 ms first
+# comes within 30 dB of its peak), 0.5 s Hann frames every 0.1 s; its peaks
+# in OPEN_BAND are those of the frames' mean power over their first 2 s,
+# 10 dB prominent and at least 1.5 Hz apart. A peak's level is the most
+# power within 0.6 Hz of it, its floor the median from 2.5 to 8 Hz either
+# side, and its decay the Theil-Sen slope of its level over the frames from
+# the first while it stands 6 dB over its floor, at least eight of them,
+# kept where the slope's 95 % interval lies under zero. Over those peaks the
+# decay rate's log is fitted linear in the octaves from C4 (Theil-Sen), as a
+# string's losses rise with its frequency.
+OPEN_START, OPEN_BAND = .3, (60.0, 5000.0)
+
+
+def open_ring_peaks(path):
+    """The strings' peaks a pedal-down take or render rings with (see
+    OPEN_START): per peak its frequency (Hz), decay (dB/s) and the upper end
+    of its 95 % interval, how many frames it stands clear and its median
+    level over its floor (dB)."""
+    import numpy as np
+    from scipy import signal, stats
+    import piano_analysis as pa
+    sr, x = pa.load(path)
+    m = x.mean(axis=1)
+    power = np.array([np.mean(m[i:i + int(.005 * sr)] ** 2) for i in range(0, len(m) - int(.005 * sr), int(.005 * sr))])
+    onset = int(np.flatnonzero(power >= power.max() * 1e-3)[0]) * int(.005 * sr)
+    length, hop, nfft = int(.5 * sr), int(.1 * sr), 1 << 18
+    w = signal.windows.hann(length)
+    hz = np.fft.rfftfreq(nfft, 1 / sr)
+    starts = range(onset + int(OPEN_START * sr), len(m) - length, hop)
+    t = np.array([(a - onset + length / 2) / sr for a in starts])
+    frames = np.array([np.abs(np.fft.rfft(m[a:a + length] * w, nfft)) ** 2 for a in starts])
+    first = 10 * np.log10(frames[t < t[0] + 2].mean(axis=0) + 1e-30)
+    band = np.flatnonzero((hz >= OPEN_BAND[0]) & (hz < OPEN_BAND[1]))
+    found, _ = signal.find_peaks(first[band], prominence=10, distance=int(1.5 / hz[1]))
+    peaks = []
+    for p in band[found]:
+        level = 10 * np.log10(frames[:, np.abs(hz - hz[p]) < .6].max(axis=1) + 1e-30)
+        side = (np.abs(hz - hz[p]) > 2.5) & (np.abs(hz - hz[p]) < 8)
+        over = level - 10 * np.log10(np.median(frames[:, side], axis=1) + 1e-30)
+        unclear = np.flatnonzero(over <= 6)
+        n = int(unclear[0]) if len(unclear) else len(over)
+        if n < 8:
+            continue
+        slope, _, _, upper = stats.theilslopes(level[:n], t[:n])
+        peaks.append({'hz': float(hz[p]), 'db_s': float(slope), 'upper_db_s': float(upper), 'frames': n,
+                      'over_db': float(np.median(over[:n]))})
+    return peaks
+
+
+def open_string_data(model):
+    """The open strings' decay rate (1/s) at C4 and its log slope per octave,
+    from the piano's pedal-down take (see OPEN_START), and the fit's spread."""
+    import numpy as np
+    from scipy import stats
+    take = model['pedal'][0]
+    if json.loads(model['split'].read_text())['cases'].get(take) != 'train':
+        raise SystemExit('the open strings are fitted on a train recording only')
+    peaks = [p for p in open_ring_peaks(model['wav'] / f'{take}.wav') if p['upper_db_s'] < 0]
+    x = np.log2(np.array([p['hz'] for p in peaks]) / 261.63)
+    rates = -np.array([p['db_s'] for p in peaks]) / 8.685889638
+    slope, intercept, _, _ = stats.theilslopes(np.log(rates), x)
+    error = np.abs(8.685889638 * (rates - np.exp(intercept + slope * x)))
+    return {'take': take, 'peaks': len(peaks), 'rate': float(np.exp(intercept)), 'slope': float(slope),
+            'median_error_db_s': float(np.median(error))}
+
+
+# What the dampers set ringing as they lift off. In the pedal-down take the
+# strings ring on with more energy from 0.3 to 2.3 s after its onset than the
+# pedal's knock holds before (4 dB more over 63 Hz to 5 kHz); played only
+# through the body's knock, the open strings stood 40 to 45 dB under it. Per
+# third-octave band of LIFT_BANDS, the take's energy from LIFT_TIMES[0] to
+# LIFT_TIMES[1] after its onset (as OPEN_START finds it) is the strings', and
+# every open string's partial in the band starts at the one level, in the
+# take's own scale, that rings that energy there through the engine's open
+# strings (open_partials) at their default width, 0.75, each at its key's
+# place: per partial (1 + (0.75 p)^2) (level^2 / 2) times the integral of
+# e^(-2 rate t) over those times.
+LIFT_BANDS = [1000.0 * 2 ** (k / 3) for k in range(-12, 8)]   # Hz: 63 Hz to 5 kHz
+LIFT_TIMES = (.3, 2.3)                                       # s after the onset
+
+
+def open_partials(anchors, law):
+    """The engine's open strings on the measured piano (KeyraEngine.cpp,
+    assemble()): per damped key from A0 to E6 its first eight partials under
+    OPEN_BAND's top, at the key's pitch, stiffness and partial tunings between
+    the anchors around it, each as (Hz, decay rate 1/s, pan)."""
+    import math
+
+    def cents(a):
+        return 1200 * math.log2(a['f1'] / (440 * 2 ** ((a['note'] - 69) / 12)))
+    out = []
+    for note in range(21, 89):
+        upper = next((k for k in range(1, len(anchors) - 1) if anchors[k]['note'] >= note), len(anchors) - 1)
+        a, b = anchors[upper - 1], anchors[upper]
+        x = (note - a['note']) / (b['note'] - a['note'])
+        f1 = 440 * 2 ** ((note - 69 + (cents(a) + (cents(b) - cents(a)) * x) / 100) / 12)
+        stiffness = math.exp(math.log(a['B']) + (math.log(b['B']) - math.log(a['B'])) * x)
+        t = min(1.0, max(0.0, x))
+        for n in range(1, 9):
+            ca = next((p['cents'] for p in a['partials'] if p['order'] == n), None)
+            cb = next((p['cents'] for p in b['partials'] if p['order'] == n), None)
+            c = ca + (cb - ca) * t if ca is not None and cb is not None else ca if ca is not None else cb or 0.0
+            hz = n * f1 * math.sqrt((1 + stiffness * n * n) / (1 + stiffness)) * 2 ** (c / 1200)
+            if hz < OPEN_BAND[1]:
+                out.append((hz, law['rate'] * math.exp(law['slope'] * math.log2(hz / 261.63)), (note - 64.5) / 80))
+    return out
+
+
+def open_lift(model, anchors, law):
+    """Per band of LIFT_BANDS the level (dB, the take's scale) every open
+    string's partial there starts at as the dampers lift (see LIFT_BANDS);
+    -200 dB in a band no partial reaches."""
+    import math
+    import numpy as np
+    import piano_analysis as pa
+    sr, x = pa.load(model['wav'] / f'{law["take"]}.wav')
+    m = x.mean(axis=1)
+    power = np.array([np.mean(m[i:i + int(.005 * sr)] ** 2) for i in range(0, len(m) - int(.005 * sr), int(.005 * sr))])
+    onset = int(np.flatnonzero(power >= power.max() * 1e-3)[0]) * int(.005 * sr)
+    y = x[onset + int(LIFT_TIMES[0] * sr):onset + int(LIFT_TIMES[1] * sr)]
+    spectrum = np.mean(np.abs(np.fft.rfft(y, axis=0)) ** 2, axis=1) * 2 / len(y) / sr
+    hz = np.fft.rfftfreq(len(y), 1 / sr)
+    partials = open_partials(anchors, law)
+    levels = []
+    for centre in LIFT_BANDS:
+        lo, hi = centre * 2 ** (-1 / 6), centre * 2 ** (1 / 6)
+        rung = sum((1 + (.75 * pan) ** 2) / 2 * (math.exp(-2 * rate * LIFT_TIMES[0]) - math.exp(-2 * rate * LIFT_TIMES[1]))
+                   / (2 * rate) for f, rate, pan in partials if lo <= f < hi)
+        energy = float(spectrum[(hz >= lo) & (hz < hi)].sum())
+        levels.append(10 * math.log10(energy / rung) if rung > 0 else NOISE_SILENT)
+    return levels
+
+
 # What a piano's dampers leave ringing, from its key-release takes where they
 # show it (MODELS 'damper'): each take is a key let go, recorded from about
 # the key-up. Its partials up to the tenth are measured every 10 ms through
@@ -1566,6 +1704,222 @@ def noise_data(results, datas, wav, tail_floor):
     return {'hz': NOISE_BANDS, 'coherence': coherence, 'anchors': anchors}
 
 
+# The strike's knock. For the first 20 ms after the hammer meets the
+# strings, between the partials, both pianos' recordings stood 5 to 16 dB
+# over everything else the engine played from 250 Hz to 10 kHz; from 35 ms
+# on the body and the board's noise ring as recorded. It is measured from
+# contact, where the engine plays it: per layer and third-octave band from
+# 630 Hz to 16 kHz, the residual's density between the partials through
+# 20 ms Hann frames every 2.5 ms whose centres run KNOCK_TIMES after
+# contact, each frame wholly after it, less what the body modes and the
+# ring's two stages play there (as the engine plays them, averaged over
+# each frame), in dB through the frames where the rest stands over the
+# ring, at least four, and falls faster than the ring there (the upper end
+# of its slope's 95 % interval under the ring's decay): the bass's 16 kHz
+# band held its floor, 3 dB over the ring and level to within 35 dB/s.
+# Bins within 1.5 main-lobe half-widths (150 Hz) of the partials are left
+# out, as noise_bands leaves them, and a band that keeps under a quarter of
+# its bins is not measured there. A frame's density is the mean of its
+# bins' power: the knock is what the frame holds beyond the ring, tones
+# included. Each anchor's knock falls in a band at the median of its
+# layers' slopes, and each layer's level at contact is fitted under that
+# decay. Measured from the onset instead, a fall per band shared across the
+# anchors took the treble's slow upper bands (about 180 dB/s at 16 kHz)
+# while the bass's own fell at 1000 to 2700 dB/s, and the bass's knock,
+# met 9 ms before contact by the key and action, sat 15 to 25 dB over its
+# recordings through the first 0.1 s. Under 630 Hz what the frames find
+# falls as the body modes ring, not as a knock (16 to 120 dB/s on the grand).
+KNOCK_BANDS = [1000.0 * 2 ** (k / 3) for k in range(-2, 13)]   # Hz: 630 Hz to 16 kHz
+KNOCK_WINDOW, KNOCK_HOP = .02, .0025                         # s
+KNOCK_TIMES = (.01, .035)                                    # s after contact: the frames' centres
+
+
+def ring_density(body_knocks, body, noise_band, i, x_level, lo, hi, tau):
+    """The density (1/Hz) the engine's ring plays in the band (lo, hi) Hz at
+    `tau` s after contact at layer i, whose level is `x_level` (layer_level):
+    the body modes in the band, both stages, spread over it, and the band's
+    noise, both stages (`noise_band`, None under its bands)."""
+    import numpy as np
+    tau = np.asarray(tau, float)
+    total = np.zeros_like(tau)
+    for m, (fm, rate, slow) in enumerate(zip(body['hz'], body['rates'], body['slow_rates'])):
+        if not lo <= fm < hi:
+            continue
+        k = body_knocks[m]
+        for level, slope, r in ((k['level_db'], k['slope_db'], rate), (k['slow_level_db'], k['slow_slope_db'], slow)):
+            if np.isfinite(r) and level > NOISE_SILENT + 50:
+                total += 10 ** ((level + slope * x_level) / 10) / 2 * np.exp(-2 * r * tau) / (hi - lo)
+    if noise_band is not None:
+        for level, decay in ((noise_band['level_db'][i], noise_band['decay_db_s']),
+                             (noise_band['slow_db'][i], noise_band['slow_decay_db_s'])):
+            if level > NOISE_SILENT + 50:
+                total += 10 ** ((level + decay * tau) / 10)
+    return np.where(tau >= 0, total, 0.0)
+
+
+def knock_bands(result, data, body, body_knocks, noise_bands_of, grid, layer_level):
+    """Per band of KNOCK_BANDS the knock's decay (dB/s), the median of its
+    layers' slopes (NaN where fewer than three layers find it), and per layer
+    and band (layers x KNOCK_BANDS) its density at contact under that decay
+    (dB re 1/Hz, stereo mean), its right-over-left level difference (dB) and
+    left/right coherence over the first four frames, and the ring's density
+    in the first frame (dB), the bound under which a layer that measures the
+    band finds no knock; NaN where it does not, the bound too where the band
+    cannot be measured. `noise_bands_of` maps a band's centre to the anchor's
+    noise band there."""
+    import math
+    import numpy as np
+    from scipy import signal, stats
+    sr = result['sr']
+    length = int(KNOCK_WINDOW * sr)
+    nfft = 1 << int(math.ceil(math.log2(2 * length)))
+    w = signal.windows.hann(length, sym=False)
+    hz = np.fft.rfftfreq(nfft, 1 / sr)
+    keep = np.ones(len(hz), bool)
+    for f in np.r_[result['freqs'], [q['hz'] for L in result['layers'] for q in L['found']]]:
+        keep &= np.abs(hz - f) > 1.5 * 2 / KNOCK_WINDOW
+    bins = []
+    for centre in KNOCK_BANDS:
+        band = (hz >= centre * 2 ** (-1 / 6)) & (hz < centre * 2 ** (1 / 6))
+        bins.append(band & keep if band.sum() and (band & keep).sum() >= .25 * band.sum() else None)
+    scale = 2 / (sr * np.sum(w * w))
+    weights = w * w / np.sum(w * w)                     # where in a frame its power comes from
+    offsets = (np.arange(length) - length // 2) / sr
+    times = np.arange(KNOCK_TIMES[0], KNOCK_TIMES[1] + 1e-9, KNOCK_HOP)
+    x_levels = np.interp([L['velocity'] for L in result['layers']], grid, layer_level)
+    shape = (len(result['layers']), len(KNOCK_BANDS))
+    slopes, level, balance, coherence, bound = (np.full(shape, np.nan) for _ in range(5))
+    held = {}
+    for i, L in enumerate(result['layers']):
+        pre = L['pre_onset'].astype(float)
+        x = np.vstack([pre, L['residual'].astype(float)])
+        contact = L['delay'] - data['layer_shift_ms'][i] / 1000
+        frames = []
+        for tau in times:
+            a = len(pre) + int(round((contact + tau) * sr)) - length // 2
+            if 0 <= a <= len(x) - length:
+                frames.append((tau, np.fft.rfft(x[a:a + length] * w[:, None], nfft, axis=0)))
+        if len(frames) < 4:
+            continue
+        at = np.array([tau for tau, _ in frames])
+        for j, band in enumerate(bins):
+            if band is None:
+                continue
+            centre = KNOCK_BANDS[j]
+            lo, hi = centre * 2 ** (-1 / 6), centre * 2 ** (1 / 6)
+            ring_band = noise_bands_of.get(round(centre))
+            density = np.array([float(np.mean(np.abs(z[band]) ** 2 * scale)) for _, z in frames])
+            ring = np.array([float(weights @ ring_density(body_knocks, body, ring_band, i, x_levels[i], lo, hi,
+                                                          tau + offsets)) for tau in at])
+            bound[i, j] = 10 * math.log10(max(ring[0], 1e-30))
+            rest = density - ring
+            clear = rest > ring
+            if clear.sum() < 4:
+                continue
+            db = 10 * np.log10(rest[clear])
+            slope, _, _, upper = stats.theilslopes(db, at[clear])
+            ring_decay = ring_band['decay_db_s'] if ring_band is not None and \
+                ring_band['level_db'][i] > NOISE_SILENT + 50 else 0.0
+            if upper >= ring_decay:
+                continue
+            slopes[i, j] = slope
+            held[i, j] = (at[clear], db)
+            left = np.concatenate([z[band, 0] for _, z in frames[:4]])
+            right = np.concatenate([z[band, 1] for _, z in frames[:4]])
+            balance[i, j] = 10 * math.log10(np.sum(np.abs(right) ** 2) / np.sum(np.abs(left) ** 2))
+            coherence[i, j] = abs(np.sum(left * np.conj(right))) / math.sqrt(
+                np.sum(np.abs(left) ** 2) * np.sum(np.abs(right) ** 2))
+    decay = np.full(len(KNOCK_BANDS), np.nan)
+    for j in range(len(KNOCK_BANDS)):
+        found = np.isfinite(slopes[:, j])
+        if found.sum() < 3:
+            balance[:, j] = coherence[:, j] = np.nan
+            continue
+        decay[j] = float(np.median(slopes[found, j]))
+        # A frame holds its decay's mean over its window, which for this
+        # decay is this much over the line at its centre.
+        over = 10 * math.log10(float(weights @ 10 ** (decay[j] * offsets / 10)))
+        for i in np.flatnonzero(found):
+            at, db = held[i, j]
+            level[i, j] = float(np.median(db - decay[j] * at)) - over
+    return decay, level, balance, coherence, bound
+
+
+def knock_data(results, datas, body, noise, grid, layer_level):
+    """The strike's knock in every band of KNOCK_BANDS (see there).
+
+    Per band one coherence, the median over every layer of every anchor that
+    measures it (the nearest band's where none does); under the noise bands
+    the knock takes it, above them it shares the noise's. Per anchor and
+    band: the decay (knock_bands), the density at contact per layer, smoothed
+    across velocity like the partials' levels, where a layer that does not
+    measure it counts weakly at 3 dB under the ring's density there, and the
+    right-over-left difference, the median over the measured layers. An
+    anchor that finds the knock in fewer than three layers of a band it
+    measures plays none there; one that cannot measure a band (its partials
+    leave too few bins) takes the levels of the anchors on either side that
+    measure it at its layers' velocities, interpolated over the pitch, and
+    plays none beyond the last of them, where nothing measures what it would
+    be: the bass and middle measure no knock from 5 kHz up, where the treble's
+    is loudest over its ring. An anchor without a decay of its own takes its
+    neighbours' (log-linear over the pitch, the nearest one's beyond them), so
+    that a key between it and one that knocks falls at that one's."""
+    import numpy as np
+    measured = []
+    for k, (r, d) in enumerate(zip(results, datas)):
+        bands_of = {round(f): noise['anchors'][k][j] for j, f in enumerate(noise['hz'])}
+        measured.append(knock_bands(r, d, body, body['anchors'][k], bands_of, grid, layer_level))
+    coherences = []
+    for j in range(len(KNOCK_BANDS)):
+        values = np.concatenate([m[3][:, j] for m in measured])
+        coherences.append(float(np.median(values[np.isfinite(values)])) if np.isfinite(values).any() else np.nan)
+    known = [j for j, c in enumerate(coherences) if np.isfinite(c)]
+    for j in range(len(KNOCK_BANDS)):
+        if not np.isfinite(coherences[j]):
+            coherences[j] = coherences[min(known, key=lambda q: abs(q - j))] if known else 1.0
+    notes = np.array([r['note'] for r in results], float)
+    anchors = []
+    for d, (decay, level, balance, _, bound) in zip(datas, measured):
+        velocities = np.array(d['velocities'])
+        bands = []
+        for j in range(len(KNOCK_BANDS)):
+            clear = np.isfinite(level[:, j])
+            if not np.isfinite(decay[j]):
+                silent = {'level_db': np.full(len(velocities), NOISE_SILENT), 'balance_db': 0.0}
+                bands.append(silent if np.isfinite(bound[:, j]).any() else None)
+                continue
+            target = np.where(clear, level[:, j], np.nan_to_num(bound[:, j], nan=NOISE_SILENT) - 3)
+            bands.append({'level_db': smooth_levels(velocities, target, np.where(clear, 1.0, .1)),
+                          'balance_db': float(np.median(balance[clear, j])), 'decay_db_s': float(decay[j])})
+        anchors.append(bands)
+    every = [b['decay_db_s'] for bands in anchors for b in bands if b is not None and 'decay_db_s' in b]
+    for j in range(len(KNOCK_BANDS)):
+        heard = [k for k, bands in enumerate(anchors) if bands[j] is not None]
+        for k, bands in enumerate(anchors):
+            if bands[j] is not None:
+                continue
+            below = [i for i in heard if notes[i] < notes[k]]
+            above = [i for i in heard if notes[i] > notes[k]]
+            if below and above:
+                around = [below[-1], above[0]]
+                levels = np.array([np.interp(notes[k], notes[around],
+                                             [level_at(datas[i]['velocities'], anchors[i][j]['level_db'], v)
+                                              for i in around])
+                                   for v in datas[k]['velocities']])
+                balance = float(np.interp(notes[k], notes[around], [anchors[i][j]['balance_db'] for i in around]))
+            else:
+                levels, balance = np.full(len(datas[k]['velocities']), NOISE_SILENT), 0.0
+            bands[j] = {'level_db': levels, 'balance_db': balance, 'filled': True}
+        timed = [k for k, bands in enumerate(anchors) if 'decay_db_s' in bands[j]]
+        for k, bands in enumerate(anchors):
+            if 'decay_db_s' not in bands[j]:
+                bands[j]['decay_db_s'] = -float(np.exp(np.interp(
+                    notes[k], notes[timed], [np.log(-anchors[i][j]['decay_db_s']) for i in timed]))) \
+                    if timed else float(np.median(every)) if every else -400.0
+    return {'hz': KNOCK_BANDS, 'coherence': coherences, 'anchors': anchors,
+            'measured': [int(np.isfinite(m[1]).sum()) for m in measured]}
+
+
 def level_at(velocities, db, v):
     """A level (dB) at velocity v from its layers', as the engine's levelAt
     takes it: piecewise linear, continued beyond the layers with the end
@@ -1593,7 +1947,7 @@ def phase_at(velocities, phase, v):
     return cmath.phase(z) if abs(z) > 1e-6 else float(phase[i] if t < .5 else phase[i + 1])
 
 
-def on_grid(anchors, noise, grid):
+def on_grid(anchors, noise, knock, grid):
     """Anchors whose layers lie at other velocities than `grid` (a pitch
     without one of the layers, or a layer whose range spans two of the
     grid's) carried onto it as the engine would play them: levels and
@@ -1612,7 +1966,33 @@ def on_grid(anchors, noise, grid):
         for b in bands:
             b['level_db'] = np.array([level_at(v, b['level_db'], g) for g in grid])
             b['slow_db'] = np.array([level_at(v, b['slow_db'], g) for g in grid])
+        for b in knock['anchors'][anchors.index(a)]:
+            b['level_db'] = np.array([level_at(v, b['level_db'], g) for g in grid])
         a['velocities'] = list(grid)
+
+
+def noise_with_knock(noise, knock):
+    """The ring's bands (NOISE_BANDS) within the knock's (KNOCK_BANDS): per
+    band its centre and coherence, and per anchor and band the ring's two
+    stages, silent under the noise bands, and the knock."""
+    import numpy as np
+    ring = {round(f): j for j, f in enumerate(noise['hz'])}
+    silent = {'decay_db_s': -400.0, 'balance_db': 0.0, 'slow_decay_db_s': -400.0}
+    anchors = []
+    for k, bands in enumerate(knock['anchors']):
+        rows = []
+        for j, (f, b) in enumerate(zip(knock['hz'], bands)):
+            if round(f) in ring:
+                row = dict(noise['anchors'][k][ring[round(f)]])
+            else:
+                row = silent | {'level_db': np.full(len(b['level_db']), NOISE_SILENT),
+                                'slow_db': np.full(len(b['level_db']), NOISE_SILENT)}
+            rows.append(row | {'knock_db': b['level_db'], 'knock_balance_db': b['balance_db'],
+                               'knock_decay_db_s': b['decay_db_s']})
+        anchors.append(rows)
+    coherence = [noise['coherence'][ring[round(f)]] if round(f) in ring else c
+                 for f, c in zip(knock['hz'], knock['coherence'])]
+    return {'hz': knock['hz'], 'coherence': coherence, 'anchors': anchors}
 
 
 def number(x):
@@ -1626,7 +2006,7 @@ def wrap(text, width=76):
     return ['// ' + line for line in textwrap.wrap(text, width)]
 
 
-def header(model, grid, layer_level, anchors, halo, body, noise, action, damper):
+def header(model, grid, layer_level, anchors, halo, body, noise, action, damper, open_strings):
     """The model's generated header: its data in the types of MeasuredTypes.h,
     in namespace keyra::measured::<name>."""
     import math
@@ -1715,6 +2095,17 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
         if edge in action:
             lines.append(f'constexpr std::array<ActionKnock,{modes}> {"pedalDown" if edge == "pedal_down" else "pedalUp"}'
                          + '{{' + ','.join(action_knock(k) for k in action[edge]) + '}};')
+    if open_strings:
+        lines += wrap('The strings the sustain pedal leaves free (the engine\'s open strings): their decay rate '
+                      '(1/s) at C4 and its log slope per octave, rate = openStringRate e^(openStringRateSlope '
+                      'log2(f / 261.63 Hz)), from the pedal-down take.')
+        lines += [f'constexpr float openStringRate={number(open_strings["rate"])};',
+                  f'constexpr float openStringRateSlope={number(open_strings["slope"])};']
+        lines += wrap('The level (dB, in the pedal-down take\'s own scale) each open string\'s partial starts at as '
+                      'the pedal lifts its damper, per third-octave band from 63 Hz to 5 kHz (1 kHz x 2^(k/3), '
+                      'k = -12 to 7), so that the strings ring as the take does.')
+        lines.append(f'constexpr std::array<float,{len(open_strings["lift_db"])}> openStringLiftDb'
+                     + '{{' + ','.join(number(x) for x in open_strings['lift_db']) + '}};')
     if damper:
         lines += wrap('What the felt leaves ringing of a damped partial (measured::Damper), from the '
                       'train key-release takes.')
@@ -1725,7 +2116,9 @@ def header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
     lines += table('Noise', 'noise', bands, [['{' + number(-b['decay_db_s'] / 8.685889638) + ',' + number(b['balance_db'])
                                      + ',{{' + ','.join(number(x) for x in b['level_db']) + '}},'
                                      + number(-b['slow_decay_db_s'] / 8.685889638)
-                                     + ',{{' + ','.join(number(x) for x in b['slow_db']) + '}}}' for b in band_rows]
+                                     + ',{{' + ','.join(number(x) for x in b['slow_db']) + '}},'
+                                     + number(-b['knock_decay_db_s'] / 8.685889638) + ',' + number(b['knock_balance_db'])
+                                     + ',{{' + ','.join(number(x) for x in b['knock_db']) + '}}}' for b in band_rows]
                                     for band_rows in noise['anchors']])
     lines.extend([f'}}}}}} // namespace keyra::measured::{name}', ''])
     return '\n'.join(lines)
@@ -1785,16 +2178,23 @@ def generate(model):
     noise = noise_data(results, anchors, model['wav'], model.get('tail_floor', False))
     for record, bands in zip(records, noise['anchors']):
         record['noise_bands_filled'] = sum(1 for b in bands if b.get('filled'))
+    knock = knock_data(results, anchors, body, noise, grid, layer_level)
+    for record, bands, count in zip(records, knock['anchors'], knock['measured']):
+        record.update({'knock_bands_filled': sum(1 for b in bands if b.get('filled')), 'knock_measured': count})
     action = action_data(model, [a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
     halo = halo_data(results, strings, halo_hz, model['wav'], grid, layer_level)
     for record, kinds in zip(records, halo['kinds']):
         record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
                                   for kind in ('clear', 'under', 'filled')}
-    on_grid(anchors, noise, grid)
+    on_grid(anchors, noise, knock, grid)
+    noise = noise_with_knock(noise, knock)
     damper = damper_data(model, results, halo_hz) if model.get('damper') else None
-    content = header(model, grid, layer_level, anchors, halo, body, noise, action, damper)
+    open_strings = open_string_data(model) if model['pedal'] else None
+    if open_strings:
+        open_strings['lift_db'] = open_lift(model, anchors, open_strings)
+    content = header(model, grid, layer_level, anchors, halo, body, noise, action, damper, open_strings)
     metadata = {
-        'schema_version': 5,
+        'schema_version': 7,
         'corpus': str(model['corpus'].relative_to(ROOT)), 'corpus_sha256': sha256(model['corpus']),
         'split': str(model['split'].relative_to(ROOT)), 'split_sha256': sha256(model['split']),
         'roles_used': ['train'], 'dev_or_sealed_recordings_opened': False,
@@ -1839,7 +2239,14 @@ def generate(model):
                   'rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density '
                   'at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 '
                   'to 100 ms after contact, and under the fundamental the ring\'s slower second stage, its start '
-                  'per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. Anchors recorded at other '
+                  'per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. '
+                  'The strike\'s knock in third-octave bands from 630 Hz to 16 kHz: through 20 ms Hann frames every '
+                  '2.5 ms centred 10 to 35 ms after contact, between the partials, what the residual holds beyond the '
+                  'body modes and the ring, where it stands over the ring in four frames or more and falls faster than '
+                  'it; per anchor and band one decay, the median of its layers\' slopes, and per layer a density at '
+                  'contact under that decay, smoothed across velocity, and one left/right balance; none where fewer '
+                  'than three layers find it, and where the partials leave too few bins, the levels of the anchors on '
+                  'either side that measure it, none beyond them. Anchors recorded at other '
                   'velocities than the layers most have are carried onto those as the engine plays between and '
                   'beyond layers.'
                   + (' What the dampers leave ringing, from the train key-release takes below F6: their partials to '
@@ -1847,7 +2254,13 @@ def generate(model):
                      'every 10 ms to 3 s, under the engine\'s damper landing as a share the felt loss takes and a '
                      'loosely held share r falling at S, both besides the lanes\' own decay at velocity 85 from '
                      '1.5 s; r (dB) and ln S linear in octaves from 261.63 Hz, per take a key-up time and per '
-                     'partial a level.' if damper else '')),
+                     'partial a level.' if damper else '')
+                  + (' The strings the sustain pedal leaves free, from the train pedal-down take: the string '
+                     'peaks 60 Hz to 5 kHz it rings with from 0.3 s after its onset, each one\'s decay over 0.5 s '
+                     'frames while it stands 6 dB over its floor, at least 0.8 s, where it falls; the rate\'s log '
+                     'linear in octaves from 261.63 Hz; and per third-octave band from 63 Hz to 5 kHz the level '
+                     'each open string\'s partial starts at as the pedal lifts its damper, so that they ring the take\'s '
+                     'energy from 0.3 to 2.3 s after its onset at those rates.' if open_strings else '')),
         'anchors': records,
         'halo': {'strings': [{'key': key, 'hz': round(hz, 2), 'cents': round(cents, 2), 'rate': round(rate, 3),
                               'rate_layers': count, 'prompt_db': round(prompt, 2), 'prompt_windows': windows,
@@ -1871,6 +2284,13 @@ def generate(model):
                        'slow_rate_per_s': round(math.exp(damper['law'][2]), 4),
                        'slow_rate_ratio_per_octave': round(math.exp(damper['law'][3]), 4),
                        'mean_abs_db': damper['mean_abs_db'], 'takes': damper['takes']}} if damper else {}),
+        **({'open_strings': {'take': open_strings['take'], 'peaks': open_strings['peaks'],
+                             'rate_per_s_at_c4': round(open_strings['rate'], 4),
+                             'rate_ratio_per_octave': round(math.exp(open_strings['slope']), 4),
+                             'median_abs_error_db_s': round(open_strings['median_error_db_s'], 3),
+                             'lift_band_hz': [round(f, 1) for f in LIFT_BANDS],
+                             'lift_db': [round(x, 2) for x in open_strings['lift_db']]}}
+           if open_strings else {}),
         'noise': {'band_hz': [round(f, 1) for f in noise['hz']],
                   'coherence': [round(c, 3) for c in noise['coherence']]},
         'uncalibrated_anchors': [{'note': note, 'reason': reason} for note, reason in model['uncalibrated'].items()],

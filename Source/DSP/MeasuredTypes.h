@@ -51,16 +51,21 @@ struct ActionKnock { float levelDb, phase; };
 // e^(logRate + logRateSlope x) (1/s at full contact) besides the partial's
 // own decay, while the felt takes the rest at the engine's felt loss.
 struct Damper { float shareDb, shareSlopeDb, logRate, logRateSlope; };
-// A third-octave band of the board's dense ring above the modes: its centre
-// (Hz) and its left/right coherence.
+// A third-octave band of noise: its centre (Hz) and its left/right
+// coherence. The board's dense ring sounds in the bands above the modes, the
+// strike's knock in every band.
 struct NoiseBand { float hz, coherence; };
 // How a recorded pitch's strike excites a band: the decay rate (1/s), the
 // right-over-left level difference (dB) and per layer the noise density at
 // contact (dB re 1/Hz); then the ring's slower second stage, which the pitch
 // measures only under its fundamental: its decay rate and per layer its
-// density at contact (-200 dB where the pitch does not measure it).
+// density at contact (-200 dB where the pitch does not measure it); then
+// the strike's knock: its decay rate, right-over-left level difference (dB)
+// and per layer its density at contact (dB re 1/Hz). Under the modes' top
+// the ring's stages are silent.
 struct Noise {
   float rate, balanceDb; std::array<float,maxLayers> densityDb;
   float slowRate; std::array<float,maxLayers> slowDensityDb;
+  float knockRate, knockBalanceDb; std::array<float,maxLayers> knockDensityDb;
 };
 }} // namespace keyra::measured

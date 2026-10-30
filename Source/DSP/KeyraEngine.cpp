@@ -22,6 +22,13 @@ namespace upright=measured::upright;
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
 static_assert(upright::haloStrings.size()==grand::haloStrings.size(),"both pianos leave the same keys undamped");
+// The damped strings, A0 to E6, which ring in sympathy as far as their
+// dampers are off (the open strings): each with its first openPartials
+// partials, four to a bank. Eight reach three octaves under a key, through
+// the twelfth; with every damper off the bank takes about 3 % of one core of
+// the development machine. The pedal-down take measures them to 5 kHz.
+constexpr int damped=firstHalo-21,openPartials=8,openBanks=damped*openPartials/lanes;
+constexpr double openTop=5000;
 // A felt hammer's force grows from zero slope as the felt is pressed in (a
 // power law of its compression, exponent 2.2 to 3.5: Hall, JASA 92(1),
 // 1992; Stulov, JASA 97(4), 1995), so a strike's sound starts without a
@@ -261,9 +268,10 @@ bool advance(Body& body) noexcept {
   for(auto& bank:body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
   return false;
 }
-// Above the body modes the board's ring is noise in third-octave bands. A
-// strike's burst holds, per band and for each of the ring's two stages, its
-// left and right amplitude at the next chunk boundary and its decay per chunk.
+// Third-octave bands of noise: above the body modes the board's ring, and
+// in every band the strike's knock. A strike's burst holds, per band and for
+// each of the ring's two stages and the knock, its left and right amplitude
+// at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
 static_assert(upright::noiseBands.size()==grand::noiseBands.size(),"both pianos' noise has the same bands");
 // The noise filters are designed once from the grand's centres for every
@@ -275,18 +283,22 @@ static_assert(sameCentres(),"both pianos' noise bands share their centres");
 struct Burst {
   double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
   double slowLeft[noiseBands]{},slowRight[noiseBands]{},slowStep[noiseBands]{};
+  double knockLeft[noiseBands]{},knockRight[noiseBands]{},knockStep[noiseBands]{};
   std::uint64_t serial=0;
   bool active=false;
 };
 // One band: a band-pass of `noiseSections` sections (b1 = 0, b2 = -b0) on
 // each of two independent noise sources, mixed for the measured left/right
 // coherence, under gains that ramp across each chunk to the bursts' sum at
-// its end.
+// its end. A band whose gains stay under -180 dB through a chunk is left
+// unfiltered for it: most of the time the knock's bands under the modes'
+// top are silent.
 constexpr int noiseSections=3;
 struct NoiseBand {
   double b0[noiseSections]{},a1[noiseSections]{},a2[noiseSections]{},scale=0,c=1,s=0;
   double x1[noiseSections][2]{},x2[noiseSections][2]{},y1[noiseSections][2]{},y2[noiseSections][2]{};
   double left=0,right=0,leftStep=0,rightStep=0,leftEnd=0,rightEnd=0;
+  bool live=false;
 };
 struct Voice {
   std::array<Partial,maxPartials> partials{};
@@ -309,6 +321,15 @@ struct Channel {
   bool sostDown=false;
 };
 struct Resonator {double q=0,p=0,c=1,s=0,decay=1;};
+// Four partials of an open string: damped rotations the output drives (c, s
+// and drive for this chunk, from the undamped rotation, the decay per sample
+// and how open the string is), heard at their key's place (pan).
+struct alignas(16) OpenBank {
+  V4 re{},im{},c{},s{},drive{},pan{};
+  double naturalC[lanes]{},naturalS[lanes]{},decay[lanes]{};
+  bool heard[lanes]{};
+  bool active=false;
+};
 // A strike's data, interpolated between the two recorded pitches around it.
 // `ratio` and `angle` are its pickup's right-over-left level (natural log)
 // and phase difference.
@@ -554,9 +575,29 @@ struct Engine::Impl {
   // Each undamped string's frequency (Hz at A4 = 440 Hz).
   std::array<double,halo> haloHz{};
   std::array<Channel,16> channels{};
-  // The open strings, then each undamped string's prompt part.
-  std::array<Resonator,88+halo> sympathetic{};
+  // Each undamped string, and the prompt part it starts with.
+  std::array<Resonator,halo> haloRing{},haloPrompt{};
+  // The open strings' partials, string by string, and each one's frequency
+  // (Hz at A4 = 440 Hz) and decay rate (1/s) on the built piano; how far
+  // each key's damper is off its strings.
+  std::array<OpenBank,openBanks> open{};
+  std::array<double,damped*openPartials> openHz{},openRate{};
   std::array<double,88> openness{};
+  // Through a chunk, per damped key whose string is open, what its own
+  // strikes play into the open strings' drive, and whether any do: its
+  // string is their voices and does not ring with them. Driven by its own
+  // partials, the string's slower decay held a released C6's second partial
+  // 30 dB over its voice's after 2 s. A strike plays into voiceLeft and
+  // voiceRight first when its string is open.
+  std::array<std::array<float,chunk>,damped> ownDrive{};
+  std::array<bool,damped> owned{};
+  std::array<V4,chunk> voiceLeft{},voiceRight{};
+  std::array<float,chunk> heardDrive{};
+  // Through a chunk: what drives the open strings, the image's width, the
+  // output before them, and their sum and pan-weighted sum.
+  std::array<float,chunk> openDrive{};
+  std::array<double,chunk> openWidth{},dryLeft{},dryRight{};
+  std::array<V4,chunk> openSum{},openPan{};
   std::array<double,sineSize+1> sine{};
   std::array<V4,chunk> mixLeft{},mixRight{};
   // The body rings in `ring`, and the slower second stage of each mode's ring
@@ -641,6 +682,25 @@ struct Engine::Impl {
     return pickLog(keyStiffness(models[0],note),keyStiffness(models[1],note),parameters.build.strings)
            *std::pow(4.,static_cast<double>(parameters.build.stiffness));
   }
+  // A partial's tuning (cents from the stiff series) on the built strings as
+  // a strike plays it: between the recorded pitches around the key where both
+  // measure its order, else the one that does, then between the pianos by the
+  // strings' build; none where neither piano measures it.
+  double builtCents(int note,int order) const noexcept {
+    double cents[2]{};bool has[2]{};
+    for(int p=0;p<2;++p){const Model& m=models[p];const int upper=upperAnchor(m,note);
+      const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
+      const auto find=[&](const measured::Anchor& x,double& c){
+        for(int i=x.first;i<x.first+x.count&&m.partials[i].order<=order;++i)
+          if(m.partials[i].order==order){c=m.partials[i].cents;return true;}
+        return false;};
+      double ca=0,cb=0;const bool inA=find(a,ca),inB=find(b,cb);
+      const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
+      has[p]=inA||inB;cents[p]=inA&&inB?mix(ca,cb,t):inA?ca:cb;
+    }
+    if(has[0]&&has[1])return pick(cents[0],cents[1],parameters.build.strings);
+    return has[0]?cents[0]:cents[1];
+  }
   // The built piano's parts that ring between strikes, from the two pianos'
   // by the build: the undamped strings by the strings', the body's modes (the
   // two pianos' lowest with lowest, those only one has fading with its
@@ -670,19 +730,65 @@ struct Engine::Impl {
     bodyRise=pickLog(g.bodyRise,u.bodyRise,b);actionRise=pickLog(g.actionRise,u.actionRise,build.action);
     for(int k=0;k<noiseBands;++k)coherence[k]=pick(g.noiseBands[k].coherence,u.noiseBands[k].coherence,b);
     for(int j=0;j<halo;++j)haloHz[j]=builtPitch(firstHalo+j)*std::pow(2.,haloString[j].cents/1200);
+    // The open strings are the keys' own: each partial where a strike of its
+    // key plays it, decaying as the grand's pedal-down take measures the
+    // strings it frees (MeasuredModalData.h). The upright has no pedal
+    // recordings, and its strings ring on at the same rates.
+    for(int i=0;i<damped;++i){const int note=i+21;const double f1=builtPitch(note),B=builtStiffness(note);
+      for(int n=1;n<=openPartials;++n){const int k=i*openPartials+n-1;
+        openHz[k]=n*f1*std::sqrt((1+B*n*n)/(1+B))*std::pow(2.,builtCents(note,n)/1200);
+        openRate[k]=grand::openStringRate*std::exp(grand::openStringRateSlope*std::log2(openHz[k]/261.63))*ring;
+      }
+    }
   }
   void retuneSympathetic() noexcept {
-    // The shared open-string bank follows concert tuning, independently of
-    // channel pitch bends. Rebuild coefficients without resetting its q/p.
-    // The undamped strings ring at their measured frequencies and rates.
-    for(int i=0;i<88;++i){auto& mode=sympathetic[i];
-      const int j=i+21-firstHalo;
-      const double frequency=j<0?parameters.tuning*std::pow(2.,(i+21-69)/12.):haloHz[j]*parameters.tuning/440;
-      const Complex r=rotation(frequency);mode.c=r.re;mode.s=r.im;
-      mode.decay=std::exp(-(j<0?.7+.001*frequency:haloString[j].rate)/sampleRate);
+    // The strings that ring in sympathy follow concert tuning, independently
+    // of channel pitch bends. Rebuild coefficients without resetting their
+    // state. The undamped strings ring at their measured frequencies and rates.
+    for(int j=0;j<halo;++j){auto& string=haloRing[j];auto& prompt=haloPrompt[j];
+      const Complex r=rotation(haloHz[j]*parameters.tuning/440);string.c=prompt.c=r.re;string.s=prompt.s=r.im;
+      string.decay=std::exp(-haloString[j].rate/sampleRate);prompt.decay=std::exp(-haloPromptRate/sampleRate);}
+    for(int b=0;b<openBanks;++b){auto& bank=open[b];
+      for(int j=0;j<lanes;++j){const int k=b*lanes+j;
+        const double frequency=openHz[k]*parameters.tuning/440;
+        const Complex r=rotation(frequency);bank.naturalC[j]=r.re;bank.naturalS[j]=r.im;
+        bank.decay[j]=std::exp(-openRate[k]/sampleRate);
+        bank.heard[j]=frequency<std::min(openTop,.43*sampleRate);
+        setLane(bank.pan,j,static_cast<float>((k/openPartials-43.5)/80.));
+      }
+      steerOpen(bank,openness[b*lanes/openPartials]);
     }
-    for(int j=0;j<halo;++j){auto& prompt=sympathetic[88+j];const auto& string=sympathetic[firstHalo-21+j];
-      prompt.c=string.c;prompt.s=string.s;prompt.decay=std::exp(-haloPromptRate/sampleRate);}
+  }
+  // An open string's rotations and drive for the chunk: unity gain at
+  // resonance as far as its damper is off; one whose damper rests on it is
+  // damped 60/s besides, and CC1's mute damps them all as the felt does.
+  void steerOpen(OpenBank& bank,double openness) noexcept {
+    for(int j=0;j<lanes;++j){
+      const double d=bank.decay[j]/(1+(1-openness)*60/sampleRate+180*mute*mute/sampleRate);
+      setLane(bank.c,j,static_cast<float>(bank.naturalC[j]*d));setLane(bank.s,j,static_cast<float>(bank.naturalS[j]*d));
+      setLane(bank.drive,j,bank.heard[j]?static_cast<float>((1-bank.decay[j])*openness):0.f);
+    }
+  }
+  // At a chunk boundary: a partial under -240 dB falls silent, and a bank
+  // silent with its damper on stops.
+  void openChunk() noexcept {
+    for(int b=0;b<openBanks;++b){auto& bank=open[b];const int string=b*lanes/openPartials;
+      bool ringing=false;
+      for(int j=0;j<lanes;++j){const double re=lane(bank.re,j),im=lane(bank.im,j);
+        if(re*re+im*im<1e-24){setLane(bank.re,j,0);setLane(bank.im,j,0);}else ringing=true;}
+      bank.active=openness[string]>0||ringing;
+      if(bank.active)steerOpen(bank,openness[string]);
+    }
+  }
+  void silenceStrings() noexcept {
+    for(int j=0;j<halo;++j){haloRing[j].q=haloRing[j].p=haloPrompt[j].q=haloPrompt[j].p=0;}
+    for(auto& bank:open){bank.re=bank.im=V4{};bank.active=false;}
+  }
+  double stringResidue() const noexcept {
+    double residue=0;
+    for(int j=0;j<halo;++j)residue+=std::abs(haloRing[j].q)+std::abs(haloRing[j].p)+std::abs(haloPrompt[j].q)+std::abs(haloPrompt[j].p);
+    for(const auto& bank:open)for(int j=0;j<lanes;++j)residue+=std::abs(lane(bank.re,j))+std::abs(lane(bank.im,j));
+    return residue;
   }
   void prepareBody(bool glide=false) noexcept {
     // Each bank's decay per sample beyond the ring's; the late ring's is its own.
@@ -779,7 +885,7 @@ struct Engine::Impl {
     for(auto& burst:bursts)burst.active=false;
     for(auto& band:noise){
       for(int j=0;j<noiseSections;++j)for(int k=0;k<2;++k)band.x1[j][k]=band.x2[j][k]=band.y1[j][k]=band.y2[j][k]=0;
-      band.left=band.right=band.leftStep=band.rightStep=band.leftEnd=band.rightEnd=0;
+      band.left=band.right=band.leftStep=band.rightStep=band.leftEnd=band.rightEnd=0;band.live=false;
     }
     seed=1;hissing=false;
   }
@@ -789,16 +895,19 @@ struct Engine::Impl {
     return *chosen;
   }
   // At a chunk boundary: each band ramps from where the last chunk ended to
-  // the bursts' sum at this chunk's end, a burst's two stages adding in
-  // power; below -180 dB a burst ends.
+  // the bursts' sum at this chunk's end, a burst's stages adding in power;
+  // below -180 dB a burst ends, and a knock before it, so that the bands the
+  // knock alone sounds fall silent.
   void advanceNoise() noexcept {
     double target[2][noiseBands]{};bool any=false;
     for(auto& burst:bursts)if(burst.active){double energy=0;
       for(int b=0;b<noiseBands;++b){
         burst.left[b]*=burst.step[b];burst.right[b]*=burst.step[b];
         burst.slowLeft[b]*=burst.slowStep[b];burst.slowRight[b]*=burst.slowStep[b];
-        const double l=burst.left[b]*burst.left[b]+burst.slowLeft[b]*burst.slowLeft[b];
-        const double r=burst.right[b]*burst.right[b]+burst.slowRight[b]*burst.slowRight[b];
+        burst.knockLeft[b]*=burst.knockStep[b];burst.knockRight[b]*=burst.knockStep[b];
+        if(burst.knockLeft[b]<1e-9&&burst.knockRight[b]<1e-9)burst.knockLeft[b]=burst.knockRight[b]=0;
+        const double l=burst.left[b]*burst.left[b]+burst.slowLeft[b]*burst.slowLeft[b]+burst.knockLeft[b]*burst.knockLeft[b];
+        const double r=burst.right[b]*burst.right[b]+burst.slowRight[b]*burst.slowRight[b]+burst.knockRight[b]*burst.knockRight[b];
         target[0][b]+=std::sqrt(l);target[1][b]+=std::sqrt(r);
         energy+=l+r;}
       burst.active=energy>=1e-18;any=any||burst.active;}
@@ -806,6 +915,7 @@ struct Engine::Impl {
       band.left=band.leftEnd;band.right=band.rightEnd;
       band.leftEnd=target[0][b];band.rightEnd=target[1][b];
       band.leftStep=(band.leftEnd-band.left)/chunk;band.rightStep=(band.rightEnd-band.right)/chunk;
+      band.live=band.scale!=0&&std::max(std::max(band.left,band.leftEnd),std::max(band.right,band.rightEnd))>=1e-9;
       any=any||band.left>0||band.right>0;}
     hissing=any;
   }
@@ -815,7 +925,7 @@ struct Engine::Impl {
       for(double& x:source){seed^=seed<<13;seed^=seed>>17;seed^=seed<<5;
         x=(static_cast<double>(seed)-2147483648.)*(1./2147483648.);}
       double l=0,r=0;
-      for(auto& band:noise)if(band.scale!=0){
+      for(auto& band:noise)if(band.live){
         double y[2];
         for(int k=0;k<2;++k){y[k]=source[k];
           for(int j=0;j<noiseSections;++j){
@@ -902,6 +1012,7 @@ struct Engine::Impl {
       for(const auto& channel:channels){sustain=std::max(sustain,static_cast<double>(pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])));open=open||channel.presses[note]>0||channel.captured[note];}
       openness[note]=open?1:sustain*sustain;
     }
+    openChunk();
     double contact=1;
     for(auto& voice:voices)if(voice.active){
       const auto& channel=channels[voice.channel];
@@ -1007,7 +1118,16 @@ struct Engine::Impl {
     auto& voice=*chosen;voice.active=true;voice.note=note;voice.channel=ch;
     voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
-    const double soft=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
+    // The soft pedal works through the action. The grand's shifts the hammers
+    // so that each meets fewer strings (una corda: `soft` below). The
+    // upright's moves them toward the strings (half-blow): at full pedal a
+    // hammer starts halfway there, and thrown as hard by the key it meets
+    // them sqrt(1/2) as fast, accelerating over half the distance, so it
+    // plays as that slower strike and changes nothing else. Between the two
+    // by the action's build.
+    const double pedal=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
+    const double soft=pedal*(1-parameters.build.action);
+    const double hammer=bounded(velocity)*std::sqrt(1-.5*pedal*parameters.build.action);
     // A strike plays at a recording-layer coordinate, not measured hammer
     // speed: the shared response's for its MIDI velocity, or for a
     // measurement the velocity itself. No two strikes land alike: each moves
@@ -1019,8 +1139,8 @@ struct Engine::Impl {
     const double s=build.strings,h=build.hammers,board=build.soundboard;
     Side sides[2];
     for(int p=0;p<2;++p){auto& x=sides[p];const Model& m=models[p];x.m=&m;
-      x.v=steady?std::max(1.,127.*bounded(velocity))
-                :layerAt(m,responseDb(127*bounded(velocity))+touchSpreadDb*std::sqrt(3.)*draw);
+      x.v=steady?std::max(1.,127.*hammer)
+                :layerAt(m,responseDb(127*hammer)+touchSpreadDb*std::sqrt(3.)*draw);
       channel.velocity[p][note-21]=static_cast<float>(x.v/127);
       x.upper=upperAnchor(m,note);x.a=&m.anchors[x.upper-1];x.b=&m.anchors[x.upper];
       // Keys beyond the last recorded pitch keep its partials but follow the
@@ -1096,19 +1216,20 @@ struct Engine::Impl {
       const double amplitude=std::pow(10.,pick(level[0],level[1],h)/20)*softGain*std::exp(-soft*.115*(order-1))
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);
-      auto& mode=sympathetic[key-21];mode.q+=amplitude*std::cos(phase);mode.p+=amplitude*std::sin(phase);
+      auto& string=haloRing[j];string.q+=amplitude*std::cos(phase);string.p+=amplitude*std::sin(phase);
       const double prompt=std::pow(10.,haloString[j].promptDb/20);
-      auto& first=sympathetic[88+j];first.q+=prompt*amplitude*std::cos(phase);first.p+=prompt*amplitude*std::sin(phase);
+      auto& first=haloPrompt[j];first.q+=prompt*amplitude*std::cos(phase);first.p+=prompt*amplitude*std::sin(phase);
     }
     // The board's noise: each band's density between the pitches like the
     // partials' levels, tinted and softened like a partial of its order; between
     // the pianos by the soundboard's build. The ring's second stage, which a
     // pitch measures only under its fundamental, blends in amplitude, so a key
     // between a pitch that measures it and one that cannot plays it as far as
-    // it lies towards the first.
+    // it lies towards the first. The strike's knock sounds from contact too,
+    // falling at its pitch's own rate.
     auto& burst=claimBurst();
     for(int k=0;k<noiseBands;++k){
-      double density[2]{},slow[2]{},balance[2]{},rate[2]{},slowRate[2]{};
+      double density[2]{},slow[2]{},balance[2]{},rate[2]{},slowRate[2]{},knock[2]{},knockBalance[2]{},knockRate[2]{};
       for(int p=0;p<2;++p){if(p?board<=0:board>=1)continue;
         const auto& x=sides[p];const Model& m=*x.m;
         const auto& a=m.noise[(x.upper-1)*noiseBands+k];const auto& b=m.noise[x.upper*noiseBands+k];
@@ -1117,16 +1238,24 @@ struct Engine::Impl {
                     std::pow(10.,levelAt(m,b.slowDensityDb.data(),x.v)/20),x.t)*std::pow(10.,x.scaleDb/20);
         balance[p]=mix(a.balanceDb,b.balanceDb,x.t);
         rate[p]=mix(std::log(a.rate),std::log(b.rate),x.t);slowRate[p]=mix(std::log(a.slowRate),std::log(b.slowRate),x.t);
+        knock[p]=mix(levelAt(m,a.knockDensityDb.data(),x.v),levelAt(m,b.knockDensityDb.data(),x.v),x.t)+x.scaleDb;
+        knockBalance[p]=mix(a.knockBalanceDb,b.knockBalanceDb,x.t);knockRate[p]=mix(std::log(a.knockRate),std::log(b.knockRate),x.t);
       }
       const double order=std::max(1.,grand::noiseBands[k].hz/f1);
       const double tint=noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
                         *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double amplitude=std::pow(10.,pick(density[0],density[1],board)/20)*tint,late=pick(slow[0],slow[1],board)*tint;
       const double tilt=pick(balance[0],balance[1],board),left=std::pow(10.,-tilt/40),right=std::pow(10.,tilt/40);
-      burst.left[k]=amplitude*left;burst.right[k]=amplitude*right;
+      // The tables' silent stages (-200 dB) start under -180 dB, as a burst
+      // ends: at none, so that a band nothing sounds is left unfiltered.
+      const auto heard=[](double x){return x<1e-9?0.:x;};
+      burst.left[k]=heard(amplitude*left);burst.right[k]=heard(amplitude*right);
       burst.step[k]=std::exp(-std::exp(pick(rate[0],rate[1],board))*chunk/sampleRate);
-      burst.slowLeft[k]=late*left;burst.slowRight[k]=late*right;
+      burst.slowLeft[k]=heard(late*left);burst.slowRight[k]=heard(late*right);
       burst.slowStep[k]=std::exp(-std::exp(pick(slowRate[0],slowRate[1],board))*chunk/sampleRate);
+      const double struck=std::pow(10.,pick(knock[0],knock[1],board)/20)*tint,knockTilt=pick(knockBalance[0],knockBalance[1],board);
+      burst.knockLeft[k]=heard(struck*std::pow(10.,-knockTilt/40));burst.knockRight[k]=heard(struck*std::pow(10.,knockTilt/40));
+      burst.knockStep[k]=std::exp(-std::exp(pick(knockRate[0],knockRate[1],board))*chunk/sampleRate);
     }
     burst.active=true;burst.serial=serial;hissing=true;
     // The partials: each piano's in order, combined order by order by the
@@ -1339,8 +1468,37 @@ struct Engine::Impl {
       for(int p=0;p<2;++p){const Model& m=models[p];const auto* k=held?m.pedalDown:m.pedalUp;
         if(k)sides[p]={k,k,0,(held?m.pedalDownDb:m.pedalUpDb)+20*std::log10(m.outputScale),m.bodyModeCount};}
       actionKnock(sides);
+      if(held)liftDampers();
     }
     pedalHeld=held;
+  }
+  // The pedal lifting the dampers sets the strings it frees ringing, as the
+  // grand's pedal-down take shows: each partial starts at its band's level
+  // (MeasuredModalData.h, in the take's scale), set against the notes as the
+  // pedal's knock is, and at the share of the grand's pedal the action's
+  // build plays (the upright has no pedal recordings). The Resonance control
+  // sets how loud the open strings sound, these with them; at its default
+  // they ring as the take does. Each partial's phase is fixed by its string
+  // and order.
+  void liftDampers() noexcept {
+    const Model& g=models[0];const double share=1-parameters.build.action;
+    if(share<=0)return;
+    const double scale=std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(share)
+                       /(Parameters{}.resonance*.35);
+    constexpr int bands=static_cast<int>(grand::openStringLiftDb.size());
+    for(int i=0;i<damped;++i){
+      bool held=false;for(const auto& c:channels)held=held||c.presses[i]>0||c.captured[i];
+      if(held)continue;
+      for(int n=0;n<openPartials;++n){const int k=i*openPartials+n,j=k%lanes;auto& bank=open[k/lanes];
+        if(!bank.heard[j])continue;
+        const int band=std::max(0,std::min(bands-1,static_cast<int>(std::lround(3*std::log2(openHz[k]/1000)))+12));
+        const double amplitude=std::pow(10.,grand::openStringLiftDb[band]/20)*scale,phase=2*pi*std::fmod(.6180339887498949*k,1.);
+        setLane(bank.re,j,lane(bank.re,j)+static_cast<float>(amplitude*std::cos(phase)));
+        setLane(bank.im,j,lane(bank.im,j)+static_cast<float>(amplitude*std::sin(phase)));
+        if(!bank.active){bank.active=true;steerOpen(bank,openness[i]);}
+      }
+    }
+    sleeping=false;
   }
   void ringBody(Body& body,int frames) noexcept {
     const int gliding=std::min(frames,pickupGlide);
@@ -1373,7 +1531,11 @@ struct Engine::Impl {
   void render(float* left,float* right,int frames) noexcept {
     const V4 zero{};
     for(int i=0;i<frames;++i){mixLeft[i]=zero;mixRight[i]=zero;}
-    for(auto& voice:voices)if(voice.active)
+    owned.fill(false);
+    for(auto& voice:voices)if(voice.active){
+      const int string=voice.note-21;const bool own=string<damped&&openness[string]>0;
+      auto& toLeft=own?voiceLeft:mixLeft;auto& toRight=own?voiceRight:mixRight;
+      if(own)for(int i=0;i<frames;++i){voiceLeft[i]=zero;voiceRight[i]=zero;}
       for(int k=0;k<voice.count;++k){auto& partial=voice.partials[k];
         V4 re=partial.re,im=partial.im;
         const V4 c=partial.c,s=partial.s,lr=partial.leftRe,li=partial.leftIm,rr=partial.rightRe,ri=partial.rightIm;
@@ -1382,17 +1544,23 @@ struct Engine::Impl {
           for(int i=0;i<frames;++i){
             smoothed+=contactShare*(1-d-smoothed);
             const V4 g=splat(smoothed);d*=decay;
-            mixLeft[i]+=(lr*re-li*im)*g;mixRight[i]+=(rr*re-ri*im)*g;
+            toLeft[i]+=(lr*re-li*im)*g;toRight[i]+=(rr*re-ri*im)*g;
             const V4 next=re*c-im*s;im=re*s+im*c;re=next;
           }
           partial.riseRemaining=d;partial.riseSmoothed=smoothed;
         }else
           for(int i=0;i<frames;++i){
-            mixLeft[i]+=lr*re-li*im;mixRight[i]+=rr*re-ri*im;
+            toLeft[i]+=lr*re-li*im;toRight[i]+=rr*re-ri*im;
             const V4 next=re*c-im*s;im=re*s+im*c;re=next;
           }
         partial.re=re;partial.im=im;
       }
+      if(own){auto& drive=ownDrive[string];
+        if(!owned[string]){owned[string]=true;std::fill_n(drive.begin(),frames,0.f);}
+        for(int i=0;i<frames;++i){const V4 l4=voiceLeft[i],r4=voiceRight[i];mixLeft[i]+=l4;mixRight[i]+=r4;
+          drive[i]+=.5f*(lane(l4,0)+lane(l4,1)+lane(l4,2)+lane(l4,3)+lane(r4,0)+lane(r4,1)+lane(r4,2)+lane(r4,3));}
+      }
+    }
     if(ringing){ringBody(ring,frames);ringBody(lateRing,frames);}
     if(rising){ringBody(onset,frames);ringBody(contactOnset,frames);}
     if(actionRising)ringBody(actionOnset,frames);
@@ -1400,7 +1568,7 @@ struct Engine::Impl {
     const bool noisy=hissing;
     if(noisy)hiss(frames);
     for(int i=0;i<frames;++i){
-      gain+=smooth*(parameters.gain-gain);width+=smooth*(parameters.width-width);
+      width+=smooth*(parameters.width-width);
       const V4 l4=mixLeft[i],r4=mixRight[i];
       double l=static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3);
       double r=static_cast<double>(lane(r4,0))+lane(r4,1)+lane(r4,2)+lane(r4,3);
@@ -1408,8 +1576,8 @@ struct Engine::Impl {
       // The undamped strings ring from their strikes alone (strike()),
       // heard through their measured pickups like the partials, whatever
       // the Resonance control.
-      for(int j=0;j<halo;++j){auto& mode=sympathetic[firstHalo-21+j];auto& first=sympathetic[88+j];
-        Resonator* parts[]{&mode,&first};
+      for(int j=0;j<halo;++j){auto& string=haloRing[j];auto& prompt=haloPrompt[j];
+        Resonator* parts[]{&string,&prompt};
         for(auto* part:parts){
           const double d=part->decay/(1+180*mute*mute/sampleRate);
           const double q=part->q,im=part->p;
@@ -1418,28 +1586,33 @@ struct Engine::Impl {
           if(part->p<1e-30&&part->p>-1e-30)part->p=0;
         }
         // The bank turns the other way to the partials' lanes.
-        const auto& string=haloString[j];const double q=mode.q+first.q,im=mode.p+first.p;
-        l+=string.left*q;r+=string.rightRe*q+string.rightIm*im;
+        const auto& pickup=haloString[j];const double q=string.q+prompt.q,im=string.p+prompt.p;
+        l+=pickup.left*q;r+=pickup.rightRe*q+pickup.rightIm*im;
       }
       // The pickup's own image at the default width; narrower towards mono.
       const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
-      double outL=mid+side,outR=mid-side;
-      // Feed-forward bridge-to-open-string radiation. The reduced core does not
-      // claim the reference solver's reciprocal 475-mode soundboard network.
-      // No feedback reaches the driven voices, so this response cannot run away.
-      double responseL=0,responseR=0;
-      for(int note=0;note<firstHalo-21;++note){
-        const double openness=this->openness[note];
-        auto& mode=sympathetic[note];
-        const double d=mode.decay/(1+(1-openness)*60/sampleRate+180*mute*mute/sampleRate);
-        const double q=mode.q,im=mode.p;
-        mode.q=d*(mode.c*q+mode.s*im);mode.p=d*(mode.c*im-mode.s*q)+(1-mode.decay)*mid*openness;
-        if(mode.q<1e-30&&mode.q>-1e-30)mode.q=0;
-        if(mode.p<1e-30&&mode.p>-1e-30)mode.p=0;
-        const double pan=(note-43.5)/80.*width;
-        responseL+=mode.q*(1-pan);responseR+=mode.q*(1+pan);
+      dryLeft[i]=mid+side;dryRight[i]=mid-side;openDrive[i]=static_cast<float>(mid);openWidth[i]=width;
+    }
+    // Feed-forward bridge-to-open-string radiation. The reduced core does not
+    // claim the reference solver's reciprocal 475-mode soundboard network.
+    // No feedback reaches the driven voices, so this response cannot run away.
+    for(int i=0;i<frames;++i){openSum[i]=V4{};openPan[i]=V4{};}
+    for(int b=0;b<openBanks;++b){auto& bank=open[b];if(!bank.active)continue;
+      const int string=b*lanes/openPartials;const float* heard=openDrive.data();
+      if(owned[string]){for(int i=0;i<frames;++i)heardDrive[i]=openDrive[i]-ownDrive[string][i];heard=heardDrive.data();}
+      V4 re=bank.re,im=bank.im;const V4 c=bank.c,s=bank.s,drive=bank.drive,pan=bank.pan;
+      for(int i=0;i<frames;++i){
+        const V4 next=c*re+s*im;im=c*im-s*re+drive*splat(heard[i]);re=next;
+        openSum[i]+=re;openPan[i]+=re*pan;
       }
-      outL+=responseL*parameters.resonance*.35;outR+=responseR*parameters.resonance*.35;
+      bank.re=re;bank.im=im;
+    }
+    for(int i=0;i<frames;++i){
+      gain+=smooth*(parameters.gain-gain);
+      const V4 s4=openSum[i],p4=openPan[i];
+      const double sum=static_cast<double>(lane(s4,0))+lane(s4,1)+lane(s4,2)+lane(s4,3);
+      const double panned=(static_cast<double>(lane(p4,0))+lane(p4,1)+lane(p4,2)+lane(p4,3))*openWidth[i];
+      const double outL=dryLeft[i]+(sum-panned)*parameters.resonance*.35,outR=dryRight[i]+(sum+panned)*parameters.resonance*.35;
       // DC blocker, a memoryless emergency bound where the clip at full scale
       // used to be, then the output stage. The bound, +12 dBFS, keeps extreme
       // 128-strike stacks finite and within the range the limiter holds
@@ -1480,7 +1653,7 @@ void Engine::prepare(double sampleRate){
 void Engine::reset() noexcept {
   auto& p=*impl;for(auto& voice:p.voices){voice.active=false;voice.count=0;}
   for(auto& channel:p.channels)channel=Channel{};
-  for(auto& resonator:p.sympathetic){resonator.q=0;resonator.p=0;}
+  p.silenceStrings();
   p.silenceBody();p.silenceNoise();
   p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.previousBrightness=p.parameters.brightness;
@@ -1550,7 +1723,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
-    if(!any){for(auto& r:p.sympathetic){r.q=0;r.p=0;}p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();}
+    if(!any){p.silenceStrings();p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();}
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
@@ -1602,14 +1775,14 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   for(const auto& voice:p.voices)any=any||voice.active;
   if(!any){
     double residue=std::abs(p.highpassL)+std::abs(p.highpassR);
-    for(const auto& r:p.sympathetic)residue+=std::abs(r.q)+std::abs(r.p);
+    residue+=p.stringResidue();
     if(residue<1e-14){
       // Chunks restart with the next strike, so a silent engine's output
       // does not depend on how long it has been silent. The output stage
       // restarts empty too: its look-ahead holds only the last 2 ms, which
       // are as quiet as the residue.
       p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-      for(auto& r:p.sympathetic){r.q=0;r.p=0;}
+      p.silenceStrings();
       p.silenceNoise();
       p.output.Reset();
     }
