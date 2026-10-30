@@ -25,7 +25,7 @@ Each MIDI channel owns its key and controller state.
 | Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
 | Width | Stereo spread, from centered to wide |
-| Tube Mic | Where the piano is heard from: at 0% the stereo pair the piano was recorded with, close over the strings (grand) or at the player's position by the hammers (upright); at 100% a vintage tube microphone at shin height, mono, with more deep bass and top and less low midrange, measured on the upright's recordings. Between, the two are mixed and the image narrows. Typical playing reads the same on the meter at every setting |
+| Tube Mic | Where the piano is heard from: at 0% the stereo pair the piano was recorded with, close over the strings (grand) or at the player's position by the hammers (upright); at 100% a vintage tube microphone at shin height, mono, with more deep bass and top and less low midrange, measured on the upright's recordings. Between, the two are mixed and the image narrows. Typical playing reads the same on the meter at 0% and 100%, and about half a decibel less mixed halfway |
 | Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling, the sustain pedal's knocks and the strings it sets ringing going down. From silent at 0% to twice as loud at 200%; 100% is as calibrated |
 | Tuning | Concert A frequency; the DAW interface shows hertz |
 | Felt mute | Adds damping to sounding modes, including physically held notes |

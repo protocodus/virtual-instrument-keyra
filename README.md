@@ -697,7 +697,10 @@ louder without it; its hammer's brighter strike is untouched. Through the
 Tube Mic alone typical playing reads −9 VU on both pianos too, each piano's
 tube at its own calibration (`tubeScale`), and the loudest chords −0.8 VU on
 the grand and −0.3 VU on the upright, 0.6 and 0.3 dB louder at velocity 127
-than at 110. The audio-tier test `Keyra.Levels` holds these readings.
+than at 110. Mixed halfway, typical playing reads 0.6 dB (grand) and 0.5 dB
+(upright) under −9 VU: the two microphones' responses differ per band, so
+their mix reads a little under either. The audio-tier test `Keyra.Levels`
+holds the readings at 0 and 100 %.
 
 ### The full physical research
 
