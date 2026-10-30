@@ -1240,8 +1240,9 @@ measurement, the choice to apply it by ear.
 ## 2026-10-29 — the top strings keep the body ringing
 
 The grand's Salamander benchmark of the shipping engine with the upright's
-cap (`out/bench/cand-56dc43c` against `out/bench/base-89e5eb0`, the engine
-before the shared release) found its treble far from the recordings: from C6
+cap (`out/bench/cand-56dc43c`, 2494771 before its rebase, against
+`out/bench/base-89e5eb0`, the engine before the shared release) found its
+treble far from the recordings: from C6
 up, the training notes' early spectrum sat 13.4 dB from them and their board
 noise 13.2 dB, where 89e5eb0 had 4.3 and 5.4. The cause was the body's felt
 contact: it counted only the damped strings, so a strike above F6, whose
@@ -1266,8 +1267,8 @@ for under 0.1 dB, and with both left out the run matches 89e5eb0 within
 
 The upright's benchmark (`Tools/benchmark_recordings.py --model upright`,
 every train and dev note of the Helsinki split, lower is better) of the
-shipping engine (0ec8037), the hammer-contact cap alone (56dc43c) and the cap
-with the body fix (0ecf932):
+shipping engine (0ec8037), the hammer-contact cap alone (2494771) and the cap
+with the body fix (612c354):
 
 | run | attack dB | early dB | sustain dB | noise dB | rise ms | partials dB |
 |---|---|---|---|---|---|---|
