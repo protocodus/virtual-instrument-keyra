@@ -1484,3 +1484,44 @@ No recording plays the upright's soft pedal, so neither halfway nor the
 constant acceleration is measured: this is a derivation, adopted under the
 owner's standing direction. A before/after phrase with the pedal held went
 to the owner, level-matched.
+
+## 2026-10-30 — full sustain pedal rings as 80 % of it did
+
+The owner found full sustain too long and asked to calibrate it so its
+maximum is 80 % of what it was. Read, and said so to the owner when the work
+started, as: full pedal lifts the dampers only as far as 80 % of the pedal
+did (`dampersLift`), so the felt still grazes the strings. A velocity-80
+chord of C3, C4, C5 and C6 let go under full pedal now falls 60 dB in 8.7 s
+on the grand and 11.2 s on the upright, where it rang on past 30 s.
+
+Taken literally the request would also have silenced the pedal's sympathetic
+wash, which the realism pass had just fitted to Salamander's pedal-down
+takes: the open strings had their own partial-pedal law, openness = sustain²
+and (1 − openness) × 60/s of loss, which at 80 % of the pedal took them down
+at 21.6/s (188 dB/s) while the same pedal left the struck strings' felt
+barely touching (a released C4 losing about 2.5 dB/s more than with the
+dampers clear). One pedal lifts one rail of felts, so the open strings now
+follow the struck strings' felt law (`feltContact`): at full pedal they lose
+about 3 dB/s more than clear of the felt, and the wash is kept. This also
+moves half pedalling: at half pedal the open strings lost 45/s and now 14/s.
+
+On `Tools/benchmark_pedal.py` the pedal-down ring over its knock sits 1.21
+and 4.74 dB per band from pedalD1 and pedalD2 (2.73 and 2.80), its fall to
+2.3–4.3 s 6.10 and 6.29 dB from them (2.58 and 2.46), and the freed strings'
+median decay is 9.6 dB/s against the takes' 6.8 and 7.0
+([report](validation/grand-pedal-lift-benchmark-2026-10-30.md)). The
+recording benchmark plays single notes without pedal: playing without pedal
+renders sample for sample as before on both pianos.
+
+Chosen by the owner, not by a measurement: the recordings' pedal lifts the
+dampers clear and sustains longer.
+
+## 2026-10-30 — a Mechanics control
+
+The owner asked for the action's loudness to be customizable. Mechanics
+scales, as an amplitude from 0 to 2, every knock of the action (the keys
+landing and coming back, the dampers falling, the sustain pedal going down
+and coming up) and the ring the pedal sets going down. A strike's own knock
+on the body and its contact noise are the hammer's, not the action's, and do
+not move. At 1 the engine plays as before, sample for sample. The plug-in's
+presets leave it, as they leave Output.

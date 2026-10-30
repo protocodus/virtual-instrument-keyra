@@ -242,7 +242,8 @@ int main()
             // other piano's: the upright with every part all the way is the
             // grand, sample for sample. A preset puts them back to the piano
             // as built, the session keeps them, and a session saved before
-            // they existed loads them at 0.
+            // they existed loads them at 0. Mechanics reaches the engine and
+            // loads as calibrated from a session saved before it existed.
             const auto play = [](KeyraAudioProcessor& processor) {
                 processor.prepareToPlay(48000, 128);
                 juce::AudioBuffer<float> audio(2, 128);
@@ -266,20 +267,26 @@ int main()
             const auto rebuiltPlays = play(rebuilt);
             require(play(grand) == rebuiltPlays, "the upright with every part the grand's did not play the grand");
             require(play(upright) != rebuiltPlays, "the build's controls did not reach the engine");
+            KeyraAudioProcessor silentAction;
+            silentAction.setCurrentProgram(0);
+            set(silentAction, "mechanics", 0);
+            require(play(silentAction) != rebuiltPlays, "Mechanics did not reach the engine");
             set(rebuilt, "soundboard", .4f);
             set(rebuilt, "ring", -.5f);
+            set(rebuilt, "mechanics", .5f);
             juce::MemoryBlock saved;
             rebuilt.getStateInformation(saved);
             KeyraAudioProcessor reopened;
             reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
             require(std::abs(reopened.parameters.getRawParameterValue("soundboard")->load() - .4f) < 1e-5f
-                && std::abs(reopened.parameters.getRawParameterValue("ring")->load() + .5f) < 1e-5f,
-                "the build was not restored");
+                && std::abs(reopened.parameters.getRawParameterValue("ring")->load() + .5f) < 1e-5f
+                && std::abs(reopened.parameters.getRawParameterValue("mechanics")->load() - .5f) < 1e-5f,
+                "the build and mechanics were not restored");
             rebuilt.setCurrentProgram(1);
             for (const auto* id : build)
                 require(rebuilt.parameters.getRawParameterValue(id)->load() == 0, "a preset left the build changed");
             auto xml = juce::AudioProcessor::getXmlFromBinary(saved.getData(), static_cast<int>(saved.getSize()));
-            for (const auto* id : build)
+            for (const auto* id : { "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring", "mechanics" })
                 for (auto* parameter : xml->getChildIterator())
                     if (parameter->getStringAttribute("id") == id) { xml->removeChildElement(parameter, true); break; }
             juce::MemoryBlock older;
@@ -290,6 +297,8 @@ int main()
                     "a session saved before the build controls did not load the piano as built");
             require(reopened.parameters.getRawParameterValue("model")->load() == 1,
                 "a session saved before the build controls lost its piano");
+            require(reopened.parameters.getRawParameterValue("mechanics")->load() == 1,
+                "a session saved before Mechanics did not load the action as calibrated");
             // A host reads a parameter's text, gives it back and reads again
             // (clap-validator's param-conversions): every value must read the
             // same both times, also when the text comes back as the CLAP

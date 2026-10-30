@@ -25,15 +25,16 @@ Each MIDI channel owns its key and controller state.
 | Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
 | Width | Stereo spread, from centered to wide |
+| Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling, the sustain pedal's knocks and the strings it sets ringing going down. From silent at 0% to twice as loud at 200%; 100% is as calibrated |
 | Tuning | Concert A frequency; the DAW interface shows hertz |
 | Felt mute | Adds damping to sounding modes, including physically held notes |
-| Sustain | Continuous damper lifting; intermediate positions produce half-pedal damping |
+| Sustain | Continuous damper lifting; intermediate positions produce half-pedal damping. Full pedal lifts the dampers 80% of the way clear, so the felt still grazes the strings: a chord let go under it falls 60 dB in about 9 s on the grand and 11 s on the upright |
 | Sostenuto | Captures only keys held when the pedal crosses 50% upward; later notes release normally |
 | Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
 
 The factory presets choose the piano as built and set Brightness,
-Resonance, Width and Felt mute; Output, Tuning, Quality and the pedals keep
-their settings. Five
+Resonance, Width and Felt mute; Output, Tuning, Quality, Mechanics and the
+pedals keep their settings. Five
 play the grand and three the upright. The DAW interface's on-screen keyboard
 is playable. Three brass pedal controls
 show the effective soft, sostenuto and sustain positions, in the physical
@@ -89,7 +90,7 @@ the felt mute can damp them as well.
 
 ## Save and recall
 
-DAW state stores the ten panel parameters. Transient held notes and MIDI
+DAW state stores the nineteen saved parameters. Transient held notes and MIDI
 controller positions are performance state. Malformed, incomplete or unsupported
 state is rejected; a session saved before the Piano control existed opens with
 the grand it was made with. Piano is not offered for automation. The Rack Extension uses Reason patches for its panel state
@@ -112,5 +113,5 @@ recording pedal positions and timings are undocumented.
 
 The upright is measured the same way from another library's recordings, which
 hold no pedal recordings: its sustain pedal makes no sound of its own, and its
-soft pedal works as the grand's does rather than moving the hammers closer to
-the strings, as an upright's does.
+soft pedal brings the hammers closer to the strings, as an upright's does
+(half-blow), by a derivation no recording measures.

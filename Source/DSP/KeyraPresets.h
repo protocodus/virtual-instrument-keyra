@@ -4,8 +4,8 @@
 
 namespace keyra {
 // The factory bank: the plug-in's programs and the README demos. A preset sets
-// the piano, its build controls to 0 and the voicing controls; output, tuning
-// and the pedals keep their values.
+// the piano, its build controls to 0 and the voicing controls; output, tuning,
+// mechanics and the pedals keep their values.
 struct Preset { const char* name; Piano piano; float brightness, resonance, width, mute; };
 inline constexpr std::array<Preset, 8> factoryPresets {{
     { "Concert Grand", Piano::grand, .5f, .25f, .75f, 0.f },

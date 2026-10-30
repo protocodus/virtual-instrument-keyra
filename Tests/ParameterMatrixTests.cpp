@@ -56,7 +56,7 @@ public:
                               && std::max (value (c.values, "mute"), value (c.base, "mute")) == 0.0;
         // The ramp is back on the case's own values before note-off, so the
         // case row decides the release. Any sustain lifts the dampers part
-        // way (control(): target 1 - sustain), and a sostenuto at or above
+        // way (control(): target 1 - 0.8 sustain), and a sostenuto at or above
         // its 0.5 threshold catches the held chord when the ramp brings it
         // back up (capture()), so those strings ring on after the keys go up.
         if (value (c.values, "sustain") > 0.0 || value (c.values, "sostenuto") >= 0.5)

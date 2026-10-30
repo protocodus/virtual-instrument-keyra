@@ -53,6 +53,10 @@ enum class Quality {full,balanced,light};
 struct Parameters {
   float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
+  // How loud the action plays, as an amplitude: the keys landing and coming
+  // back, the dampers falling, the sustain pedal's knocks and the strings its
+  // lifting sets ringing. 0 silent, 1 as calibrated, 2 twice as loud.
+  float mechanics=1.f;
   Build build{};
   Quality quality=Quality::full;
 };

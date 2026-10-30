@@ -63,9 +63,9 @@ private:
     KeyraLookAndFeel look;
     juce::ComboBox program, piano, quality;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> pianoAttachment, qualityAttachment;
-    std::array<juce::Slider, 9> controls;
+    std::array<juce::Slider, 10> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
-    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 9> attachments;
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 10> attachments;
     KeyraTab voicingTab { "VOICING" }, buildTab { "BUILD" };
     std::array<juce::Slider, 7> build; // keyra::buildToward's order
     std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 7> buildAttachments;

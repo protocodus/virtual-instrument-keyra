@@ -577,11 +577,43 @@ int main(int argc,char** argv){
     std::cout<<"release_knock_peak_dbfs="<<20*std::log10(peak)<<" held_2s_against_0.5s_db="<<20*std::log10(ratio)<<'\n';
   }
   {
-    // Under the pedal a damper stays off the strings, so letting its key go
-    // sounds nothing: the same as holding it.
+    // Under the pedal a damper stays where the pedal holds it, so letting its
+    // key go knocks nothing: with the action silenced just before, nothing
+    // after it changes. At the end of the pedal's travel the dampers stop
+    // short of clearing the strings (dampersLift, the owner's calibration),
+    // so a C4 let go under it falls about twice as fast as one held down over
+    // its first five seconds, and rings far over one let go without it. The
+    // action is silenced, so that the strings the pedal frees ring only with
+    // the note.
     keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());a.controlChange(64,127);b.controlChange(64,127);
-    a.noteOn(60,.7f);b.noteOn(60,.7f);render(a,12000);render(b,12000);a.noteOff(60);
+    a.noteOn(60,.7f);b.noteOn(60,.7f);render(a,12000);render(b,12000);
+    auto silent=dry();silent.mechanics=0;b.setParameters(silent);a.noteOff(60);b.noteOff(60);
     check(render(a,24000)==render(b,24000),"a key let go under the pedal knocks nothing");
+    const auto fall=[&](int mode){keyra::Engine e;e.setParameters(silent);if(mode<2)e.controlChange(64,127);
+      e.noteOn(60,.7f);render(e,12000);if(mode)e.noteOff(60);render(e,12000);
+      std::array<double,5> level{};for(auto& l:level)l=20*std::log10(rms(render(e,48000)));return level;};
+    const auto held=fall(0),pedal=fall(1),damped=fall(2);
+    const double heldRate=(held[0]-held[4])/4,pedalRate=(pedal[0]-pedal[4])/4;
+    check(pedalRate>1.5*heldRate&&pedalRate<3*heldRate,"at full pedal the dampers still graze the strings");
+    check(pedal[1]>damped[1]+40,"at full pedal a key let go rings on");
+    std::cout<<"held_under_pedal_db_s="<<heldRate<<" let_go_under_pedal_db_s="<<pedalRate<<'\n';
+  }
+  {
+    // The Mechanics control scales the action as an amplitude: on both
+    // pianos a key going down and coming back knocks twice as hard at 2 as
+    // at 1, against 0, where it knocks nothing. The body is linear, and the
+    // output stage passes a quiet note untouched.
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright}){
+      const auto play=[piano](float mechanics){keyra::Engine e;auto p=dry();p.build=keyra::measuredBuild(piano);p.gain=.1f;
+        p.mechanics=mechanics;e.setParameters(p);e.noteOn(60,.7f);render(e,12000);e.noteOff(60);return render(e,12000);};
+      const auto none=play(0),once=play(1),twice=play(2);
+      double knock=0,error=0;
+      for(std::size_t i=0;i<none.size();++i){
+        const double a=static_cast<double>(once[i])-none[i],b=static_cast<double>(twice[i])-none[i];
+        knock=std::max(knock,std::abs(a));error=std::max(error,std::abs(b-2*a));}
+      check(knock>1e-5&&error<1e-3*knock,"the Mechanics control scales the action's knocks");
+      std::cout<<"mechanics_piano="<<static_cast<int>(piano)<<" knock_peak="<<knock<<" doubling_error="<<error/knock<<'\n';
+    }
   }
   {
     // The pedal sounds at the ends of its travel, once each way: going down
@@ -827,11 +859,11 @@ int main(int argc,char** argv){
   }
   {
     // The sustain pedal going down knocks, and the strings its dampers free
-    // ring on: in the grand's pedal-down takes the energy from 0.3 to 2.3 s
+    // ring: in the grand's pedal-down takes the energy from 0.3 to 2.3 s
     // after the onset stands 4.7 dB (pedalD1, train) and 4.4 dB (pedalD2,
-    // dev) over the first 0.3 s, where the open strings, rung only by the
-    // knock, stood 45 dB under it. The engine's knock, fitted on the body
-    // modes, holds less of the take's than its strings do, so 6.9 dB.
+    // dev) over the first 0.3 s. The engine rang them at 6.9 dB until the
+    // owner had full pedal leave the felt grazing the strings (dampersLift),
+    // which grazes these too, so they fall faster: 2.8 dB.
     keyra::Engine e;e.controlChange(64,127);
     const auto audio=render(e,48000*3);
     std::vector<double> power;

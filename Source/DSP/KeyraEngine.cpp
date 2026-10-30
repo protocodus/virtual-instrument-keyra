@@ -163,6 +163,22 @@ constexpr int maxExtras=mostExtras(grand::anchors)+mostExtras(upright::anchors);
 // clear the strings (the contact in boundary()), so that a pedal which
 // never quite reaches an end still sounds and half-pedalling between does not.
 constexpr float pedalClear=.92f,pedalRest=.08f;
+// How far the sustain pedal lifts the dampers at the end of its travel, as a
+// share of the travel that clears them. The owner found full pedal rang too
+// long and asked for it to sound as 80 % of the pedal did (2026-10-30): there
+// the felt still grazes the strings, and a velocity-80 chord of C3, C4, C5 and
+// C6 let go under it falls 60 dB in 8.7 s on the grand and 11.2 s on the
+// upright, where it rang on past 30 s. The strings the pedal frees are grazed
+// by the same felt (feltContact), so the ring the pedal sets going down falls
+// faster than Salamander's pedal-down takes do
+// (Docs/validation/grand-pedal-lift-benchmark-2026-10-30.md). The pedal's own
+// knocks still follow its travel.
+constexpr double dampersLift=.8;
+// How firmly a damper's felt lies on its strings where it stands (0 lifted
+// clear, 1 resting on them): not at all over the last 8 % of the lift, then
+// steeply more as it comes down. One law for the struck strings and the
+// strings that ring in sympathy, whose dampers the same pedal lifts.
+double feltContact(double damper) noexcept {return std::pow(std::max(0.,(damper-.08)/.92),2.5);}
 // How far a player's strikes of one key at one intended force spread, in
 // level. Twelve of the upright library's second takes at train pitches, nine
 // of them at its softest layer, are new strikes rather than copies of the
@@ -763,8 +779,9 @@ struct Engine::Impl {
     }
   }
   // An open string's rotations and drive for the chunk: unity gain at
-  // resonance as far as its damper is off; one whose damper rests on it is
-  // damped 60/s besides, and CC1's mute damps them all as the felt does.
+  // resonance as far as its damper is off; as far as its felt lies on it
+  // (1 - openness) it is damped up to 60/s besides, and CC1's mute damps them
+  // all as the felt does.
   void steerOpen(OpenBank& bank,double openness) noexcept {
     for(int j=0;j<lanes;++j){
       const double d=bank.decay[j]/(1+(1-openness)*60/sampleRate+180*mute*mute/sampleRate);
@@ -1013,7 +1030,7 @@ struct Engine::Impl {
     for(int note=0;note<88;++note){
       bool open=note>=68;double sustain=parameters.sustain;
       for(const auto& channel:channels){sustain=std::max(sustain,static_cast<double>(pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])));open=open||channel.presses[note]>0||channel.captured[note];}
-      openness[note]=open?1:sustain*sustain;
+      openness[note]=open?1:1-feltContact(1-dampersLift*sustain);
     }
     openChunk();
     double contact=1;
@@ -1022,11 +1039,11 @@ struct Engine::Impl {
       const int key=voice.note-21;
       const bool open=channel.presses[key]>0||channel.captured[key];
       const double sustain=pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2]);
-      const double target=open?0:1-sustain;
+      const double target=open?0:1-dampersLift*sustain;
       voice.damper+=controlSmooth*(target-voice.damper);
       // Continuous felt contact, including partial engagement and re-pedaling.
       // The undamped top twenty keys do not acquire a fictitious key damper.
-      voice.contact=voice.note>=89?0:std::pow(std::max(0.,(voice.damper-.08)/.92),2.5);
+      voice.contact=voice.note>=89?0:feltContact(voice.damper);
       // The body rings on while any sounding string is free: an undamped one
       // keeps it up as a held key's does, whatever its key. CC1's mute damps
       // the strings that drive it as the felt does.
@@ -1427,13 +1444,14 @@ struct Engine::Impl {
   // recorded pitches' (levels mixed, phases from the nearer), between the
   // pianos by the action's build, building up under the action's rise.
   void actionKnock(const ActionSide (&side)[2]) noexcept {
+    if(!(parameters.mechanics>0))return;
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     const int counts[2]={side[0].count,side[1].count};
     bool any=false;
     for(int k=0;k<bodyModeCount;++k){double level=0,phase=0;
       if(!betweenPianos(parameters.build.action,k,counts,[&](int p,double& l,double& ph){const auto& x=side[p];
            l=mix(x.x[k].levelDb,x.y[k].levelDb,x.t)+x.gainDb;ph=x.t<.5?x.x[k].phase:x.y[k].phase;},level,phase))continue;
-      const double amplitude=std::pow(10.,level/20);
+      const double amplitude=parameters.mechanics*std::pow(10.,level/20);
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
       knock(ring[k/lanes],k%lanes,g,ahead);knock(actionOnset[k/lanes],k%lanes,{-g.re,-g.im},ahead);
       any=true;
@@ -1481,12 +1499,14 @@ struct Engine::Impl {
   // pedal's knock is, and at the share of the grand's pedal the action's
   // build plays (the upright has no pedal recordings). The Resonance control
   // sets how loud the open strings sound, these with them; at its default
-  // they ring as the take does. Each partial's phase is fixed by its string
+  // they start ringing as the take's do, and fall faster under the felt that
+  // full pedal leaves grazing them (dampersLift). The Mechanics control scales
+  // them with the pedal's knock. Each partial's phase is fixed by its string
   // and order.
   void liftDampers() noexcept {
     const Model& g=models[0];const double share=1-parameters.build.action;
-    if(share<=0)return;
-    const double scale=std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(share)
+    if(share<=0||!(parameters.mechanics>0))return;
+    const double scale=parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(share)
                        /(Parameters{}.resonance*.35);
     constexpr int bands=static_cast<int>(grand::openStringLiftDb.size());
     for(int i=0;i<damped;++i){
@@ -1670,6 +1690,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   auto& p=*impl;const float oldTune=p.parameters.tuning;
   p.parameters.gain=bounded(input.gain,0,2);p.parameters.brightness=bounded(input.brightness);
   p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);
+  p.parameters.mechanics=bounded(input.mechanics,0,2);
   // Wrappers combine their 400..480 Hz user range with host master tuning.
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
   p.parameters.sustain=bounded(input.sustain);p.parameters.sostenuto=bounded(input.sostenuto);

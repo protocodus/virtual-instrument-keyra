@@ -3,8 +3,10 @@
 
 namespace {
 const juce::Colour ink(0xff302c26), ivory(0xffeee8dc), brass(0xffa48448), muted(0xff7c766b), footer(0xffc6ad89);
-constexpr std::array<const char*, 9> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft" }};
-constexpr std::array<const char*, 9> captions {{ "OUTPUT", "BRIGHTNESS", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT" }};
+constexpr std::array<const char*, 10> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics" }};
+constexpr std::array<const char*, 10> captions {{ "OUTPUT", "BRIGHTNESS", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS" }};
+// The voicing view's knobs, left to right.
+constexpr std::array<int, 6> voicing {{ 1, 2, 3, 9, 5, 0 }};
 constexpr std::array<const char*, 7> buildIds {{ "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
 constexpr std::array<const char*, 7> buildCaptions {{ "STRINGS", "HAMMERS", "SOUNDBOARD", "ACTION", "STIFFNESS", "UNISONS", "RING" }};
 constexpr std::array<const char*, 7> buildHints {{
@@ -203,7 +205,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     for (size_t i = 0; i < controls.size(); ++i) {
         auto& slider = controls[i];
         slider.setName(captions[i]);
-        slider.setSliderStyle(i >= 6 ? juce::Slider::LinearHorizontal : juce::Slider::RotaryHorizontalVerticalDrag);
+        slider.setSliderStyle(i >= 6 && i <= 8 ? juce::Slider::LinearHorizontal : juce::Slider::RotaryHorizontalVerticalDrag);
         slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 92, 22);
         slider.setRotaryParameters(juce::MathConstants<float>::pi * 1.23f,
             juce::MathConstants<float>::pi * 2.77f, true);
@@ -232,6 +234,8 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     controls[6].setTooltip("Damper pedal (CC64). Intermediate positions allow half pedalling.");
     controls[7].setTooltip("Sostenuto (CC66). Captures only the notes held when the pedal crosses its latch point.");
     controls[8].setTooltip("Soft pedal (CC67). Changes hammer excitation and unison balance.");
+    controls[9].setTooltip("How loud the action plays: the keys landing and coming back, the dampers falling and "
+                           "the sustain pedal, from silent to twice as loud as calibrated.");
     upright = value("model") >= .5f;
     for (size_t i = 0; i < build.size(); ++i) {
         auto& slider = build[i];
@@ -262,7 +266,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         }
         slider.updateText();
     }
-    voicingTab.setTooltip("Brightness, resonance, width, felt mute and output.");
+    voicingTab.setTooltip("Brightness, resonance, width, mechanics, felt mute and output.");
     buildTab.setTooltip("The piano's build: its strings, hammers, soundboard and action moved toward the other piano's, "
                         "and its strings' stiffness, unisons and ring.");
     voicingTab.onClick = [this] { showBuild(false); };
@@ -330,7 +334,7 @@ void KeyraAudioProcessorEditor::showBuild(bool on)
     processor.editorShowsBuild = on;
     voicingTab.setToggleState(!on, juce::dontSendNotification);
     buildTab.setToggleState(on, juce::dontSendNotification);
-    for (const auto i : { 0, 1, 2, 3, 5 })
+    for (const auto i : voicing)
         controls[static_cast<size_t>(i)].setVisible(!on);
     for (auto& slider : build)
         slider.setVisible(on);
@@ -344,9 +348,8 @@ float KeyraAudioProcessorEditor::value(const char* id) const
 
 void KeyraAudioProcessorEditor::resized()
 {
-    constexpr std::array<int, 5> order {{ 1, 2, 3, 5, 0 }};
-    for (size_t i = 0; i < order.size(); ++i)
-        controls[static_cast<size_t>(order[i])].setBounds(74 + static_cast<int>(i) * 176, 170, 128, 126);
+    for (size_t i = 0; i < voicing.size(); ++i)
+        controls[static_cast<size_t>(voicing[i])].setBounds(74 + static_cast<int>(i) * 704 / 5, 170, 128, 126);
     // The four parts, then past a divider the three modifiers.
     for (size_t i = 0; i < build.size(); ++i)
         build[i].setBounds((i < 4 ? 74 : 122) + static_cast<int>(i) * 112, 170, 112, 126);
@@ -407,10 +410,9 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
         g.setColour(ink.withAlpha(.12f));
         g.drawLine(546, 182, 546, 314, 1);
     } else {
-        constexpr std::array<int, 5> order {{ 1, 2, 3, 5, 0 }};
-        for (size_t i = 0; i < order.size(); ++i) {
-            const auto x = 74 + static_cast<int>(i) * 176;
-            text(g, captions[static_cast<size_t>(order[i])], { x - 6, 301, 140, 24 }, 12, ink, juce::Justification::centred, true);
+        for (const auto i : voicing) {
+            const auto& knob = controls[static_cast<size_t>(i)];
+            text(g, captions[static_cast<size_t>(i)], knob.getBounds().withY(301).withHeight(24), 12, ink, juce::Justification::centred, true);
         }
     }
     g.setColour(brass.withAlpha(.25f));

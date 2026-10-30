@@ -5,10 +5,10 @@
 #include <cstdlib>
 
 namespace {
-constexpr std::array<const char*, 18> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
-    "model", "quality", "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
+constexpr std::array<const char*, 19> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
+    "model", "quality", "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring", "mechanics" }};
 // The build's seven controls follow Quality, in keyra::buildToward's order.
-constexpr size_t modelIndex = 9, qualityIndex = 10, buildIndex = 11;
+constexpr size_t modelIndex = 9, qualityIndex = 10, buildIndex = 11, mechanicsIndex = 18;
 constexpr auto& programs = keyra::factoryPresets;
 }
 
@@ -95,6 +95,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
         [](double f) { return f < 1 ? f - 1 : (f - 1) / 2; });
     modifier("ring", "Ring", [](double x) { return std::pow(2.0, x); },
         [](double f) { return f > 0 ? std::log2(f) : -1.0; });
+    // How loud the action plays, from silent to twice as loud as calibrated
+    // (keyra::Parameters::mechanics). A preset leaves it, as it leaves the
+    // output.
+    add("mechanics", "Mechanics", 0.0f, 2.0f, 1.0f);
     return layout;
 }
 
@@ -169,6 +173,7 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.sustain = values[6]->load(std::memory_order_relaxed);
     p.sostenuto = values[7]->load(std::memory_order_relaxed);
     p.soft = values[8]->load(std::memory_order_relaxed);
+    p.mechanics = values[mechanicsIndex]->load(std::memory_order_relaxed);
     const auto build = [this](size_t i) { return values[buildIndex + i]->load(std::memory_order_relaxed); };
     p.build = keyra::buildToward(values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand,
         build(0), build(1), build(2), build(3), build(4), build(5), build(6));
@@ -284,9 +289,9 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
             || value > parameter->getNormalisableRange().end) return;
         seen[index] = true;
     }
-    // Sessions saved before the piano, quality and build controls existed
-    // lack them and keep their defaults: the grand they were made with, at
-    // full quality, as it was built.
+    // Sessions saved before the piano, quality, build and mechanics controls
+    // existed lack them and keep their defaults: the grand they were made
+    // with, at full quality, as it was built, its action as calibrated.
     for (size_t i = 0; i < modelIndex; ++i)
         if (!seen[i]) return;
     parameters.replaceState(state);

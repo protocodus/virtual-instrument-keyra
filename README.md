@@ -187,6 +187,18 @@ musical passages through the same engine. Both are frozen evidence from
   mode's level and phase is measured from the library's release and pedal
   recordings, and the knocks sit against the notes as the library's SFZ mixes
   them, since the recordings carry no level of their own.
+- A Mechanics control sets how loud the action plays, from silent to twice as
+  loud: the keys landing and coming back, the dampers falling, the sustain
+  pedal's knocks and the strings its going down sets ringing.
+- Full sustain pedal rings as 80 % of the pedal did, at the owner's request:
+  the dampers stop short of clearing the strings, so the felt grazes them,
+  and a chord of C3, C4, C5 and C6 let go under it falls 60 dB in 8.7 s on the
+  grand and 11.2 s on the upright, where it rang on past 30 s. The strings
+  the pedal frees are grazed by the same felt, so the ring it sets going down
+  falls 9.6 dB/s where Salamander's pedal-down takes fall 6.8 and 7.0
+  ([pedal benchmark](Docs/validation/grand-pedal-lift-benchmark-2026-10-30.md)),
+  and half pedalling lets them ring as far as it lets the struck strings,
+  where it all but silenced them.
 - The upright's soft pedal works as an upright's does (half-blow): it brings
   the hammers halfway to the strings, so a strike plays as one √½ as fast,
   quieter and darker, on every string of its unison. At middle C, velocity
@@ -346,7 +358,9 @@ at the key's place in the image. A key's own strikes do not drive its
 string: they are its sound. They decay at the rate the grand's pedal-down
 recording measures for their frequency, 0.32/s at middle C (2.8 dB/s) and a
 third faster per octave up, and the pedal going down sets the strings it frees
-ringing, at the level per third-octave band that recording rings them with.
+ringing, at the level per third-octave band that recording rings them with;
+under full pedal's grazing felt (**Pedals and keyswitches**) they fall faster
+than its strings do.
 
 A strike's tone moves with velocity beyond its layer: each partial gains
 0.4 dB per octave of its order (up to four) for every decibel its layer plays
@@ -365,7 +379,9 @@ building up over the 54 ms the release recordings show rather than clicking,
 and quieter the longer the key was held; under the sustain pedal or sostenuto
 no damper falls and the key-up is silent, while from F6 up, where there is
 no damper, the key's own return knocks them whatever the pedals do. The
-sustain pedal knocks them going down and coming up.
+sustain pedal knocks them going down and coming up. The Mechanics control
+scales every knock of the action, and the ring the pedal sets going down,
+from silent at 0 to twice as loud at 200 %.
 
 ### Two pianos, one model
 
@@ -542,8 +558,13 @@ the knock and its fall ([report](Docs/validation/grand-open-strings-benchmark-20
 
 ### Pedals and keyswitches
 
-Sustain lifts the dampers continuously, so half pedalling damps part way;
-going down it sets the strings it frees ringing (**The modal engine**).
+Sustain lifts the dampers continuously, so half pedalling damps part way.
+At the owner's request full pedal lifts them only 80 % of the way that clears
+the strings, so the felt still grazes every string, those ringing in sympathy
+with the rest: a chord of C3, C4, C5 and C6 let go under it falls 60 dB in
+8.7 s on the grand and 11.2 s on the upright, where clear of the strings it
+rang on past 30 s. Going down the pedal sets the strings it frees ringing
+(**The modal engine**).
 Sostenuto captures the keys held as it crosses halfway down and holds only
 those. Soft acts on later strikes as each piano's action does: the grand's
 shifts the hammers to fewer strings (una corda), lowering the level and the
@@ -566,11 +587,12 @@ a reset of the controllers lifts it without a sound.
 ### Controls, presets and MIDI
 
 Piano, its seven build controls, Quality, Output, Brightness, Resonance,
-Width, Tuning, Felt mute and the three pedals are the eighteen saved
-parameters. Piano, its build and Quality are not offered for automation: the
+Width, Mechanics, Tuning, Felt mute and the three pedals are the nineteen
+saved parameters. Piano, its build and Quality are not offered for automation: the
 piano is chosen for a part, not played, and Quality is a setting for the
 machine, not the music. A session saved before they existed plays the grand
-as built at full quality. The eight factory presets in
+as built at full quality, and one saved before Mechanics its action as
+calibrated. The eight factory presets in
 `Source/DSP/KeyraPresets.h`, five on the grand and three on the upright, set
 the piano as built, Brightness, Resonance, Width and Felt mute and leave the
 rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
@@ -635,8 +657,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   fast the pedal goes down. No recording plays notes under the pedal, so how
   loud the open strings ring in sympathy with what is played is the Resonance
   control's, not a measurement, and how they ring on from 1 to 4 s is fitted
-  on one decay law: from 250 Hz to 1 kHz they fall 2 to 5 dB further over
-  those seconds than the pedal-down takes, from 3 to 5 kHz 2 to 5 dB less. The
+  on one decay law, which full pedal's grazing felt steepens at the owner's
+  request: over those seconds they fall 1.5 to 11 dB further than the
+  pedal-down takes from 63 Hz to 2.5 kHz and within 2 dB of them from 3 to
+  5 kHz, a median 9.6 dB/s where the takes' strings fall 6.8 and 7.0. The
   pedal knocks play at the
   library's mix and the key knocks at a level the owner chose by ear, not a
   measured level, and only as far as the
