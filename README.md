@@ -748,7 +748,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
-  recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB). A key
+  recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB). From C6
+  up the grand's image is narrower than its recordings': from 800 Hz to
+  4 kHz its side stands a median 2.4 to 4.7 dB further under its mid on the
+  dev cases, and its channels' coherence 0.2 to 0.3 higher
+  (`Tools/tone_survey.py`). A key
   between two recorded pitches follows one that is louder or quieter than
   its neighbours, where its own recording may not: the upright's C4 sits 3
   to 7.5 dB over the line through F♯3's and D4's levels at every layer, and
