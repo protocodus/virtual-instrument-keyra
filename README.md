@@ -836,17 +836,20 @@ without the guard they would read 0.8, 6.5 and 6.0 VU. A velocity-127 chord
 still reads louder than the same chord at 110 on the grand and the upright,
 by a median 0.3 and 0.2 dB through the guard, where it reads 1.0 and 2.6 dB
 louder without it; on the Hamamatsu grand it reads 2.0 dB louder without
-the guard and 0.04 dB quieter through it (Known gaps). Its hammer's brighter
-strike is untouched. Through the Tube Mic alone typical playing reads −9 VU
-on the grand and the upright too, each piano's tube at its own calibration
-(`tubeScale`), and the loudest chords −0.9 and −0.3 VU, 0.6 and 0.2 dB
-louder at velocity 127 than at 110. The Hamamatsu grand's tube reads
-−10.0 VU, so that its loudest chords stay out of the red (−0.004 VU, 0.7 dB
-louder at 127). Mixed halfway, typical playing reads 1.0 dB (grand),
-0.8 dB (upright) and 1.2 dB (Hamamatsu grand) under −9 VU: the two
-microphones' responses differ per band, so their mix reads a little under
-either. The audio-tier test `Keyra.Levels` holds the readings at 0 and
-100 %.
+the guard and 0.04 dB quieter through it, levelling off, as the owner chose
+(Known gaps). Its hammer's brighter strike is untouched: such a chord's
+spectral centroid over its first 0.3 s rises from a median 477 Hz at 110 to
+551 Hz at 127. A single note at 127 reads a median 1.6 to 2.3 dB louder than
+at 110 through the guard on every preset. Through the Tube Mic alone typical
+playing reads −9 VU on the grand and the upright too, each piano's tube at
+its own calibration (`tubeScale`), and the loudest chords −0.9 and −0.3 VU,
+0.6 and 0.2 dB louder at velocity 127 than at 110. The Hamamatsu grand's
+tube reads −10.0 VU, so that its loudest chords stay out of the red
+(−0.004 VU, 0.7 dB louder at 127). Mixed halfway, typical playing reads
+1.0 dB (grand), 0.8 dB (upright) and 1.2 dB (Hamamatsu grand) under −9 VU:
+the two microphones' responses differ per band, so their mix reads a little
+under either. The audio-tier test `Keyra.Levels` holds the readings at 0
+and 100 %.
 
 ### The full physical research
 
@@ -1016,11 +1019,13 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   between G♯5 and C6, and D5's image 11.6 dB from its recording's
   ([benchmark](Docs/validation/kawai-recording-benchmark-2026-10-31.md)). Its
   A2 is recorded about 4 dB over its neighbours in its three loudest layers,
-  and the keys between them play toward it. Through the tube alone its
-  typical playing reads −10.0 VU, 1 dB under the other pianos', so that its
-  loudest chords, which that A2 and the tube's bass make hotter, stay out of
-  the red, by 0.004 dB. At the default Output its chords at velocity 127 read
-  no louder than at 110 through the output stage (Playing level). It has no
+  and the keys between them play toward it. The owner chose two trades for
+  it. Through the tube alone its typical playing reads −10.0 VU, 1 dB under
+  the other pianos', so that its loudest chords, which that A2 and the
+  tube's bass make hotter, stay out of the red, by 0.004 dB. At the default
+  Output its chords at velocity 127 level off with those at 110 through the
+  output stage, while its single notes still read 2.3 dB louder (Playing
+  level). It has no
   pedal recordings: its pedals make no sound of their own and its strings
   ring under the pedal at the Kakegawa grand's rates. Its second layer's
   takes from E3 up stop at a noise gate 0.6 to 15 s after the strike, and the

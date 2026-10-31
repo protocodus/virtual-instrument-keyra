@@ -18,6 +18,8 @@
 //  - the loudest chords: the same chords at velocity 127, five rounds of
 //    them, read as the highest of their readings and the output's sample
 //    peak, and against five rounds at velocity 110.
+//  - the loudest single notes: the same single notes at velocity 127,
+//    against them at 110.
 //
 // A piano's calibration reads its default sound 20 dB down, below the output
 // stage, and adds the 20 dB back; the factor --report prints brings it to
@@ -29,9 +31,10 @@
 // also stay out of the red and play louder than at
 // 110; every preset without felt reads within 2 dB of it; the loudest
 // chords of every preset stay out of the red, under 0 VU, with no sample over
-// the stage's ceiling; and the chords still play louder at velocity 127 than
-// at 110 through the guard, by their median difference: each strike's own
-// spread (touchSpreadDb) can turn one chord over. The felt presets read lower and are not
+// the stage's ceiling; and the single notes and the chords still play louder
+// at velocity 127 than at 110 through the guard, by their median difference
+// (each strike's own spread, touchSpreadDb, can turn one over), except that
+// on the Kawai's hammers the chords may level off (below). The felt presets read lower and are not
 // held to the target: the felt stops each note within a fraction of a second,
 // so the meter's 300 ms holds less of it, while its attack peaks as high as
 // the others' and raising them would press every hard note into the limiter.
@@ -49,6 +52,7 @@
 #include <cstring>
 #include <functional>
 #include <thread>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -59,10 +63,15 @@ const std::vector<std::vector<int>> chords{
   {60,64,67},{60,65,69},{59,62,67},{57,60,64},
   {48,55,64,67,72},{41,53,57,60,65},{43,55,59,62,67},{45,52,57,60,64}};
 constexpr int singles=22,velocities[]{70,90,110};
+std::vector<Event> singleNotes(int velocity){
+  std::vector<Event> events;
+  for(int i=0;i<singles;++i)events.push_back({{21+4*i},velocity});
+  return events;
+}
 std::vector<Event> typicalPlaying(){
   std::vector<Event> events;
   for(int velocity:velocities){
-    for(int i=0;i<singles;++i)events.push_back({{21+4*i},velocity});
+    for(auto& note:singleNotes(velocity))events.push_back(std::move(note));
     for(const auto& chord:chords)events.push_back({chord,velocity});
   }
   return events;
@@ -135,11 +144,13 @@ int run(int jobs,bool check){
   constexpr std::size_t pianos=keyra::pianoCount;
   const char* const pianoNames[pianos]{"grand","upright","kawai"};
   const auto typicalEvents=typicalPlaying(),loudestEvents=chordRounds(127),strongEvents=chordRounds(110);
+  const auto loudestNotes=singleNotes(127),strongNotes=singleNotes(110);
   // Tasks: each piano's default sound below the stage, at Mic 0 and at 1,
   // and its loudest chords and the same chords at 110 at Mic 1 as heard;
-  // then each preset's typical playing, loudest chords and the same chords
-  // at 110 as heard.
-  const std::size_t calibrations=4*pianos,count=calibrations+3*presets.size();
+  // then each preset's typical playing, loudest chords, the same chords at
+  // 110, loudest single notes and the same notes at 110 as heard.
+  constexpr std::size_t perPreset=5;
+  const std::size_t calibrations=4*pianos,count=calibrations+perPreset*presets.size();
   std::vector<Reading> readings(count);
   parallel(count,jobs,[&](std::size_t task){
     if(task<calibrations){
@@ -150,9 +161,10 @@ int run(int jobs,bool check){
       readings[task]=play(parameters,kind<2?typicalEvents:kind==2?loudestEvents:strongEvents);
       return;
     }
-    const std::size_t preset=(task-calibrations)/3,kind=(task-calibrations)%3;
+    const std::size_t preset=(task-calibrations)/perPreset,kind=(task-calibrations)%perPreset;
     const auto parameters=keyra::withPreset(keyra::Parameters{},presets[preset]);
-    readings[task]=play(parameters,kind==0?typicalEvents:kind==1?loudestEvents:strongEvents);
+    const std::vector<Event>* events[perPreset]{&typicalEvents,&loudestEvents,&strongEvents,&loudestNotes,&strongNotes};
+    readings[task]=play(parameters,*events[kind]);
   });
 
   int failures=0;
@@ -184,21 +196,37 @@ int run(int jobs,bool check){
     expect(std::max(loudest.peakDbfs,strong.peakDbfs)<=20*std::log10(protocodus::OutputStage<2>::kCeiling)+.01,
            pianoNames[piano],"a sample at Mic 1 passes the ceiling",std::max(loudest.peakDbfs,strong.peakDbfs));
   }
+  // The median step from velocity 110 to 127, event by event, and the least.
+  const auto stepOf=[](const Reading& loudest,const Reading& strong){
+    std::vector<double> steps;
+    for(std::size_t k=0;k<loudest.events.size();++k)steps.push_back(loudest.events[k]-strong.events[k]);
+    return std::make_pair(median(steps),*std::min_element(steps.begin(),steps.end()));
+  };
   for(std::size_t preset=0;preset<presets.size();++preset){
-    const auto& typical=readings[calibrations+3*preset];const auto& loudest=readings[calibrations+3*preset+1];
-    const auto& strong=readings[calibrations+3*preset+2];
+    const Reading* r=&readings[calibrations+perPreset*preset];
+    const auto& typical=r[0];const auto& loudest=r[1];const auto& strong=r[2];
     const double reading=median(typical.events);
     const double loud=*std::max_element(loudest.events.begin(),loudest.events.end());
-    std::vector<double> steps;
-    for(std::size_t chord=0;chord<loudest.events.size();++chord)steps.push_back(loudest.events[chord]-strong.events[chord]);
-    const double step=median(steps),least=*std::min_element(steps.begin(),steps.end());
-    const double peak=std::max({typical.peakDbfs,loudest.peakDbfs,strong.peakDbfs});
-    std::printf("%-18s typical %6.2f VU  loudest chords %6.2f VU  velocity 110 to 127 %+.2f dB (least %+.2f)  peak %6.2f dBFS\n",
-                presets[preset].name,reading,loud,step,least,peak);
+    const auto [step,least]=stepOf(loudest,strong);
+    const double noteStep=stepOf(r[3],r[4]).first;
+    const double peak=std::max({typical.peakDbfs,loudest.peakDbfs,strong.peakDbfs,r[3].peakDbfs,r[4].peakDbfs});
+    std::printf("%-18s typical %6.2f VU  loudest chords %6.2f VU  velocity 110 to 127 %+.2f dB (least %+.2f), "
+                "single notes %+.2f dB  peak %6.2f dBFS\n",presets[preset].name,reading,loud,step,least,noteStep,peak);
     const char* name=presets[preset].name;
     if(presets[preset].mute==0)expect(std::abs(reading-targetVu)<=2,name,"typical playing is not near the target",reading);
     expect(loud<0,name,"the loudest chords reach the red",loud);
-    expect(step>0,name,"the chords at velocity 127 are no louder than at 110",step);
+    expect(noteStep>0,name,"the single notes at velocity 127 are no louder than at 110",noteStep);
+    // On the Kawai's hammers alone the chords at 127 may level off with
+    // those at 110, as the owner chose (Docs/decisions.md, 2026-10-31):
+    // before the guard they read 1.5 to 2.9 dB louder, and the guard that
+    // keeps the loudest out of the red takes the step, which lowering the
+    // Kawai's output gives back only 0.09 dB per dB. Level means less than
+    // a quarter decibel under, short of the 0.4 dB change listeners can just
+    // detect in a broadband sound (Miller 1947, white noise); the single
+    // notes still play louder (above).
+    const bool levelsOff=presets[preset].build.hammers==keyra::only(keyra::Piano::kawai);
+    expect(levelsOff?step>-.25:step>0,name,levelsOff?"the chords at velocity 127 read a quarter decibel or more under 110"
+                                                    :"the chords at velocity 127 are no louder than at 110",step);
     expect(peak<=20*std::log10(protocodus::OutputStage<2>::kCeiling)+.01,name,"a sample passes the ceiling",peak);
   }
   if(!check)return 0;

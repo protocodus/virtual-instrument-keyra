@@ -1996,9 +1996,12 @@ neighbours in its three loudest layers, the keys between them play toward
 it, and the tube hears more of the bass. The owner first chose a quieter
 tube over evening out the A2, 0.1 dB past the half-decibel bound; the change
 to the keys between recorded pitches (below) then raised those chords, and
-the owner is asked whether the tube goes 1 dB quieter, which
-`KeyraLevels --check` allows the Kawai alone (1.05 dB), or the A2 is evened
-out.
+asked again, between the tube 1 dB quieter and the A2 brought down to its
+neighbours' trend, the owner chose the quieter tube, which
+`KeyraLevels --check` allows the Kawai alone (1.05 dB). Its loudest chords
+through the tube clear the red by 0.004 dB and its reading the bound by
+0.02 dB, so a later change that raises those chords comes back to the
+owner.
 
 On its 23 dev notes, against the grand's data played on them, the Kawai's
 own data sits closer to the recordings in tuning (2.87 against 4.17 cents),
@@ -2093,11 +2096,10 @@ preset menu takes its place. A session saved with the Piano control and the
 two-piano parts opens as the same build (`buildToward(piano, partner(piano),
 …)`), and a state holding both kinds of parameter is refused.
 
-The owner was asked whether each part takes a weight per piano or one knob
+The owner chose a weight per piano for each part over one knob per part
 that sweeps the pianos in a row: four knobs, but only neighbours in the row
-blend, never Helsinki with Hamamatsu directly. The weights are built, as
-recommended, while the answer is pending. Checked by measurement; no one has
-listened to a build of three pianos yet.
+blend, never Helsinki with Hamamatsu directly. Checked by measurement; no
+one has listened to a build of three pianos yet.
 
 ## 2026-10-31 — the pianos and the presets go by cities
 
@@ -2140,6 +2142,16 @@ other preset's read louder, as the step check asks. Before the stage they
 read 1.5 to 2.9 dB louder (chord by chord, five rounds each), and the stage's
 guard, which keeps its loudest chords at −1.2 VU, takes the step: lowering
 the Kawai's output gives back 0.09 dB of it per dB, and the in-between
-change above is not the cause (before it the step read −0.05 dB). The owner
-is asked whether its top velocities may level off there, whether the Kawai
-plays 1 dB quieter overall, or whether the preset waits.
+change above is not the cause (before it the step read −0.05 dB). Asked
+whether its top velocities may level off there, whether the Kawai plays
+1 dB quieter overall (typical playing at −10 VU, its chords at 127 then
+0.05 dB over 110) or whether the preset waits, the owner chose to let them
+level off. `KeyraLevels --check` now lets the chords of a preset on the
+Kawai's hammers alone read up to a quarter decibel under 110, short of the
+0.4 dB change listeners can just detect in a broadband sound, and holds
+every preset's single notes to playing louder at 127 than at 110 (the median
+over the 22 typical notes). Hamamatsu Grand's single notes read 2.28 dB
+louder at 127 (21 of 22 notes), the other presets' 1.58 to 1.90 dB, and its
+chords at 127 are brighter: their spectral centroid over the first 0.3 s
+rises from a median 477 to 551 Hz, brighter in 38 of 40 chords, as the
+Kakegawa grand's rises from 551 to 614 Hz.
