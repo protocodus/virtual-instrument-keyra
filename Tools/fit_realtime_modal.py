@@ -111,22 +111,32 @@ MODELS = {
               'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
                          'recorded pitch\'s key is let go (from F6 up, where it plays none, the take of D#6\'s), '
                          'from one take each in those recordings\' own scale.'},
-    'newyork': {'title': 'the Decent Sampler "Steinway Grand" (Jon Meyer, no licence stated)',
+    'hamburg': {'title': 'the Decent Sampler "Steinway Grand" (Jon Meyer); nothing from the library is copied',
+                'corpus': ROOT / 'Tools/corpus/hamburg-grand.json',
+                'split': ROOT / 'Tools/corpus/split-hamburg-2026-10-31.json',
+                'wav': ROOT / 'out/hamburg/wav', 'cache': ROOT / 'out/calibration/hamburg',
+                'header': ROOT / 'Source/DSP/MeasuredHamburgData.h',
+                'metadata': ROOT / 'Docs/research/hamburg-modal-fit-2026-10-31.json',
+                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
+                # Only 1 % of its undamped strings' tones stand 20 dB over their
+                # neighbours a second after contact, too few to give a fall.
+                # From 16 dB the shared rate holds: 0.76/s, and 0.77/s from 14.
+                'halo_fall_margin': 16,
+                'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
+                           'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
+    'newyork': {'title': 'the Pianobook "Grandpa\'s Piano" (David Hawkins); nothing from the library is copied',
                 'corpus': ROOT / 'Tools/corpus/newyork-grand.json',
                 'split': ROOT / 'Tools/corpus/split-newyork-2026-10-31.json',
                 'wav': ROOT / 'out/newyork/wav', 'cache': ROOT / 'out/calibration/newyork',
                 'header': ROOT / 'Source/DSP/MeasuredNewYorkData.h',
                 'metadata': ROOT / 'Docs/research/newyork-modal-fit-2026-10-31.json',
                 'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
-                'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
-                           'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
-    'detroit': {'title': 'the Pianobook "Grandpa\'s Piano" (David Hawkins, no licence stated)',
-                'corpus': ROOT / 'Tools/corpus/detroit-grand.json',
-                'split': ROOT / 'Tools/corpus/split-detroit-2026-10-31.json',
-                'wav': ROOT / 'out/detroit/wav', 'cache': ROOT / 'out/calibration/detroit',
-                'header': ROOT / 'Source/DSP/MeasuredDetroitData.h',
-                'metadata': ROOT / 'Docs/research/detroit-modal-fit-2026-10-31.json',
-                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
+                # G5, A#6, D#7 and G#7 have no mapped FF take at their pitches, and
+                # their steep upper layers, carried on by slope, played D#7 41 dB
+                # louder from velocity 91 to 127 where F6, which has its FF,
+                # plays 11 dB. Their top layer takes the median step the other
+                # pitches record from F to FF instead.
+                'carried_top': True,
                 'actions': 'The action\'s knocks on the body modes: the seven key-noise takes the library plays '
                            'as any key is let go, one to each recorded pitch in turn, in those recordings\' own '
                            'scale.'},
@@ -811,7 +821,7 @@ def halo_pitches(results, strings, wav):
     return {key: float(np.median(hzs)) if hzs else strings[key] for key, hzs in found.items()}
 
 
-def halo_data(results, strings, hz, wav, grid, layer_level):
+def halo_data(results, strings, hz, wav, grid, layer_level, fall_margin=20):
     """The undamped strings every strike sets ringing (see HALO_TIMES), at
     their frequencies `hz` (halo_pitches) by key; `strings` are the pitches
     the engine gives their keys.
@@ -884,7 +894,7 @@ def halo_data(results, strings, hz, wav, grid, layer_level):
     heard = [j for j, pickup in enumerate(pickups) if pickup is not None]
     pickups = [pickups[min(heard, key=lambda h: abs(h - j))] for j in range(len(keys))]
     falls = [np.concatenate([(m['tone'][:, j, 0] - m['tone'][:, j, -1])
-                             [(m['margin'][:, j, 0] >= 20) & (m['margin'][:, j, -1] >= 6)]
+                             [(m['margin'][:, j, 0] >= fall_margin) & (m['margin'][:, j, -1] >= 6)]
                              for m in measured if m['apart'][j]]) for j in range(len(keys))]
     pooled = float(np.median([np.median(x) for x in falls if len(x)]))
     rates = np.array([(len(x) * np.median(x) + 10 * pooled) / (len(x) + 10) if len(x) else pooled
@@ -2156,27 +2166,34 @@ def phase_at(velocities, phase, v):
     return cmath.phase(z) if abs(z) > 1e-6 else float(phase[i] if t < .5 else phase[i + 1])
 
 
-def on_grid(anchors, noise, knock, grid):
+def on_grid(anchors, noise, knock, grid, top_step=None):
     """Anchors whose layers lie at other velocities than `grid` (a pitch
     without one of the layers, or a layer whose range spans two of the
     grid's) carried onto it as the engine would play them: levels and
     densities by level_at, phases by phase_at, the onset rise log-linear and
-    held beyond the layers."""
+    held beyond the layers. With `top_step` (dB), an anchor without the grid's
+    top layer plays it at its own top layer's tone that much louder, where the
+    last segment's slope would carry on far past what any recorded top layer
+    adds (see MODELS['newyork'])."""
     import numpy as np
     for a, bands in zip(anchors, noise['anchors']):
         v = list(a['velocities'])
         if v == list(grid):
             continue
+        def at(db, g):
+            if top_step is not None and g > v[-1]:
+                return float(db[-1]) + top_step * (g - v[-1]) / (grid[-1] - v[-1])
+            return level_at(v, db, g)
         for p in a['partials'] + a['extras']:
             for lane in p['lanes']:
-                lane['level_db'] = np.array([level_at(v, lane['level_db'], g) for g in grid])
+                lane['level_db'] = np.array([at( lane['level_db'], g) for g in grid])
                 lane['phase'] = np.array([phase_at(v, lane['phase'], g) for g in grid])
         a['onset_rise'] = np.exp(np.interp(grid, v, np.log(a['onset_rise'])))
         for b in bands:
-            b['level_db'] = np.array([level_at(v, b['level_db'], g) for g in grid])
-            b['slow_db'] = np.array([level_at(v, b['slow_db'], g) for g in grid])
+            b['level_db'] = np.array([at( b['level_db'], g) for g in grid])
+            b['slow_db'] = np.array([at( b['slow_db'], g) for g in grid])
         for b in knock['anchors'][anchors.index(a)]:
-            b['level_db'] = np.array([level_at(v, b['level_db'], g) for g in grid])
+            b['level_db'] = np.array([at( b['level_db'], g) for g in grid])
         a['velocities'] = list(grid)
 
 
@@ -2404,11 +2421,11 @@ def generate(model):
     for record, bands, count in zip(records, knock['anchors'], knock['measured']):
         record.update({'knock_bands_filled': sum(1 for b in bands if b.get('filled')), 'knock_measured': count})
     action = action_data(model, [a['note'] for a in anchors], body['hz'], body['rates'], body['shapes'])
-    halo = halo_data(results, strings, halo_hz, model['wav'], grid, layer_level)
+    halo = halo_data(results, strings, halo_hz, model['wav'], grid, layer_level, model.get('halo_fall_margin', 20))
     for record, kinds in zip(records, halo['kinds']):
         record['halo_strings'] = {kind: [key for key, k in zip(halo['keys'], kinds) if k == kind]
                                   for kind in ('clear', 'under', 'filled')}
-    on_grid(anchors, noise, knock, grid)
+    on_grid(anchors, noise, knock, grid, float(layer_level[-1] - layer_level[-2]) if model.get('carried_top') else None)
     noise = noise_with_knock(noise, knock)
     damper = damper_data(model, results, halo_hz) if model.get('damper') else None
     open_strings = open_string_data(model) if model['pedal'] else None
@@ -2525,6 +2542,21 @@ def generate(model):
     return content, metadata
 
 
+def same_provenance(stored, fresh) -> bool:
+    """Equal to within 1e-9 relative: only the Hamburg grand's diagnostics (its
+    median phase agreements) vary from run to run, in their last bits; its
+    header, compared exactly above, stays byte-identical."""
+    import math
+    if isinstance(stored, dict):
+        return isinstance(fresh, dict) and stored.keys() == fresh.keys() and all(
+            same_provenance(stored[k], fresh[k]) for k in stored)
+    if isinstance(stored, list):
+        return isinstance(fresh, list) and len(stored) == len(fresh) and all(map(same_provenance, stored, fresh))
+    if isinstance(stored, float) and isinstance(fresh, (int, float)):
+        return math.isclose(stored, fresh, rel_tol=1e-9, abs_tol=1e-12)
+    return stored == fresh
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--model', choices=MODELS, default='grand')
@@ -2544,7 +2576,7 @@ def main():
     if args.check:
         if args.header.read_text() != content:
             raise SystemExit('Measured modal header differs from the regenerated fit')
-        if json.loads(args.metadata.read_text()) != metadata:
+        if not same_provenance(json.loads(args.metadata.read_text()), metadata):
             raise SystemExit('Measured modal provenance differs from the regenerated fit')
         print('measured modal header and provenance reproduce exactly')
         return

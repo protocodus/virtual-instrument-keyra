@@ -338,6 +338,16 @@ musical passages through the same engine. Both are frozen evidence from
   recordings its tuning, attack, noise between partials, rise and level sit
   closer to them than the first grand's data does, and its partial levels,
   decay, image and envelope further (Known gaps)
+- Adds two more grands, each with a preset after Three Cities: Hamburg Grand
+  (program 11), from the Decent Sampler "Steinway Grand" by Jon Meyer, and New
+  York Grand (program 12), from Pianobook's "Grandpa's Piano" by David Hawkins.
+  The first three pianos, their blends and
+  every demo render sample for sample as before. Hamburg's data sits closer to
+  its never-fitted recordings than the first grand's in tuning, attack, noise,
+  rise and level and further in partial levels and decay, New York's closer but
+  for decay
+  ([Hamburg](Docs/validation/hamburg-recording-benchmark-2026-10-31.md),
+  [New York](Docs/validation/newyork-recording-benchmark-2026-10-31.md))
   ([benchmark](Docs/validation/kawai-recording-benchmark-2026-10-31.md)).
 - The pianos are builds of one model, at the owner's request. A Build view
   beside the voicing knobs mixes the measured pianos part by part: the

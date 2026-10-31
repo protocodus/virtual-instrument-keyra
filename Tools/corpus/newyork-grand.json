@@ -1,1933 +1,1587 @@
 {
- "title": "Steinway Grand (Decent Sampler)",
- "author": "Jon Meyer (inferred: the library's image caption JONMEYERMUSIC.COM and its archive name)",
- "instrument": "a Steinway & Sons grand piano; model and size are not given",
- "license": "none stated in the library; the project owner asked for the fit on 31 October 2026",
- "capture": "one stereo perspective, 48 kHz/24-bit stereo WAV",
- "pitch_names": "the library names middle C (MIDI 60) C3; ids carry MIDI numbers",
- "velocity_layers": "four, by the preset: 1-60, 61-98, 99-117, 118-127; two round robins each",
- "mixing": "the preset trims samples by -6 to +9 dB, which the fit does not apply",
- "decoding": "cut at the preset's start point less 0.02 s, no gain, resampling, denoising or EQ",
+ "title": "Grandpa's Piano (Decent Sampler, Pianobook)",
+ "author": "David Hawkins",
+ "instrument": "a 1933 Steinway Model L grand piano, per the library's README",
+ "license": "none stated in the library",
+ "capture": "one stereo perspective, 44.1 kHz stereo AIFF, 16-bit but for six 24-bit takes",
+ "velocity_layers": "PP 0-25, P 26-45, M 46-75, F 76-105, FF 106-127",
+ "mixing": "the preset's group volumes and pan are not applied; see Tools/decode_newyork.py",
+ "decoding": "ffmpeg to PCM WAV at the source depth, no gain, trim, resampling, denoising or EQ",
  "files": [
-  {
-   "id": "n24v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_C0_Dyn1_RR1.wav",
-   "start": 41500,
-   "wav_sha256": "dbeeb76cefc87835220ae057a4a193a4cdf709459ecdafde72830be04e007a63"
-  },
-  {
-   "id": "n24v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_C0_Dyn1_RR2.wav",
-   "start": 35862,
-   "wav_sha256": "8ea6276d113504dbd636835d8791a7db62758e36bb37ab1ae15b1fe19f5532d5"
-  },
-  {
-   "id": "n24v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_C0_Dyn2_RR1.wav",
-   "start": 37828,
-   "wav_sha256": "23ef7fcda849d86c05a29aa5c403b2b57f738cea0518dd4706365f29c803d283"
-  },
-  {
-   "id": "n24v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_C0_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "96463bea294a5ba6d9f583e37149fc26bb576c0e8150969ee3de0f160ac5e37b"
-  },
-  {
-   "id": "n24v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_C0_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "1370b0f1a181698879666fe77c13123023f6377056bb83e4560b28e9ebe42b6c"
-  },
-  {
-   "id": "n24v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_C0_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "6c32b0d14696de6b5e99f8c87bb0e36e1b04ee249fff8d8a30248820b6ef84a4"
-  },
-  {
-   "id": "n24v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_C0_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "b3cc69a77e32339dbc798d4ff36c42096bc25e6eb557c69a254cf5e761a1f95f"
-  },
-  {
-   "id": "n24v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_C0_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "0d2234884b231ba5981b186d2d7864bc6fbd26566f5d39eea167ff8a21411782"
-  },
-  {
-   "id": "n31v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_G0_Dyn1_RR1.wav",
-   "start": 35652,
-   "wav_sha256": "eadcf92047aca4ee7f5092f8517f3eb003ff7fcee20981befddcaab001af1825"
-  },
-  {
-   "id": "n31v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_G0_Dyn1_RR2.wav",
-   "start": 35511,
-   "wav_sha256": "64571077a980906482fd18ed7a67a45290555bcf2b3576ab8593a320f3d32d8c"
-  },
-  {
-   "id": "n31v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_G0_Dyn2_RR1.wav",
-   "start": 35756,
-   "wav_sha256": "2971b9714f79fc08ca2847a879877fa1f1f01e705653103881beeb085b9cb94f"
-  },
-  {
-   "id": "n31v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_G0_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "eeb6ffd651059b7d4ded63eb6b186dffde9f70dac39b5b6ff475c104586ff75a"
-  },
-  {
-   "id": "n31v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_G0_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "0ce227dc4cecdfb66ac4178fc68065c6c48c6ef5cd4b2a4c7278966c3500c51b"
-  },
-  {
-   "id": "n31v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_G0_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "cc9536cfa3bb01f69a0c5c3d09424807a617aa9bfb303d98dbbba21a48da724c"
-  },
-  {
-   "id": "n31v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_G0_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "b9754c5cd90e39810bd00e8df3bf2e077752dde5add5ac27b0c9cab7d656e87d"
-  },
-  {
-   "id": "n31v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_G0_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "7df9427985f2320884e53174d391ef14bb627e60ca6f5490d9b8da8a75419dd8"
-  },
-  {
-   "id": "n38v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_D1_Dyn1_RR1.wav",
-   "start": 36649,
-   "wav_sha256": "f0859be9ed3ee62aae7e33f7534e359248007e2a06435057def2f2f951b525a7"
-  },
-  {
-   "id": "n38v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_D1_Dyn1_RR2.wav",
-   "start": 35709,
-   "wav_sha256": "cddadbe6fa81229c38749aa96311aa5ba1e9073c903d96e3e46d4747766f9101"
-  },
-  {
-   "id": "n38v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_D1_Dyn2_RR1.wav",
-   "start": 35800,
-   "wav_sha256": "40bd2b63d449e40a66e9bcbb31a4a95cb56cbe2f01532aaf4307711b4b0aad4b"
-  },
-  {
-   "id": "n38v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_D1_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "905a61b5ad7045fb52721507dd76b994fa7ca0a231bd15059172bfceab139532"
-  },
-  {
-   "id": "n38v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_D1_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "f90c83090b2ca5dc926aab3b22fb620b511273ef208e63752a5820dd3b7db91f"
-  },
-  {
-   "id": "n38v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_D1_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "4817c004d2d3238783c59d2f8d45fc1a684823943f1030ce5897ca081a4d2401"
-  },
-  {
-   "id": "n38v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_D1_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "685b0645f54259420e611bb6597123b8372314b5f75a94ebb75411cea19ac668"
-  },
-  {
-   "id": "n38v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_D1_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "f87fdb03a92a58ef105ee43c6e941127da2edcc1e3b3b44af0b80f1dfcac7fdc"
-  },
-  {
-   "id": "n45v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_A1_Dyn1_RR1.wav",
-   "start": 35935,
-   "wav_sha256": "4740ecbea71c4cebc5231c4c698ea73fe95bd8d6b5cc39ab597dcbd191c5270e"
-  },
-  {
-   "id": "n45v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_A1_Dyn1_RR2.wav",
-   "start": 35862,
-   "wav_sha256": "35569b7cf9334aaa5d7b767d27392aa8d606b0880c915c43c9925a0f6f40108e"
-  },
-  {
-   "id": "n45v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_A1_Dyn2_RR1.wav",
-   "start": 35595,
-   "wav_sha256": "07531269843702af9677dc0ea94d1a269629d8cdd6938e6281d69306a68eb747"
-  },
-  {
-   "id": "n45v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_A1_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "f34e9787d2a7488bbbf6b236b726ebad63f82e563a27b365d3ec00e17408c9ea"
-  },
-  {
-   "id": "n45v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_A1_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "0087110afd0a4952e0402b3f04a0663f07242ad9fb29b0ef5b2f27ae81680550"
-  },
-  {
-   "id": "n45v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_A1_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "aecbe62dcd69a38d6e7765c81c47a99f2a5e8bb4fb8b5572b31e588df1e73d37"
-  },
-  {
-   "id": "n45v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_A1_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "77bc4475ca77e561870cc2ae5621b4a2e65d77a5203c528fa14dab904c2eb1e3"
-  },
-  {
-   "id": "n45v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_A1_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "51a758e9e58b3b023ad26e089aff17ca711ecf24cf86170251266fca6b9bbb9c"
-  },
-  {
-   "id": "n52v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_E2_Dyn1_RR1.wav",
-   "start": 36460,
-   "wav_sha256": "ead40bed893304f3fe659026186a12895032eb5340950ed2fb30dbcd1d9174f4"
-  },
-  {
-   "id": "n52v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_E2_Dyn1_RR2.wav",
-   "start": 35862,
-   "wav_sha256": "692d6e24ac71a8d98b0b360ac74a75d00db4cfdc671c401ce1b2b572f669b177"
-  },
-  {
-   "id": "n52v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_E2_Dyn2_RR1.wav",
-   "start": 35878,
-   "wav_sha256": "04e2c799044b5e119df6c4ca40ceec186dd7315274716ca5234588ec6f4bcb31"
-  },
-  {
-   "id": "n52v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_E2_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "a1a2f01538e848e49e7bf1c7f102e21ccb357acbc13d4c86b512e14d44fc2d7e"
-  },
-  {
-   "id": "n52v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_E2_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "d56aeeb05e9ac82f45e83207abbc88ef5f5e34ff04e9b31176823ec1a49df277"
-  },
-  {
-   "id": "n52v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_E2_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "5c04d9beceb85f9c4efe5246201c8cd8588ac36ecc8adad8dd004e34ca144498"
-  },
-  {
-   "id": "n52v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_E2_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "1a98752533daa80dbd5a90773d9f597cce18507d27646f71ddbed07a1e5e3167"
-  },
-  {
-   "id": "n52v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_E2_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "4df6359f86056192575f309762f6b3ae1b745efb6efa8c699b55bdef5eb3bffe"
-  },
-  {
-   "id": "n59v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_B2_Dyn1_RR1.wav",
-   "start": 35234,
-   "wav_sha256": "0fe5a5048fd0e1a5fde957cd2e22225137a29a8169e7c6a90ef9c54056fe233d"
-  },
-  {
-   "id": "n59v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_B2_Dyn1_RR2.wav",
-   "start": 35862,
-   "wav_sha256": "8260f4fff30d6998e1310b2476f239eea4151ee6e9519cbf5aa5197dcd2ab36b"
-  },
-  {
-   "id": "n59v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_B2_Dyn2_RR1.wav",
-   "start": 35668,
-   "wav_sha256": "f529935e881305420cc3e436cb6bb896dfc2ecb317a8082618efb2f92afc7351"
-  },
-  {
-   "id": "n59v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_B2_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "89a0817869535c1797205cb44d710f96285b01fa0c4372aa92d4e6d8257aa0cc"
-  },
-  {
-   "id": "n59v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_B2_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "44045f4b2f80e43f74673bf88d612965bd11d666d6219b59ff5bb03afca4607b"
-  },
-  {
-   "id": "n59v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_B2_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "c35cfa73d198f9c5e0a05aaba50a560bad1756b149bec9c8480b7ff958eecbc5"
-  },
-  {
-   "id": "n59v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_B2_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "bfba3193d25b1a5fca0ad9636e4b299349d2097f04f63f6393606fa0d33fa3c3"
-  },
-  {
-   "id": "n59v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_B2_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "cfd6678bae3a0288c71c429688553d43b95db9710ac939ba7e622c332bd8c3c3"
-  },
-  {
-   "id": "n66v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_F#3_Dyn1_RR1.wav",
-   "start": 35182,
-   "wav_sha256": "9ebe9d53120216eb2fb3d003d493da6f9cb320f8659567f9af82c40d14bdaafc"
-  },
-  {
-   "id": "n66v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_F#3_Dyn1_RR2.wav",
-   "start": 36102,
-   "wav_sha256": "88a347ba8a87fc2942dc38566869eec04ae7fb45fa059de983016b3eb171dd45"
-  },
-  {
-   "id": "n66v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_F#3_Dyn2_RR1.wav",
-   "start": 35728,
-   "wav_sha256": "cd6dde1e5f7ba7d3f4a5c3abaa2364cd36cd13b82a11b24ee9b3570fc7d7fa79"
-  },
-  {
-   "id": "n66v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_F#3_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "ea10b4020bc18d0022d5e8da2460d8ac32a5eb3d3d1b5d2f7d7706794c4f3b5d"
-  },
-  {
-   "id": "n66v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_F#3_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "50f3d725c7b508785c76c3b20d7a321e6ec847d216be9a43a2e7c306cc2cad44"
-  },
-  {
-   "id": "n66v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_F#3_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "2a2ca165a732c04f3b53f153201df1167f588547063e64489b16d1fee6834da1"
-  },
-  {
-   "id": "n66v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_F#3_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "4efca4de70ab2fed354af10914463d7d95334f89f1c37478430854c18f492f61"
-  },
-  {
-   "id": "n66v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_F#3_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "d33de8b8792e7143570c8d535b9a0804d01a53542ad380af2a98c09677baeb16"
-  },
-  {
-   "id": "n73v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_C#4_Dyn1_RR1.wav",
-   "start": 35734,
-   "wav_sha256": "eab7e84e8369daf1b86a3f0c1358f21d60321fadf469393b34bd833e48d0264d"
-  },
-  {
-   "id": "n73v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_C#4_Dyn1_RR2.wav",
-   "start": 35862,
-   "wav_sha256": "d4293ca3e57ba3eadc6c091a26a5a8df0ceeb728a1f45f0a08f8f54f8e052620"
-  },
-  {
-   "id": "n73v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_C#4_Dyn2_RR1.wav",
-   "start": 35860,
-   "wav_sha256": "940c36140ec7e178f9c092ce698b4e17f9b2733251f3d2a25574a25ff354b26f"
-  },
-  {
-   "id": "n73v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_C#4_Dyn2_RR2.wav",
-   "start": 35856,
-   "wav_sha256": "33528c3936466282582b32cfb7cf146c843b8a4e41c4329e97de04522a133f63"
-  },
-  {
-   "id": "n73v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_C#4_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "2800fd444c1141d88a763eaca6edd9cac01bc1eb077378e7a7df4d14f637d9e1"
-  },
-  {
-   "id": "n73v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_C#4_Dyn3_RR2.wav",
-   "start": 35712,
-   "wav_sha256": "5b0b38bbfb1cfd7be6ef05936e21d372fcc520f27fbd70f25a213d1b3e011a4c"
-  },
-  {
-   "id": "n73v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_C#4_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "67d906c8727b577ccc6c407bc0a2b0a27549f46429333315c640df50ee822703"
-  },
-  {
-   "id": "n73v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_C#4_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "bc510cf68f017ea37bce294b0268b89f8af7d98c84dbb66d9c649edc975cee2f"
-  },
-  {
-   "id": "n80v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_G#4_Dyn1_RR1.wav",
-   "start": 36400,
-   "wav_sha256": "be6dc6480f8fde9aeb24415ab8f60ddc30a9beeba45b33ab678436dc432dc356"
-  },
-  {
-   "id": "n80v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_G#4_Dyn1_RR2.wav",
-   "start": 35547,
-   "wav_sha256": "1ee38a3439beaa57a81baee95ad61133ac2f896d6bf47c126da1106f1e45e6cb"
-  },
-  {
-   "id": "n80v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_G#4_Dyn2_RR1.wav",
-   "start": 35896,
-   "wav_sha256": "c0b5de58f0f33dc97195c1cf294ad86ac07e78bf02cc38a1e95ec1283c6df41c"
-  },
-  {
-   "id": "n80v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_G#4_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "6be2ed2ccc4ed015c9d6e203d77caf5c3a744c84257312b1a5e0b5c4531b69f3"
-  },
-  {
-   "id": "n80v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_G#4_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "e1a576637224ea61b15f6e680e9b6ae8162e2e0bb32815acdf435101c93eb7ca"
-  },
-  {
-   "id": "n80v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_G#4_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "5414413d85a84a44c5c39c83e48088984890e0f13466bc71c919ac3ab2d9135e"
-  },
-  {
-   "id": "n80v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_G#4_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "c774897d8de7dded3934845d20884bb19a9aeebc0fd4706e4c66e46ce21d8287"
-  },
-  {
-   "id": "n80v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_G#4_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "36e6a2bad1fa912dbc881e152a3a70ca614b2328325302cd88bb869e59287aa1"
-  },
-  {
-   "id": "n87v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_D#5_Dyn1_RR1.wav",
-   "start": 35954,
-   "wav_sha256": "bd21b8ba2b9f46fb18ba24cbf222b4fd7607b7cad07a053ce1b2c1813d605c80"
-  },
-  {
-   "id": "n87v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_D#5_Dyn1_RR2.wav",
-   "start": 36242,
-   "wav_sha256": "5fbf89b4ed676ff8d664d231c8bcf14858abba83f284ede27b049bb18a9286da"
-  },
-  {
-   "id": "n87v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_D#5_Dyn2_RR1.wav",
-   "start": 35958,
-   "wav_sha256": "85109a7c6a3831dc07b858923be94ddd2f53e6c1de5cd6bbac0441afb2a76abd"
-  },
-  {
-   "id": "n87v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_D#5_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "613c189e3f74225b28a6c381bf925df84fc61d872476008963eef512b582aeb4"
-  },
-  {
-   "id": "n87v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_D#5_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "fc458c4b4f693430c267f444d106da2a2af56b22c8250dfb2cb3fe7af7a37c32"
-  },
-  {
-   "id": "n87v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_D#5_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "d203d7390b3552f1155ceb3509832ab39cc07dac4beb2f79dcf1d27128287771"
-  },
-  {
-   "id": "n87v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_D#5_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "3cf79d09e5e27407368d886c62e98c7dc6bc1bb2f1b1c827801934421c623642"
-  },
-  {
-   "id": "n87v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_D#5_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "83d44e1de8774dd63f38f40ea7e2b3d6dc346b9d5796072baf85f1ef180f4127"
-  },
-  {
-   "id": "n94v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_A#5_Dyn1_RR1.wav",
-   "start": 35806,
-   "wav_sha256": "7c1feec86c22b8813b2869dec61881ad62d2cec68f45f218fe3f6cc5305abc6d"
-  },
-  {
-   "id": "n94v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_A#5_Dyn1_RR2.wav",
-   "start": 35862,
-   "wav_sha256": "ddd41c5476f6b34b07e7df9ae0ecd634df4c0ff81e6c98c9a03b25cb7503d897"
-  },
-  {
-   "id": "n94v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_A#5_Dyn2_RR1.wav",
-   "start": 35920,
-   "wav_sha256": "f7bd22f22a48ad9e508a6a5b12db18c8cdcfbcc2fbd3f86c8ad4aea0740dbe56"
-  },
-  {
-   "id": "n94v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_A#5_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "86c96dd9cedabc28d88d374708defb49a4979c3efeac2678677af9115bd775eb"
-  },
-  {
-   "id": "n94v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_A#5_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "455b4022612beffe8d85fc895217d9b86ca4f5dacc96119d8f1135911885e7fe"
-  },
-  {
-   "id": "n94v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_A#5_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "2d1a8150b69308308f4d0c8e8d10d2d5dc7c01a8f647834bb1229ae0de42bfb7"
-  },
-  {
-   "id": "n94v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_A#5_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "ad8e250ad6e6b68c7613bc3b3801b9b20a2c57dd776fb14ae86cfa5c337a2ada"
-  },
-  {
-   "id": "n94v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 94,
-   "keys": [
-    88,
-    94
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_A#5_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "1b03fc8ad026597413cd24766a7b8f55b277556fcf307fec0e6b8a4eb53ad683"
-  },
-  {
-   "id": "n101v1r1",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 1,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_F6_Dyn1_RR1.wav",
-   "start": 35884,
-   "wav_sha256": "9a4f101c0f396948b6132d2743caf426936503c1c4374351daded8283f5b3028"
-  },
-  {
-   "id": "n101v1r2",
-   "kind": "note",
-   "layer": 1,
-   "round_robin": 2,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    1,
-    60
-   ],
-   "source": "Samples/Steinway_F6_Dyn1_RR2.wav",
-   "start": 35604,
-   "wav_sha256": "04c8f3eba0da6136dd0f270d5c8d0fd8474045e62aaa92a60531af7fe502d9df"
-  },
-  {
-   "id": "n101v2r1",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 1,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_F6_Dyn2_RR1.wav",
-   "start": 35884,
-   "wav_sha256": "ccb5c8f72af4e08145237bc10cd978ae3af3b152f7baae09ecda20b33014c455"
-  },
-  {
-   "id": "n101v2r2",
-   "kind": "note",
-   "layer": 2,
-   "round_robin": 2,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    61,
-    98
-   ],
-   "source": "Samples/Steinway_F6_Dyn2_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "6c4cd2918c8517dd17e6053a581565cc4bbf42782d4933a0f510265744fbb1ff"
-  },
-  {
-   "id": "n101v3r1",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 1,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_F6_Dyn3_RR1.wav",
-   "start": 36000,
-   "wav_sha256": "2ff7fc14492bde6e16e364d658609fee8d1882205a7a7940610c22461c27f7b3"
-  },
-  {
-   "id": "n101v3r2",
-   "kind": "note",
-   "layer": 3,
-   "round_robin": 2,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    99,
-    117
-   ],
-   "source": "Samples/Steinway_F6_Dyn3_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "4e8527e5b5b18c3f39a644d057643fb24502402047e2aee32f5ba44922d38e51"
-  },
-  {
-   "id": "n101v4r1",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 1,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_F6_Dyn4_RR1.wav",
-   "start": 35889,
-   "wav_sha256": "9ae2a1493f7b857f37dd76c8ec9a1204d93cf081b055cc033cbc9e440e963807"
-  },
-  {
-   "id": "n101v4r2",
-   "kind": "note",
-   "layer": 4,
-   "round_robin": 2,
-   "midi": 101,
-   "keys": [
-    95,
-    101
-   ],
-   "velocity": [
-    118,
-    127
-   ],
-   "source": "Samples/Steinway_F6_Dyn4_RR2.wav",
-   "start": 36000,
-   "wav_sha256": "2a4c7999f807f04ddc768b9347a3a1340caeb7076340b399cd1be21da65ed475"
-  },
   {
    "id": "rel24",
    "kind": "key-release",
    "midi": 24,
-   "keys": [
-    18,
-    24
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_C0.wav",
-   "start": 35434,
-   "wav_sha256": "dd3f70b7863386cff4a71a41193de0c097fd762c752673a591cbe8bafdda2a7d"
+   "source": "Samples/RT_1.aif",
+   "carried_from": "RT_1",
+   "aif_sha256": "bee090fee3762f0dade6496ae2415cb20b35636f4774c40064b78b582ae7cd15"
   },
   {
-   "id": "rel31",
+   "id": "rel29",
    "kind": "key-release",
-   "midi": 31,
-   "keys": [
-    25,
-    31
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_G0.wav",
-   "start": 34629,
-   "wav_sha256": "f76766171cd7801f13286e7264df8d63bff6b1e692891460bd72ac51165765b9"
+   "midi": 29,
+   "source": "Samples/RT_2.aif",
+   "carried_from": "RT_2",
+   "aif_sha256": "5359ad38ad978a6417e88480482966b935aab7cbe869946ee2f9e8d570875921"
   },
   {
-   "id": "rel38",
+   "id": "rel34",
    "kind": "key-release",
-   "midi": 38,
-   "keys": [
-    32,
-    38
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_D1.wav",
-   "start": 34219,
-   "wav_sha256": "4e105319328b7e0aa335447f39ebed48af6227ef4bf56a086916d6544bfa3912"
+   "midi": 34,
+   "source": "Samples/RT_3.aif",
+   "carried_from": "RT_3",
+   "aif_sha256": "8316d6791493888cf9b1e1dd9285385c8d693f11e773a1d3cf0681a327a020e5"
   },
   {
-   "id": "rel45",
+   "id": "rel39",
    "kind": "key-release",
-   "midi": 45,
-   "keys": [
-    39,
-    45
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_A1.wav",
-   "start": 23779,
-   "wav_sha256": "c761b5a6dc5d775fdd7059360f5493e63f2c84e89374503e5acf4bbc5eb99cdd"
+   "midi": 39,
+   "source": "Samples/RT_4.aif",
+   "carried_from": "RT_4",
+   "aif_sha256": "f17762a6f51f2fbd2fbc7267fc35f3006ea0289eb99d2826c36933001a00489d"
   },
   {
-   "id": "rel52",
+   "id": "rel44",
    "kind": "key-release",
-   "midi": 52,
-   "keys": [
-    46,
-    52
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_E2.wav",
-   "start": 33407,
-   "wav_sha256": "4a40f597dd7b182689e300e2ee61490dd485a9656c2ec9239451bc49425bad52"
+   "midi": 44,
+   "source": "Samples/RT_5.aif",
+   "carried_from": "RT_5",
+   "aif_sha256": "4ed5ed9af74809c116c2f703707f902e43525c1a381a95d084354c06c44b60ff"
+  },
+  {
+   "id": "rel49",
+   "kind": "key-release",
+   "midi": 49,
+   "source": "Samples/RT_6.aif",
+   "carried_from": "RT_6",
+   "aif_sha256": "1444a785a77becb4e70c5d06f23c0e574d4336dee5aec12aee3f514b10d516f9"
+  },
+  {
+   "id": "rel54",
+   "kind": "key-release",
+   "midi": 54,
+   "source": "Samples/RT_7.aif",
+   "carried_from": "RT_7",
+   "aif_sha256": "7955669797f68632da0a462492fb3068e7d6e666bf822b5e20f197b97d9d1b19"
   },
   {
    "id": "rel59",
    "kind": "key-release",
    "midi": 59,
-   "keys": [
-    53,
-    59
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_B2.wav",
-   "start": 34909,
-   "wav_sha256": "850635660ac635add5c87bf84d7d16ea7172f42f61542c36267f019978f47b22"
+   "source": "Samples/RT_1.aif",
+   "carried_from": "RT_1",
+   "aif_sha256": "bee090fee3762f0dade6496ae2415cb20b35636f4774c40064b78b582ae7cd15"
   },
   {
-   "id": "rel66",
+   "id": "rel64",
    "kind": "key-release",
-   "midi": 66,
-   "keys": [
-    60,
-    66
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_F#3.wav",
-   "start": 35711,
-   "wav_sha256": "f95b58b90da31cde711a1e80389fbeefdfefbcbbae27e2b3b53b75280118059c"
+   "midi": 64,
+   "source": "Samples/RT_2.aif",
+   "carried_from": "RT_2",
+   "aif_sha256": "5359ad38ad978a6417e88480482966b935aab7cbe869946ee2f9e8d570875921"
   },
   {
-   "id": "rel73",
+   "id": "rel69",
    "kind": "key-release",
-   "midi": 73,
-   "keys": [
-    67,
-    73
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_C#4.wav",
-   "start": 36181,
-   "wav_sha256": "a7eeb9e632a5e09edda7b4610195b2de9f6876b8b9b60807bf04331a5088eca9"
+   "midi": 69,
+   "source": "Samples/RT_3.aif",
+   "carried_from": "RT_3",
+   "aif_sha256": "8316d6791493888cf9b1e1dd9285385c8d693f11e773a1d3cf0681a327a020e5"
   },
   {
-   "id": "rel80",
+   "id": "rel74",
    "kind": "key-release",
-   "midi": 80,
-   "keys": [
-    74,
-    80
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_G#4.wav",
-   "start": 35483,
-   "wav_sha256": "07cd8439a220b52712a98454027f9290feb70528d6c88c978aa58a3e0c8839db"
+   "midi": 74,
+   "source": "Samples/RT_4.aif",
+   "carried_from": "RT_4",
+   "aif_sha256": "f17762a6f51f2fbd2fbc7267fc35f3006ea0289eb99d2826c36933001a00489d"
   },
   {
-   "id": "rel87",
+   "id": "rel79",
    "kind": "key-release",
-   "midi": 87,
-   "keys": [
-    81,
-    87
-   ],
-   "velocity": [
-    1,
-    127
-   ],
-   "source": "Samples/Steinway_Release_D#5.wav",
-   "start": 34722,
-   "wav_sha256": "5c4f9202067c65dcc06ca261966e7c8b27a0a911790cdd93788e8d6167d71a22"
+   "midi": 79,
+   "source": "Samples/RT_5.aif",
+   "carried_from": "RT_5",
+   "aif_sha256": "4ed5ed9af74809c116c2f703707f902e43525c1a381a95d084354c06c44b60ff"
+  },
+  {
+   "id": "rel84",
+   "kind": "key-release",
+   "midi": 84,
+   "source": "Samples/RT_6.aif",
+   "carried_from": "RT_6",
+   "aif_sha256": "1444a785a77becb4e70c5d06f23c0e574d4336dee5aec12aee3f514b10d516f9"
+  },
+  {
+   "id": "rel89",
+   "kind": "key-release",
+   "midi": 89,
+   "source": "Samples/RT_7.aif",
+   "carried_from": "RT_7",
+   "aif_sha256": "7955669797f68632da0a462492fb3068e7d6e666bf822b5e20f197b97d9d1b19"
   },
   {
    "id": "rel94",
    "kind": "key-release",
    "midi": 94,
+   "source": "Samples/RT_1.aif",
+   "carried_from": "RT_1",
+   "aif_sha256": "bee090fee3762f0dade6496ae2415cb20b35636f4774c40064b78b582ae7cd15"
+  },
+  {
+   "id": "rel99",
+   "kind": "key-release",
+   "midi": 99,
+   "source": "Samples/RT_2.aif",
+   "carried_from": "RT_2",
+   "aif_sha256": "5359ad38ad978a6417e88480482966b935aab7cbe869946ee2f9e8d570875921"
+  },
+  {
+   "id": "rel100",
+   "kind": "key-release",
+   "midi": 100,
+   "source": "Samples/RT_3.aif",
+   "carried_from": "RT_3",
+   "aif_sha256": "8316d6791493888cf9b1e1dd9285385c8d693f11e773a1d3cf0681a327a020e5"
+  },
+  {
+   "id": "rel104",
+   "kind": "key-release",
+   "midi": 104,
+   "source": "Samples/RT_4.aif",
+   "carried_from": "RT_4",
+   "aif_sha256": "f17762a6f51f2fbd2fbc7267fc35f3006ea0289eb99d2826c36933001a00489d"
+  },
+  {
+   "id": "rel105",
+   "kind": "key-release",
+   "midi": 105,
+   "source": "Samples/RT_5.aif",
+   "carried_from": "RT_5",
+   "aif_sha256": "4ed5ed9af74809c116c2f703707f902e43525c1a381a95d084354c06c44b60ff"
+  },
+  {
+   "id": "n24v1",
+   "kind": "note",
+   "midi": 24,
+   "layer": 1,
+   "round_robin": 1,
    "keys": [
-    88,
+    21,
+    24
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_24.aif",
+   "aif_sha256": "1c80b55e4428aec2d066c199a036adaa987fca19223d26584d10cc36e1488ba2"
+  },
+  {
+   "id": "n24v2",
+   "kind": "note",
+   "midi": 24,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_24.aif",
+   "aif_sha256": "cd6f9ddd368b376535c66cbc4e5635c184efaa9bee65b8614057a0131f847a86"
+  },
+  {
+   "id": "n24v3",
+   "kind": "note",
+   "midi": 24,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_24.aif",
+   "aif_sha256": "c01851fbc46061c37918501009d397af2441d5ca49052f62863cfca8eb1ea49f"
+  },
+  {
+   "id": "n24v4",
+   "kind": "note",
+   "midi": 24,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_24.aif",
+   "aif_sha256": "5137f1a2bd4781d34a1166cffebe336821ed5db5974112fe2caa0dde47b32e07"
+  },
+  {
+   "id": "n24v5",
+   "kind": "note",
+   "midi": 24,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_24.aif",
+   "aif_sha256": "15ea574c60e07b48bdff5e4ba8187e695c876191dbb1c98795e60d0dd365eff9"
+  },
+  {
+   "id": "n29v1",
+   "kind": "note",
+   "midi": 29,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_29.aif",
+   "aif_sha256": "ff048165c2fba636a3e7251b257db51675d65691e54c8d44c9a94a2a93972ac4"
+  },
+  {
+   "id": "n29v2",
+   "kind": "note",
+   "midi": 29,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_29.aif",
+   "aif_sha256": "d728576f9314aad902dd8c9ce9f1fe29b220efd1e0ff3ddccb45f936024f9f67"
+  },
+  {
+   "id": "n29v3",
+   "kind": "note",
+   "midi": 29,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_29.aif",
+   "aif_sha256": "3da3264e57bd8cb1d960a0e31963c9a79d2b43a83643a852b7a45a5cabd0d714"
+  },
+  {
+   "id": "n29v4",
+   "kind": "note",
+   "midi": 29,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_29.aif",
+   "aif_sha256": "953d1a68d5f2d672ee6034838bf08375e62fd4486d3f761e1bef3bbdd5aea3fd"
+  },
+  {
+   "id": "n29v5",
+   "kind": "note",
+   "midi": 29,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_29.aif",
+   "aif_sha256": "edafade00e8ffd5a1f0aa19fade87b873b90fe1eb0d7a23977e3b1bb2055938e"
+  },
+  {
+   "id": "n34v1",
+   "kind": "note",
+   "midi": 34,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_34.aif",
+   "aif_sha256": "1a316e98d479f8f01a87e8f00f59882df0d5d7e689245f47d5d9182ba0ceb472"
+  },
+  {
+   "id": "n34v2",
+   "kind": "note",
+   "midi": 34,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_34.aif",
+   "aif_sha256": "574eec080f69cbc038381fe8dbc0e1f1f46c19f419fc0def881346217f2a6288"
+  },
+  {
+   "id": "n34v3",
+   "kind": "note",
+   "midi": 34,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_34.aif",
+   "aif_sha256": "75d28816ee62caef8b2217dd170d0a8bf2b5d1d0cd3e68f0e0071196cbf996b4"
+  },
+  {
+   "id": "n34v4",
+   "kind": "note",
+   "midi": 34,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_34.aif",
+   "aif_sha256": "fe21be6db5933593c866ce7816eec17c07d46f7b342e4f9508c55888c8ffbf1a"
+  },
+  {
+   "id": "n34v5",
+   "kind": "note",
+   "midi": 34,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_34.aif",
+   "aif_sha256": "56ad69f4433a59415d4951d57fabb120b634fe98ef37ea968cf4ce61206fc322"
+  },
+  {
+   "id": "n39v1",
+   "kind": "note",
+   "midi": 39,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_39.aif",
+   "aif_sha256": "2951cb6b2d82457d37184aa698b42b9172b801e246f5fe636264e6572421e7ca"
+  },
+  {
+   "id": "n39v2",
+   "kind": "note",
+   "midi": 39,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_39.aif",
+   "aif_sha256": "018bb7cfddea4fbacf08749de1b58e061765b356717495ff723532450f0ff957"
+  },
+  {
+   "id": "n39v3",
+   "kind": "note",
+   "midi": 39,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_39.aif",
+   "aif_sha256": "6c76dbff584aec7c1c4828bd7e1fc145b2ac587f3464e9c3394560ba864f3b70"
+  },
+  {
+   "id": "n39v4",
+   "kind": "note",
+   "midi": 39,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_39.aif",
+   "aif_sha256": "38eea33c647a7550e51a792b44be6e9ccbd2fe755d2f5dc3551fa8a1d91d9071"
+  },
+  {
+   "id": "n39v5",
+   "kind": "note",
+   "midi": 39,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_39.aif",
+   "aif_sha256": "42dc766c3509e788f6ce40e7ffb1c48c6df767829dc0aa19a124061c9f07e4e3"
+  },
+  {
+   "id": "n44v1",
+   "kind": "note",
+   "midi": 44,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_44.aif",
+   "aif_sha256": "d24b70db5b0e405c2938e428ea667fd9aad9e90838b571b5f734e84d9675388b"
+  },
+  {
+   "id": "n44v2",
+   "kind": "note",
+   "midi": 44,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_44.aif",
+   "aif_sha256": "d15b51c01df0d53904d34e89cc8423417e1f9f5c61cf680f8d07c8d3c5e514df"
+  },
+  {
+   "id": "n44v3",
+   "kind": "note",
+   "midi": 44,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_44.aif",
+   "aif_sha256": "25f9e9cd418ffe197aa779045e10efd386c323169587041299af42d82436c951"
+  },
+  {
+   "id": "n44v4",
+   "kind": "note",
+   "midi": 44,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_44.aif",
+   "aif_sha256": "717fe435dedae4f7061ee0f3050abd6ef0a933057855330f49e9a22609d9b6c1"
+  },
+  {
+   "id": "n44v5",
+   "kind": "note",
+   "midi": 44,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_44.aif",
+   "aif_sha256": "7494b7fba86cb3847ead8791ddb818bef368365c07c9904f1a63b2931babdcf7"
+  },
+  {
+   "id": "n49v1",
+   "kind": "note",
+   "midi": 49,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_49.aif",
+   "aif_sha256": "a98e229cf0c2cc30babf23c87d6c3edd2cf778764b10cc9125c93cdde9c0b4b8"
+  },
+  {
+   "id": "n49v2",
+   "kind": "note",
+   "midi": 49,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_49.aif",
+   "aif_sha256": "a606ddace439b251feb12587a9a462bda0aa4fd7257829241c3b7b6bcba260b9"
+  },
+  {
+   "id": "n49v3",
+   "kind": "note",
+   "midi": 49,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_49.aif",
+   "aif_sha256": "438d9bd74199b6dd45e5d634e2848b668de3e13dd9da13ac57289a8eb1a128a4"
+  },
+  {
+   "id": "n49v4",
+   "kind": "note",
+   "midi": 49,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_49.aif",
+   "aif_sha256": "22a9592a0461b37dad000c8b7a19daff9833a093f8f9b85bad9476e75e39e58a"
+  },
+  {
+   "id": "n49v5",
+   "kind": "note",
+   "midi": 49,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_49.aif",
+   "aif_sha256": "fe5eb0bb5d7a238e247bad4c07281197769151440a477fa6f8990fee33248b0b"
+  },
+  {
+   "id": "n54v1",
+   "kind": "note",
+   "midi": 54,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_54.aif",
+   "aif_sha256": "5a63f253ee114da03015bd223de261a048bd9e3edf50546b115bd7b53aaac3b2"
+  },
+  {
+   "id": "n54v2",
+   "kind": "note",
+   "midi": 54,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_54.aif",
+   "aif_sha256": "a3a7dd8fa7a3daa59e369f265da3f4c59f1d50b49e64a47a9062df26d102fa06"
+  },
+  {
+   "id": "n54v3",
+   "kind": "note",
+   "midi": 54,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_54.aif",
+   "aif_sha256": "22bdefafdbf11e3c11eed9b3df65f18d167692afd060fd7c948c17015f81caaa"
+  },
+  {
+   "id": "n54v4",
+   "kind": "note",
+   "midi": 54,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_54.aif",
+   "aif_sha256": "2f1ac31d0b0ce4ec0dce6fc1a719b0527b5445261ba1065a161e6a602b2356e5"
+  },
+  {
+   "id": "n54v5",
+   "kind": "note",
+   "midi": 54,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_54.aif",
+   "aif_sha256": "1195d1cd580caf4f01316c0dc1a9a2c852a07142fe30026669764b6f1933b284"
+  },
+  {
+   "id": "n59v1",
+   "kind": "note",
+   "midi": 59,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_59.aif",
+   "aif_sha256": "f0251ba40ed1aaf6bd4283b0ea99a1ee97d4dd654257dada4171b1f968903711"
+  },
+  {
+   "id": "n59v2",
+   "kind": "note",
+   "midi": 59,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_59.aif",
+   "aif_sha256": "a7f1117a02f8075613e338d84d67bbdc1d1fe7ff48ae40ccce918248b542fdd4"
+  },
+  {
+   "id": "n59v3",
+   "kind": "note",
+   "midi": 59,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_59.aif",
+   "aif_sha256": "5c6df570d9af831e5c72233f3ead1be8fc46c7b2feca9998a8aa46dac40c8445"
+  },
+  {
+   "id": "n59v4",
+   "kind": "note",
+   "midi": 59,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_59.aif",
+   "aif_sha256": "c93d586d86c0584e99d6cf299a3291af4c9478595ac7756ecd3004ed64328d2f"
+  },
+  {
+   "id": "n59v5",
+   "kind": "note",
+   "midi": 59,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_59.aif",
+   "aif_sha256": "d1b4ca290da169882d7fef133fbc0e79a2cc0784ff12f92c442614e6d4601b2a"
+  },
+  {
+   "id": "n64v1",
+   "kind": "note",
+   "midi": 64,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_64.aif",
+   "aif_sha256": "8226cc90125a08ca06446c710835f22dc95ca5575661f4846f9c0b7518252055"
+  },
+  {
+   "id": "n64v2",
+   "kind": "note",
+   "midi": 64,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_64.aif",
+   "aif_sha256": "178495963ae708b4681ea2a309d6cd111196acb68632c1900ff26e68027fcdb9"
+  },
+  {
+   "id": "n64v3",
+   "kind": "note",
+   "midi": 64,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_64.aif",
+   "aif_sha256": "47212e842c67980c9977128813e60fb8e94827887c1bd2ef2dd64f613490393a"
+  },
+  {
+   "id": "n64v4",
+   "kind": "note",
+   "midi": 64,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_64.aif",
+   "aif_sha256": "c82cf9a0d517dadf9f31049b30da91e10a861f6a14599aa5e6f43f17fddff9cf"
+  },
+  {
+   "id": "n64v5",
+   "kind": "note",
+   "midi": 64,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_64_Repaired.aif",
+   "aif_sha256": "39cce80800bfbfbe038d553ac793dbb5c035fe943156fc417de9a2d2226e84dc"
+  },
+  {
+   "id": "n69v1",
+   "kind": "note",
+   "midi": 69,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_69.aif",
+   "aif_sha256": "f0106efb6e48b55a3a55d05d74e2f4cae38257865aad967ad508b12aa1301232"
+  },
+  {
+   "id": "n69v2",
+   "kind": "note",
+   "midi": 69,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_69.aif",
+   "aif_sha256": "efac0913c5f437df3f1e5dfda0b8c9dade6a29033be2b92fe2d590d80a2557be"
+  },
+  {
+   "id": "n69v3",
+   "kind": "note",
+   "midi": 69,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_69.aif",
+   "aif_sha256": "fdb585afa1596f3d4e220e21d635c7b3df89afc2dd1c11e3ab879e68eb63f6db"
+  },
+  {
+   "id": "n69v4",
+   "kind": "note",
+   "midi": 69,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_69.aif",
+   "aif_sha256": "1fe4fdb348f90bd1fc50715fb4faca37947d36894fd0937df0fa26560440b0e6"
+  },
+  {
+   "id": "n69v5",
+   "kind": "note",
+   "midi": 69,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_69.aif",
+   "aif_sha256": "e955878770e771fe5ac8ef441aafaa2b842dbf28a664c0122c7004a47a9d5db3"
+  },
+  {
+   "id": "n74v1",
+   "kind": "note",
+   "midi": 74,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_74.aif",
+   "aif_sha256": "b0b41a9c328f000ffdfb4cca826b5146a2eea2696fd70ccc821312daead9a54c"
+  },
+  {
+   "id": "n74v2",
+   "kind": "note",
+   "midi": 74,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_74.aif",
+   "aif_sha256": "f910c2c85f55e93a59ec0722bc2f2335eca2060d1541c474c8fcd51f330e0b2d"
+  },
+  {
+   "id": "n74v3",
+   "kind": "note",
+   "midi": 74,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_74.aif",
+   "aif_sha256": "f784b55629cacdbac4146f8b5370dd39d7ba8be76fc3fbb44543f3646bc58fac"
+  },
+  {
+   "id": "n74v4",
+   "kind": "note",
+   "midi": 74,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_74.aif",
+   "aif_sha256": "f8349b0e7fff1acb5f6bd52d341936497d152d5de31cdaba006d83b026c3cc29"
+  },
+  {
+   "id": "n74v5",
+   "kind": "note",
+   "midi": 74,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    70,
+    76
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_74.aif",
+   "aif_sha256": "19bdd673badc0ffd1374def1db1a7516f81ed9a332932dcbad9a2d8283f61098"
+  },
+  {
+   "id": "n79v1",
+   "kind": "note",
+   "midi": 79,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_79.aif",
+   "aif_sha256": "8d75bb1f2840e050c474b31e49ae198300d38308901c87bfbdd984f1f0ac20d3"
+  },
+  {
+   "id": "n79v2",
+   "kind": "note",
+   "midi": 79,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_79.aif",
+   "aif_sha256": "a708d6c4629ccd5e02926f08ccda5b3c3ad7a46e46ced606ea7cefe076a969de"
+  },
+  {
+   "id": "n79v3",
+   "kind": "note",
+   "midi": 79,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_79.aif",
+   "aif_sha256": "bdee20513c20dd0882600e57719e603440ec647e4f95239b1e586b0eb0ae8b5a"
+  },
+  {
+   "id": "n79v4",
+   "kind": "note",
+   "midi": 79,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_79.aif",
+   "aif_sha256": "6f7cce0e587bbb66f39d2a480742d034b257b7874b43c95f55f0aa4a601c4f70"
+  },
+  {
+   "id": "n84v1",
+   "kind": "note",
+   "midi": 84,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_84.aif",
+   "aif_sha256": "5735a6aff657f1fc70e389f582c5a4e08379c14bffab78f1f0baed5aa4b45bdb"
+  },
+  {
+   "id": "n84v2",
+   "kind": "note",
+   "midi": 84,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_84.aif",
+   "aif_sha256": "f862c5e50583da95b8b78f9001b7e9f69d8efdba742bbdbbfddc69c9f320b77b"
+  },
+  {
+   "id": "n84v3",
+   "kind": "note",
+   "midi": 84,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_84.aif",
+   "aif_sha256": "1ebca4c15b972c44992af8977dec788cd43761e9c6bac355e49eff530458152b"
+  },
+  {
+   "id": "n84v4",
+   "kind": "note",
+   "midi": 84,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_84.aif",
+   "aif_sha256": "a65381d07cee8916196f0e21f1eadc00eb8f44aa5ffe1ae10ffd8150993557c8"
+  },
+  {
+   "id": "n84v5",
+   "kind": "note",
+   "midi": 84,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    77,
+    84
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_84_Clicks_Removed.aif",
+   "aif_sha256": "83fed4c41ffa3bdb94eec79be08f74c19bf45201e410b46f8ebb3e90424666a4"
+  },
+  {
+   "id": "n89v1",
+   "kind": "note",
+   "midi": 89,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_89.aif",
+   "aif_sha256": "41d3a0b3f9dcb9787b6c81e88aca8cc8b8221bdc57d4d9b86bce43a7eaf7aaa7"
+  },
+  {
+   "id": "n89v2",
+   "kind": "note",
+   "midi": 89,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_89.aif",
+   "aif_sha256": "73583babf098ee77522d6b00040420daa36222d49816ddb8dda1a02ade1e6cb3"
+  },
+  {
+   "id": "n89v3",
+   "kind": "note",
+   "midi": 89,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_89.aif",
+   "aif_sha256": "a66552d748e3990353cc609f059378c2d0e9353431187dbe07a828008e4d98be"
+  },
+  {
+   "id": "n89v4",
+   "kind": "note",
+   "midi": 89,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_89.aif",
+   "aif_sha256": "a0a9c44e5ad711093ea8d0d919d4b481a68e4b411225feb0008b40c4fd29362f"
+  },
+  {
+   "id": "n89v5",
+   "kind": "note",
+   "midi": 89,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    85,
     94
    ],
    "velocity": [
-    1,
+    106,
     127
    ],
-   "source": "Samples/Steinway_Release_A#5.wav",
-   "start": 35441,
-   "wav_sha256": "87e74ec44246e6dca41ed8acb6780633a4daf4907914d938122123624ccb56db"
+   "source": "Samples/Steinway_FF_89.aif",
+   "aif_sha256": "cb4e8d519ac853fc2a7cf23f9c26e02d7424f20c476b354629b12c9631ab75b4"
   },
   {
-   "id": "rel101",
-   "kind": "key-release",
-   "midi": 101,
+   "id": "n94v1",
+   "kind": "note",
+   "midi": 94,
+   "layer": 1,
+   "round_robin": 1,
    "keys": [
-    95,
-    101
+    90,
+    94
    ],
    "velocity": [
-    1,
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_94.aif",
+   "aif_sha256": "11c67c2e8e5796d321b8e6f850ee740e6c210668440d63ccaf5bc120501b4316"
+  },
+  {
+   "id": "n94v2",
+   "kind": "note",
+   "midi": 94,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_94.aif",
+   "aif_sha256": "480cd0dc248f4398230477910881455343ed7a074ea37fb45c8176a05ec65100"
+  },
+  {
+   "id": "n94v3",
+   "kind": "note",
+   "midi": 94,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_94.aif",
+   "aif_sha256": "60ba2ea0bdd4b3e142ddef0a3e7fe222ca45e9bd23a00a74def32fd7509af2ca"
+  },
+  {
+   "id": "n94v4",
+   "kind": "note",
+   "midi": 94,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_94.aif",
+   "aif_sha256": "7da2343fd23803eda26db1b36318950bfec4c91f3232a2c86b94a503a5e88486"
+  },
+  {
+   "id": "n99v1",
+   "kind": "note",
+   "midi": 99,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_99.aif",
+   "aif_sha256": "106e9a15e9ca13063f074848ca645bd7859aa1491187c333397e8c3e0aad25e2"
+  },
+  {
+   "id": "n99v2",
+   "kind": "note",
+   "midi": 99,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_99.aif",
+   "aif_sha256": "86cee74062a8717c1add69ec7338aaad593a81f7a77f2b30e54ec200fdd5d899"
+  },
+  {
+   "id": "n99v3",
+   "kind": "note",
+   "midi": 99,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_99.aif",
+   "aif_sha256": "dc063f5f61c646623245e6c7b6d0a21fc67767485daa025e5d1bd94459aebe07"
+  },
+  {
+   "id": "n99v4",
+   "kind": "note",
+   "midi": 99,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_99.aif",
+   "aif_sha256": "e21302bc8754ae4915d7f2de1285ff2de616a8fa74a59df6b194993207367b9e"
+  },
+  {
+   "id": "n100v5",
+   "kind": "note",
+   "midi": 100,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    95,
+    100
+   ],
+   "velocity": [
+    106,
     127
    ],
-   "source": "Samples/Steinway_Release_F6.wav",
-   "start": 34483,
-   "wav_sha256": "d6fbdc6bbeb01a579d94df466c1469f28899fe89b8dbd581194442b621fb1969"
+   "source": "Samples/Steinway_FF_100.aif",
+   "aif_sha256": "a9698ddcd53131e9020cc3b43f1977cdf86ba8541c43e3fe339545d1932b04e6"
+  },
+  {
+   "id": "n104v1",
+   "kind": "note",
+   "midi": 104,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_104.aif",
+   "aif_sha256": "c58fd53319a2587dc8d280248c0f9228d1671d58f7d69bd5e85e247affbcd723"
+  },
+  {
+   "id": "n104v2",
+   "kind": "note",
+   "midi": 104,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_104.aif",
+   "aif_sha256": "5e14cb5902bcc2bf152dbdae4e6548f1a54398503aa5c77d44823dacc3a3299d"
+  },
+  {
+   "id": "n104v3",
+   "kind": "note",
+   "midi": 104,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_104.aif",
+   "aif_sha256": "7e009fd9fabf2814b1224c1ba278fb1b031284f9bb32b17bcca4ef2f629a81ab"
+  },
+  {
+   "id": "n104v4",
+   "kind": "note",
+   "midi": 104,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_104.aif",
+   "aif_sha256": "3567d309ec2d8ae23a729359be710abc8d6cf6ff303f5df462a978c3240fbdea"
+  },
+  {
+   "id": "n105v5",
+   "kind": "note",
+   "midi": 105,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    101,
+    108
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_105.aif",
+   "aif_sha256": "5e550dee426e8da43c261af89f8b715d2effc1eb86c6d36a3922a921c411704d"
+  },
+  {
+   "id": "pedalD1",
+   "kind": "pedal",
+   "source": "Samples/Steinway_Pedal_Down.aif",
+   "aif_sha256": "43fdaddaa08088af3385108995256087968edc2701200dbdae25757def9bf26a"
+  },
+  {
+   "id": "pedalU1",
+   "kind": "pedal",
+   "source": "Samples/Steinway_Pedal_Up.aif",
+   "aif_sha256": "90d376af59a7c584ad3aaff8655940fc589d90deeb90ee187e0f898e50d2bb66"
   }
  ]
 }

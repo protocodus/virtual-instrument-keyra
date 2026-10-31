@@ -1,7 +1,7 @@
 # Keyra development candidate
 
-Keyra generates an 88-key piano from three measured pianos, the Kakegawa and
-Hamamatsu grands and the Helsinki upright, mixed part by part, using a
+Keyra generates an 88-key piano from five measured pianos, the Kakegawa, Hamamatsu,
+Hamburg and New York grands and the Helsinki upright, mixed part by part, using a
 real-time reduced modal engine and numerical measurements of acoustic
 recordings. The preserved nonlinear
 research renderer remains available separately. This candidate is for
@@ -19,7 +19,7 @@ Each MIDI channel owns its key and controller state.
 
 | Control | Behavior |
 | --- | --- |
-| Strings, Hammers, Soundboard, Action | In the Build view: a row per part, with a weight from 0 to 100% for each measured piano (Kakegawa, Helsinki, Hamamatsu). The part mixes the pianos at their shares of its row, so 100% Kakegawa and 50% Helsinki plays two thirds of the one and a third of the other, and a row of zeros plays the Kakegawa grand's. Strings set the tuning stretch, stiffness, unisons and how the partials ring; Hammers how hard each partial is struck, how fast it rises and how the tone follows velocity; Soundboard the body's modes, the strike's knock and the board's noise; Action the knocks of keys, dampers and pedals and how the soft pedal works. A change applies from the next note: what sounds rings on, and held keys and pedals keep their state; the soundboard's modes move at once |
+| Strings, Hammers, Soundboard, Action | In the Build view: a row per part, with a weight from 0 to 100% for each measured piano (Kakegawa, Helsinki, Hamamatsu, Hamburg, New York). The part mixes the pianos at their shares of its row, so 100% Kakegawa and 50% Helsinki plays two thirds of the one and a third of the other, and a row of zeros plays the Kakegawa grand's. Strings set the tuning stretch, stiffness, unisons and how the partials ring; Hammers how hard each partial is struck, how fast it rises and how the tone follows velocity; Soundboard the body's modes, the strike's knock and the board's noise; Action the knocks of keys, dampers and pedals and how the soft pedal works. A change applies from the next note: what sounds rings on, and held keys and pedals keep their state; the soundboard's modes move at once |
 | Stiffness, Unisons, Ring | In the Build view: the strings' inharmonicity from ×0.25 to ×4, how far each note's unison strings sit apart from ×0 (one pitch) to ×3, and how long the strings ring from ×0.5 to ×2, each ×1.00 as built. A change applies from the next note |
 | Quality | How much of each note plays, for CPU on slower machines. Full, the default, plays all of it; Balanced and Light leave out the partials 60 and 50 dB under the note's strongest, which changes no third of an octave of its spectrum by more than 0.04 and 0.74 dB. A change applies from the next note |
 | Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2 ms, which the plug-in reports to the host |
@@ -34,11 +34,12 @@ Each MIDI channel owns its key and controller state.
 | Sostenuto | Captures only keys held when the pedal crosses 50% upward; later notes release normally |
 | Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
 
-The ten factory presets set the build, Brightness, Resonance, Width and
+The twelve factory presets set the build, Brightness, Resonance, Width and
 Felt mute; Output, Tuning, Quality, Tube Mic, Mechanics and the pedals keep
 their settings. Five play the Kakegawa grand and three the Helsinki upright,
 Hamamatsu Grand plays the Hamamatsu grand, and Three Cities plays every part
-at equal thirds of the three. The DAW interface's on-screen keyboard
+at equal thirds of the first three; Hamburg Grand and New York Grand play
+those grands. The DAW interface's on-screen keyboard
 is playable. Three brass pedal controls
 show the effective soft, sostenuto and sustain positions, in the physical
 piano's left-to-right order. Hold a pedal to press it and release to lift it;
@@ -93,7 +94,7 @@ the felt mute can damp them as well.
 
 ## Save and recall
 
-DAW state stores the 27 saved parameters. Transient held notes and MIDI
+DAW state stores the 35 saved parameters. Transient held notes and MIDI
 controller positions are performance state. Malformed, incomplete or unsupported
 state is rejected; a session saved before the build existed opens with the
 grand it was made with, and one saved with the Piano control as the build it
@@ -122,4 +123,6 @@ soft pedal brings the hammers closer to the strings, as an upright's does
 measured from a third library's recordings, which hold no pedal recordings
 either: its sustain pedal makes no sound of its own, its strings ring under
 it at the Kakegawa grand's rates, and its soft pedal shifts the hammers, as a
-grand's does.
+grand's does. The Hamburg and New York grands are played the same way; their
+libraries' takes hold no notes under the pedal, and New York's pedal noises are
+not played yet.

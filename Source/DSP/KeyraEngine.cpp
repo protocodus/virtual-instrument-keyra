@@ -1,5 +1,7 @@
 #include "KeyraEngine.h"
 #include "MeasuredKawaiData.h"
+#include "MeasuredHamburgData.h"
+#include "MeasuredNewYorkData.h"
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
@@ -22,10 +24,12 @@ constexpr int lanes=4; // a partial's measured lanes, one per vector lane
 namespace grand=measured::grand;
 namespace upright=measured::upright;
 namespace kawai=measured::kawai;
+namespace hamburg=measured::hamburg;
+namespace newyork=measured::newyork;
 // F6, the lowest key without a damper, and the undamped strings from it up.
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
-static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size(),
+static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size(),
               "every piano leaves the same keys undamped");
 // The damped strings, A0 to E6, which ring in sympathy as far as their
 // dampers are off (the open strings): each with its first openPartials
@@ -48,7 +52,7 @@ constexpr double openTop=5000;
 // from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
 // stay as fitted.
 constexpr double contactSmoothing=1e-4;
-static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing,
+static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
 // What the felt leaves ringing once it lands, the same on every piano: the
 // upright's measured shape over the keys and its slow rates
@@ -200,10 +204,49 @@ constexpr Model models[]{
    // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
    1.3201,
    true},
+  {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),
+   hamburg::partials.data(),hamburg::extras.data(),
+   static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()),
+   hamburg::haloStrings.data(),hamburg::haloLevels.data(),hamburg::haloSlopeDb,hamburg::haloSlopeRiseDb,hamburg::haloPromptRate,
+   hamburg::bodyModes.data(),static_cast<int>(hamburg::bodyModes.size()),hamburg::bodyRise,hamburg::knocks.data(),
+   hamburg::releaseKnocks.data(),nullptr,nullptr,hamburg::actionRise,hamburg::actionDecay,
+   // The library's preset plays its release takes at its "rt volume" default,
+   // 0.305 (-10.3 dB), tracking velocity as its notes do (ampVelTrack 1), with
+   // no fade and no pedal recordings. Measured as the grand's, at a velocity-80
+   // note's C2, C4 and C6: the key landing 37, 29 and 25 dB under and a key let
+   // go half a second on 37, 28 and 24 dB under (grand: 35, 33, 27 and 36, 36, 28).
+   -10.3,1,1,0,0,0,-10.3,
+   // Its rises are capped at the hammer's contact, as the upright's.
+   .002,
+   hamburg::noiseBands.data(),hamburg::noise.data(),
+   // Each one's typical playing at the grand's level, -9 VU, and its tube at
+   // the pair's (Tools/KeyraLevels.cpp).
+   2.3152,
+   1.5936,
+   true},
+  {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),
+   newyork::partials.data(),newyork::extras.data(),
+   static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()),
+   newyork::haloStrings.data(),newyork::haloLevels.data(),newyork::haloSlopeDb,newyork::haloSlopeRiseDb,newyork::haloPromptRate,
+   newyork::bodyModes.data(),static_cast<int>(newyork::bodyModes.size()),newyork::bodyRise,newyork::knocks.data(),
+   newyork::releaseKnocks.data(),nullptr,nullptr,newyork::actionRise,newyork::actionDecay,
+   // The library's preset plays its seven key noises at group volume 0.75
+   // (-2.5 dB), on any key. It records pedal noises (Steinway_Pedal_Down and
+   // _Up), which the fit does not use yet. Measured as the grand's, at a
+   // velocity-80 note's C2, C4 and C6: the key landing 41, 43 and 37 dB under
+   // and a key let go half a second on 33, 35 and 30 dB under.
+   -2.5,1,1,0,0,0,-2.5,
+   // Its rises are capped at the hammer's contact, as the upright's.
+   .002,
+   newyork::noiseBands.data(),newyork::noise.data(),
+   // Typical playing at -9 VU and the tube at the pair's, as above.
+   .6823,
+   1.7227,
+   true},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
-constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()),
-              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size());
+constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),
+              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size());
 // The most components beside the series two neighbouring recorded pitches of
 // a piano hold. A strike plays them from its build's two pianos at most, so
 // from the two pianos that hold the most.
@@ -212,8 +255,12 @@ template<std::size_t N> constexpr int mostExtras(const std::array<measured::Anch
   for(std::size_t i=0;i+1<N;++i)most=std::max(most,anchors[i].extraCount+anchors[i+1].extraCount);
   return most;
 }
-constexpr int maxExtras=mostExtras(grand::anchors)+mostExtras(upright::anchors)+mostExtras(kawai::anchors)
-                        -std::min({mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors)});
+constexpr int maxExtras=[]{
+  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors)};
+  int first=0,second=0;
+  for(const int m:most){if(m>first){second=first;first=m;}else if(m>second)second=m;}
+  return first+second;
+}();
 // The SFZ sounds the pedal at CC64 127 and 0. Here it sounds within .08 of
 // either end of its travel, the margin within which the dampers already
 // clear the strings (the contact in boundary()), so that a pedal which
@@ -347,7 +394,7 @@ struct alignas(16) BodyBank {
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{},natural[lanes]{};
 };
 struct alignas(16) BodyPickup {V4 left{},rightRe{},rightIm{};};
-constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size()})),
+constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size()})),
               bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
@@ -372,13 +419,13 @@ bool advance(Body& body) noexcept {
 // each of the ring's two stages and the knock, its left and right amplitude
 // at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
-static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size(),
+static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size(),
               "every piano's noise has the same bands");
 // The noise filters are designed once from the grand's centres for every
 // build, so every other piano's must be the same.
 constexpr bool sameCentres(std::size_t b=0) noexcept {
   return b==grand::noiseBands.size()||(grand::noiseBands[b].hz==upright::noiseBands[b].hz
-                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&sameCentres(b+1));
+                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&sameCentres(b+1));
 }
 static_assert(sameCentres(),"every piano's noise bands share the grand's centres");
 struct Burst {
@@ -500,6 +547,9 @@ double levelAt(const Model& model,const float* db,double velocity) noexcept {
 // tone it recorded at that loudness. Velocity 127 plays each piano's loudest
 // layer and 1 the highest of the softest layers' levels, which every other
 // piano passes between its own, so none plays beyond what it recorded.
+// Of the first three pianos only: Hamburg's softest layer stands 15 dB over
+// theirs, and raising the floor would change how they answer velocity. Hamburg
+// plays under its softest layer on that layer's slope.
 constexpr double responseFloorDb=std::max({grand::layerLevelDb[0],upright::layerLevelDb[0],kawai::layerLevelDb[0]});
 double responseDb(double midi) noexcept {
   const double x=(std::max(1.,std::min(127.,midi))-1)/126;

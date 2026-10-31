@@ -2155,3 +2155,72 @@ louder at 127 (21 of 22 notes), the other presets' 1.58 to 1.90 dB, and its
 chords at 127 are brighter: their spectral centroid over the first 0.3 s
 rises from a median 477 to 551 Hz, brighter in 38 of 40 chords, as the
 Kakegawa grand's rises from 551 to 614 Hz.
+
+## 2026-10-31 — a fourth and a fifth piano, the Hamburg and New York grands
+
+At the owner's direction (2026-10-31), two more libraries are fitted: Jon Meyer's
+"Steinway Grand" for Decent Sampler and David Hawkins's "Grandpa's Piano"
+(Pianobook).
+
+They go by the cities of their maker, as the owner chose. The 1933 Model L of
+"Grandpa's Piano" was built in New York. Hamburg is the maker's other city and
+claims nothing about where Jon Meyer's piano was built, which nothing says.
+They are `Piano::hamburg` and `Piano::newyork`, added after the others so saved
+songs and patches recall those as before; older sessions load with no weight
+on them, and their presets go after Three Cities (programs 11 and 12).
+
+**Hamburg.** Twelve pitches every seven semitones, four layers, two round
+robins, a release take per pitch, 48 kHz/24-bit. Train is the first takes at ten
+pitches. Dev is E3 and C♯5 (MIDI 52, 73; the library names them E2 and C♯4). The
+second takes are `repeat`: same-layer pairs correlate at a median 0.94 over the
+impact, and C♯5's Dyn2 RR2 and Dyn3 RR1 are one strike. **It has no sealed set**:
+a third held-out pitch would leave a 21-semitone hole among twelve. The decoder
+cuts each take at the preset's start point less 20 ms, because the pre-roll holds
+unrelated sounds up to −39 dBFS that the onset would take for the strike. The
+preset gives one take's rootNote as 37 where its zone says 101. Its undamped
+strings stand too faintly for the 20 dB their shared fall asks (1 % of tones), so
+it is read from 16 dB: 0.76/s, 0.77/s from 14 dB. Lowering the margin slows the
+rate on New York too (2.64/s at 20 dB, 2.36 at 16), so Hamburg's may read slow.
+
+**New York.** Five layers on 17 pitches every five semitones, seven unpitched key
+noises, 44.1 kHz. Train is 13 pitches, dev MIDI 39, 64, 84 and the single FF
+takes at 100 and 105, sealed MIDI 54 (not opened). The FF takes peak within
+2.4 dB of full scale, which raised normalisation, but their raw levels are kept:
+F to FF is the steadiest step of all (SD 1.18 dB, the others 2.79 to 3.54), which
+take-by-take gain would have scattered; FF across the keyboard (SD 3.17 dB) is no
+jumpier than F (3.68 dB); and the peaks, 0.765 to 0.9996, hold no one ceiling.
+G5, A♯6, D♯7 and G♯7 have no mapped FF take. Carried on by slope, D♯7 rose 41 dB
+from velocity 91 to 127 where F6, with its FF, rises 11 dB, and put a ten-note
+chord past the engine's headroom. They now take the median recorded F to FF step
+(5.96 dB), so their loudest strikes are F's tone, louder: their FF tone is not
+measured. Its pedal noises are pinned and not played.
+
+`responseFloorDb` stays over the first three pianos: Hamburg's softest layer
+stands 15 dB over theirs, and raising the floor would change how they answer
+velocity. Below its softest layer Hamburg continues on that layer's slope, so it
+plays softer than it recorded.
+
+The first three pianos, 13 solo, two-piano and three-piano renders and all eight
+demos are sample for sample the same as before. Each piano's typical playing
+reads −9 VU and its tube the pair's (`KeyraLevels --check`), at scales of 2.3152
+and 1.5936, and 0.6823 and 1.7227. `Keyra.Engine`'s ring measure now renders 5 s,
+as Hamburg's C4 falls 20 dB past the old 3 s at Ring 1.
+
+On its 8 dev notes, against the Kakegawa grand's data played on them, Hamburg's
+data sits closer in tuning (0.56 against 2.06 cents), attack (6.47 and 9.01 dB),
+early spectrum (5.78 and 8.95 dB), sustain (7.32 and 10.92 dB), noise (5.39 and
+10.13 dB), image (4.17 and 5.00 dB), envelope (4.39 and 4.82 dB), rise (3.87 and
+11.97 ms) and level (1.78 and 3.71 dB), and further in partial levels (7.32 and
+6.38 dB) and decay (6.14 and 3.03 dB/s), with five regressions, largest C♯5's
+decay (3.93 to 8.97 dB/s)
+([report](validation/hamburg-recording-benchmark-2026-10-31.md)). On its 17,
+New York's sits closer in partial levels (9.94 and 12.88 dB), tuning (2.37 and
+5.75 cents), attack (8.72 and 9.34 dB), early (7.88 and 8.70 dB), sustain (9.13
+and 10.27 dB), noise (8.91 and 10.23 dB), image (6.25 and 7.42 dB), envelope
+(3.60 and 4.55 dB), rise (8.51 and 9.99 ms) and level (2.18 and 4.59 dB), and
+further in decay (7.75 and 6.78 dB/s), with 13 regressions, largest the single
+FF take at 105's decay (5.54 to 29.05 dB/s)
+([report](validation/newyork-recording-benchmark-2026-10-31.md)).
+
+Fitted at the owner's request and checked by measurement; no one has listened to
+them yet.

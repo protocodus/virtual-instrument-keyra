@@ -142,7 +142,7 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
 int run(int jobs,bool check){
   const auto& presets=keyra::factoryPresets;
   constexpr std::size_t pianos=keyra::pianoCount;
-  const char* const pianoNames[pianos]{"grand","upright","kawai"};
+  const char* const pianoNames[pianos]{"grand","upright","kawai","hamburg","newyork"};
   const auto typicalEvents=typicalPlaying(),loudestEvents=chordRounds(127),strongEvents=chordRounds(110);
   const auto loudestNotes=singleNotes(127),strongNotes=singleNotes(110);
   // Tasks: each piano's default sound below the stage, at Mic 0 and at 1,

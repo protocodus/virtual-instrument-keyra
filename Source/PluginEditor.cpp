@@ -24,7 +24,7 @@ constexpr std::array<const char*, 3> modifierHints {{
     "How far each note's unison strings sit apart, from one pitch to three times as far as built. Applies from the next note.",
     "How long the strings ring, from half to twice as long as built. Applies from the next note."
 }};
-constexpr int gridLeft = 176, gridPitch = 128, rowTop = 188, rowPitch = 31;
+constexpr int gridLeft = 176, gridPitch = 82, rowTop = 188, rowPitch = 31;
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {
@@ -253,7 +253,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
             const juce::String name = juce::String(keyra::pianoCities[piano]) + " " + keyra::pianoKinds[piano];
             slider.setName(juce::String(partCaptions[part]) + " " + keyra::pianoCities[piano]);
             slider.setSliderStyle(juce::Slider::LinearHorizontal);
-            slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 40, 22);
+            slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 36, 22);
             slider.setTooltip("The piano takes this much of the " + name + "'s " + partHints[part]);
             addChildComponent(slider);
             weightAttachments[part * keyra::pianoCount + piano] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
@@ -438,7 +438,7 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
         // Each column a piano, over its weights' tracks; each row a part.
         for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
             text(g, juce::String(keyra::pianoCities[piano]).toUpperCase(),
-                { gridLeft + static_cast<int>(piano) * gridPitch, 164, gridPitch - 48, 18 }, 11, muted, juce::Justification::centred, true);
+                { gridLeft + static_cast<int>(piano) * gridPitch, 164, gridPitch - 4, 18 }, 10, muted, juce::Justification::centred, true);
         for (size_t part = 0; part < buildParts.size(); ++part)
             text(g, partCaptions[part], { 74, rowTop + static_cast<int>(part) * rowPitch, gridLeft - 82, 26 }, 12, ink,
                 juce::Justification::centredLeft, true);

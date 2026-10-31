@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
-"""Decode and verify the Decent Sampler "Steinway Grand" recordings.
+"""Decode and verify the Pianobook "Grandpa's Piano" recordings.
 
-The library (a Steinway grand, Jon Meyer, jonmeyermusic.com; the author is
-inferred from its image caption and archive name) states no licence. Its
-preset maps 12 pitches every seven semitones from MIDI 24 to 101, at four
-velocity layers and two round robins, with one release take per pitch; there
-are no pedal takes. Files are 48 kHz/24-bit stereo. This reads a copy of the
-library and writes into the ignored out/ tree, which never enters the
-repository or the instrument, without gain, resampling, denoising or EQ.
+The library (a 1933 Steinway Model L, David Hawkins, README 2024-06-19) states
+no licence. Its preset maps five velocity layers on pitches every five
+semitones, seven unpitched key-noise takes and pedal noises, 44.1 kHz stereo,
+mostly 16-bit. This reads a copy of the library and writes WAV into the
+ignored out/ tree, which never enters the repository or the instrument,
+without gain, trim, resampling, denoising or EQ.
 
-Each take is cut once, at the preset's own start point less CUT_MARGIN. Files
-hold about 0.75 s of pre-roll before that point, and in some of them
-unrelated sounds up to -39 dBFS (G0 Dyn1 RR2) that the analysis's onset would
-take for the strike. The preset's volume trims are not applied: the fit reads
-the recorded levels.
+The preset's line 147 is not well-formed XML (no space before an attribute),
+so it is read by pattern. The five files it leaves unmapped are left out,
+FF_94_CellNoise and FF_99_CellNoise among them.
 
-  python3 Tools/decode_steinway.py --library <Steinway Grand  (DS) folder>        # decode, verify
-  python3 Tools/decode_steinway.py --library <Steinway Grand  (DS) folder> --pin  # (re)write the pins
+The preset's levels are not applied. Its group volumes (FF 0.35, F 0.45, M 0.6,
+P and PP 1) step down with velocity, and its pan runs -24 to +24 with pitch.
+The layers were not brought to one level: from PP to FF the 50-750 ms RMS
+rises 25 to 40 dB at each pitch, in order. The FF takes peak within 2.4 dB of
+full scale, yet nothing shows them normalised and their raw levels are kept:
+F to FF is the steadiest step of all (SD 1.18 dB, the others 2.79 to 3.54), as
+take-by-take gain would not leave it, and the peaks hold no one ceiling.
+
+The seven key-noise takes play on any key. A pitch's rel<midi> is one of them
+in turn, by the pitch's place in the list (carried_from names the take).
+
+  python3 Tools/decode_newyork.py --library <Grandpas Piano (DS) folder>        # decode, verify
+  python3 Tools/decode_newyork.py --library <Grandpas Piano (DS) folder> --pin  # (re)write the pins
 """
 from __future__ import annotations
 
@@ -24,35 +32,43 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
 
-import numpy as np
-from scipy.io import wavfile
-
 ROOT = Path(__file__).resolve().parents[1]
-PRESET = 'Steinway Grand.dspreset'
+PRESET = 'GrandpasPiano.dspreset'
 MANIFEST = ROOT / 'Tools/corpus/newyork-grand.json'
-CUT_MARGIN = .02
+LAYERS = {'PP': 1, 'P': 2, 'M': 3, 'F': 4, 'FF': 5}
 
 
 def inventory(library: Path):
-    """Every sample the preset maps. A note's root comes from its release
-    take's pitch name, not from its rootNote: the preset gives F6 Dyn1 RR2
-    rootNote 37 where its zone and every other F6 take say 101."""
-    text = (library / PRESET).read_text(encoding='utf-8')
+    text = re.sub(r'<!--.*?-->', '', (library / PRESET).read_text(encoding='utf-8'), flags=re.S)
     samples = [dict(re.findall(r'(\w+)="([^"]*)"', s)) for s in re.findall(r'<sample\b[^>]*>', text)]
-    items = []
+    items, noises = [], []
     for s in samples:
-        release = re.search(r'Steinway_Release_(.+)\.wav$', s['path'])
-        common = {'midi': int(s['hiNote']), 'keys': [int(s['loNote']), int(s['hiNote'])],
-                  'velocity': [int(s['loVel']), int(s['hiVel'])], 'source': s['path'], 'start': int(s['start'])}
-        if release:
-            items.append({'id': f'rel{common["midi"]}', 'kind': 'key-release'} | common)
-            continue
-        layer, take = map(int, re.search(r'_Dyn(\d)_RR(\d)\.wav$', s['path']).groups())
-        items.append({'id': f'n{common["midi"]}v{layer}r{take}', 'kind': 'note', 'layer': layer,
-                      'round_robin': take} | common)
-    return sorted(items, key=lambda i: (i['kind'] != 'note', i['midi'], i.get('layer', 0), i.get('round_robin', 0)))
+        name = re.search(r'Steinway_(PP|P|M|FF|F)_\d+', s['path'])
+        if name:
+            root = int(s['rootNote'])
+            items.append({'id': f'n{root}v{LAYERS[name[1]]}', 'kind': 'note', 'midi': root, 'layer': LAYERS[name[1]],
+                          'round_robin': 1, 'keys': [int(s['loNote']), int(s['hiNote'])],
+                          'velocity': [int(s['loVel']), int(s['hiVel'])], 'source': s['path']})
+        elif 'RT_' in s['path']:
+            noises.append(s['path'])
+        elif 'Pedal_Down' in s['path'] or 'Pedal_Up' in s['path']:
+            items.append({'id': 'pedalD1' if 'Down' in s['path'] else 'pedalU1', 'kind': 'pedal', 'source': s['path']})
+    pitches = sorted({i['midi'] for i in items if i['kind'] == 'note'})
+    for n, midi in enumerate(pitches):
+        source = noises[n % len(noises)]
+        items.append({'id': f'rel{midi}', 'kind': 'key-release', 'midi': midi, 'source': source,
+                      'carried_from': Path(source).stem})
+    return sorted(items, key=lambda i: (i['kind'], i.get('midi', 0), i.get('layer', 0)))
+
+
+def depth(path: Path) -> str:
+    probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'a:0', '-show_entries',
+                            'stream=sample_fmt,bits_per_sample', '-of', 'csv=p=0', str(path)],
+                           capture_output=True, text=True, check=True).stdout
+    return 'pcm_s24le' if '24' in probe else 'pcm_s16le'
 
 
 def main():
@@ -62,35 +78,31 @@ def main():
     parser.add_argument('--pin', action='store_true')
     args = parser.parse_args()
     stored = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
-    pins = {} if args.pin else {f['id']: f['wav_sha256'] for f in stored.get('files', [])}
+    pins = {} if args.pin else {f['id']: f['aif_sha256'] for f in stored.get('files', [])}
     items = inventory(args.library)
     if not args.pin and {i['id'] for i in items} != set(pins):
         raise SystemExit('the preset maps other recordings than the manifest pins')
     args.out.mkdir(parents=True, exist_ok=True)
     for item in items:
         path = args.library / item['source']
-        item['wav_sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
-        if item['id'] in pins and pins[item['id']] != item['wav_sha256']:
+        item['aif_sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+        if item['id'] in pins and pins[item['id']] != item['aif_sha256']:
             raise SystemExit(f'{item["id"]}: SHA256 differs from the pin')
-        rate, x = wavfile.read(path)
-        if rate != 48000 or x.dtype != np.int32 or x.ndim != 2:
-            raise SystemExit(f'{item["id"]}: expected 48 kHz 24-bit stereo')
         target = args.out / f'{item["id"]}.wav'
         if not target.exists():
             part = target.with_suffix('.part.wav')
-            wavfile.write(part, rate, x[max(0, item['start'] - round(CUT_MARGIN * rate)):])
+            subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-nostdin', '-y', '-i', str(path),
+                            '-map_metadata', '-1', '-c:a', depth(path), str(part)], check=True)
             part.replace(target)
     if args.pin:
         MANIFEST.write_text(json.dumps({
-            'title': 'Steinway Grand (Decent Sampler)',
-            'author': 'Jon Meyer (inferred: the library\'s image caption JONMEYERMUSIC.COM and its archive name)',
-            'instrument': 'a Steinway & Sons grand piano; model and size are not given',
-            'license': 'none stated in the library; the project owner asked for the fit on 31 October 2026',
-            'capture': 'one stereo perspective, 48 kHz/24-bit stereo WAV',
-            'pitch_names': 'the library names middle C (MIDI 60) C3; ids carry MIDI numbers',
-            'velocity_layers': 'four, by the preset: 1-60, 61-98, 99-117, 118-127; two round robins each',
-            'mixing': 'the preset trims samples by -6 to +9 dB, which the fit does not apply',
-            'decoding': f'cut at the preset\'s start point less {CUT_MARGIN} s, no gain, resampling, denoising or EQ',
+            'title': 'Grandpa\'s Piano (Decent Sampler, Pianobook)', 'author': 'David Hawkins',
+            'instrument': 'a 1933 Steinway Model L grand piano, per the library\'s README',
+            'license': 'none stated in the library',
+            'capture': 'one stereo perspective, 44.1 kHz stereo AIFF, 16-bit but for six 24-bit takes',
+            'velocity_layers': 'PP 0-25, P 26-45, M 46-75, F 76-105, FF 106-127',
+            'mixing': 'the preset\'s group volumes and pan are not applied; see Tools/decode_newyork.py',
+            'decoding': 'ffmpeg to PCM WAV at the source depth, no gain, trim, resampling, denoising or EQ',
             'files': items}, indent=1) + '\n')
     print(json.dumps({'decoded': len(items), 'pinned': len(pins) or 'written'}))
 

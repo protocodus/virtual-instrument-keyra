@@ -260,7 +260,7 @@ int main()
             reopened.setStateInformation(future.getData(), static_cast<int>(future.getSize()));
             require(weightsAre(reopened, toward.strings, 0), "a session with both a piano and the weights was not refused");
             KeyraAudioProcessor thirds;
-            const auto last = static_cast<int>(keyra::factoryPresets.size()) - 1;
+            const auto last = static_cast<int>(keyra::factoryPresets.size()) - 1; // New York Grand
             thirds.setCurrentProgram(last);
             juce::MemoryBlock lastSaved;
             thirds.getStateInformation(lastSaved);
@@ -362,6 +362,16 @@ int main()
                 "a session saved before Mechanics did not load the action as calibrated");
             require(reopened.parameters.getRawParameterValue("mic")->load() == 0,
                 "a session saved before Tube Mic did not load the pair");
+            // A session saved with three pianos' weights plays the later pianos
+            // at none.
+            juce::StringArray laterWeights;
+            for (size_t part = 0; part < buildParts.size(); ++part)
+                for (size_t piano = 3; piano < keyra::pianoCount; ++piano) laterWeights.add(weightId(part, piano));
+            const auto threePianos = edited(saved, laterWeights, {});
+            reopened.setStateInformation(threePianos.getData(), static_cast<int>(threePianos.getSize()));
+            for (const auto& id : laterWeights)
+                require(reopened.parameters.getRawParameterValue(id)->load() == 0,
+                    "a session saved with three pianos took a later piano's weight");
             // A host reads a parameter's text, gives it back and reads again
             // (clap-validator's param-conversions): every value must read the
             // same both times, also when the text comes back as the CLAP
