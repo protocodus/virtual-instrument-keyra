@@ -3,17 +3,19 @@
 
 One phrase for each of eight of the ten factory presets (README G3a), <NN>
 its program number, each written for what that preset is for: Kakegawa
-Grand plays a full-range romantic phrase with legato pedalling, Studio Grand
-a pop ballad pattern, Warm Walnut jazz voicings with the soft pedal, Felt
-Nocturne a quiet nocturne whose felt the modulation wheel brings in, and
-Open Strings struck notes with the dampers raised so the undamped strings
-ring. On the upright, Helsinki Upright plays a song accompaniment of broken
-chords under a tune, Felt Upright repeated chords under a high line at an
-ordinary touch, quietened by its felt, and Pop Upright pumping chords over
-octave roots with the pedal up. Hamamatsu Grand and Three Cities have none.
-The .mid files are the committed sources the demo renderer reads; this
-script only records how they were written. Re-run it only to change a
-phrase on purpose, and commit the changed .mid files on their own:
+Grand plays a full-range romantic phrase with legato pedalling, Warm Walnut
+jazz voicings with the soft pedal, Felt Nocturne a quiet nocturne whose felt
+the modulation wheel brings in, and Open Strings struck notes with the
+dampers raised so the undamped strings ring. Helsinki Upright plays a song
+accompaniment of broken chords under a tune, and Pop Upright pumping chords
+over octave roots with the pedal up. Hamamatsu Grand plays two voices without
+the pedal, each line heard on its own, and Three Cities, every part a third
+of each piano, a chorale whose chords sound the blend across the range.
+Studio Grand and Felt Upright, voicings of the grand and the upright like
+those beside them, have none. The .mid files are the committed sources the
+demo renderer reads; this script only records how they were written. Re-run
+it only to change a phrase on purpose, and commit the changed .mid files on
+their own:
 
     python3 Tools/write_preset_midi.py           # write Docs/audio/midi
     python3 Tools/write_preset_midi.py --check   # the committed files match
@@ -140,29 +142,6 @@ def kakegawa_grand():
     return p
 
 
-def studio_grand():
-    # A pop ballad pattern: syncopated right-hand chords over left-hand
-    # octaves, pedal caught after each change and lifted before the next.
-    p = Phrase(96)
-    progression = [
-        (["C2", "C3"], ["E4", "G4", "C5"]),
-        (["B1", "B2"], ["D4", "G4", "B4"]),
-        (["F1", "F2"], ["C4", "F4", "A4"]),
-    ]
-    for bar, (bass, chord) in enumerate(progression):
-        start = 4 * bar
-        p.chord(start, 3.8, bass, 84)
-        for beat, velocity in ((0, 88), (1, 72), (1.5, 78), (2.5, 80), (3, 74)):
-            p.chord(start + beat, 0.4, chord, velocity)
-        p.cc(start + 0.1, SUSTAIN, 127)
-        p.cc(start + 3.85, SUSTAIN, 0)
-    p.line(10, [("G5", 0.5), ("A5", 0.5), ("G5", 0.5), ("E5", 0.5)], 86)
-    p.chord(12, 2.5, ["C2", "C3", "E4", "G4", "C5", "E5"], 90)
-    p.cc(12.1, SUSTAIN, 127)
-    p.cc(14.5, SUSTAIN, 0)
-    return p
-
-
 def warm_walnut():
     # A ii-V-I in rootless jazz voicings in the middle register, played
     # quietly with the soft pedal down for the first bar and up for the rest.
@@ -259,33 +238,6 @@ def helsinki_upright():
     return p
 
 
-def felt_upright():
-    # Repeated broken chords in A minor under a high line, the pedal down and
-    # changed with the harmony, at the ordinary touch a practice felt is
-    # played with: the felt keeps it quiet. Played softly as well, its demo
-    # peaked 9 dB under the grand's Felt Nocturne.
-    p = Phrase(76)
-    harmony = [
-        ("A2", ["E3", "A3", "C4", "E4"]),
-        ("F2", ["C3", "F3", "A3", "C4"]),
-        ("C3", ["G3", "C4", "E4", "G4"]),
-        ("G2", ["D3", "G3", "B3", "D4"]),
-    ]
-    line = [("E5", 2), ("C5", 2), ("G5", 1.5), ("E5", 0.5), ("D5", 2)]
-    p.cc(0, SUSTAIN, 127)
-    for bar, (bass, chord) in enumerate(harmony):
-        start = 2 * bar
-        if bar:
-            p.change_pedal(start)
-        p.note(start, 1.9, bass, 64)
-        p.arpeggio(start + 0.5, 0.25, chord + chord[-2::-1][:2], 0.5, 56)
-    p.line(0, line, 72)
-    p.change_pedal(8)
-    p.chord(8, 2, ["A2", "E3", "A3", "C4", "E4", "A4"], 62)
-    p.cc(10, SUSTAIN, 0)
-    return p
-
-
 def pop_upright():
     # Pumping eighth-note chords over octave roots, pushed into each bar on
     # the last eighth before it, with the pedal up for a tight, percussive
@@ -314,13 +266,50 @@ def pop_upright():
     return p
 
 
+def hamamatsu_grand():
+    # Two voices in D without the pedal: the right hand's figure answered by
+    # the left a bar later and two octaves down, then a cadence home, so each
+    # note's attack and decay is heard on its own.
+    p = Phrase(100)
+    p.line(0, [("D5", 0.5), ("E5", 0.5), ("F#5", 0.5), ("G5", 0.5), ("A5", 1), ("F#5", 1)], 76)
+    p.line(0, [("D3", 1), ("A2", 1), ("D3", 1), ("F#3", 1)], 62)
+    p.line(4, [("G5", 1), ("B5", 1), ("A5", 0.5), ("G5", 0.5), ("F#5", 0.5), ("E5", 0.5)], 80)
+    p.line(4, [("D3", 0.5), ("E3", 0.5), ("F#3", 0.5), ("G3", 0.5), ("A3", 1), ("F#3", 1)], 68)
+    p.line(8, [("F#5", 0.5), ("G5", 0.5), ("E5", 0.5), ("C#5", 0.5), ("D5", 2)], 78)
+    p.line(8, [("G3", 1), ("A2", 1)], 70)
+    p.chord(10, 2, ["D2", "D3"], 72)
+    return p
+
+
+def three_cities():
+    # A chorale in B-flat, four voices moving to the dominant seventh and
+    # home, the pedal changed with each chord and the last spread over five
+    # octaves, so the blend is heard in chords from the bass to the treble.
+    p = Phrase(80)
+    chords = [
+        ["Bb2", "F3", "D4", "Bb4"],
+        ["G2", "G3", "D4", "Bb4"],
+        ["C3", "G3", "Eb4", "C5"],
+        ["F2", "A3", "Eb4", "C5"],
+    ]
+    p.cc(0, SUSTAIN, 127)
+    for index, chord in enumerate(chords):
+        if index:
+            p.change_pedal(2 * index)
+        p.chord(2 * index, 1.95, chord, 64 + 5 * index)
+    p.change_pedal(8)
+    p.chord(8, 3, ["Bb1", "Bb2", "F3", "D4", "F4", "Bb4", "D5"], 80)
+    p.cc(11, SUSTAIN, 0)
+    return p
+
+
 # The demos, each by its preset's slug: at most eight, so the bank's other
 # presets have none (README G3).
 PRESETS = [
-    ("kakegawa-grand", kakegawa_grand), ("studio-grand", studio_grand),
-    ("warm-walnut", warm_walnut), ("felt-nocturne", felt_nocturne),
-    ("open-strings", open_strings), ("helsinki-upright", helsinki_upright),
-    ("felt-upright", felt_upright), ("pop-upright", pop_upright),
+    ("kakegawa-grand", kakegawa_grand), ("warm-walnut", warm_walnut),
+    ("felt-nocturne", felt_nocturne), ("open-strings", open_strings),
+    ("helsinki-upright", helsinki_upright), ("pop-upright", pop_upright),
+    ("hamamatsu-grand", hamamatsu_grand), ("three-cities", three_cities),
 ]
 
 
