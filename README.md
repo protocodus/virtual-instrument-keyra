@@ -386,7 +386,7 @@ musical passages through the same engine. Both are frozen evidence from
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 52](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41196184726/artifacts/13040209988)**, built from [`1c16efd80106`](https://github.com/protocodus/virtual-instrument-keyra/commit/1c16efd80106bbc94025d981b34683c854757aa2). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 53](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41223578182/artifacts/13051755986)**, built from [`8d14238d64c2`](https://github.com/protocodus/virtual-instrument-keyra/commit/8d14238d64c2cc97c42d6c62b24c80e2c2c24a27). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
