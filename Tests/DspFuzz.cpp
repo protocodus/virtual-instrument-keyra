@@ -40,14 +40,17 @@ extern "C" int LLVMFuzzerTestOneInput (const std::uint8_t* data, std::size_t siz
             {
                 // One raw write, which may be any float, to any control,
                 // the build's included.
+                auto& build = parameters.build;
                 float* fields[] { &parameters.gain, &parameters.brightness, &parameters.resonance,
                                   &parameters.width, &parameters.tuning, &parameters.mute,
                                   &parameters.sustain, &parameters.sostenuto, &parameters.soft,
-                                  &parameters.build.strings, &parameters.build.hammers,
-                                  &parameters.build.soundboard, &parameters.build.action,
-                                  &parameters.build.stiffness, &parameters.build.unisons,
-                                  &parameters.build.ring };
-                *fields[input.Pick (std::size(fields))] = input.Scalar();
+                                  &build.stiffness, &build.unisons, &build.ring };
+                // Or one piano's weight in one part.
+                keyra::Mix* parts[] { &build.strings, &build.hammers, &build.soundboard, &build.action };
+                const auto pick = input.Pick (std::size(fields) + std::size(parts) * keyra::pianoCount);
+                float& field = pick < std::size(fields) ? *fields[pick]
+                             : (*parts[(pick - std::size(fields)) / keyra::pianoCount])[(pick - std::size(fields)) % keyra::pianoCount];
+                field = input.Scalar();
                 engine->setParameters (parameters);
                 break;
             }

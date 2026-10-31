@@ -1,27 +1,38 @@
 #pragma once
+#include <array>
+#include <cstddef>
 #include <memory>
 
 namespace keyra {
-// The two measured pianos: the grand from the Salamander Grand Piano V3
-// recordings, the upright from the Helsinki 1967 Tube-Ribbon Edition's.
-enum class Piano {grand,upright};
-// The piano that plays, built part by part. Each part sits between the two
-// measured pianos' (0 the grand's, 1 the upright's); between them it blends
-// the two, a piano neither recording is. The modifiers scale what the parts
-// give, 0 leaving them as built. A change applies from the next strike, and
-// the soundboard's modes and the undamped strings move at once.
+// The measured pianos, each fitted from its own recordings: the grand from
+// the Salamander Grand Piano V3's, the upright from the Helsinki 1967
+// Tube-Ribbon Edition's, the Kawai grand from the VCSL Keys "Grand Piano,
+// K"'s. Saved songs and patches recall a piano by its value, so pianos are
+// only ever added at the end.
+enum class Piano {grand,upright,kawai};
+constexpr int pianoCount=3;
+// How much of each measured piano a part of the build takes, by Piano:
+// weights from 0 to 1, played as shares of their sum, so that any number of
+// pianos mix in one part. A part with no weight plays the grand's.
+using Mix=std::array<float,pianoCount>;
+constexpr Mix only(Piano piano) noexcept {Mix mix{};mix[static_cast<std::size_t>(piano)]=1;return mix;}
+// The piano that plays, built part by part from the measured pianos. Each
+// part mixes the pianos by its Mix; between them it blends them, a piano no
+// recording is. The modifiers scale what the parts give, 0 leaving them as
+// built. A change applies from the next strike, and the soundboard's modes
+// and the undamped strings move at once.
 struct Build {
   // The strings: their stretch and stiffness, unisons, decays and pickups,
   // the undamped top strings and the components beside the series.
-  float strings=0;
+  Mix strings=only(Piano::grand);
   // The hammers: what a strike excites, each partial's level and phase at
   // contact, the tone's change with velocity, the onset and the contact.
-  float hammers=0;
+  Mix hammers=only(Piano::grand);
   // The soundboard and case: their modes, a strike's knock on them and the
   // board's noise.
-  float soundboard=0;
+  Mix soundboard=only(Piano::grand);
   // The action: the knocks of keys, dampers and pedals.
-  float action=0;
+  Mix action=only(Piano::grand);
   // The strings' inharmonicity, times 4^stiffness (-1 to 1: a quarter to four
   // times as built).
   float stiffness=0;
@@ -32,19 +43,20 @@ struct Build {
   float ring=0;
 };
 // Each measured piano's build: every part its own, the modifiers at 0.
-constexpr Build measuredBuild(Piano piano) noexcept {
-  const float part=piano==Piano::upright?1.f:0.f;
-  return {part,part,part,part,0.f,0.f,0.f};
-}
-// The build the front ends' controls describe: a measured piano with each
-// part moved toward the other piano's by its control (0 its own, 1 the
-// other's), and the modifiers. A song or patch saved before the controls
-// existed has them at 0, so it plays the piano it chose.
-constexpr Build buildToward(Piano piano,float strings,float hammers,float soundboard,float action,
+constexpr Build measuredBuild(Piano piano) noexcept {return {only(piano),only(piano),only(piano),only(piano),0,0,0};}
+// A build between two pianos, as the controls of songs and patches saved
+// before the mixes describe it: each part moved from `piano`'s (0) toward
+// `toward`'s (1), and the modifiers. A piano built toward itself is just
+// itself.
+constexpr Build buildToward(Piano piano,Piano toward,float strings,float hammers,float soundboard,float action,
                             float stiffness,float unisons,float ring) noexcept {
-  const float own=piano==Piano::upright?1.f:0.f,way=1-2*own;
-  return {own+way*strings,own+way*hammers,own+way*soundboard,own+way*action,stiffness,unisons,ring};
+  const auto part=[piano,toward](float x){
+    Mix mix{};mix[static_cast<std::size_t>(piano)]+=1-x;mix[static_cast<std::size_t>(toward)]+=x;return mix;};
+  return {part(strings),part(hammers),part(soundboard),part(action),stiffness,unisons,ring};
 }
+// The piano a measured piano's parts moved toward in those songs and
+// patches: the upright's for the grand, the grand's for every other.
+constexpr Piano partner(Piano piano) noexcept {return piano==Piano::grand?Piano::upright:Piano::grand;}
 // How much of each strike plays, for CPU: every partial, or only those that
 // come within 60 dB (balanced) or 50 dB (light) of the strike's strongest,
 // which no third-octave band of the note misses by more than 0.04 or 0.74 dB
@@ -106,7 +118,7 @@ private:
   std::unique_ptr<Impl> impl;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
-// plays on a measured piano before its player's spread: one response for both
-// pianos.
+// plays on a measured piano before its player's spread: one response for
+// every piano.
 float responseVelocity(Piano piano,float velocity) noexcept;
 }

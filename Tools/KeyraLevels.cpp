@@ -24,8 +24,9 @@
 // targetVu at the default Output (KeyraEngine.cpp's outputScale). The same
 // reading at Mic 1, the tube alone, gives the factor that brings it to its
 // pair's (KeyraEngine.cpp's tubeScale). --check fails unless each piano's
-// default sound reads targetVu within half a decibel at Mic 0 and at Mic 1,
-// where its loudest chords also stay out of the red and play louder than at
+// default sound reads targetVu within half a decibel at Mic 0 and at Mic 1
+// (the Kawai's down to 1.05 dB under there, below), where its loudest chords
+// also stay out of the red and play louder than at
 // 110; every preset without felt reads within 2 dB of it; the loudest
 // chords of every preset stay out of the red, under 0 VU, with no sample over
 // the stage's ceiling; and the chords still play louder at velocity 127 than
@@ -131,21 +132,22 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
 
 int run(int jobs,bool check){
   const auto& presets=keyra::factoryPresets;
-  const keyra::Piano pianos[]{keyra::Piano::grand,keyra::Piano::upright};
-  const char* const pianoNames[]{"grand","upright"};
+  constexpr std::size_t pianos=keyra::pianoCount;
+  const char* const pianoNames[pianos]{"grand","upright","kawai"};
   const auto typicalEvents=typicalPlaying(),loudestEvents=chordRounds(127),strongEvents=chordRounds(110);
   // Tasks: each piano's default sound below the stage, at Mic 0 and at 1,
   // and its loudest chords and the same chords at 110 at Mic 1 as heard;
   // then each preset's typical playing, loudest chords and the same chords
   // at 110 as heard.
-  const std::size_t calibrations=8,count=calibrations+3*presets.size();
+  const std::size_t calibrations=4*pianos,count=calibrations+3*presets.size();
   std::vector<Reading> readings(count);
   parallel(count,jobs,[&](std::size_t task){
     if(task<calibrations){
-      keyra::Parameters parameters;parameters.build=keyra::measuredBuild(pianos[task%2]);
-      parameters.mic=task<2?0.f:1.f;
-      if(task<4)parameters.gain*=static_cast<float>(std::pow(10.,-belowDb/20));
-      readings[task]=play(parameters,task<4?typicalEvents:task<6?loudestEvents:strongEvents);
+      const std::size_t kind=task/pianos;
+      keyra::Parameters parameters;parameters.build=keyra::measuredBuild(static_cast<keyra::Piano>(task%pianos));
+      parameters.mic=kind==0?0.f:1.f;
+      if(kind<2)parameters.gain*=static_cast<float>(std::pow(10.,-belowDb/20));
+      readings[task]=play(parameters,kind<2?typicalEvents:kind==2?loudestEvents:strongEvents);
       return;
     }
     const std::size_t preset=(task-calibrations)/3,kind=(task-calibrations)%3;
@@ -158,9 +160,9 @@ int run(int jobs,bool check){
     if(ok)return;
     std::printf("FAIL %s: %s (%.2f)\n",what,message,value);++failures;
   };
-  for(std::size_t piano=0;piano<2;++piano){
-    const double reading=median(readings[piano].events)+belowDb,tube=median(readings[2+piano].events)+belowDb;
-    const auto& loudest=readings[4+piano];const auto& strong=readings[6+piano];
+  for(std::size_t piano=0;piano<pianos;++piano){
+    const double reading=median(readings[piano].events)+belowDb,tube=median(readings[pianos+piano].events)+belowDb;
+    const auto& loudest=readings[2*pianos+piano];const auto& strong=readings[3*pianos+piano];
     const double loud=*std::max_element(loudest.events.begin(),loudest.events.end());
     std::vector<double> steps;
     for(std::size_t chord=0;chord<loudest.events.size();++chord)steps.push_back(loudest.events[chord]-strong.events[chord]);
@@ -171,7 +173,12 @@ int run(int jobs,bool check){
                 "velocity 110 to 127 %+.2f dB  peak %6.2f dBFS\n",
                 pianoNames[piano],tube,std::pow(10.,(reading-tube)/20),reading-tube,loud,step,loudest.peakDbfs);
     expect(std::abs(reading-targetVu)<=.5,pianoNames[piano],"its default sound is not at the target",reading);
-    expect(std::abs(tube-targetVu)<=.5,pianoNames[piano],"its sound at Mic 1 is not at the target",tube);
+    // The Kawai's tube may read up to 1.05 dB under the target: within 0.5,
+    // its loudest chords at Mic 1 reach the red (+0.07 VU at -9.73), and the
+    // owner chose a quieter tube over evening out its loud A2 recordings
+    // (KeyraEngine.cpp's tubeScale, Docs/decisions.md, 2026-10-31).
+    const double tubeBelow=static_cast<keyra::Piano>(piano)==keyra::Piano::kawai?1.05:.5;
+    expect(tube-targetVu<=.5&&targetVu-tube<=tubeBelow,pianoNames[piano],"its sound at Mic 1 is not at the target",tube);
     expect(loud<0,pianoNames[piano],"the loudest chords at Mic 1 reach the red",loud);
     expect(step>0,pianoNames[piano],"the chords at velocity 127 are no louder than at 110 at Mic 1",step);
     expect(std::max(loudest.peakDbfs,strong.peakDbfs)<=20*std::log10(protocodus::OutputStage<2>::kCeiling)+.01,

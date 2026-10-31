@@ -5,11 +5,38 @@
 #include <cstdlib>
 
 namespace {
-constexpr std::array<const char*, 20> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
-    "model", "quality", "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring", "mechanics", "mic" }};
-// The build's seven controls follow Quality, in keyra::buildToward's order.
-constexpr size_t modelIndex = 9, qualityIndex = 10, buildIndex = 11, mechanicsIndex = 18, micIndex = 19;
+// The build's controls follow Quality: each part's weights (weightId), part
+// by part, then the three modifiers.
+constexpr std::array<const char*, 27> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
+    "quality", "strings1", "strings2", "strings3", "hammers1", "hammers2", "hammers3", "soundboard1", "soundboard2", "soundboard3",
+    "action1", "action2", "action3", "stiffness", "unisons", "ring", "mechanics", "mic" }};
+constexpr size_t qualityIndex = 9, weightIndex = 10, modifierIndex = 22, mechanicsIndex = 25, micIndex = 26;
+static_assert(modifierIndex - weightIndex == buildParts.size() * keyra::pianoCount, "every part has a weight of every piano");
 constexpr auto& programs = keyra::factoryPresets;
+// The parts' and the modifiers' values of a build, in the parameters' order.
+std::array<float, modifierIndex + 3 - weightIndex> buildValues(const keyra::Build& build)
+{
+    std::array<float, modifierIndex + 3 - weightIndex> result {};
+    const std::array<const keyra::Mix*, 4> parts {{ &build.strings, &build.hammers, &build.soundboard, &build.action }};
+    for (size_t part = 0; part < parts.size(); ++part)
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            result[part * keyra::pianoCount + piano] = (*parts[part])[piano];
+    result[modifierIndex - weightIndex] = build.stiffness;
+    result[modifierIndex + 1 - weightIndex] = build.unisons;
+    result[modifierIndex + 2 - weightIndex] = build.ring;
+    return result;
+}
+// A saved value: one finite decimal number and nothing after it.
+bool parse(const juce::String& text, float& value)
+{
+    const auto* begin = text.toRawUTF8();
+    char* end = nullptr;
+    errno = 0;
+    const auto parsed = std::strtod(begin, &end);
+    if (begin == end || end == nullptr || *end != '\0' || errno == ERANGE) return false;
+    value = static_cast<float>(parsed);
+    return std::isfinite(value);
+}
 }
 
 const juce::String KeyraAudioProcessor::getProgramName(int index)
@@ -21,18 +48,16 @@ void KeyraAudioProcessor::setCurrentProgram(int index)
 {
     if (index < 0 || index >= static_cast<int>(programs.size())) return;
     const auto& preset = programs[static_cast<size_t>(index)];
-    // Every factory preset is one of the two measured pianos, as built.
-    const std::array<std::pair<const char*, float>, 12> settings {{
-        { "model", preset.piano == keyra::Piano::upright ? 1.0f : 0.0f },
-        { "strings", 0.0f }, { "hammers", 0.0f }, { "soundboard", 0.0f }, { "action", 0.0f },
-        { "stiffness", 0.0f }, { "unisons", 0.0f }, { "ring", 0.0f },
-        { "brightness", preset.brightness }, { "resonance", preset.resonance },
-        { "width", preset.width }, { "mute", preset.mute }
-    }};
-    for (const auto& setting : settings) {
-        auto* parameter = parameters.getParameter(setting.first);
-        parameter->setValueNotifyingHost(parameter->convertTo0to1(setting.second));
-    }
+    const auto set = [this](const char* id, float value) {
+        auto* parameter = parameters.getParameter(id);
+        parameter->setValueNotifyingHost(parameter->convertTo0to1(value));
+    };
+    const auto build = buildValues(preset.build);
+    for (size_t i = 0; i < build.size(); ++i) set(ids[weightIndex + i], build[i]);
+    set("brightness", preset.brightness);
+    set("resonance", preset.resonance);
+    set("width", preset.width);
+    set("mute", preset.mute);
     currentProgram.store(index, std::memory_order_relaxed);
 }
 
@@ -52,25 +77,28 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     add("sustain", "Sustain pedal", 0.0f, 1.0f, 0.0f);
     add("sostenuto", "Sostenuto pedal", 0.0f, 1.0f, 0.0f);
     add("soft", "Soft pedal", 0.0f, 1.0f, 0.0f);
-    // The instrument, not a performance control: the piano is chosen for a
-    // part, not played, so it is not offered for automation.
-    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "model", 1 }, "Piano",
-        juce::StringArray { "Grand", "Upright" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
     // A CPU setting, which presets leave alone; it applies from the next strike.
     layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "quality", 1 }, "Quality",
         juce::StringArray { "Full", "Balanced", "Light" }, 0, juce::AudioParameterChoiceAttributes().withAutomatable(false)));
-    // The piano's build (keyra::buildToward): each part moved toward the
-    // other piano's, from 0 (the piano's own) to 1 (the other's), and three
-    // modifiers from -1 to 1. Part of the instrument like the piano, so not
-    // offered for automation either.
-    const auto part = [&layout](const char* id, const char* name) {
-        layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { id, 1 }, name,
-            juce::NormalisableRange<float>(0.0f, 1.0f), 0.0f, juce::AudioParameterFloatAttributes().withAutomatable(false)));
-    };
-    part("strings", "Strings");
-    part("hammers", "Hammers");
-    part("soundboard", "Soundboard");
-    part("action", "Action");
+    // The piano's build (keyra::Build): each part's weight of each measured
+    // piano, from 0 to 1, the part playing each at its share of the part's
+    // weights; the grand's alone by default. Then three modifiers from -1 to
+    // 1. The instrument, not a performance control: it is chosen for a part,
+    // not played, so it is not offered for automation.
+    constexpr std::array<const char*, 4> partNames {{ "Strings", "Hammers", "Soundboard", "Action" }};
+    for (size_t part = 0; part < buildParts.size(); ++part)
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { weightId(part, piano), 1 },
+                juce::String(partNames[part]) + ": " + keyra::pianoCities[piano], juce::NormalisableRange<float>(0.0f, 1.0f),
+                piano == 0 ? 1.0f : 0.0f, juce::AudioParameterFloatAttributes()
+                    .withAutomatable(false)
+                    .withStringFromValueFunction([](float x, int length) {
+                        const auto text = juce::String(juce::roundToInt(x * 100)) + "%";
+                        return length > 0 ? text.substring(0, length) : text;
+                    })
+                    .withValueFromStringFunction([](const juce::String& text) {
+                        return static_cast<float>(text.substring(text.indexOfAnyOf("0123456789.")).getDoubleValue() * .01);
+                    })));
     // A modifier reads as the factor it scales the build by: stiffness 4^x,
     // unisons 1 + x below 0 and 1 + 2x above, ring 2^x. Two decimals give a
     // host back the value it read; seven, the default, do not on -1..1 once
@@ -179,9 +207,14 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.soft = values[8]->load(std::memory_order_relaxed);
     p.mechanics = values[mechanicsIndex]->load(std::memory_order_relaxed);
     p.mic = values[micIndex]->load(std::memory_order_relaxed);
-    const auto build = [this](size_t i) { return values[buildIndex + i]->load(std::memory_order_relaxed); };
-    p.build = keyra::buildToward(values[modelIndex]->load(std::memory_order_relaxed) >= .5f ? keyra::Piano::upright : keyra::Piano::grand,
-        build(0), build(1), build(2), build(3), build(4), build(5), build(6));
+    const auto build = [this](size_t i) { return values[weightIndex + i]->load(std::memory_order_relaxed); };
+    const std::array<keyra::Mix*, 4> parts {{ &p.build.strings, &p.build.hammers, &p.build.soundboard, &p.build.action }};
+    for (size_t part = 0; part < parts.size(); ++part)
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            (*parts[part])[piano] = build(part * keyra::pianoCount + piano);
+    p.build.stiffness = values[modifierIndex]->load(std::memory_order_relaxed);
+    p.build.unisons = values[modifierIndex + 1]->load(std::memory_order_relaxed);
+    p.build.ring = values[modifierIndex + 2]->load(std::memory_order_relaxed);
     p.quality = static_cast<keyra::Quality>(juce::jlimit(0, 2, juce::roundToInt(values[qualityIndex]->load(std::memory_order_relaxed))));
     engine.setParameters(p);
     auto read = keyboardRead.load(std::memory_order_relaxed);
@@ -271,8 +304,40 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
     auto state = juce::ValueTree::fromXml(*xml);
     if (!state.isValid() || state.getProperty("schemaVersion", 1).toString() != "1") return;
     const auto programText = state.getProperty("program", 0).toString();
-    if (programText.length() != 1 || programText[0] < '0'
-        || programText[0] >= '0' + static_cast<int>(programs.size())) return;
+    if (programText.isEmpty() || programText.length() > 3 || !programText.containsOnly("0123456789")
+        || programText.getIntValue() >= static_cast<int>(programs.size())) return;
+    // A session saved before the parts mixed every piano chose a piano,
+    // "model" (0 the grand, 1 the upright), and moved each part from its own
+    // toward the other's (keyra::buildToward), the parts under their names
+    // alone; it loads as the same mixes.
+    {
+        std::array<float, 4> toward {};
+        float model = 0;
+        bool older = false;
+        for (int i = state.getNumChildren(); --i >= 0;) {
+            const auto child = state.getChild(i);
+            const auto id = child.getProperty("id").toString();
+            size_t part = 0;
+            while (part < buildParts.size() && id != buildParts[part]) ++part;
+            if (id != "model" && part == buildParts.size()) continue;
+            float value = 0;
+            if (!parse(child.getProperty("value").toString(), value) || value < 0 || value > 1) return;
+            if (id == "model") model = value;
+            else toward[part] = value;
+            state.removeChild(i, nullptr);
+            older = true;
+        }
+        if (older) {
+            const auto piano = model >= .5f ? keyra::Piano::upright : keyra::Piano::grand;
+            const auto build = buildValues(keyra::buildToward(piano, keyra::partner(piano), toward[0], toward[1], toward[2], toward[3], 0, 0, 0));
+            for (size_t i = 0; i < modifierIndex - weightIndex; ++i) {
+                juce::ValueTree child("PARAM");
+                child.setProperty("id", ids[weightIndex + i], nullptr);
+                child.setProperty("value", build[i], nullptr);
+                state.appendChild(child, nullptr);
+            }
+        }
+    }
     // Reject malformed or future state atomically. Never apply half a preset.
     std::array<bool, ids.size()> seen {};
     for (const auto child : state) {
@@ -281,15 +346,9 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
         size_t index = 0;
         while (index < ids.size() && id != ids[index]) ++index;
         if (index == ids.size() || seen[index] || !child.hasProperty("value")) return;
-        const auto valueText = child.getProperty("value").toString();
-        const auto* begin = valueText.toRawUTF8();
-        char* end = nullptr;
-        errno = 0;
-        const auto parsed = std::strtod(begin, &end);
-        if (begin == end || end == nullptr || *end != '\0' || errno == ERANGE) return;
-        const auto value = static_cast<float>(parsed);
+        float value = 0;
         const auto* parameter = dynamic_cast<juce::RangedAudioParameter*>(parameters.getParameter(id));
-        if (parameter == nullptr || !std::isfinite(value)
+        if (parameter == nullptr || !parse(child.getProperty("value").toString(), value)
             || value < parameter->getNormalisableRange().start
             || value > parameter->getNormalisableRange().end) return;
         seen[index] = true;
@@ -298,7 +357,7 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
     // controls existed lack them and keep their defaults: the grand they
     // were made with, at full quality, as it was built, its action as
     // calibrated, heard from the pair.
-    for (size_t i = 0; i < modelIndex; ++i)
+    for (size_t i = 0; i < qualityIndex; ++i)
         if (!seen[i]) return;
     parameters.replaceState(state);
     currentProgram.store(programText.getIntValue(), std::memory_order_relaxed);

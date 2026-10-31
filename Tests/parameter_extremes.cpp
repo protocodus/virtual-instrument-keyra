@@ -34,26 +34,41 @@ double difference(const Audio& a, const Audio& b) {
     }
     return sum / a.size();
 }
-// Each control as a field of the parameters, including the build's parts and
-// modifiers.
-struct Control { const char* name; float& (*field)(keyra::Parameters&); float low, mid, high; };
+// Another piano than the measured one a part takes a weight of: its partner
+// (0) or the remaining one (1). The measured piano's own weight is not a
+// control here: alone in its part, any weight of it plays the same.
+std::size_t other(keyra::Piano piano, int which) {
+    const auto partner = static_cast<std::size_t>(keyra::partner(piano));
+    if (which == 0) return partner;
+    std::size_t p = 0;
+    while (p == static_cast<std::size_t>(piano) || p == partner) ++p;
+    return p;
+}
+// Each control as a field of the parameters for the measured piano, including
+// the build's parts' weights and its modifiers.
+using Field = float& (*)(keyra::Parameters&, keyra::Piano);
+struct Control { const char* name; Field field; float low, mid, high; };
 const Control controls[] {
-    {"gain", [](keyra::Parameters& p) -> float& { return p.gain; }, 0, .5f, 1},
-    {"brightness", [](keyra::Parameters& p) -> float& { return p.brightness; }, 0, .5f, 1},
-    {"resonance", [](keyra::Parameters& p) -> float& { return p.resonance; }, 0, .5f, 1},
-    {"width", [](keyra::Parameters& p) -> float& { return p.width; }, 0, .5f, 1},
-    {"tuning", [](keyra::Parameters& p) -> float& { return p.tuning; }, 400, 440, 480},
-    {"mute", [](keyra::Parameters& p) -> float& { return p.mute; }, 0, .5f, 1},
-    {"sustain", [](keyra::Parameters& p) -> float& { return p.sustain; }, 0, .5f, 1},
-    {"sostenuto", [](keyra::Parameters& p) -> float& { return p.sostenuto; }, 0, .5f, 1},
-    {"soft", [](keyra::Parameters& p) -> float& { return p.soft; }, 0, .5f, 1},
-    {"strings", [](keyra::Parameters& p) -> float& { return p.build.strings; }, 0, .5f, 1},
-    {"hammers", [](keyra::Parameters& p) -> float& { return p.build.hammers; }, 0, .5f, 1},
-    {"soundboard", [](keyra::Parameters& p) -> float& { return p.build.soundboard; }, 0, .5f, 1},
-    {"action", [](keyra::Parameters& p) -> float& { return p.build.action; }, 0, .5f, 1},
-    {"stiffness", [](keyra::Parameters& p) -> float& { return p.build.stiffness; }, -1, 0, 1},
-    {"unisons", [](keyra::Parameters& p) -> float& { return p.build.unisons; }, -1, 0, 1},
-    {"ring", [](keyra::Parameters& p) -> float& { return p.build.ring; }, -1, 0, 1}
+    {"gain", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.gain; }, 0, .5f, 1},
+    {"brightness", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.brightness; }, 0, .5f, 1},
+    {"resonance", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.resonance; }, 0, .5f, 1},
+    {"width", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.width; }, 0, .5f, 1},
+    {"tuning", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.tuning; }, 400, 440, 480},
+    {"mute", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.mute; }, 0, .5f, 1},
+    {"sustain", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.sustain; }, 0, .5f, 1},
+    {"sostenuto", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.sostenuto; }, 0, .5f, 1},
+    {"soft", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.soft; }, 0, .5f, 1},
+    {"strings partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.strings[other(x, 0)]; }, 0, .5f, 1},
+    {"strings third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.strings[other(x, 1)]; }, 0, .5f, 1},
+    {"hammers partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.hammers[other(x, 0)]; }, 0, .5f, 1},
+    {"hammers third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.hammers[other(x, 1)]; }, 0, .5f, 1},
+    {"soundboard partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.soundboard[other(x, 0)]; }, 0, .5f, 1},
+    {"soundboard third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.soundboard[other(x, 1)]; }, 0, .5f, 1},
+    {"action partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.action[other(x, 0)]; }, 0, .5f, 1},
+    {"action third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.action[other(x, 1)]; }, 0, .5f, 1},
+    {"stiffness", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.build.stiffness; }, -1, 0, 1},
+    {"unisons", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.build.unisons; }, -1, 0, 1},
+    {"ring", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.build.ring; }, -1, 0, 1}
 };
 
 Audio exercise(const Control& control, float value, double rate, bool automate, keyra::Piano piano) {
@@ -64,11 +79,11 @@ Audio exercise(const Control& control, float value, double rate, bool automate, 
     // notes correctly captures nothing, so that sequence cannot witness its
     // signal path (the engine contract separately checks that behavior).
     if (!automate && std::strcmp(control.name, "sostenuto") != 0)
-        control.field(parameters) = value;
+        control.field(parameters, piano) = value;
     engine->setParameters(parameters);
     engine->noteOn(48, .8f); engine->noteOn(60, .7f);
     play(*engine, 4096);
-    control.field(parameters) = value;
+    control.field(parameters, piano) = value;
     engine->setParameters(parameters);
     // A later strike witnesses Soft, and released notes witness both pedals.
     engine->noteOn(72, .75f);
@@ -80,7 +95,7 @@ Audio exercise(const Control& control, float value, double rate, bool automate, 
 
 int main() {
     unsigned cases = 0;
-    for (const auto piano : {keyra::Piano::grand, keyra::Piano::upright}) {
+    for (const auto piano : {keyra::Piano::grand, keyra::Piano::upright, keyra::Piano::kawai}) {
         for (const double rate : {44100., 48000., 96000.}) {
             for (const auto& control : controls) {
                 for (const bool automate : {false, true}) {

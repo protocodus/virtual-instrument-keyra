@@ -1,4 +1,5 @@
 #include "KeyraEngine.h"
+#include "MeasuredKawaiData.h"
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
@@ -8,6 +9,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <type_traits>
 
 namespace keyra {
 namespace {
@@ -19,10 +21,12 @@ constexpr int maxVoices=128, maxPartials=128, chunk=32, sineSize=4096;
 constexpr int lanes=4; // a partial's measured lanes, one per vector lane
 namespace grand=measured::grand;
 namespace upright=measured::upright;
+namespace kawai=measured::kawai;
 // F6, the lowest key without a damper, and the undamped strings from it up.
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
-static_assert(upright::haloStrings.size()==grand::haloStrings.size(),"both pianos leave the same keys undamped");
+static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size(),
+              "every piano leaves the same keys undamped");
 // The damped strings, A0 to E6, which ring in sympathy as far as their
 // dampers are off (the open strings): each with its first openPartials
 // partials, four to a bank. Eight reach three octaves under a key, through
@@ -44,9 +48,9 @@ constexpr double openTop=5000;
 // from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
 // stay as fitted.
 constexpr double contactSmoothing=1e-4;
-static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing,
+static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
-// What the felt leaves ringing once it lands, the same on both pianos: the
+// What the felt leaves ringing once it lands, the same on every piano: the
 // upright's measured shape over the keys and its slow rates
 // (Docs/research/upright-dampers-2026-10-28.md) at a share the owner chose by
 // ear (Docs/decisions.md, 2026-10-29). The upright's own share, 13 dB under
@@ -73,9 +77,11 @@ float pedalLevel(float panel,float midi,std::uint16_t heldSwitches) noexcept {
 // sfizz's Region::velocityCurve computes it.
 double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracking*v*v;}
 // A piano: its fitted data (MeasuredTypes.h), where its lanes start in the
-// engine's caches, how loud the action's noises play against the notes and
-// the scale of its levels. Tables over the recorded pitches hold a row per
-// pitch; one without pedal recordings has no pedal knocks.
+// engine's caches, how loud the action's noises play against the notes, the
+// scale of its levels and how its soft pedal works (unaCorda: the hammers
+// shift along the strings, as a grand's do, rather than move toward them).
+// Tables over the recorded pitches hold a row per pitch; one without pedal
+// recordings has no pedal knocks.
 struct Model {
   int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;
@@ -87,6 +93,7 @@ struct Model {
   double contactTime;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
   double outputScale,tubeScale;
+  bool unaCorda;
 };
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),
@@ -119,13 +126,14 @@ constexpr Model models[]{
    // the default Output, where the portfolio's newer instruments play, with
    // the output stage's guard keeping the loudest chords out of the red
    // (Tools/KeyraLevels.cpp).
-   .7699,
+   .7680,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5091},
+   1.5139,
+   true},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -149,25 +157,63 @@ constexpr Model models[]{
    .002,
    upright::noiseBands.data(),upright::noise.data(),
    // The recordings' levels are their own. This scale brings its typical
-   // playing to the grand's, -9 VU (Tools/KeyraLevels.cpp), which also keeps
-   // its median note at velocity 127 within 0.1 dB as loud as the grand's
-   // (each key A0-C8 held, both channels' RMS from 50 to 750 ms after the
-   // strike, as the benchmark sets a case's gain). Below it the shared
-   // velocity response (responseAt) keeps the two medians within 1 dB of each
-   // other.
-   2.2040,
-   2.1196},
+   // playing to the grand's, -9 VU (Tools/KeyraLevels.cpp), which puts its
+   // median note at velocity 127 0.4 dB over the grand's (each key A0-C8
+   // held, both channels' RMS from 50 to 750 ms after the strike, as the
+   // benchmark sets a case's gain). Below it the shared velocity response
+   // (responseAt) keeps the two medians within 1 dB of each other.
+   2.2755,
+   2.1763,
+   false},
+  {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),
+   kawai::partials.data(),kawai::extras.data(),
+   static_cast<int>(grand::partials.size()+upright::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()),
+   kawai::haloStrings.data(),kawai::haloLevels.data(),kawai::haloSlopeDb,kawai::haloSlopeRiseDb,kawai::haloPromptRate,
+   kawai::bodyModes.data(),static_cast<int>(kawai::bodyModes.size()),kawai::bodyRise,kawai::knocks.data(),
+   kawai::releaseKnocks.data(),nullptr,nullptr,kawai::actionRise,kawai::actionDecay,
+   // The library's SFZ (VCSL Keys, Grand Piano, K.sfz) tracks velocity at
+   // 88 % for the notes and the keys let go alike, so a release plays the
+   // same against its note at every velocity, and fades it 4 dB for each
+   // second since its strike (rt_decay). Its volume opcodes bring every
+   // take to about one loudness, so it sets no balance between the action
+   // and the notes. Its release takes fall about 38 dB from A0 to C6 and play
+   // on that trend (fit_realtime_modal.py, release_trend); a key let go half
+   // a second after its strike and the key landing play no louder against a
+   // velocity-80 note than the grand's at C2, C4 or C6, measured as the
+   // grand's: as loud at C2, 11 to 13 dB under at C4 and 44 dB under at C6.
+   // It has no pedal recordings.
+   -22.36,.88,.88,4,0,0,-22.84,
+   // Its rises are capped at the hammer's contact, as the upright's: its fit
+   // times them past the contact too (a median 2.5 ms, but 35 partials over
+   // 30 ms).
+   .002,
+   kawai::noiseBands.data(),kawai::noise.data(),
+   // Its typical playing at the grand's level, -9 VU (Tools/KeyraLevels.cpp),
+   // which puts its median note 0.6 dB over the grand's at velocity 127 and
+   // 1.4 dB over at velocity 30, measured as the upright's.
+   2.8267,
+   // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
+   // pair's: within 0.5 dB, its loudest chords through the tube reach the
+   // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
+   // its neighbours in its three loudest layers, the keys between them play
+   // toward it, and the tube's response favours the bass. The owner chose
+   // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
+   1.3201,
+   true},
 };
-constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
-              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
+static_assert(std::size(models)==pianoCount,"a model for every piano");
+constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()),
+              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size());
 // The most components beside the series two neighbouring recorded pitches of
-// a piano hold, which a strike plays from both pianos at most.
+// a piano hold. A strike plays them from its build's two pianos at most, so
+// from the two pianos that hold the most.
 template<std::size_t N> constexpr int mostExtras(const std::array<measured::Anchor,N>& anchors) noexcept {
   int most=0;
   for(std::size_t i=0;i+1<N;++i)most=std::max(most,anchors[i].extraCount+anchors[i+1].extraCount);
   return most;
 }
-constexpr int maxExtras=mostExtras(grand::anchors)+mostExtras(upright::anchors);
+constexpr int maxExtras=mostExtras(grand::anchors)+mostExtras(upright::anchors)+mostExtras(kawai::anchors)
+                        -std::min({mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors)});
 // The SFZ sounds the pedal at CC64 127 and 0. Here it sounds within .08 of
 // either end of its travel, the margin within which the dampers already
 // clear the strings (the contact in boundary()), so that a pedal which
@@ -219,10 +265,37 @@ void setLane(V4& v,int i,float x) noexcept {v.v[i]=x;}
 V4 splat(float x) noexcept {return {{x,x,x,x}};}
 #endif
 double mix(double a,double b,double t) noexcept {return a+(b-a)*t;}
-// Between the two pianos' values of a part at its build: exactly either at its
+// Between two pianos' values of a part at its build: exactly either at its
 // ends, linear or in the log domain between them.
 double pick(double a,double b,double t) noexcept {return t<=0?a:t>=1?b:mix(a,b,t);}
 double pickLog(double a,double b,double t) noexcept {return t<=0?a:t>=1?b:std::exp(mix(std::log(a),std::log(b),t));}
+// A part's shares of the pianos, by Piano, summing to 1.
+using Shares=std::array<double,pianoCount>;
+// A part's weights (0 to 1) as shares of their sum; a part with none plays
+// the grand's.
+Shares sharesOf(const Mix& mix) noexcept {
+  Shares share{};double sum=0;
+  for(int p=0;p<pianoCount;++p){share[p]=mix[p];sum+=share[p];}
+  if(!(sum>0)){share.fill(0);share[0]=1;return share;}
+  for(auto& x:share)x/=sum;
+  return share;
+}
+// The built piano's value from each piano's, get(p), at a part's shares:
+// mixed two at a time in the pianos' order, each next one at its share of
+// the shares so far, so that two pianos mix as `two` mixes a pair and more
+// as its weighted mean. A piano without a share is left out.
+template<class Get,class Two> auto fold(const Shares& share,const Get& get,const Two& two) noexcept {
+  std::decay_t<decltype(get(0))> value{};double total=0;
+  for(int p=0;p<pianoCount;++p){if(!(share[p]>0))continue;
+    if(total>0){total+=share[p];value=two(value,get(p),share[p]/total);}
+    else{total=share[p];value=get(p);}}
+  return value;
+}
+// A part's shares left to the pianos that have something.
+template<class Has> Shares among(Shares share,const Has& has) noexcept {
+  for(int p=0;p<pianoCount;++p)if(!has(p))share[p]=0;
+  return share;
+}
 // A stereo pickup (left real; right complex; mean channel power 1).
 struct Pickup {double left=1,rightRe=1,rightIm=0;};
 // Between two pickups as blendLane blends a lane's: their channels' level
@@ -274,7 +347,7 @@ struct alignas(16) BodyBank {
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{},natural[lanes]{};
 };
 struct alignas(16) BodyPickup {V4 left{},rightRe{},rightIm{};};
-constexpr int bodyModes=static_cast<int>(std::max(grand::bodyModes.size(),upright::bodyModes.size())),
+constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size()})),
               bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
@@ -299,13 +372,15 @@ bool advance(Body& body) noexcept {
 // each of the ring's two stages and the knock, its left and right amplitude
 // at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
-static_assert(upright::noiseBands.size()==grand::noiseBands.size(),"both pianos' noise has the same bands");
+static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size(),
+              "every piano's noise has the same bands");
 // The noise filters are designed once from the grand's centres for every
-// build, so the upright's must be the same.
+// build, so every other piano's must be the same.
 constexpr bool sameCentres(std::size_t b=0) noexcept {
-  return b==grand::noiseBands.size()||(grand::noiseBands[b].hz==upright::noiseBands[b].hz&&sameCentres(b+1));
+  return b==grand::noiseBands.size()||(grand::noiseBands[b].hz==upright::noiseBands[b].hz
+                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&sameCentres(b+1));
 }
-static_assert(sameCentres(),"both pianos' noise bands share their centres");
+static_assert(sameCentres(),"every piano's noise bands share the grand's centres");
 struct Burst {
   double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
   double slowLeft[noiseBands]{},slowRight[noiseBands]{},slowStep[noiseBands]{};
@@ -338,7 +413,7 @@ struct Channel {
   std::array<bool,88> captured{};
   // Each key's latest strike, which sets the noise of its release: where it
   // played on each piano's layers (0..1).
-  std::array<std::array<float,88>,2> velocity{};
+  std::array<std::array<float,88>,pianoCount> velocity{};
   std::array<std::uint64_t,88> struck{};
   // Momentary C0/C#0/D0 switches have independent ownership from CC/panel.
   std::array<std::uint16_t,3> keySwitches{};
@@ -374,7 +449,7 @@ LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
   return c;
 }
 // The mean time of the 50-750 ms window the layers' levels are measured
-// over: heardPower weighs a partial's power from contact by e^(-t/heard).
+// over: shareLanes weighs a lane's power from contact by e^(-t/heard).
 constexpr double heard=.4;
 // Each lane's share of its partial's heard power, its lanes' beating left
 // out, averaged over the layers so that a key pairs its lanes alike however
@@ -423,9 +498,9 @@ double levelAt(const Model& model,const float* db,double velocity) noexcept {
 // layer, halfway between a straight line and smoothstep, and plays the layer
 // coordinate where the piano's measured layers (layerLevelDb) reach it: the
 // tone it recorded at that loudness. Velocity 127 plays each piano's loudest
-// layer and 1 the higher of the two softest layers' levels, which the other
-// piano passes between its own, so neither plays beyond what it recorded.
-constexpr double responseFloorDb=std::max(grand::layerLevelDb[0],upright::layerLevelDb[0]);
+// layer and 1 the highest of the softest layers' levels, which every other
+// piano passes between its own, so none plays beyond what it recorded.
+constexpr double responseFloorDb=std::max({grand::layerLevelDb[0],upright::layerLevelDb[0],kawai::layerLevelDb[0]});
 double responseDb(double midi) noexcept {
   const double x=(std::max(1.,std::min(127.,midi))-1)/126;
   return responseFloorDb*(1-.5*(x+x*x*(3-2*x)));
@@ -503,35 +578,18 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
   l.left={left,0};l.right={left*g*std::cos(l.angle),left*g*std::sin(l.angle)};
   return l;
 }
-// A partial's power as the first second or so hears it: every pair of its
-// lanes, amplitudes and pickups, integrated in closed form against
-// e^(-t/0.4 s) from contact, the mean time of the 50-750 ms window the
-// layers' levels are measured over; the rise its lanes share is left out.
-double heardPower(const PartialData& d) noexcept {
-  double amplitude[lanes],rate[lanes];
-  for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
-  double sum=0;
-  for(int j=0;j<lanes;++j)for(int k=j;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
-    // Both lanes' phases and the pickups' inner product over the channels.
-    const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
-    const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
-    const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
-    const double re=rate[j]+rate[k]+1/heard,im=2*pi*(y.offset-x.offset);
-    const double term=amplitude[j]*amplitude[k]*(product.re*re+product.im*im)/(re*re+im*im);
-    sum+=j==k?term:2*term;
-  }
-  return sum;
-}
 // A partial's power over the 50-750 ms window the layers' levels are
-// measured over: heardPower's pairs of lanes, integrated between the window's
-// ends instead. A lane that dies within the first 50 ms counts here for what
-// the window hears of it, not for its whole energy.
+// measured over: every pair of its lanes, amplitudes and pickups, integrated
+// in closed form between the window's ends; the rise its lanes share is left
+// out. A lane that dies within the first 50 ms counts here for what the
+// window hears of it, not for its whole energy.
 double windowPower(const PartialData& d) noexcept {
   constexpr double from=.05,to=.75;
   double amplitude[lanes],rate[lanes];
   for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
   double sum=0;
   for(int j=0;j<lanes;++j)for(int k=j;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
+    // Both lanes' phases and the pickups' inner product over the channels.
     const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
     const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
     const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
@@ -553,10 +611,13 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
   std::sort(d.lane,d.lane+lanes,[](const LaneData& x,const LaneData& y){return x.rate>y.rate;});
   // Blended one by one, the lanes beat and cancel with offsets, phases and
   // pickups neither pitch has, and a partial could play several dB under or
-  // over both: grand B4 sat 4 dB under its neighbours. Its heard power is
-  // set between the two pitches' instead, in dB like the lanes' levels.
+  // over both: grand B4 sat 4 dB under its neighbours. Its power over the
+  // window the layers' levels are measured over is set between the two
+  // pitches' instead, in dB like the lanes' levels. (Its power from contact
+  // counts a lane that dies within 50 ms for its whole energy, as the
+  // Kawai's A6 fundamental does, and put its F#6 4.3 dB over both.)
   if(t>0&&t<1){
-    const double pa=heardPower(a),pb=heardPower(b),pd=heardPower(d);
+    const double pa=windowPower(a),pb=windowPower(b),pd=windowPower(d);
     if(pa>0&&pb>0&&pd>0){
       const double gain=10*(mix(std::log10(pa),std::log10(pb),t)-std::log10(pd));
       for(auto& l:d.lane)l.level+=gain;
@@ -637,10 +698,12 @@ struct Engine::Impl {
   // (rise - s), rise the body's, s = contactSmoothing.
   double struckOnset=0,struckContact=0;
   std::array<double,noiseBands> coherence{};
+  // Each part's shares of the pianos (setParameters), all the grand's until set.
+  struct {Shares strings=sharesOf({}),hammers=sharesOf({}),soundboard=sharesOf({}),action=sharesOf({});} share;
   // A strike's partials on each piano before the build combines them, the
   // weights they play at, and its components beside the series (strike()).
-  std::array<std::array<PartialData,2*maxPartials>,2> seriesData{};
-  std::array<std::array<double,2*maxPartials>,2> seriesWeight{};
+  std::array<std::array<PartialData,2*maxPartials>,pianoCount> seriesData{};
+  std::array<std::array<double,2*maxPartials>,pianoCount> seriesWeight{};
   struct Component {double frequency=0,order=0;LaneData lane{};};
   std::array<Component,maxExtras> components{};
   // Every piano's measured lanes' caches (see LaneCache), filled at construction.
@@ -757,21 +820,28 @@ struct Engine::Impl {
   // Frequencies follow tuning and bends from the next chunk boundary, so the
   // exact state is never advanced with a rotation that was not used.
   void retune(int ch) noexcept {for(auto& voice:voices)if(voice.active&&voice.channel==ch)voice.retune=true;}
+  // The share of a part's build from the pianos that `has` something.
+  template<class Has> double shareWith(const Shares& part,const Has& has) const noexcept {
+    double sum=0;
+    for(int p=0;p<pianoCount;++p)if(has(models[p]))sum+=part[p];
+    return sum;
+  }
   // A key's fundamental and stiffness on the built strings.
   double builtPitch(int note) const noexcept {
-    return pickLog(keyPitch(models[0],note),keyPitch(models[1],note),parameters.build.strings);
+    return fold(share.strings,[&](int p){return keyPitch(models[p],note);},pickLog);
   }
   double builtStiffness(int note) const noexcept {
-    return pickLog(keyStiffness(models[0],note),keyStiffness(models[1],note),parameters.build.strings)
+    return fold(share.strings,[&](int p){return keyStiffness(models[p],note);},pickLog)
            *std::pow(4.,static_cast<double>(parameters.build.stiffness));
   }
   // A partial's tuning (cents from the stiff series) on the built strings as
   // a strike plays it: between the recorded pitches around the key where both
-  // measure its order, else the one that does, then between the pianos by the
-  // strings' build; none where neither piano measures it.
+  // measure its order, else the one that does, then between the pianos that
+  // measure it by the strings' build; where none of those does, the first
+  // piano that measures it, and none where no piano does.
   double builtCents(int note,int order) const noexcept {
-    double cents[2]{};bool has[2]{};
-    for(int p=0;p<2;++p){const Model& m=models[p];const int upper=upperAnchor(m,note);
+    double cents[pianoCount]{};bool has[pianoCount]{};
+    for(int p=0;p<pianoCount;++p){const Model& m=models[p];const int upper=upperAnchor(m,note);
       const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
       const auto find=[&](const measured::Anchor& x,double& c){
         for(int i=x.first;i<x.first+x.count&&m.partials[i].order<=order;++i)
@@ -781,46 +851,57 @@ struct Engine::Impl {
       const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
       has[p]=inA||inB;cents[p]=inA&&inB?mix(ca,cb,t):inA?ca:cb;
     }
-    if(has[0]&&has[1])return pick(cents[0],cents[1],parameters.build.strings);
-    return has[0]?cents[0]:cents[1];
+    const Shares measuring=among(share.strings,[&](int p){return has[p];});
+    for(int p=0;p<pianoCount;++p)if(measuring[p]>0)return fold(measuring,[&](int q){return cents[q];},pick);
+    for(int p=0;p<pianoCount;++p)if(has[p])return cents[p];
+    return 0;
   }
-  // The built piano's parts that ring between strikes, from the two pianos'
-  // by the build: the undamped strings by the strings', the body's modes (the
-  // two pianos' lowest with lowest, those only one has fading with its
-  // share) and the board's noise by the soundboard's, the action's rise by
-  // the action's; and the tube's level by the hammers', which mix the
-  // partials' levels. Then their sample-rate coefficients follow (prepare()).
+  // The built piano's parts that ring between strikes, from the pianos' by
+  // the build: the undamped strings by the strings', the body's modes (the
+  // pianos' lowest with lowest, those only some have from those alone, fading
+  // with their share at a knock) and the board's noise by the soundboard's,
+  // the action's rise by the action's; and the tube's level by the hammers',
+  // which mix the partials' levels. Then their sample-rate coefficients
+  // follow (prepare()).
   void assemble() noexcept {
-    const Model& g=models[0];const Model& u=models[1];const Build& build=parameters.build;
-    const double s=build.strings,b=build.soundboard,ring=std::pow(2.,-static_cast<double>(build.ring));
-    for(int j=0;j<halo;++j){const auto& x=g.haloStrings[j];const auto& y=u.haloStrings[j];auto& z=haloString[j];
-      z.cents=static_cast<float>(pick(x.cents,y.cents,s));
-      z.rate=static_cast<float>(pickLog(x.rate,y.rate,s)*ring);
-      z.promptDb=static_cast<float>(pick(x.promptDb,y.promptDb,s));
-      const Pickup p=blendPickup({x.left,x.rightRe,x.rightIm},{y.left,y.rightRe,y.rightIm},s);
+    const Build& build=parameters.build;const double ring=std::pow(2.,-static_cast<double>(build.ring));
+    const auto pickupOf=[](const auto& x){return Pickup{x.left,x.rightRe,x.rightIm};};
+    for(int j=0;j<halo;++j){auto& z=haloString[j];
+      const auto at=[&](int p)->const measured::HaloString&{return models[p].haloStrings[j];};
+      z.cents=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).cents);},pick));
+      z.rate=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).rate);},pickLog)*ring);
+      z.promptDb=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).promptDb);},pick));
+      const Pickup p=fold(share.strings,[&](int q){return pickupOf(at(q));},blendPickup);
       z.left=static_cast<float>(p.left);z.rightRe=static_cast<float>(p.rightRe);z.rightIm=static_cast<float>(p.rightIm);
     }
-    haloPromptRate=pickLog(g.haloPromptRate,u.haloPromptRate,s)*ring;
-    bodyModeCount=b<=0?g.bodyModeCount:b>=1?u.bodyModeCount:std::max(g.bodyModeCount,u.bodyModeCount);
-    const int shared=std::min(g.bodyModeCount,u.bodyModeCount);
+    haloPromptRate=fold(share.strings,[&](int p){return static_cast<double>(models[p].haloPromptRate);},pickLog)*ring;
+    bodyModeCount=0;
+    for(int p=0;p<pianoCount;++p)if(share.soundboard[p]>0)bodyModeCount=std::max(bodyModeCount,models[p].bodyModeCount);
     for(int k=0;k<bodyModeCount;++k){
-      if(k>=shared){bodyMode[k]=(g.bodyModeCount>k?g:u).bodyModes[k];continue;}
-      const auto& x=g.bodyModes[k];const auto& y=u.bodyModes[k];auto& z=bodyMode[k];
-      z.hz=static_cast<float>(pickLog(x.hz,y.hz,b));z.rate=static_cast<float>(pickLog(x.rate,y.rate,b));
-      z.slowRate=static_cast<float>(pickLog(x.slowRate,y.slowRate,b));
-      const Pickup p=blendPickup({x.left,x.rightRe,x.rightIm},{y.left,y.rightRe,y.rightIm},b);
+      const Shares w=among(share.soundboard,[&](int p){return models[p].bodyModeCount>k;});
+      const auto at=[&](int p)->const measured::BodyMode&{return models[p].bodyModes[k];};
+      int pianos=0,first=0;
+      for(int p=pianoCount-1;p>=0;--p)if(w[p]>0){first=p;++pianos;}
+      if(pianos==1){bodyMode[k]=at(first);continue;}
+      auto& z=bodyMode[k];
+      z.hz=static_cast<float>(fold(w,[&](int p){return static_cast<double>(at(p).hz);},pickLog));
+      z.rate=static_cast<float>(fold(w,[&](int p){return static_cast<double>(at(p).rate);},pickLog));
+      z.slowRate=static_cast<float>(fold(w,[&](int p){return static_cast<double>(at(p).slowRate);},pickLog));
+      const Pickup p=fold(w,[&](int q){return pickupOf(at(q));},blendPickup);
       z.left=static_cast<float>(p.left);z.rightRe=static_cast<float>(p.rightRe);z.rightIm=static_cast<float>(p.rightIm);
     }
-    bodyRise=pickLog(g.bodyRise,u.bodyRise,b);actionRise=pickLog(g.actionRise,u.actionRise,build.action);
-    actionDecay=pickLog(g.actionDecay,u.actionDecay,build.action);
-    tubeScale=pickLog(g.tubeScale,u.tubeScale,build.hammers);
+    bodyRise=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].bodyRise);},pickLog);
+    actionRise=fold(share.action,[&](int p){return static_cast<double>(models[p].actionRise);},pickLog);
+    actionDecay=fold(share.action,[&](int p){return static_cast<double>(models[p].actionDecay);},pickLog);
+    tubeScale=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
-    for(int k=0;k<noiseBands;++k)coherence[k]=pick(g.noiseBands[k].coherence,u.noiseBands[k].coherence,b);
+    for(int k=0;k<noiseBands;++k)
+      coherence[k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].noiseBands[k].coherence);},pick);
     for(int j=0;j<halo;++j)haloHz[j]=builtPitch(firstHalo+j)*std::pow(2.,haloString[j].cents/1200);
     // The open strings are the keys' own: each partial where a strike of its
     // key plays it, decaying as the grand's pedal-down take measures the
-    // strings it frees (MeasuredModalData.h). The upright has no pedal
-    // recordings, and its strings ring on at the same rates.
+    // strings it frees (MeasuredModalData.h). Only the grand's recordings
+    // hold the pedal, and every other piano's strings ring on at its rates.
     for(int i=0;i<damped;++i){const int note=i+21;const double f1=builtPitch(note),B=builtStiffness(note);
       for(int n=1;n<=openPartials;++n){const int k=i*openPartials+n-1;
         openHz[k]=n*f1*std::sqrt((1+B*n*n)/(1+B))*std::pow(2.,builtCents(note,n)/1200);
@@ -1181,22 +1262,25 @@ struct Engine::Impl {
     }
     bodyContact=contact;
   }
-  // A body mode's level (dB) and phase between two pianos' at a part's build
+  // A body mode's level (dB) and phase on the built piano at a part's shares
   // w, each piano's from get(p, level, phase) for its first counts[p] modes:
-  // the powers mixed and the nearer piano's phase where both have the mode;
-  // where one does, its own, fading with its share of the build in power.
-  // False where the build plays the mode from neither. The two pianos' k-th
-  // modes are not one mode of one board, and their strongest lie at
-  // different k: mixed in dB, a soft top note's knock, nearly all body, sat
-  // 4 dB under both pianos at the halfway build.
-  template<class Get> static bool betweenPianos(double w,int k,const int (&counts)[2],const Get& get,double& level,double& phase) noexcept {
-    const bool has[2]={k<counts[0]&&w<1,k<counts[1]&&w>0};
-    double l[2]{},ph[2]{};
-    for(int p=0;p<2;++p)if(has[p])get(p,l[p],ph[p]);
-    if(has[0]&&has[1]){level=10*std::log10(mix(std::pow(10.,l[0]/10),std::pow(10.,l[1]/10),w));phase=w<.5?ph[0]:ph[1];return true;}
-    if(!has[0]&&!has[1])return false;
-    const int p=has[0]?0:1;
-    level=l[p]+10*std::log10(p?w:1-w);phase=ph[p];
+  // the powers of the pianos that have the mode mixed by their shares, and
+  // the phase of the one with the largest; the mix fading with their share
+  // of the build in power where not every piano has it. False where the
+  // build plays the mode from none. The pianos' k-th modes are not one mode
+  // of one board, and their strongest lie at different k: mixed in dB, a
+  // soft top note's knock, nearly all body, sat 4 dB under both pianos at
+  // the halfway build.
+  template<class Get> static bool betweenPianos(const Shares& w,int k,const int (&counts)[pianoCount],const Get& get,double& level,double& phase) noexcept {
+    double power=0,total=0,top=0;int pianos=0;
+    for(int p=0;p<pianoCount;++p){if(!(k<counts[p]&&w[p]>0))continue;
+      double l=0,ph=0;get(p,l,ph);
+      if(pianos++){total+=w[p];power=mix(power,std::pow(10.,l/10),w[p]/total);}
+      else{total=w[p];power=std::pow(10.,l/10);level=l;}
+      if(w[p]>=top){top=w[p];phase=ph;}
+    }
+    if(!pianos)return false;
+    level=pianos==1?level+10*std::log10(total):10*std::log10(power*total);
     return true;
   }
   // One piano's partials for a strike, into seriesData[p] and
@@ -1236,16 +1320,16 @@ struct Engine::Impl {
     auto& voice=*chosen;voice.active=true;voice.note=note;voice.channel=ch;
     voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
-    // The soft pedal works through the action. The grand's shifts the hammers
-    // so that each meets fewer strings (una corda: `soft` below). The
+    // The soft pedal works through the action. A grand's shifts the hammers
+    // so that each meets fewer strings (una corda: `soft` below). An
     // upright's moves them toward the strings (half-blow): at full pedal a
     // hammer starts halfway there, and thrown as hard by the key it meets
     // them sqrt(1/2) as fast, accelerating over half the distance, so it
     // plays as that slower strike and changes nothing else. Between the two
     // by the action's build.
     const double pedal=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
-    const double soft=pedal*(1-parameters.build.action);
-    const double hammer=bounded(velocity)*std::sqrt(1-.5*pedal*parameters.build.action);
+    const double soft=pedal*shareWith(share.action,[](const Model& m){return m.unaCorda;});
+    const double hammer=bounded(velocity)*std::sqrt(1-.5*pedal*shareWith(share.action,[](const Model& m){return !m.unaCorda;}));
     // A strike plays at a recording-layer coordinate, not measured hammer
     // speed: the shared response's for its MIDI velocity, or for a
     // measurement the velocity itself. No two strikes land alike: each moves
@@ -1254,9 +1338,11 @@ struct Engine::Impl {
     double draw=0;
     for(int k=0;k<4;++k){touch^=touch<<13;touch^=touch>>17;touch^=touch<<5;draw+=touch*(1./4294967296.)-.5;}
     const Build& build=parameters.build;
-    const double s=build.strings,h=build.hammers,board=build.soundboard;
-    Side sides[2];
-    for(int p=0;p<2;++p){auto& x=sides[p];const Model& m=models[p];x.m=&m;
+    const Shares &strings=share.strings,&hammers=share.hammers,&board=share.soundboard;
+    // Every piano's, so that a key let go knocks as its strike played on
+    // whichever pianos the action's build holds then.
+    Side sides[pianoCount];
+    for(int p=0;p<pianoCount;++p){auto& x=sides[p];const Model& m=models[p];x.m=&m;
       x.v=steady?std::max(1.,127.*hammer)
                 :layerAt(m,responseDb(127*hammer)+touchSpreadDb*std::sqrt(3.)*draw);
       channel.velocity[p][note-21]=static_cast<float>(x.v/127);
@@ -1274,18 +1360,19 @@ struct Engine::Impl {
     channel.struck[note-21]=clock;
     const double f1=builtPitch(note),B=builtStiffness(note);
     const double highest=std::min(17000.,sampleRate*.43);
-    const double shortestRise=pickLog(sides[0].shortestRise,sides[1].shortestRise,h);
+    const double shortestRise=fold(hammers,[&](int p){return sides[p].shortestRise;},pickLog);
     const double ratio=tuningRatio(ch);
     const double softGain=1-.28*soft;
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
-    const double colourDb=pick(sides[0].colourDb,sides[1].colourDb,h);
+    const double colourDb=fold(hammers,[&](int p){return sides[p].colourDb;},pick);
     const auto colour=[colourDb](double order){return std::pow(10.,colourDb*std::min(4.,std::log2(order))/20);};
     double plain=0,coloured=0; // the strike's energy without and with its colour
     // The body's knock: on each piano, levels between the two pitches like the
     // partials', growing with the level the strike's layer plays at, phases
     // from the nearer pitch; between the pianos by the soundboard's build.
-    const int modes[2]={models[0].bodyModeCount,models[1].bodyModeCount};
+    int modes[pianoCount];
+    for(int p=0;p<pianoCount;++p)modes[p]=models[p].bodyModeCount;
     for(int k=0;k<bodyModeCount;++k){
       Complex stage[2]{};
       for(int late=0;late<2;++late){double level=0,phase=0;
@@ -1308,8 +1395,8 @@ struct Engine::Impl {
     // The key landing on the keybed knocks the body's modes as its return
     // does, growing with the strike's layer, but as an impact, with the
     // strike: under the body's rise rather than the release's slower build.
-    ActionSide keys[2];
-    for(int p=0;p<2;++p){const auto& x=sides[p];const Model& m=*x.m;
+    ActionSide keys[pianoCount];
+    for(int p=0;p<pianoCount;++p){const auto& x=sides[p];const Model& m=*x.m;
       keys[p]={m.releaseKnocks+(x.upper-1)*m.bodyModeCount,m.releaseKnocks+x.upper*m.bodyModeCount,x.t,
                m.keyDownDb+x.layerDb+x.scaleDb,m.bodyModeCount};}
     actionKnock(keys,true);
@@ -1325,12 +1412,12 @@ struct Engine::Impl {
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
       if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
       const double order=std::max(1.,haloHz[j]/f1);
-      double level[2]{};
-      for(int p=0;p<2;++p){if(p?h<=0:h>=1)continue;
+      double level[pianoCount]{};
+      for(int p=0;p<pianoCount;++p){if(!(hammers[p]>0))continue;
         const auto& x=sides[p];const Model& m=*x.m;
         level[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)
                  +(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*x.layerDb+x.scaleDb;}
-      const double amplitude=std::pow(10.,pick(level[0],level[1],h)/20)*softGain*std::exp(-soft*.115*(order-1))
+      const double amplitude=std::pow(10.,fold(hammers,[&](int p){return level[p];},pick)/20)*softGain*std::exp(-soft*.115*(order-1))
                              *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);
       auto& string=haloRing[j];string.q+=amplitude*std::cos(phase);string.p+=amplitude*std::sin(phase);
@@ -1346,8 +1433,9 @@ struct Engine::Impl {
     // falling at its pitch's own rate.
     auto& burst=claimBurst();
     for(int k=0;k<noiseBands;++k){
-      double density[2]{},slow[2]{},balance[2]{},rate[2]{},slowRate[2]{},knock[2]{},knockBalance[2]{},knockRate[2]{};
-      for(int p=0;p<2;++p){if(p?board<=0:board>=1)continue;
+      double density[pianoCount]{},slow[pianoCount]{},balance[pianoCount]{},rate[pianoCount]{},slowRate[pianoCount]{},
+             knock[pianoCount]{},knockBalance[pianoCount]{},knockRate[pianoCount]{};
+      for(int p=0;p<pianoCount;++p){if(!(board[p]>0))continue;
         const auto& x=sides[p];const Model& m=*x.m;
         const auto& a=m.noise[(x.upper-1)*noiseBands+k];const auto& b=m.noise[x.upper*noiseBands+k];
         density[p]=mix(levelAt(m,a.densityDb.data(),x.v),levelAt(m,b.densityDb.data(),x.v),x.t)+x.scaleDb;
@@ -1361,35 +1449,45 @@ struct Engine::Impl {
       const double order=std::max(1.,grand::noiseBands[k].hz/f1);
       const double tint=noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
                         *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
-      const double amplitude=std::pow(10.,pick(density[0],density[1],board)/20)*tint,late=pick(slow[0],slow[1],board)*tint;
-      const double tilt=pick(balance[0],balance[1],board),left=std::pow(10.,-tilt/40),right=std::pow(10.,tilt/40);
+      const auto built=[&](const double (&x)[pianoCount]){return fold(board,[&](int p){return x[p];},pick);};
+      const double amplitude=std::pow(10.,built(density)/20)*tint,late=built(slow)*tint;
+      const double tilt=built(balance),left=std::pow(10.,-tilt/40),right=std::pow(10.,tilt/40);
       // The tables' silent stages (-200 dB) start under -180 dB, as a burst
       // ends: at none, so that a band nothing sounds is left unfiltered.
       const auto heard=[](double x){return x<1e-9?0.:x;};
       burst.left[k]=heard(amplitude*left);burst.right[k]=heard(amplitude*right);
-      burst.step[k]=std::exp(-std::exp(pick(rate[0],rate[1],board))*chunk/sampleRate);
+      burst.step[k]=std::exp(-std::exp(built(rate))*chunk/sampleRate);
       burst.slowLeft[k]=heard(late*left);burst.slowRight[k]=heard(late*right);
-      burst.slowStep[k]=std::exp(-std::exp(pick(slowRate[0],slowRate[1],board))*chunk/sampleRate);
-      const double struck=std::pow(10.,pick(knock[0],knock[1],board)/20)*tint,knockTilt=pick(knockBalance[0],knockBalance[1],board);
+      burst.slowStep[k]=std::exp(-std::exp(built(slowRate))*chunk/sampleRate);
+      const double struck=std::pow(10.,built(knock)/20)*tint,knockTilt=built(knockBalance);
       burst.knockLeft[k]=heard(struck*std::pow(10.,-knockTilt/40));burst.knockRight[k]=heard(struck*std::pow(10.,knockTilt/40));
-      burst.knockStep[k]=std::exp(-std::exp(pick(knockRate[0],knockRate[1],board))*chunk/sampleRate);
+      burst.knockStep[k]=std::exp(-std::exp(built(knockRate))*chunk/sampleRate);
     }
     burst.active=true;burst.serial=serial;hissing=true;
     // The partials: each piano's in order, combined order by order by the
-    // strings' and the hammers' builds; one only one piano has plays at its
-    // share of the hammers' in power, as the components beside the series do,
-    // so the halfway build sounds about as loud as either piano. The modifiers
-    // then stretch the unisons and the ring.
-    const int count[2]={s<1||h<1?series(sides[0],0):0,s>0||h>0?series(sides[1],1):0};
+    // strings' and the hammers' builds, two at a time in the pianos' order as
+    // fold() mixes; one only some pianos have plays at their share of the
+    // hammers' in power, as the components beside the series do, so the
+    // halfway build sounds about as loud as either piano. The modifiers then
+    // stretch the unisons and the ring.
+    int count[pianoCount]{},next[pianoCount]{};
+    for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p):0;
     const double ring=-static_cast<double>(build.ring)*std::log(2.);
     const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
-    int i=0,j=0;
-    while((i<count[0]||j<count[1])&&voice.count<maxPartials){
-      const int og=i<count[0]?seriesData[0][i].order:1<<30,ou=j<count[1]?seriesData[1][j].order:1<<30;
-      PartialData d;double weight=1;
-      if(og==ou){d=combine(seriesData[0][i],seriesData[1][j],s,h);weight=pick(seriesWeight[0][i],seriesWeight[1][j],h);++i;++j;}
-      else if(og<ou){d=seriesData[0][i];weight=seriesWeight[0][i]*std::sqrt(1-h);++i;}
-      else{d=seriesData[1][j];weight=seriesWeight[1][j]*std::sqrt(h);++j;}
+    while(voice.count<maxPartials){
+      int lowest=1<<30;
+      for(int p=0;p<pianoCount;++p)if(next[p]<count[p])lowest=std::min(lowest,seriesData[p][next[p]].order);
+      if(lowest==1<<30)break;
+      PartialData d;double weight=0,stringsTotal=0,hammersTotal=0;bool any=false;
+      for(int p=0;p<pianoCount;++p){
+        if(!(next[p]<count[p]&&seriesData[p][next[p]].order==lowest))continue;
+        const auto& x=seriesData[p][next[p]];const double w=seriesWeight[p][next[p]];++next[p];
+        if(!any){d=x;weight=w;stringsTotal=strings[p];hammersTotal=hammers[p];any=true;continue;}
+        stringsTotal+=strings[p];hammersTotal+=hammers[p];
+        const double ts=stringsTotal>0?strings[p]/stringsTotal:0,th=hammersTotal>0?hammers[p]/hammersTotal:0;
+        d=combine(d,x,ts,th);weight=pick(weight,w,th);
+      }
+      weight*=std::sqrt(hammersTotal);
       if(weight<=0)continue;
       const int order=d.order;
       const double frequency=order*f1*std::sqrt((1+B*order*order)/(1+B))*std::pow(2.,d.cents/1200);
@@ -1418,9 +1516,8 @@ struct Engine::Impl {
       // The hammer stays on the string a while; where a piano measures that
       // time (Model::contactTime), no partial of its rises slower.
       const double rise=std::exp(d.rise);
-      const double capped[2]={sides[0].contact>0?std::min(rise,sides[0].contact):rise,
-                              sides[1].contact>0?std::min(rise,sides[1].contact):rise};
-      launch(voice,partial,legacyAttack?.002:std::max(pickLog(capped[0],capped[1],h),shortestRise),ahead,ratio);
+      const double capped=fold(hammers,[&](int p){return sides[p].contact>0?std::min(rise,sides[p].contact):rise;},pickLog);
+      launch(voice,partial,legacyAttack?.002:std::max(capped,shortestRise),ahead,ratio);
       const double c=colour(order);
       for(int k=0;k<lanes;++k){const double e=partial.energyWeight[k]/(1-partial.decay[k]*partial.decay[k]);coloured+=e;plain+=e/(c*c);}
       ++voice.count;
@@ -1461,14 +1558,14 @@ struct Engine::Impl {
     const auto place=[&](const measured::Extra& e){
       const double n=e.order;return n*f1*std::sqrt((1+B*n*n)/(1+B))*std::pow(2.,e.cents/1200);};
     int found=0;
-    for(int p=0;p<2;++p){const double piano=p?h:1-h;if(piano<=0)continue;
+    for(int p=0;p<pianoCount;++p){const double piano=hammers[p];if(piano<=0)continue;
       const auto& x=sides[p];const Model& m=*x.m;
-      const double share[2]={std::sqrt((1-x.t)*piano),std::sqrt(x.t*piano)};
+      const double pitchShare[2]={std::sqrt((1-x.t)*piano),std::sqrt(x.t*piano)};
       for(int q=0;q<2;++q){const auto& anchor=q?*x.b:*x.a;
         for(int e=anchor.extraFirst;e<anchor.extraFirst+anchor.extraCount;++e){
           const auto& extra=m.extras[e];const double frequency=place(extra);
-          if(share[q]<=0||frequency>highest)continue;
-          LaneData l=laneAt(m,extra.lane,extraLanes[m.extraFirst+e],x.v);l.level+=20*std::log10(share[q])+x.scaleDb;
+          if(pitchShare[q]<=0||frequency>highest)continue;
+          LaneData l=laneAt(m,extra.lane,extraLanes[m.extraFirst+e],x.v);l.level+=20*std::log10(pitchShare[q])+x.scaleDb;
           int at=found++;
           while(at>0&&components[at-1].frequency>frequency){components[at]=components[at-1];--at;}
           components[at]={frequency,static_cast<double>(extra.order),l};
@@ -1542,13 +1639,14 @@ struct Engine::Impl {
   // pianos by the action's build, ringing at the action's decay. It builds
   // up under the action's rise, or, `struck` with a strike, under the
   // body's as the strike's knock does.
-  void actionKnock(const ActionSide (&side)[2],bool struck=false) noexcept {
+  void actionKnock(const ActionSide (&side)[pianoCount],bool struck=false) noexcept {
     if(!(parameters.mechanics>0))return;
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
-    const int counts[2]={side[0].count,side[1].count};
+    int counts[pianoCount];
+    for(int p=0;p<pianoCount;++p)counts[p]=side[p].count;
     bool any=false;
     for(int k=0;k<bodyModeCount;++k){double level=0,phase=0;
-      if(!betweenPianos(parameters.build.action,k,counts,[&](int p,double& l,double& ph){const auto& x=side[p];
+      if(!betweenPianos(share.action,k,counts,[&](int p,double& l,double& ph){const auto& x=side[p];
            l=mix(x.x[k].levelDb,x.y[k].levelDb,x.t)+x.gainDb;ph=x.t<.5?x.x[k].phase:x.y[k].phase;},level,phase))continue;
       const double amplitude=parameters.mechanics*std::pow(10.,level/20);
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
@@ -1568,8 +1666,8 @@ struct Engine::Impl {
     const auto& channel=channels[ch];const int key=note-21;
     if(note<89&&(channel.captured[key]||pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])>=pedalClear))return;
     const double held=static_cast<double>(clock-channel.struck[key])/sampleRate;
-    ActionSide sides[2];
-    for(int p=0;p<2;++p){const Model& m=models[p];const double v=channel.velocity[p][key];
+    ActionSide sides[pianoCount];
+    for(int p=0;p<pianoCount;++p){const Model& m=models[p];const double v=channel.velocity[p][key];
       const int upper=upperAnchor(m,note);
       const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
       const auto* x=m.releaseKnocks+(upper-1)*m.bodyModeCount;
@@ -1587,8 +1685,8 @@ struct Engine::Impl {
     for(const auto& c:channels)level=std::max(level,pedalLevel(parameters.sustain,c.sustain,c.keySwitches[2]));
     const bool held=level>=pedalClear||(pedalHeld&&level>pedalRest);
     if(audible&&held!=pedalHeld){
-      ActionSide sides[2];
-      for(int p=0;p<2;++p){const Model& m=models[p];const auto* k=held?m.pedalDown:m.pedalUp;
+      ActionSide sides[pianoCount];
+      for(int p=0;p<pianoCount;++p){const Model& m=models[p];const auto* k=held?m.pedalDown:m.pedalUp;
         if(k)sides[p]={k,k,0,(held?m.pedalDownDb:m.pedalUpDb)+20*std::log10(m.outputScale),m.bodyModeCount};}
       actionKnock(sides);
       if(held)liftDampers();
@@ -1599,16 +1697,17 @@ struct Engine::Impl {
   // grand's pedal-down take shows: each partial starts at its band's level
   // (MeasuredModalData.h, in the take's scale), set against the notes as the
   // pedal's knock is, and at the share of the grand's pedal the action's
-  // build plays (the upright has no pedal recordings). The Resonance control
+  // build plays (no other piano's recordings hold the pedal). The Resonance control
   // sets how loud the open strings sound, these with them; at its default
   // they start ringing as the take's do, and fall faster under the felt that
   // full pedal leaves grazing them (dampersLift). The Mechanics control scales
   // them with the pedal's knock. Each partial's phase is fixed by its string
   // and order.
   void liftDampers() noexcept {
-    const Model& g=models[0];const double share=1-parameters.build.action;
-    if(share<=0||!(parameters.mechanics>0))return;
-    const double scale=parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(share)
+    const Model& g=models[static_cast<int>(Piano::grand)];
+    const double grandShare=shareWith(share.action,[&g](const Model& m){return &m==&g;});
+    if(grandShare<=0||!(parameters.mechanics>0))return;
+    const double scale=parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(grandShare)
                        /(Parameters{}.resonance*.35);
     constexpr int bands=static_cast<int>(grand::openStringLiftDb.size());
     for(int i=0;i<damped;++i){
@@ -1810,14 +1909,16 @@ void Engine::setParameters(const Parameters& input) noexcept {
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
   p.parameters.sustain=bounded(input.sustain);p.parameters.sostenuto=bounded(input.sostenuto);
   p.parameters.soft=bounded(input.soft);p.parameters.quality=input.quality;
-  // The parts within the two pianos, the modifiers within their ranges, a
-  // modifier that is not a number left as built.
+  // The parts' weights from 0 to 1, a weight that is not a number none; the
+  // modifiers within their ranges, one that is not a number left as built.
+  const auto weights=[](const Mix& x){Mix w{};for(int k=0;k<pianoCount;++k)w[k]=bounded(x[k]);return w;};
   const auto modifier=[](float x){return x!=x?0.f:bounded(x,-1,1);};
   const Build old=p.parameters.build;auto& build=p.parameters.build;
-  build={bounded(input.build.strings),bounded(input.build.hammers),bounded(input.build.soundboard),bounded(input.build.action),
+  build={weights(input.build.strings),weights(input.build.hammers),weights(input.build.soundboard),weights(input.build.action),
          modifier(input.build.stiffness),modifier(input.build.unisons),modifier(input.build.ring)};
   if(old.strings!=build.strings||old.hammers!=build.hammers||old.soundboard!=build.soundboard||old.action!=build.action
      ||old.stiffness!=build.stiffness||old.unisons!=build.unisons||old.ring!=build.ring){
+    p.share={sharesOf(build.strings),sharesOf(build.hammers),sharesOf(build.soundboard),sharesOf(build.action)};
     p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();}
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
@@ -1890,7 +1991,7 @@ int Engine::outputLatencySamples() const noexcept {return impl->output.DelaySamp
 void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
 float responseVelocity(Piano piano,float velocity) noexcept {
-  return static_cast<float>(responseAt(models[piano==Piano::upright?1:0],127*bounded(velocity)));
+  return static_cast<float>(responseAt(models[static_cast<int>(piano)],127*bounded(velocity)));
 }
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;

@@ -6,6 +6,16 @@
 #include <array>
 #include <atomic>
 
+// The build's four parts, and each one's weight of each measured piano as a
+// plug-in parameter: "<part><n>" for the n-th of keyra::Piano, so that
+// "strings1" is the strings' weight of the Kakegawa grand. A piano added
+// later adds its four weights without changing the others'.
+inline constexpr std::array<const char*, 4> buildParts {{ "strings", "hammers", "soundboard", "action" }};
+inline juce::String weightId(size_t part, size_t piano)
+{
+    return juce::String(buildParts[part]) + juce::String(static_cast<int>(piano) + 1);
+}
+
 class KeyraAudioProcessor final : public juce::AudioProcessor
 {
 public:
@@ -47,7 +57,7 @@ private:
     void dispatch(const juce::MidiMessage&) noexcept;
     void publishPedals() noexcept;
     keyra::Engine engine;
-    std::array<std::atomic<float>*, 20> values {};
+    std::array<std::atomic<float>*, 27> values {};
     bool prepared = false;
     std::atomic<int> currentProgram { 0 };
     struct KeyboardEvent { bool down; int note; float velocity; };

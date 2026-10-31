@@ -27,6 +27,16 @@ measured set by SHA256 and `Tools/decode_helsinki.py` reads it from a copy of
 the library. This attribution does not imply endorsement by the recording
 author.
 
+The Hamamatsu grand is measured the same way from the "Grand Piano, K"
+recordings of the **Versilian Community Sample Library** (VCSL Keys) by
+**Versilian Studios**, dedicated to the public domain under
+[CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/). No
+recording of that library is in this repository or a Keyra build;
+`Tools/corpus/vcsl-kawai.json` pins the measured set by SHA256 and
+`Tools/decode_vcsl.py` reads it from a copy of the library. CC0 asks for no
+attribution; it is given as provenance and does not imply endorsement by the
+library's authors or the instrument's maker.
+
 ## JUCE 8.0.14
 
 The DAW plug-in and standalone application use JUCE, Copyright (c) Raw

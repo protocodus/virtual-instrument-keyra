@@ -88,6 +88,29 @@ MODELS = {
                 'uncalibrated': {}, 'release': 'hammer{note}', 'pedal': (), 'tail_floor': True, 'damper': True,
                 'actions': 'The action\'s knocks on the body modes: the hammer noise the library plays as each '
                            'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
+    'kawai': {'title': 'the VCSL Keys "Grand Piano, K" (Versilian Studios, CC0 1.0)',
+              'corpus': ROOT / 'Tools/corpus/vcsl-kawai.json',
+              'split': ROOT / 'Tools/corpus/split-vcsl-kawai-2026-10-31.json',
+              'wav': ROOT / 'out/vcsl/kawai', 'cache': ROOT / 'out/calibration/kawai',
+              'header': ROOT / 'Source/DSP/MeasuredKawaiData.h',
+              'metadata': ROOT / 'Docs/research/kawai-modal-fit-2026-10-31.json',
+              'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (),
+              # An order counts where two layers find it, not three. The four
+              # layers span 33 dB, and the second softest finds C4's series to
+              # the 15th partial where the two loudest find it to the 29th and
+              # 38th, each on the ladder the orders below predict: asked of
+              # three of the four, those partials, a forte strike's
+              # brilliance, went unplayed.
+              'min_layers': 2,
+              # Its release takes scatter by up to 20 dB between neighbouring
+              # keys (at their 10 ms peaks C4 -39 dBFS, E4 -56, C5 -41, C6
+              # -61) about a fall of 38 dB from A0 to C6; played take by take,
+              # a key let go at C4 knocked 34 dB louder against its note than
+              # one at C6.
+              'release_trend': True,
+              'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
+                         'recorded pitch\'s key is let go (from F6 up, where it plays none, the take of D#6\'s), '
+                         'from one take each in those recordings\' own scale.'},
 }
 # The keys from F6 up have no dampers: every strike sets their strings
 # ringing at their own pitches (halo_data). The analysis also searches the
@@ -127,24 +150,31 @@ def train_anchors(model):
             if note not in model['uncalibrated']}
 
 
-def cache_key(layers) -> str:
+def analysis_options(model) -> dict:
+    """The analysis' settings a model changes from piano_analysis's defaults."""
+    return {k: model[k] for k in ('min_layers',) if k in model}
+
+
+def cache_key(layers, options) -> str:
     h = hashlib.sha256(ANALYSIS.read_bytes())
     for case, velocity, pin in layers:
         h.update(f'{case}:{velocity}:{pin}\n'.encode())
+    for name, value in sorted(options.items()):
+        h.update(f'{name}:{value}\n'.encode())
     return h.hexdigest()
 
 
 def analyse_one(name, note, layers):
     import piano_analysis as pa
     model = MODELS[name]
-    key = cache_key(layers)
+    key = cache_key(layers, analysis_options(model))
     target = model['cache'] / f'{note}.pkl'
     if target.exists():
         with target.open('rb') as f:
             if pickle.load(f).get('cache_key') == key:
                 return note, 'cached'
     result = pa.analyse_anchor([model['wav'] / f'{case}.wav' for case, _, _ in layers], note,
-                               [velocity for _, velocity, _ in layers])
+                               [velocity for _, velocity, _ in layers], **analysis_options(model))
     result['cache_key'] = key
     result['cases'] = [case for case, _, _ in layers]
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -608,17 +638,18 @@ def halo_spectra(result, i, windows, wav):
     """Layer i's stereo spectrum (the recording's units, zero-padded 8 times)
     through each Hann window of `windows` (its centre in seconds after string
     contact, its length in seconds), with its frequencies; (None, None) for a
-    window past the recording's end."""
+    window past where the recording stops (piano_analysis.recorded_end)."""
     import numpy as np
     import piano_analysis as pa
     L = result['layers'][i]
     sr, x = pa.load(wav / f'{result["cases"][i]}.wav')
     contact = L['start'] + L['delay'] * sr
+    end = pa.recorded_end(x, sr, L['start'])
     spectra = []
     for centre, seconds in windows:
         n = int(seconds * sr)
         start = int(round(contact + centre * sr)) - n // 2
-        if start + n > len(x):
+        if start + n > end:
             spectra.append((None, None))
             continue
         w = np.hanning(n)
@@ -704,7 +735,8 @@ def halo_slope_fit(groups, start):
     for every layer (a censored fit, from the slope `start`). Fitted on the
     clear layers alone, with no rise, the slope came out about a quarter too
     shallow, as in soft layers only the strings that ring loudest ring
-    clear."""
+    clear. A layer whose recording stops before its 1 s window (NaN) bounds
+    nothing and is left out."""
     import math
     import numpy as np
     from scipy import optimize, special
@@ -713,6 +745,8 @@ def halo_slope_fit(groups, start):
     o = np.concatenate([np.full(len(v), o) for v, _, _, o in groups])
     y = np.concatenate([y for _, y, _, _ in groups])
     clear = np.concatenate([c for _, _, c, _ in groups])
+    known = np.isfinite(y)
+    g, x, o, y, clear = g[known], x[known], o[known], y[known], clear[known]
     def loss(p):
         spread = math.exp(p[2])
         z = (y - p[3:][g] - (p[0] + p[1] * o) * x) / spread
@@ -747,6 +781,8 @@ def halo_pitches(results, strings, wav):
         ladder = pa.stiff(*series(r), np.arange(1, 400))
         for i in range(len(r['layers'])):
             (f, z), (g, y) = halo_spectra(r, i, [(1.5, 1.0), (1.0, .5)], wav)
+            if z is None or y is None:
+                continue  # a take that stops within 2 s of contact, as the Kawai's soft and gated top notes do
             power = np.mean(np.abs(z) ** 2, axis=1)
             for key in UNDAMPED:
                 span = (f >= strings[key] * 2 ** (-30 / 1200)) & (f <= strings[key] * 2 ** (30 / 1200))
@@ -869,8 +905,10 @@ def halo_data(results, strings, hz, wav, grid, layer_level):
         bounds = m['level'] - (slope + rise * m['octaves'][None, :]) * m['x'][:, None]
         for j in np.flatnonzero(m['apart']):
             rang = m['rang'][:, j]
-            if rang.sum() < 2:
-                level = min(np.median(bounds[~rang, j]) - HALO_HIDDEN, np.min(bounds[~rang, j]))
+            # A layer whose recording stops before its 1 s window bounds nothing.
+            bound = bounds[~rang, j][np.isfinite(bounds[~rang, j])]
+            if rang.sum() < 2 and len(bound):
+                level = min(np.median(bound) - HALO_HIDDEN, np.min(bound))
                 levels[m['anchor'], j], kinds[m['anchor']][j] = level, 'under'
     notes = np.array([r['note'] for r in results], float)
     for j in range(len(keys)):
@@ -918,20 +956,23 @@ def body_late(path, hz, top, contact):
     (dB, channels' mean) every 10 ms over BODY_LATE from string contact
     (`contact`, s into the take), as times and modes x frames, and each mode's
     floor, its band's power over the take's quietest second before the
-    library's fade-out, as the benchmark reads a band's floor, on the
-    envelope's scale (twice the band's mean square). Under 0.8 f1 the take
-    holds none of its note's partials, so it is the residual there, and runs
-    on past the residual's end."""
+    library's fade-out, or its gate, as the benchmark reads a band's floor,
+    on the envelope's scale (twice the band's mean square); no frame lies past
+    the gate (piano_analysis.recorded_end). Under 0.8 f1 the take holds none
+    of its note's partials, so it is the residual there, and runs on past the
+    residual's end."""
     import numpy as np
     from scipy import signal
     import piano_analysis as pa
     sr, x = pa.load(path)
     duration = len(x) / sr
-    end = duration - max(1.0, .25 * duration) if duration > 8 else duration - 1.0
+    stop = pa.recorded_end(x, sr, int(contact * sr)) / sr
+    end = min(duration - max(1.0, .25 * duration) if duration > 8 else duration - 1.0, stop)
     sos = signal.butter(6, [BODY_LOW, BODY_TOP], 'bandpass', fs=sr, output='sos')
     y = signal.resample_poly(signal.sosfiltfilt(sos, x[:max(sr, int(end * sr))], axis=0), BODY_RATE, sr, axis=0)
     y = signal.sosfiltfilt(signal.butter(6, [BODY_LOW, top], 'bandpass', fs=BODY_RATE, output='sos'), y, axis=0)
-    frames = np.arange(int((contact + BODY_LATE[0]) * BODY_RATE), min(len(y), int((contact + BODY_LATE[1]) * BODY_RATE)),
+    frames = np.arange(int((contact + BODY_LATE[0]) * BODY_RATE),
+                       min(len(y), int((contact + BODY_LATE[1]) * BODY_RATE), int(stop * BODY_RATE)),
                        BODY_RATE // 100)
     floors, late = [], []
     for fm in hz:
@@ -1283,6 +1324,25 @@ def action_fit(y, design, shapes, ridge=1e-3):
     return levels, float(np.sum((y - A @ c) ** 2) / np.sum(y ** 2))
 
 
+def release_trend(notes, releases, signals):
+    """The release knocks with each take's total level (its modes' power,
+    dB) moved onto the Theil-Sen line through the distinct takes' totals over
+    the keyboard, so a key let go plays the keyboard's trend in the take's
+    own modes (MODELS: release_trend), and that line."""
+    import numpy as np
+    from scipy import stats
+    totals = np.array([10 * np.log10(sum(10 ** (k['level_db'] / 10) for k in row)) for row in releases])
+    first = {}
+    for i, y in enumerate(signals):
+        first.setdefault(y.tobytes(), i)
+    own = sorted(first.values())
+    slope, intercept, _, _ = stats.theilslopes(totals[own], np.asarray(notes, float)[own])
+    moved = [[k | {'level_db': float(k['level_db'] + intercept + slope * note - total)} for k in row]
+             for row, note, total in zip(releases, notes, totals)]
+    return moved, {'db_per_key': float(slope), 'c4_db': float(intercept + 60 * slope),
+                   'scatter_db': float(np.median(np.abs(totals[own] - intercept - slope * np.asarray(notes)[own])))}
+
+
 def action_data(model, notes, hz, rates, shapes):
     """The anchors' key releases and, where the corpus records it, the pedal's
     down and up as knocks (MODELS): their shared rise (s) and decay (times the
@@ -1295,11 +1355,14 @@ def action_data(model, notes, hz, rates, shapes):
     if any(roles.get(name) != 'train' for name in names):
         raise SystemExit('the action knocks are fitted on train recordings only')
     signals = [action_signal(model['wav'] / f'{name}.wav') for name in names]
+    # A take several anchors share (the Kawai's undamped keys carry D#6's)
+    # weighs once in the shared rise and decay.
+    distinct = list({y.tobytes(): y for y in signals}.values())
     waves = action_waves(max(len(y) for y in signals), hz)
     rises = np.geomspace(.005, .3, 25)
     first, last, step = ACTION_DECAYS
     decays = first + step * np.arange(round((last - first) / step) + 1)
-    trials = [(float(np.mean([action_fit(y, design, shapes)[1] for y in signals])), decay, rise)
+    trials = [(float(np.mean([action_fit(y, design, shapes)[1] for y in distinct])), decay, rise)
               for decay in decays for rise in rises
               for design in [action_design(waves, decay * np.asarray(rates), rise)]]
     _, decay, rise = min(trials, key=lambda trial: trial[0])
@@ -1309,6 +1372,8 @@ def action_data(model, notes, hz, rates, shapes):
                for level in levels] for levels, _ in fits]
     out = {'rise': float(rise), 'decay': float(round(decay, 6)), 'releases': knocks[:len(notes)], 'cases': names,
            'unexplained': [round(u, 3) for _, u in fits]}
+    if model.get('release_trend'):
+        out['releases'], out['release_trend'] = release_trend(notes, out['releases'], signals[:len(notes)])
     if model['pedal']:
         out.update({'pedal_down': knocks[len(notes)], 'pedal_up': knocks[len(notes) + 1]})
     return out
@@ -2265,7 +2330,7 @@ def generate(model):
             raise SystemExit(f'anchor {note} is not analysed: run with --analyse first')
         with target.open('rb') as f:
             result = pickle.load(f)
-        if result.get('cache_key') != cache_key(layers):
+        if result.get('cache_key') != cache_key(layers, analysis_options(model)):
             raise SystemExit(f'anchor {note} was analysed from other inputs: run with --analyse')
         results.append(result)
     strings = string_pitches({r['note']: series(r)[0] for r in results})
@@ -2419,7 +2484,9 @@ def generate(model):
                  'layer_rise_ms': {str(note): [round(1000 * r, 3) for r in rises]
                                    for note, rises in body['layer_rises'].items()}},
         'action': {'cases': action['cases'], 'rise_ms': round(1000 * action['rise'], 3), 'decay': action['decay'],
-                   'unexplained': dict(zip(action['cases'], action['unexplained']))},
+                   'unexplained': dict(zip(action['cases'], action['unexplained']))}
+                  | ({'release_trend': {k: round(v, 3) for k, v in action['release_trend'].items()}}
+                     if 'release_trend' in action else {}),
         **({'damper': {'share_db': round(damper['law'][0], 3), 'share_db_per_octave': round(damper['law'][1], 3),
                        'slow_rate_per_s': round(math.exp(damper['law'][2]), 4),
                        'slow_rate_ratio_per_octave': round(math.exp(damper['law'][3]), 4),

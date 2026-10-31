@@ -58,18 +58,21 @@ private:
     void handleNoteOn(juce::MidiKeyboardState*, int, int note, float velocity) override;
     void handleNoteOff(juce::MidiKeyboardState*, int, int note, float) override;
     void showBuild(bool);
-    float value(const char* id) const;
+    juce::String pianoName() const;
     KeyraAudioProcessor& processor;
     KeyraLookAndFeel look;
-    juce::ComboBox program, piano, quality;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> pianoAttachment, qualityAttachment;
+    juce::ComboBox program, quality;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> qualityAttachment;
     std::array<juce::Slider, 11> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
     std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 11> attachments;
     KeyraTab voicingTab { "VOICING" }, buildTab { "BUILD" };
-    std::array<juce::Slider, 7> build; // keyra::buildToward's order
-    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 7> buildAttachments;
-    bool upright = false;
+    // The build view: each part's weight of each piano (weightId), part by
+    // part, and the three modifiers.
+    std::array<juce::Slider, buildParts.size() * keyra::pianoCount> weights;
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, buildParts.size() * keyra::pianoCount> weightAttachments;
+    std::array<juce::Slider, 3> modifiers;
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 3> modifierAttachments;
     juce::MidiKeyboardState keyboardState;
     juce::MidiKeyboardComponent keyboard { keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard };
     juce::TooltipWindow tooltips { this, 750 };

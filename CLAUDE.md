@@ -245,9 +245,11 @@ hashes. No recorded waveform or impulse response is loaded by the instrument.
 The owner's standing rule (2026-10-29): keep benchmarking and tuning against
 the real recordings. Every audible engine change runs
 `Tools/benchmark_recordings.py` against the shipping engine before it ships,
-the grand on Salamander (`Tools/fetch_salamander.py`) and, with
-`--model upright`, the upright on the Helsinki 1967 recordings
-(`Tools/decode_helsinki.py`, from the owner's copy of the library). Report the
+the grand on Salamander (`Tools/fetch_salamander.py`), with
+`--model upright` the upright on the Helsinki 1967 recordings
+(`Tools/decode_helsinki.py`, from the owner's copy of the library) and, with
+`--model kawai`, the Hamamatsu grand on VCSL Keys' Grand Piano K
+(`Tools/decode_vcsl.py`, from a copy of the CC0 library). Report the
 movement with the change; where the owner chooses by ear against the
 recordings, record both. When a piano's recordings are not in the session,
 ask the owner for them rather than ship that piano's change unmeasured.

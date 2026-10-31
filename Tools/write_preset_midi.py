@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """Write the committed per-preset demo phrases, Docs/audio/midi/<NN>-<slug>.mid.
 
-One phrase per factory preset (README G3a), written for what that preset is
-for: Concert Grand plays a full-range romantic phrase with legato pedalling,
-Studio Grand a pop ballad pattern, Warm Walnut jazz voicings with the soft
-pedal, Felt Nocturne a quiet nocturne whose felt the modulation wheel brings
-in, and Open Strings struck notes with the dampers raised so the undamped
-strings ring. On the upright, Rehearsal Upright plays a song accompaniment
-of broken chords under a tune, Felt Upright repeated chords under a high
-line at an ordinary touch, quietened by its felt, and Pop Upright pumping
-chords over octave roots with the pedal up. The .mid files are the
-committed sources the demo renderer reads; this script only records how
-they were written. Re-run it only to change a phrase on purpose, and commit
-the changed .mid files on their own:
+One phrase for each of eight of the ten factory presets (README G3a), <NN>
+its program number, each written for what that preset is for: Kakegawa
+Grand plays a full-range romantic phrase with legato pedalling, Studio Grand
+a pop ballad pattern, Warm Walnut jazz voicings with the soft pedal, Felt
+Nocturne a quiet nocturne whose felt the modulation wheel brings in, and
+Open Strings struck notes with the dampers raised so the undamped strings
+ring. On the upright, Helsinki Upright plays a song accompaniment of broken
+chords under a tune, Felt Upright repeated chords under a high line at an
+ordinary touch, quietened by its felt, and Pop Upright pumping chords over
+octave roots with the pedal up. Hamamatsu Grand and Three Cities have none.
+The .mid files are the committed sources the demo renderer reads; this
+script only records how they were written. Re-run it only to change a
+phrase on purpose, and commit the changed .mid files on their own:
 
     python3 Tools/write_preset_midi.py           # write Docs/audio/midi
     python3 Tools/write_preset_midi.py --check   # the committed files match
@@ -113,7 +114,7 @@ class Phrase:
                 + b"MTrk" + struct.pack(">I", len(track)) + track)
 
 
-def concert_grand():
+def kakegawa_grand():
     # C minor, a bar of the tonic and one of the dominant in left-hand
     # arpeggios under a melody that grows from piano to forte, then a
     # full-range final chord.
@@ -230,7 +231,7 @@ def open_strings():
     return p
 
 
-def rehearsal_upright():
+def helsinki_upright():
     # A song accompaniment in G: a bass note and broken chords in the left
     # hand under a plain tune, the pedal changed with each chord, home to a
     # spread G major.
@@ -313,21 +314,26 @@ def pop_upright():
     return p
 
 
+# The demos, each by its preset's slug: at most eight, so the bank's other
+# presets have none (README G3).
 PRESETS = [
-    ("concert-grand", concert_grand), ("studio-grand", studio_grand),
+    ("kakegawa-grand", kakegawa_grand), ("studio-grand", studio_grand),
     ("warm-walnut", warm_walnut), ("felt-nocturne", felt_nocturne),
-    ("open-strings", open_strings), ("rehearsal-upright", rehearsal_upright),
+    ("open-strings", open_strings), ("helsinki-upright", helsinki_upright),
     ("felt-upright", felt_upright), ("pop-upright", pop_upright),
 ]
 
 
 def files() -> dict[str, bytes]:
+    presets = BANK.read_text(encoding="utf-8").split("factoryPresets", 1)[1].split("}};", 1)[0]
     bank = [re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
-            for name in re.findall(r'\{ "([^"]+)",', BANK.read_text(encoding="utf-8"))]
-    if [slug for slug, _ in PRESETS] != bank:
-        sys.exit(f"phrases {[slug for slug, _ in PRESETS]} do not match the bank {bank}")
+            for name in re.findall(r'\{ "([^"]+)",', presets)]
+    slugs = [slug for slug, _ in PRESETS]
+    if any(slug not in bank for slug in slugs) or len(slugs) > 8 or (len(bank) <= 8 and sorted(slugs) != sorted(bank)):
+        sys.exit(f"phrases {slugs} are not at most eight of the bank {bank}, or all of a bank of eight or fewer")
     result = {}
-    for index, (slug, build) in enumerate(PRESETS, 1):
+    for slug, build in PRESETS:
+        index = bank.index(slug) + 1
         phrase = build()
         last = max(beat for beat, _, _ in phrase.events)
         seconds = last * 60 / phrase.bpm

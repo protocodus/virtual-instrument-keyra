@@ -6,6 +6,8 @@ detection) cancels in a comparison.
 
 - onset: the first 1 ms stereo-power crossing of a noise-aware threshold near
   -45 dB of the first-second peak (the preserved benchmark's definition);
+- recorded_end: where a take stops holding the piano, at a noise gate's
+  silence;
 - partials: sequential peak tracking of a long Hann spectrum, each partial
   searched where the stiff-string fit of the partials found so far predicts it,
   so per-partial deviations from that fit (bridge coupling, wound strings) are
@@ -65,6 +67,30 @@ def onset(x, sr):
     noise = float(np.median(env[:max(1, int(.008 * sr))]))
     threshold = max(peak * 10 ** (-4.5), min(noise * 25, peak * 1e-4))
     return max(0, int(np.flatnonzero(env > threshold)[0]) - int(.0005 * sr))
+
+
+# A take holds the piano until a run of exact digital silence this long in
+# either channel. Every second-dynamic ("v2") take of the VCSL Kawai from E3
+# up was recorded through a noise gate that cuts it to silence, channel by
+# channel, from 0.6 to 15 s after the strike; its other note takes hold runs
+# of 8 ms at most, where their quietest tails meet the 16-bit floor. No
+# Salamander take holds such a run, and seven Helsinki takes only in the
+# silence they end with, past the fade-out every measurement leaves out.
+SILENCE_RUN = .02  # s
+
+
+def recorded_end(x, sr, start):
+    """The sample from which a take holds nothing: the first run of exact
+    digital silence of SILENCE_RUN or longer in either channel after
+    `start`, or the take's end."""
+    end = len(x)
+    for channel in x.T:
+        edges = np.diff(np.concatenate([[0], (channel[start:] == 0).astype(np.int8), [0]]))
+        on, off = np.flatnonzero(edges == 1), np.flatnonzero(edges == -1)
+        long = on[off - on >= SILENCE_RUN * sr]
+        if len(long):
+            end = min(end, start + int(long[0]))
+    return end
 
 
 def blackman_harris(n):
@@ -820,6 +846,7 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
         seg = x[start + int(.05 * sr):start + int(.75 * sr)]
         layers.append({'path': str(path), 'x': x, 'sr': sr, 'start': start, 'f1': f1, 'B': B, 'found': found,
                        'velocity': velocity, 'horizon': horizon, 'duration': duration,
+                       'end': recorded_end(x, sr, start) - start,
                        'early_rms_db': float(10 * np.log10(np.mean(seg ** 2) + 1e-30))})
     sr = layers[0]['sr']
     by_order = {}
@@ -832,7 +859,10 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
     length = window_length(f1, sr) / sr
     hop = float(np.clip(length / 8, .0005, .005))
     for L in layers:
-        times = np.r_[np.arange(0, .5, hop), np.arange(.5, L['horizon'], .02)]
+        # A gated take ends at its gate (recorded_end), which no frame's
+        # window reaches.
+        L['horizon'] = min(L['horizon'], L['end'] / sr - length / 2)
+        times = np.r_[np.arange(0, min(.5, L['horizon']), hop), np.arange(.5, L['horizon'], .02)]
         t, z = envelopes(L['x'], sr, freqs, f1, L['start'], None, times=times)
         power_db = 10 * np.log10(np.maximum(np.mean(np.abs(z) ** 2, axis=1), 1e-30))
         floor = envelope_floor(t, power_db)
@@ -843,9 +873,10 @@ def analyse_anchor(paths, note, velocities, residual_seconds=1.0, horizon_max=16
         fits.append(fit_partial_layers([{'times': L['times'], 'z': L['z'][k], 'power_db': L['power_db'][k],
                                          'floor_db': L['floor_db'][k], 'velocity': L['velocity']}
                                         for L in layers], f1, sr, n, freqs[k]))
-    # Each layer's recording without its fitted partials, to the horizon.
+    # Each layer's recording without its fitted partials, to the horizon; past
+    # a gate, the gate's silence.
     for i, L in enumerate(layers):
-        samples = min(len(L['x']) - L['start'], int((L['horizon'] + 1.0) * sr))
+        samples = min(L['end'], int((L['horizon'] + 1.0) * sr))
         residual = L['x'].copy()
         for k, fit in enumerate(fits):
             if fit is None or fit['amplitudes'][i] is None:

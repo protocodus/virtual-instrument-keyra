@@ -7,17 +7,24 @@ constexpr std::array<const char*, 11> ids {{ "gain", "brightness", "resonance", 
 constexpr std::array<const char*, 11> captions {{ "OUTPUT", "BRIGHTNESS", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS", "TUBE MIC" }};
 // The voicing view's knobs, left to right.
 constexpr std::array<int, 7> voicing {{ 1, 2, 3, 10, 9, 5, 0 }};
-constexpr std::array<const char*, 7> buildIds {{ "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
-constexpr std::array<const char*, 7> buildCaptions {{ "STRINGS", "HAMMERS", "SOUNDBOARD", "ACTION", "STIFFNESS", "UNISONS", "RING" }};
-constexpr std::array<const char*, 7> buildHints {{
-    "The strings, from this piano's toward the other's: their stretch and stiffness, unisons, decays and pickups. Applies from the next note.",
-    "The hammers, from this piano's toward the other's: how hard each partial is struck, how fast it rises and how the tone follows velocity. Applies from the next note.",
-    "The soundboard and case, from this piano's toward the other's: the body's modes, the strike's knock on them and the board's noise.",
-    "The action, from this piano's toward the other's: the knocks of keys, dampers and pedals.",
+// The build view: a row of weights for each part, one per piano, then past a
+// divider the three modifiers.
+constexpr std::array<const char*, 4> partCaptions {{ "STRINGS", "HAMMERS", "SOUNDBOARD", "ACTION" }};
+constexpr std::array<const char*, 4> partHints {{
+    "strings, as a share of the row: their stretch and stiffness, unisons, decays and pickups. Applies from the next note.",
+    "hammers, as a share of the row: how hard each partial is struck, how fast it rises and how the tone follows velocity. "
+    "Applies from the next note.",
+    "soundboard and case, as a share of the row: the body's modes, the strike's knock on them and the board's noise.",
+    "action, as a share of the row: the knocks of keys, dampers and pedals."
+}};
+constexpr std::array<const char*, 3> modifierIds {{ "stiffness", "unisons", "ring" }};
+constexpr std::array<const char*, 3> modifierCaptions {{ "STIFFNESS", "UNISONS", "RING" }};
+constexpr std::array<const char*, 3> modifierHints {{
     "The strings' inharmonicity, from a quarter to four times as built. Applies from the next note.",
     "How far each note's unison strings sit apart, from one pitch to three times as far as built. Applies from the next note.",
     "How long the strings ring, from half to twice as long as built. Applies from the next note."
 }};
+constexpr int gridLeft = 176, gridPitch = 128, rowTop = 188, rowPitch = 31;
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {
@@ -184,15 +191,11 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     program.setColour(juce::ComboBox::outlineColourId, brass.withAlpha(.35f));
     program.setColour(juce::ComboBox::arrowColourId, brass);
     program.onChange = [this] { processor.setCurrentProgram(program.getSelectedId() - 1); };
+    program.setTooltip("A factory piano: each measured piano as built, by the city it comes from, voiced several "
+                       "ways, and pianos between them. It sets the build and the voicing; output, tuning, "
+                       "mechanics, the tube mic and the pedals stay.");
     addAndMakeVisible(program);
     // The attachment selects item index + 1 of the choice, so the items go in first.
-    piano.addItemList({ "Grand", "Upright" }, 1);
-    for (const auto id : { juce::ComboBox::backgroundColourId, juce::ComboBox::textColourId,
-                           juce::ComboBox::outlineColourId, juce::ComboBox::arrowColourId })
-        piano.setColour(id, program.findColour(id));
-    piano.setTooltip("The piano that plays: the modelled grand or upright. A switch plays from the next note; what sounds rings on.");
-    addAndMakeVisible(piano);
-    pianoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "model", piano);
     quality.addItemList({ "Full", "Balanced", "Light" }, 1);
     quality.setColour(juce::ComboBox::backgroundColourId, juce::Colours::transparentBlack);
     quality.setColour(juce::ComboBox::textColourId, footer);
@@ -239,39 +242,46 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     controls[10].setTooltip("Where the piano is heard from: the stereo pair close over the strings, or a vintage tube "
                             "microphone at shin height, mono, its colour measured on the upright's recordings. "
                             "Between, the two are mixed.");
-    upright = value("model") >= .5f;
-    for (size_t i = 0; i < build.size(); ++i) {
-        auto& slider = build[i];
-        slider.setName(buildCaptions[i]);
-        slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-        slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 104, 22);
-        slider.setRotaryParameters(juce::MathConstants<float>::pi * 1.23f,
-            juce::MathConstants<float>::pi * 2.77f, true);
-        slider.setDoubleClickReturnValue(true, 0.0);
-        slider.setTooltip(buildHints[i]);
-        addChildComponent(slider);
-        buildAttachments[i] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.parameters, buildIds[i], slider);
+    const auto plain = [](juce::Slider& slider) {
         slider.setColour(juce::Slider::textBoxTextColourId, ink);
         slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::transparentBlack);
         slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
-        // A modifier reads as its parameter does, the factor it scales by.
-        if (i < 4) {
-            // A part reads as whose it is: the piano's own at 0, the other
-            // piano's at 1, and the share of the other's between.
-            slider.textFromValueFunction = [this](double x) {
-                const auto percent = juce::roundToInt(x * 100);
-                const juce::String own = upright ? "Upright" : "Grand", other = upright ? "Grand" : "Upright";
-                return percent <= 0 ? own : percent >= 100 ? other : juce::String(percent) + "% " + other.toLowerCase();
-            };
-            slider.valueFromTextFunction = [this](const juce::String& text) {
-                return text.trim().equalsIgnoreCase(upright ? "Grand" : "Upright") ? 1.0 : text.getDoubleValue() * .01;
-            };
+    };
+    for (size_t part = 0; part < buildParts.size(); ++part)
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano) {
+            auto& slider = weights[part * keyra::pianoCount + piano];
+            const juce::String name = juce::String(keyra::pianoCities[piano]) + " " + keyra::pianoKinds[piano];
+            slider.setName(juce::String(partCaptions[part]) + " " + keyra::pianoCities[piano]);
+            slider.setSliderStyle(juce::Slider::LinearHorizontal);
+            slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 40, 22);
+            slider.setTooltip("The piano takes this much of the " + name + "'s " + partHints[part]);
+            addChildComponent(slider);
+            weightAttachments[part * keyra::pianoCount + piano] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+                processor.parameters, weightId(part, piano), slider);
+            plain(slider);
+            slider.textFromValueFunction = [](double x) { return juce::String(juce::roundToInt(x * 100)) + "%"; };
+            slider.valueFromTextFunction = [](const juce::String& text) { return text.getDoubleValue() * .01; };
+            slider.updateText();
         }
+    // A modifier reads as its parameter does, the factor it scales by.
+    for (size_t i = 0; i < modifiers.size(); ++i) {
+        auto& slider = modifiers[i];
+        slider.setName(modifierCaptions[i]);
+        slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+        slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 92, 22);
+        slider.setRotaryParameters(juce::MathConstants<float>::pi * 1.23f,
+            juce::MathConstants<float>::pi * 2.77f, true);
+        slider.setDoubleClickReturnValue(true, 0.0);
+        slider.setTooltip(modifierHints[i]);
+        addChildComponent(slider);
+        modifierAttachments[i] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.parameters, modifierIds[i], slider);
+        plain(slider);
         slider.updateText();
     }
     voicingTab.setTooltip("Brightness, resonance, width, tube mic, mechanics, felt mute and output.");
-    buildTab.setTooltip("The piano's build: its strings, hammers, soundboard and action moved toward the other piano's, "
-                        "and its strings' stiffness, unisons and ring.");
+    buildTab.setTooltip(juce::String("The piano's build: how much of each measured piano's strings, hammers, soundboard and "
+                        "action it takes, a row of zeros playing the ") + keyra::pianoCities[0] + " " + keyra::pianoKinds[0]
+                        + "'s, and its strings' stiffness, unisons and ring.");
     voicingTab.onClick = [this] { showBuild(false); };
     buildTab.onClick = [this] { showBuild(true); };
     addAndMakeVisible(voicingTab);
@@ -339,27 +349,48 @@ void KeyraAudioProcessorEditor::showBuild(bool on)
     buildTab.setToggleState(on, juce::dontSendNotification);
     for (const auto i : voicing)
         controls[static_cast<size_t>(i)].setVisible(!on);
-    for (auto& slider : build)
+    for (auto& slider : weights)
+        slider.setVisible(on);
+    for (auto& slider : modifiers)
         slider.setVisible(on);
     repaint();
 }
 
-float KeyraAudioProcessorEditor::value(const char* id) const
+// The piano the build plays, for the header: one measured piano, every part
+// its alone, or a hybrid of those the parts take (a part at zero takes the
+// first piano's, as the engine plays it).
+juce::String KeyraAudioProcessorEditor::pianoName() const
 {
-    return processor.parameters.getRawParameterValue(id)->load(std::memory_order_relaxed);
+    std::array<bool, keyra::pianoCount> taken {};
+    for (size_t part = 0; part < buildParts.size(); ++part) {
+        bool any = false;
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            if (weights[part * keyra::pianoCount + piano].getValue() > 0) taken[piano] = any = true;
+        if (!any) taken[0] = true;
+    }
+    juce::StringArray cities;
+    size_t only = 0;
+    for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+        if (taken[piano]) { cities.add(keyra::pianoCities[piano]); only = piano; }
+    if (cities.size() == 1) return (juce::String("MODELLED ") + keyra::pianoCities[only] + " " + keyra::pianoKinds[only]).toUpperCase();
+    const auto last = cities[cities.size() - 1];
+    cities.remove(cities.size() - 1);
+    return ("MODELLED HYBRID OF " + cities.joinIntoString(", ") + " AND " + last).toUpperCase();
 }
 
 void KeyraAudioProcessorEditor::resized()
 {
     for (size_t i = 0; i < voicing.size(); ++i)
         controls[static_cast<size_t>(voicing[i])].setBounds(74 + static_cast<int>(i) * 120, 170, 112, 126);
-    // The four parts, then past a divider the three modifiers.
-    for (size_t i = 0; i < build.size(); ++i)
-        build[i].setBounds((i < 4 ? 74 : 122) + static_cast<int>(i) * 112, 170, 112, 126);
+    for (size_t part = 0; part < buildParts.size(); ++part)
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            weights[part * keyra::pianoCount + piano].setBounds(gridLeft + static_cast<int>(piano) * gridPitch,
+                rowTop + static_cast<int>(part) * rowPitch, gridPitch - 8, 26);
+    for (size_t i = 0; i < modifiers.size(); ++i)
+        modifiers[i].setBounds(594 + static_cast<int>(i) * 104, 170, 104, 126);
     voicingTab.setBounds(410, 138, 80, 21);
     buildTab.setBounds(490, 138, 80, 21);
     controls[4].setBounds(794, 100, 112, 28);
-    piano.setBounds(520, 60, 184, 30);
     program.setBounds(520, 99, 184, 30);
     for (int i = 0; i < 3; ++i) {
         const auto x = 90 + i * 282;
@@ -395,12 +426,8 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(juce::Colours::white.withAlpha(.65f));
     g.drawRoundedRectangle(39, 29, 902, 502, 4, 1);
     text(g, "KEYRA", { 70, 52, 300, 50 }, 43, ink, juce::Justification::centredLeft, true);
-    // The piano the build plays: one of the two measured, or one between.
-    const auto toward = value("strings") + value("hammers") + value("soundboard") + value("action");
-    const auto* own = upright ? "MODELLED UPRIGHT PIANO" : "MODELLED GRAND PIANO";
-    const auto* other = upright ? "MODELLED GRAND PIANO" : "MODELLED UPRIGHT PIANO";
-    text(g, toward <= 0 ? own : toward >= 4 ? other : "MODELLED PIANO BETWEEN GRAND AND UPRIGHT", { 74, 103, 435, 22 }, 12, muted);
-    text(g, "PIANO", { 440, 63, 72, 25 }, 12, muted, juce::Justification::centredRight);
+    text(g, pianoName(), { 74, 103, 366, 22 }, 12, muted);
+    text(g, "PRESET", { 440, 102, 72, 25 }, 12, muted, juce::Justification::centredRight);
     text(g, "PROTOCODUS", { 718, 54, 188, 24 }, 15, ink, juce::Justification::centredRight, true);
     text(g, "A4", { 750, 101, 36, 25 }, 12, muted, juce::Justification::centredRight);
     // The rule under the header parts around the two views' tabs.
@@ -408,10 +435,17 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
     g.drawLine(74, 148, 402, 148, 1);
     g.drawLine(578, 148, 906, 148, 1);
     if (buildTab.getToggleState()) {
-        for (size_t i = 0; i < build.size(); ++i)
-            text(g, buildCaptions[i], build[i].getBounds().withY(301).withHeight(24), 12, ink, juce::Justification::centred, true);
+        // Each column a piano, over its weights' tracks; each row a part.
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            text(g, juce::String(keyra::pianoCities[piano]).toUpperCase(),
+                { gridLeft + static_cast<int>(piano) * gridPitch, 164, gridPitch - 48, 18 }, 11, muted, juce::Justification::centred, true);
+        for (size_t part = 0; part < buildParts.size(); ++part)
+            text(g, partCaptions[part], { 74, rowTop + static_cast<int>(part) * rowPitch, gridLeft - 82, 26 }, 12, ink,
+                juce::Justification::centredLeft, true);
+        for (size_t i = 0; i < modifiers.size(); ++i)
+            text(g, modifierCaptions[i], modifiers[i].getBounds().withY(301).withHeight(24), 12, ink, juce::Justification::centred, true);
         g.setColour(ink.withAlpha(.12f));
-        g.drawLine(546, 182, 546, 314, 1);
+        g.drawLine(574, 182, 574, 314, 1);
     } else {
         for (const auto i : voicing) {
             const auto& knob = controls[static_cast<size_t>(i)];
@@ -453,11 +487,6 @@ void KeyraAudioProcessorEditor::timerCallback()
     level = juce::jmax(processor.outputPeak.load(std::memory_order_relaxed), level * .8f);
     activity = processor.noteActivity.exchange(false, std::memory_order_relaxed);
     program.setSelectedId(processor.getCurrentProgram() + 1, juce::dontSendNotification);
-    if (const auto nowUpright = value("model") >= .5f; nowUpright != upright) {
-        upright = nowUpright;
-        for (size_t i = 0; i < 4; ++i)
-            build[i].updateText();
-    }
     repaint();
 }
 

@@ -1,13 +1,14 @@
 # Keyra
 
-Keyra is a sample-free piano, a grand or an upright: a real-time modal engine
-whose strings, soundboard ring and stereo image are fitted from numerical
-measurements of acoustic piano recordings, with three visible pedals,
-momentary pedal keyswitches and felt muting from the modulation wheel. It
-builds as VST3 and CLAP plug-ins, an Audio Unit on macOS and a standalone
-application, and the Reason Rack Extension adapter plays the same engine's
-grand. It is a development candidate: host acceptance and a commercial release
-are still to come.
+Keyra is a sample-free piano: a real-time modal engine whose strings,
+soundboard ring and stereo image are fitted from numerical measurements of
+acoustic piano recordings, with three visible pedals, momentary pedal
+keyswitches and felt muting from the modulation wheel. Three pianos are
+measured, two grands and an upright, and their strings, hammers, soundboard
+and action mix part by part into pianos none of them is. It builds as VST3
+and CLAP plug-ins, an Audio Unit on macOS and a standalone application, and
+the Reason Rack Extension adapter plays the same engine. It is a development
+candidate: host acceptance and a commercial release are still to come.
 
 ![Keyra](Docs/screenshots/keyra.png)
 
@@ -123,8 +124,8 @@ musical passages through the same engine. Both are frozen evidence from
   stage replaces the clip at full scale: its guard keeps the loudest chords
   out of the red and its look-ahead limiter every sample under −1.5 dBFS,
   for 2 ms of latency, which the plug-in reports. Single notes pass it
-  untouched; it takes a median 1.4 dB from the grand's chords at velocity
-  110 and 3 dB from the upright's. The felt presets read about 8 dB lower
+  untouched; it takes a median 1.3 dB from the grand's chords at velocity
+  110 and 3.5 dB from the upright's. The felt presets read 7 to 9 dB lower
   (below).
 - A Quality choice trades detail for CPU on slower machines, at the owner's
   request. Full, the default, plays every partial; Balanced and Light leave
@@ -223,6 +224,18 @@ musical passages through the same engine. Both are frozen evidence from
   fundamental, a step further from C8's recordings
   ([grand](Docs/validation/grand-string-energy-benchmark-2026-10-31.md),
   [upright](Docs/validation/upright-string-energy-benchmark-2026-10-31.md)).
+- A key between two recorded pitches meets their levels over the 50 to
+  750 ms its levels are measured over, where it met them over its power from
+  contact, which counted a burst dying within 50 ms for its whole energy and
+  put the Hamamatsu grand's F♯6 4.3 dB over both its neighbours. On the
+  never-fitted recordings the Kakegawa grand's partial levels sit 5.33 dB
+  from them (was 5.39) and its level 1.01 dB (0.94), and no note of it or of
+  the Helsinki upright moves past the benchmark's tolerance, while the
+  Hamamatsu grand's F♯7 and B5 sit 2.0 and 0.6 dB further from their
+  recordings' level
+  ([Kakegawa](Docs/validation/grand-between-window-benchmark-2026-10-31.md),
+  [Helsinki](Docs/validation/upright-between-window-benchmark-2026-10-31.md),
+  [Hamamatsu](Docs/validation/kawai-between-window-benchmark-2026-10-31.md)).
 - Letting a key go knocks the body as its damper lands, and the sustain pedal
   knocks it going down and coming up, synthesized on the body's modes: each
   mode's level and phase is measured from the library's release and pedal
@@ -285,8 +298,8 @@ musical passages through the same engine. Both are frozen evidence from
   spectrum 4.2 dB (15.8 dB), the sustain spectrum 4.6 dB (10.2 dB) and the
   noise between partials 6.3 dB (24.7 dB); its regressions, C4's and F♯4's
   onset rise first, are listed there.
-- Adds an upright beside the grand, chosen with the new Piano control and
-  three presets (Rehearsal Upright, Felt Upright, Pop Upright): a 1967
+- Adds an upright beside the grand, with three presets (Helsinki Upright,
+  Felt Upright, Pop Upright): a 1967
   upright with worn hammers in a dry room, measured the grand's way from 137
   recordings of the Helsinki 1967 Tube-Ribbon Edition (Mikko Patama, with his
   permission; none of its recordings is distributed). Sessions saved before
@@ -319,17 +332,33 @@ musical passages through the same engine. Both are frozen evidence from
   strikes are darker and the hardest keep their brightness, at the same
   loudness. Middle C's spectral centroid from velocity 20 to 120 now spans
   349 to 711 Hz on the grand and 265 to 472 Hz on the upright.
-- The grand and the upright are two builds of one model, at the owner's
-  request. A Build view beside the voicing knobs moves the piano's strings,
-  hammers, soundboard and action each toward the other piano's, so the grand
-  with the upright's hammers, or a piano halfway between, plays; halfway,
-  each key sits within 1.6 dB of between the two pianos' levels. Stiffness,
+- Adds a third piano, a second grand, measured the same way from 131
+  recordings of VCSL Keys' Grand Piano K (Versilian Studios, CC0): a stereo
+  pair in player position at four velocity layers. On its never-fitted
+  recordings its tuning, attack, noise between partials, rise and level sit
+  closer to them than the first grand's data does, and its partial levels,
+  decay, image and envelope further (Known gaps)
+  ([benchmark](Docs/validation/kawai-recording-benchmark-2026-10-31.md)).
+- The pianos are builds of one model, at the owner's request. A Build view
+  beside the voicing knobs mixes the measured pianos part by part: the
+  strings, hammers, soundboard and action each take a share of every piano,
+  so the first grand with the upright's hammers, a piano halfway between or
+  one with something of all three plays. Halfway between the first grand and
+  the upright each key sits within 0.9 dB of between their levels, and at
+  equal thirds of the three within 1.4 dB of between the three's. Stiffness,
   Unisons and Ring scale the strings' inharmonicity, unison spread and decay.
-  The two measured pianos play as before, and switching Piano plays from the
-  next note while what sounds rings on, where it silenced the instrument. The
-  voicing knob that read Hammer reads Brightness, beside the build's Hammers.
-  A Strings setting between the two pianos keeps their stereo image, between
-  theirs; at first every one of them played in mono.
+  The measured pianos play as before, and a build plays from the next note
+  while what sounds rings on. The voicing knob that read Hammer reads
+  Brightness, beside the build's Hammers. A Strings setting between pianos
+  keeps their stereo image, between theirs; at first every one of them played
+  in mono.
+- The pianos go by cities, at the owner's request, and so do their presets:
+  the first grand is the Kakegawa grand, the upright the Helsinki upright and
+  the new grand the Hamamatsu grand. Concert Grand is now Kakegawa Grand and
+  Rehearsal Upright Helsinki Upright, at their program numbers; Hamamatsu
+  Grand plays the new grand and Three Cities every part at equal thirds of
+  the three. A preset sets the build and the voicing, and the Piano control
+  is gone: a session saved with it opens as the build it chose.
 - Adds the CLAP plug-in on every platform beside VST3, the standalone
   application and, on macOS, the Audio Unit.
 - The repository root is the product only. The full physical piano research
@@ -371,7 +400,7 @@ octaves up), and like the body's knock without a corner: every rise is smoothed 
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 
-Both pianos answer velocity alike. A strike plays at a coordinate between
+Every piano answers velocity alike. A strike plays at a coordinate between
 its piano's recorded layers, each layer at the velocity its library maps to
 it: a velocity asks for a level under the loudest layer, halfway between a
 straight line and smoothstep from velocity 1 to 127, and the strike plays
@@ -380,10 +409,13 @@ at that loudness. A layer's level is its early level under the same pitch's
 loudest layer (both channels' RMS from 50 to 750 ms after the onset), the
 median over the pitches recorded at every layer. Velocity 127 plays each
 piano's loudest layer, and velocity 1 the grand's softest, 21.2 dB under it,
-which the upright reaches between its two softest layers. Single keys keep
-their recordings' differences: at one velocity a key of the upright sits
-from 4 dB under to 7 dB over the same key of the grand (the tenth to the
-ninetieth percentile), where the two pianos' median notes sit within 1 dB.
+which the upright and the Hamamatsu grand reach between their two softest
+layers. Single keys keep their recordings' differences: at one velocity a
+key of the upright sits from 4 dB under to 7 dB over the same key of the
+grand (the tenth to the ninetieth percentile), where the median notes of the
+two sit within 0.4 dB of each other at velocities 30, 64, 100 and 127, and
+the Hamamatsu grand's within 0.6 dB of the grand's, but 1.4 dB over it at
+velocity 30.
 
 No two strikes land alike. Each plays a little harder or softer than its
 velocity asks: its level moves by a random amount with a spread of 1.085 dB,
@@ -443,7 +475,7 @@ over the layer at velocity 100, and loses as much below it, and the strike's
 partials are then rescaled to the energy the layer plays, so velocity moves
 the colour without moving the level.
 
-Once a key is let go, the felt leaves the same small share on both pianos,
+Once a key is let go, the felt leaves the same small share on every piano,
 the upright's measured leftover shape at −46 dB at middle C, and while every
 damped key is down the body's modes damp at the felt's rate for their
 frequency, so the board stops with the strings.
@@ -461,49 +493,63 @@ The sustain pedal knocks them going down and coming up. The Mechanics control
 scales every knock of the action, and the ring the pedal sets going down, from
 silent at 0 to twice as loud at 200 %.
 
-### Two pianos, one model
+### Three pianos, one model
 
-The grand and the upright are two builds of one model (`keyra::Build`). Each
-of its four parts runs from the grand's measurements at 0 to the upright's at
-1: the **strings** (their stretch and stiffness, unison offsets, decays and
-pickups, the undamped top strings and the components beside the series), the
-**hammers** (how hard each partial is struck and how fast it rises, the
-components' levels, the tone's change with velocity), the **soundboard** (the
-body's modes, a strike's knock on them and the board's noise) and the
-**action** (the knocks of keys, dampers and pedals). Three modifiers stretch
-what the parts build: stiffness scales every key's inharmonicity B by
-4^stiffness, unisons sets how far each partial's unison strings sit apart
-(−1 one pitch, 0 as built, 1 three times as far) and ring scales every
-string's decay time by 2^ring. At 0 and 1 a part plays its piano's
-measurements exactly, so `measuredBuild(Piano::grand)` and
-`measuredBuild(Piano::upright)` are the two measured pianos.
+The pianos are builds of one model (`keyra::Build`): the Kakegawa grand
+(Salamander's), the Helsinki upright and the Hamamatsu grand (VCSL Keys'),
+each fitted from its own recordings. Elsewhere in this document the grand is
+the Kakegawa grand and the upright the Helsinki upright. Each of the model's
+four parts mixes the measured pianos by a weight from 0 to 1 for each of
+them (`keyra::Mix`), played as shares of their sum: the **strings** (their
+stretch and stiffness, unison offsets, decays and pickups, the undamped top
+strings and the components beside the series), the **hammers** (how hard
+each partial is struck and how fast it rises, the components' levels, the
+tone's change with velocity), the **soundboard** (the body's modes, a
+strike's knock on them and the board's noise) and the **action** (the knocks
+of keys, dampers and pedals). A part with no weight plays the Kakegawa
+grand's. Three modifiers stretch what the parts build: stiffness scales every
+key's inharmonicity B by 4^stiffness, unisons sets how far each partial's
+unison strings sit apart (−1 one pitch, 0 as built, 1 three times as far)
+and ring scales every string's decay time by 2^ring. A part with one piano's
+weight alone plays that piano's measurements exactly, so
+`measuredBuild(Piano::grand)`, `measuredBuild(Piano::upright)` and
+`measuredBuild(Piano::kawai)` are the three measured pianos.
 
-The plug-in's Build view shows the parts as the chosen piano's, moved toward
-the other piano's (`keyra::buildToward`): Strings, Hammers, Soundboard and
-Action read Grand on the grand at 0, a share of the upright between and
-Upright at 100 %, and the other way round on the upright. Stiffness, Unisons
-and Ring show their factors, ×1.00 as built. So the grand with every part at
-100 % is the upright, sample for sample, and every song saved before the
-build existed, its controls at 0, plays the piano it chose.
-`keyra_render --build` plays any build.
+The engine mixes the pianos' values two at a time in `keyra::Piano`'s order,
+each next piano at its share of the shares so far, so two pianos mix as a
+pair does and more as the pair rule's weighted mean. A built partial rings
+as the strings have it and is struck as the hammers have it: its lanes blend
+as between two recorded pitches, and its power over the window the layers'
+levels are measured over (50 to 750 ms) lies between the pianos' in dB, at
+the hammers' shares; a partial only some pianos play plays at their share in
+power. The body's modes pass between the pianos mode by mode in power, with
+the phase of the largest share's, since the boards' modes of one index are
+not one mode. So halfway between the grand and the upright each key plays
+within 0.9 dB of between their levels at soft, middle and full velocity, and
+with every part at equal thirds of the three pianos within 1.4 dB of between
+the three's. A build changes from the next strike: what sounds rings on, the
+strings as they were struck and the body as the new board has it, its
+pickups gliding to the new board's over 10 ms.
 
-A built partial rings as the strings have it and is struck as the hammers
-have it: its lanes blend as between two recorded pitches, and its power over
-the window the layers' levels are measured over (50 to 750 ms) lies between
-the two pianos' in dB, at the hammers' share. The body's modes pass between
-the pianos mode by mode in power, since the two boards' modes of one index
-are not one mode. So the halfway build, every part at 0.5, plays each key
-within 1.6 dB of between the two pianos' levels at soft, middle and full
-velocity. A build changes from the next strike: what sounds rings on, the
-strings as they were struck and the body as the new board has it, its pickups
-gliding to the new board's over 10 ms.
+The plug-in's Build view is a grid of the weights, a row per part and a
+column per piano under its city, beside Stiffness, Unisons and Ring, which
+show their factors, ×1.00 as built. A piano's presets set its column to
+100 % and the others to 0; the weights of a part are shares of their sum, so
+Strings at 50 % Kakegawa and 50 % Helsinki plays as Strings at 100 % of each.
+Every song saved before the weights existed opens as the build it chose,
+`keyra::buildToward` turning its Piano and its parts toward the other piano
+into weights. `keyra_render --strings kawai=1,grand=1` and the other parts'
+options play any build.
 
 ### Microphones
 
 Each piano is heard from the stereo pair its recordings were taken with: the
 grand from Salamander's two AKG C414 in AB about 12 cm over the strings, the
 upright from the Helsinki library's Blumlein ribbon pair in player position,
-close to the hammers. The Tube Mic control (`keyra::Parameters::mic`) moves
+close to the hammers, and the Hamamatsu grand from VCSL's pair in player
+position. A build between pianos hears each partial and mode through a
+pickup between theirs, by the strings' and the soundboard's shares. The Tube
+Mic control (`keyra::Parameters::mic`) moves
 toward the Helsinki library's other microphone, a modified CV-12 tube
 condenser at shin height to the left, which took every strike at the same
 time as the ribbons: its onsets sit a median 0.26 ms from theirs, and where
@@ -527,9 +573,9 @@ narrowing as the tube comes in. The control applies at once to everything
 sounding; at 0 the tube is silent and the engine plays as before, sample for
 sample. Its level is each piano's own calibration on Reason's meter (see
 Playing level), between them by the hammers' build, which mixes the
-partials' levels. The grand was never recorded through the tube: it plays
-the upright's measured response, a vintage colour on the grand rather than
-a measurement of it.
+partials' levels. Neither grand was recorded through the tube: each plays
+the upright's measured response, a vintage colour on a grand rather than a
+measurement of it.
 
 ### Calibration from recordings
 
@@ -663,6 +709,30 @@ as a velocity change does, ten of them brighter where louder, by a median
 1.04 dB in early level, which is a spread of 1.085 dB for one strike, and in
 pitch by a median 0.02 cents.
 
+The Hamamatsu grand's `Source/DSP/MeasuredKawaiData.h` comes from the same
+tool (`--model kawai`) and the train role of
+`Tools/corpus/split-vcsl-kawai-2026-10-31.json`: 27 pitches from A0 to C8 at
+the library's four velocity layers (fewer at a few pitches), one take each,
+each layer measured at the middle of its velocity range, and the release
+take the library plays as each of those keys is let go
+(`Tools/decode_vcsl.py` decodes and verifies a copy of the library). The
+library's lowest takes, which it maps to A♯0, sound A0 and are taken as A0's.
+Its layers span 33 dB, so a partial counts where two of them find it rather
+than three, or a forte strike's upper partials would go unplayed. Every
+second-layer take from E3 up was recorded through a noise gate that cuts it
+to digital silence 0.6 to 15 s after the strike, so the analysis, the fit and
+the benchmark read a take only until its first 20 ms of exact silence
+(`piano_analysis.recorded_end`), which no take of the other two libraries
+holds before its fade-out. Its release takes scatter by up to 20 dB between
+neighbouring keys about a 38 dB fall from A0 to C6; each keeps its modes and
+plays at that fall's line through them. The library sets no level between
+the action and the notes, so its knocks play no louder against a note than
+the grand's do at C2, C4 or C6. Its rises are capped at the hammer's contact,
+as the upright's are. It has no pedal recordings: its pedals make no sound of
+their own and its strings ring under the pedal at the grand's rates. Its 23
+dev recordings, never fitted, are every layer of D♯1, D♯2, A♯3, D5, A♯5,
+B5, F♯7 and G7; D3, F♯4 and F♯6 stay sealed.
+
 `Tools/benchmark_recordings.py` scores a renderer against every train and dev
 recording, through `keyra_render`, which strikes every note at exactly its
 recorded layer's velocity unless given `--vary`, which plays it as the
@@ -672,7 +742,8 @@ D♯2, D♯4 and D♯6 stay sealed until a candidate goes to the owner. `Tools/c
 lists every note where a candidate is worse than the shipping engine. The [current report](Docs/validation/recording-benchmark-split-2026-10-27.md)
 compares this engine with 0.3.0; the [upright's](Docs/validation/upright-recording-benchmark-2026-10-28.md)
 scores the upright on its own recordings against the grand's data played on
-them. `Tools/benchmark_releases.py` scores the upright's key releases against
+them, and the [Hamamatsu grand's](Docs/validation/kawai-recording-benchmark-2026-10-31.md)
+likewise. `Tools/benchmark_releases.py` scores the upright's key releases against
 its train and dev key-release takes ([report](Docs/validation/upright-release-benchmark-2026-10-28.md)),
 and `Tools/benchmark_pedal.py` the grand's sustain pedal going down against
 its train and dev pedal-down takes, band by band, the strings' ring against
@@ -691,16 +762,17 @@ with the rest: a chord of C3, C4, C5 and C6 let go under it falls 60 dB in
 rang on past 30 s. Going down the pedal sets the strings it frees ringing
 (**The modal engine**).
 Sostenuto captures the keys held as it crosses halfway down and holds only
-those. Soft acts on later strikes as each piano's action does: the grand's
+those. Soft acts on later strikes as each piano's action does: a grand's
 shifts the hammers to fewer strings (una corda), lowering the level and the
 high partials and moving energy to the slowest lane, and the upright's brings
 them halfway to the strings (half-blow), so that a strike plays as one √½ as
-fast, as a hammer thrown as hard over half the distance arrives.
+fast, as a hammer thrown as hard over half the distance arrives. A build's
+soft pedal does each as far as its action is a grand's or the upright's.
 Each pedal takes the largest of its panel control, its MIDI controller (CC64,
 CC66, CC67) and its momentary keyswitch (MIDI 14, 13, 12, below the piano's
 A0). The top twenty keys have no dampers, as on a grand. A damper's felt
 takes a partial down faster the higher it sounds, a released C4 at about
-500 dB/s, and on both pianos leaves the small share described under
+500 dB/s, and on every piano leaves the small share described under
 **The modal engine**. The upright's release recordings hold more, 13 dB under the
 partial at middle C ([release benchmark](Docs/validation/upright-release-benchmark-2026-10-28.md));
 the owner chose the subtler ending by ear. The felt mute (CC1
@@ -711,16 +783,18 @@ a reset of the controllers lifts it without a sound.
 
 ### Controls, presets and MIDI
 
-Piano, its seven build controls, Quality, Output, Brightness, Resonance,
-Width, Tube Mic, Mechanics, Tuning, Felt mute and the three pedals are the
-twenty saved parameters. Piano, its build and Quality are not offered for automation: the
-piano is chosen for a part, not played, and Quality is a setting for the
-machine, not the music. A session saved before they existed plays the grand
-as built at full quality, one saved before Mechanics its action as
-calibrated, and one saved before Tube Mic hears the pair. The eight factory presets in
-`Source/DSP/KeyraPresets.h`, five on the grand and three on the upright, set
-the piano as built, Brightness, Resonance, Width and Felt mute and leave the
-rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
+The build's twelve weights (`strings1` to `action3`, a part's n-th weight
+for the n-th of `keyra::Piano`) and its three modifiers, Quality, Output,
+Brightness, Resonance, Width, Tube Mic, Mechanics, Tuning, Felt mute and the
+three pedals are the 27 saved parameters. The build and Quality are not
+offered for automation: the piano is built for a part, not played, and
+Quality is a setting for the machine, not the music. A session saved before
+the build existed plays the grand as built at full quality, one saved with
+the Piano control the build it chose, one saved before Mechanics its action
+as calibrated, and one saved before Tube Mic hears the pair. The ten factory
+presets in `Source/DSP/KeyraPresets.h`, five on the Kakegawa grand, three on
+the Helsinki upright, Hamamatsu Grand and Three Cities, set the build,
+Brightness, Resonance, Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
 their sample positions; each MIDI channel owns its keys and pedals, and CC120,
 CC121 and CC123 are honoured per channel. The
 [user guide](Docs/guide/user-guide.md) describes every control.
@@ -751,23 +825,28 @@ notes every fourth semitone and eight chords at velocities 70, 90 and 110
 for typical playing, and the chords at 127 for the loudest. Each piano's
 output scale brings its default sound's typical playing to −9 VU at the
 default Output, where the portfolio's newer instruments play; the other
-presets without felt read from −10.8 to −7.8 VU. The output ends in the
-portfolio's shared stage (`Source/DSP/OutputStage.h`): the plucked
-instruments' guard compressor, which reads power over the meter's 300 ms,
-and a look-ahead limiter at −1.5 dBFS. Single notes pass it untouched (a
-median 0.04 dB at velocity 110); chords at velocity 110 lose a median 1.4 dB
-on the grand and 3 dB on the upright, and the loudest chords read
-−0.6 VU on the grand and −0.2 VU on the upright. A velocity-127 chord still
-reads louder than the same chord at 110, by a median 0.2 dB on the grand
-and 0.3 dB on the upright through the guard, where it reads 0.6 and 2.7 dB
-louder without it; its hammer's brighter strike is untouched. Through the
-Tube Mic alone typical playing reads −9 VU on both pianos too, each piano's
-tube at its own calibration (`tubeScale`), and the loudest chords −0.8 VU on
-the grand and −0.3 VU on the upright, 0.6 and 0.3 dB louder at velocity 127
-than at 110. Mixed halfway, typical playing reads 0.6 dB (grand) and 0.5 dB
-(upright) under −9 VU: the two microphones' responses differ per band, so
-their mix reads a little under either. The audio-tier test `Keyra.Levels`
-holds the readings at 0 and 100 %.
+presets without felt read from −10.9 to −8.0 VU, Three Cities −10.4 VU. The
+output ends in the portfolio's shared stage (`Source/DSP/OutputStage.h`): the
+plucked instruments' guard compressor, which reads power over the meter's
+300 ms, and a look-ahead limiter at −1.5 dBFS. Single notes pass it
+untouched (a median 0.04 dB at velocity 110); chords at velocity 110 lose a
+median 1.3 dB on the grand, 3.5 dB on the upright and 2.4 dB on the
+Hamamatsu grand, and the loudest chords read −1.1, −0.8 and −1.2 VU, where
+without the guard they would read 0.8, 6.5 and 6.0 VU. A velocity-127 chord
+still reads louder than the same chord at 110 on the grand and the upright,
+by a median 0.3 and 0.2 dB through the guard, where it reads 1.0 and 2.6 dB
+louder without it; on the Hamamatsu grand it reads 2.0 dB louder without
+the guard and 0.04 dB quieter through it (Known gaps). Its hammer's brighter
+strike is untouched. Through the Tube Mic alone typical playing reads −9 VU
+on the grand and the upright too, each piano's tube at its own calibration
+(`tubeScale`), and the loudest chords −0.9 and −0.3 VU, 0.6 and 0.2 dB
+louder at velocity 127 than at 110. The Hamamatsu grand's tube reads
+−10.0 VU, so that its loudest chords stay out of the red (−0.004 VU, 0.7 dB
+louder at 127). Mixed halfway, typical playing reads 1.0 dB (grand),
+0.8 dB (upright) and 1.2 dB (Hamamatsu grand) under −9 VU: the two
+microphones' responses differ per band, so their mix reads a little under
+either. The audio-tier test `Keyra.Levels` holds the readings at 0 and
+100 %.
 
 ### The full physical research
 
@@ -806,8 +885,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   more slowly than the strings, which the engine does not play: the grand's
   noise score at F♯3, A3 and C4 sits up to 6 dB from it at the softest layers
   ([knock benchmark](Docs/validation/grand-knock-benchmark-2026-10-29.md)).
-- Only the upright was recorded through the tube: the grand heard through it
-  plays the upright's measured response. The tube hears the pair's mid
+- Only the upright was recorded through the tube: the grands heard through it
+  play the upright's measured response. The tube hears the pair's mid
   through one response, without the 0.26 ms its strikes arrive after the
   ribbons', so mixing the two sounds no comb between them, as two real
   microphones apart would. No recording takes either piano from further
@@ -886,19 +965,21 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   the holdout does not establish how the fit generalises to another
   instrument.
 - How far strikes spread is measured from twelve of the upright's strikes,
-  nine of them at its softest layer, and plays at every velocity on both
-  pianos: the grand's library holds one take of each note, so its own spread
-  is unmeasured.
-- The felt presets read about 8 dB under the others on the meter (Felt
-  Nocturne −17.5 VU, Felt Upright −16.5 VU): the felt stops each note within
+  nine of them at its softest layer, and plays at every velocity on every
+  piano: the grands' libraries hold one take of each note, so their own
+  spread is unmeasured.
+- The felt presets read 7 to 9 dB under the others on the meter (Felt
+  Nocturne −18.1 VU, Felt Upright −15.9 VU): the felt stops each note within
   a fraction of a second, so the meter's 300 ms holds less of it, while its
   attack peaks as high as the others'. Raising them to −9 VU would press
   every hard note into the limiter. To keep the loudest chords out of the
   red at −9 VU, the guard compresses the hardest playing, most on the
   upright, whose middle register, where chords sit, is hotter against its
-  bass and treble than the grand's: its velocity-127 chords lose a median
-  4.7 dB (above), and their attacks, which would peak 5.8 dB over full
-  scale, meet the limiter.
+  bass and treble than the grand's: its chords at velocity 110 lose a median
+  3.5 dB (above), and its loudest would read 6.5 VU without the guard. On
+  the Hamamatsu grand the guard takes all the step from velocity 110 to 127
+  of its chords, which read 2.0 dB louder at 127 before it and 0.04 dB
+  quieter after; single notes keep it.
 - No recording plays the upright's soft pedal: its half-blow assumes the rail
   brings the hammers halfway to the strings and that the key accelerates
   them evenly. It has no pedal recordings at all, so its pedals make no sound
@@ -927,6 +1008,26 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   to 19 dB louder than the recording's, and at its loudest the residue
   between the partials from 1.6 to 8 kHz sits 6 to 13 dB under the
   recording's.
+- The Hamamatsu grand is fitted from four velocity layers 33 dB apart, one
+  take each, at pitches two to six semitones apart. At its never-fitted
+  pitches its partials' balance, decay, image and envelope sit further from
+  their recordings than the Kakegawa grand's data played there does: its
+  partial levels 9.9 dB from them against 7.7 dB, worst at B5 (22.4 dB),
+  between G♯5 and C6, and D5's image 11.6 dB from its recording's
+  ([benchmark](Docs/validation/kawai-recording-benchmark-2026-10-31.md)). Its
+  A2 is recorded about 4 dB over its neighbours in its three loudest layers,
+  and the keys between them play toward it. Through the tube alone its
+  typical playing reads −10.0 VU, 1 dB under the other pianos', so that its
+  loudest chords, which that A2 and the tube's bass make hotter, stay out of
+  the red, by 0.004 dB. At the default Output its chords at velocity 127 read
+  no louder than at 110 through the output stage (Playing level). It has no
+  pedal recordings: its pedals make no sound of their own and its strings
+  ring under the pedal at the Kakegawa grand's rates. Its second layer's
+  takes from E3 up stop at a noise gate 0.6 to 15 s after the strike, and the
+  fit reads them no further.
+- Three pianos are measured. The other libraries the owner offered, a
+  Steinway grand among them, need their authors' permission to be fitted,
+  and a preset can only mix the measured pianos.
 - Only Linux VST3 and standalone builds have been validated
   ([pluginval](Docs/validation/pluginval-2026-10-26.txt)); CLAP, the Audio Unit,
   macOS, Windows and Reason are built by CI but not yet accepted in a host.
@@ -986,7 +1087,9 @@ Keyra's source is available under the [PolyForm Noncommercial License
 purpose, commercial music included. The grand's reference recordings are
 Salamander Grand Piano V3 by Alexander Holm under CC BY 3.0; the upright's are
 the Helsinki 1967 Tube-Ribbon Edition by Mikko Patama, whose author permits
-fitting numbers from them provided the recordings are not distributed. JUCE,
+fitting numbers from them provided the recordings are not distributed; the
+Hamamatsu grand's are VCSL Keys' Grand Piano K by Versilian Studios, dedicated
+to the public domain under CC0 1.0. JUCE,
 CLAP and the other dependencies keep their own licences.
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists them, with the licence
 texts in `ThirdParty/`. The licensed Reason Jukebox SDK is not part of this

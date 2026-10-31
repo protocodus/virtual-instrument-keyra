@@ -1923,3 +1923,223 @@ three runs each).
 Chosen by measurement, as the owner's standing direction asks; no one has
 listened to it yet. The A/B pack is in the project files
 (`keyra/string-energy-2026-10-31/`).
+
+## 2026-10-31 — a third piano, the grand of VCSL Keys
+
+The owner offered more libraries to calibrate the pianos against, to blend
+between or to build new pianos from, keeping one product whose model fits
+them all: VCSL Keys, Pianobook's Grandmas, Yamaha C3 and Grandpas, Mum's
+Upright and a Steinway grand for Decent Sampler. VCSL Keys (Versilian
+Studios) is CC0, so numbers fitted from its "Grand Piano, K", a Kawai grand,
+can ship without asking anyone. The Pianobook and Decent Sampler libraries
+need their authors' permission to be fitted, as the Helsinki library did, and
+none has been asked, so none of them is fitted. The grand is the third
+measured piano, `Piano::kawai`, added after the other two so that saved songs
+and patches recall them as before; the front ends call it the Hamamatsu grand
+(below).
+
+Its recordings are a stereo pair in player position, 44.1 kHz/16-bit, one
+take per note at four velocity layers, the SFZ's 0–54, 55–83, 84–106 and
+107–127, each played at its range's rounded midpoint (27, 69, 95 and 117
+where a pitch has all four), the softest 32.8 dB under the loudest, with a
+release take per recorded pitch and no pedal recordings.
+`Tools/decode_vcsl.py` decodes a copy of the library without gain, trim or
+resampling and verifies it against the pins in `Tools/corpus/vcsl-kawai.json`.
+The lowest takes, which the SFZ maps to A♯0, sound A0 (the strongest peak by
+A♯0's third partial sits 109 to 112 cents under it) and are taken as A0's.
+The split (`Tools/corpus/split-vcsl-kawai-2026-10-31.json`) was written after
+an inventory and before any fit: 27 pitches train (131 files); D♯1, D♯2, A♯3,
+D5, A♯5, B5, F♯7 and G7 dev (31 files with their release takes; B5 and G7
+hold one layer each); D3, F♯4 and F♯6 sealed (14 files), not opened.
+
+`Tools/fit_realtime_modal.py --model kawai` fits it as it fits the other two,
+624 partials at 27 recorded pitches from A0 to C8
+(`Source/DSP/MeasuredKawaiData.h`), with what its recordings ask:
+
+- An order counts where two layers find it, not three. The layers span
+  33 dB, and the second softest finds C4's series to the 15th partial where
+  the two loudest find it to the 29th and 38th: asked of three layers, a
+  forte strike's upper partials went unplayed. On the dev notes the partial
+  levels sit 9.85 dB from the recordings (three layers: 11.17 dB) and the
+  rise 4.98 ms (9.55 ms), while decay sits 5.25 dB/s (5.03 dB/s).
+- Every second-layer take from E3 up was recorded through a noise gate that
+  cuts it to digital silence, channel by channel, 0.6 to 15 s after the
+  strike. The analysis, the fit and the benchmark read a take only until it
+  stops holding the piano, at its first 20 ms of exact silence in either
+  channel (`piano_analysis.recorded_end`). No Salamander take holds such a
+  run, and the Helsinki takes only past the fade-out every measurement
+  leaves out, so the other two fits are unchanged by it.
+- Its release takes scatter by up to 20 dB between neighbouring keys about a
+  fall of 38 dB from A0 to C6: played take by take, a key let go at C4
+  knocked 34 dB louder against its note than one at C6. Each take keeps its
+  modes and plays at the keyboard's trend, a Theil–Sen line through the
+  takes' levels (`release_trend`); from F6 up the library plays no release
+  and those keys take D♯6's. Its SFZ brings every take to about one
+  loudness, so it sets no balance between the action and the notes: a key
+  let go half a second after its strike, and a key landing, play no louder
+  against a velocity-80 note than the grand's do at C2, C4 or C6 (as loud at
+  C2, 11 to 13 dB under at C4, 44 dB under at C6).
+- Its rises are capped at the hammer's contact, as the upright's are: the
+  fit times them past it too, a median 2.5 ms but 35 partials over 30 ms.
+
+It answers velocity through the shared response. Its median note sits
+0.6 dB over the grand's at velocity 127 and 1.4 dB over at velocity 30 (each
+key held, both channels' RMS from 50 to 750 ms), and its softest layer,
+11.6 dB further under its loudest than the grand's, never plays alone. Its
+soft pedal shifts the hammers, as a grand's does. Its output scale (2.8267)
+brings typical playing to −9 VU on Reason's meter, with the other two. Through
+the tube alone (`tubeScale` 1.3201) typical playing reads −10.03 VU, 1.03 dB
+under the pair: within 0.5 dB, where the other pianos' tubes sit, its
+loudest chords through the tube reach the red (+0.07 VU at −9.73 VU), and at
+−10.03 VU they read −0.004 VU. Its A2 is recorded about 4 dB over its
+neighbours in its three loudest layers, the keys between them play toward
+it, and the tube hears more of the bass. The owner first chose a quieter
+tube over evening out the A2, 0.1 dB past the half-decibel bound; the change
+to the keys between recorded pitches (below) then raised those chords, and
+the owner is asked whether the tube goes 1 dB quieter, which
+`KeyraLevels --check` allows the Kawai alone (1.05 dB), or the A2 is evened
+out.
+
+On its 23 dev notes, against the grand's data played on them, the Kawai's
+own data sits closer to the recordings in tuning (2.87 against 4.17 cents),
+attack (8.23 and 8.82 dB), early spectrum (9.45 and 9.55 dB), noise between
+partials (8.77 and 12.66 dB), rise (4.99 and 8.02 ms) and level (3.96 and
+7.27 dB), and further in partial levels (9.88 and 7.74 dB), decay (5.24 and
+4.90 dB/s), image (5.28 and 4.52 dB), envelope (4.91 and 4.26 dB) and the
+sustain spectrum (9.51 and 9.48 dB). Of the 33 notes and measures that
+regress, the largest are B5's partial levels (11.44 to 22.43 dB), early
+spectrum (11.06 to 17.30 dB) and attack (7.82 to 13.75 dB), D5's image
+(4.91 to 11.64 dB) and A♯3's partial levels (5.95 to 11.30 dB)
+([report](validation/kawai-recording-benchmark-2026-10-31.md)). At its
+never-fitted pitches, then, the Kawai's partials stand further from their
+recordings' balance than the grand's data does; the pitches it is fitted
+from lie two to six semitones apart, and B5 sits between G♯5 and C6.
+
+Fitted at the owner's request and checked by measurement; no one has
+listened to it yet.
+
+## 2026-10-31 — a key between two recorded pitches meets them over the levels' window
+
+A key between two recorded pitches sets each blended partial's power between
+the two pitches' in dB, so that its lanes' beating cannot put it under or
+over both. That power was weighed from contact by e^(−t/0.4 s), the mean time
+of the 50–750 ms window the layers' levels and the benchmark's gain are
+measured over, and so it counted a lane that dies within the first 50 ms for
+its whole energy. The Kawai's A6 fundamental holds such a lane: the keys
+below it took a share of a burst the window never hears, and the engine's
+F♯6 played 4.3 dB over both D♯6 and A6 (renders of the three keys; F♯6's
+recordings stay sealed), past `Keyra.Engine`'s 3 dB. The power is now
+integrated over the window itself (`windowPower`), as a build between two
+pianos already measured it.
+
+On the dev notes, against the engine before it: the grand's partial levels
+move 5.39 to 5.33 dB, its early spectrum 4.55 to 4.52 dB, its sustain
+spectrum 5.35 to 5.31 dB and its rise 4.76 to 4.61 ms, while its level moves
+0.94 to 1.01 dB, with no regression
+([report](validation/grand-between-window-benchmark-2026-10-31.md)). The
+upright's attack moves 6.41 to 6.37 dB, its early spectrum 7.14 to 7.09 dB
+and its rise 6.21 to 6.01 ms, while its partial levels move 8.39 to 8.46 dB
+and its level 2.41 to 2.46 dB, with no regression
+([report](validation/upright-between-window-benchmark-2026-10-31.md)). The
+Kawai's early spectrum moves 9.81 to 9.45 dB, its attack 8.39 to 8.23 dB and
+its level 4.00 to 3.96 dB, while its partial levels move 9.85 to 9.88 dB;
+its three regressions are F♯7's level (8.10 to 10.14 dB) and partial levels
+(9.22 to 9.88 dB) and B5's level (7.68 to 8.31 dB)
+([report](validation/kawai-between-window-benchmark-2026-10-31.md)).
+
+It moves typical playing, so the scales are re-pinned: the grand's to
+0.7680 and 1.5139 (were 0.7699 and 1.5091) and the upright's to 2.2755 and
+2.1763 (were 2.2040 and 2.1196), which puts the upright's median note at
+velocity 127 0.4 dB over the grand's. Chosen by measurement, as the owner's
+standing direction asks; no one has listened to it yet.
+
+## 2026-10-31 — a palette: each part mixes any of the recorded pianos
+
+The owner asked for a palette of parameters (strings, wood, detune, mics,
+stiffness, unison spread) and presets that set them to play like one
+particular piano, under other names, the user free to change any of them,
+where the build could only blend two pianos. It continues their earlier
+asks: one product, no strip but parameters and presets, and the power to
+tune those parameters into hybrids by hand.
+
+Each part of `keyra::Build` (strings, hammers, soundboard, action) now holds
+a weight from 0 to 1 for each measured piano (`keyra::Mix`), played as
+shares of their sum, so any number of pianos mix in any part; a part with no
+weight plays the grand's. The engine mixes the pianos' values two at a time
+in `Piano`'s order, each next piano at its share of the shares so far
+(`fold`), so that two pianos mix exactly as the two-piano build mixed them
+and more as that rule's weighted mean: every measured piano, every
+two-piano build and every demo renders sample for sample as before. A body
+mode the boards share mixes their powers at their shares, with the phase of
+the largest share's; one only some boards have plays from those at their
+share in power, as before. A strike's partials come from each piano's two
+recorded pitches around the key, merged by order across the pianos, and an
+order only some pianos play plays at their share of the hammers in power.
+Stiffness, Unisons and Ring stretch what the parts build, as before. Of the
+owner's list, detune is Unisons, how far each partial's unison strings sit
+apart, the wood is the Soundboard part and the mics are the Tube Mic
+control. Halfway between the grand and the upright every third key plays
+within 0.93 dB of between the two pianos' levels, and at equal thirds of the
+three within 1.37 dB of between the three's, soft, middle and full
+(`Keyra.Engine`, under 2 dB).
+
+In the plug-in the weights are twelve parameters, `strings1` to `action3`,
+the n-th of each part the n-th of `Piano` (`weightId`), shown as percentages
+and not offered for automation: a build is chosen for a part, not played. A
+piano added later adds its four without changing the others'. The Build view
+lays them out as a grid, a row per part and a column per piano under its
+city, beside Stiffness, Unisons and Ring. The Piano control is gone and the
+preset menu takes its place. A session saved with the Piano control and the
+two-piano parts opens as the same build (`buildToward(piano, partner(piano),
+…)`), and a state holding both kinds of parameter is refused.
+
+The owner was asked whether each part takes a weight per piano or one knob
+that sweeps the pianos in a row: four knobs, but only neighbours in the row
+blend, never Helsinki with Hamamatsu directly. The weights are built, as
+recommended, while the answer is pending. Checked by measurement; no one has
+listened to a build of three pianos yet.
+
+## 2026-10-31 — the pianos and the presets go by cities
+
+The owner asked for presets of particular pianos under other names than
+their makers', such as the cities the makers come from: Reason's identity
+rule keeps makers' names, model numbers and trademarks off panels, patches
+and copy. The front ends name the pianos by `keyra::pianoCities` and
+`pianoKinds`: the Salamander grand is the Kakegawa grand, the Helsinki
+upright keeps its city, and the VCSL grand is the Hamamatsu grand. Both
+grands' makers come from Hamamatsu, so the Salamander grand takes Kakegawa,
+where its maker builds its grands.
+
+The bank holds ten presets. Concert Grand is renamed Kakegawa Grand and
+Rehearsal Upright Helsinki Upright; the other six keep their names, and all
+eight their program numbers, so a session recalls the preset it chose. Two
+are added: Hamamatsu Grand, the third piano as built, and Three Cities, every
+part at equal thirds of the three, both at the default voicing. A preset
+sets the parts' weights, the modifiers and the voicing; Output, Tuning,
+Quality, Mechanics, Tube Mic and the pedals keep their values.
+
+The owner also named a Steinway. The model plays only the pianos it
+measures, and a preset only mixes them, so no preset imitates one: the
+Steinway grand for Decent Sampler would need its own fit and its author's
+permission.
+
+The README keeps eight demos, each a different side of the instrument: Studio
+Grand, a brighter and narrower Kakegawa Grand, and Felt Upright, the felt
+Felt Nocturne already shows, leave the set, and the two new presets take
+their places with phrases of their own: Hamamatsu Grand plays two voices
+without the pedal, each line heard on its own, and Three Cities a chorale
+whose chords sound the blend across the range. The renamed presets keep their
+phrases. Each
+file takes its preset's program number (`01-kakegawa-grand` to
+`10-three-cities`), and `Tools/write_preset_midi.py` checks the set against
+the bank.
+
+Hamamatsu Grand fails `Keyra.Levels`. Through the output stage its chords at
+velocity 127 read a median 0.04 dB under the same chords at 110, where every
+other preset's read louder, as the step check asks. Before the stage they
+read 1.5 to 2.9 dB louder (chord by chord, five rounds each), and the stage's
+guard, which keeps its loudest chords at −1.2 VU, takes the step: lowering
+the Kawai's output gives back 0.09 dB of it per dB, and the in-between
+change above is not the cause (before it the step read −0.05 dB). The owner
+is asked whether its top velocities may level off there, whether the Kawai
+plays 1 dB quieter overall, or whether the preset waits.

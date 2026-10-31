@@ -1,0 +1,2548 @@
+{
+  "schema_version": 7,
+  "corpus": "Tools/corpus/vcsl-kawai.json",
+  "corpus_sha256": "36fadc7bca1609381d2c7aaa6b943fdf8a054bbf88304546392425bfb6d61046",
+  "split": "Tools/corpus/split-vcsl-kawai-2026-10-31.json",
+  "split_sha256": "79fc59f8221ca85feccc5ea0fe1ee245202b021cfdad6f69987b0f27ceeca165",
+  "roles_used": [
+    "train"
+  ],
+  "dev_or_sealed_recordings_opened": false,
+  "analysis_source_sha256": "cea860b458b7d51cf4b247d1ae8046c896b10dd1078afb20761cc32cb21bcbf0",
+  "fitter_source_sha256": "6a936adfc9208d062f561479db0170c0bbe9aaf55229bf7ad11ba5624e7d8a31",
+  "tool_versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "layer_velocity": [
+    27.0,
+    69.0,
+    95.0,
+    117.0
+  ],
+  "layer_level_db": [
+    -32.846,
+    -18.568,
+    -4.127,
+    0.0
+  ],
+  "model": "Per partial four lanes with complex rates shared by all layers under one rise 1 - e^(-t/rise) that starts them from zero, never shorter than the anchor's onset rise measured from the recordings' build-up; per lane a velocity-independent pickup shape and a smoothed level and phase at string contact per layer, the layers shifted in time to one phase pattern across the partials; in a layer where a component does not stand clear of its floor, no louder than its recorded peak there. Partials are interpolated between anchors by order, lanes fastest first. Beside the series, the residual peaks at least four layers share: above 1 kHz those 20 dB over their surroundings (the 64 most powerful per anchor), each measured through a window that parts it from its neighbours and fitted with one lane from contact, placed by the series in cents from its nearest order and cross-faded in power between anchors; peaks within 15 cents of the fundamental are left to the partial's lanes, and those beside the undamped strings' pitches (MIDI 89-108) to the halo. The undamped strings ring with every strike, struck key excepted: each at one frequency, the median of the strongest peak within 30 cents of its key's pitch 1 to 2 s after contact in the train recordings from C6 up, where clear; measured as tones (the largest amplitude within 1 Hz through 0.5 s Hann windows every 0.25 s from 1 to 2 s after contact, both channels' mean power, clear where 10 dB over the median 4 to 20 Hz either side) in the train recordings from F#3 up, where no partial of the struck series lies within 10 Hz: per string one decay rate (its median fall from 1 to 2 s, drawn towards all the strings' median by ten recordings) and one stereo pickup (the median level difference and mean phase between the channels), one slope in the level the strike's layer plays at (dB per dB) rising by one step per octave the string lies over the struck fundamental, and per anchor and string a level at contact at its loudest layer: where the string rang clear in two or more windows of two or more layers, fitted with the slope over every layer, the clear ones' mean level brought back at the rate and the others' 1 s tone as an upper bound (one spread, censored), or else 10 dB under the median 1 s bound but never over the tightest; strings the struck series or key covers and anchors below F#3 take the levels of the anchors around. Every string starts with its own prompt part, all decaying at one rate: through 0.25 s Hann windows from 0.125 to 0.5 s after contact, in the layers where a string 60 Hz from every partial rang clear from 1 to 2 s, its excess over its own line there; the rate fitted where strings rang clear then (10 dB over the median 16 to 60 Hz either side), each string's level censored where the noise hid it and drawn towards the strings' median by ten layers' worth of windows. One bank of body modes shared by every key, found in the treble anchors' residuals below 0.8 f1, each with one stereo pickup and a ring falling in two stages, the second's decay measured 0.4 to 1.5 s after contact and its level 0.4 to 0.95 s, the first's from 20 ms, and from 45 ms, after the knock, for the modes in the bands where a first such fit, in every band the anchor can measure the knock in, finds it; per anchor, mode and stage a complex excitation at string contact whose dB level is linear in the level its layer plays at, modes hidden by an anchor's partials taken from its neighbours. The action's knocks on the same modes (each anchor's key release; one train take each, in those files' own scale) fitted from their onsets under one shared rise. Above the modes, third-octave band noise from 1 to 16 kHz: per anchor and band a density at contact per layer, one exponential decay and a left/right balance, measured in the residual 2 to 100 ms after contact, and under the fundamental the ring's slower second stage, its start per layer and its decay, measured 150 to 600 ms after contact; one left/right coherence per band. The strike's knock in third-octave bands from 400 Hz to 16 kHz: through 20 ms Hann frames every 2.5 ms centred 10 to 35 ms after contact, between the partials, what the residual holds beyond the body modes and the ring, where it stands over the ring in four frames or more and falls faster than it; per anchor and band one decay, the median of its layers' slopes, and per layer a density at contact under that decay, smoothed across velocity, and one left/right balance; none where fewer than three layers find it, and where the partials leave too few bins, the levels of the anchors on either side that measure it, none beyond them. Anchors recorded at other velocities than the layers most have are carried onto those as the engine plays between and beyond layers.",
+  "anchors": [
+    {
+      "note": 21,
+      "cases": [
+        "n21v1",
+        "n21v2",
+        "n21v3"
+      ],
+      "f1_hz": 27.37925323883132,
+      "stiffness": 0.00028852333135811814,
+      "partials": 51,
+      "extras": 0,
+      "contact_delay_ms": [
+        10.362,
+        2.38,
+        2.357
+      ],
+      "layer_shift_ms": [
+        0.615,
+        0.13,
+        0.0
+      ],
+      "median_phase_agreement": 0.8594174245033507,
+      "onset_rise_ms": [
+        2.131,
+        11.324,
+        9.852
+      ],
+      "median_relative_error": 0.2818859077513789,
+      "recorded_velocities": [
+        33.0,
+        83.0,
+        114.0
+      ],
+      "body_explained": [
+        0.188,
+        0.111,
+        0.036
+      ],
+      "body_modes_hidden": 10,
+      "body_phase_coherence": 0.9921822152521274,
+      "noise_bands_filled": 5,
+      "knock_bands_filled": 9,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 24,
+      "cases": [
+        "n24v1",
+        "n24v2",
+        "n24v3",
+        "n24v4"
+      ],
+      "f1_hz": 32.60297242986215,
+      "stiffness": 0.0002019014175490911,
+      "partials": 55,
+      "extras": 0,
+      "contact_delay_ms": [
+        5.827,
+        9.885,
+        3.06,
+        3.808
+      ],
+      "layer_shift_ms": [
+        -0.42,
+        -0.925,
+        0.205,
+        0.0
+      ],
+      "median_phase_agreement": 0.8290406302847964,
+      "onset_rise_ms": [
+        0.7,
+        1.063,
+        14.958,
+        0.304
+      ],
+      "median_relative_error": 0.32185507141839814,
+      "body_explained": [
+        0.017,
+        0.143,
+        0.123,
+        0.072
+      ],
+      "body_modes_hidden": 9,
+      "body_phase_coherence": 0.9761579557102099,
+      "noise_bands_filled": 7,
+      "knock_bands_filled": 11,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 30,
+      "cases": [
+        "n30v1",
+        "n30v2",
+        "n30v3",
+        "n30v4"
+      ],
+      "f1_hz": 46.07711214672756,
+      "stiffness": 0.00017362089222288404,
+      "partials": 44,
+      "extras": 0,
+      "contact_delay_ms": [
+        5.35,
+        7.164,
+        9.387,
+        3.65
+      ],
+      "layer_shift_ms": [
+        0.25,
+        -0.45,
+        -0.355,
+        0.0
+      ],
+      "median_phase_agreement": 0.7637770443902816,
+      "onset_rise_ms": [
+        2.131,
+        1.404,
+        0.925,
+        0.804
+      ],
+      "median_relative_error": 0.18009791814497,
+      "body_explained": [
+        0.061,
+        0.112,
+        0.116,
+        0.13
+      ],
+      "body_modes_hidden": 6,
+      "body_phase_coherence": 0.9380515169851475,
+      "noise_bands_filled": 8,
+      "knock_bands_filled": 12,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 33,
+      "cases": [
+        "n33v1",
+        "n33v2",
+        "n33v3",
+        "n33v4"
+      ],
+      "f1_hz": 54.81373002050724,
+      "stiffness": 0.00014106722454294813,
+      "partials": 47,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.38,
+        5.713,
+        8.139,
+        2.856
+      ],
+      "layer_shift_ms": [
+        -3.005,
+        -3.005,
+        1.995,
+        0.0
+      ],
+      "median_phase_agreement": 0.7303230545247912,
+      "onset_rise_ms": [
+        0.7,
+        0.7,
+        0.2,
+        8.572
+      ],
+      "median_relative_error": 0.21299558678344307,
+      "body_explained": [
+        0.101,
+        0.202,
+        0.092,
+        0.054
+      ],
+      "body_modes_hidden": 5,
+      "body_phase_coherence": 0.95524660891353,
+      "noise_bands_filled": 6,
+      "knock_bands_filled": 11,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 36,
+      "cases": [
+        "n36v1",
+        "n36v2",
+        "n36v3",
+        "n36v4"
+      ],
+      "f1_hz": 64.8812672567724,
+      "stiffness": 0.00014460694403648928,
+      "partials": 42,
+      "extras": 0,
+      "contact_delay_ms": [
+        6.666,
+        5.917,
+        4.897,
+        4.126
+      ],
+      "layer_shift_ms": [
+        -0.365,
+        0.12,
+        0.395,
+        0.0
+      ],
+      "median_phase_agreement": 0.9365288359736494,
+      "onset_rise_ms": [
+        3.719,
+        2.131,
+        4.913,
+        3.719
+      ],
+      "median_relative_error": 0.2739737940563048,
+      "body_explained": [
+        0.132,
+        0.134,
+        0.227,
+        0.149
+      ],
+      "body_modes_hidden": 4,
+      "body_phase_coherence": 0.9691031498356448,
+      "noise_bands_filled": 7,
+      "knock_bands_filled": 12,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 42,
+      "cases": [
+        "n42v1",
+        "n42v2",
+        "n42v3",
+        "n42v4"
+      ],
+      "f1_hz": 92.32229308603202,
+      "stiffness": 0.00011650098511054666,
+      "partials": 34,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.675,
+        1.427,
+        4.715,
+        2.629
+      ],
+      "layer_shift_ms": [
+        -0.45,
+        0.165,
+        -0.37,
+        0.0
+      ],
+      "median_phase_agreement": 0.8811100653684603,
+      "onset_rise_ms": [
+        0.804,
+        0.925,
+        0.2,
+        0.925
+      ],
+      "median_relative_error": 0.277932812169621,
+      "body_explained": [
+        0.067,
+        0.048,
+        0.131,
+        0.156
+      ],
+      "body_modes_hidden": 5,
+      "body_phase_coherence": 0.9868443790543351,
+      "noise_bands_filled": 8,
+      "knock_bands_filled": 13,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 45,
+      "cases": [
+        "n45v1",
+        "n45v2",
+        "n45v3",
+        "n45v4"
+      ],
+      "f1_hz": 109.69331529033971,
+      "stiffness": 0.00010222825813830537,
+      "partials": 37,
+      "extras": 0,
+      "contact_delay_ms": [
+        3.718,
+        1.314,
+        4.783,
+        4.965
+      ],
+      "layer_shift_ms": [
+        -0.81,
+        0.395,
+        0.275,
+        0.0
+      ],
+      "median_phase_agreement": 0.9671077786550951,
+      "onset_rise_ms": [
+        13.015,
+        1.063,
+        1.404,
+        0.2
+      ],
+      "median_relative_error": 0.22504273768985028,
+      "body_explained": [
+        0.147,
+        0.248,
+        0.187,
+        0.155
+      ],
+      "body_modes_hidden": 3,
+      "body_phase_coherence": 0.9590008083529591,
+      "noise_bands_filled": 9,
+      "knock_bands_filled": 13,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 48,
+      "cases": [
+        "n48v1",
+        "n48v2",
+        "n48v3",
+        "n48v4"
+      ],
+      "f1_hz": 130.38816165574198,
+      "stiffness": 0.0001921993369521031,
+      "partials": 46,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.992,
+        1.813,
+        2.675,
+        3.491
+      ],
+      "layer_shift_ms": [
+        0.185,
+        0.665,
+        0.55,
+        0.0
+      ],
+      "median_phase_agreement": 0.9615472028078313,
+      "onset_rise_ms": [
+        5.646,
+        4.913,
+        5.646,
+        1.613
+      ],
+      "median_relative_error": 0.466392625863395,
+      "body_explained": [
+        0.092,
+        0.077,
+        0.196,
+        0.103
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.9364867061685165,
+      "noise_bands_filled": 9,
+      "knock_bands_filled": 13,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 52,
+      "cases": [
+        "n52v1",
+        "n52v2",
+        "n52v3",
+        "n52v4"
+      ],
+      "f1_hz": 164.2382957190414,
+      "stiffness": 0.00017948197098706923,
+      "partials": 29,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.836,
+        2.04,
+        1.926,
+        0.929
+      ],
+      "layer_shift_ms": [
+        0.07,
+        -0.11,
+        -0.075,
+        0.0
+      ],
+      "median_phase_agreement": 0.9803897356723402,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        3.236,
+        4.913
+      ],
+      "median_relative_error": 0.475141751883831,
+      "body_explained": [
+        0.042,
+        0.044,
+        0.189,
+        0.107
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.9190300496722573,
+      "noise_bands_filled": 8,
+      "knock_bands_filled": 13,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [],
+        "under": [],
+        "filled": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ]
+      }
+    },
+    {
+      "note": 54,
+      "cases": [
+        "n54v1",
+        "n54v2",
+        "n54v3",
+        "n54v4"
+      ],
+      "f1_hz": 184.67087011875176,
+      "stiffness": 0.00018932889039397494,
+      "partials": 39,
+      "extras": 0,
+      "contact_delay_ms": [
+        3.627,
+        1.359,
+        1.858,
+        2.312
+      ],
+      "layer_shift_ms": [
+        0.03,
+        0.44,
+        0.4,
+        0.0
+      ],
+      "median_phase_agreement": 0.9645195500283316,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        2.449,
+        3.236
+      ],
+      "median_relative_error": 0.39790300760234587,
+      "body_explained": [
+        0.119,
+        0.077,
+        0.122,
+        0.102
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.9222048472216238,
+      "noise_bands_filled": 5,
+      "knock_bands_filled": 14,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [
+          92,
+          101,
+          106,
+          108
+        ],
+        "under": [
+          89,
+          91,
+          93,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          102,
+          103,
+          104,
+          105,
+          107
+        ],
+        "filled": [
+          90,
+          94
+        ]
+      }
+    },
+    {
+      "note": 56,
+      "cases": [
+        "n56v1",
+        "n56v2",
+        "n56v3",
+        "n56v4"
+      ],
+      "f1_hz": 206.84263491928053,
+      "stiffness": 0.00020633816592000582,
+      "partials": 22,
+      "extras": 0,
+      "contact_delay_ms": [
+        3.446,
+        1.836,
+        1.7,
+        2.402
+      ],
+      "layer_shift_ms": [
+        -1.87,
+        -0.11,
+        -0.06,
+        0.0
+      ],
+      "median_phase_agreement": 0.8885053936873237,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "median_relative_error": 0.3866444219042613,
+      "body_explained": [
+        0.16,
+        0.147,
+        0.302,
+        0.148
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.9396632106629454,
+      "noise_bands_filled": 1,
+      "knock_bands_filled": 14,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [
+          90,
+          94
+        ],
+        "under": [
+          89,
+          91,
+          93,
+          95,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          92,
+          96
+        ]
+      }
+    },
+    {
+      "note": 60,
+      "cases": [
+        "n60v1",
+        "n60v2",
+        "n60v3",
+        "n60v4"
+      ],
+      "f1_hz": 260.81525945654937,
+      "stiffness": 0.00029287249825466757,
+      "partials": 26,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.652,
+        2.221,
+        1.994,
+        2.334
+      ],
+      "layer_shift_ms": [
+        -0.335,
+        -0.365,
+        -0.14,
+        0.0
+      ],
+      "median_phase_agreement": 0.9510205811158773,
+      "onset_rise_ms": [
+        7.458,
+        0.2,
+        1.613,
+        1.063
+      ],
+      "median_relative_error": 0.45864237804183083,
+      "body_explained": [
+        0.121,
+        0.082,
+        0.12,
+        0.202
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.9468949858586257,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 14,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [
+          96,
+          98
+        ],
+        "under": [
+          89,
+          90,
+          92,
+          93,
+          94,
+          95,
+          97,
+          99,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          91,
+          100
+        ]
+      }
+    },
+    {
+      "note": 62,
+      "cases": [
+        "n62v1",
+        "n62v2",
+        "n62v3",
+        "n62v4"
+      ],
+      "f1_hz": 291.9252570863349,
+      "stiffness": 0.0003592708515750378,
+      "partials": 26,
+      "extras": 0,
+      "contact_delay_ms": [
+        4.307,
+        2.244,
+        1.904,
+        2.266
+      ],
+      "layer_shift_ms": [
+        1.38,
+        -0.25,
+        0.01,
+        0.0
+      ],
+      "median_phase_agreement": 0.9210087781475816,
+      "onset_rise_ms": [
+        2.815,
+        0.53,
+        1.063,
+        3.236
+      ],
+      "median_relative_error": 0.4850481855890091,
+      "body_explained": [
+        0.154,
+        0.063,
+        0.167,
+        0.128
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9463559581681952,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 14,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [
+          105
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          94,
+          95,
+          96,
+          97,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          106,
+          108
+        ],
+        "filled": [
+          93,
+          98,
+          107
+        ]
+      }
+    },
+    {
+      "note": 64,
+      "cases": [
+        "n64v1",
+        "n64v2",
+        "n64v3",
+        "n64v4"
+      ],
+      "f1_hz": 327.757716424174,
+      "stiffness": 0.0004105879761682623,
+      "partials": 23,
+      "extras": 0,
+      "contact_delay_ms": [
+        4.988,
+        1.7,
+        2.334,
+        1.79
+      ],
+      "layer_shift_ms": [
+        1.44,
+        -0.015,
+        -0.15,
+        0.0
+      ],
+      "median_phase_agreement": 0.9480276056305349,
+      "onset_rise_ms": [
+        3.719,
+        0.7,
+        0.2,
+        0.2
+      ],
+      "median_relative_error": 0.47573689577367834,
+      "body_explained": [
+        0.106,
+        0.045,
+        0.152,
+        0.211
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9233233313592024,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 13,
+      "knock_measured": 0,
+      "halo_strings": {
+        "clear": [
+          94
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          96,
+          97,
+          98,
+          99,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          95,
+          100
+        ]
+      }
+    },
+    {
+      "note": 68,
+      "cases": [
+        "n68v1",
+        "n68v2",
+        "n68v3",
+        "n68v4"
+      ],
+      "f1_hz": 414.5433260748319,
+      "stiffness": 0.0006076573113929193,
+      "partials": 14,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.539,
+        1.632,
+        1.45,
+        0.951
+      ],
+      "layer_shift_ms": [
+        -0.66,
+        -0.395,
+        -0.03,
+        0.0
+      ],
+      "median_phase_agreement": 0.9398106167917237,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        0.2,
+        1.854
+      ],
+      "median_relative_error": 0.39295354761724655,
+      "body_explained": [
+        0.149,
+        0.065,
+        0.229,
+        0.088
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.940312713598041,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 5,
+      "knock_measured": 4,
+      "halo_strings": {
+        "clear": [],
+        "under": [
+          89,
+          90,
+          91,
+          93,
+          94,
+          95,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          92,
+          96
+        ]
+      }
+    },
+    {
+      "note": 70,
+      "cases": [
+        "n70v1",
+        "n70v2",
+        "n70v3",
+        "n70v4"
+      ],
+      "f1_hz": 464.6374338730874,
+      "stiffness": 0.0007048234178604176,
+      "partials": 13,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.788,
+        1.427,
+        1.155,
+        1.178
+      ],
+      "layer_shift_ms": [
+        -0.655,
+        -0.305,
+        -0.12,
+        0.0
+      ],
+      "median_phase_agreement": 0.9598590021010094,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        2.131,
+        1.404
+      ],
+      "median_relative_error": 0.40521991654250655,
+      "body_explained": [
+        0.3,
+        0.161,
+        0.327,
+        0.207
+      ],
+      "body_modes_hidden": 2,
+      "body_phase_coherence": 0.9703632936709099,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 3,
+      "knock_measured": 13,
+      "halo_strings": {
+        "clear": [],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          95,
+          96,
+          97,
+          99,
+          100,
+          101,
+          102,
+          103,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          94,
+          98,
+          104
+        ]
+      }
+    },
+    {
+      "note": 72,
+      "cases": [
+        "n72v1",
+        "n72v2",
+        "n72v3",
+        "n72v4"
+      ],
+      "f1_hz": 522.3979054395845,
+      "stiffness": 0.0008103683790759174,
+      "partials": 12,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.654,
+        1.133,
+        1.178,
+        1.382
+      ],
+      "layer_shift_ms": [
+        -0.455,
+        -0.015,
+        0.025,
+        0.0
+      ],
+      "median_phase_agreement": 0.9626350973223643,
+      "onset_rise_ms": [
+        0.2,
+        8.572,
+        5.646,
+        5.646
+      ],
+      "median_relative_error": 0.480075848610162,
+      "body_explained": [
+        0.145,
+        0.084,
+        0.2,
+        0.172
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.9818749692609756,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 4,
+      "knock_measured": 7,
+      "halo_strings": {
+        "clear": [
+          103,
+          108
+        ],
+        "under": [
+          89,
+          90,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          104,
+          105,
+          107
+        ],
+        "filled": [
+          91,
+          106
+        ]
+      }
+    },
+    {
+      "note": 76,
+      "cases": [
+        "n76v1",
+        "n76v2",
+        "n76v3",
+        "n76v4"
+      ],
+      "f1_hz": 658.0932171695326,
+      "stiffness": 0.0012562612103170126,
+      "partials": 13,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.541,
+        1.11,
+        0.747,
+        1.065
+      ],
+      "layer_shift_ms": [
+        -0.675,
+        -0.41,
+        -0.035,
+        0.0
+      ],
+      "median_phase_agreement": 0.9875074236412097,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        5.646,
+        7.458
+      ],
+      "median_relative_error": 0.408789464852878,
+      "body_explained": [
+        0.254,
+        0.347,
+        0.194,
+        0.138
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.970777678589365,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 2,
+      "knock_measured": 10,
+      "halo_strings": {
+        "clear": [
+          104
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          101,
+          102,
+          103,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          100
+        ]
+      }
+    },
+    {
+      "note": 78,
+      "cases": [
+        "n78v1",
+        "n78v2",
+        "n78v3",
+        "n78v4"
+      ],
+      "f1_hz": 739.4521465824977,
+      "stiffness": 0.0014891078597391377,
+      "partials": 9,
+      "extras": 0,
+      "contact_delay_ms": [
+        3.219,
+        1.065,
+        0.724,
+        1.155
+      ],
+      "layer_shift_ms": [
+        0.585,
+        -0.225,
+        0.165,
+        0.0
+      ],
+      "median_phase_agreement": 0.9312784350262431,
+      "onset_rise_ms": [
+        5.646,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "median_relative_error": 0.34569774726253855,
+      "body_explained": [
+        0.175,
+        0.217,
+        0.099,
+        0.304
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9332345135474971,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 2,
+      "knock_measured": 3,
+      "halo_strings": {
+        "clear": [],
+        "under": [
+          89,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          90,
+          102
+        ]
+      }
+    },
+    {
+      "note": 80,
+      "cases": [
+        "n80v1",
+        "n80v2",
+        "n80v3",
+        "n80v4"
+      ],
+      "f1_hz": 830.1057291784876,
+      "stiffness": 0.0017632457983732162,
+      "partials": 11,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.926,
+        1.019,
+        0.929,
+        0.883
+      ],
+      "layer_shift_ms": [
+        -0.375,
+        0.32,
+        -0.045,
+        0.0
+      ],
+      "median_phase_agreement": 0.9426053145606658,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "median_relative_error": 0.5172207968120919,
+      "body_explained": [
+        0.345,
+        0.004,
+        0.156,
+        0.068
+      ],
+      "body_modes_hidden": 1,
+      "body_phase_coherence": 0.975964449844234,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 1,
+      "knock_measured": 6,
+      "halo_strings": {
+        "clear": [],
+        "under": [
+          89,
+          90,
+          91,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          92
+        ]
+      }
+    },
+    {
+      "note": 84,
+      "cases": [
+        "n84v1",
+        "n84v2",
+        "n84v3",
+        "n84v4"
+      ],
+      "f1_hz": 1046.4155367652797,
+      "stiffness": 0.0025900177296787363,
+      "partials": 10,
+      "extras": 0,
+      "contact_delay_ms": [
+        2.561,
+        1.065,
+        1.087,
+        0.951
+      ],
+      "layer_shift_ms": [
+        -0.295,
+        0.05,
+        0.08,
+        0.0
+      ],
+      "median_phase_agreement": 0.8857042571079012,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        8.572,
+        8.572
+      ],
+      "median_relative_error": 0.3578375457269298,
+      "body_explained": [
+        0.227,
+        0.16,
+        0.279,
+        0.099
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9718285641759037,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 1,
+      "knock_measured": 29,
+      "halo_strings": {
+        "clear": [
+          95,
+          96
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": []
+      }
+    },
+    {
+      "note": 87,
+      "cases": [
+        "n87v1",
+        "n87v2",
+        "n87v3"
+      ],
+      "f1_hz": 1241.1459951254578,
+      "stiffness": 0.003446056158232484,
+      "partials": 6,
+      "extras": 0,
+      "contact_delay_ms": [
+        0.929,
+        0.883,
+        1.019
+      ],
+      "layer_shift_ms": [
+        -0.035,
+        0.055,
+        0.0
+      ],
+      "median_phase_agreement": 0.7718848832228011,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        2.449
+      ],
+      "median_relative_error": 0.436749406421709,
+      "recorded_velocities": [
+        42.0,
+        95.0,
+        117.0
+      ],
+      "body_explained": [
+        0.308,
+        0.42,
+        0.583
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9537165486046731,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 1,
+      "knock_measured": 21,
+      "halo_strings": {
+        "clear": [
+          90,
+          91,
+          92,
+          93
+        ],
+        "under": [
+          89,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": []
+      }
+    },
+    {
+      "note": 93,
+      "cases": [
+        "n93v1",
+        "n93v2",
+        "n93v3"
+      ],
+      "f1_hz": 1761.4179145906292,
+      "stiffness": 0.006405182867658788,
+      "partials": 4,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.609,
+        1.563,
+        1.609
+      ],
+      "layer_shift_ms": [
+        -0.035,
+        -0.015,
+        0.0
+      ],
+      "median_phase_agreement": 0.9507091281967728,
+      "onset_rise_ms": [
+        7.458,
+        4.913,
+        0.925
+      ],
+      "median_relative_error": 0.28786661556203064,
+      "recorded_velocities": [
+        42.0,
+        95.0,
+        117.0
+      ],
+      "body_explained": [
+        0.436,
+        0.507,
+        0.51
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.927669419190124,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 0,
+      "knock_measured": 24,
+      "halo_strings": {
+        "clear": [
+          92,
+          94,
+          95,
+          105
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          93
+        ]
+      }
+    },
+    {
+      "note": 96,
+      "cases": [
+        "n96v1",
+        "n96v2",
+        "n96v3",
+        "n96v4"
+      ],
+      "f1_hz": 2094.217058751585,
+      "stiffness": 0.007265614307137821,
+      "partials": 5,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.654,
+        1.563,
+        1.586,
+        1.609
+      ],
+      "layer_shift_ms": [
+        -0.175,
+        -0.03,
+        -0.015,
+        0.0
+      ],
+      "median_phase_agreement": 0.8899999325936064,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        4.274,
+        3.236
+      ],
+      "median_relative_error": 0.4081837187297613,
+      "body_explained": [
+        0.367,
+        0.348,
+        0.542,
+        0.5
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9638061037058212,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 0,
+      "knock_measured": 31,
+      "halo_strings": {
+        "clear": [
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          108
+        ],
+        "under": [
+          89,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107
+        ],
+        "filled": [
+          96
+        ]
+      }
+    },
+    {
+      "note": 99,
+      "cases": [
+        "n99v1",
+        "n99v2",
+        "n99v3"
+      ],
+      "f1_hz": 2490.3531064189146,
+      "stiffness": 0.010420158783673108,
+      "partials": 2,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.359,
+        1.155,
+        1.223
+      ],
+      "layer_shift_ms": [
+        0.14,
+        -0.05,
+        0.0
+      ],
+      "median_phase_agreement": 0.9147500399335333,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "median_relative_error": 0.30109619741612537,
+      "recorded_velocities": [
+        42.0,
+        95.0,
+        117.0
+      ],
+      "body_explained": [
+        0.376,
+        0.455,
+        0.534
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9494384014687923,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 0,
+      "knock_measured": 21,
+      "halo_strings": {
+        "clear": [
+          97,
+          100
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          98,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          99
+        ]
+      }
+    },
+    {
+      "note": 105,
+      "cases": [
+        "n105v1",
+        "n105v2",
+        "n105v3",
+        "n105v4"
+      ],
+      "f1_hz": 3520.9635194178086,
+      "stiffness": 0.016417029182663058,
+      "partials": 2,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.813,
+        1.291,
+        1.269,
+        1.087
+      ],
+      "layer_shift_ms": [
+        0.0,
+        0.1,
+        0.07,
+        0.0
+      ],
+      "median_phase_agreement": 0.9283254026828691,
+      "onset_rise_ms": [
+        0.2,
+        4.913,
+        4.274,
+        0.2
+      ],
+      "median_relative_error": 0.4235488734672203,
+      "body_explained": [
+        0.161,
+        0.16,
+        0.4,
+        0.463
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.8553955240751056,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 0,
+      "knock_measured": 32,
+      "halo_strings": {
+        "clear": [
+          104
+        ],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          106,
+          107,
+          108
+        ],
+        "filled": [
+          105
+        ]
+      }
+    },
+    {
+      "note": 108,
+      "cases": [
+        "n108v1",
+        "n108v2",
+        "n108v3",
+        "n108v4"
+      ],
+      "f1_hz": 4172.293524334804,
+      "stiffness": 0.01964484776462635,
+      "partials": 2,
+      "extras": 0,
+      "contact_delay_ms": [
+        1.178,
+        1.133,
+        1.065,
+        1.201
+      ],
+      "layer_shift_ms": [
+        0.055,
+        0.005,
+        -0.065,
+        0.0
+      ],
+      "median_phase_agreement": 0.7787891322346614,
+      "onset_rise_ms": [
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "median_relative_error": 0.2821709430274243,
+      "body_explained": [
+        0.188,
+        0.143,
+        0.484,
+        0.539
+      ],
+      "body_modes_hidden": 0,
+      "body_phase_coherence": 0.9226337151730918,
+      "noise_bands_filled": 0,
+      "knock_bands_filled": 0,
+      "knock_measured": 40,
+      "halo_strings": {
+        "clear": [],
+        "under": [
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107
+        ],
+        "filled": [
+          108
+        ]
+      }
+    }
+  ],
+  "halo": {
+    "strings": [
+      {
+        "key": 89,
+        "hz": 1373.62,
+        "cents": -26.45,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 1.76,
+        "prompt_windows": 0,
+        "prompt_clear": 0,
+        "right_over_left_db": 3.3,
+        "phase": 1.214
+      },
+      {
+        "key": 90,
+        "hz": 1480.94,
+        "cents": 2.77,
+        "rate": 2.121,
+        "rate_layers": 2,
+        "prompt_db": 6.31,
+        "prompt_windows": 24,
+        "prompt_clear": 21,
+        "right_over_left_db": 10.7,
+        "phase": -1.434
+      },
+      {
+        "key": 91,
+        "hz": 1566.25,
+        "cents": -1.28,
+        "rate": 2.143,
+        "rate_layers": 2,
+        "prompt_db": -3.83,
+        "prompt_windows": 32,
+        "prompt_clear": 23,
+        "right_over_left_db": 2.41,
+        "phase": 2.198
+      },
+      {
+        "key": 92,
+        "hz": 1664.38,
+        "cents": 2.9,
+        "rate": 2.003,
+        "rate_layers": 6,
+        "prompt_db": 6.35,
+        "prompt_windows": 36,
+        "prompt_clear": 31,
+        "right_over_left_db": 3.86,
+        "phase": -1.899
+      },
+      {
+        "key": 93,
+        "hz": 1753.5,
+        "cents": -7.8,
+        "rate": 2.064,
+        "rate_layers": 3,
+        "prompt_db": -18.02,
+        "prompt_windows": 36,
+        "prompt_clear": 22,
+        "right_over_left_db": -0.3,
+        "phase": -1.268
+      },
+      {
+        "key": 94,
+        "hz": 1866.56,
+        "cents": 0.51,
+        "rate": 2.161,
+        "rate_layers": 1,
+        "prompt_db": 2.38,
+        "prompt_windows": 36,
+        "prompt_clear": 27,
+        "right_over_left_db": 0.98,
+        "phase": -1.823
+      },
+      {
+        "key": 95,
+        "hz": 1971.31,
+        "cents": -4.84,
+        "rate": 2.231,
+        "rate_layers": 5,
+        "prompt_db": 1.14,
+        "prompt_windows": 36,
+        "prompt_clear": 29,
+        "right_over_left_db": 8.61,
+        "phase": 0.328
+      },
+      {
+        "key": 96,
+        "hz": 2088.75,
+        "cents": -4.53,
+        "rate": 2.25,
+        "rate_layers": 2,
+        "prompt_db": -2.04,
+        "prompt_windows": 4,
+        "prompt_clear": 3,
+        "right_over_left_db": -2.03,
+        "phase": 1.381
+      },
+      {
+        "key": 97,
+        "hz": 2205.44,
+        "cents": -10.39,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 4.85,
+        "prompt_windows": 8,
+        "prompt_clear": 8,
+        "right_over_left_db": -5.18,
+        "phase": 0.423
+      },
+      {
+        "key": 98,
+        "hz": 2352.44,
+        "cents": 1.34,
+        "rate": 1.966,
+        "rate_layers": 2,
+        "prompt_db": 1.76,
+        "prompt_windows": 0,
+        "prompt_clear": 0,
+        "right_over_left_db": 4.98,
+        "phase": -0.051
+      },
+      {
+        "key": 99,
+        "hz": 2469.56,
+        "cents": -14.51,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 1.76,
+        "prompt_windows": 0,
+        "prompt_clear": 0,
+        "right_over_left_db": -3.78,
+        "phase": -1.492
+      },
+      {
+        "key": 100,
+        "hz": 2647.88,
+        "cents": 6.26,
+        "rate": 2.417,
+        "rate_layers": 2,
+        "prompt_db": 2.51,
+        "prompt_windows": 8,
+        "prompt_clear": 8,
+        "right_over_left_db": -2.92,
+        "phase": -2.222
+      },
+      {
+        "key": 101,
+        "hz": 2781.5,
+        "cents": -8.43,
+        "rate": 1.935,
+        "rate_layers": 2,
+        "prompt_db": 3.07,
+        "prompt_windows": 4,
+        "prompt_clear": 3,
+        "right_over_left_db": 5.2,
+        "phase": -1.439
+      },
+      {
+        "key": 102,
+        "hz": 2986.06,
+        "cents": 14.5,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 0.38,
+        "prompt_windows": 4,
+        "prompt_clear": 3,
+        "right_over_left_db": -2.93,
+        "phase": -2.853
+      },
+      {
+        "key": 103,
+        "hz": 3141.25,
+        "cents": 2.29,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 1.76,
+        "prompt_windows": 0,
+        "prompt_clear": 0,
+        "right_over_left_db": 11.84,
+        "phase": -0.907
+      },
+      {
+        "key": 104,
+        "hz": 3314.75,
+        "cents": -4.56,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 4.25,
+        "prompt_windows": 8,
+        "prompt_clear": 8,
+        "right_over_left_db": 5.53,
+        "phase": -3.126
+      },
+      {
+        "key": 105,
+        "hz": 3526.38,
+        "cents": 2.66,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": -5.2,
+        "prompt_windows": 8,
+        "prompt_clear": 8,
+        "right_over_left_db": 2.83,
+        "phase": -1.16
+      },
+      {
+        "key": 106,
+        "hz": 3725.0,
+        "cents": -0.42,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": 2.8,
+        "prompt_windows": 12,
+        "prompt_clear": 12,
+        "right_over_left_db": 5.93,
+        "phase": -1.942
+      },
+      {
+        "key": 107,
+        "hz": 3906.38,
+        "cents": -16.06,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": -1.21,
+        "prompt_windows": 4,
+        "prompt_clear": 3,
+        "right_over_left_db": 7.42,
+        "phase": -0.795
+      },
+      {
+        "key": 108,
+        "hz": 4148.75,
+        "cents": -9.8,
+        "rate": 2.132,
+        "rate_layers": 0,
+        "prompt_db": -15.44,
+        "prompt_windows": 28,
+        "prompt_clear": 1,
+        "right_over_left_db": -5.97,
+        "phase": 0.151
+      }
+    ],
+    "slope_db_per_layer_db": 1.191,
+    "slope_rise_per_octave": 0.505,
+    "prompt_rate": 5.174
+  },
+  "body": {
+    "modes": 38,
+    "hz": [
+      31.25,
+      63.15,
+      91.38,
+      95.47,
+      107.33,
+      121.55,
+      182.54,
+      191.59,
+      206.68,
+      226.08,
+      246.77,
+      270.69,
+      286.21,
+      306.47,
+      343.53,
+      376.94,
+      457.76,
+      465.09,
+      518.1,
+      526.72,
+      542.46,
+      568.75,
+      598.49,
+      633.62,
+      660.99,
+      694.4,
+      728.02,
+      753.88,
+      769.4,
+      780.39,
+      791.38,
+      802.16,
+      816.38,
+      833.19,
+      860.78,
+      887.72,
+      901.08,
+      933.19
+    ],
+    "t60_seconds": [
+      0.646,
+      0.523,
+      0.578,
+      0.506,
+      0.635,
+      0.651,
+      0.511,
+      0.614,
+      0.522,
+      0.576,
+      0.509,
+      0.575,
+      0.507,
+      0.498,
+      0.528,
+      0.518,
+      0.471,
+      0.552,
+      0.519,
+      0.691,
+      0.52,
+      0.523,
+      0.521,
+      0.519,
+      0.526,
+      0.523,
+      0.524,
+      0.521,
+      0.519,
+      0.537,
+      0.517,
+      0.53,
+      0.513,
+      0.484,
+      0.518,
+      0.51,
+      0.51,
+      0.518
+    ],
+    "second_stage_t60_seconds": [
+      4.915,
+      null,
+      4.039,
+      5.038,
+      1.472,
+      3.392,
+      2.9,
+      null,
+      9.473,
+      null,
+      8.478,
+      null,
+      null,
+      7.308,
+      9.26,
+      5.7,
+      null,
+      null,
+      null,
+      2.934,
+      5.742,
+      4.463,
+      null,
+      4.394,
+      null,
+      3.374,
+      null,
+      null,
+      null,
+      null,
+      3.798,
+      null,
+      null,
+      null,
+      null,
+      1.965,
+      null,
+      null
+    ],
+    "pickup_explained": [
+      0.922,
+      0.939,
+      0.989,
+      0.995,
+      0.989,
+      0.978,
+      0.861,
+      0.715,
+      0.608,
+      0.84,
+      0.798,
+      0.74,
+      0.796,
+      0.79,
+      0.886,
+      0.652,
+      0.884,
+      0.779,
+      0.623,
+      0.918,
+      0.851,
+      0.611,
+      0.697,
+      0.77,
+      0.761,
+      0.66,
+      0.787,
+      0.843,
+      0.751,
+      0.732,
+      0.666,
+      0.704,
+      0.674,
+      0.63,
+      0.695,
+      0.798,
+      0.933,
+      0.974
+    ],
+    "rise_ms": 0.376,
+    "layer_rise_ms": {
+      "68": [
+        0.1,
+        0.253,
+        0.639,
+        0.1
+      ],
+      "70": [
+        0.114,
+        0.329,
+        0.1,
+        0.95
+      ],
+      "72": [
+        0.221,
+        0.1,
+        0.1,
+        0.221
+      ],
+      "76": [
+        0.1,
+        0.1,
+        0.95,
+        0.95
+      ],
+      "78": [
+        0.833,
+        0.1,
+        0.329,
+        1.414
+      ],
+      "80": [
+        0.194,
+        0.376,
+        2.104,
+        2.104
+      ],
+      "84": [
+        0.1,
+        0.1,
+        1.085,
+        1.615
+      ],
+      "87": [
+        0.1,
+        1.843,
+        0.639
+      ],
+      "93": [
+        0.1,
+        0.221,
+        0.1
+      ],
+      "96": [
+        0.1,
+        0.1,
+        0.376,
+        0.429
+      ],
+      "99": [
+        0.376,
+        1.414,
+        0.95
+      ],
+      "105": [
+        0.1,
+        0.729,
+        1.239,
+        2.104
+      ],
+      "108": [
+        0.95,
+        0.639,
+        0.833,
+        0.49
+      ]
+    }
+  },
+  "action": {
+    "cases": [
+      "rel21",
+      "rel24",
+      "rel30",
+      "rel33",
+      "rel36",
+      "rel42",
+      "rel45",
+      "rel48",
+      "rel52",
+      "rel54",
+      "rel56",
+      "rel60",
+      "rel62",
+      "rel64",
+      "rel68",
+      "rel70",
+      "rel72",
+      "rel76",
+      "rel78",
+      "rel80",
+      "rel84",
+      "rel87",
+      "rel93",
+      "rel96",
+      "rel99",
+      "rel105",
+      "rel108"
+    ],
+    "rise_ms": 38.73,
+    "decay": 1.85,
+    "unexplained": {
+      "rel21": 0.744,
+      "rel24": 0.678,
+      "rel30": 0.685,
+      "rel33": 0.693,
+      "rel36": 0.793,
+      "rel42": 0.209,
+      "rel45": 0.37,
+      "rel48": 0.559,
+      "rel52": 0.973,
+      "rel54": 0.346,
+      "rel56": 0.741,
+      "rel60": 0.565,
+      "rel62": 0.63,
+      "rel64": 0.763,
+      "rel68": 0.859,
+      "rel70": 0.436,
+      "rel72": 0.207,
+      "rel76": 0.567,
+      "rel78": 0.925,
+      "rel80": 0.237,
+      "rel84": 0.835,
+      "rel87": 0.875,
+      "rel93": 0.875,
+      "rel96": 0.875,
+      "rel99": 0.875,
+      "rel105": 0.875,
+      "rel108": 0.875
+    },
+    "release_trend": {
+      "db_per_key": -0.529,
+      "c4_db": -38.4,
+      "scatter_db": 6.63
+    }
+  },
+  "noise": {
+    "band_hz": [
+      396.9,
+      500.0,
+      630.0,
+      793.7,
+      1000.0,
+      1259.9,
+      1587.4,
+      2000.0,
+      2519.8,
+      3174.8,
+      4000.0,
+      5039.7,
+      6349.6,
+      8000.0,
+      10079.4,
+      12699.2,
+      16000.0
+    ],
+    "coherence": [
+      0.894,
+      0.848,
+      0.707,
+      0.654,
+      0.357,
+      0.305,
+      0.259,
+      0.307,
+      0.194,
+      0.183,
+      0.161,
+      0.189,
+      0.171,
+      0.118,
+      0.097,
+      0.079,
+      0.072
+    ]
+  },
+  "uncalibrated_anchors": [],
+  "generated_header_sha256": "b4c787203d8def4b1d366f293080b90080dfefb0e0e538f62bfe82d96d2e9483"
+}

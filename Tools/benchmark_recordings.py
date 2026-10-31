@@ -8,7 +8,9 @@ layer's velocity) through a `keyra_render` binary and measures the render and
 the recording with the same `piano_analysis` operators, at the recording's
 partials: the render's are its peaks nearest them, order by order
 (matched_partials). One scalar gain, from the 50-750 ms RMS, is removed per
-case and kept for every later window.
+case and kept for every later window. A recording is measured only to where
+it stops holding the piano (piano_analysis.recorded_end), the Kawai's gated
+takes to their gates.
 Stereo channels are compared in power and as left/right relations, never as
 cancelling waveforms. These scores measure agreement with one recorded piano
 and microphone pair; they are not perceptual ratings.
@@ -80,11 +82,12 @@ SPLIT = fit.MODELS['grand']['split']
 MANIFEST = fit.MODELS['grand']['corpus']
 # Each piano's record of the openings of its sealed cases.
 SEALED_LOGS = {'grand': ROOT / 'Tools/corpus/sealed-openings.json',
-               'upright': ROOT / 'Tools/corpus/sealed-openings-helsinki.json'}
+               'upright': ROOT / 'Tools/corpus/sealed-openings-helsinki.json',
+               'kawai': ROOT / 'Tools/corpus/sealed-openings-kawai.json'}
 WINDOWS = [(.05, .25), (.25, .75), (.75, 1.5), (1.5, 3.5)]
 LAYER_VELOCITY = fit.LAYER_VELOCITY
 RENDER_SECONDS = 4.6
-FEATURES = 'features 6'  # bump when features() changes, to refresh cached references
+FEATURES = 'features 7'  # bump when features() changes, to refresh cached references
 LEAD = .05
 # keyra_render's Output for measurements: 20 dB under the default, where the
 # output stage (Source/DSP/OutputStage.h) passes every strike untouched. The
@@ -154,6 +157,8 @@ def features(path, note, reference=None):
     a render's partials are sought where its `reference` recording's are."""
     sr, x = pa.load(path)
     start = pa.onset(x, sr)
+    # A render's silence is the engine's, and is scored.
+    stop = pa.recorded_end(x, sr, start) if reference is None else len(x)
     if reference is None:
         f1, B, found = pa.partials(x, sr, note, start)
         orders, freqs = [q['n'] for q in found], np.array([q['hz'] for q in found])
@@ -162,18 +167,18 @@ def features(path, note, reference=None):
         f1, B = reference['f1'], reference['B']
         orders, freqs = matched_partials(x, sr, note, start, reference)
     tracked = freqs if len(freqs) else np.array([pa.midi_hz(note)])
-    seconds = min(3.6, (len(x) - start) / sr - .02)
+    seconds = min(3.6, (stop - start) / sr - .02)
     t, z = pa.envelopes(x, sr, tracked, f1, start, seconds)
     power = np.mean(np.abs(z) ** 2, axis=1)
     level, left, right, cross = band_spectrogram(x, sr, start, min(3.0, seconds))
     # The recording's own floor per band (room, microphones, ventilation): the
     # mean power of its quietest second before the library's fade-out (the
-    # analysis' horizon); nothing near it is scored. The quietest single frames
-    # sat 10-15 dB under the room's rumble, as a band of one or two bins swings
-    # that far from frame to frame and the files fade to silence, so in the
-    # treble that rumble scored as the piano's sustain.
+    # analysis' horizon) or its gate; nothing near it is scored. The quietest
+    # single frames sat 10-15 dB under the room's rumble, as a band of one or
+    # two bins swings that far from frame to frame and the files fade to
+    # silence, so in the treble that rumble scored as the piano's sustain.
     duration = len(x) / sr
-    end = duration - max(1.0, .25 * duration) if duration > 8 else duration - 1.0
+    end = min(duration - max(1.0, .25 * duration) if duration > 8 else duration - 1.0, stop / sr)
     whole, _, _, _ = band_spectrogram(x, sr, 0, end, hop=.05)
     whole = 10 ** (whole / 10)
     second = np.array([whole[k:k + 20].mean(axis=0) for k in range(max(1, len(whole) - 19))])
@@ -232,13 +237,15 @@ def compare(ref, mod):
     mod_index = {n: i for i, n in enumerate(mod['n'])}
     level_err, tune_err, decay_err = [], [], []
     # Partials more than 50 dB below the strongest one in a window, or within
-    # 10 dB of the recording's floor, are not scored in that window.
-    strongest = [max(window_db(ref['env_t'], p, lo, hi) for p in ref['env_power']) for lo, hi in WINDOWS]
+    # 10 dB of the recording's floor, are not scored in that window, and no
+    # window past where the recording stops (a gated take) is scored.
+    windows = [(lo, hi) for lo, hi in WINDOWS if window_db(ref['env_t'], ref['env_power'][0], lo, hi) is not None]
+    strongest = [max(window_db(ref['env_t'], p, lo, hi) for p in ref['env_power']) for lo, hi in windows]
     for i, n in enumerate(ref['n']):
         j = mod_index.get(n)
         rdb = 10 * np.log10(np.maximum(ref['env_power'][i], 1e-30))
         scored = False
-        for (lo, hi), top in zip(WINDOWS, strongest):
+        for (lo, hi), top in zip(windows, strongest):
             r = window_db(ref['env_t'], ref['env_power'][i], lo, hi)
             if r is None or r < max(ref['floor'][i] + 10, top - 50):
                 continue

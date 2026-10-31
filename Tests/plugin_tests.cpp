@@ -25,6 +25,41 @@ void set(KeyraAudioProcessor& processor, const char* id, float value)
     auto* parameter = processor.parameters.getParameter(id);
     parameter->setValueNotifyingHost(parameter->convertTo0to1(value));
 }
+juce::StringArray weightIds()
+{
+    juce::StringArray result;
+    for (size_t part = 0; part < buildParts.size(); ++part)
+        for (size_t piano = 0; piano < keyra::pianoCount; ++piano) result.add(weightId(part, piano));
+    return result;
+}
+// Whether one part's weights, or every part's, are the mix.
+bool weightsAre(KeyraAudioProcessor& processor, const keyra::Mix& mix, int only = -1)
+{
+    for (size_t part = 0; part < buildParts.size(); ++part)
+        if (only < 0 || part == static_cast<size_t>(only))
+            for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+                if (std::abs(processor.parameters.getRawParameterValue(weightId(part, piano))->load() - mix[piano]) > 1e-6f)
+                    return false;
+    return true;
+}
+// A saved state without the removed parameters and with the added ones, as
+// an earlier or a later version would save it.
+juce::MemoryBlock edited(const juce::MemoryBlock& state, const juce::StringArray& removed,
+    std::initializer_list<std::pair<const char*, const char*>> added)
+{
+    auto xml = juce::AudioProcessor::getXmlFromBinary(state.getData(), static_cast<int>(state.getSize()));
+    for (const auto& id : removed)
+        for (auto* parameter : xml->getChildIterator())
+            if (parameter->getStringAttribute("id") == id) { xml->removeChildElement(parameter, true); break; }
+    for (const auto& [id, value] : added) {
+        auto* parameter = xml->createNewChildElement("PARAM");
+        parameter->setAttribute("id", id);
+        parameter->setAttribute("value", value);
+    }
+    juce::MemoryBlock result;
+    juce::AudioProcessor::copyXmlToBinary(*xml, result);
+    return result;
+}
 std::vector<float> render(int block)
 {
     KeyraAudioProcessor processor;
@@ -195,26 +230,42 @@ int main()
             require(restored.parameters.copyState().toXmlString() == before, "invalid state changed parameters");
         }
         {
-            // An upright preset chooses the upright, which the session keeps. A
-            // session saved before the piano choice existed has no "model": it
-            // loads, and plays the grand it was made with.
+            // An upright preset takes every part from the upright, which the
+            // session keeps. A session saved before the piano choice existed
+            // has no weights: it loads, and plays the grand it was made with.
             KeyraAudioProcessor upright;
             upright.setCurrentProgram(5);
-            require(upright.parameters.getRawParameterValue("model")->load() == 1, "an upright preset did not choose the upright");
+            require(weightsAre(upright, keyra::only(keyra::Piano::upright)), "an upright preset did not take the upright's parts");
             juce::MemoryBlock saved;
             upright.getStateInformation(saved);
             KeyraAudioProcessor reopened;
             reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
-            require(reopened.parameters.getRawParameterValue("model")->load() == 1, "the upright was not restored");
-            auto xml = juce::AudioProcessor::getXmlFromBinary(state.getData(), static_cast<int>(state.getSize()));
-            for (auto* parameter : xml->getChildIterator())
-                if (parameter->getStringAttribute("id") == "model") { xml->removeChildElement(parameter, true); break; }
-            juce::MemoryBlock older;
-            juce::AudioProcessor::copyXmlToBinary(*xml, older);
+            require(weightsAre(reopened, keyra::only(keyra::Piano::upright)), "the upright was not restored");
+            const auto older = edited(state, weightIds(), {});
             reopened.setStateInformation(older.getData(), static_cast<int>(older.getSize()));
-            require(reopened.parameters.getRawParameterValue("model")->load() == 0
+            require(weightsAre(reopened, keyra::only(keyra::Piano::grand))
                 && std::abs(reopened.parameters.getRawParameterValue("brightness")->load() - .83f) < 1e-5f,
                 "a session saved before the piano choice did not load as the grand");
+            // A session saved when the build chose a piano and moved each
+            // part toward the other's loads as the same mixes, and one past
+            // the eighth preset keeps its program.
+            const auto chosen = edited(state, weightIds(), {
+                { "model", "1" }, { "strings", "0.25" }, { "hammers", "0" }, { "soundboard", "1" }, { "action", "0.5" } });
+            reopened.setStateInformation(chosen.getData(), static_cast<int>(chosen.getSize()));
+            const auto toward = keyra::buildToward(keyra::Piano::upright, keyra::Piano::grand, .25f, 0, 1, .5f, 0, 0, 0);
+            require(weightsAre(reopened, toward.strings, 0) && weightsAre(reopened, toward.hammers, 1)
+                && weightsAre(reopened, toward.soundboard, 2) && weightsAre(reopened, toward.action, 3),
+                "a session saved with a piano and its parts did not load as the same mixes");
+            const auto future = edited(state, {}, { { "model", "1" } });
+            reopened.setStateInformation(future.getData(), static_cast<int>(future.getSize()));
+            require(weightsAre(reopened, toward.strings, 0), "a session with both a piano and the weights was not refused");
+            KeyraAudioProcessor thirds;
+            const auto last = static_cast<int>(keyra::factoryPresets.size()) - 1;
+            thirds.setCurrentProgram(last);
+            juce::MemoryBlock lastSaved;
+            thirds.getStateInformation(lastSaved);
+            reopened.setStateInformation(lastSaved.getData(), static_cast<int>(lastSaved.getSize()));
+            require(reopened.getCurrentProgram() == last, "a program past the eighth was not restored");
         }
         {
             // Quality stays with the session, not with presets, and a session
@@ -238,13 +289,14 @@ int main()
                 "a session saved before the quality choice did not load at full quality");
         }
         {
-            // The build's controls move the chosen piano's parts toward the
-            // other piano's: the upright with every part all the way is the
-            // grand, sample for sample. A preset puts them back to the piano
-            // as built, the session keeps them, and a session saved before
-            // they existed loads them at 0. Mechanics and Tube Mic reach the
-            // engine, a preset leaves them, and a session saved before they
-            // existed loads the action as calibrated, heard from the pair.
+            // A part plays each piano at its share of the part's weights: the
+            // upright preset with every part's weight moved to the grand is the
+            // grand, sample for sample. A preset puts the build back to its
+            // own, the session keeps it, and a session saved before the
+            // build's controls existed loads its piano as built. Mechanics and
+            // Tube Mic reach the engine, a preset leaves them, and a session
+            // saved before they existed loads the action as calibrated, heard
+            // from the pair.
             const auto play = [](KeyraAudioProcessor& processor) {
                 processor.prepareToPlay(48000, 128);
                 juce::AudioBuffer<float> audio(2, 128);
@@ -259,12 +311,14 @@ int main()
                 }
                 return result;
             };
-            constexpr std::array<const char*, 7> build {{ "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring" }};
             KeyraAudioProcessor grand, rebuilt, upright;
             grand.setCurrentProgram(0);
             rebuilt.setCurrentProgram(5);
             upright.setCurrentProgram(5);
-            for (size_t i = 0; i < 4; ++i) set(rebuilt, build[i], 1.0f);
+            for (size_t part = 0; part < buildParts.size(); ++part) {
+                set(rebuilt, weightId(part, 0).toRawUTF8(), 1.0f);
+                set(rebuilt, weightId(part, 1).toRawUTF8(), 0.0f);
+            }
             const auto rebuiltPlays = play(rebuilt);
             require(play(grand) == rebuiltPlays, "the upright with every part the grand's did not play the grand");
             require(play(upright) != rebuiltPlays, "the build's controls did not reach the engine");
@@ -276,7 +330,7 @@ int main()
             tube.setCurrentProgram(0);
             set(tube, "mic", 1);
             require(play(tube) != rebuiltPlays, "Tube Mic did not reach the engine");
-            set(rebuilt, "soundboard", .4f);
+            set(rebuilt, "soundboard3", .4f);
             set(rebuilt, "ring", -.5f);
             set(rebuilt, "mechanics", .5f);
             set(rebuilt, "mic", .3f);
@@ -284,28 +338,26 @@ int main()
             rebuilt.getStateInformation(saved);
             KeyraAudioProcessor reopened;
             reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
-            require(std::abs(reopened.parameters.getRawParameterValue("soundboard")->load() - .4f) < 1e-5f
+            require(std::abs(reopened.parameters.getRawParameterValue("soundboard3")->load() - .4f) < 1e-5f
                 && std::abs(reopened.parameters.getRawParameterValue("ring")->load() + .5f) < 1e-5f
                 && std::abs(reopened.parameters.getRawParameterValue("mechanics")->load() - .5f) < 1e-5f
                 && std::abs(reopened.parameters.getRawParameterValue("mic")->load() - .3f) < 1e-5f,
                 "the build, mechanics and mic were not restored");
             rebuilt.setCurrentProgram(1);
-            for (const auto* id : build)
+            require(weightsAre(rebuilt, keyra::only(keyra::Piano::grand)), "a preset left the parts changed");
+            for (const auto* id : { "stiffness", "unisons", "ring" })
                 require(rebuilt.parameters.getRawParameterValue(id)->load() == 0, "a preset left the build changed");
             require(std::abs(rebuilt.parameters.getRawParameterValue("mic")->load() - .3f) < 1e-5f,
                 "a preset moved Tube Mic");
-            auto xml = juce::AudioProcessor::getXmlFromBinary(saved.getData(), static_cast<int>(saved.getSize()));
-            for (const auto* id : { "strings", "hammers", "soundboard", "action", "stiffness", "unisons", "ring", "mechanics", "mic" })
-                for (auto* parameter : xml->getChildIterator())
-                    if (parameter->getStringAttribute("id") == id) { xml->removeChildElement(parameter, true); break; }
-            juce::MemoryBlock older;
-            juce::AudioProcessor::copyXmlToBinary(*xml, older);
+            auto removed = weightIds();
+            for (const auto* id : { "stiffness", "unisons", "ring", "mechanics", "mic" }) removed.add(id);
+            const auto older = edited(saved, removed, { { "model", "1" } });
             reopened.setStateInformation(older.getData(), static_cast<int>(older.getSize()));
-            for (const auto* id : build)
+            require(weightsAre(reopened, keyra::only(keyra::Piano::upright)),
+                "a session saved before the build controls lost its piano");
+            for (const auto* id : { "stiffness", "unisons", "ring" })
                 require(reopened.parameters.getRawParameterValue(id)->load() == 0,
                     "a session saved before the build controls did not load the piano as built");
-            require(reopened.parameters.getRawParameterValue("model")->load() == 1,
-                "a session saved before the build controls lost its piano");
             require(reopened.parameters.getRawParameterValue("mechanics")->load() == 1,
                 "a session saved before Mechanics did not load the action as calibrated");
             require(reopened.parameters.getRawParameterValue("mic")->load() == 0,

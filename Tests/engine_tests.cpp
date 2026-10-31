@@ -1,4 +1,5 @@
 #include "DSP/KeyraEngine.h"
+#include "DSP/MeasuredKawaiData.h"
 #include "DSP/MeasuredMicData.h"
 #include "DSP/MeasuredModalData.h"
 #include "DSP/MeasuredUprightData.h"
@@ -36,6 +37,11 @@ Audio render(keyra::Engine& engine,int frames,int block=127){
 double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<double>(x)*x;return std::sqrt(sum/std::max<std::size_t>(1,audio.size()));}
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
 keyra::Parameters dryUpright(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::upright);return p;}
+keyra::Parameters dryKawai(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::kawai);return p;}
+const char* pianoName(keyra::Piano piano){
+  static const std::array<const char*,keyra::pianoCount> names{"grand","upright","kawai"};
+  return names[static_cast<std::size_t>(piano)];
+}
 // C4's own strings: the amplitude of its first four partials, in both
 // channels, at a piano's measured pitch (the grand's unless given). They sit
 // below F6, where the undamped strings its strike sets ringing begin; no
@@ -246,28 +252,30 @@ int main(int argc,char** argv){
     check(lighter,"light quality leaves out what no band hears");
   }
   {
-    // One velocity response for both pianos: a velocity asks for a level under
+    // One velocity response for every piano: a velocity asks for a level under
     // the loudest layer, halfway between a straight line and smoothstep from
-    // the higher of the two softest layers' levels, and plays where each
+    // the highest of the softest layers' levels, and plays where each
     // piano's measured layers reach it.
-    namespace g=keyra::measured::grand;namespace u=keyra::measured::upright;
+    namespace g=keyra::measured::grand;namespace u=keyra::measured::upright;namespace kw=keyra::measured::kawai;
     auto level=[](const auto& v,const auto& l,int layers,double at){
       int i=0;while(i<layers-2&&at>v[i+1])++i;
       return l[i]+(l[i+1]-l[i])*(at-v[i])/(v[i+1]-v[i]);};
-    const double floor=std::max(g::layerLevelDb[0],u::layerLevelDb[0]);
-    double worst=0;float last[2]{};bool rising=true;
+    const double floor=std::max({g::layerLevelDb[0],u::layerLevelDb[0],kw::layerLevelDb[0]});
+    double worst=0;float last[3]{};bool rising=true;
     for(int midi=1;midi<=127;++midi){
       const double x=(midi-1)/126.,wanted=floor*(1-.5*(x+x*x*(3-2*x)));
-      const float at[2]{keyra::responseVelocity(keyra::Piano::grand,midi/127.f),
-                        keyra::responseVelocity(keyra::Piano::upright,midi/127.f)};
+      const float at[3]{keyra::responseVelocity(keyra::Piano::grand,midi/127.f),
+                        keyra::responseVelocity(keyra::Piano::upright,midi/127.f),
+                        keyra::responseVelocity(keyra::Piano::kawai,midi/127.f)};
       worst=std::max({worst,std::abs(level(g::layerVelocity,g::layerLevelDb,g::layers,at[0])-wanted),
-                      std::abs(level(u::layerVelocity,u::layerLevelDb,u::layers,at[1])-wanted)});
-      rising=rising&&at[0]>=last[0]&&at[1]>=last[1];last[0]=at[0];last[1]=at[1];
+                      std::abs(level(u::layerVelocity,u::layerLevelDb,u::layers,at[1])-wanted),
+                      std::abs(level(kw::layerVelocity,kw::layerLevelDb,kw::layers,at[2])-wanted)});
+      for(int k=0;k<3;++k){rising=rising&&at[k]>=last[k];last[k]=at[k];}
     }
     std::cout<<"velocity_response_worst_db="<<worst<<'\n';
-    check(worst<.01,"both pianos play the shared velocity response's level at every velocity");
+    check(worst<.01,"every piano plays the shared velocity response's level at every velocity");
     check(rising,"a harder strike never plays a softer layer");
-    check(last[0]==g::layerVelocity[g::layers-1]&&last[1]==u::layerVelocity[u::layers-1],
+    check(last[0]==g::layerVelocity[g::layers-1]&&last[1]==u::layerVelocity[u::layers-1]&&last[2]==kw::layerVelocity[kw::layers-1],
           "velocity 127 plays each piano's loudest layer");
   }
   {
@@ -508,18 +516,19 @@ int main(int argc,char** argv){
       for(int k=0;k<4;++k){
         const double low=std::min(difference[0][k],difference[2][k]),high=std::max(difference[0][k],difference[2][k]);
         check(difference[1][k]>low-3&&difference[1][k]<high+3,"an interpolated pitch's partials sit between its recorded neighbours' stereo positions");
-        std::cout<<(piano==keyra::Piano::grand?"grand":"upright")<<" partial="<<k+1<<" level_difference_db "<<below<<'='<<difference[0][k]
+        std::cout<<pianoName(piano)<<" partial="<<k+1<<" level_difference_db "<<below<<'='<<difference[0][k]
                  <<' '<<note<<'='<<difference[1][k]<<' '<<above<<'='<<difference[2][k]<<'\n';
       }
     };
     for(const int note:{51,75}){between(keyra::Piano::grand,keyra::measured::grand::anchors,note);
-                                between(keyra::Piano::upright,keyra::measured::upright::anchors,note);}
+                                between(keyra::Piano::upright,keyra::measured::upright::anchors,note);
+                                between(keyra::Piano::kawai,keyra::measured::kawai::anchors,note);}
   }
   {
     // A key between two recorded pitches plays about as loud as they do. Its
     // partials' lanes, blended one by one, beat and cancel where neither
     // pitch's do, which put the grand's B4 4 dB under both its neighbours.
-    // Every such key on both pianos, at one layer coordinate, 50-750 ms.
+    // Every such key on every piano, at one layer coordinate, 50-750 ms.
     double worst=0;
     const auto scan=[&](keyra::Piano piano,const auto& anchors){
       auto p=dry();p.build=keyra::measuredBuild(piano);
@@ -532,6 +541,7 @@ int main(int argc,char** argv){
       }
     };
     scan(keyra::Piano::grand,keyra::measured::grand::anchors);scan(keyra::Piano::upright,keyra::measured::upright::anchors);
+    scan(keyra::Piano::kawai,keyra::measured::kawai::anchors);
     std::cout<<"between_pitches_outside_neighbours_db="<<worst<<'\n';
     check(worst<3,"a key between two recorded pitches plays within 3 dB of their levels");
   }
@@ -567,11 +577,13 @@ int main(int argc,char** argv){
     // upright's up to 14.4 dB; the rises' corners, unsmoothed, reached 14 dB.
     // (From their onsets, the key's sound a few milliseconds before contact,
     // the grand's stayed at or under 0 dB.)
-    for(const auto& piano:{dry(),dryUpright()})for(const int key:{33,42,60,84})for(const float velocity:{31.f,61.f,101.f}){
-      keyra::Engine e;e.setParameters(piano);e.noteOn(key,velocity/127);
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai})
+      for(const int key:{33,42,60,84})for(const float velocity:{31.f,61.f,101.f}){
+      auto p=dry();p.build=keyra::measuredBuild(piano);
+      keyra::Engine e;e.setParameters(p);e.noteOn(key,velocity/127);
       const double db=click(render(e,2400),0);
       check(db<13,"a strike starts without a click");
-      std::cout<<"model="<<(piano.build.hammers==1?"upright":"grand")<<" key="<<key<<" velocity="<<velocity
+      std::cout<<"model="<<pianoName(piano)<<" key="<<key<<" velocity="<<velocity
                <<" onset_over_30ms_above_8khz_db="<<db<<'\n';
     }
   }
@@ -617,11 +629,11 @@ int main(int argc,char** argv){
     std::cout<<"held_under_pedal_db_s="<<heldRate<<" let_go_under_pedal_db_s="<<pedalRate<<'\n';
   }
   {
-    // The Mechanics control scales the action as an amplitude: on both
-    // pianos a key going down and coming back knocks twice as hard at 2 as
+    // The Mechanics control scales the action as an amplitude: on every
+    // piano a key going down and coming back knocks twice as hard at 2 as
     // at 1, against 0, where it knocks nothing. The body is linear, and the
     // output stage passes a quiet note untouched.
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai}){
       const auto play=[piano](float mechanics){keyra::Engine e;auto p=dry();p.build=keyra::measuredBuild(piano);p.gain=.1f;
         p.mechanics=mechanics;e.setParameters(p);e.noteOn(60,.7f);render(e,12000);e.noteOff(60);return render(e,12000);};
       const auto none=play(0),once=play(1),twice=play(2);
@@ -669,23 +681,32 @@ int main(int argc,char** argv){
     check(render(a,24000)==render(c,24000),"a changed and reset engine plays as one built so from its start");
   }
   {
-    // Grand and upright are two builds of one model, each part (strings,
-    // hammers, soundboard, action) running from the grand at 0 to the
-    // upright at 1. Halfway, every third key plays between the two pianos'
+    // The pianos are builds of one model, each part (strings, hammers,
+    // soundboard, action) mixing them by its weights. Halfway between the
+    // grand and the upright, every third key plays between the two pianos'
     // levels (50-750 ms, at the velocity itself) within 2 dB, soft, middle
-    // and full. (Mixed lane by lane and mode by mode in dB, the halfway build
-    // had put E7 and the soft top octave 3 to 4 dB outside both.)
-    double worst=0;int at=0;
+    // and full, and with every part at equal thirds of all three pianos
+    // between the three's. (Mixed lane by lane and mode by mode in dB, the
+    // halfway build had put E7 and the soft top octave 3 to 4 dB outside both.)
+    const keyra::Build builds[]{keyra::measuredBuild(keyra::Piano::grand),
+                                keyra::buildToward(keyra::Piano::grand,keyra::Piano::upright,.5f,.5f,.5f,.5f,0,0,0),
+                                keyra::measuredBuild(keyra::Piano::upright),keyra::measuredBuild(keyra::Piano::kawai),
+                                {{1,1,1},{1,1,1},{1,1,1},{1,1,1},0,0,0}};
+    double worst=0,worstThirds=0;int at=0,atThirds=0;
     for(const float velocity:{.25f,.7f,1.f})for(int note=21;note<=108;note+=3){
-      double level[3];
-      for(int k=0;k<3;++k){const float x=.5f*static_cast<float>(k);auto p=dry();p.build={x,x,x,x,0,0,0};
+      double level[std::size(builds)];
+      for(std::size_t k=0;k<std::size(builds);++k){auto p=dry();p.build=builds[k];
         keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(note,velocity);
         auto audio=render(e,36000);audio.erase(audio.begin(),audio.begin()+4800);level[k]=20*std::log10(rms(audio));}
       const double outside=std::max(std::min(level[0],level[2])-level[1],level[1]-std::max(level[0],level[2]));
+      const double low=std::min({level[0],level[2],level[3]}),high=std::max({level[0],level[2],level[3]});
+      const double thirds=std::max(low-level[4],level[4]-high);
       if(outside>worst){worst=outside;at=note;}
+      if(thirds>worstThirds){worstThirds=thirds;atThirds=note;}
     }
-    std::cout<<"halfway_build_outside_db="<<worst<<" key="<<at<<'\n';
+    std::cout<<"halfway_build_outside_db="<<worst<<" key="<<at<<" thirds_build_outside_db="<<worstThirds<<" key="<<atThirds<<'\n';
     check(worst<2,"the halfway build plays between the two pianos' levels");
+    check(worstThirds<2,"a build of equal thirds plays between the three pianos' levels");
   }
   {
     // The strings' build carries each partial's stereo pickup between the
@@ -693,7 +714,7 @@ int main(int argc,char** argv){
     // quarters stays within the two pianos' own, 2 dB aside. (Blended without
     // their ratio and angle, every in-between build played in mono, its side
     // 24 dB under its mid.)
-    const auto image=[](float strings){auto p=dry();p.build={strings,0,0,0,0,0,0};
+    const auto image=[](float strings){auto p=dry();p.build=keyra::buildToward(keyra::Piano::grand,keyra::Piano::upright,strings,0,0,0,0,0,0);
       keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);
       for(const int note:{48,55,64,72})e.noteOn(note,.7f);
       const auto audio=render(e,48000);double mid=0,side=0;
@@ -710,8 +731,9 @@ int main(int argc,char** argv){
     // partial moves as B times a quarter and four times puts it, from each
     // piano's measured f1 and B at C2.
     const auto c2=[](const auto& anchors){for(const auto& x:anchors)if(x.note==36)return std::array<double,2>{x.f1,x.B};return std::array<double,2>{};};
-    const std::array<std::pair<keyra::Piano,std::array<double,2>>,2> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
-                                                                           {keyra::Piano::upright,c2(keyra::measured::upright::anchors)}}};
+    const std::array<std::pair<keyra::Piano,std::array<double,2>>,3> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
+                                                                           {keyra::Piano::upright,c2(keyra::measured::upright::anchors)},
+                                                                           {keyra::Piano::kawai,c2(keyra::measured::kawai::anchors)}}};
     for(const auto& [piano,anchor]:pianos){
       const auto twelfth=[&](float stiffness){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.stiffness=stiffness;
@@ -730,7 +752,7 @@ int main(int argc,char** argv){
     // so that no beat moves it, C4's fundamental falls 20 dB from its peak in
     // half the time at -1 and twice the time at 1, within 10 % (the onset and
     // the body are not scaled).
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai}){
       const auto fall=[&](float ring){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.ring=ring;
         keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
@@ -789,25 +811,35 @@ int main(int argc,char** argv){
     check(rms(render(e,9600))==0,"the upright's pedal sounds nothing");
   }
   {
-    // Both pianos' felt holds the same small share of each partial only
+    // Every piano's felt holds the same small share of each partial only
     // loosely (leftover), so C4's strings still ring faintly half a second
     // after the key-up, falling on: at middle C the share is 46 dB under the
     // partial and falls about 6 dB/s. The upright's own measured share, 13 dB
-    // under, rang on for seconds.
+    // under, rang on for seconds. The share is read against the key held as
+    // long, not against the note before the key-up: held, the Kawai's C4
+    // falls 9.5 dB over those 0.75 s and the grand's beats 3 dB louder, so
+    // read that way their released C4s parted by 10 dB where the felt leaves
+    // all three pianos the same share of each partial.
     const auto fall=[](const keyra::Parameters& p,const auto& anchors){
-      keyra::Engine e;e.setParameters(p);e.noteOn(60,.7f);render(e,60000);
-      const double before=c4Strings(render(e,12000),anchors);e.noteOff(60);render(e,24000);
-      const double half=c4Strings(render(e,12000),anchors);render(e,36000);
-      return std::array<double,3>{before,half,c4Strings(render(e,12000),anchors)};};
-    const auto upright=fall(dryUpright(),keyra::measured::upright::anchors),grand=fall(dry(),keyra::measured::grand::anchors);
-    for(const auto& piano:{upright,grand}){
+      keyra::Engine e,held;e.setParameters(p);held.setParameters(p);e.noteOn(60,.7f);held.noteOn(60,.7f);render(e,60000);
+      const double before=c4Strings(render(e,12000),anchors);e.noteOff(60);render(e,24000);render(held,96000);
+      const double half=c4Strings(render(e,12000),anchors),stillHeld=c4Strings(render(held,12000),anchors);render(e,36000);
+      return std::array<double,4>{before,half,c4Strings(render(e,12000),anchors),stillHeld};};
+    const auto upright=fall(dryUpright(),keyra::measured::upright::anchors),grand=fall(dry(),keyra::measured::grand::anchors),
+               kawai=fall(dryKawai(),keyra::measured::kawai::anchors);
+    for(const auto& piano:{upright,grand,kawai}){
       check(piano[1]>piano[0]*1e-4&&piano[1]<piano[0]*.01,"the felt leaves a faint share of a released C4 ringing");
       check(piano[2]<piano[1]*.7,"what the felt leaves keeps falling");}
-    check(std::abs(20*std::log10(upright[1]/upright[0]*grand[0]/grand[1]))<6,"both pianos' felt leaves the same share");
+    for(const auto& piano:{upright,kawai})
+      check(std::abs(20*std::log10(piano[1]/piano[3]*grand[3]/grand[1]))<6,"every piano's felt leaves the same share");
     std::cout<<"upright_released_c4_db="<<20*std::log10(upright[1]/upright[0])<<','<<20*std::log10(upright[2]/upright[0])
-             <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])<<'\n';
+             <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])
+             <<" kawai_released_c4_db="<<20*std::log10(kawai[1]/kawai[0])
+             <<" released_against_held_c4_db="<<20*std::log10(grand[1]/grand[3])<<','<<20*std::log10(upright[1]/upright[3])
+             <<','<<20*std::log10(kawai[1]/kawai[3])<<'\n';
   }
-  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai})
+    for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.build=keyra::measuredBuild(piano);p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
     for(int note:{21,60,108})e.noteOn(note,1);
     for(float bend:{-48.f,0.f,48.f}){e.pitchBend(bend);const auto a=render(e,4000);for(float x:a)check(std::isfinite(x)&&std::abs(x)<=1,"rate/bend/nonfinite parameter output finite and bounded");}
@@ -961,7 +993,7 @@ int main(int argc,char** argv){
     const auto pedals=e.pedalState();(void)pedals;
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
     p.build=keyra::measuredBuild(keyra::Piano::upright);e.setParameters(p);e.noteOn(48,.8f);e.noteOff(48);
-    p.build={.5f,.5f,.5f,.5f,.25f,-.5f,.5f};e.setParameters(p);e.noteOn(50,.8f);e.noteOff(50);
+    p.build={{.5f,.5f,.5f},{1,0,.3f},{0,.7f,1},{.2f,.3f,.5f},.25f,-.5f,.5f};e.setParameters(p);e.noteOn(50,.8f);e.noteOff(50);
     for(int i=0;i<40;++i)e.process(l.data(),r.data(),64);
     e.reset();e.controlChange(120,0);trap=false;
     check(allocations==0,"all live event/render/reset APIs allocate zero bytes");
@@ -969,13 +1001,13 @@ int main(int argc,char** argv){
   // A fortissimo chord meets the output stage's limiter, never the emergency
   // bound ahead of it (4, +12 dBFS): read 24 dB down, where the stage passes
   // it untouched, its peak at the default Output stays 3 dB under the bound.
-  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright})for(int count:{3,6,10}){
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai})for(int count:{3,6,10}){
     keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.gain/=16;e.setParameters(p);e.reset();
     for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));
     peak*=16;
     check(peak<4*std::pow(10.f,-3/20.f),"fortissimo chord has headroom before the emergency bound");
-    std::cout<<"headroom_piano="<<(piano==keyra::Piano::upright?"upright":"grand")<<" notes="<<count<<" peak_dbfs_before_stage="<<20*std::log10(peak)<<'\n';
+    std::cout<<"headroom_piano="<<pianoName(piano)<<" notes="<<count<<" peak_dbfs_before_stage="<<20*std::log10(peak)<<'\n';
   }
   std::cout<<"engine_failures="<<failures<<" live_allocations="<<allocations<<'\n';return failures?1:0;
 }
