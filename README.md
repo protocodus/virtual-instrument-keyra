@@ -182,6 +182,22 @@ musical passages through the same engine. Both are frozen evidence from
   0.3 to 0.9 dB further from theirs
   ([grand](Docs/validation/grand-between-pitches-benchmark-2026-10-28.md),
   [upright](Docs/validation/upright-between-pitches-benchmark-2026-10-28.md)).
+- A key between two recorded pitches keeps its partials between theirs in
+  the stereo image. Their channels' phase difference was blended while their
+  phases came from the nearer pitch, so the lanes met in the right channel at
+  phases neither pitch has and cancelled there: D♯5's third partial on the
+  grand and its second on the upright sat 4.6 and 6 dB further to one side
+  than either neighbour. The phase difference now comes from the nearer
+  pitch with the phases. At velocity 64 the share of blended partials beyond
+  both pitches' balance falls from 29 to 24 % on the grand and 24 to 20 % on
+  the upright, the furthest from 12.5 to 7.7 dB and 11.7 to 7.2 dB. The
+  never-fitted pitches' image moves 4.97 to 4.74 dB from their recordings on
+  the grand and 4.53 to 4.26 dB on the upright; the grand's D♯3 moves 6.84 to
+  7.73 dB
+  ([grand](Docs/validation/grand-stereo-between-pitches-benchmark-2026-10-31.md),
+  [upright](Docs/validation/upright-stereo-between-pitches-benchmark-2026-10-31.md)).
+  Warm Walnut plays a touch brighter (0.30, was 0.28) to stay within 2 dB of
+  typical playing's −9 VU.
 - Letting a key go knocks the body as its damper lands, and the sustain pedal
   knocks it going down and coming up, synthesized on the body's modes: each
   mode's level and phase is measured from the library's release and pedal
@@ -576,7 +592,8 @@ partial starts at as the dampers lift is the one that rings the take's energy
 there from 0.3 to 2.3 s, in the take's own scale. A strike interpolates
 between the recorded pitches by partial order and between the layers by
 velocity, taking phases from the nearer pitch; a partial's stereo pickup moves
-between the two pitches' channel level and phase differences, and its level is
+between the two pitches' channel level differences in dB and takes its
+channel phase difference from the nearer pitch with its phases, and its level is
 set so that its power over the first second or so, its lanes' beating
 included, sits between the two pitches' in dB. C8 is left out: its strongest
 components sit 90–100 cents above the stretch that F♯7 and A7 set and no
@@ -766,7 +783,9 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
-  recording than 0.3.0's fixed panning was (6.9 dB against 4.7 dB). From C6
+  recording than 0.3.0's fixed panning was (7.7 dB against 4.7 dB): the
+  recording holds its first eight partials up to 12 dB to the right, where
+  C3 and F♯3 hold their second 19 to 24 and 10 to 11 dB to the left. From C6
   up the grand's image is narrower than its recordings': from 800 Hz to
   4 kHz its side stands a median 2.4 to 4.7 dB further under its mid on the
   dev cases, and its channels' coherence 0.2 to 0.3 higher

@@ -119,13 +119,13 @@ constexpr Model models[]{
    // the default Output, where the portfolio's newer instruments play, with
    // the output stage's guard keeping the loudest chords out of the red
    // (Tools/KeyraLevels.cpp).
-   .7707,
+   .7738,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5882},
+   1.5312},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -155,8 +155,8 @@ constexpr Model models[]{
    // strike, as the benchmark sets a case's gain). Below it the shared
    // velocity response (responseAt) keeps the two medians within 1 dB of each
    // other.
-   2.2691,
-   2.4395},
+   2.2806,
+   2.3472},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());
@@ -448,16 +448,23 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
   // the strike's arrival across the partials, and a blend of two is neither.
   l.phase=t<.5?x.phase:y.phase;
   // The pickup shape (left real, unit mean channel power) is blended as its
-  // channels' level difference in dB and their phase difference along the
-  // shorter arc. The microphones hear the board about 3.4 ms apart, so like
-  // partials of two recorded pitches can arrive half a turn apart in phase;
-  // blended as vectors they cancelled a channel, putting D#3's fundamental
-  // 12 dB further left than either C3 or F#3 has it.
+  // channels' level difference in dB; their phase difference comes from the
+  // nearer anchor with the phases, as the right channel's phase is the
+  // lane's turned by it. The microphones hear the board about 3.4 ms apart,
+  // so like partials of two recorded pitches can arrive half a turn apart in
+  // phase: blended as vectors they cancelled a channel, putting D#3's
+  // fundamental 12 dB further left than either C3 or F#3 has it. Blended
+  // along the shorter arc under the nearer anchor's phases, the lanes met in
+  // the right channel at phases neither pitch gives them and cancelled
+  // there: D#5's third partial on the grand and its second on the upright
+  // sat 4.6 and 6 dB further to one side than either neighbour, and a
+  // refit's D#3 fundamental 14 dB to the left, where C3 holds it 4.7 dB left
+  // and F#3 in the middle.
   // The result carries its own ratio and angle: a lane blended between two
   // recorded pitches is blended again between the pianos by the strings'
   // build, and without them it took both pianos' channels as alike and
   // played every strike of an in-between build in mono.
-  l.ratio=mix(x.ratio,y.ratio,t);l.angle=x.angle+t*std::remainder(y.angle-x.angle,2*pi);
+  l.ratio=mix(x.ratio,y.ratio,t);l.angle=t<.5?x.angle:y.angle;
   const double g=std::exp(l.ratio),left=std::sqrt(2/(1+g*g));
   l.left={left,0};l.right={left*g*std::cos(l.angle),left*g*std::sin(l.angle)};
   return l;

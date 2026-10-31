@@ -10,7 +10,7 @@ struct Preset { const char* name; Piano piano; float brightness, resonance, widt
 inline constexpr std::array<Preset, 8> factoryPresets {{
     { "Concert Grand", Piano::grand, .5f, .25f, .75f, 0.f },
     { "Studio Grand", Piano::grand, .62f, .12f, .48f, 0.f },
-    { "Warm Walnut", Piano::grand, .28f, .31f, .64f, 0.f },
+    { "Warm Walnut", Piano::grand, .3f, .31f, .64f, 0.f },
     { "Felt Nocturne", Piano::grand, .35f, .17f, .58f, .32f },
     { "Open Strings", Piano::grand, .52f, .62f, .95f, 0.f },
     { "Rehearsal Upright", Piano::upright, .5f, .25f, .75f, 0.f },

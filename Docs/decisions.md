@@ -1753,3 +1753,65 @@ preset); typical playing still reads −9 VU on both pianos.
 
 Chosen by measurement, as the owner's standing direction asks; no one has
 listened to it yet.
+
+## 2026-10-31 — a blended partial keeps the nearer pitch's channel phase
+
+A key between two recorded pitches takes each lane's phases from the nearer
+pitch, but `blendLane` blended the channels' phase difference along the
+shorter arc. The right channel's phase is the lane's turned by that
+difference, so the lanes met in the right channel at phases neither pitch
+gives them and cancelled there: D♯5's third partial on the grand and its
+second on the upright sat 4.6 and 6 dB further to one side than either
+neighbour (whole band, 0.1 to 1.1 s), and on refitted data D♯3's
+fundamental sat 14.2 dB to the left, where C3 holds it 4.7 dB left and F♯3
+0.2 dB right. The phase difference now comes from the nearer pitch with the
+phases; the level difference is still blended in dB. Recorded pitches are
+not blended; they change only by the re-pinned output scale below.
+
+Every blended partial of every key between recorded pitches at layer
+coordinate 64, its heard right-over-left balance (the lanes' beating
+included, against e^(−t/0.4 s) as `heardPower` weighs it) against its two
+pitches': on the grand 29 % of them sat beyond both, by up to 12.5 dB (99th
+percentile 5.45 dB), now 24 %, by up to 7.7 dB (4.23); on the upright 24 %
+by up to 11.7 dB (5.00), now 20 % by up to 7.2 dB (3.54). The engine test
+now reads D♯3 and D♯5 on both pianos, their first four partials over each
+whole band, and holds each within 3 dB of its neighbours' range; the
+shipping engine fails it at D♯5 on both pianos (the grand's third partial
+−10.7 dB against −6.1 and +3.0).
+
+On the benchmark the dev notes' image (ild_db) moves 2.56 to 2.47 dB on the
+grand, its four never-fitted pitches 4.97 to 4.74 dB, and 4.53 to 4.26 dB on
+the upright, whose dev notes are all never fitted; the train notes score as
+before. Per pitch on the grand D♯1 3.12 to 2.98, D♯5 8.30 to 6.81
+and D♯7 1.62 to 1.45, but D♯3 6.84 to 7.73: the recording holds its first
+eight partials between 0 and 12 dB to the right, where C3 and F♯3 hold their
+second 19 to 24 and 10 to 11 dB to the left, so no blend of the two places
+D♯3, and the old one happened to land nearer. The regressions
+`Tools/compare_benchmarks.py` lists are that D♯3 image, D♯5's envelope on
+the grand (4.61 to 5.66 dB) and on the upright E6's coherence (0.20 to 0.28)
+and envelope (6.55 to 7.06 dB) and D♯2's coherence (0.20 to 0.22)
+([grand](validation/grand-stereo-between-pitches-benchmark-2026-10-31.md),
+[upright](validation/upright-stereo-between-pitches-benchmark-2026-10-31.md)).
+
+Rejected: setting each blended partial's heard balance between its two
+pitches' (or pianos') with a gain per channel. Where a channel cancels over
+the heard window but rings on later, its gain grows without bound: at the
+halfway build a soft A1's fifth partial took 19.3 dB of gain on the right.
+It failed the stereo test at D♯3 (the grand's fundamental +3.9 dB against
+−4.3 and +0.4) and the halfway build's level test (2.8 dB at A1), where the
+nearer phase passes both (0.95 dB, was 1.22).
+
+The meter reads the louder channel and the tube hears their sum, so the
+balanced channels read a little lower on the pair and higher through the
+tube: typical playing on the presets moved −0.14 to +0.15 dB, the default
+sounds −0.04 (grand) and −0.05 dB (upright), and the tube alone +0.27 and
++0.31 dB. `outputScale` and `tubeScale` are re-pinned to the new readings
+(`Tools/KeyraLevels.cpp`): each piano's default sound reads −9.00 and
+−9.02 VU through the pair and −9.00 and −9.01 VU through the tube. Warm
+Walnut then read 2.02 dB under the target, where the check allows 2, and
+now plays at brightness 0.30 (was 0.28), which reads −10.94 VU. The change
+takes work from a strike; the per-sample path is unchanged.
+
+Chosen by measurement, as the owner's standing direction asks; no one has
+listened to it yet. The A/B pack is in the project files
+(`keyra/stereo-between-pitches-2026-10-31/`).
