@@ -1815,3 +1815,45 @@ takes work from a strike; the per-sample path is unchanged.
 Chosen by measurement, as the owner's standing direction asks; no one has
 listened to it yet. The A/B pack is in the project files
 (`keyra/stereo-between-pitches-2026-10-31/`).
+
+## 2026-10-31 — an in-between key's lanes meet by the share they carry
+
+A key between two recorded pitches blends each partial's four lanes pair by
+pair, and `blend` paired them as they are stored, fastest first. Where one
+pitch's fit holds a lane the other's lacks, that order meets the lane that
+carries a partial with one that carries little. A refit gave F♯3's second
+partial on the grand a 228 dB/s transient ahead of the lane that carries
+91 % of it: C3's carrying lane met the transient, F♯3's met a lane of C3's at
+−38 dB, and D♯3's second partial sat at −6.2 dB right over left, 6.3 dB
+nearer the middle than either neighbour (C3 −24.0 dB, F♯3 −12.5 dB), which
+fails the stereo test. Each partial now takes, of the 24 pairings, the one
+whose pairs' log decay rates differ least, each pair weighed by the share of
+the partial its two lanes carry: a lane's heard power (against
+e^(−t/0.4 s) as `heardPower` weighs it, its beating left out) as a share of
+its partial's, averaged over the layers so that a key pairs its lanes alike
+at every velocity. The blended lanes are then stored fastest first again, as
+`combine` pairs the pianos' lanes. On the refit D♯3's second partial sits at
+−20.8 dB, and every engine test passes on the shipping data, on the refit and
+on the refit with its strings' energy restored.
+
+On the shipping data the pairing changes 433 of the grand's 733 blended
+partials and 286 of the upright's 498, most of them in the bass; in 131 and
+66 of them the lanes that carry the partial now meet where they did not.
+Recorded pitches play as before, and the train notes score as before. On the
+grand's dev notes level moves 1.20 to 1.07 dB (middle register 1.03 to
+0.76), decay 2.34 to 2.29 dB/s (treble 3.37 to 3.08), the early spectrum
+4.57 to 4.52 dB, the image 2.47 to 2.44 dB (middle 3.77 to 3.65) and the
+envelope 2.67 to 2.65 dB; partial levels move 5.42 to 5.44 dB, the sustain
+spectrum 5.25 to 5.31 dB and the bass image 1.33 to 1.43 dB. On the
+upright's 21 dev notes the envelope moves 4.95 to 4.88 dB and the early
+spectrum 7.32 to 7.27 dB, decay 4.47 to 4.63 dB/s and the image 4.26 to
+4.31 dB. No note moves past the tolerances `Tools/compare_benchmarks.py`
+lists regressions at
+([grand](validation/grand-lane-roles-benchmark-2026-10-31.md),
+[upright](validation/upright-lane-roles-benchmark-2026-10-31.md)). The
+levels check passes unchanged. The pairing costs a strike 24 sums of four
+terms per blended partial; the per-sample path is unchanged.
+
+Chosen by measurement and the stereo test, as the owner's standing direction
+asks; no one has listened to it yet. The A/B pack is in the project files
+(`keyra/lane-roles-2026-10-31/`).

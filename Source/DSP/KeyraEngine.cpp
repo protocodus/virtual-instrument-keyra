@@ -362,9 +362,9 @@ struct alignas(16) OpenBank {
 struct LaneData {double rate=0,offset=0,level=0,ratio=0,angle=0;Complex phase{1,0},left{},right{};};
 struct PartialData {int order=0;double cents=0,rise=0;LaneData lane[lanes]{};};
 // What every strike would otherwise recompute of a measured lane: its log
-// rate, its pickup's ratio and angle (see LaneData) and its layers' phases
-// as unit vectors.
-struct LaneCache {double logRate=0,ratio=0,angle=0;std::array<Complex,measured::maxLayers> phase{};};
+// rate, its pickup's ratio and angle (see LaneData), its layers' phases as
+// unit vectors and its share of its partial (shareLanes).
+struct LaneCache {double logRate=0,ratio=0,angle=0,share=0;std::array<Complex,measured::maxLayers> phase{};};
 LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
   LaneCache c;c.logRate=std::log(m.rate);
   const double right=std::max(1e-6,std::hypot(static_cast<double>(m.rightRe),static_cast<double>(m.rightIm)));
@@ -372,6 +372,40 @@ LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
   c.angle=std::atan2(static_cast<double>(m.rightIm),static_cast<double>(m.rightRe));
   for(int i=0;i<layers;++i)c.phase[i]={std::cos(m.phase[i]),std::sin(m.phase[i])};
   return c;
+}
+// The mean time of the 50-750 ms window the layers' levels are measured
+// over: heardPower weighs a partial's power from contact by e^(-t/heard).
+constexpr double heard=.4;
+// Each lane's share of its partial's heard power, its lanes' beating left
+// out, averaged over the layers so that a key pairs its lanes alike however
+// hard it is struck.
+void shareLanes(const measured::Partial& p,int layers,std::array<LaneCache,lanes>& c) noexcept {
+  for(int i=0;i<layers;++i){
+    double power[lanes],sum=0;
+    for(int j=0;j<lanes;++j){power[j]=std::pow(10.,p.lanes[j].levelDb[i]/10)/(2*p.lanes[j].rate+1/heard);sum+=power[j];}
+    for(int j=0;j<lanes;++j)c[j].share+=sum>0?power[j]/sum/layers:0;
+  }
+}
+// Which of b's lanes each of a's meets between two recorded pitches: of the
+// 24 pairings, the one whose pairs' decay rates differ least in log, each
+// pair weighed by the share of the partial its two lanes carry. Paired as
+// they are stored, fastest first, the lane that carries a partial met one
+// that carries little wherever one pitch's fit holds a lane the other's
+// lacks, and the key between them took decays and stereo positions neither
+// has: a refit gave F#3's second partial on the grand a 228 dB/s transient
+// ahead of the lane that carries 91 % of it, and D#3's second partial sat
+// 6.3 dB nearer the middle than either neighbour. Of the shipping fit's
+// blended partials, 131 of the grand's 733 and 66 of the upright's 498 now
+// meet by the lanes that carry them.
+std::array<int,lanes> pairing(const std::array<LaneCache,lanes>& a,const std::array<LaneCache,lanes>& b) noexcept {
+  std::array<int,lanes> order{},best{};
+  for(int j=0;j<lanes;++j)order[j]=best[j]=j;
+  double least=std::numeric_limits<double>::infinity();
+  do{double cost=0;
+    for(int j=0;j<lanes;++j){const double d=a[j].logRate-b[order[j]].logRate;cost+=(a[j].share+b[order[j]].share)*d*d;}
+    if(cost<least){least=cost;best=order;}
+  }while(std::next_permutation(order.begin(),order.end()));
+  return best;
 }
 
 double levelAt(const Model& model,const float* db,double velocity) noexcept {
@@ -474,7 +508,6 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
 // e^(-t/0.4 s) from contact, the mean time of the 50-750 ms window the
 // layers' levels are measured over; the rise its lanes share is left out.
 double heardPower(const PartialData& d) noexcept {
-  constexpr double heard=.4;
   double amplitude[lanes],rate[lanes];
   for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
   double sum=0;
@@ -512,11 +545,12 @@ double windowPower(const PartialData& d) noexcept {
   }
   return sum;
 }
-PartialData blend(const PartialData& a,const PartialData& b,double t) noexcept {
+PartialData blend(const PartialData& a,const PartialData& b,double t,const std::array<int,lanes>& pair) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
   d.rise=mix(a.rise,b.rise,t);
-  // Lanes are stored fastest first, so like roles meet.
-  for(int j=0;j<lanes;++j)d.lane[j]=blendLane(a.lane[j],b.lane[j],t);
+  for(int j=0;j<lanes;++j)d.lane[j]=blendLane(a.lane[j],b.lane[pair[j]],t);
+  // Fastest first again, as combine() pairs the pianos' lanes.
+  std::sort(d.lane,d.lane+lanes,[](const LaneData& x,const LaneData& y){return x.rate>y.rate;});
   // Blended one by one, the lanes beat and cancel with offsets, phases and
   // pickups neither pitch has, and a partial could play several dB under or
   // over both: grand B4 sat 4 dB under its neighbours. Its heard power is
@@ -1175,7 +1209,7 @@ struct Engine::Impl {
     while((i<ia||j<jb)&&n<2*maxPartials){
       const int oa=i<ia?m.partials[i].order:1<<30,ob=j<jb?m.partials[j].order:1<<30;
       auto& d=seriesData[p][n];auto& weight=seriesWeight[p][n];
-      if(oa==ob){d=blend(single(m,m.partials[i],cache[i],x.v),single(m,m.partials[j],cache[j],x.v),x.t);weight=1;++i;++j;}
+      if(oa==ob){d=blend(single(m,m.partials[i],cache[i],x.v),single(m,m.partials[j],cache[j],x.v),x.t,pairing(cache[i],cache[j]));weight=1;++i;++j;}
       else if(oa<ob){d=single(m,m.partials[i],cache[i],x.v);weight=1-x.t;++i;}
       else{d=single(m,m.partials[j],cache[j],x.v);weight=x.t;++j;}
       for(auto& l:d.lane)l.level+=x.scaleDb;
@@ -1730,8 +1764,10 @@ struct Engine::Impl {
 Engine::Engine(double sampleRate):impl(new Impl){
   auto& p=*impl;
   for(const auto& m:models){
-    for(int i=0;i<m.anchors[m.anchorCount-1].first+m.anchors[m.anchorCount-1].count;++i)
+    for(int i=0;i<m.anchors[m.anchorCount-1].first+m.anchors[m.anchorCount-1].count;++i){
       for(int j=0;j<lanes;++j)p.partialLanes[m.partialFirst+i][j]=cacheLane(m.partials[i].lanes[j],m.layers);
+      shareLanes(m.partials[i],m.layers,p.partialLanes[m.partialFirst+i]);
+    }
     for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
       p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);
   }

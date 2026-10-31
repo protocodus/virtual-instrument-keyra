@@ -198,6 +198,18 @@ musical passages through the same engine. Both are frozen evidence from
   [upright](Docs/validation/upright-stereo-between-pitches-benchmark-2026-10-31.md)).
   Warm Walnut plays a touch brighter (0.30, was 0.28) to stay within 2 dB of
   typical playing's −9 VU.
+- A key between two recorded pitches pairs each partial's lanes by the share
+  of the partial they carry, where it paired them fastest first. Where one
+  pitch's fit holds a lane the other's lacks, that order met the lane that
+  carries a partial with one that carries little, and the key between them
+  rang the partial with a decay and a stereo position neither neighbour has:
+  on a refit D♯3's second partial sat 6.3 dB nearer the middle than either.
+  The pairing changes 433 of the grand's 733 blended partials and 286 of the
+  upright's 498, most in the bass. On the grand's never-fitted pitches level
+  sits 1.07 dB from the recordings (was 1.20) and the treble's decay
+  3.08 dB/s (3.37); the sustain spectrum moves 5.25 to 5.31 dB
+  ([grand](Docs/validation/grand-lane-roles-benchmark-2026-10-31.md),
+  [upright](Docs/validation/upright-lane-roles-benchmark-2026-10-31.md)).
 - Letting a key go knocks the body as its damper lands, and the sustain pedal
   knocks it going down and coming up, synthesized on the body's modes: each
   mode's level and phase is measured from the library's release and pedal
@@ -591,7 +603,9 @@ octaves. Per third-octave band from 63 Hz to 5 kHz, the level every freed
 partial starts at as the dampers lift is the one that rings the take's energy
 there from 0.3 to 2.3 s, in the take's own scale. A strike interpolates
 between the recorded pitches by partial order and between the layers by
-velocity, taking phases from the nearer pitch; a partial's stereo pickup moves
+velocity, taking phases from the nearer pitch. A partial's lanes are paired by
+the share of the partial they carry, each pair as alike in decay as the
+pairing allows; a partial's stereo pickup moves
 between the two pitches' channel level differences in dB and takes its
 channel phase difference from the nearer pitch with its phases, and its level is
 set so that its power over the first second or so, its lanes' beating
