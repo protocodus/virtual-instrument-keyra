@@ -39,11 +39,11 @@ explanation for the missing body and spatial behavior.
 `tools/compare_quality_baseline.py` renders the same first six seconds of the
 original nocturne events, followed by three seconds of tail/held behavior:
 
-- [Original, dry](../Audio/quality-baseline/original-dry.mp3)
-- [Reduced preview, dry](../Audio/quality-baseline/reduced-dry.mp3)
-- [Original, same room](../Audio/quality-baseline/original-room.mp3)
-- [Reduced preview, same room](../Audio/quality-baseline/reduced-room.mp3)
-- [Original → reduced, dry](../Audio/quality-baseline/original-then-reduced-dry.mp3)
+- Original, dry (removed 2026-10-31)
+- Reduced preview, dry (removed 2026-10-31)
+- Original, same room (removed 2026-10-31)
+- Reduced preview, same room (removed 2026-10-31)
+- Original → reduced, dry (removed 2026-10-31)
   (segments begin at 0 and 9.5 seconds)
 
 The reduced preview retains its default body/resonance (0.3), mechanical noise
@@ -59,7 +59,7 @@ all files. Both room versions use the identical preserved procedural room,
 wet=.16. No added room appears in either dry file. The reference's 192 kHz native
 output is FIR-downsampled; the live model synthesizes at 48 kHz. Native output
 high-pass differences are retained and documented; no further EQ is applied.
-The [manifest](../Audio/quality-baseline/manifest.json) records hashes, gains,
+The manifest (removed 2026-10-31) records hashes, gains,
 commands, source identities and limitations. This is a labeled comparison, not a
 fabricated blind-listening verdict.
 

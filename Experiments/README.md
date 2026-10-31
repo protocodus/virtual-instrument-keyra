@@ -7,6 +7,12 @@ or configure it from the repository root with
 `cmake -S Experiments -B Experiments/build`. What follows is the research
 README as it stood when the product moved to the repository root.
 
+The committed listening audio (`Audio/`, `Research/GrandPianoV2/listening/`
+and `renders/`) was removed on 2026-10-31, so the repository holds no
+recordings. Links to it below are marked removed; the receipts under
+`Validation/` keep the paths and hashes they were written with, and the export
+tools re-create the sets from fetched recordings.
+
 Keyra is a sample-free piano instrument in development, targeting a **Reason Rack Extension**. Linux provides the efficient DSP/recording test environment; Reason itself and its licensed Jukebox toolchain require separate host validation. Version 0.2 adds a playable modal engine, optional VST3/CLAP development harnesses, separate grand/upright recording calibrations, four instrument voicings, three material voicings and six microphone arrangements. Production readiness and a price above US$199 remain goals, not established claims.
 
 **Sound-quality baseline:** the preserved full nonlinear physical renderer that produced the original demos. The user reports that those demos sounded better than the newer reduced live model, especially in body, stereo and attack. The reduced renderer is a CPU/parameter research preview, not a proven quality replacement. [QUALITY_BASELINE.md](docs/QUALITY_BASELINE.md) explains the distinction and links a same-passage, RMS-matched comparison with identical room processing. Performance work must preserve that original quality rather than justify removing physical mechanisms with note scores alone.
@@ -21,19 +27,19 @@ A [current pressure-readout check](docs/PRESSURE_CURRENT.md) measures a further 
 
 The current priority is the **full physical grand against recordings**. The [locked full-range corpus](References/GrandFullRange/README.md) adds A0 and C1–C8, with 34 training recordings at 17 pitches and separate evaluation cases. The [full-model calibration work](docs/FULL_CALIBRATION.md) retains nonlinear contact and reciprocal string/body coupling; its candidate remains separate from the plugin preview. C8 has an unresolved strong recorded component whose physical identity is uncertain.
 
-A subsequent [confidence-prior decay candidate](docs/FULL_CONFIDENCE_LOSS.md) improves mean envelope and early attack-band agreement and reverses the earlier A3 envelope regression. [Five matched recording comparisons](Audio/full-confidence-loss/README.md) retain the A0 attack, C2 envelope and C8 regressions. These previously observed historical cases are not fresh validation, and the canonical calibration remains unchanged.
+A subsequent [confidence-prior decay candidate](docs/FULL_CONFIDENCE_LOSS.md) improves mean envelope and early attack-band agreement and reverses the earlier A3 envelope regression. Five matched recording comparisons (removed 2026-10-31) retain the A0 attack, C2 envelope and C8 regressions. These previously observed historical cases are not fresh validation, and the canonical calibration remains unchanged.
 
 The [A0 attack diagnosis](docs/FULL_ATTACK_TIMING.md) separates the large relative-rise metric change from actual hammer timing: radiation weighting changes which bass-cycle peak crosses the threshold. Early attack-band agreement improves, while excessive initial pressure remains. The next fit needs coherent pressure guards before 50 ms alongside the existing spectrum/envelope criteria.
 
-The [radiation-startup confirmation](docs/RADIATION_STARTUP.md) rejects the proposed observer/crossover click correction: 26 of 34 TRAIN cases pass, but eight regress in early attack texture. The [matched diagnostic passage](Audio/full-radiation-crossover/README.md) remains available for listening; the default sound is unchanged.
+The [radiation-startup confirmation](docs/RADIATION_STARTUP.md) rejects the proposed observer/crossover click correction: 26 of 34 TRAIN cases pass, but eight regress in early attack texture. The matched diagnostic passage (removed 2026-10-31) remains available for listening; the default sound is unchanged.
 
 The [soundboard reconstruction and fit](docs/BODY_RADIATION.md) provides a faster way to test the actual body observation: all 34 cases reproduce captured raw body pressure bit for bit from saved simulation forces. A single six-weight fit improved early band agreement but worsened late harmonics, envelopes and levels; **0/34 cases passed all preservation guards**. This replacement is rejected and adds no runtime change.
 
-The later [contact-driven attack correction](docs/TRANSIENT_RADIATION.md) retains the original physical trajectory and subtracts a short-memory companion observation. Early band error improves from 14.963 to 13.730 dB across the same 34 TRAIN cases, and both C3 click criteria pass. Hard C8 still misses an early-window guard: **33/34 is a global failure**, not a promoted default. A [matched experimental passage](Audio/full-transient-completion/README.md) plays original → candidate at 0 / 9.5 seconds. The full companion is an offline quality experiment, with realtime implementation and listening judgment outstanding.
+The later [contact-driven attack correction](docs/TRANSIENT_RADIATION.md) retains the original physical trajectory and subtracts a short-memory companion observation. Early band error improves from 14.963 to 13.730 dB across the same 34 TRAIN cases, and both C3 click criteria pass. Hard C8 still misses an early-window guard: **33/34 is a global failure**, not a promoted default. A matched experimental passage (removed 2026-10-31) plays original → candidate at 0 / 9.5 seconds. The full companion is an offline quality experiment, with realtime implementation and listening judgment outstanding.
 
 For frozen listening exports and numerical replays, follow the [replay-environment addendum](docs/REPLAY_ENVIRONMENT.md), including `OPENBLAS_NUM_THREADS=1` before Python starts. It records a later-discovered procedural-room fingerprint requirement while preserving the original evidence and its scope.
 
-The earlier 13-pitch **reduced preview** improved harmonic error from 5.83 to 2.97 dB and envelope error from 4.26 to 2.46 dB on seven recordings opened after that candidate froze. Its [validation report](docs/VALIDATION.md) preserves individual regressions. [A3](Audio/default-A3v8-real-before-after.mp3) and [D♯4](Audio/default-Dsharp4v8-real-before-after.mp3) play real → previous preview → current preview at 0 / 4.5 / 9 seconds. These historical preview results do not establish full-model or perceptual parity.
+The earlier 13-pitch **reduced preview** improved harmonic error from 5.83 to 2.97 dB and envelope error from 4.26 to 2.46 dB on seven recordings opened after that candidate froze. Its [validation report](docs/VALIDATION.md) preserves individual regressions. A3 (removed 2026-10-31) and D♯4 (removed 2026-10-31) play real → previous preview → current preview at 0 / 4.5 / 9 seconds. These historical preview results do not establish full-model or perceptual parity.
 
 A separate [connected physical research path](docs/MODULES.md) provides independently testable finger/key/keybed/action, nonlinear hammer contact, persistent strings, sympathetic coupling, wood, air, lid and player-load components. It has not replaced the default sound: physical passivity, material tables and more modules do not by themselves prove recording realism. Material/preset expansion is secondary to default-model fidelity.
 
@@ -41,9 +47,9 @@ The [piano-parts coverage map](docs/PIANO_PARTS_COVERAGE.md) relates the supplie
 
 The original full model also has a [modular key/pedal body-coupling prototype](docs/MECHANISM_NETWORK.md). Tests show mechanism impacts reaching unstruck strings and body motion reacting back on the source; intact stems and coupling/source ablations expose both effects. A separate [precision candidate](docs/PRECISION_FINDINGS.md) retains every original mode/operator and is about 1.67× faster on repeated short 48 kHz comparisons, with measured numerical loss. Both remain research candidates for listening and further validation.
 
-A separate [full physical block API](docs/FULL_BACKEND.md) now combines that precision approach with persistent strings, bounded seeded strike variation, hammer recovery and quiet body-coupled key/pedal texture. Its [repetition controller](docs/STRIKE_REPETITION.md) defers unsafe strikes instead of overwriting an active hammer. [Shared-gain repetition clips](Audio/strike-repetition/README.md) expose the behavior. This API uses the original control calibration; the development plugin wrappers still use the reduced preview, and full-model realtime performance remains unresolved.
+A separate [full physical block API](docs/FULL_BACKEND.md) now combines that precision approach with persistent strings, bounded seeded strike variation, hammer recovery and quiet body-coupled key/pedal texture. Its [repetition controller](docs/STRIKE_REPETITION.md) defers unsafe strikes instead of overwriting an active hammer. Shared-gain repetition clips (removed 2026-10-31) expose the behavior. This API uses the original control calibration; the development plugin wrappers still use the reduced preview, and full-model realtime performance remains unresolved.
 
-The [full offline renderer](docs/FULL_RENDERER.md) exercises that API with sample-timestamped scores and component switches. A [matched stereo passage](Audio/full-performance/README.md) compares the original full control and connected action version, dry and with identical room processing. A separate [air/lid/player research integration](docs/FULL_ACOUSTIC_NETWORK.md) connects the existing passive cavity to the full string/body network and exposes reciprocal transfer and source/coupling ablations; its uncalibrated parameters remain outside the default instrument.
+The [full offline renderer](docs/FULL_RENDERER.md) exercises that API with sample-timestamped scores and component switches. A matched stereo passage (removed 2026-10-31) compares the original full control and connected action version, dry and with identical room processing. A separate [air/lid/player research integration](docs/FULL_ACOUSTIC_NETWORK.md) connects the existing passive cavity to the full string/body network and exposes reciprocal transfer and source/coupling ablations; its uncalibrated parameters remain outside the default instrument.
 
 A bounded [C2/C4 waveguide experiment](docs/COUPLED_WAVEGUIDE.md) demonstrates persistent nonlinear strikes and reciprocal transfer through the full 475-mode board with a numerical energy ledger. It is a cheaper-representation study; missing polarization, unison losses, dampers and calibrated radiation prevent replacing the full engine.
 
@@ -76,7 +82,7 @@ build/keyra_full_render --help
 
 The default build is offline and creates the core, renderer, reference and CLAP harness. Add `-DKEYRA_BUILD_VST3=ON` to download the pinned SDK, or also supply `-DKEYRA_VST3_SDK_DIR=/path/to/vst3sdk` with its submodules for an offline build. On Windows use an x64 Visual Studio toolchain, `cmake --build build --config Release`, and `ctest --test-dir build -C Release --output-on-failure`. The manually invoked Windows harness workflow was retired with the move; a Windows binary of these harnesses is not validated. Linux builds have been exercised locally. See [VST3](vst3/README.md) and [CLAP](plugin/README.md) for harness details. Their binaries are not Rack Extensions.
 
-The [live validation report](docs/VALIDATION.md) separates improvements, regressions and release blockers. [Release goals](docs/ROADMAP.md) record the remaining Reason work. [Listening examples](Audio/manifest.json) include four performances and held-out real→model comparisons; recording attribution is retained in the manifest.
+The [live validation report](docs/VALIDATION.md) separates improvements, regressions and release blockers. [Release goals](docs/ROADMAP.md) record the remaining Reason work. Listening examples (removed 2026-10-31) include four performances and held-out real→model comparisons; recording attribution is retained in the manifest.
 
 ## Preserved mechanical reference
 
@@ -90,12 +96,12 @@ The reference renderer is expensive: the supplied 192 kHz musical renders took a
 
 | Original musical example | MP3 preview |
 |---|---|
-| Window at Dusk | [Nocturne](Research/GrandPianoV2/renders/01_nocturne-room.mp3) |
-| Two Voices in Morning Light | [Prelude](Research/GrandPianoV2/renders/02_prelude-room.mp3) |
-| Sunday on the River | [Jazz waltz](Research/GrandPianoV2/renders/03_jazz_waltz-room.mp3) |
-| Copper and Thunder | [Etude](Research/GrandPianoV2/renders/04_etude-room.mp3) |
+| Window at Dusk | Nocturne (removed 2026-10-31) |
+| Two Voices in Morning Light | Prelude (removed 2026-10-31) |
+| Sunday on the River | Jazz waltz (removed 2026-10-31) |
+| Copper and Thunder | Etude (removed 2026-10-31) |
 
-The isolated-note clips play **real acoustic piano → original POC → calibrated v2**. Try [C4](Research/GrandPianoV2/listening/C4v8-real-v1-v2.mp3), [F♯3](Research/GrandPianoV2/listening/Fsharp3v8-real-v1-v2.mp3) or the [C7 extrapolation check](Research/GrandPianoV2/listening/C7v8-real-v1-v2.mp3). These are level-matched, labeled comparisons, not blind listening tests.
+The isolated-note clips play **real acoustic piano → original POC → calibrated v2**. Try C4 (removed 2026-10-31), F♯3 (removed 2026-10-31) or the C7 extrapolation check (removed 2026-10-31). These are level-matched, labeled comparisons, not blind listening tests.
 
 The reference recordings are **Salamander Grand Piano V3 by Alexander Holm**, an acoustic Yamaha C5 set under CC BY 3.0. Ten notes/velocity cases were used for fitting, twelve in-range cases were excluded from fitting and two extreme notes were tested separately. Across the twelve in-range held-out cases:
 

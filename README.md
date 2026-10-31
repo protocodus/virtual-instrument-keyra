@@ -34,11 +34,12 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 
 ### Listening against the recordings
 
-The [recording comparisons](Docs/audio/recording-comparisons/2026-10-26/README.md)
-play a real Salamander Grand note, the first fit and the current fit in turn,
-level-matched. The [live renders](Docs/audio/live/manifest.json) are earlier
-musical passages through the same engine. Both are frozen evidence from
-0.2.0's review.
+The [live renders](Docs/audio/live/manifest.json) are earlier musical passages
+through the same engine, frozen evidence from 0.2.0's review. The recording
+comparisons that set Salamander notes beside the fits were removed on
+2026-10-31 so the repository holds no recordings;
+`Tools/make_recording_comparisons.py --output-dir <dir>` rebuilds them outside
+the checkout from a fetched copy of the library.
 
 ## Version history
 

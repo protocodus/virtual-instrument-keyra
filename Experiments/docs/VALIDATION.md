@@ -185,6 +185,6 @@ build/keyra_benchmark_modules
 
 Refit only from the locked training subset. New evaluation-driven iterations
 need new reserved recordings before making fresh generalization claims. The
-[listening manifest](../Audio/manifest.json) identifies real→model segment times,
+listening manifest (removed 2026-10-31) identifies real→model segment times,
 gains, hashes and attribution. Four performances share one export gain. These
 are labeled listening aids; no human listening verdict has been fabricated.

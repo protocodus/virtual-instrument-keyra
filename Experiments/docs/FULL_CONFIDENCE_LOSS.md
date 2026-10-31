@@ -95,7 +95,7 @@ Receipts:
 - [TRAIN result](../Validation/full-confidence-loss.json)
 - [Historical result with every case and regression](../Validation/full-confidence-loss-historical.json)
 - [Provenance review](../Validation/full-confidence-loss-review.json)
-- [Matched listening files and processing notes](../Audio/full-confidence-loss/README.md)
+- Matched listening files and processing notes (removed 2026-10-31)
 
 The piano and recording chain are the same Salamander instrument throughout.
 Hammer speeds, capture pedal state, room and editing are not fully known. MIDI

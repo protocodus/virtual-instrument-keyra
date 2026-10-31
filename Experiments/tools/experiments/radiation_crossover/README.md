@@ -115,7 +115,7 @@ Reference measurements use Alexander Holm's Salamander Grand Piano V3,
 [CC BY 3.0](../../../References/GrandFullRange/upstream/LICENSE-CC-BY-3.0.txt).
 See [corpus attribution and capture limits](../../../References/GrandFullRange/README.md).
 No recording, impulse response or plugin build is bundled in this source and
-evidence package. A separate [18.5-second musical comparison](../../../Audio/full-radiation-crossover/README.md)
+evidence package. A separate 18.5-second musical comparison (removed 2026-10-31)
 plays old control at 0 seconds, then the fixed crossover at 9.5 seconds with
 the same room and fixed gains. Its exact reproduction is presentation evidence,
 not a listener verdict or broader recording validation.

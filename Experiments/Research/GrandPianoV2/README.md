@@ -35,26 +35,26 @@ All four musical excerpts are original compositions and deterministic performanc
 
 | Piece | Length | Preview |
 |---|---:|---|
-| Window at Dusk | 37.75 s | [MP3](renders/01_nocturne-room.mp3) |
-| Two Voices in Morning Light | 31.12 s | [MP3](renders/02_prelude-room.mp3) |
-| Sunday on the River | 31.75 s | [MP3](renders/03_jazz_waltz-room.mp3) |
-| Copper and Thunder | 30.05 s | [MP3](renders/04_etude-room.mp3) |
-| Velocity, Register and Pedal Study | 35.76 s | [MP3](renders/05_diagnostics-room.mp3) |
+| Window at Dusk | 37.75 s | MP3 (removed 2026-10-31) |
+| Two Voices in Morning Light | 31.12 s | MP3 (removed 2026-10-31) |
+| Sunday on the River | 31.75 s | MP3 (removed 2026-10-31) |
+| Copper and Thunder | 30.05 s | MP3 (removed 2026-10-31) |
+| Velocity, Register and Pedal Study | 35.76 s | MP3 (removed 2026-10-31) |
 
 The completed isolated-note comparisons play **real recording → v1 → v2**, with segments starting at 0.00, 4.60 and 9.20 seconds:
 
 | Note | Evaluation | MP3 preview |
 |---|---|---|
-| C2, layer 8 | Velocity excluded from fitting | [Listen](listening/C2v8-real-v1-v2.mp3) |
-| C4, layer 8 | Velocity excluded from fitting | [Listen](listening/C4v8-real-v1-v2.mp3) |
-| C6, layer 8 | Velocity excluded from fitting | [Listen](listening/C6v8-real-v1-v2.mp3) |
-| F♯3, layer 8 | Pitch excluded from fitting | [Listen](listening/Fsharp3v8-real-v1-v2.mp3) |
-| C1, layer 8 | Bass extrapolation | [Listen](listening/C1v8-real-v1-v2.mp3) |
-| C7, layer 8 | Treble extrapolation | [Listen](listening/C7v8-real-v1-v2.mp3) |
+| C2, layer 8 | Velocity excluded from fitting | Listen (removed 2026-10-31) |
+| C4, layer 8 | Velocity excluded from fitting | Listen (removed 2026-10-31) |
+| C6, layer 8 | Velocity excluded from fitting | Listen (removed 2026-10-31) |
+| F♯3, layer 8 | Pitch excluded from fitting | Listen (removed 2026-10-31) |
+| C1, layer 8 | Bass extrapolation | Listen (removed 2026-10-31) |
+| C7, layer 8 | Treble extrapolation | Listen (removed 2026-10-31) |
 
-Each 13.25-second triplet uses onset-aligned 4.05-second excerpts and 0.55-second gaps. One early-RMS gain per model remains fixed through the decay; a common final gain gives the set a maximum estimated true peak of −2 dBTP. No room, compression or limiter is added. The real excerpts are Alexander Holm's CC BY 3.0 recordings, aligned, end-faded and concatenated for comparison; see [attribution](reference/ATTRIBUTION.md) and the [listening manifest](listening/manifest.json). These are labeled listening aids, not a blind test.
+Each 13.25-second triplet uses onset-aligned 4.05-second excerpts and 0.55-second gaps. One early-RMS gain per model remains fixed through the decay; a common final gain gives the set a maximum estimated true peak of −2 dBTP. No room, compression or limiter is added. The real excerpts are Alexander Holm's CC BY 3.0 recordings, aligned, end-faded and concatenated for comparison; see [attribution](reference/ATTRIBUTION.md) and the listening manifest (removed 2026-10-31). These are labeled listening aids, not a blind test.
 
-All five supplied performances were synthesized at 192 kHz, FIR-downsampled to 48 kHz and exported as stereo 24-bit PCM with TPDF dither. MP3 previews are 320 kb/s. Room versions add procedural reflections and a diffuse tail; no recorded room response is used. Dry files are the most direct way to judge the synthesis. A shared −10.07 dB export gain preserves dynamics across all ten dry/room WAVs, without compression or limiting; the maximum estimated true peak is −1.50 dBTP. [Export metrics](renders/metrics/export.json) include durations, levels, output hashes and verified native-render provenance for the frozen source and calibration.
+All five supplied performances were synthesized at 192 kHz, FIR-downsampled to 48 kHz and exported as stereo 24-bit PCM with TPDF dither. MP3 previews are 320 kb/s. Room versions add procedural reflections and a diffuse tail; no recorded room response is used. Dry files are the most direct way to judge the synthesis. A shared −10.07 dB export gain preserves dynamics across all ten dry/room WAVs, without compression or limiting; the maximum estimated true peak is −1.50 dBTP. Export metrics (removed 2026-10-31) include durations, levels, output hashes and verified native-render provenance for the frozen source and calibration.
 
 ## Reproduce
 

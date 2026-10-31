@@ -148,7 +148,7 @@ The C4 layer-8 diagnostic uses the saved early-RMS model gains and a shared 80�
 
 The [six listening triplets](README.md#listen) play real → v1 → v2 at segment starts 0.00, 4.60 and 9.20 s. Each excerpt retains 50 ms before detected onset, four seconds of attack/decay and a 15 ms end fade. A 0.55 s gap separates excerpts. The same early-RMS model matching used by the benchmark remains fixed throughout each note. One final gain applies to the entire triplet set; the maximum estimated true peak is −2 dBTP. There is no room effect, compression or limiting.
 
-The [listening manifest](listening/manifest.json) preserves source hashes, model gains, output hashes and Alexander Holm's recording attribution. Reference excerpts are modified only for alignment, excerpt length, end fade, common presentation gain and concatenation. This is a labeled listening comparison, not a blind experiment.
+The listening manifest (removed 2026-10-31) preserves source hashes, model gains, output hashes and Alexander Holm's recording attribution. Reference excerpts are modified only for alignment, excerpt length, end fade, common presentation gain and concatenation. This is a labeled listening comparison, not a blind experiment.
 
 ## Reproduce the evidence
 

@@ -13,7 +13,7 @@ excite the body/network, with body reaction observable at the mechanism.
 The [mechanism/body prototype](MECHANISM_NETWORK.md) now exercises that
 connection on the original full piano. Its authored key/pedal resonators have
 direct/body/string stems, reciprocal reaction tests and source/coupling
-ablations. [Lossless listening exports](../Audio/mechanism-network/manifest.json)
+ablations. Lossless listening exports (removed 2026-10-31)
 retain a shared gain within each bundle; their effective levels are uncalibrated.
 
 `PhysicalInstrument` connects the modules below through mechanical displacement,

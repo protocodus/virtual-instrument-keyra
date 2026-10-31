@@ -13,12 +13,12 @@ use the same preserved procedural room at wet=0.16. The live preview retains its
 default body/noise controls, with only internal room bypassed. Native filter and
 internal-rate differences remain documented in the manifest.
 
-- [Original full physical model, dry](../Audio/physical-candidate/original-dry.mp3)
-- [Experimental physical kernel, dry](../Audio/physical-candidate/physical-dry.mp3)
-- [Reduced live preview, dry](../Audio/physical-candidate/reduced-dry.mp3)
-- [Original → experimental physical → reduced, dry](../Audio/physical-candidate/original-physical-reduced-dry.mp3)
+- Original full physical model, dry (removed 2026-10-31)
+- Experimental physical kernel, dry (removed 2026-10-31)
+- Reduced live preview, dry (removed 2026-10-31)
+- Original → experimental physical → reduced, dry (removed 2026-10-31)
   (starts at 0 / 9.5 / 19 seconds)
-- [Experimental physical kernel, same room](../Audio/physical-candidate/physical-room.mp3)
+- Experimental physical kernel, same room (removed 2026-10-31)
 
 The candidate retains 4,607 modes in this 48 kHz configuration, including 475
 board modes. The original retains 17,778 string modes plus 475 board modes.
@@ -42,7 +42,7 @@ python3 tools/compare_physical_candidate.py --render-candidate
 ```
 
 Omit `--render-candidate` to reuse only hash-verified synthesis outputs. The
-[manifest](../Audio/physical-candidate/manifest.json) and
+manifest (removed 2026-10-31) and
 [report](../Validation/physical-candidate-comparison.json) identify commands,
 inputs, binaries, raw audio, stems, gains and limitations. No recording fitting
 or automatic perceptual decision occurs in these export scripts.

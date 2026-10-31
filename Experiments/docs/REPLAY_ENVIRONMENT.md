@@ -22,11 +22,11 @@ crossover PCM and matched the old presented segment's PCM24. The separate
 presentation evidence records the failed attempt and retry; it does not revise
 the original six-case failed pilot or establish a listener preference.
 
-The [IR-only receipt](../Audio/full-radiation-crossover/environment-receipt.json)
+The IR-only receipt (removed 2026-10-31)
 records a maximum IR difference of `1.1102230246251565e-16` and 139,793 differing
 binary64 elements between one and eight threads. It opened no piano PCM. The
-[first-attempt receipt](../Audio/full-radiation-crossover/evidence/first-attempt-receipt.json)
-and [exact presentation reproduction](../Audio/full-radiation-crossover/evidence/presentation-reproduction.json)
+first-attempt receipt (removed 2026-10-31)
+and exact presentation reproduction (removed 2026-10-31)
 retain the failure and corrected-environment evidence. The newer exporter's
 thread pin is set before NumPy import; the old frozen exporter requires the
 explicit prefix below.
@@ -39,7 +39,7 @@ OPENBLAS_NUM_THREADS=1 python3 Audio/full-radiation-pilot/export.py --inputs sou
 
 The input map, original fingerprint-matched files, NumPy/SciPy and FFmpeg are
 still required as described in its unchanged
-[README](../Audio/full-radiation-pilot/README.md). Choose a new or empty output
+README (removed 2026-10-31). Choose a new or empty output
 directory. This command performs presentation processing, not instrument
 synthesis or a model-quality evaluation.
 

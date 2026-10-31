@@ -90,7 +90,7 @@ modes and 475 board modes. It is an expensive offline quality experiment and
 requires a cheaper realization before plugin integration. It does not establish
 current connected-default behavior, other sample rates or Reason/Recon readiness.
 
-A [matched musical comparison](../Audio/full-transient-completion/README.md)
+A matched musical comparison (removed 2026-10-31)
 plays original at 0 s and candidate at 9.5 s, dry and with identical room/gain
 processing. The original full nine-second float32 audio is bit-identical to its
 historical control. A separate unity-memory observer reproduces raw pressure

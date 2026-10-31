@@ -61,7 +61,7 @@ Adjacent-band H1 prominence is only a contrast proxy, and reference-equivalent
 dBFS is not calibrated acoustic SPL. The preregistered transient ×0.5 mixture
 also fails both C6 cases when the same numerical gates are applied post hoc.
 Neither diagnosis changes the frozen result. The separately published
-[listening diagnostics](../../../Audio/full-radiation-pilot/README.md) retain
+listening diagnostics (removed 2026-10-31) retain
 the same failure status; their manifest is pinned by the review index.
 
 ## Evidence and identities

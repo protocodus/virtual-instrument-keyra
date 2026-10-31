@@ -66,16 +66,16 @@ still have a numerical decay floor, and a correction requires separate tests.
 
 ## Audition and reproduction
 
-[Double control](../Audio/precision-comparison/double-control.flac) and
-[float candidate](../Audio/precision-comparison/float-candidate.flac) are lossless
+Double control (removed 2026-10-31) and
+float candidate (removed 2026-10-31) are lossless
 24-bit FLAC exports of dry 48 kHz outputs, complete-file RMS
 matched with one shared sample-peak gain. Starts: C2 soft at 0 s, C4 hard at
 1.4 s, C6 hard at 2.8 s, original musical prefix at 4.2 s. No blind listening
 verdict is claimed.
 
-The [combined listening file](../Audio/precision-comparison/double-then-float.flac)
+The combined listening file (removed 2026-10-31)
 plays double control then float candidate, with a 0.5-second gap. No extra gain
-is applied by the lossless export. Its [manifest](../Audio/precision-comparison/manifest.json)
+is applied by the lossless export. Its manifest (removed 2026-10-31)
 records the exact source and gains.
 
 [Initial profiles](../Validation/full-precision-profiles.json) preserve the first

@@ -24,7 +24,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--initial-renderer',type=Path,default=ROOT/'build/recording-iteration-01/keyra_render')
     parser.add_argument('--final-renderer',type=Path,required=True)
-    parser.add_argument('--output-dir',type=Path,default=ROOT/'Docs/audio/recording-comparisons/2026-10-26')
+    # Required, outside the checkout: the output plays Salamander recordings,
+    # which the repository does not hold (removed 2026-10-31).
+    parser.add_argument('--output-dir',type=Path,required=True)
     args=parser.parse_args()
     args.output_dir.mkdir(parents=True,exist_ok=True)
     working=ROOT/'build/recording-comparison-previews';working.mkdir(parents=True,exist_ok=True)

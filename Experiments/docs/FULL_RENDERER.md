@@ -79,7 +79,7 @@ does not establish acoustic realism or actual Reason validation.
 build, with pressure SIMD disabled. Its touching-note renders at block
 sizes 17 and 64 are identical and retain the initial control's WAV bytes. The
 initial source/binary snapshot remains preserved for the
-[matched musical comparison](../Audio/full-performance/README.md).
+matched musical comparison (removed 2026-10-31).
 
 `Validation/full-renderer-profiles.json` pins the later default mechanism-cache
 build for both `OriginalControl` and `FrozenConfidenceGrand`. Each admits all
