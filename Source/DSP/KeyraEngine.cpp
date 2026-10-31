@@ -170,7 +170,7 @@ constexpr Model models[]{
    2.1763,
    false},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),
-   kawai::partials.data(),kawai::extras.data(),
+   kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
    static_cast<int>(grand::partials.size()+upright::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()),
    kawai::haloStrings.data(),kawai::haloLevels.data(),kawai::haloSlopeDb,kawai::haloSlopeRiseDb,kawai::haloPromptRate,
    kawai::bodyModes.data(),static_cast<int>(kawai::bodyModes.size()),kawai::bodyRise,kawai::knocks.data(),
@@ -1755,7 +1755,7 @@ struct Engine::Impl {
   // and order.
   void liftDampers() noexcept {
     const Model& g=models[static_cast<int>(Piano::grand)];
-    const double grandShare=shareWith(share.action,[&g](const Model& m){return &m==&g;});
+    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];});
     if(grandShare<=0||!(parameters.mechanics>0))return;
     const double scale=parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(grandShare)
                        /(Parameters{}.resonance*.35);
