@@ -21,14 +21,14 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
-| 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 2 | Studio Grand | [02-studio-grand.wav](Docs/audio/02-studio-grand.wav) | 11.6 s | -5.9 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -12.0 dBFS |
+| 1 | Kakegawa Grand | [01-kakegawa-grand.wav](Docs/audio/01-kakegawa-grand.wav) | 11.2 s | -1.5 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -12.1 dBFS |
 | 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -14.7 dBFS |
 | 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -1.5 dBFS |
-| 6 | Rehearsal Upright | [06-rehearsal-upright.wav](Docs/audio/06-rehearsal-upright.wav) | 11.6 s | -1.6 dBFS |
-| 7 | Felt Upright | [07-felt-upright.wav](Docs/audio/07-felt-upright.wav) | 10.4 s | -5.9 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
+| 6 | Helsinki Upright | [06-helsinki-upright.wav](Docs/audio/06-helsinki-upright.wav) | 11.6 s | -1.5 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.6 dBFS |
+| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -5.0 dBFS |
+| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -1.9 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -376,7 +376,7 @@ musical passages through the same engine. Both are frozen evidence from
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 51](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41187447136/artifacts/13039124155)**, built from [`16e02db1d86d`](https://github.com/protocodus/virtual-instrument-keyra/commit/16e02db1d86d024447316ebb3ccd0ab2eccc208f). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 52](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41196184726/artifacts/13040209988)**, built from [`1c16efd80106`](https://github.com/protocodus/virtual-instrument-keyra/commit/1c16efd80106bbc94025d981b34683c854757aa2). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
