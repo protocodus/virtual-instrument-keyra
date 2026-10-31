@@ -1,0 +1,1587 @@
+{
+ "title": "Grandpa's Piano (Decent Sampler, Pianobook)",
+ "author": "David Hawkins",
+ "instrument": "a 1933 Steinway Model L grand piano, per the library's README",
+ "license": "none stated in the library",
+ "capture": "one stereo perspective, 44.1 kHz stereo AIFF, 16-bit but for six 24-bit takes",
+ "velocity_layers": "PP 0-25, P 26-45, M 46-75, F 76-105, FF 106-127",
+ "mixing": "the preset's group volumes and pan are not applied; see Tools/decode_detroit.py",
+ "decoding": "ffmpeg to PCM WAV at the source depth, no gain, trim, resampling, denoising or EQ",
+ "files": [
+  {
+   "id": "rel24",
+   "kind": "key-release",
+   "midi": 24,
+   "source": "Samples/RT_1.aif",
+   "carried_from": "RT_1",
+   "aif_sha256": "bee090fee3762f0dade6496ae2415cb20b35636f4774c40064b78b582ae7cd15"
+  },
+  {
+   "id": "rel29",
+   "kind": "key-release",
+   "midi": 29,
+   "source": "Samples/RT_2.aif",
+   "carried_from": "RT_2",
+   "aif_sha256": "5359ad38ad978a6417e88480482966b935aab7cbe869946ee2f9e8d570875921"
+  },
+  {
+   "id": "rel34",
+   "kind": "key-release",
+   "midi": 34,
+   "source": "Samples/RT_3.aif",
+   "carried_from": "RT_3",
+   "aif_sha256": "8316d6791493888cf9b1e1dd9285385c8d693f11e773a1d3cf0681a327a020e5"
+  },
+  {
+   "id": "rel39",
+   "kind": "key-release",
+   "midi": 39,
+   "source": "Samples/RT_4.aif",
+   "carried_from": "RT_4",
+   "aif_sha256": "f17762a6f51f2fbd2fbc7267fc35f3006ea0289eb99d2826c36933001a00489d"
+  },
+  {
+   "id": "rel44",
+   "kind": "key-release",
+   "midi": 44,
+   "source": "Samples/RT_5.aif",
+   "carried_from": "RT_5",
+   "aif_sha256": "4ed5ed9af74809c116c2f703707f902e43525c1a381a95d084354c06c44b60ff"
+  },
+  {
+   "id": "rel49",
+   "kind": "key-release",
+   "midi": 49,
+   "source": "Samples/RT_6.aif",
+   "carried_from": "RT_6",
+   "aif_sha256": "1444a785a77becb4e70c5d06f23c0e574d4336dee5aec12aee3f514b10d516f9"
+  },
+  {
+   "id": "rel54",
+   "kind": "key-release",
+   "midi": 54,
+   "source": "Samples/RT_7.aif",
+   "carried_from": "RT_7",
+   "aif_sha256": "7955669797f68632da0a462492fb3068e7d6e666bf822b5e20f197b97d9d1b19"
+  },
+  {
+   "id": "rel59",
+   "kind": "key-release",
+   "midi": 59,
+   "source": "Samples/RT_1.aif",
+   "carried_from": "RT_1",
+   "aif_sha256": "bee090fee3762f0dade6496ae2415cb20b35636f4774c40064b78b582ae7cd15"
+  },
+  {
+   "id": "rel64",
+   "kind": "key-release",
+   "midi": 64,
+   "source": "Samples/RT_2.aif",
+   "carried_from": "RT_2",
+   "aif_sha256": "5359ad38ad978a6417e88480482966b935aab7cbe869946ee2f9e8d570875921"
+  },
+  {
+   "id": "rel69",
+   "kind": "key-release",
+   "midi": 69,
+   "source": "Samples/RT_3.aif",
+   "carried_from": "RT_3",
+   "aif_sha256": "8316d6791493888cf9b1e1dd9285385c8d693f11e773a1d3cf0681a327a020e5"
+  },
+  {
+   "id": "rel74",
+   "kind": "key-release",
+   "midi": 74,
+   "source": "Samples/RT_4.aif",
+   "carried_from": "RT_4",
+   "aif_sha256": "f17762a6f51f2fbd2fbc7267fc35f3006ea0289eb99d2826c36933001a00489d"
+  },
+  {
+   "id": "rel79",
+   "kind": "key-release",
+   "midi": 79,
+   "source": "Samples/RT_5.aif",
+   "carried_from": "RT_5",
+   "aif_sha256": "4ed5ed9af74809c116c2f703707f902e43525c1a381a95d084354c06c44b60ff"
+  },
+  {
+   "id": "rel84",
+   "kind": "key-release",
+   "midi": 84,
+   "source": "Samples/RT_6.aif",
+   "carried_from": "RT_6",
+   "aif_sha256": "1444a785a77becb4e70c5d06f23c0e574d4336dee5aec12aee3f514b10d516f9"
+  },
+  {
+   "id": "rel89",
+   "kind": "key-release",
+   "midi": 89,
+   "source": "Samples/RT_7.aif",
+   "carried_from": "RT_7",
+   "aif_sha256": "7955669797f68632da0a462492fb3068e7d6e666bf822b5e20f197b97d9d1b19"
+  },
+  {
+   "id": "rel94",
+   "kind": "key-release",
+   "midi": 94,
+   "source": "Samples/RT_1.aif",
+   "carried_from": "RT_1",
+   "aif_sha256": "bee090fee3762f0dade6496ae2415cb20b35636f4774c40064b78b582ae7cd15"
+  },
+  {
+   "id": "rel99",
+   "kind": "key-release",
+   "midi": 99,
+   "source": "Samples/RT_2.aif",
+   "carried_from": "RT_2",
+   "aif_sha256": "5359ad38ad978a6417e88480482966b935aab7cbe869946ee2f9e8d570875921"
+  },
+  {
+   "id": "rel100",
+   "kind": "key-release",
+   "midi": 100,
+   "source": "Samples/RT_3.aif",
+   "carried_from": "RT_3",
+   "aif_sha256": "8316d6791493888cf9b1e1dd9285385c8d693f11e773a1d3cf0681a327a020e5"
+  },
+  {
+   "id": "rel104",
+   "kind": "key-release",
+   "midi": 104,
+   "source": "Samples/RT_4.aif",
+   "carried_from": "RT_4",
+   "aif_sha256": "f17762a6f51f2fbd2fbc7267fc35f3006ea0289eb99d2826c36933001a00489d"
+  },
+  {
+   "id": "rel105",
+   "kind": "key-release",
+   "midi": 105,
+   "source": "Samples/RT_5.aif",
+   "carried_from": "RT_5",
+   "aif_sha256": "4ed5ed9af74809c116c2f703707f902e43525c1a381a95d084354c06c44b60ff"
+  },
+  {
+   "id": "n24v1",
+   "kind": "note",
+   "midi": 24,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_24.aif",
+   "aif_sha256": "1c80b55e4428aec2d066c199a036adaa987fca19223d26584d10cc36e1488ba2"
+  },
+  {
+   "id": "n24v2",
+   "kind": "note",
+   "midi": 24,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_24.aif",
+   "aif_sha256": "cd6f9ddd368b376535c66cbc4e5635c184efaa9bee65b8614057a0131f847a86"
+  },
+  {
+   "id": "n24v3",
+   "kind": "note",
+   "midi": 24,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_24.aif",
+   "aif_sha256": "c01851fbc46061c37918501009d397af2441d5ca49052f62863cfca8eb1ea49f"
+  },
+  {
+   "id": "n24v4",
+   "kind": "note",
+   "midi": 24,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_24.aif",
+   "aif_sha256": "5137f1a2bd4781d34a1166cffebe336821ed5db5974112fe2caa0dde47b32e07"
+  },
+  {
+   "id": "n24v5",
+   "kind": "note",
+   "midi": 24,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    21,
+    24
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_24.aif",
+   "aif_sha256": "15ea574c60e07b48bdff5e4ba8187e695c876191dbb1c98795e60d0dd365eff9"
+  },
+  {
+   "id": "n29v1",
+   "kind": "note",
+   "midi": 29,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_29.aif",
+   "aif_sha256": "ff048165c2fba636a3e7251b257db51675d65691e54c8d44c9a94a2a93972ac4"
+  },
+  {
+   "id": "n29v2",
+   "kind": "note",
+   "midi": 29,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_29.aif",
+   "aif_sha256": "d728576f9314aad902dd8c9ce9f1fe29b220efd1e0ff3ddccb45f936024f9f67"
+  },
+  {
+   "id": "n29v3",
+   "kind": "note",
+   "midi": 29,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_29.aif",
+   "aif_sha256": "3da3264e57bd8cb1d960a0e31963c9a79d2b43a83643a852b7a45a5cabd0d714"
+  },
+  {
+   "id": "n29v4",
+   "kind": "note",
+   "midi": 29,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_29.aif",
+   "aif_sha256": "953d1a68d5f2d672ee6034838bf08375e62fd4486d3f761e1bef3bbdd5aea3fd"
+  },
+  {
+   "id": "n29v5",
+   "kind": "note",
+   "midi": 29,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    25,
+    29
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_29.aif",
+   "aif_sha256": "edafade00e8ffd5a1f0aa19fade87b873b90fe1eb0d7a23977e3b1bb2055938e"
+  },
+  {
+   "id": "n34v1",
+   "kind": "note",
+   "midi": 34,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_34.aif",
+   "aif_sha256": "1a316e98d479f8f01a87e8f00f59882df0d5d7e689245f47d5d9182ba0ceb472"
+  },
+  {
+   "id": "n34v2",
+   "kind": "note",
+   "midi": 34,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_34.aif",
+   "aif_sha256": "574eec080f69cbc038381fe8dbc0e1f1f46c19f419fc0def881346217f2a6288"
+  },
+  {
+   "id": "n34v3",
+   "kind": "note",
+   "midi": 34,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_34.aif",
+   "aif_sha256": "75d28816ee62caef8b2217dd170d0a8bf2b5d1d0cd3e68f0e0071196cbf996b4"
+  },
+  {
+   "id": "n34v4",
+   "kind": "note",
+   "midi": 34,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_34.aif",
+   "aif_sha256": "fe21be6db5933593c866ce7816eec17c07d46f7b342e4f9508c55888c8ffbf1a"
+  },
+  {
+   "id": "n34v5",
+   "kind": "note",
+   "midi": 34,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    30,
+    34
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_34.aif",
+   "aif_sha256": "56ad69f4433a59415d4951d57fabb120b634fe98ef37ea968cf4ce61206fc322"
+  },
+  {
+   "id": "n39v1",
+   "kind": "note",
+   "midi": 39,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_39.aif",
+   "aif_sha256": "2951cb6b2d82457d37184aa698b42b9172b801e246f5fe636264e6572421e7ca"
+  },
+  {
+   "id": "n39v2",
+   "kind": "note",
+   "midi": 39,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_39.aif",
+   "aif_sha256": "018bb7cfddea4fbacf08749de1b58e061765b356717495ff723532450f0ff957"
+  },
+  {
+   "id": "n39v3",
+   "kind": "note",
+   "midi": 39,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_39.aif",
+   "aif_sha256": "6c76dbff584aec7c1c4828bd7e1fc145b2ac587f3464e9c3394560ba864f3b70"
+  },
+  {
+   "id": "n39v4",
+   "kind": "note",
+   "midi": 39,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_39.aif",
+   "aif_sha256": "38eea33c647a7550e51a792b44be6e9ccbd2fe755d2f5dc3551fa8a1d91d9071"
+  },
+  {
+   "id": "n39v5",
+   "kind": "note",
+   "midi": 39,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    35,
+    39
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_39.aif",
+   "aif_sha256": "42dc766c3509e788f6ce40e7ffb1c48c6df767829dc0aa19a124061c9f07e4e3"
+  },
+  {
+   "id": "n44v1",
+   "kind": "note",
+   "midi": 44,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_44.aif",
+   "aif_sha256": "d24b70db5b0e405c2938e428ea667fd9aad9e90838b571b5f734e84d9675388b"
+  },
+  {
+   "id": "n44v2",
+   "kind": "note",
+   "midi": 44,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_44.aif",
+   "aif_sha256": "d15b51c01df0d53904d34e89cc8423417e1f9f5c61cf680f8d07c8d3c5e514df"
+  },
+  {
+   "id": "n44v3",
+   "kind": "note",
+   "midi": 44,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_44.aif",
+   "aif_sha256": "25f9e9cd418ffe197aa779045e10efd386c323169587041299af42d82436c951"
+  },
+  {
+   "id": "n44v4",
+   "kind": "note",
+   "midi": 44,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_44.aif",
+   "aif_sha256": "717fe435dedae4f7061ee0f3050abd6ef0a933057855330f49e9a22609d9b6c1"
+  },
+  {
+   "id": "n44v5",
+   "kind": "note",
+   "midi": 44,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    40,
+    44
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_44.aif",
+   "aif_sha256": "7494b7fba86cb3847ead8791ddb818bef368365c07c9904f1a63b2931babdcf7"
+  },
+  {
+   "id": "n49v1",
+   "kind": "note",
+   "midi": 49,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_49.aif",
+   "aif_sha256": "a98e229cf0c2cc30babf23c87d6c3edd2cf778764b10cc9125c93cdde9c0b4b8"
+  },
+  {
+   "id": "n49v2",
+   "kind": "note",
+   "midi": 49,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_49.aif",
+   "aif_sha256": "a606ddace439b251feb12587a9a462bda0aa4fd7257829241c3b7b6bcba260b9"
+  },
+  {
+   "id": "n49v3",
+   "kind": "note",
+   "midi": 49,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_49.aif",
+   "aif_sha256": "438d9bd74199b6dd45e5d634e2848b668de3e13dd9da13ac57289a8eb1a128a4"
+  },
+  {
+   "id": "n49v4",
+   "kind": "note",
+   "midi": 49,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_49.aif",
+   "aif_sha256": "22a9592a0461b37dad000c8b7a19daff9833a093f8f9b85bad9476e75e39e58a"
+  },
+  {
+   "id": "n49v5",
+   "kind": "note",
+   "midi": 49,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    45,
+    49
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_49.aif",
+   "aif_sha256": "fe5eb0bb5d7a238e247bad4c07281197769151440a477fa6f8990fee33248b0b"
+  },
+  {
+   "id": "n54v1",
+   "kind": "note",
+   "midi": 54,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_54.aif",
+   "aif_sha256": "5a63f253ee114da03015bd223de261a048bd9e3edf50546b115bd7b53aaac3b2"
+  },
+  {
+   "id": "n54v2",
+   "kind": "note",
+   "midi": 54,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_54.aif",
+   "aif_sha256": "a3a7dd8fa7a3daa59e369f265da3f4c59f1d50b49e64a47a9062df26d102fa06"
+  },
+  {
+   "id": "n54v3",
+   "kind": "note",
+   "midi": 54,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_54.aif",
+   "aif_sha256": "22bdefafdbf11e3c11eed9b3df65f18d167692afd060fd7c948c17015f81caaa"
+  },
+  {
+   "id": "n54v4",
+   "kind": "note",
+   "midi": 54,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_54.aif",
+   "aif_sha256": "2f1ac31d0b0ce4ec0dce6fc1a719b0527b5445261ba1065a161e6a602b2356e5"
+  },
+  {
+   "id": "n54v5",
+   "kind": "note",
+   "midi": 54,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    50,
+    54
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_54.aif",
+   "aif_sha256": "1195d1cd580caf4f01316c0dc1a9a2c852a07142fe30026669764b6f1933b284"
+  },
+  {
+   "id": "n59v1",
+   "kind": "note",
+   "midi": 59,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_59.aif",
+   "aif_sha256": "f0251ba40ed1aaf6bd4283b0ea99a1ee97d4dd654257dada4171b1f968903711"
+  },
+  {
+   "id": "n59v2",
+   "kind": "note",
+   "midi": 59,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_59.aif",
+   "aif_sha256": "a7f1117a02f8075613e338d84d67bbdc1d1fe7ff48ae40ccce918248b542fdd4"
+  },
+  {
+   "id": "n59v3",
+   "kind": "note",
+   "midi": 59,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_59.aif",
+   "aif_sha256": "5c6df570d9af831e5c72233f3ead1be8fc46c7b2feca9998a8aa46dac40c8445"
+  },
+  {
+   "id": "n59v4",
+   "kind": "note",
+   "midi": 59,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_59.aif",
+   "aif_sha256": "c93d586d86c0584e99d6cf299a3291af4c9478595ac7756ecd3004ed64328d2f"
+  },
+  {
+   "id": "n59v5",
+   "kind": "note",
+   "midi": 59,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    55,
+    59
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_59.aif",
+   "aif_sha256": "d1b4ca290da169882d7fef133fbc0e79a2cc0784ff12f92c442614e6d4601b2a"
+  },
+  {
+   "id": "n64v1",
+   "kind": "note",
+   "midi": 64,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_64.aif",
+   "aif_sha256": "8226cc90125a08ca06446c710835f22dc95ca5575661f4846f9c0b7518252055"
+  },
+  {
+   "id": "n64v2",
+   "kind": "note",
+   "midi": 64,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_64.aif",
+   "aif_sha256": "178495963ae708b4681ea2a309d6cd111196acb68632c1900ff26e68027fcdb9"
+  },
+  {
+   "id": "n64v3",
+   "kind": "note",
+   "midi": 64,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_64.aif",
+   "aif_sha256": "47212e842c67980c9977128813e60fb8e94827887c1bd2ef2dd64f613490393a"
+  },
+  {
+   "id": "n64v4",
+   "kind": "note",
+   "midi": 64,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_64.aif",
+   "aif_sha256": "c82cf9a0d517dadf9f31049b30da91e10a861f6a14599aa5e6f43f17fddff9cf"
+  },
+  {
+   "id": "n64v5",
+   "kind": "note",
+   "midi": 64,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    60,
+    64
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_64_Repaired.aif",
+   "aif_sha256": "39cce80800bfbfbe038d553ac793dbb5c035fe943156fc417de9a2d2226e84dc"
+  },
+  {
+   "id": "n69v1",
+   "kind": "note",
+   "midi": 69,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_69.aif",
+   "aif_sha256": "f0106efb6e48b55a3a55d05d74e2f4cae38257865aad967ad508b12aa1301232"
+  },
+  {
+   "id": "n69v2",
+   "kind": "note",
+   "midi": 69,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_69.aif",
+   "aif_sha256": "efac0913c5f437df3f1e5dfda0b8c9dade6a29033be2b92fe2d590d80a2557be"
+  },
+  {
+   "id": "n69v3",
+   "kind": "note",
+   "midi": 69,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_69.aif",
+   "aif_sha256": "fdb585afa1596f3d4e220e21d635c7b3df89afc2dd1c11e3ab879e68eb63f6db"
+  },
+  {
+   "id": "n69v4",
+   "kind": "note",
+   "midi": 69,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_69.aif",
+   "aif_sha256": "1fe4fdb348f90bd1fc50715fb4faca37947d36894fd0937df0fa26560440b0e6"
+  },
+  {
+   "id": "n69v5",
+   "kind": "note",
+   "midi": 69,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    65,
+    69
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_69.aif",
+   "aif_sha256": "e955878770e771fe5ac8ef441aafaa2b842dbf28a664c0122c7004a47a9d5db3"
+  },
+  {
+   "id": "n74v1",
+   "kind": "note",
+   "midi": 74,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_74.aif",
+   "aif_sha256": "b0b41a9c328f000ffdfb4cca826b5146a2eea2696fd70ccc821312daead9a54c"
+  },
+  {
+   "id": "n74v2",
+   "kind": "note",
+   "midi": 74,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_74.aif",
+   "aif_sha256": "f910c2c85f55e93a59ec0722bc2f2335eca2060d1541c474c8fcd51f330e0b2d"
+  },
+  {
+   "id": "n74v3",
+   "kind": "note",
+   "midi": 74,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_74.aif",
+   "aif_sha256": "f784b55629cacdbac4146f8b5370dd39d7ba8be76fc3fbb44543f3646bc58fac"
+  },
+  {
+   "id": "n74v4",
+   "kind": "note",
+   "midi": 74,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    70,
+    74
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_74.aif",
+   "aif_sha256": "f8349b0e7fff1acb5f6bd52d341936497d152d5de31cdaba006d83b026c3cc29"
+  },
+  {
+   "id": "n74v5",
+   "kind": "note",
+   "midi": 74,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    70,
+    76
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_74.aif",
+   "aif_sha256": "19bdd673badc0ffd1374def1db1a7516f81ed9a332932dcbad9a2d8283f61098"
+  },
+  {
+   "id": "n79v1",
+   "kind": "note",
+   "midi": 79,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_79.aif",
+   "aif_sha256": "8d75bb1f2840e050c474b31e49ae198300d38308901c87bfbdd984f1f0ac20d3"
+  },
+  {
+   "id": "n79v2",
+   "kind": "note",
+   "midi": 79,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_79.aif",
+   "aif_sha256": "a708d6c4629ccd5e02926f08ccda5b3c3ad7a46e46ced606ea7cefe076a969de"
+  },
+  {
+   "id": "n79v3",
+   "kind": "note",
+   "midi": 79,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_79.aif",
+   "aif_sha256": "bdee20513c20dd0882600e57719e603440ec647e4f95239b1e586b0eb0ae8b5a"
+  },
+  {
+   "id": "n79v4",
+   "kind": "note",
+   "midi": 79,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    75,
+    79
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_79.aif",
+   "aif_sha256": "6f7cce0e587bbb66f39d2a480742d034b257b7874b43c95f55f0aa4a601c4f70"
+  },
+  {
+   "id": "n84v1",
+   "kind": "note",
+   "midi": 84,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_84.aif",
+   "aif_sha256": "5735a6aff657f1fc70e389f582c5a4e08379c14bffab78f1f0baed5aa4b45bdb"
+  },
+  {
+   "id": "n84v2",
+   "kind": "note",
+   "midi": 84,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_84.aif",
+   "aif_sha256": "f862c5e50583da95b8b78f9001b7e9f69d8efdba742bbdbbfddc69c9f320b77b"
+  },
+  {
+   "id": "n84v3",
+   "kind": "note",
+   "midi": 84,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_84.aif",
+   "aif_sha256": "1ebca4c15b972c44992af8977dec788cd43761e9c6bac355e49eff530458152b"
+  },
+  {
+   "id": "n84v4",
+   "kind": "note",
+   "midi": 84,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    80,
+    84
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_84.aif",
+   "aif_sha256": "a65381d07cee8916196f0e21f1eadc00eb8f44aa5ffe1ae10ffd8150993557c8"
+  },
+  {
+   "id": "n84v5",
+   "kind": "note",
+   "midi": 84,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    77,
+    84
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_84_Clicks_Removed.aif",
+   "aif_sha256": "83fed4c41ffa3bdb94eec79be08f74c19bf45201e410b46f8ebb3e90424666a4"
+  },
+  {
+   "id": "n89v1",
+   "kind": "note",
+   "midi": 89,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_89.aif",
+   "aif_sha256": "41d3a0b3f9dcb9787b6c81e88aca8cc8b8221bdc57d4d9b86bce43a7eaf7aaa7"
+  },
+  {
+   "id": "n89v2",
+   "kind": "note",
+   "midi": 89,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_89.aif",
+   "aif_sha256": "73583babf098ee77522d6b00040420daa36222d49816ddb8dda1a02ade1e6cb3"
+  },
+  {
+   "id": "n89v3",
+   "kind": "note",
+   "midi": 89,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_89.aif",
+   "aif_sha256": "a66552d748e3990353cc609f059378c2d0e9353431187dbe07a828008e4d98be"
+  },
+  {
+   "id": "n89v4",
+   "kind": "note",
+   "midi": 89,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    85,
+    89
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_89.aif",
+   "aif_sha256": "a0a9c44e5ad711093ea8d0d919d4b481a68e4b411225feb0008b40c4fd29362f"
+  },
+  {
+   "id": "n89v5",
+   "kind": "note",
+   "midi": 89,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    85,
+    94
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_89.aif",
+   "aif_sha256": "cb4e8d519ac853fc2a7cf23f9c26e02d7424f20c476b354629b12c9631ab75b4"
+  },
+  {
+   "id": "n94v1",
+   "kind": "note",
+   "midi": 94,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_94.aif",
+   "aif_sha256": "11c67c2e8e5796d321b8e6f850ee740e6c210668440d63ccaf5bc120501b4316"
+  },
+  {
+   "id": "n94v2",
+   "kind": "note",
+   "midi": 94,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_94.aif",
+   "aif_sha256": "480cd0dc248f4398230477910881455343ed7a074ea37fb45c8176a05ec65100"
+  },
+  {
+   "id": "n94v3",
+   "kind": "note",
+   "midi": 94,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_94.aif",
+   "aif_sha256": "60ba2ea0bdd4b3e142ddef0a3e7fe222ca45e9bd23a00a74def32fd7509af2ca"
+  },
+  {
+   "id": "n94v4",
+   "kind": "note",
+   "midi": 94,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    90,
+    94
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_94.aif",
+   "aif_sha256": "7da2343fd23803eda26db1b36318950bfec4c91f3232a2c86b94a503a5e88486"
+  },
+  {
+   "id": "n99v1",
+   "kind": "note",
+   "midi": 99,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_99.aif",
+   "aif_sha256": "106e9a15e9ca13063f074848ca645bd7859aa1491187c333397e8c3e0aad25e2"
+  },
+  {
+   "id": "n99v2",
+   "kind": "note",
+   "midi": 99,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_99.aif",
+   "aif_sha256": "86cee74062a8717c1add69ec7338aaad593a81f7a77f2b30e54ec200fdd5d899"
+  },
+  {
+   "id": "n99v3",
+   "kind": "note",
+   "midi": 99,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_99.aif",
+   "aif_sha256": "dc063f5f61c646623245e6c7b6d0a21fc67767485daa025e5d1bd94459aebe07"
+  },
+  {
+   "id": "n99v4",
+   "kind": "note",
+   "midi": 99,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    95,
+    99
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_99.aif",
+   "aif_sha256": "e21302bc8754ae4915d7f2de1285ff2de616a8fa74a59df6b194993207367b9e"
+  },
+  {
+   "id": "n100v5",
+   "kind": "note",
+   "midi": 100,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    95,
+    100
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_100.aif",
+   "aif_sha256": "a9698ddcd53131e9020cc3b43f1977cdf86ba8541c43e3fe339545d1932b04e6"
+  },
+  {
+   "id": "n104v1",
+   "kind": "note",
+   "midi": 104,
+   "layer": 1,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    0,
+    25
+   ],
+   "source": "Samples/Steinway_PP_104.aif",
+   "aif_sha256": "c58fd53319a2587dc8d280248c0f9228d1671d58f7d69bd5e85e247affbcd723"
+  },
+  {
+   "id": "n104v2",
+   "kind": "note",
+   "midi": 104,
+   "layer": 2,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    26,
+    45
+   ],
+   "source": "Samples/Steinway_P_104.aif",
+   "aif_sha256": "5e14cb5902bcc2bf152dbdae4e6548f1a54398503aa5c77d44823dacc3a3299d"
+  },
+  {
+   "id": "n104v3",
+   "kind": "note",
+   "midi": 104,
+   "layer": 3,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    46,
+    75
+   ],
+   "source": "Samples/Steinway_M_104.aif",
+   "aif_sha256": "7e009fd9fabf2814b1224c1ba278fb1b031284f9bb32b17bcca4ef2f629a81ab"
+  },
+  {
+   "id": "n104v4",
+   "kind": "note",
+   "midi": 104,
+   "layer": 4,
+   "round_robin": 1,
+   "keys": [
+    100,
+    108
+   ],
+   "velocity": [
+    76,
+    105
+   ],
+   "source": "Samples/Steinway_F_104.aif",
+   "aif_sha256": "3567d309ec2d8ae23a729359be710abc8d6cf6ff303f5df462a978c3240fbdea"
+  },
+  {
+   "id": "n105v5",
+   "kind": "note",
+   "midi": 105,
+   "layer": 5,
+   "round_robin": 1,
+   "keys": [
+    101,
+    108
+   ],
+   "velocity": [
+    106,
+    127
+   ],
+   "source": "Samples/Steinway_FF_105.aif",
+   "aif_sha256": "5e550dee426e8da43c261af89f8b715d2effc1eb86c6d36a3922a921c411704d"
+  },
+  {
+   "id": "pedalD1",
+   "kind": "pedal",
+   "source": "Samples/Steinway_Pedal_Down.aif",
+   "aif_sha256": "43fdaddaa08088af3385108995256087968edc2701200dbdae25757def9bf26a"
+  },
+  {
+   "id": "pedalU1",
+   "kind": "pedal",
+   "source": "Samples/Steinway_Pedal_Up.aif",
+   "aif_sha256": "90d376af59a7c584ad3aaff8655940fc589d90deeb90ee187e0f898e50d2bb66"
+  }
+ ]
+}

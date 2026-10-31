@@ -111,6 +111,25 @@ MODELS = {
               'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
                          'recorded pitch\'s key is let go (from F6 up, where it plays none, the take of D#6\'s), '
                          'from one take each in those recordings\' own scale.'},
+    'newyork': {'title': 'the Decent Sampler "Steinway Grand" (Jon Meyer, no licence stated)',
+                'corpus': ROOT / 'Tools/corpus/newyork-grand.json',
+                'split': ROOT / 'Tools/corpus/split-newyork-2026-10-31.json',
+                'wav': ROOT / 'out/newyork/wav', 'cache': ROOT / 'out/calibration/newyork',
+                'header': ROOT / 'Source/DSP/MeasuredNewYorkData.h',
+                'metadata': ROOT / 'Docs/research/newyork-modal-fit-2026-10-31.json',
+                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
+                'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
+                           'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
+    'detroit': {'title': 'the Pianobook "Grandpa\'s Piano" (David Hawkins, no licence stated)',
+                'corpus': ROOT / 'Tools/corpus/detroit-grand.json',
+                'split': ROOT / 'Tools/corpus/split-detroit-2026-10-31.json',
+                'wav': ROOT / 'out/detroit/wav', 'cache': ROOT / 'out/calibration/detroit',
+                'header': ROOT / 'Source/DSP/MeasuredDetroitData.h',
+                'metadata': ROOT / 'Docs/research/detroit-modal-fit-2026-10-31.json',
+                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
+                'actions': 'The action\'s knocks on the body modes: the seven key-noise takes the library plays '
+                           'as any key is let go, one to each recorded pitch in turn, in those recordings\' own '
+                           'scale.'},
 }
 # The keys from F6 up have no dampers: every strike sets their strings
 # ringing at their own pitches (halo_data). The analysis also searches the
@@ -145,7 +164,7 @@ def train_anchors(model):
     for case, role in roles.items():
         item = corpus[case]
         if role == 'train' and item['kind'] == 'note':
-            anchors.setdefault(item['midi'], []).append((case, layer_velocity(item), item['flac_sha256']))
+            anchors.setdefault(item['midi'], []).append((case, layer_velocity(item), item.get('flac_sha256', item.get('wav_sha256'))))
     return {note: sorted(layers, key=lambda layer: layer[1]) for note, layers in sorted(anchors.items())
             if note not in model['uncalibrated']}
 
