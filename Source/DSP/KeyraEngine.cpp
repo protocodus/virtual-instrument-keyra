@@ -119,13 +119,13 @@ constexpr Model models[]{
    // the default Output, where the portfolio's newer instruments play, with
    // the output stage's guard keeping the loudest chords out of the red
    // (Tools/KeyraLevels.cpp).
-   .7738,
+   .7699,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5312},
+   1.5091},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -155,8 +155,8 @@ constexpr Model models[]{
    // strike, as the benchmark sets a case's gain). Below it the shared
    // velocity response (responseAt) keeps the two medians within 1 dB of each
    // other.
-   2.2806,
-   2.3472},
+   2.2040,
+   2.1196},
 };
 constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()),
               extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size());

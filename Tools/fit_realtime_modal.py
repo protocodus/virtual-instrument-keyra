@@ -365,6 +365,65 @@ def header_waves(data, i, sr, samples, contact):
     return np.array(waves), np.array(rises)
 
 
+# A least-squares fit keeps less of a partial's energy than its recording
+# holds, by what it leaves in the residual: where the lanes cannot follow the
+# unison strings' beating, a good share of it. Over the first 0.75 s that
+# loss sets a recorded pitch's loudness, and so the keyboard's evenness: the
+# grand's F#7 fits held 2.9 to 3.4 dB less than its recordings at every
+# layer, the upright's A#6 and E7 fundamentals 2.7 to 8.4 dB, where C3's and
+# C4's hold within 0.3 dB, and the benchmark heard F#7 2.3 to 3.5 dB under
+# the median note. So each partial's lanes are scaled, layer by layer, to
+# the energy its strings hold from 50 to 750 ms after contact (ENERGY_TIMES),
+# both measured through the analysis's window, in the frames where the
+# recording stands 10 dB over the partial's floor and 10 dB over its level
+# half an order either side (the louder), less that level; by at most
+# ENERGY_LIMIT, and not where fewer than ten frames stand that clear. Beside
+# a bass fundamental the board rings within 5 dB of it, a sound the body
+# plays; taken as the strings', it would have raised the grand's A0 and A1
+# fundamentals by 1 to 5 dB.
+ENERGY_TIMES = (.05, .75, .005)   # s after contact: from, to, step
+ENERGY_LIMIT = 6.0                # dB
+
+
+def energy_gains(result, shaped, wav):
+    """Per partial of `shaped` and layer, the dB that bring its lanes' energy
+    over ENERGY_TIMES to its strings' (0 where they do not stand clear)."""
+    import numpy as np
+    import piano_analysis as pa
+    sr, f1, freqs = result['sr'], result['f1'], result['freqs']
+    B = float(np.median([L['B'] for L in result['layers']]))
+    n = np.asarray(result['orders'], float)
+    centre = pa.stiff(f1, B, n)
+    sides = np.r_[freqs * pa.stiff(f1, B, n - .5) / centre, freqs * pa.stiff(f1, B, n + .5) / centre]
+    length = pa.window_length(f1, sr)
+    grid, profile = pa.window_profile(f1, sr, min(.002, length / sr / 24), length)
+    times = np.arange(*ENERGY_TIMES)
+    response = pa._WindowedExponentials(times, grid, profile)
+    gains = np.zeros((len(shaped), len(result['layers'])))
+    for i, (case, L) in enumerate(zip(result['cases'], result['layers'])):
+        _, x = pa.load(wav / f'{case}.wav')
+        _, z = pa.envelopes(x, sr, freqs, f1, L['start'], None, times=times + L['delay'])
+        _, beside = pa.envelopes(x, sr, sides, f1, L['start'], None, times=times + L['delay'])
+        beside = np.mean(np.abs(beside) ** 2, axis=1).reshape(2, len(freqs), -1).max(axis=0)
+        for row, (k, _, fit, layers, u, mu, _) in enumerate(shaped):
+            if i not in layers:
+                continue
+            recorded = np.mean(np.abs(z[k]) ** 2, axis=0)
+            clear = (recorded > 10 ** ((L['floor_db'][k] + 10) / 10)) & (recorded > 10 * beside[k])
+            if clear.sum() < 10:
+                continue
+            s, rho = pa.lane_complex_rates(fit['theta'], L['velocity'], mu.shape[1])
+            E, _ = response(np.r_[s, s - rho])
+            # The lanes as the header keeps them: each its pickup shape times
+            # its level at the layer.
+            a = u * mu[layers.index(i)][None, :]
+            model = np.mean(np.abs((E[:, :len(s)] - E[:, len(s):]) @ a.T) ** 2, axis=1)
+            strings = (recorded - beside[k])[clear].sum()
+            gains[row, i] = np.clip(10 * np.log10(strings / max(model[clear].sum(), 1e-300)),
+                                    -ENERGY_LIMIT, ENERGY_LIMIT)
+    return gains
+
+
 def anchor_data(result, halo_hz, wav):
     """The engine's data for one calibrated anchor; `halo_hz` are the
     undamped strings' frequencies (halo_pitches) and `wav` the folder of the
@@ -390,6 +449,9 @@ def anchor_data(result, halo_hz, wav):
         # The fit's carrier runs from the detected onset; the engine's from contact.
         mu *= np.exp(2j * math.pi * freqs[k] * delays[layers])[:, None]
         shaped.append((k, n, fit, layers, u, mu, explained))
+    gains = energy_gains(result, shaped, wav)
+    for row, (k, n, fit, layers, u, mu, explained) in enumerate(shaped):
+        mu *= 10 ** (gains[row, layers] / 20)[:, None]
     phases = np.zeros((len(shaped), len(velocities)))
     weights = np.zeros_like(phases)
     for row, (k, _, _, layers, _, mu, _) in enumerate(shaped):

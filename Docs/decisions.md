@@ -1857,3 +1857,69 @@ terms per blended partial; the per-sample path is unchanged.
 Chosen by measurement and the stereo test, as the owner's standing direction
 asks; no one has listened to it yet. The A/B pack is in the project files
 (`keyra/lane-roles-2026-10-31/`).
+
+## 2026-10-31 — each partial keeps the energy its strings hold
+
+A least-squares fit keeps less of a partial than its recording holds, by what
+it leaves in the residual, and where the lanes cannot follow the unison
+strings' beating that is a good share of it. Over the first 0.75 s that loss
+sets a recorded pitch's loudness, and so the keyboard's evenness: the grand's
+F♯7 fits held 2.9 to 3.4 dB less than its recordings at every layer, the
+upright's A♯6 and E7 fundamentals 2.7 to 8.4 dB, where C3's and C4's hold
+within 0.3 dB, and the benchmark heard F♯7 2.3 to 3.5 dB under the median
+note. `Tools/fit_realtime_modal.py` now scales each partial's lanes, layer by
+layer, to the energy its strings hold from 50 to 750 ms after contact, both
+measured through the analysis's window, in the frames where the recording
+stands 10 dB over the partial's floor and 10 dB over its level half an order
+either side, less that level; by at most 6 dB, and not where fewer than ten
+frames stand that clear. Beside a bass fundamental the board rings within
+5 dB of it, a sound the body plays; taken as the strings', it would have
+raised the grand's A0 and A1 fundamentals by 1 to 5 dB, so the level beside
+is taken out. The analysis is unchanged; both pianos are refitted from it.
+
+On the benchmark the grand's train notes' level moves 0.69 to 0.50 dB and
+their partial levels 4.62 to 4.54 dB; on its dev notes level moves 1.07 to
+0.96 dB (treble 1.42 to 1.01), partial levels 5.44 to 5.39 dB and the attack
+4.81 to 4.78 dB. F♯7 sits 0.82 dB from its recordings' loudness (was 1.98)
+and A7 0.85 dB (1.98). Of the 17 regressions `Tools/compare_benchmarks.py`
+lists, ten are C8's: the keys above A7 play A7's data, A7's fundamental now
+plays 1.7 to 3.8 dB louder, and C8's spectra move 0.8 to 1.2 dB further from
+its recordings (its sustain spectrum was already 16 dB off). The others are
+A7's rise (dev 2.33 to 3.71 ms, train 2.96 to 4.37 ms), D♯1's dev rise
+(1.83 to 7.98 ms: at three layers the 10–90 % rise jumps from about 1 ms to
+24 ms while D♯1's spectra and level move under 0.1 dB, the 90 % point
+passing from the strike to the swell after it), A1's train noise (6.02 to
+6.75 dB) and rise (2.10 to 3.14 ms), and A6's and D♯7's dev tuning (0.12 to
+0.76 and 3.48 to 4.04 cents) ([report](validation/grand-string-energy-benchmark-2026-10-31.md)).
+
+On the upright the train notes' level moves 0.87 to 0.51 dB (treble 1.58 to
+0.57) and partial levels 5.98 to 5.76 dB; on its 21 dev notes partial levels
+move 8.78 to 8.39 dB, the early spectrum 7.27 to 7.14 dB, the sustain
+spectrum 8.77 to 8.66 dB, decay 4.63 to 4.54 dB/s and the attack 6.47 to
+6.41 dB, while noise moves 6.98 to 7.09 dB and rise 6.00 to 6.21 ms. E7 sits
+1.50 dB from its recordings' loudness (was 4.52), G♯6 0.12 dB (1.89), A♯6
+0.44 dB (2.08) and C6 0.45 dB (1.75). The five regressions are E7's train
+sustain spectrum (6.89 to 8.06 dB), D♯2's dev noise (8.57 to 9.39 dB), A2's
+train noise (4.53 to 5.13 dB), C7's train coherence (0.21 to 0.24) and B3's
+dev rise (4.85 to 5.85 ms) ([report](validation/upright-string-energy-benchmark-2026-10-31.md)).
+
+`Tools/evaluate_recordings.py`'s 24 cases of the preserved research split,
+all in the live model's train role, through the product default: the twelve
+in-range held-out cases' harmonic levels move 4.11 to 4.01 dB, their band
+levels 5.15 to 5.13 dB, partial tuning 0.34 to 0.22 cents and rise 4.83 to
+4.02 ms, envelope 1.71 dB and decay 2.27 to 2.28 dB/s; the edge cases C1v8
+(band levels 2.61 to 2.63 dB, harmonic levels 3.08 to 3.18 dB) and C7v8
+(band levels 6.43 to 6.83 dB, envelope 13.63 to 13.76 dB, rise 0.23 to
+0.02 ms).
+
+The refit plays louder: the upright's typical playing read 0.30 dB over
+−9 VU at Mic 0 and 1.18 dB at Mic 1, the grand's 0.04 and 0.17 dB, so
+`outputScale` and `tubeScale` are re-pinned (grand 0.7699 and 1.5091, were
+0.7738 and 1.5312; upright 2.2040 and 2.1196, were 2.2806 and 2.3472) and
+every reading is back at −9.00 VU. The refit changes levels only, no lane or
+partial: the demo renderer's CPU time is 45.1 s against 45.2 s (median of
+three runs each).
+
+Chosen by measurement, as the owner's standing direction asks; no one has
+listened to it yet. The A/B pack is in the project files
+(`keyra/string-energy-2026-10-31/`).

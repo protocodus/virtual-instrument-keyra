@@ -210,6 +210,19 @@ musical passages through the same engine. Both are frozen evidence from
   3.08 dB/s (3.37); the sustain spectrum moves 5.25 to 5.31 dB
   ([grand](Docs/validation/grand-lane-roles-benchmark-2026-10-31.md),
   [upright](Docs/validation/upright-lane-roles-benchmark-2026-10-31.md)).
+- Each recorded pitch keeps the energy its strings hold in the recordings.
+  The fit left part of a partial in its residual where its lanes cannot
+  follow the unison strings' beating, so some keys played quieter than their
+  recordings: the grand's F♯7 by about 3 dB, the upright's A♯6 and E7
+  fundamentals by 3 to 8 dB. Each partial's lanes are now scaled to the
+  energy its strings hold over the first 0.75 s. On the recordings it is
+  fitted from, the grand's notes sit 0.50 dB from their loudness (was 0.69)
+  and the upright's 0.51 dB (0.87), on the grand's never-fitted ones 0.96 dB
+  (1.07); the upright's E7 moves from 4.5 to 1.5 dB off and the grand's F♯7
+  from 2.0 to 0.8 dB. C8 and the keys up to it play A7's louder
+  fundamental, a step further from C8's recordings
+  ([grand](Docs/validation/grand-string-energy-benchmark-2026-10-31.md),
+  [upright](Docs/validation/upright-string-energy-benchmark-2026-10-31.md)).
 - Letting a key go knocks the body as its damper lands, and the sustain pedal
   knocks it going down and coming up, synthesized on the body's modes: each
   mode's level and phase is measured from the library's release and pedal
@@ -534,7 +547,12 @@ partials, and a pitch's onset rise follows one line over velocity, held within
 the range its layers measure. A partial's lanes sit within about 3 cents of it;
 where one settles at that bound, the partial is fitted again with lanes up to
 about 10 cents out, seeded from the components its envelopes resolve and
-keeping the first fit's rise, and the closer of the two fits is kept. Beside
+keeping the first fit's rise, and the closer of the two fits is kept. A fit
+leaves part of a partial in its residual where its lanes cannot follow the
+unison strings' beating, so each partial's lanes are then scaled, layer by
+layer and by at most 6 dB, to the energy its strings hold from 50 to 750 ms
+after contact, where the recording stands 10 dB over the partial's floor and
+over the levels half an order either side, less those levels. Beside
 the series, the residual's peaks that four or more layers share are measured
 each through a window just long enough to part it from its nearest neighbour,
 from 30 ms to 2 s, and fitted with one lane from contact; one within 3.5 cents
