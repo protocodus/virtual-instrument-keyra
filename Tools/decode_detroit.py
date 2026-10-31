@@ -15,9 +15,10 @@ FF_94_CellNoise and FF_99_CellNoise among them.
 The preset's levels are not applied. Its group volumes (FF 0.35, F 0.45, M 0.6,
 P and PP 1) step down with velocity, and its pan runs -24 to +24 with pitch.
 The layers were not brought to one level: from PP to FF the 50-750 ms RMS
-rises 19 to 45 dB at each pitch, in order. But the FF takes peak within 2.4 dB
-of full scale at every pitch, so they were likely normalised take by take,
-and between neighbouring pitches their levels say little.
+rises 25 to 40 dB at each pitch, in order. The FF takes peak within 2.4 dB of
+full scale, yet nothing shows them normalised and their raw levels are kept:
+F to FF is the steadiest step of all (SD 1.18 dB, the others 2.79 to 3.54), as
+take-by-take gain would not leave it, and the peaks hold no one ceiling.
 
 The seven key-noise takes play on any key. A pitch's rel<midi> is one of them
 in turn, by the pitch's place in the list (carried_from names the take).
