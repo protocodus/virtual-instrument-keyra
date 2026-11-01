@@ -333,14 +333,39 @@ def compare(ref, mod):
 
 def cached_reference(case, note, cache: Path, corpus: Path):
     wav = corpus / f'{case}.wav'
-    key = hashlib.sha256((Path(pa.__file__).read_text() + FEATURES).encode()).hexdigest()[:12]
+    # Case labels overlap across libraries (e.g. n60v1r1). A cache shared by
+    # several pianos must identify the actual recording, its interpreted MIDI
+    # pitch, and both feature implementations. File contents also invalidate a
+    # decoded/corrected recording at the same path; timestamps cannot prove
+    # that it is the same source. Hash without loading a whole long take.
+    digest = hashlib.sha256()
+    for data in (Path(pa.__file__).read_bytes(), Path(__file__).read_bytes(),
+                 FEATURES.encode(), str(note).encode()):
+        digest.update(len(data).to_bytes(8, 'little'))
+        digest.update(data)
+    with wav.open('rb') as source:
+        for block in iter(lambda: source.read(1 << 20), b''):
+            digest.update(block)
+    key = digest.hexdigest()
     target = cache / f'{case}-{key}.npz'
     if target.exists():
-        data = dict(np.load(target, allow_pickle=True))
+        with np.load(target, allow_pickle=True) as saved:
+            data = dict(saved)
         return {k: (v.item() if v.shape == () else v) for k, v in data.items()}
     f = features(wav, note)
     cache.mkdir(parents=True, exist_ok=True)
-    np.savez(target, **{k: np.asarray(v, dtype=object) if v is None else np.asarray(v) for k, v in f.items()})
+    # Concurrent comparison runs can request the same reference. Publish only
+    # a complete archive; another reader must never see a partial npz file.
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=cache, suffix='.npz', delete=False) as pending:
+            temporary = Path(pending.name)
+            np.savez(pending, **{k: np.asarray(v, dtype=object) if v is None else np.asarray(v)
+                                for k, v in f.items()})
+        temporary.replace(target)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
     return f
 
 

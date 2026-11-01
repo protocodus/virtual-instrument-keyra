@@ -3,8 +3,8 @@
 Keyra is a sample-free piano: a real-time modal engine whose strings,
 soundboard ring and stereo image are fitted from numerical measurements of
 acoustic piano recordings, with three visible pedals, momentary pedal
-keyswitches and felt muting from the modulation wheel. Three pianos are
-measured, two grands and an upright, and their strings, hammers, soundboard
+keyswitches and felt muting from the modulation wheel. Six pianos are
+measured, five grands and an upright, and their strings, hammers, soundboard
 and action mix part by part into pianos none of them is. It builds as VST3
 and CLAP plug-ins, an Audio Unit on macOS and a standalone application, and
 the Reason Rack Extension adapter plays the same engine. It is a development
@@ -42,6 +42,15 @@ comparisons that set Salamander notes beside the fits were removed on
 the checkout from a fetched copy of the library.
 
 ## Version history
+
+### Unreleased — 0.4.2 — interpolation between recorded notes and dynamics
+
+- Repairs selected cancellation dips and overshoots between velocity layers,
+  while preserving the recorded layers. Between keys, unidentified decay rates
+  have less influence without introducing an endpoint discontinuity. All six
+  pianos have lower mean held-out decay error; individual regressions and
+  remaining uneven notes are documented in the
+  [recording and keyboard validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md).
 
 ### Unreleased — 0.4.1 — measured strings, body and board noise
 
@@ -543,10 +552,11 @@ The sustain pedal knocks them going down and coming up. The Mechanics control
 scales every knock of the action, and the ring the pedal sets going down, from
 silent at 0 to twice as loud at 200 %.
 
-### Three pianos, one model
+### Six pianos, one model
 
 The pianos are builds of one model (`keyra::Build`): the Kakegawa grand
-(Salamander's), the Helsinki upright and the Hamamatsu grand (VCSL Keys'),
+(Salamander's), the Helsinki upright, the Hamamatsu grand (VCSL Keys'),
+the Hamburg and New York grands, and the Belmont baby grand (Mom's 1974),
 each fitted from its own recordings. Elsewhere in this document the grand is
 the Kakegawa grand and the upright the Helsinki upright. Each of the model's
 four parts mixes the measured pianos by a weight from 0 to 1 for each of
@@ -1097,9 +1107,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   +0.6 VU, in the red, which the owner accepted over a tube about 5 dB
   quieter. Its strings ring under the pedal at the Kakegawa grand's rates
   ([benchmark](Docs/validation/belmont-recording-benchmark-2026-11-01.md)).
-- Three pianos are measured. The other libraries the owner offered, a
-  Steinway grand among them, need their authors' permission to be fitted,
-  and a preset can only mix the measured pianos.
+- Six pianos are measured separately. Yamaha C3 supplies additional calibration
+  measurements. Predictions between recorded pitches remain approximate;
+  the [interpolation validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md)
+  records the remaining pitch-gap and attack-fit limitations.
 - Only Linux VST3 and standalone builds have been validated
   ([pluginval](Docs/validation/pluginval-2026-10-26.txt)); CLAP, the Audio Unit,
   macOS, Windows and Reason are built by CI but not yet accepted in a host.

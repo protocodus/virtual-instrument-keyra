@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.1 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.2 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -44,6 +44,11 @@ include(CTest)
 option(KEYRA_ENABLE_SANITIZERS "Instrument development builds with ASan and UBSan" OFF)
 option(KEYRA_BUILD_FUZZER "Build KeyraDspFuzz as a Clang libFuzzer target" OFF)
 option(KEYRA_REQUIRE_PYTHON_TESTS "Fail to configure without the interpreter the Python checks need" OFF)
+option(KEYRA_ENABLE_MODEL_VALIDATION_TESTS
+       "Require numerical model, generated-mask and native-probe checks (NumPy/SciPy, GCC/Clang)" OFF)
+if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS AND NOT BUILD_TESTING)
+    message(FATAL_ERROR "KEYRA_ENABLE_MODEL_VALIDATION_TESTS requires BUILD_TESTING=ON")
+endif()
 if(KEYRA_ENABLE_SANITIZERS)
     if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
         message(FATAL_ERROR "KEYRA_ENABLE_SANITIZERS requires Clang or GCC")
@@ -61,6 +66,7 @@ set(KEYRA_DSP_HEADERS
     Source/DSP/MeasuredMicData.h
     Source/DSP/MeasuredModalData.h
     Source/DSP/MeasuredUprightData.h
+    Source/DSP/MeasuredVelocityInterpolation.h
     Source/DSP/OutputStage.h)
 
 add_library(KeyraDSP STATIC ${KEYRA_DSP_SOURCES} ${KEYRA_DSP_HEADERS})
@@ -240,7 +246,7 @@ endif()
 if(BUILD_TESTING)
     # CI requires the interpreter, so a missing one cannot silently register
     # fewer tests.
-    if(KEYRA_REQUIRE_PYTHON_TESTS)
+    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
         find_package(Python3 COMPONENTS Interpreter REQUIRED)
     else()
         find_package(Python3 COMPONENTS Interpreter)
@@ -292,6 +298,49 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.DemoMidiSources
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/write_preset_midi.py" --check)
+        add_test(NAME Keyra.YamahaCorpusImport
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_yamaha_c3_import.py")
+    endif()
+
+    # Required in the primary Linux CI job. An explicit option keeps the
+    # portable DSP/plugin tiers independent of scientific Python and a second
+    # compiler driver; enabling this tier never silently skips a dependency.
+    if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
+        if(NOT CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+            message(FATAL_ERROR "Model validation native probes require a GCC/Clang compiler driver")
+        endif()
+        find_program(KEYRA_MODEL_CXX NAMES c++ REQUIRED)
+        execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import numpy; import scipy"
+                        RESULT_VARIABLE KEYRA_MODEL_PYTHON_RESULT
+                        ERROR_VARIABLE KEYRA_MODEL_PYTHON_ERROR
+                        OUTPUT_QUIET)
+        if(NOT KEYRA_MODEL_PYTHON_RESULT EQUAL 0)
+            message(FATAL_ERROR
+                "Model validation needs NumPy/SciPy in ${Python3_EXECUTABLE}. "
+                "Install Tools/requirements-model-validation.txt. ${KEYRA_MODEL_PYTHON_ERROR}")
+        endif()
+        add_test(NAME Keyra.VelocityInterpolation
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_velocity_interpolation.py")
+        add_test(NAME Keyra.VelocityInterpolationFreshness
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/generate_velocity_interpolation.py" --check)
+        add_test(NAME Keyra.RateInterpolation
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
+        add_test(NAME Keyra.RecordingReferenceCache
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_reference_cache.py")
+        add_test(NAME Keyra.KeyboardMetricContract
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
+        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
+                             Keyra.RateInterpolation Keyra.RecordingReferenceCache Keyra.KeyboardMetricContract
+                             PROPERTIES TIMEOUT 600
+                             ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
+    else()
+        message(STATUS "Numerical model validation disabled; enable KEYRA_ENABLE_MODEL_VALIDATION_TESTS for the required Linux CI tier")
     endif()
 
     if(KEYRA_BUILD_TOOLS)

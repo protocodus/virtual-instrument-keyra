@@ -3,6 +3,9 @@
 #include "MeasuredHamburgData.h"
 #include "MeasuredNewYorkData.h"
 #include "MeasuredBelmontData.h"
+#ifndef KEYRA_GENERATING_VELOCITY_GUARD
+#include "MeasuredVelocityInterpolation.h"
+#endif
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
@@ -510,12 +513,27 @@ struct alignas(16) OpenBank {
 // A strike's data, interpolated between the two recorded pitches around it.
 // `ratio` and `angle` are its pickup's right-over-left level (natural log)
 // and phase difference.
-struct LaneData {double rate=0,offset=0,level=0,ratio=0,angle=0;Complex phase{1,0},left{},right{};};
+// piano_analysis.SLOWEST_RATE: a fit at this lower bound did not identify
+// the lane's decay. Read the original float, before its cached logarithm.
+// Tests/test_rate_interpolation.py checks the shared fitter bound and data.
+constexpr float fittedRateLowerBound=.003f;
+struct LaneData {double rate=0,offset=0,level=0,ratio=0,angle=0;Complex phase{1,0},left{},right{};bool rateIdentified=true;};
 struct PartialData {int order=0;double cents=0,rise=0;LaneData lane[lanes]{};};
 // What every strike would otherwise recompute of a measured lane: its log
 // rate, its pickup's ratio and angle (see LaneData), its layers' phases as
 // unit vectors and its share of its partial (shareLanes).
 struct LaneCache {double logRate=0,ratio=0,angle=0,share=0;std::array<Complex,measured::maxLayers> phase{};};
+// Only the layer intervals approved by the offline four-window guard carry
+// these normalized excitation patterns. Their poles and pickups stay the
+// measured partial's. Nothing is allocated or integrated when a note starts.
+struct VelocityInterpolation {
+  Complex a[lanes]{},b[lanes]{};
+  double logPowerA=0,logPowerB=0,angle=0,overlap=0;
+};
+struct PartialCache : std::array<LaneCache,lanes> {
+  std::uint16_t velocityMask=0;
+  const VelocityInterpolation* velocity=nullptr;
+};
 LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
   LaneCache c;c.logRate=std::log(m.rate);
   const double right=std::max(1e-6,std::hypot(static_cast<double>(m.rightRe),static_cast<double>(m.rightIm)));
@@ -620,6 +638,7 @@ Complex phaseAt(const Model& model,const LaneCache& lane,double velocity) noexce
 }
 LaneData laneAt(const Model& model,const measured::Lane& m,const LaneCache& c,double velocity) noexcept {
   LaneData l;l.rate=c.logRate;l.offset=m.offsetHz;l.level=levelAt(model,m.levelDb.data(),velocity);l.phase=phaseAt(model,c,velocity);
+  l.rateIdentified=m.rate>fittedRateLowerBound;
   l.ratio=c.ratio;l.angle=c.angle;l.left={m.left,0};l.right={m.rightRe,m.rightIm};
   return l;
 }
@@ -682,10 +701,83 @@ double windowPower(const PartialData& d) noexcept {
   }
   return sum;
 }
+// Complex inner product in the same 50-750 ms window as windowPower.
+// Its phase aligns two complete partials, rather than independently turning
+// each lane through a cancellation at an intermediate velocity.
+Complex windowCross(const PartialData& a,const PartialData& b) noexcept {
+  Complex sum{};
+  for(int j=0;j<lanes;++j)for(int k=0;k<lanes;++k){
+    const auto& x=a.lane[j];const auto& y=b.lane[k];
+    const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
+    const Complex l=x.left*Complex{y.left.re,-y.left.im},r=x.right*Complex{y.right.re,-y.right.im};
+    const double re=std::exp(x.rate)+std::exp(y.rate),im=2*pi*(y.offset-x.offset);
+    const auto at=[&](double t){const double e=std::exp(-re*t);return Complex{e*std::cos(im*t),-e*std::sin(im*t)};};
+    const Complex from=at(.05),to=at(.75),span{from.re-to.re,from.im-to.im};
+    const Complex z=phase*Complex{l.re+r.re,l.im+r.im}*span*Complex{re/(re*re+im*im),-im/(re*re+im*im)};
+    const double amplitude=std::pow(10.,(x.level+y.level)/20);
+    sum.re+=amplitude*z.re;sum.im+=amplitude*z.im;
+  }
+  return sum;
+}
+VelocityInterpolation cacheVelocity(const Model& m,const measured::Partial& p,
+                                   const std::array<LaneCache,lanes>& lanesAt,int layer) noexcept {
+  const PartialData a=single(m,p,lanesAt,m.layerVelocity[layer]),b=single(m,p,lanesAt,m.layerVelocity[layer+1]);
+  const double pa=windowPower(a),pb=windowPower(b);const Complex cross=windowCross(a,b);
+  const double magnitude=std::hypot(cross.re,cross.im);
+  // Unlike phaseAt's unit vectors, this inner product is in the recording's
+  // power units and can be arbitrarily quiet. Only exact zero lacks a phase.
+  const Complex align=magnitude>0?Complex{cross.re/magnitude,cross.im/magnitude}:Complex{1,0};
+  VelocityInterpolation c;c.logPowerA=std::log(pa);c.logPowerB=std::log(pb);
+  c.angle=std::atan2(align.im,align.re);
+  // Cauchy-Schwarz bounds this by one; min only absorbs floating roundoff.
+  c.overlap=std::min(1.,magnitude/std::sqrt(pa*pb));
+  for(int j=0;j<lanes;++j){
+    const double ga=std::pow(10.,a.lane[j].level/20)/std::sqrt(pa),gb=std::pow(10.,b.lane[j].level/20)/std::sqrt(pb);
+    c.a[j]={ga*a.lane[j].phase.re,ga*a.lane[j].phase.im};
+    c.b[j]=Complex{gb*b.lane[j].phase.re,gb*b.lane[j].phase.im}*align;
+  }
+  return c;
+}
+PartialData interpolateVelocity(PartialData d,const VelocityInterpolation& c,double t) noexcept {
+  // Align, interpolate on the unit-power sphere, then undo the common
+  // phase continuously. Both measured endpoints are preserved. The squared
+  // denominator is >=1/2, so the cancellation correction is at most sqrt(2),
+  // unlike scaling a nearly cancelled waveform up by 20 dB or more.
+  const double norm=std::sqrt((1-t)*(1-t)+t*t+2*t*(1-t)*c.overlap);
+  const double gain=std::exp(.5*mix(c.logPowerA,c.logPowerB,t))/norm;
+  const Complex rotation{std::cos(-t*c.angle),std::sin(-t*c.angle)};
+  for(int j=0;j<lanes;++j){const Complex z=Complex{mix(c.a[j].re,c.b[j].re,t),mix(c.a[j].im,c.b[j].im,t)}*rotation;
+    const double amplitude=std::hypot(z.re,z.im);
+    d.lane[j].level=20*std::log10(std::max(gain*amplitude,std::numeric_limits<double>::min()));
+    if(amplitude>0)d.lane[j].phase={z.re/amplitude,z.im/amplitude};
+  }
+  return d;
+}
+PartialData single(const Model& model,const measured::Partial& p,const PartialCache& c,double velocity) noexcept {
+  auto d=single(model,p,static_cast<const std::array<LaneCache,lanes>&>(c),velocity);
+  if(!c.velocityMask||velocity<=model.layerVelocity[0]||velocity>=model.layerVelocity[model.layers-1])return d;
+  int layer=0;while(velocity>model.layerVelocity[layer+1])++layer;
+  if(velocity==model.layerVelocity[layer]||velocity==model.layerVelocity[layer+1]||!(c.velocityMask&(1u<<layer)))return d;
+  int index=0;for(int i=0;i<layer;++i)if(c.velocityMask&(1u<<i))++index;
+  return interpolateVelocity(d,c.velocity[index],(velocity-model.layerVelocity[layer])/(model.layerVelocity[layer+1]-model.layerVelocity[layer]));
+}
+double pitchRate(const LaneData& x,const LaneData& y,double t) noexcept {
+  if(t<=0||t>=1||x.rateIdentified==y.rateIdentified)return mix(x.rate,y.rate,t);
+  // Quadratic Bezier in log(rate), its middle control point the identified
+  // endpoint. Unknown-left gives 2t-t^2; unknown-right t^2. The poles reach
+  // both measured endpoints continuously and stay between them. This is a
+  // support prior, not a measured pitch trend; it changes no lane offsets.
+  const double confidence=static_cast<double>(y.rateIdentified)-static_cast<double>(x.rateIdentified);
+  const double coordinate=t+t*(1-t)*confidence;
+  return mix(x.rate,y.rate,coordinate);
+}
 PartialData blend(const PartialData& a,const PartialData& b,double t,const std::array<int,lanes>& pair) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
   d.rise=mix(a.rise,b.rise,t);
-  for(int j=0;j<lanes;++j)d.lane[j]=blendLane(a.lane[j],b.lane[pair[j]],t);
+  for(int j=0;j<lanes;++j){
+    const auto& x=a.lane[j];const auto& y=b.lane[pair[j]];
+    d.lane[j]=blendLane(x,y,t);d.lane[j].rate=pitchRate(x,y,t);
+  }
   // Fastest first again, as combine() pairs the pianos' lanes.
   std::sort(d.lane,d.lane+lanes,[](const LaneData& x,const LaneData& y){return x.rate>y.rate;});
   // Blended one by one, the lanes beat and cancel with offsets, phases and
@@ -786,7 +878,10 @@ struct Engine::Impl {
   struct Component {double frequency=0,order=0;LaneData lane{};};
   std::array<Component,maxExtras> components{};
   // Every piano's measured lanes' caches (see LaneCache), filled at construction.
-  std::array<std::array<LaneCache,lanes>,partialCaches> partialLanes{};
+  std::array<PartialCache,partialCaches> partialLanes{};
+#ifndef KEYRA_GENERATING_VELOCITY_GUARD
+  std::array<VelocityInterpolation,measured::velocity::intervalCount> velocityIntervals{};
+#endif
   std::array<LaneCache,extraCaches> extraLanes{};
   // Each undamped string's frequency (Hz at A4 = 440 Hz).
   std::array<double,halo> haloHz{};
@@ -1941,10 +2036,24 @@ struct Engine::Impl {
 
 Engine::Engine(double sampleRate):impl(new Impl){
   auto& p=*impl;
+#ifndef KEYRA_GENERATING_VELOCITY_GUARD
+  static_assert(measured::velocity::masks.size()==partialCaches,"velocity masks cover the measured partials");
+  static_assert([]{std::size_t count=0;
+    for(auto mask:measured::velocity::masks){while(mask){count+=mask&1u;mask>>=1;}}
+    return count;}()==measured::velocity::intervalCount,
+    "velocity cache capacity equals the mask population");
+  std::size_t nextVelocity=0;
+#endif
   for(const auto& m:models){
     for(int i=0;i<m.anchors[m.anchorCount-1].first+m.anchors[m.anchorCount-1].count;++i){
       for(int j=0;j<lanes;++j)p.partialLanes[m.partialFirst+i][j]=cacheLane(m.partials[i].lanes[j],m.layers);
       shareLanes(m.partials[i],m.layers,p.partialLanes[m.partialFirst+i]);
+#ifndef KEYRA_GENERATING_VELOCITY_GUARD
+      auto& c=p.partialLanes[m.partialFirst+i];c.velocityMask=measured::velocity::masks[m.partialFirst+i];
+      if(c.velocityMask){c.velocity=p.velocityIntervals.data()+nextVelocity;
+        for(int layer=0;layer<m.layers-1;++layer)if(c.velocityMask&(1u<<layer))
+          p.velocityIntervals[nextVelocity++]=cacheVelocity(m,m.partials[i],c,layer);}
+#endif
     }
     for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
       p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);

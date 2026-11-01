@@ -1,0 +1,1346 @@
+{
+  "roles": [
+    "train",
+    "dev"
+  ],
+  "protocol": "Same933 cases and frozen scorer; both level-error measurements use the full train+dev baseline median gain. All existing per-note tolerance exceedances retained. No sealed cases.",
+  "tolerance": {
+    "partial_db": 0.5,
+    "tuning_cents": 0.5,
+    "decay_db_s": 1.0,
+    "attack_db": 0.5,
+    "early_db": 0.5,
+    "sustain_db": 0.5,
+    "noise_db": 0.5,
+    "ild_db": 0.5,
+    "icc": 0.02,
+    "envelope_db": 0.5,
+    "rise_ms": 1.0,
+    "level_db": 0.5
+  },
+  "models": {
+    "grand": {
+      "case_count": 432,
+      "level_reference_db": 25.621605372276957,
+      "baseline_report_sha256": "6a699b0da8bbebbd6c19a9c4c6d4a1fdf970cb39c717c27744955de36007f194",
+      "candidate_report_sha256": "742212e50657d105290bef627c8594d8a0b75632504053419cfd1f6b9ea167ed",
+      "means": {
+        "train": {
+          "partial_db": {
+            "baseline": 4.538596769502876,
+            "candidate": 4.538596770409308,
+            "delta": 9.064322625818022e-10
+          },
+          "tuning_cents": {
+            "baseline": 0.25221445431521106,
+            "candidate": 0.2522144542840249,
+            "delta": -3.118616476172065e-11
+          },
+          "decay_db_s": {
+            "baseline": 1.8412507079152738,
+            "candidate": 1.8412507189596832,
+            "delta": 1.1044409387039877e-08
+          },
+          "attack_db": {
+            "baseline": 4.41825498147461,
+            "candidate": 4.418254980158564,
+            "delta": -1.3160459388927848e-09
+          },
+          "early_db": {
+            "baseline": 4.235893070992163,
+            "candidate": 4.235893071065003,
+            "delta": 7.283951219960727e-11
+          },
+          "sustain_db": {
+            "baseline": 4.654676588874114,
+            "candidate": 4.6546765889253034,
+            "delta": 5.118927504099702e-11
+          },
+          "noise_db": {
+            "baseline": 5.693348311797577,
+            "candidate": 5.693348273250406,
+            "delta": -3.85471716768393e-08
+          },
+          "ild_db": {
+            "baseline": 0.9034516998187014,
+            "candidate": 0.9034516998032751,
+            "delta": -1.5426326882561625e-11
+          },
+          "icc": {
+            "baseline": 0.06459435778655312,
+            "candidate": 0.06459435777976158,
+            "delta": -6.7915395529638545e-12
+          },
+          "envelope_db": {
+            "baseline": 1.9619480636582136,
+            "candidate": 1.9619480636899016,
+            "delta": 3.168798556885122e-11
+          },
+          "rise_ms": {
+            "baseline": 3.2647192028985508,
+            "candidate": 3.2647192028985508,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 0.5034992241391628,
+            "candidate": 0.5034992241246853,
+            "delta": -1.4477530285716966e-11
+          }
+        },
+        "dev": {
+          "partial_db": {
+            "baseline": 5.327099315247488,
+            "candidate": 5.310017624139719,
+            "delta": -0.01708169110776936
+          },
+          "tuning_cents": {
+            "baseline": 1.1646447851332002,
+            "candidate": 1.1614300525922312,
+            "delta": -0.0032147325409690453
+          },
+          "decay_db_s": {
+            "baseline": 2.3232899832016476,
+            "candidate": 2.2620896178272094,
+            "delta": -0.06120036537443818
+          },
+          "attack_db": {
+            "baseline": 4.7961866758729705,
+            "candidate": 4.797162021454422,
+            "delta": 0.0009753455814518475
+          },
+          "early_db": {
+            "baseline": 4.5230914039360215,
+            "candidate": 4.5232628510796715,
+            "delta": 0.00017144714365002756
+          },
+          "sustain_db": {
+            "baseline": 5.310811328331323,
+            "candidate": 5.323971063047331,
+            "delta": 0.013159734716007954
+          },
+          "noise_db": {
+            "baseline": 5.35718139217977,
+            "candidate": 5.365393943741557,
+            "delta": 0.008212551561786796
+          },
+          "ild_db": {
+            "baseline": 2.441377554707033,
+            "candidate": 2.4404508389240824,
+            "delta": -0.0009267157829504491
+          },
+          "icc": {
+            "baseline": 0.1228984198290237,
+            "candidate": 0.12279248052564819,
+            "delta": -0.00010593930337551849
+          },
+          "envelope_db": {
+            "baseline": 2.6546888125843653,
+            "candidate": 2.65847199060679,
+            "delta": 0.0037831780224246714
+          },
+          "rise_ms": {
+            "baseline": 3.8994391025641026,
+            "candidate": 3.8999732905982905,
+            "delta": 0.0005341880341878102
+          },
+          "level_db": {
+            "baseline": 1.0345063769035352,
+            "candidate": 1.001538007597782,
+            "delta": -0.0329683693057532
+          }
+        }
+      },
+      "regressions": [],
+      "improvements": []
+    },
+    "upright": {
+      "case_count": 158,
+      "level_reference_db": 15.961512282308165,
+      "baseline_report_sha256": "2590481fe1c052d1cd79bbe69b5f8caf6c753cda7fd0670b9fb7b12c4858dafc",
+      "candidate_report_sha256": "ced83d1d89e692c4b5d7a6fd7ff5882811769971aa1a2931bf8c9d1b0056bb18",
+      "means": {
+        "train": {
+          "partial_db": {
+            "baseline": 5.763790064916014,
+            "candidate": 5.763790060597652,
+            "delta": -4.318361668254056e-09
+          },
+          "tuning_cents": {
+            "baseline": 0.2573880502763842,
+            "candidate": 0.25738805252517305,
+            "delta": 2.2487888773348175e-09
+          },
+          "decay_db_s": {
+            "baseline": 2.341815445670554,
+            "candidate": 2.3418154921781675,
+            "delta": 4.650761331603803e-08
+          },
+          "attack_db": {
+            "baseline": 4.935953601775517,
+            "candidate": 4.935953613321837,
+            "delta": 1.1546320344280048e-08
+          },
+          "early_db": {
+            "baseline": 5.1295401485451615,
+            "candidate": 5.129540142648926,
+            "delta": -5.89623549984708e-09
+          },
+          "sustain_db": {
+            "baseline": 5.673397848933718,
+            "candidate": 5.673397852458903,
+            "delta": 3.5251854768603152e-09
+          },
+          "noise_db": {
+            "baseline": 6.352311783868738,
+            "candidate": 6.3523120009105565,
+            "delta": 2.1704181829562685e-07
+          },
+          "ild_db": {
+            "baseline": 2.134476873142598,
+            "candidate": 2.1344768738379662,
+            "delta": 6.953682074595235e-10
+          },
+          "icc": {
+            "baseline": 0.13675295109944485,
+            "candidate": 0.13675295108000607,
+            "delta": -1.9438783915859403e-11
+          },
+          "envelope_db": {
+            "baseline": 2.5950633226489135,
+            "candidate": 2.595063322016199,
+            "delta": -6.327143253770373e-10
+          },
+          "rise_ms": {
+            "baseline": 8.032694647201946,
+            "candidate": 8.032694647201946,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 0.48927273308409946,
+            "candidate": 0.48927272486018936,
+            "delta": -8.223910108462462e-09
+          }
+        },
+        "dev": {
+          "partial_db": {
+            "baseline": 8.469826167586527,
+            "candidate": 8.410682532152762,
+            "delta": -0.059143635433764885
+          },
+          "tuning_cents": {
+            "baseline": 1.8834995549621625,
+            "candidate": 1.8836016940914193,
+            "delta": 0.00010213912925682855
+          },
+          "decay_db_s": {
+            "baseline": 4.515124049932684,
+            "candidate": 4.36160575171054,
+            "delta": -0.1535182982221439
+          },
+          "attack_db": {
+            "baseline": 6.422733325440194,
+            "candidate": 6.422311039879978,
+            "delta": -0.0004222855602158404
+          },
+          "early_db": {
+            "baseline": 7.252830252131682,
+            "candidate": 7.251816278524999,
+            "delta": -0.001013973606682761
+          },
+          "sustain_db": {
+            "baseline": 8.801271852257344,
+            "candidate": 8.801274379416661,
+            "delta": 2.5271593173670226e-06
+          },
+          "noise_db": {
+            "baseline": 7.041481619607951,
+            "candidate": 7.041423012549166,
+            "delta": -5.860705878468764e-05
+          },
+          "ild_db": {
+            "baseline": 4.34979709197968,
+            "candidate": 4.349797040286743,
+            "delta": -5.169293615381321e-08
+          },
+          "icc": {
+            "baseline": 0.20672736366857447,
+            "candidate": 0.20672736552396234,
+            "delta": 1.855387871119163e-09
+          },
+          "envelope_db": {
+            "baseline": 4.844602293814803,
+            "candidate": 4.879127532127629,
+            "delta": 0.034525238312825834
+          },
+          "rise_ms": {
+            "baseline": 5.743055555555555,
+            "candidate": 5.743055555555555,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 2.5875113100279874,
+            "candidate": 2.5874808576600623,
+            "delta": -3.0452367925093426e-05
+          }
+        }
+      },
+      "regressions": [],
+      "improvements": []
+    },
+    "kawai": {
+      "case_count": 127,
+      "level_reference_db": 14.109381322668288,
+      "baseline_report_sha256": "9314e3219e8e736d6509a6bb6568e2fd595adb1cd8bed6c5e54c0bec4416b5fa",
+      "candidate_report_sha256": "79e78eb4c32edd79a7594bd3c7b3e63c8fb4b05cf71d82a127e7134c201ab803",
+      "means": {
+        "train": {
+          "partial_db": {
+            "baseline": 8.326378193170353,
+            "candidate": 8.327018234223807,
+            "delta": 0.0006400410534546097
+          },
+          "tuning_cents": {
+            "baseline": 0.4747193218151457,
+            "candidate": 0.47483095973630823,
+            "delta": 0.0001116379211625329
+          },
+          "decay_db_s": {
+            "baseline": 3.6944497957528375,
+            "candidate": 3.694039097992985,
+            "delta": -0.00041069775985258516
+          },
+          "attack_db": {
+            "baseline": 7.630980936377528,
+            "candidate": 7.630510957810367,
+            "delta": -0.00046997856716046726
+          },
+          "early_db": {
+            "baseline": 8.775133579845816,
+            "candidate": 8.771669759733783,
+            "delta": -0.003463820112033389
+          },
+          "sustain_db": {
+            "baseline": 8.464528656737127,
+            "candidate": 8.460445364917293,
+            "delta": -0.00408329181983369
+          },
+          "noise_db": {
+            "baseline": 7.904373617562394,
+            "candidate": 7.904082825506451,
+            "delta": -0.0002907920559431787
+          },
+          "ild_db": {
+            "baseline": 1.769287429766913,
+            "candidate": 1.768467631632552,
+            "delta": -0.0008197981343609495
+          },
+          "icc": {
+            "baseline": 0.09667087553915425,
+            "candidate": 0.09673369682940866,
+            "delta": 6.282129025440841e-05
+          },
+          "envelope_db": {
+            "baseline": 3.3940446150453933,
+            "candidate": 3.3924381251291758,
+            "delta": -0.0016064899162175905
+          },
+          "rise_ms": {
+            "baseline": 7.525797738967381,
+            "candidate": 7.528401905634048,
+            "delta": 0.0026041666666669627
+          },
+          "level_db": {
+            "baseline": 0.7221007465481407,
+            "candidate": 0.723234551911162,
+            "delta": 0.001133805363021323
+          }
+        },
+        "dev": {
+          "partial_db": {
+            "baseline": 9.809016978618779,
+            "candidate": 9.793418066681616,
+            "delta": -0.015598911937162896
+          },
+          "tuning_cents": {
+            "baseline": 2.9090729171901564,
+            "candidate": 2.9178412186724083,
+            "delta": 0.008768301482251939
+          },
+          "decay_db_s": {
+            "baseline": 5.237336623049206,
+            "candidate": 5.137958304790763,
+            "delta": -0.09937831825844334
+          },
+          "attack_db": {
+            "baseline": 8.276541921202007,
+            "candidate": 8.278568253392313,
+            "delta": 0.002026332190306235
+          },
+          "early_db": {
+            "baseline": 9.358390590621179,
+            "candidate": 9.360818608005003,
+            "delta": 0.0024280173838242547
+          },
+          "sustain_db": {
+            "baseline": 9.513894124913021,
+            "candidate": 9.507381446793508,
+            "delta": -0.006512678119513282
+          },
+          "noise_db": {
+            "baseline": 8.742305336230478,
+            "candidate": 8.735566323672499,
+            "delta": -0.0067390125579791516
+          },
+          "ild_db": {
+            "baseline": 5.364753431863072,
+            "candidate": 5.360855489096134,
+            "delta": -0.0038979427669376676
+          },
+          "icc": {
+            "baseline": 0.19671904576640367,
+            "candidate": 0.19672340814562456,
+            "delta": 4.362379220884671e-06
+          },
+          "envelope_db": {
+            "baseline": 4.9107531917736695,
+            "candidate": 4.941731098958823,
+            "delta": 0.030977907185153697
+          },
+          "rise_ms": {
+            "baseline": 5.225987133984028,
+            "candidate": 5.225987133984028,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 4.54087147384708,
+            "candidate": 4.542060784216298,
+            "delta": 0.0011893103692184326
+          }
+        }
+      },
+      "regressions": [],
+      "improvements": []
+    },
+    "hamburg": {
+      "case_count": 48,
+      "level_reference_db": 16.082613800656585,
+      "baseline_report_sha256": "66666f0c8f96326971bb297d5c3899a33bc04e6950ff5a3526d57d007cbaced7",
+      "candidate_report_sha256": "cb080cc4265747f8d0b715b1777a35d7ca686fe728dac927f91325c1393f3841",
+      "means": {
+        "train": {
+          "partial_db": {
+            "baseline": 4.576874038084721,
+            "candidate": 4.576874044058077,
+            "delta": 5.973356032029642e-09
+          },
+          "tuning_cents": {
+            "baseline": 0.283425903707774,
+            "candidate": 0.2834259040748286,
+            "delta": 3.6705460892960673e-10
+          },
+          "decay_db_s": {
+            "baseline": 3.3019691260776045,
+            "candidate": 3.301969516481089,
+            "delta": 3.904034846513582e-07
+          },
+          "attack_db": {
+            "baseline": 6.004462539876843,
+            "candidate": 6.004462544498262,
+            "delta": 4.621418803196775e-09
+          },
+          "early_db": {
+            "baseline": 4.770754602347565,
+            "candidate": 4.770754605079515,
+            "delta": 2.7319497775124546e-09
+          },
+          "sustain_db": {
+            "baseline": 5.247656471373248,
+            "candidate": 5.247656472657304,
+            "delta": 1.2840555285720257e-09
+          },
+          "noise_db": {
+            "baseline": 6.758887588890139,
+            "candidate": 6.758887688378474,
+            "delta": 9.94883349036968e-08
+          },
+          "ild_db": {
+            "baseline": 1.5370225327763853,
+            "candidate": 1.5370225300129314,
+            "delta": -2.763453910148428e-09
+          },
+          "icc": {
+            "baseline": 0.1153268169846387,
+            "candidate": 0.11532681667212961,
+            "delta": -3.1250908805180444e-10
+          },
+          "envelope_db": {
+            "baseline": 3.1721094109719545,
+            "candidate": 3.1721094113360375,
+            "delta": 3.6408298598189504e-10
+          },
+          "rise_ms": {
+            "baseline": 17.338020833333335,
+            "candidate": 17.338020833333335,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 0.6418106509477652,
+            "candidate": 0.641810651084748,
+            "delta": 1.3698275846962815e-10
+          }
+        },
+        "dev": {
+          "partial_db": {
+            "baseline": 7.277615348895903,
+            "candidate": 7.286284355041323,
+            "delta": 0.008669006145419544
+          },
+          "tuning_cents": {
+            "baseline": 0.61605241154567,
+            "candidate": 0.6168033845949901,
+            "delta": 0.0007509730493200362
+          },
+          "decay_db_s": {
+            "baseline": 6.1316320879383515,
+            "candidate": 5.6098946350880725,
+            "delta": -0.521737452850279
+          },
+          "attack_db": {
+            "baseline": 6.817998541389045,
+            "candidate": 6.812404946827342,
+            "delta": -0.0055935945617031635
+          },
+          "early_db": {
+            "baseline": 6.641084864026941,
+            "candidate": 6.642467984777249,
+            "delta": 0.0013831207503081089
+          },
+          "sustain_db": {
+            "baseline": 7.360561395163156,
+            "candidate": 7.360518239657891,
+            "delta": -4.3155505265346505e-05
+          },
+          "noise_db": {
+            "baseline": 6.118079790722587,
+            "candidate": 6.0949161863539185,
+            "delta": -0.023163604368668267
+          },
+          "ild_db": {
+            "baseline": 4.241836694999982,
+            "candidate": 4.242022623377257,
+            "delta": 0.00018592837727471334
+          },
+          "icc": {
+            "baseline": 0.21235390766106,
+            "candidate": 0.2123208794261146,
+            "delta": -3.302823494538698e-05
+          },
+          "envelope_db": {
+            "baseline": 4.435909470356939,
+            "candidate": 4.435072976302027,
+            "delta": -0.0008364940549121513
+          },
+          "rise_ms": {
+            "baseline": 3.768229166666666,
+            "candidate": 3.768229166666666,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 1.8775078044439315,
+            "candidate": 1.9050478727541413,
+            "delta": 0.02754006831020983
+          }
+        }
+      },
+      "regressions": [],
+      "improvements": []
+    },
+    "newyork": {
+      "case_count": 78,
+      "level_reference_db": 26.379974067748073,
+      "baseline_report_sha256": "013eea0b12de32b86fcc1f8722bd58a21b72eafe850ee3fd94f0b09854a79b08",
+      "candidate_report_sha256": "5e2099da191c027b1219c708d38d4f78851e8ea9c3f99eb6d1ce486b9f5080f4",
+      "means": {
+        "train": {
+          "partial_db": {
+            "baseline": 7.780600125932724,
+            "candidate": 7.780600118769696,
+            "delta": -7.163028392653814e-09
+          },
+          "tuning_cents": {
+            "baseline": 0.4712647484330341,
+            "candidate": 0.4712647499562736,
+            "delta": 1.523239478995464e-09
+          },
+          "decay_db_s": {
+            "baseline": 4.090632109227984,
+            "candidate": 4.090633348901613,
+            "delta": 1.239673628639082e-06
+          },
+          "attack_db": {
+            "baseline": 6.992392079760541,
+            "candidate": 6.992392073557193,
+            "delta": -6.20334805745415e-09
+          },
+          "early_db": {
+            "baseline": 7.3624744969319496,
+            "candidate": 7.362474498137671,
+            "delta": 1.2057217446681534e-09
+          },
+          "sustain_db": {
+            "baseline": 7.507012611952497,
+            "candidate": 7.50701259843646,
+            "delta": -1.3516037178362694e-08
+          },
+          "noise_db": {
+            "baseline": 7.774076250497241,
+            "candidate": 7.774076671359464,
+            "delta": 4.208622232937387e-07
+          },
+          "ild_db": {
+            "baseline": 1.7286405907584732,
+            "candidate": 1.7286405880820086,
+            "delta": -2.676464605499973e-09
+          },
+          "icc": {
+            "baseline": 0.09260979609135292,
+            "candidate": 0.0926097960715509,
+            "delta": -1.980202113394114e-11
+          },
+          "envelope_db": {
+            "baseline": 2.3371629553599877,
+            "candidate": 2.337162954649829,
+            "delta": -7.101585985935799e-10
+          },
+          "rise_ms": {
+            "baseline": 11.959481060183636,
+            "candidate": 11.959481060183636,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 0.5912867617858987,
+            "candidate": 0.5912867580502548,
+            "delta": -3.735643905322661e-09
+          }
+        },
+        "dev": {
+          "partial_db": {
+            "baseline": 9.980005016600844,
+            "candidate": 9.97139334053847,
+            "delta": -0.00861167606237423
+          },
+          "tuning_cents": {
+            "baseline": 2.369393695483401,
+            "candidate": 2.44392147453021,
+            "delta": 0.07452777904680863
+          },
+          "decay_db_s": {
+            "baseline": 7.765580871486889,
+            "candidate": 7.407784599836801,
+            "delta": -0.35779627165008776
+          },
+          "attack_db": {
+            "baseline": 8.604355074803793,
+            "candidate": 8.597898792553744,
+            "delta": -0.006456282250049128
+          },
+          "early_db": {
+            "baseline": 7.899228745390063,
+            "candidate": 7.901398848230908,
+            "delta": 0.0021701028408447343
+          },
+          "sustain_db": {
+            "baseline": 9.214935844510915,
+            "candidate": 9.195342910717443,
+            "delta": -0.019592933793472156
+          },
+          "noise_db": {
+            "baseline": 8.77466423161772,
+            "candidate": 8.789762247487047,
+            "delta": 0.015098015869327241
+          },
+          "ild_db": {
+            "baseline": 6.208270357808938,
+            "candidate": 6.209846380010532,
+            "delta": 0.0015760222015943626
+          },
+          "icc": {
+            "baseline": 0.19626757552823973,
+            "candidate": 0.19631555198479775,
+            "delta": 4.797645655801874e-05
+          },
+          "envelope_db": {
+            "baseline": 3.9370132910461835,
+            "candidate": 3.947356591153993,
+            "delta": 0.010343300107809483
+          },
+          "rise_ms": {
+            "baseline": 8.625183406696012,
+            "candidate": 8.612928504735228,
+            "delta": -0.012254901960783826
+          },
+          "level_db": {
+            "baseline": 5.153081583453752,
+            "candidate": 5.134470629611888,
+            "delta": -0.018610953841863953
+          }
+        }
+      },
+      "regressions": [
+        {
+          "note": 100,
+          "role": "dev",
+          "metric": "tuning_cents",
+          "baseline": 2.956281508331407,
+          "candidate": 4.185813013129753,
+          "delta": 1.229531504798346
+        }
+      ],
+      "improvements": []
+    },
+    "belmont": {
+      "case_count": 90,
+      "level_reference_db": 21.116405884213563,
+      "baseline_report_sha256": "15d48922e34b0095f4db1f826694246634a57abe4c8fdcd4de3c3d784375482c",
+      "candidate_report_sha256": "08c2f6e3b92e761f2de9eea4f04701ee13d3ecc55c647fb96036e6f45cd0beba",
+      "means": {
+        "train": {
+          "partial_db": {
+            "baseline": 6.823055539730468,
+            "candidate": 6.823055540343674,
+            "delta": 6.132054863883241e-10
+          },
+          "tuning_cents": {
+            "baseline": 0.3390180298697603,
+            "candidate": 0.3390180301246354,
+            "delta": 2.5487506549737304e-10
+          },
+          "decay_db_s": {
+            "baseline": 3.9058335432998224,
+            "candidate": 3.905833364134835,
+            "delta": -1.7916498729064756e-07
+          },
+          "attack_db": {
+            "baseline": 4.837482543962475,
+            "candidate": 4.8374825361428,
+            "delta": -7.819674685549671e-09
+          },
+          "early_db": {
+            "baseline": 5.050466714663937,
+            "candidate": 5.0504667148817886,
+            "delta": 2.1785151460562702e-10
+          },
+          "sustain_db": {
+            "baseline": 6.236500879112463,
+            "candidate": 6.236500865989114,
+            "delta": -1.3123349518195937e-08
+          },
+          "noise_db": {
+            "baseline": 6.029075950216707,
+            "candidate": 6.0290838726164555,
+            "delta": 7.922399748672149e-06
+          },
+          "ild_db": {
+            "baseline": 2.0576517829932564,
+            "candidate": 2.057651777383128,
+            "delta": -5.610128361865918e-09
+          },
+          "icc": {
+            "baseline": 0.08942375253028849,
+            "candidate": 0.08942375265790345,
+            "delta": 1.2761496026580943e-10
+          },
+          "envelope_db": {
+            "baseline": 4.330764050426484,
+            "candidate": 4.330764051603297,
+            "delta": 1.1768133134637537e-09
+          },
+          "rise_ms": {
+            "baseline": 10.623456790123457,
+            "candidate": 10.623456790123457,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 0.310908175030434,
+            "candidate": 0.3109081708129699,
+            "delta": -4.217464100175761e-09
+          }
+        },
+        "dev": {
+          "partial_db": {
+            "baseline": 6.999492417278491,
+            "candidate": 6.976856274298524,
+            "delta": -0.022636142979966856
+          },
+          "tuning_cents": {
+            "baseline": 1.562949018384487,
+            "candidate": 1.5705460782463734,
+            "delta": 0.007597059861886413
+          },
+          "decay_db_s": {
+            "baseline": 4.772874551103109,
+            "candidate": 4.728415249385995,
+            "delta": -0.04445930171711421
+          },
+          "attack_db": {
+            "baseline": 6.806883406151996,
+            "candidate": 6.815974583842602,
+            "delta": 0.009091177690605967
+          },
+          "early_db": {
+            "baseline": 7.470710077022706,
+            "candidate": 7.468918709540307,
+            "delta": -0.0017913674823990533
+          },
+          "sustain_db": {
+            "baseline": 8.434326996814116,
+            "candidate": 8.371720978969869,
+            "delta": -0.06260601784424757
+          },
+          "noise_db": {
+            "baseline": 7.749080563047782,
+            "candidate": 7.758603830861237,
+            "delta": 0.009523267813454694
+          },
+          "ild_db": {
+            "baseline": 3.769212746141615,
+            "candidate": 3.7756821341530844,
+            "delta": 0.006469388011469235
+          },
+          "icc": {
+            "baseline": 0.07968545002206937,
+            "candidate": 0.08089165736250235,
+            "delta": 0.0012062073404329882
+          },
+          "envelope_db": {
+            "baseline": 4.610610568083154,
+            "candidate": 4.501873092416804,
+            "delta": -0.10873747566635039
+          },
+          "rise_ms": {
+            "baseline": 20.537037037037038,
+            "candidate": 20.537037037037038,
+            "delta": 0.0
+          },
+          "level_db": {
+            "baseline": 0.4648507654804565,
+            "candidate": 0.5043329883934918,
+            "delta": 0.039482222913035325
+          }
+        }
+      },
+      "regressions": [],
+      "improvements": []
+    }
+  },
+  "version": "0.4.2 development candidate",
+  "baseline_commit": "ba3ee990864577464f9cf449b2c335c6788a465b",
+  "renderer_sha256": "248bc8b3568d9f2b85bd2ee5cc44bf8206915c52f8f7fe6284e5b0f79e6519a3",
+  "source_sha256": {
+    "CMakeLists.txt": "93033e53f0a57720cf50a4ebe585f01ca4655da87cea78952d18c6ba3094f6b7",
+    "Tools/render.cpp": "3f03ab9fd36770107de91bf50228aaf90d432ef0ab98971cc2c06c4db0eaa26a",
+    "Source/DSP/MeasuredUprightData.h": "c9a816902ff2b0e3ab32859419fc285941e5d4c2faf1320736481d573846719d",
+    "Source/DSP/OutputStage.h": "7b3bce8d7d2005de25b41a59ca06436a449a0bcc648a18b571a5a75de53f794a",
+    "Source/DSP/KeyraEngine.h": "7d35d4680a780f55702d7415d873dee17e7a5ada0d432e783eb8acbb62a6f808",
+    "Source/DSP/MeasuredTypes.h": "6466918a652ac5e71d6fbcded1b0643ccbdb22faee655fc402ddc4b009c9f033",
+    "Source/DSP/MeasuredVelocityInterpolation.h": "c5167799cc571e22f15874ba67ba2260da46aaef2c4243ff72bc72490e4ba6ec",
+    "Source/DSP/MeasuredNewYorkData.h": "c41f0f5166ba41d3ce2dc7e8932095aca0c9cb8aaa4cbf8c83edeaec3866b8dc",
+    "Source/DSP/MeasuredHamburgData.h": "8f12423ea9b73beecc7f03232675a0970efcb995ece1a8c854084e6845d0d0e7",
+    "Source/DSP/KeyraPresets.h": "9ccb27f380f2465a65bbff53f13396bfcbe2a11d545f460fe6da6464c0d1131c",
+    "Source/DSP/MeasuredMicData.h": "461ff0a80a138db805edad7a237171f6716b028ced50156e7b32949e1357274f",
+    "Source/DSP/MeasuredKawaiData.h": "082b9b1795c86933c3b736d6dec8776885a6d79d1c25249045b50a00a16438b3",
+    "Source/DSP/KeyraEngine.cpp": "8afcba98abe2029b8adcff5b49e846312476b199f2e9383d8779f91957d55ee0",
+    "Source/DSP/MeasuredModalData.h": "edd7ba272ef3e8e291d1306deb4d1f346df9989f38c66189c7fa8be0d7d2be99",
+    "Source/DSP/MeasuredBelmontData.h": "ae5dc672ae2992981e2a4a3db796e8b9ebd0e0f4b8f4f58d5817bca6d80e2ad6"
+  },
+  "keyboard": {
+    "cases": 1584,
+    "identical_audio_cases": 451,
+    "availability_changes": 0,
+    "fresh_repeat": {
+      "model": "belmont",
+      "note": 21,
+      "velocity": 32,
+      "audio_sha256": "de1e306d05741b031066c212d7f3aca0a62477abdcee9be6383b66d6d8ed86d8",
+      "identical": true
+    },
+    "models": {
+      "grand": {
+        "max_gain_halving_relative_error": 0.0,
+        "windows": {
+          "early_rms_dbfs": {
+            "max_adjacent_before": 5.547990420049999,
+            "max_adjacent_after": 5.547990420049999,
+            "mean_adjacent_change": -0.0012571853267541178,
+            "largest_case_change": {
+              "note": 27,
+              "velocity": 32,
+              "delta": 1.0291762204479724
+            }
+          },
+          "middle_rms_dbfs": {
+            "max_adjacent_before": 6.075447591058136,
+            "max_adjacent_after": 6.075447591058136,
+            "mean_adjacent_change": -0.010473347943903644,
+            "largest_case_change": {
+              "note": 27,
+              "velocity": 32,
+              "delta": 1.060097605622083
+            }
+          },
+          "late_rms_dbfs": {
+            "max_adjacent_before": 12.442729581377847,
+            "max_adjacent_after": 12.442729581377847,
+            "mean_adjacent_change": 0.002041583326381824,
+            "largest_case_change": {
+              "note": 27,
+              "velocity": 32,
+              "delta": 0.9874906034536721
+            }
+          }
+        }
+      },
+      "upright": {
+        "max_gain_halving_relative_error": 0.0,
+        "windows": {
+          "early_rms_dbfs": {
+            "max_adjacent_before": 7.7358853949096655,
+            "max_adjacent_after": 7.7358853949096655,
+            "mean_adjacent_change": 0.0031934274673912633,
+            "largest_case_change": {
+              "note": 29,
+              "velocity": 120,
+              "delta": 0.797811414632676
+            }
+          },
+          "middle_rms_dbfs": {
+            "max_adjacent_before": 6.983874769033193,
+            "max_adjacent_after": 6.983819541176388,
+            "mean_adjacent_change": 0.0008787082292867066,
+            "largest_case_change": {
+              "note": 42,
+              "velocity": 120,
+              "delta": 0.8523195113009621
+            }
+          },
+          "late_rms_dbfs": {
+            "max_adjacent_before": 11.527086873457925,
+            "max_adjacent_after": 11.527086873457925,
+            "mean_adjacent_change": 0.026158408561427926,
+            "largest_case_change": {
+              "note": 29,
+              "velocity": 120,
+              "delta": -1.2860677026373253
+            }
+          }
+        }
+      },
+      "kawai": {
+        "max_gain_halving_relative_error": 0.0,
+        "windows": {
+          "early_rms_dbfs": {
+            "max_adjacent_before": 7.96378626339245,
+            "max_adjacent_after": 8.237199232543247,
+            "mean_adjacent_change": -0.0008243858280443384,
+            "largest_case_change": {
+              "note": 23,
+              "velocity": 120,
+              "delta": 0.7496147581632044
+            }
+          },
+          "middle_rms_dbfs": {
+            "max_adjacent_before": 8.119228689713538,
+            "max_adjacent_after": 8.119228689713538,
+            "mean_adjacent_change": -0.002353010868000993,
+            "largest_case_change": {
+              "note": 23,
+              "velocity": 120,
+              "delta": 0.632684864535868
+            }
+          },
+          "late_rms_dbfs": {
+            "max_adjacent_before": 14.823949726461507,
+            "max_adjacent_after": 14.589502135649695,
+            "mean_adjacent_change": -0.09760034718449528,
+            "largest_case_change": {
+              "note": 106,
+              "velocity": 120,
+              "delta": -5.7543982732405965
+            }
+          }
+        }
+      },
+      "hamburg": {
+        "max_gain_halving_relative_error": 0.0,
+        "windows": {
+          "early_rms_dbfs": {
+            "max_adjacent_before": 2.958060867381647,
+            "max_adjacent_after": 2.836512886155859,
+            "mean_adjacent_change": 0.0010177096643155803,
+            "largest_case_change": {
+              "note": 51,
+              "velocity": 32,
+              "delta": -0.3586927695642643
+            }
+          },
+          "middle_rms_dbfs": {
+            "max_adjacent_before": 3.652076514589922,
+            "max_adjacent_after": 3.652117247156667,
+            "mean_adjacent_change": -0.00015086204906600287,
+            "largest_case_change": {
+              "note": 51,
+              "velocity": 32,
+              "delta": -0.3781189137606731
+            }
+          },
+          "late_rms_dbfs": {
+            "max_adjacent_before": 5.868032354235808,
+            "max_adjacent_after": 5.8681174470066395,
+            "mean_adjacent_change": -0.005478956593183426,
+            "largest_case_change": {
+              "note": 93,
+              "velocity": 80,
+              "delta": -0.7243148140060072
+            }
+          }
+        }
+      },
+      "newyork": {
+        "max_gain_halving_relative_error": 0.0,
+        "windows": {
+          "early_rms_dbfs": {
+            "max_adjacent_before": 4.928392694620619,
+            "max_adjacent_after": 4.928392694620619,
+            "mean_adjacent_change": -0.00549336079045637,
+            "largest_case_change": {
+              "note": 26,
+              "velocity": 120,
+              "delta": 0.7913405058330198
+            }
+          },
+          "middle_rms_dbfs": {
+            "max_adjacent_before": 4.001205230150617,
+            "max_adjacent_after": 4.001205230150617,
+            "mean_adjacent_change": -0.0030937531209807023,
+            "largest_case_change": {
+              "note": 26,
+              "velocity": 120,
+              "delta": 0.51851627125167
+            }
+          },
+          "late_rms_dbfs": {
+            "max_adjacent_before": 11.771032218853975,
+            "max_adjacent_after": 11.770990271996496,
+            "mean_adjacent_change": -0.0064612454784289675,
+            "largest_case_change": {
+              "note": 24,
+              "velocity": 120,
+              "delta": 1.4517153999765995
+            }
+          }
+        }
+      },
+      "belmont": {
+        "max_gain_halving_relative_error": 0.0,
+        "windows": {
+          "early_rms_dbfs": {
+            "max_adjacent_before": 5.190943473452762,
+            "max_adjacent_after": 5.190943473676832,
+            "mean_adjacent_change": -0.007848067436938111,
+            "largest_case_change": {
+              "note": 44,
+              "velocity": 120,
+              "delta": 1.60551439587735
+            }
+          },
+          "middle_rms_dbfs": {
+            "max_adjacent_before": 3.7224488575949124,
+            "max_adjacent_after": 3.867139870248913,
+            "mean_adjacent_change": -0.00951518061471468,
+            "largest_case_change": {
+              "note": 44,
+              "velocity": 120,
+              "delta": 1.9118895956753903
+            }
+          },
+          "late_rms_dbfs": {
+            "max_adjacent_before": 14.761889801047644,
+            "max_adjacent_after": 14.356643792730864,
+            "mean_adjacent_change": -0.08975228932566814,
+            "largest_case_change": {
+              "note": 83,
+              "velocity": 32,
+              "delta": -7.017863984687395
+            }
+          }
+        }
+      }
+    }
+  },
+  "native_performance": {
+    "baseline": {
+      "instrument": "Keyra",
+      "note": "Native arm64 development machine; not Reason or DAW performance",
+      "compiler": "clang 21.0.0 (clang-2100.1.1.101)",
+      "timing_meaningful": true,
+      "system": "macos",
+      "cpu_model": "Apple M1 Max",
+      "hardware_threads": 10,
+      "sample_rate": 48000,
+      "block_frames": 256,
+      "repeats": 3,
+      "cpu_budget": 0.6,
+      "demos": [
+        {
+          "number": 1,
+          "preset": "Kakegawa Grand",
+          "file": "01-kakegawa-grand.wav",
+          "seconds": 11.25,
+          "realtime_factor": 0.0965017896,
+          "worst_block_share": 0.27560925,
+          "realtime_factors": [
+            0.0967919324,
+            0.0965017896,
+            0.0964771035
+          ],
+          "error": ""
+        },
+        {
+          "number": 3,
+          "preset": "Warm Walnut",
+          "file": "03-warm-walnut.wav",
+          "seconds": 11.0714375,
+          "realtime_factor": 0.0557965377,
+          "worst_block_share": 0.125406187,
+          "realtime_factors": [
+            0.0561677562,
+            0.0557965377,
+            0.0557904676
+          ],
+          "error": ""
+        },
+        {
+          "number": 4,
+          "preset": "Felt Nocturne",
+          "file": "04-felt-nocturne.wav",
+          "seconds": 10.6818125,
+          "realtime_factor": 0.0297525987,
+          "worst_block_share": 0.0932030625,
+          "realtime_factors": [
+            0.029852633,
+            0.0297525987,
+            0.029646797
+          ],
+          "error": ""
+        },
+        {
+          "number": 5,
+          "preset": "Open Strings",
+          "file": "05-open-strings.wav",
+          "seconds": 11.6666667,
+          "realtime_factor": 0.0849049563,
+          "worst_block_share": 0.187601437,
+          "realtime_factors": [
+            0.0850290204,
+            0.0849044415,
+            0.0849049563
+          ],
+          "error": ""
+        },
+        {
+          "number": 6,
+          "preset": "Helsinki Upright",
+          "file": "06-helsinki-upright.wav",
+          "seconds": 11.6304375,
+          "realtime_factor": 0.0797975748,
+          "worst_block_share": 0.190320187,
+          "realtime_factors": [
+            0.0799775813,
+            0.0797252581,
+            0.0797975748
+          ],
+          "error": ""
+        },
+        {
+          "number": 8,
+          "preset": "Pop Upright",
+          "file": "08-pop-upright.wav",
+          "seconds": 11.5517083,
+          "realtime_factor": 0.0983927923,
+          "worst_block_share": 0.19790625,
+          "realtime_factors": [
+            0.098571495,
+            0.0983927923,
+            0.0979412537
+          ],
+          "error": ""
+        },
+        {
+          "number": 9,
+          "preset": "Hamamatsu Grand",
+          "file": "09-hamamatsu-grand.wav",
+          "seconds": 9.7,
+          "realtime_factor": 0.0297609773,
+          "worst_block_share": 0.080664,
+          "realtime_factors": [
+            0.0297609773,
+            0.0298307164,
+            0.0296924463
+          ],
+          "error": ""
+        },
+        {
+          "number": 10,
+          "preset": "Three Cities",
+          "file": "10-three-cities.wav",
+          "seconds": 10.75,
+          "realtime_factor": 0.0564973394,
+          "worst_block_share": 0.331335938,
+          "realtime_factors": [
+            0.0568194927,
+            0.0564973394,
+            0.0564607722
+          ],
+          "error": ""
+        }
+      ]
+    },
+    "candidate": {
+      "instrument": "Keyra",
+      "note": "",
+      "compiler": "clang 21.0.0 (clang-2100.1.1.101)",
+      "timing_meaningful": true,
+      "system": "macos",
+      "cpu_model": "Apple M1 Max",
+      "hardware_threads": 10,
+      "sample_rate": 48000,
+      "block_frames": 256,
+      "repeats": 3,
+      "cpu_budget": 0.6,
+      "demos": [
+        {
+          "number": 1,
+          "preset": "Kakegawa Grand",
+          "file": "01-kakegawa-grand.wav",
+          "seconds": 11.25,
+          "realtime_factor": 0.0963959349,
+          "worst_block_share": 0.279718688,
+          "realtime_factors": [
+            0.0965392583,
+            0.0963959349,
+            0.0962820152
+          ],
+          "error": ""
+        },
+        {
+          "number": 3,
+          "preset": "Warm Walnut",
+          "file": "03-warm-walnut.wav",
+          "seconds": 11.0714375,
+          "realtime_factor": 0.0561638078,
+          "worst_block_share": 0.123664125,
+          "realtime_factors": [
+            0.0561638078,
+            0.0585628931,
+            0.0560535043
+          ],
+          "error": ""
+        },
+        {
+          "number": 4,
+          "preset": "Felt Nocturne",
+          "file": "04-felt-nocturne.wav",
+          "seconds": 10.6818125,
+          "realtime_factor": 0.0297790387,
+          "worst_block_share": 0.095335875,
+          "realtime_factors": [
+            0.0298491085,
+            0.0297790387,
+            0.0297551154
+          ],
+          "error": ""
+        },
+        {
+          "number": 5,
+          "preset": "Open Strings",
+          "file": "05-open-strings.wav",
+          "seconds": 11.6666667,
+          "realtime_factor": 0.0852816474,
+          "worst_block_share": 0.185593875,
+          "realtime_factors": [
+            0.087180192,
+            0.0852816474,
+            0.0845432689
+          ],
+          "error": ""
+        },
+        {
+          "number": 6,
+          "preset": "Helsinki Upright",
+          "file": "06-helsinki-upright.wav",
+          "seconds": 11.6304375,
+          "realtime_factor": 0.079975336,
+          "worst_block_share": 0.193570313,
+          "realtime_factors": [
+            0.0801248505,
+            0.0799537003,
+            0.079975336
+          ],
+          "error": ""
+        },
+        {
+          "number": 8,
+          "preset": "Pop Upright",
+          "file": "08-pop-upright.wav",
+          "seconds": 11.5517083,
+          "realtime_factor": 0.0984088386,
+          "worst_block_share": 0.198890625,
+          "realtime_factors": [
+            0.102385675,
+            0.0984088386,
+            0.0981908541
+          ],
+          "error": ""
+        },
+        {
+          "number": 9,
+          "preset": "Hamamatsu Grand",
+          "file": "09-hamamatsu-grand.wav",
+          "seconds": 9.7,
+          "realtime_factor": 0.0296626994,
+          "worst_block_share": 0.077523375,
+          "realtime_factors": [
+            0.0298829363,
+            0.0296626994,
+            0.0295666073
+          ],
+          "error": ""
+        },
+        {
+          "number": 10,
+          "preset": "Three Cities",
+          "file": "10-three-cities.wav",
+          "seconds": 10.75,
+          "realtime_factor": 0.056452355,
+          "worst_block_share": 0.334679813,
+          "realtime_factors": [
+            0.0564214695,
+            0.0565714195,
+            0.056452355
+          ],
+          "error": ""
+        }
+      ]
+    },
+    "scope": "Native Apple M1 Max development machine only, eight curated demos, not Reason or DAW host performance."
+  },
+  "validation": {
+    "unit": "11/11 pass; final YamahaCorpusImport and strengthened RateInterpolation rerun2/2 pass (11.22s)",
+    "audio": "2/2 pass for unchanged baseline and combined candidate",
+    "perf": "1/1 pass",
+    "cxx17": "pass",
+    "sealed_opened": false,
+    "host_acceptance": "not run for this candidate",
+    "rack_adapter": "pin unchanged"
+  }
+}

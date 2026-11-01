@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""Guard velocity interpolation using only the six pianos' fitted numeric data.
+
+No recordings or dev/sealed data are opened. Each complete partial/layer
+interval is enabled only if the old interpolation leaves its endpoint-energy
+bounds and the phase-aligned alternative stays inside them in four windows.
+The first 50 ms includes the runtime rise cap, floor and 48 kHz discrete contact
+smoothing, checked at quarter recording-layer coordinates. The other windows
+(50-750 ms, .75-1.5 s, 1.5-3.5 s) exclude the rise, as windowPower does, and
+their entire intervals are certified from the real roots of the quartic
+derivative of exp(L*t)*quadratic(t)/quadratic(t). This is a modal-power guard,
+not a proof about the complete acoustic waveform, other sample rates or the
+early window between grid points. Recording benchmarks and listening follow.
+
+python3 Tools/generate_velocity_interpolation.py [--check]
+"""
+import argparse
+import csv
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+HEADER = ROOT / 'Source/DSP/MeasuredVelocityInterpolation.h'
+METADATA = ROOT / 'Docs/research/velocity-interpolation-2026-11-01.json'
+PIANOS = ['grand', 'upright', 'kawai', 'hamburg', 'newyork', 'belmont']
+DATA = ['MeasuredModalData.h', 'MeasuredUprightData.h', 'MeasuredKawaiData.h',
+        'MeasuredHamburgData.h', 'MeasuredNewYorkData.h', 'MeasuredBelmontData.h']
+# Double analytic integrals and quartic roots lose their last bits for nearly
+# flat endpoints. 1e-8 dB is a numerical equality tolerance, not an audible
+# acceptance margin (relative power 2.3e-9).
+ROUNDING_DB = 1e-8
+
+
+def constant_window_extrema(pa, pb, rho, q):
+    """All endpoint and stationary powers of the rational-exponential curve."""
+    from numpy.polynomial import polynomial as poly
+    q = np.asarray(q, dtype=float)
+    if (not np.isfinite(pa) or pa <= 0 or not np.isfinite(pb) or pb <= 0
+            or not np.isfinite(rho) or not 0 <= rho <= 1
+            or q.shape != (3,) or not np.all(np.isfinite(q))):
+        return float('inf'), []
+    d = np.array([1., 2*(rho-1), 2*(1-rho)])
+    slope = np.log(pb/pa)
+    derivative = poly.polyadd(slope*poly.polymul(q, d),
+                              poly.polysub(poly.polymul(poly.polyder(q), d),
+                                           poly.polymul(q, poly.polyder(d))))
+    if not np.isfinite(slope) or not np.all(np.isfinite(derivative)):
+        return float('inf'), []
+    try:
+        roots = poly.polyroots(np.trim_zeros(derivative, 'b')) if np.any(derivative) else []
+    except np.linalg.LinAlgError:
+        return float('inf'), []
+    points = [0., 1.]
+    for root in roots:
+        if abs(root.imag) < 1e-8 and 0 < root.real < 1:
+            points.append(float(root.real))
+    t = np.array(points)
+    power = pa*np.exp(slope*t)*poly.polyval(t, q)/poly.polyval(t, d)
+    if not np.all(np.isfinite(power)) or np.any(power <= 0):
+        return float('inf'), points
+    endpoints = power[:2]
+    excursion = max(0., float(10*np.log10(endpoints.min()/power.min())),
+                    float(10*np.log10(power.max()/endpoints.max())))
+    return excursion, points
+
+
+def compile_probe(source, binary, include):
+    subprocess.run([os.environ.get('CXX', 'c++'), '-std=c++17', '-O2', '-ffp-contract=off',
+                    '-I', str(include), str(source), '-o', str(binary)], check=True)
+
+
+def generate():
+    with tempfile.TemporaryDirectory(prefix='keyra-velocity-guard-') as directory:
+        probe = Path(directory)/'guard'
+        compile_probe(ROOT/'Tools/VelocityInterpolationGuard.cpp', probe, ROOT/'Source')
+        rows = list(csv.DictReader(io.StringIO(subprocess.check_output([str(probe)], text=True))))
+    masks = [0]*(max(int(row['partial']) for row in rows)+1)
+    records = []
+    for row in rows:
+        pa, pb, rho = (float(row[k]) for k in ('pa', 'pb', 'rho'))
+        excursions = [float(row['early_excursion'])]
+        for w in range(3):
+            q = [float(row[f'q{w}{j}']) for j in range(3)]
+            excursions.append(constant_window_extrema(pa, pb, rho, q)[0])
+        baseline = float(row['baseline_excursion'])
+        valid = bool(np.isfinite(baseline)) and all(np.isfinite(value) for value in excursions)
+        enabled = valid and baseline > ROUNDING_DB and max(excursions) <= ROUNDING_DB
+        if enabled:
+            masks[int(row['partial'])] |= 1 << int(row['layer'])
+        records.append({'model': row['model'], 'note': int(row['note']), 'order': int(row['order']),
+                        'partial': int(row['partial']), 'layer': int(row['layer']), 'enabled': enabled,
+                        'baseline_excursion_db': round(baseline, 9) if np.isfinite(baseline) else None,
+                        'candidate_excursion_db': [round(e, 9) if np.isfinite(e) else None for e in excursions]})
+    count = sum(mask.bit_count() for mask in masks)
+    header = ['// Generated by Tools/generate_velocity_interpolation.py; do not edit.',
+              '// Whole layer intervals passing the four-window endpoint-power guard.',
+              '#pragma once', '#include <array>', '#include <cstdint>',
+              'namespace keyra { namespace measured { namespace velocity {',
+              f'constexpr std::array<std::uint16_t,{len(masks)}> masks{{{{']
+    header += ['  '+','.join(str(mask) for mask in masks[i:i+24])+',' for i in range(0, len(masks), 24)]
+    header += ['}};', f'constexpr std::size_t intervalCount={count};', '}}} // namespace keyra::measured::velocity', '']
+    content = '\n'.join(header)
+    sources = [Path(__file__).resolve(), ROOT/'Tools/VelocityInterpolationGuard.cpp', ROOT/'Source/DSP/KeyraEngine.cpp',
+               ROOT/'Source/DSP/MeasuredTypes.h']+[ROOT/'Source/DSP'/name for name in DATA]
+    metadata = {'schema_version': 1, 'protocol': __doc__, 'recordings_opened': False,
+                'rounding_tolerance_db': ROUNDING_DB, 'early_window_sample_rate': 48000,
+                'early_grid_layer_coordinate_step': .25,
+                'sources': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
+                'partial_count': len(masks), 'enabled_intervals': count,
+                'summary': {model: {'intervals': sum(r['model']==model for r in records),
+                                   'enabled': sum(r['model']==model and r['enabled'] for r in records)} for model in PIANOS},
+                'examined_intervals': len(records),
+                # Well-behaved intervals are unchanged; retain every actual
+                # violation's accepted/rejected decision for review.
+                'intervals': [r for r in records if r['baseline_excursion_db'] is None
+                              or r['baseline_excursion_db'] > ROUNDING_DB],
+                'generated_header_sha256': hashlib.sha256(content.encode()).hexdigest()}
+    return content, metadata
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--check', action='store_true')
+    parser.add_argument('--header', type=Path, default=HEADER)
+    parser.add_argument('--metadata', type=Path, default=METADATA)
+    args = parser.parse_args()
+    header, metadata = generate()
+    if args.check:
+        if args.header.read_text() != header or json.loads(args.metadata.read_text()) != metadata:
+            raise SystemExit('velocity interpolation masks or provenance differ; regenerate')
+        print('velocity interpolation masks and provenance reproduce')
+        return
+    args.header.parent.mkdir(parents=True, exist_ok=True)
+    args.metadata.parent.mkdir(parents=True, exist_ok=True)
+    args.header.write_text(header)
+    args.metadata.write_text(json.dumps(metadata, indent=2, allow_nan=False)+'\n')
+    print(json.dumps(metadata['summary']))
+    print(f'{metadata["enabled_intervals"]} guarded intervals across {metadata["partial_count"]} partials')
+
+
+if __name__ == '__main__':
+    main()
