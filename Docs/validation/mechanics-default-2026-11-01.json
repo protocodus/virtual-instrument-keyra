@@ -1,0 +1,276 @@
+{
+  "version": "0.4.5",
+  "selection": "Moonlight B, raw Mechanics .175, visible knob .4",
+  "engine_cpp_sha256_unchanged": "2d8e6f891e7efceb8a77ba6c5d04c9455b468267f13cac59876576ff8d6429bd",
+  "renderer_sha256": "3e43bc5b1fa2a8adc17c854af4332b6159ec6604180dfe0753ea48461c76f7bf",
+  "legacy_renderer_sha256": "9d81cc55fb6aba4439449f64800ef794ff1780a679b2962737f041f819b23063",
+  "artifacts": [
+    {
+      "format": "VST3",
+      "bundle": "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/VST3/Keyra.vst3",
+      "version": "0.4.5",
+      "architectures": "x86_64 arm64",
+      "binary_sha256": "9791fac12c894e02beac4ecd928de1df7f37e4e15eef734b20486c2353c82787"
+    },
+    {
+      "format": "AU",
+      "bundle": "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/AU/Keyra.component",
+      "version": "0.4.5",
+      "architectures": "x86_64 arm64",
+      "binary_sha256": "cc6b2cea2b138d6eac0f1737b3c474f6fe88906735fa35e58c4287ca07467ee3"
+    },
+    {
+      "format": "CLAP",
+      "bundle": "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/CLAP/Keyra.clap",
+      "version": "0.4.5",
+      "architectures": "x86_64 arm64",
+      "binary_sha256": "1acd2388cdf172965406b7ff06a78d3c67a0a78da14b4e7f2236f50d1bcbacf7"
+    },
+    {
+      "format": "Standalone",
+      "bundle": "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/Standalone/Keyra.app",
+      "version": "0.4.5",
+      "architectures": "x86_64 arm64",
+      "binary_sha256": "7af5211a335a3a9e19a595c5e1efa5037f2ca072a52c35a0a5439ec9f77f078b"
+    }
+  ],
+  "moonlight_parity": [
+    {
+      "case": "B",
+      "command": [
+        "/Users/vojta/Dev/keyra-realism-20261101/build-realism/keyra_render",
+        "--events",
+        "/Users/vojta/Downloads/Keyra Demo Songs 2026-11-01/Performances/02_Beethoven_Moonlight_I.events",
+        "--output",
+        "/Users/vojta/Dev/keyra-realism-20261101/out/mechanics-default-20261101/moonlight-default-B.wav",
+        "--duration",
+        "40.5",
+        "--sample-rate",
+        "48000",
+        "--gain",
+        ".007",
+        "--model",
+        "hamburg",
+        "--vary",
+        "--quality",
+        "full",
+        "--brightness",
+        "0.47",
+        "--resonance",
+        "0.3"
+      ],
+      "sha256": "77bcbb5c95f897ef383effb9e85af79f527484c7336ed78b47204643a36c21ef",
+      "expected_sha256": "77bcbb5c95f897ef383effb9e85af79f527484c7336ed78b47204643a36c21ef",
+      "bit_identical": true,
+      "metrics": {
+        "sample_rate": 48000,
+        "frames": 1944000,
+        "duration_seconds": 40.5,
+        "wall_seconds": 4.258372166,
+        "realtime_factor": 0.1051449918,
+        "peak": 0.00275787618,
+        "rms": 0.0003186354321,
+        "legacy_attack": false
+      }
+    },
+    {
+      "case": "A",
+      "command": [
+        "/Users/vojta/Dev/keyra-realism-20261101/build-realism/keyra_render",
+        "--events",
+        "/Users/vojta/Downloads/Keyra Demo Songs 2026-11-01/Performances/02_Beethoven_Moonlight_I.events",
+        "--output",
+        "/Users/vojta/Dev/keyra-realism-20261101/out/mechanics-default-20261101/moonlight-legacy-A.wav",
+        "--duration",
+        "40.5",
+        "--sample-rate",
+        "48000",
+        "--gain",
+        ".007",
+        "--model",
+        "hamburg",
+        "--vary",
+        "--quality",
+        "full",
+        "--brightness",
+        "0.47",
+        "--resonance",
+        "0.3",
+        "--mechanics",
+        "0.35"
+      ],
+      "sha256": "2206a484a56d9f37d335c81a1d2b4011b8b80daae2f015afd6f5511680ca16a2",
+      "expected_sha256": "2206a484a56d9f37d335c81a1d2b4011b8b80daae2f015afd6f5511680ca16a2",
+      "bit_identical": true,
+      "metrics": {
+        "sample_rate": 48000,
+        "frames": 1944000,
+        "duration_seconds": 40.5,
+        "wall_seconds": 4.201987959,
+        "realtime_factor": 0.1037527891,
+        "peak": 0.00275192759,
+        "rms": 0.0003186377669,
+        "legacy_attack": false
+      }
+    }
+  ],
+  "native_units": 13,
+  "native_audio": 2,
+  "plugin_processor_editor_and_parameter_matrix": "passed",
+  "pluginval": {
+    "version": "1.0.4",
+    "strictness": 10,
+    "seed": "0x4b455952",
+    "result": "passed"
+  },
+  "clap_validator": {
+    "version": "0.3.2",
+    "passed": 17,
+    "failed": 0,
+    "skipped": 3,
+    "warnings": 1
+  },
+  "performance": {
+    "instrument": "Keyra",
+    "note": "",
+    "compiler": "clang 21.0.0 (clang-2100.1.1.101)",
+    "timing_meaningful": true,
+    "system": "macos",
+    "cpu_model": "Apple M1 Max",
+    "hardware_threads": 10,
+    "sample_rate": 48000,
+    "block_frames": 256,
+    "repeats": 3,
+    "cpu_budget": 0.6,
+    "demos": [
+      {
+        "number": 1,
+        "preset": "Kakegawa Grand",
+        "file": "01-kakegawa-grand.wav",
+        "seconds": 11.25,
+        "realtime_factor": 0.0970105428,
+        "worst_block_share": 0.287937563,
+        "realtime_factors": [
+          0.0997954846,
+          0.0970105428,
+          0.0968446498
+        ],
+        "error": ""
+      },
+      {
+        "number": 3,
+        "preset": "Warm Walnut",
+        "file": "03-warm-walnut.wav",
+        "seconds": 11.0714375,
+        "realtime_factor": 0.0572751509,
+        "worst_block_share": 0.124343812,
+        "realtime_factors": [
+          0.0570568899,
+          0.0572751509,
+          0.057626575
+        ],
+        "error": ""
+      },
+      {
+        "number": 4,
+        "preset": "Felt Nocturne",
+        "file": "04-felt-nocturne.wav",
+        "seconds": 10.6818125,
+        "realtime_factor": 0.0310051219,
+        "worst_block_share": 0.10678125,
+        "realtime_factors": [
+          0.0304551513,
+          0.0387867284,
+          0.0310051219
+        ],
+        "error": ""
+      },
+      {
+        "number": 5,
+        "preset": "Open Strings",
+        "file": "05-open-strings.wav",
+        "seconds": 11.6666667,
+        "realtime_factor": 0.0863188457,
+        "worst_block_share": 0.186039,
+        "realtime_factors": [
+          0.0865083742,
+          0.0863188457,
+          0.0861900861
+        ],
+        "error": ""
+      },
+      {
+        "number": 6,
+        "preset": "Helsinki Upright",
+        "file": "06-helsinki-upright.wav",
+        "seconds": 11.6304375,
+        "realtime_factor": 0.0816197305,
+        "worst_block_share": 0.20071875,
+        "realtime_factors": [
+          0.0816525853,
+          0.0814812593,
+          0.0816197305
+        ],
+        "error": ""
+      },
+      {
+        "number": 8,
+        "preset": "Pop Upright",
+        "file": "08-pop-upright.wav",
+        "seconds": 11.5517083,
+        "realtime_factor": 0.10022917,
+        "worst_block_share": 0.20829675,
+        "realtime_factors": [
+          0.100388424,
+          0.10022917,
+          0.100218338
+        ],
+        "error": ""
+      },
+      {
+        "number": 9,
+        "preset": "Hamamatsu Grand",
+        "file": "09-hamamatsu-grand.wav",
+        "seconds": 9.7,
+        "realtime_factor": 0.0300337878,
+        "worst_block_share": 0.08315625,
+        "realtime_factors": [
+          0.0300337878,
+          0.0299956762,
+          0.0313168827
+        ],
+        "error": ""
+      },
+      {
+        "number": 10,
+        "preset": "Three Cities",
+        "file": "10-three-cities.wav",
+        "seconds": 10.75,
+        "realtime_factor": 0.0561920529,
+        "worst_block_share": 0.342078,
+        "realtime_factors": [
+          0.0561920529,
+          0.0559829535,
+          0.0562683135
+        ],
+        "error": ""
+      }
+    ]
+  },
+  "log_hashes": {
+    "out/mechanics-default-20261101/plugin-build.log": "e4a161ec9631d5ef2d50244754ba3e12b7cd117b769ae9147c698dfa2d4f069a",
+    "out/mechanics-default-20261101/plugin-tests.log": "f0617b9b9dbce05f1c01ec7094e775702a2e41921ca6616b0c45196e7636efdd",
+    "out/mechanics-default-20261101/parameter-matrix.log": "029a5781d5b1e34cb2e8ba838da46267a3efb647b0c99e9f7a2ec445105de9fe",
+    "out/mechanics-default-20261101/pluginval-console.log": "e7cd3e55b9c84349343d2871fc6daa36e32c72fd5a0f17ee8d7b25b88040c93d",
+    "out/mechanics-default-20261101/clap-validator.log": "0682d11ce6ceb9b94807b7b8f8d298e9243b8d5a86eb78f0c75c60602995df6d",
+    "out/mechanics-default-20261101/performance.log": "71905363db4fdf20ffcda00115aa43532ff345a7706ff63f45d0dd2b1f36eb66",
+    "out/realism/native-component-audit-20261101/engine/mechanics-default-045/unit.log": "20188db6ed6ec6e7511ff52483dd51007d03c63f5adb4c41acf7f5f5effe2eab",
+    "out/realism/native-component-audit-20261101/engine/mechanics-default-045/audio.log": "62f3e346118a78fdc963ff7eeebf66463abd91f417dcf301c05d3ba956ea74f9"
+  },
+  "gui_screenshot_sha256": "0d4df6757e9e145dbe8348791ee1cf96f4fed00751729a247e477e0c2ddd2986",
+  "limits": [
+    "Executed on arm64; x86_64 slices built but not executed.",
+    "AU built; no fresh AUval or manual DAW session performed.",
+    "Reason adapter validation is recorded separately."
+  ]
+}

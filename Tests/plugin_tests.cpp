@@ -1,4 +1,5 @@
 #include "PluginProcessor.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
@@ -60,6 +61,128 @@ juce::MemoryBlock edited(const juce::MemoryBlock& state, const juce::StringArray
     juce::AudioProcessor::copyXmlToBinary(*xml, result);
     return result;
 }
+
+void mechanicsStateCompatibility()
+{
+    KeyraAudioProcessor processor;
+    auto* parameter = processor.parameters.getParameter("mechanics");
+    const auto raw = [&] { return processor.parameters.getRawParameterValue("mechanics")->load(); };
+    require(raw() == .175f, "fresh Mechanics gain is not the chosen quieter default");
+    require(parameter->getDefaultValue() == .0875f, "Mechanics host default is not raw gain .175");
+    require(parameter->getNormalisableRange().start == 0 && parameter->getNormalisableRange().end == 2,
+        "Mechanics host range changed");
+    for (int i = 0; i <= 100; ++i) {
+        const auto normalised = static_cast<float>(i) / 100;
+        require(std::abs(parameter->convertFrom0to1(normalised) - 2 * normalised) < 1e-7f
+            && std::abs(parameter->convertTo0to1(2 * normalised) - normalised) < 1e-7f,
+            "Mechanics GUI taper changed legacy host automation mapping");
+        parameter->setValueNotifyingHost(normalised);
+        require(raw() == 2 * normalised, "Mechanics host automation no longer sets raw gain");
+    }
+
+    set(processor, "brightness", .64f);
+    juce::MemoryBlock state;
+    processor.getStateInformation(state);
+    const auto xml = juce::AudioProcessor::getXmlFromBinary(state.getData(), static_cast<int>(state.getSize()));
+    require(xml != nullptr && xml->getIntAttribute("schemaVersion") == 1,
+        "Mechanics display change altered the saved-state schema");
+    // Explicit values in historical schema-1 sessions are physical gains,
+    // not knob positions. Include both previous and current default values.
+    for (const auto* value : { "0", "0.175", "0.35", "0.5", "1", "2" }) {
+        const auto legacy = edited(state, { "mechanics" }, { { "mechanics", value } });
+        set(processor, "mechanics", .63f);
+        processor.setStateInformation(legacy.getData(), static_cast<int>(legacy.getSize()));
+        require(raw() == juce::String(value).getFloatValue(), "explicit legacy Mechanics gain was reinterpreted");
+    }
+    const auto missing = edited(state, { "mechanics" }, {});
+    for (const auto previous : { 0.0f, .175f, .35f, 2.0f }) {
+        set(processor, "mechanics", previous);
+        set(processor, "brightness", .1f);
+        processor.setStateInformation(missing.getData(), static_cast<int>(missing.getSize()));
+        require(raw() == 1, "state without Mechanics did not restore historical gain 1");
+        require(processor.parameters.getRawParameterValue("brightness")->load() == .64f,
+            "legacy Mechanics migration prevented the rest of the state restoring");
+    }
+    set(processor, "mechanics", .35f);
+    for (int program = 0; program < processor.getNumPrograms(); ++program) {
+        processor.setCurrentProgram(program);
+        require(raw() == .35f, "factory preset overwrote the user's Mechanics balance");
+    }
+}
+
+juce::Slider* mechanicsSlider(juce::Component& component)
+{
+    if (auto* slider = dynamic_cast<juce::Slider*>(&component); slider != nullptr && slider->getName() == "MECHANICS")
+        return slider;
+    for (auto* child : component.getChildren())
+        if (auto* slider = mechanicsSlider(*child)) return slider;
+    return nullptr;
+}
+
+void mechanicsEditorMapping()
+{
+    KeyraAudioProcessor processor;
+    auto& parameter = *processor.parameters.getParameter("mechanics");
+    struct HostEvents final : juce::AudioProcessorParameter::Listener {
+        explicit HostEvents(juce::AudioProcessorParameter& p) : parameter(p) { parameter.addListener(this); }
+        ~HostEvents() override { parameter.removeListener(this); }
+        void parameterValueChanged(int, float) override { ++values; }
+        void parameterGestureChanged(int, bool starting) override { if (starting) ++starts; else ++ends; }
+        juce::AudioProcessorParameter& parameter;
+        int values = 0, starts = 0, ends = 0;
+    } events(parameter);
+    std::unique_ptr<juce::AudioProcessorEditor> editor(processor.createEditor());
+    require(editor != nullptr, "Mechanics editor could not be created");
+    auto* slider = mechanicsSlider(*editor);
+    require(slider != nullptr, "Mechanics slider is not exposed in the editor");
+    require(events.values == 0 && events.starts == 0 && events.ends == 0,
+        "opening the editor wrote Mechanics automation");
+    require(slider->getMinimum() == 0 && slider->getMaximum() == 2 && slider->getValue() == .175f,
+        "Mechanics slider lost the physical gain range or fresh default");
+    require(std::abs(slider->valueToProportionOfLength(slider->getValue()) - .4) < 1e-6
+        && slider->getTextFromValue(slider->getValue()) == "40%"
+        && std::abs(slider->getValueFromText("40%") - .175) < 1e-6,
+        "Mechanics fresh gain does not display and parse as 40 percent");
+    require(slider->proportionOfLengthToValue(0) == 0 && slider->proportionOfLengthToValue(1) == 2,
+        "Mechanics knob no longer reaches both physical gain endpoints");
+
+    // A host still writes its old linear value; the editor alone uses the
+    // perceptual travel. Host feedback must not restore the linear GUI range.
+    parameter.setValueNotifyingHost(.5f);
+    require(slider->getValue() == 1 && parameter.getValue() == .5f
+        && std::abs(slider->valueToProportionOfLength(1) - .770502939) < 1e-6
+        && slider->getTextFromValue(1) == "77%",
+        "host automation changed the Mechanics gain or discarded its GUI taper");
+    slider->setValue(slider->proportionOfLengthToValue(.4), juce::sendNotificationSync);
+    require(std::abs(parameter.convertFrom0to1(parameter.getValue()) - .175f) < 1e-6f
+        && std::abs(parameter.getValue() - .0875f) < 1e-6f,
+        "40 percent Mechanics knob movement did not write physical gain .175");
+
+    set(processor, "mechanics", 1);
+    require(slider->isDoubleClickReturnEnabled() && slider->getDoubleClickReturnValue() == .175f,
+        "Mechanics double-click is not configured for the chosen default");
+    const auto valuesBefore = events.values, startsBefore = events.starts, endsBefore = events.ends;
+    const juce::MouseEvent doubleClick(juce::Desktop::getInstance().getMainMouseSource(), {}, {},
+        0, 0, 0, 0, 0, slider, slider, {}, {}, {}, 2, false);
+    slider->mouseDoubleClick(doubleClick);
+    require(parameter.getValue() == .0875f && slider->getTextFromValue(slider->getValue()) == "40%",
+        "Mechanics double-click did not restore the quieter default");
+    require(events.values == valuesBefore + 1 && events.starts == startsBefore + 1 && events.ends == endsBefore + 1,
+        "Mechanics double-click did not notify the host with one balanced gesture");
+
+    editor.reset();
+    set(processor, "mechanics", .35f);
+    const auto reopenValues = events.values, reopenStarts = events.starts, reopenEnds = events.ends;
+    editor.reset(processor.createEditor());
+    slider = mechanicsSlider(*editor);
+    require(slider != nullptr && slider->getValue() == .35f && parameter.getValue() == .175f
+        && slider->getTextFromValue(slider->getValue()) == "52%"
+        && std::abs(slider->valueToProportionOfLength(slider->getValue()) - .519141433) < 1e-6,
+        "reopening the editor reinterpreted a stored Mechanics gain");
+    require(events.values == reopenValues && events.starts == reopenStarts && events.ends == reopenEnds,
+        "reopening the editor wrote Mechanics automation");
+}
+
 std::vector<float> render(int block)
 {
     KeyraAudioProcessor processor;
@@ -205,6 +328,8 @@ int main()
 {
     try {
         juce::ScopedJuceInitialiser_GUI initialise;
+        mechanicsStateCompatibility();
+        mechanicsEditorMapping();
         KeyraAudioProcessor processor;
         set(processor, "brightness", .83f);
         set(processor, "mute", .37f);

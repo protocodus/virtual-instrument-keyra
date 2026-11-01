@@ -1,4 +1,5 @@
 #pragma once
+#include "MechanicsControl.h"
 #include <array>
 #include <cstddef>
 #include <memory>
@@ -78,7 +79,9 @@ struct Parameters {
   // How loud the action plays, as an amplitude: the keys landing and coming
   // back, the dampers falling, the sustain pedal's knocks and the strings its
   // lifting sets ringing. 0 silent, 1 as calibrated, 2 twice as loud.
-  float mechanics=1.f;
+  // New instruments use the owner's quieter choice; saved gains keep their
+  // physical meaning. The knob's display taper lives in MechanicsControl.h.
+  float mechanics=defaultMechanicsGain;
   Build build{};
   Quality quality=Quality::full;
 };

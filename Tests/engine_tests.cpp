@@ -37,7 +37,9 @@ Audio render(keyra::Engine& engine,int frames,int block=127){
   return audio;
 }
 double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<double>(x)*x;return std::sqrt(sum/std::max<std::size_t>(1,audio.size()));}
-keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
+// Existing measured-model fixtures retain the calibrated action gain. The
+// new-instrument default and its control mapping are checked separately.
+keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;p.mechanics=keyra::legacyMechanicsGain;return p;}
 keyra::Parameters dryUpright(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::upright);return p;}
 keyra::Parameters dryKawai(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::kawai);return p;}
 const char* pianoName(keyra::Piano piano){
@@ -201,6 +203,39 @@ int main(int argc,char** argv){
     json<<timing(12)<<','<<timing(32)<<','<<timing(128)<<"]}\n";
     if(argc>2){std::ofstream out(argv[2]);out<<json.str();}
     std::cout<<json.str();return 0;
+  }
+  {
+    check(keyra::Parameters{}.mechanics==keyra::defaultMechanicsGain,
+          "a new instrument uses the chosen Mechanics gain");
+    check(keyra::legacyMechanicsGain==1.f&&keyra::maximumMechanicsGain==2.f,
+          "legacy Mechanics gains retain their physical range");
+    check(keyra::mechanicsGainFromPosition(0)==0&&keyra::mechanicsGainFromPosition(1)==2
+          &&keyra::mechanicsPositionFromGain(0)==0&&keyra::mechanicsPositionFromGain(2)==1,
+          "Mechanics display endpoints preserve the gain endpoints");
+    check(keyra::mechanicsGainFromPosition(.4)==.175f
+          &&keyra::mechanicsGainFromPosition(keyra::defaultMechanicsPosition)==keyra::defaultMechanicsGain
+          &&keyra::mechanicsPositionFromGain(keyra::defaultMechanicsGain)==keyra::defaultMechanicsPosition,
+          "forty percent knob travel selects the exact chosen gain");
+    const float nan=std::numeric_limits<float>::quiet_NaN(),inf=std::numeric_limits<float>::infinity();
+    check(keyra::mechanicsGainFromPosition(-1)==0&&keyra::mechanicsGainFromPosition(inf)==2
+          &&keyra::mechanicsGainFromPosition(nan)==0&&keyra::mechanicsPositionFromGain(-1)==0
+          &&keyra::mechanicsPositionFromGain(inf)==1&&keyra::mechanicsPositionFromGain(nan)==0,
+          "Mechanics display conversions bound invalid input");
+    bool monotone=true;float previousGain=-1,previousPosition=-1,maxGainError=0,maxPositionError=0;
+    for(int i=0;i<=16384;++i){
+      const float position=static_cast<float>(i)/16384,gain=2*position;
+      const float displayed=keyra::mechanicsPositionFromGain(gain),played=keyra::mechanicsGainFromPosition(position);
+      monotone=monotone&&played>previousGain&&displayed>previousPosition;
+      maxGainError=std::max(maxGainError,std::abs(keyra::mechanicsGainFromPosition(displayed)-gain));
+      maxPositionError=std::max(maxPositionError,std::abs(keyra::mechanicsPositionFromGain(played)-position));
+      previousGain=played;previousPosition=displayed;
+    }
+    // Two float-domain conversions and the intervening power function: a
+    // small multiple of float epsilon, independent of any audio tolerance.
+    constexpr float epsilon=std::numeric_limits<float>::epsilon();
+    check(monotone&&maxGainError<=8*epsilon*keyra::maximumMechanicsGain&&maxPositionError<=8*epsilon,
+          "Mechanics display taper is monotone and round-trips in the float domain");
+    std::cout<<"mechanics_gain_roundtrip_error="<<maxGainError<<" position_roundtrip_error="<<maxPositionError<<'\n';
   }
   {
     keyra::Engine a,b;a.setParameters(dry());b.setParameters(dry());
@@ -636,9 +671,15 @@ int main(int argc,char** argv){
     // at 1, against 0, where it knocks nothing. The body is linear, and the
     // output stage passes a quiet note untouched.
     for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont}){
-      const auto play=[piano](float mechanics){keyra::Engine e;auto p=dry();p.build=keyra::measuredBuild(piano);p.gain=.1f;
-        p.mechanics=mechanics;e.setParameters(p);e.noteOn(60,.7f);render(e,12000);e.noteOff(60);return render(e,12000);};
+      const auto play=[piano](float mechanics,bool explicitGain=true){keyra::Engine e;keyra::Parameters p;
+        p.resonance=0;p.build=keyra::measuredBuild(piano);p.gain=.1f;
+        if(explicitGain)p.mechanics=mechanics;
+        e.setParameters(p);e.noteOn(60,.7f);auto audio=render(e,12000);e.noteOff(60);
+        const auto released=render(e,12000);audio.insert(audio.end(),released.begin(),released.end());return audio;};
       const auto none=play(0),once=play(1),twice=play(2);
+      const auto chosen=play(.175f);
+      check(chosen==play(0,false)&&chosen==play(keyra::mechanicsGainFromPosition(.4f)),
+            "every piano's fresh Mechanics default and forty-percent knob match the chosen gain");
       double knock=0,error=0;
       for(std::size_t i=0;i<none.size();++i){
         const double a=static_cast<double>(once[i])-none[i],b=static_cast<double>(twice[i])-none[i];

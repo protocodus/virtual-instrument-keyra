@@ -221,7 +221,21 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::transparentBlack);
         slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
         slider.setNumDecimalPlacesToDisplay(i == 4 ? 1 : 0);
-        if (i != 4) {
+        if (i == 9) {
+            // The attachment and host retain physical gain 0..2. Change only
+            // knob travel and its readout, so old automation plays unchanged.
+            // Install after SliderAttachment: its constructor sets the range.
+            slider.setNormalisableRange(juce::NormalisableRange<double>(0.0, keyra::maximumMechanicsGain,
+                [](double, double, double position) { return keyra::mechanicsGainFromPosition(static_cast<float>(position)); },
+                [](double, double, double gain) { return keyra::mechanicsPositionFromGain(static_cast<float>(gain)); }));
+            slider.textFromValueFunction = [](double gain) {
+                return juce::String(juce::roundToInt(100 * keyra::mechanicsPositionFromGain(static_cast<float>(gain)))) + "%";
+            };
+            slider.valueFromTextFunction = [](const juce::String& value) {
+                return keyra::mechanicsGainFromPosition(static_cast<float>(value.getDoubleValue() * .01));
+            };
+            slider.setDoubleClickReturnValue(true, keyra::defaultMechanicsGain);
+        } else if (i != 4) {
             slider.textFromValueFunction = [](double value) { return juce::String(juce::roundToInt(value * 100)) + "%"; };
             slider.valueFromTextFunction = [](const juce::String& value) { return value.getDoubleValue() * .01; };
         } else {
@@ -238,7 +252,8 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     controls[7].setTooltip("Sostenuto (CC66). Captures only the notes held when the pedal crosses its latch point.");
     controls[8].setTooltip("Soft pedal (CC67). Changes hammer excitation and unison balance.");
     controls[9].setTooltip("How loud the action plays: the keys landing and coming back, the dampers falling and "
-                           "the sustain pedal, from silent to twice as loud as calibrated.");
+                           "the sustain pedal. 0% silences the action; 40% is the natural, quieter default. "
+                           "The upper range brings the mechanics forward. Double-click to reset.");
     controls[10].setTooltip("Where the piano is heard from: the stereo pair close over the strings, or a vintage tube "
                             "microphone at shin height, mono, its colour measured on the upright's recordings. "
                             "Between, the two are mixed.");

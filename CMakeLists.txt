@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.4 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.5 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -61,6 +61,7 @@ endif()
 set(KEYRA_DSP_SOURCES Source/DSP/KeyraEngine.cpp)
 set(KEYRA_DSP_HEADERS
     Source/DSP/KeyraEngine.h
+    Source/DSP/MechanicsControl.h
     Source/DSP/KeyraPresets.h
     Source/DSP/MeasuredTypes.h
     Source/DSP/MeasuredMicData.h

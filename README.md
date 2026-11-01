@@ -28,7 +28,7 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | 6 | Helsinki Upright | [06-helsinki-upright.wav](Docs/audio/06-helsinki-upright.wav) | 11.6 s | -1.5 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
 | 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -5.4 dBFS |
-| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -2.6 dBFS |
+| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -2.8 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -43,7 +43,18 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### Unreleased — 0.4.4 — consistent soft-pedal interpolation
+### Unreleased — 0.4.5 — quieter, adjustable mechanics
+
+New instruments use the quieter B action balance chosen in the Moonlight
+listening test. The Mechanics knob places that setting at **40%**, with finer
+travel at quiet levels, silence at 0% and the existing maximum at 100%.
+Saved settings and host automation keep their previous sound. The piano's
+hammer/body attack and measured character are unchanged
+([listening decision](Docs/decisions.md#2026-11-01--quieter-key-landing-action-in-the-moonlight-performance)).
+Universal macOS builds, control/state tests, exact B render parity and VST3/CLAP
+validation pass ([validation record](Docs/validation/mechanics-default-2026-11-01.md)).
+
+### 0.4.4 — 2026-11-01 — development snapshot: consistent soft-pedal interpolation
 
 A grand’s soft-pedal weighting now follows the fitted components between
 measured notes and dynamics. Crossing decay rates no longer abruptly exchange
@@ -58,7 +69,7 @@ The combined build passes native unit/audio/performance and VST3/CLAP checks;
 the [validation record](Docs/validation/calibration-followups-2026-11-01.md#soft-pedal-interpolation--accepted-locally-in-044)
 documents keyboard parity, remaining tradeoffs and host coverage.
 
-### Unreleased — 0.4.3 — clean reset after changing piano
+### 0.4.3 — 2026-11-01 — development snapshot: clean reset after changing piano
 
 A hard reset immediately after changing piano now starts with the selected
 soundboard's pickups. It no longer carries the previous piano's unfinished
@@ -66,7 +77,7 @@ pickup transition into the next note. Live piano changes retain their smooth
 transition; the measured sound and interpolation are unchanged
 ([validation](Docs/validation/calibration-followups-2026-11-01.md#hard-reset-after-changing-piano--accepted-locally-in-043)).
 
-### Unreleased — 0.4.2 — interpolation between recorded notes and dynamics
+### 0.4.2 — 2026-11-01 — development snapshot: interpolation between recorded notes and dynamics
 
 - Repairs selected cancellation dips and overshoots between velocity layers,
   while preserving the recorded layers. Between keys, unidentified decay rates
@@ -75,7 +86,7 @@ transition; the measured sound and interpolation are unchanged
   remaining uneven notes are documented in the
   [recording and keyboard validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md).
 
-### Unreleased — 0.4.1 — measured strings, body and board noise
+### 0.4.1 — 2026-11-01 — development snapshot: measured strings, body and board noise
 
 - Recalibrated from 264 recordings (every A, C and F♯ from A0 to A7 at twelve
   velocities) instead of ten. Each partial has four measured decay lanes with
@@ -573,7 +584,9 @@ sostenuto no damper falls and the key-up is silent, while from F6 up, where
 there is no damper, the key's own return knocks them whatever the pedals do.
 The sustain pedal knocks them going down and coming up. The Mechanics control
 scales every knock of the action, and the ring the pedal sets going down, from
-silent at 0 to twice as loud at 200 %.
+silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
+40% on a continuous tapered knob. The action levels above describe raw gain 1;
+the separate hammer/body attack is not scaled by Mechanics.
 
 ### Six pianos, one model
 
@@ -873,17 +886,20 @@ a reset of the controllers lifts it without a sound.
 
 ### Controls, presets and MIDI
 
-The build's twelve weights (`strings1` to `action3`, a part's n-th weight
+The build's twenty-four weights (`strings1` to `action6`, a part's n-th weight
 for the n-th of `keyra::Piano`) and its three modifiers, Quality, Output,
 Brightness, Resonance, Width, Tube Mic, Mechanics, Tuning, Felt mute and the
-three pedals are the 27 saved parameters. The build and Quality are not
+three pedals are the 39 saved parameters. The build and Quality are not
 offered for automation: the piano is built for a part, not played, and
 Quality is a setting for the machine, not the music. A session saved before
 the build existed plays the grand as built at full quality, one saved with
 the Piano control the build it chose, one saved before Mechanics its action
-as calibrated, and one saved before Tube Mic hears the pair. The ten factory
+as calibrated, and one saved before Tube Mic hears the pair. Mechanics retains
+its raw 0–2 host parameter range for saved automation; only the custom knob's
+travel and percentage readout use the new taper. The thirteen factory
 presets in `Source/DSP/KeyraPresets.h`, five on the Kakegawa grand, three on
-the Helsinki upright, Hamamatsu Grand and Three Cities, set the build,
+the Helsinki upright, Hamamatsu Grand, Three Cities, Hamburg Grand, New York
+Grand and Belmont Grand, set the build,
 Brightness, Resonance, Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
 their sample positions; each MIDI channel owns its keys and pedals, and CC120,
 CC121 and CC123 are honoured per channel. The

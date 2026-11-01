@@ -127,7 +127,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     // How loud the action plays, from silent to twice as loud as calibrated
     // (keyra::Parameters::mechanics). A preset leaves it, as it leaves the
     // output.
-    add("mechanics", "Mechanics", 0.0f, 2.0f, 1.0f);
+    // Keep this raw range linear: existing host automation and saved values
+    // are physical gain. Only the editor's knob travel uses the new taper.
+    add("mechanics", "Mechanics", 0.0f, keyra::maximumMechanicsGain, keyra::defaultMechanicsGain);
     // Where the piano is heard from, from the stereo pair (0) to the
     // upright recordings' tube microphone alone (1), the two mixed between
     // (keyra::Parameters::mic). A preset leaves it, as it leaves the output.
@@ -360,6 +362,14 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
     // calibrated, heard from the pair.
     for (size_t i = 0; i < qualityIndex; ++i)
         if (!seen[i]) return;
+    // Old sessions without this control used gain 1. The quieter default is
+    // for new instruments; it must not reinterpret a previously saved song.
+    if (!seen[mechanicsIndex]) {
+        juce::ValueTree child("PARAM");
+        child.setProperty("id", "mechanics", nullptr);
+        child.setProperty("value", keyra::legacyMechanicsGain, nullptr);
+        state.appendChild(child, nullptr);
+    }
     parameters.replaceState(state);
     currentProgram.store(programText.getIntValue(), std::memory_order_relaxed);
 }

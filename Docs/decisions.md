@@ -2351,3 +2351,54 @@ historical, and this entry records the later answer.
 - Upper B WAV SHA256: `cbbc9d008b6d20388e7b574678448323d8837cefbaf9f8de37a2e1c0dd91cb1b`.
 - Bass A WAV SHA256: `b005eaaa8dd7e9d731584e73f2e192008e9b706b0b46142dd4dc12d324f14e24`.
 - Bass B WAV SHA256: `8c1c070b8495c40798755008c0907c83ff483ce10fa783da6357555db66916ac`.
+
+## 2026-11-01 — quieter key-landing action in the Moonlight performance
+
+The owner described the mechanical sound as too loud on every Moonlight note
+press. After initially liking C and B and hearing the key, the owner explicitly
+chose **B**: “ok then lets go with B,” requesting a Mechanics volume control
+with that balance at **0.4** on the knob. This authorizes the quieter playback
+default across the instrument. It is a listening preference, not a claim that
+the physical action level was measured or independently preferred on all six
+pianos.
+
+Version 0.4.5 sets new instances to physical Mechanics gain **0.175**, exactly
+the Moonlight B setting. The existing visible knob receives a continuous taper
+with this setting at 40%, silence at 0%, and the existing maximum gain 2 at
+100%. The taper is an interface choice anchored to the requested position;
+it is not an acoustic fit. Raw engine values and the host parameter's linear
+0–2 range remain unchanged so existing state and automation keep their sound.
+Old plug-in states that omit Mechanics explicitly recover historical gain 1.
+The native renderer continues to accept raw gain through `--mechanics`.
+
+A is the current 0.4.4 engine and Moonlight demo settings, Mechanics 0.35.
+B uses Mechanics 0.175, halving action excitation amplitude (−6.0206 dB).
+C uses Mechanics 0. All other notes, velocities, pedals, settings and seed are
+identical. All letters use the same gain, retaining the same tonal level while
+judging action-to-tone balance. The 19.900049-second excerpt starts at
+20.375066 seconds and is rendered with its complete preceding musical history.
+The common export gain is +44.869798 dB, making A's excerpt RMS −24 dBFS.
+
+In this pedalled Hamburg passage, Mechanics changes the added key-landing
+action and its downstream sympathetic response. It does not scale the separate
+hammer/body knock, modal attack or impact-noise burst. Hamburg has no active
+pedal-knock recording, and the passage's note releases occur while sustain
+suppresses the combined release knock. C therefore retains the piano's tonal
+and hammer/body attack. The owner was told this key after answering.
+
+The A−C causal difference is 46.345 dB below A in whole-excerpt RMS and peaks
+at −49.342 dBFS at this common listening gain. B's effect is half A's within
+floating-point error. These descriptive levels are not an audibility threshold
+and do not override the owner's preference. The separate Helsinki controls
+have not received a verdict. No physical keybed amplitude is identified by
+this listening choice; the existing Mechanics control is a playback balance.
+
+The frozen files/key/receipt are in the local review folder
+`Downloads/Keyra Mechanics Listening 2026-11-01/`; the reproducer and native
+controls remain under `out/realism/native-component-audit-20261101/mechanics/`.
+The WAVs are review artifacts and are not committed.
+
+- Receipt SHA256: `15f6ea5b84dbb38eb59d5093981578cd54e8d056f182ea4cfa5b6302a98010e5`.
+- A WAV SHA256: `c40418816a33cd6660c70d4b2ff389d0f73dffce766fd4a6bb0b64c104c635ea`.
+- B WAV SHA256: `4bb940ce17541fdc1b58cb4924e47cd440785cda8118a29daf2ef78885202654`.
+- C WAV SHA256: `968b08ba5265d082737b489b839290b6cfbe26a70612d3e79d41ae1daca75204`.

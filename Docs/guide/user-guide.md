@@ -27,7 +27,7 @@ Each MIDI channel owns its key and controller state.
 | Resonance | Amount of the reduced sympathetic response |
 | Width | Stereo spread, from centered to wide |
 | Tube Mic | Where the piano is heard from: at 0% the stereo pair the piano was recorded with, close over the strings (Kakegawa grand), at the player's position by the hammers (Helsinki upright) or at the player's position (Hamamatsu grand); at 100% a vintage tube microphone at shin height, mono, with more deep bass and top and less low midrange, measured on the upright's recordings. Between, the two are mixed and the image narrows. Typical playing reads the same on the meter at 0% and 100%, and about half a decibel less mixed halfway |
-| Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling, the sustain pedal's knocks and the strings it sets ringing going down. From silent at 0% to twice as loud at 200%; 100% is as calibrated |
+| Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling, the sustain pedal's knocks and the strings it sets ringing going down. Silent at 0%; the quieter default is 40%. Turn up for more mechanical detail, or double-click to reset. The hammer/body attack stays present at 0% |
 | Tuning | Concert A frequency; the DAW interface shows hertz |
 | Felt mute | Adds damping to sounding modes, including physically held notes |
 | Sustain | Continuous damper lifting; intermediate positions produce half-pedal damping. Full pedal lifts the dampers 80% of the way clear, so the felt still grazes the strings: a chord let go under it falls 60 dB in about 9 s on the Kakegawa grand and 11 s on the Helsinki upright |
@@ -47,6 +47,10 @@ the continuous travel controls remain available for half pedalling. The
 display also follows MIDI pedals and keyswitches. The Rack Extension has
 host pitch and modulation wheels; pitch bend spans two semitones each way.
 Reason's master tuning is included by the adapter.
+
+Older saved Mechanics settings and automation keep their sound. In the DAW's
+generic parameter view, Mechanics still uses its original raw 0–2 scale; the
+instrument panel shows a tapered 0–100% knob, with the new default at 40%.
 
 ## Pedal keyswitches
 
