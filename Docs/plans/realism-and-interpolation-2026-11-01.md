@@ -69,9 +69,9 @@ does not select the subsequent candidates below.
 
 | Priority | Mechanism and likely effect | Comparison with the experiments so far |
 | --- | --- | --- |
-| 1 | Continuous whole-pattern pitch interpolation: remove abrupt changes in note body, stereo image and tail between anchors. | Native diagnosis finds energetic gain steps of several dB. Coherent colour normalization removes that gain discontinuity, but both its original and anchor-preserving forms leave phase/stereo/tail switches. Exact endpoint preservation alone is insufficient. Derive and test complete four-lane stereo transport before a broad benchmark. |
-| 2 | Layer-resolved body excitation and better stereo representation: prevent quiet notes inheriting loud-layer body energy. | Kawai TRAIN80 proves that the current weighted line can greatly overstate a soft body component. Per-layer magnitudes repair that excess but expose upstream fixed-pole and pickup losses at the loudest layer. Keep the genuine fundamental correction separate from this body error; avoid a scalar compensation or invented resonance. |
-| 3 | Fit against the actual played observation model, including stereo compression, contact cap and smoothing. | Fixed-pole ALS improves its waveform objective, and correcting the energy denominator helps one Helsinki note. Exported attack/tail tradeoffs remain. Do not substitute raw fit quality for native recording agreement or discard a measured slow component to improve the attack. |
+| 1 | Continuous whole-pattern pitch interpolation: remove abrupt changes in note body, stereo image and tail between anchors. | Coherent colour normalization leaves phase/stereo/tail switches. The subsequent one-window spherical transport removes sampled switches but creates a 9.060 dB late-energy excursion above Upright53's anchors. Reject it. Optimistic multi-window eligibility leaves only small possible contributions in nine selected intervals, without full-velocity certification or common-gain closure. A different multi-window/stereo formulation is needed before a broad benchmark. |
+| 2 | Layer-resolved body excitation and better stereo representation: prevent quiet notes inheriting loud-layer body energy. | Kawai TRAIN80 proves a weighted-line error, but the completed 65-layer/12-anchor TRAIN panel does not show comparable quiet excess across all six pianos. Its softest-layer body-minus-recorded-total range is −8.540 to +1.073 dB, with no identified body-only target. Keep any repair specific to measured export-stage evidence; do not add a global body gain or invented resonance. |
+| 3 | Fit against the actual played observation model, including stereo compression, contact cap and smoothing. | Fixed-pole ALS and the corrected energy denominator have mixed exported attack/tail results. Pinning the slowest original pole would not prevent note86's loss: that pole is already retained; the second slowest is dropped, and a pinned pole's excitation may still vanish. Before any new search, declare full-coherent late-response retention checks for all 15 existing TRAIN layers and require the native roundtrip. No new fit was run for this proposal. |
 | 4 | Consistent stochastic noise covariance across bands and simultaneous strikes. | Independent bands repair a proven density-calibration mismatch. The 933-case recording comparison is mixed, with dev noise-error changes around −0.20 to +0.16 dB. Chord headroom and stereo covariance across strikes remain unresolved. Retain this as a separate shared-engine correction, not evidence of a large overall realism gain. |
 | 5 | Donor-informed uncertainty or structural priors for genuinely missing measurements. | The dense Steinway masked-layer pilot rejects direct transfer of another piano's velocity curvature in every primary aggregate. The tail prior also lacks reliable coverage. Keep target anchors and voicing; a useful donor method must win masked-target prediction before filling production gaps. |
 
@@ -79,6 +79,20 @@ The [follow-up evidence](../validation/calibration-followups-2026-11-01.md)
 records negative results, native controls and remaining limits. None of these
 follow-up candidates has replaced accepted 0.4.2. No fixed seed, favorable
 window or single piano may be selected afterwards to conceal a regression.
+
+The separate soft-pedal lane-bias candidate is ready for listening, not adopted.
+It preserves the 933-case default-soft benchmark and all 465 measured-anchor/
+edge cases in the full 1,584-case soft-on grid; native unit/headroom, parameter,
+fuzz and demo gates pass. Transporting the existing biases removes selected
+rank-crossing discontinuities, but 920 interpolated waveforms change, including
+a −2.398 dB middle-level change at Belmont89/v120 and larger adjacent differences
+elsewhere. Review those excursions as well as the selected crossings. No
+soft-pedal recording target or mixed-string continuity claim supports acceptance.
+Frozen summaries and hashes are in the follow-up evidence; listening must settle
+the remaining audible tradeoff without selecting only favorable examples.
+
+The independent reset fix for 0.4.3 is undergoing separate validation. Its
+acceptance and adapter integration are not implied by any research result here.
 
 Progress remains active until the sound and whole-range requirements have
 direct evidence for all six pianos. A prepared dataset, a favorable aggregate

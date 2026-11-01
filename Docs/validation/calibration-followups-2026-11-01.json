@@ -1,7 +1,7 @@
 {
   "date": "2026-11-01",
-  "status": "Research candidates rejected; production DSP and numeric tables unchanged.",
-  "protocol": "Quiet-frame candidate compared to accepted0.4.2 on933recordings and1584normal-playing renders. Paired errors use common metric cases andbaseline gain reference. Steinway/Salamander donor experiment uses numeric features only. No sealed observations used.",
+  "status": "Calibration and pitch-transport candidates rejected or bounded diagnostics; soft-pedal transport awaits listening and is not adopted. Frozen research reference remains accepted 0.4.2.",
+  "protocol": "Quiet-frame candidate compared to accepted0.4.2 on933recordings and1584normal-playing renders. Paired errors use common metric cases andbaseline gain reference. Steinway/Salamander donor experiment uses numeric features only. No sealed observations used. Subsequent body and slow-pole diagnoses use TRAIN only; pitch eligibility reads frozen model outputs. Soft-pedal evaluation reuses all 933 frozen TRAIN/DEV recording caches and two 1584-case soft-on keyboard grids, with no new reference extraction or fitting.",
   "comparator_sha256": "8090abd041356c7186313a44ec5ce703c956f1ce0450bcf51bfbae9c53573fd8",
   "quiet_frame": {
     "models": {
@@ -2137,7 +2137,7 @@
     "out/realism/tail-prior/artifact-sha256.json": "556f72a6580a98351257f04e6f07d31ecf4b31a09379d11ae1ba958d3545fb6b"
   },
   "runtime_diagnosis": {
-    "status": "All diagnostic candidates remain out of production. Noise933recordings/1584keyboard complete, mixedscores and nativeheadroomfailure retained. Body and colour candidates remain bounded diagnostics; mixedbuild, phase transport, and covariance work is unresolved.",
+    "status": "All research candidates remain out of production. Body survey and slow-pole review are bounded diagnoses; one-window pitch transport is rejected. Soft-pedal transport passes the recorded native/default-sound gates but has full-grid tradeoffs and awaits listening. Reset 0.4.3 is a separate validation underway; no acceptance claim is made here.",
     "production_engine_sha256": "8afcba98abe2029b8adcff5b49e846312476b199f2e9383d8779f91957d55ee0",
     "body_observation": "TRAIN80 low body modes: loud-layer weighting contaminates soft excitation; independent fixed-pole fit and shared stereo pickup separately lose loud-layer energy. Observed total band is not a proven body-only target.",
     "body_loud_117": {
@@ -2150,9 +2150,9 @@
         0.1293,
         0.0997
       ],
-      "scope": "Regenerated-baseline trace, TRAIN80v117,150\u2013250Hz,50\u2013300ms aftercontact,originalsourceunits. Not exactshippingheadermeasurement."
+      "scope": "Regenerated-baseline trace, TRAIN80v117,150–250Hz,50–300ms aftercontact,originalsourceunits. Not exactshippingheadermeasurement."
     },
-    "colour_observation": "Later independent-lane infinite-energy normalization reintroduces gain steps after coherent50\u2013750ms interpolation. Coherent replacement removes isolated gain steps but shifts anchors and has mixed actual-key/window results.",
+    "colour_observation": "Later independent-lane infinite-energy normalization reintroduces gain steps after coherent50–750ms interpolation. Coherent replacement removes isolated gain steps but shifts anchors and has mixed actual-key/window results.",
     "noise_observation": "Shared random inputs across frequency bands disagree with power-sum density calibration. Independent-band candidate matches native stochastic predictions but fails existing chord-headroom margin.",
     "headroom_dbfs": {
       "limit": 9.041199826559248,
@@ -2192,7 +2192,31 @@
       "out/realism/noise-covariance/rise-seed-audit/summary.json": "3b7f657e649ca796e2da6884f03c22070d22d55c7bb95174f3026d2d6e8a1fc9",
       "out/realism/noise-covariance/rise-seed-audit/receipt.json": "256abe00d70337c3f3ce220ddcb7670892e469f34599c8e89f4216e6ad0d2171",
       "out/realism/noise-covariance/rise-seed-audit/threshold-evidence.json": "eee197377a22c5879514513992771057d9b9d5e8c19011ed7a175dfae5424f13",
-      "out/realism/noise-covariance/headroom-audit/receipt.json": "ddfff56ab6c20800e7b5f346589f3326e30dc491f87e906950f674936bd52ad7"
+      "out/realism/noise-covariance/headroom-audit/receipt.json": "ddfff56ab6c20800e7b5f346589f3326e30dc491f87e906950f674936bd52ad7",
+      "out/realism/body-layer-survey/panel.json": "b59deddfbd5575cba73f4ca6ba321d731a1549998b93dbc46cb1a521c8e7a93e",
+      "out/realism/body-layer-survey/summary.json": "b2322947fcaa5a460b7ca51664da9c54db26996a3cc1befa35e604457ba0b91b",
+      "out/realism/body-layer-survey/analysis.json": "4392b4667f1f3875ff994f2866e67b9f1ad55afa13817384a04533b75d6b4955",
+      "out/realism/body-layer-survey/analysis-receipt.json": "9a176c3c07c1df3ba7ed662f6d647a48757a34b41090661a532d4d51476a5e81",
+      "out/realism/runtime-fit-review/slow-pole-design/proposal.txt": "a1aea9db35009da943d4de4e754cfc4f4716658cfbbb5dc4e372d658b254feb6",
+      "out/realism/runtime-fit-review/slow-pole-design/evidence.json": "77ca94f04fa80fd2a4ee1402ca1b1a35405780abef1d3a49df76104809a8170a",
+      "out/realism/runtime-fit-review/slow-pole-design/receipt.json": "490fa1acc034e24bf8fc289fb462e8f3731a5badff02aba25f7e8b3b240cc4e0",
+      "out/realism/pitch-pattern-continuity/transport-candidate/assessment.md": "02c62190876240544890e96de2a709a17e2c696045427f7da172696e6d548632",
+      "out/realism/pitch-pattern-continuity/transport-candidate/preflight-summary.json": "261a25fd796f9f8f6d9021dea49a493d7922c1bf9e7d783f0ac8ee15938d8d5f",
+      "out/realism/pitch-pattern-continuity/transport-candidate/build-receipt.json": "6fb71d65de4ccb0d7ac46d3a1f9301e3cb0f72e213d123a4f0080bbfcec72ade",
+      "out/realism/pitch-pattern-continuity/transport-candidate/representation-receipt.json": "1ba1cd32b289d5bfe0f0ebfe79abfb5197ffff2a012fa32276bf7844ab32060f",
+      "out/realism/pitch-pattern-continuity/transport-eligibility/assessment.md": "d56b0c716868499030464e72b8cab1e54e90492653fc7959a3d356eef99d80db",
+      "out/realism/pitch-pattern-continuity/transport-eligibility/protocol.md": "78186d5fa7b8fdcb87af722b0ac0c643e9876d6d604f941eda7cfdb4f61b4d70",
+      "out/realism/pitch-pattern-continuity/transport-eligibility/results.json": "3e839226e8ea0b6cb3f0ffdd314888d792053637e61d2546a49bef4f4ab3f76b",
+      "out/realism/pitch-pattern-continuity/transport-eligibility/receipt.json": "380d969f04039583f469e98f85f785c3dccc45f2f1896ee0abd5463c584f49b0",
+      "out/realism/soft-order-audit/evaluation/summary.json": "d396ee1f625b0a5a59df4dfdd828de22502ef3939ef184703636424bedaf2d9d",
+      "out/realism/soft-order-audit/evaluation/receipt.json": "4877a0bf4b7fa15f25c27dc9fa15a569d68a4af48c6a2c7ba377f3f2ac8c6cfd",
+      "out/realism/soft-order-audit/evaluation/excursions.json": "9f8dcbdde42f02e27ed90b4a7479c6e77030a05370fd28c6c06904405dafe3e5",
+      "out/realism/soft-order-audit/native-gates/status.json": "527161731be69a5f3f375018c950255bf4005eb899bb9031b3c85586643317c3",
+      "out/realism/soft-order-audit/native-gates/receipt.json": "0543bc63ae8cdeac3d6cbcd08ab99327c8a1017b8ac30004e59738ff3e190959",
+      "out/realism/soft-order-audit/native-gates/test-summary.json": "35de2d3c1c5227b4467735fb7482c73bd2d1979283a767440a2c40e728b33995",
+      "out/realism/soft-order-audit/native-gates/cpu-status.json": "c14131d4ef9344405af345f866358b0dac9b00541d8e713a8ce7fb56f37a1570",
+      "out/realism/soft-order-audit/native-gates/baseline-cpu.json": "de0ff05233146be0eaac0ac98e169f60b4a75b9719aaf54e4bf5d7faaf10d455",
+      "out/realism/soft-order-audit/native-gates/candidate-cpu.json": "31281c7ff6a94fb18077a18fe1a3b27222b7ad96816adc6d39d05ae9bca224e7"
     },
     "noise_recording_evaluation": {
       "cases": 933,
@@ -5221,6 +5245,277 @@
       "limitations": "Pure measured builds only; external harness prepares exact native endpoint ratios. Mixed builds/realtime cache architecture unresolved. No full recording/keyboard benchmark or production change.",
       "status": "Bounded only; phase/stereo/window tradeoffs remain. Not adopted."
     },
-    "body_conditional_constraint": "Observed totalbandpower is a conditionalobservationalbound, not identifiedbody-onlyenergy orstatisticalconfidence; noDEVgainused."
+    "body_conditional_constraint": "Observed totalbandpower is a conditionalobservationalbound, not identifiedbody-onlyenergy orstatisticalconfidence; noDEVgainused.",
+    "production_engine_sha256_scope": "Frozen accepted 0.4.2 source used for these experiments, not an assertion about the current working-tree reset candidate.",
+    "body_train_panel": {
+      "decision": "Do not generalize the Kawai80 repair or add global body gains from this panel. Retain the existing mechanism-specific Kawai80 evidence; any broader body-table change needs per-anchor observability and export-stage diagnosis in original TRAIN units.",
+      "train_anchors": 12,
+      "train_layers": 65,
+      "selection": "Each of six models: TRAIN pitch nearest MIDI 72 and 84, lower-pitch ties; all recorded TRAIN layers.",
+      "measurement": "Native struck body versus recorded total, 150-250 Hz band over 50-300 ms after existing contact; known gain/outputScale inversion only.",
+      "body_minus_source_total_range_db": [
+        -8.53984981237734,
+        2.296950770889765
+      ],
+      "softest_layer_range_db": [
+        -8.53984981237734,
+        1.0730136860511976
+      ],
+      "kawai_soft_source_above_tail_proxy_db": {
+        "72": 9.140595664506975,
+        "84": 6.044568225640887
+      },
+      "controls": {
+        "half_gain_exact_anchor_count": 12,
+        "official_exact_model_count": 6,
+        "minimum_compressor_gain_at128sample_boundaries": 1,
+        "maximum_limiter_reduction_at128sample_boundaries": 0,
+        "maximum_native_peak": 0.11434359103441238
+      },
+      "limits": [
+        "Bounded selected panel, not a random all-keyboard sample or fit acceptance test.",
+        "Recorded total band is not an identified body-only target; coherent interference prevents a hard calibration inequality.",
+        "Quietest complete one-second tail window is selection-biased, not measured noise or statistical confidence; no subtraction.",
+        "Source-level units do not undo DC blocking, radiation or the rest of the native signal path. No DEV/sealed reads or fits."
+      ]
+    },
+    "slow_pole_proposal": {
+      "decision": "Do not treat a minimum-rate pole lock as protection of the observed note-86 tail. No optimizer or new coefficient fit run.",
+      "train_notes": [
+        82,
+        84,
+        86
+      ],
+      "train_layers": 15,
+      "note86_retained_slowest_original": {
+        "rate_per_s": 0.494689197,
+        "offset_hz": 2.790728239
+      },
+      "note86_retained_slowest_optimized": {
+        "rate_per_s": 0.493940818,
+        "offset_hz": 2.787846189
+      },
+      "note86_dropped_second_slowest": {
+        "rate_per_s": 0.522189726,
+        "offset_hz": 2.087025555
+      },
+      "note86_v15_late2": {
+        "observations_above_floor_plus_10db": 521,
+        "support_s": [
+          3.5,
+          6.215
+        ],
+        "mean_observed_power_over_floor_db": 21.097,
+        "fixed_other_coefficients_relative_complex_error_before_after_second_pole_omission": [
+          0.465458,
+          0.586416
+        ],
+        "slow_pair_column_coherence": 0.198583
+      },
+      "cross_note_rationale": "82 already retains its slowest pole; 84 improves average native late errors with an alternative basis despite replacing its slowest. No universal one-pole identification claim follows.",
+      "limits": [
+        "Individual pole power and fixed-coefficient omission are conditional model diagnostics, not isolated measured modes or nested-fit significance.",
+        "A fixed pole can receive zero excitation or be coherently cancelled. The 0.003/s fitter boundary is not a confidence interval.",
+        "Before any new search, predeclare full-coherent late-response retention across all 15 supported TRAIN cases and native export; no coefficient floor, new loss weight or per-case winner."
+      ]
+    },
+    "whole_pattern_pitch_transport": {
+      "decision": "Reject the unconstrained one-window real-Hilbert spherical construction; no broad recording evaluation, listening, production mask or new fit.",
+      "selected_intervals": 9,
+      "preflight_partial_coordinates": 22849,
+      "hook_disabled_waveform_controls_exact": 12,
+      "enabled_anchor_edge_waveform_controls_exact": 30,
+      "sampled_midpoint_step_max_db": {
+        "total_power": 4.86e-07,
+        "ild": 6.61e-07
+      },
+      "upright53_layer15": {
+        "late_power_above_louder_endpoint_db": 9.06,
+        "late_power_change_db": 10.114,
+        "normalization_ild_change_db": 7.503,
+        "fundamental_real_overlap": 0.65905,
+        "fundamental_coefficient_bound": 1.098
+      },
+      "eligibility": {
+        "matched_partials": 313,
+        "complete_native_coverage_partials": 250,
+        "possible_partials_with_optimistic_gain_intersection": 20,
+        "belmont_possible_normalization_power_percent": 2.16305,
+        "other_case_max_possible_normalization_power_percent": 0.00988,
+        "upright53_required_common_power_gain_lower_upper": [
+          5.344,
+          0.10885
+        ]
+      },
+      "limits": [
+        "Nine deliberately difficult intervals, one selected layer each, and stored pitch coordinates do not certify whole intervals or velocity coverage.",
+        "The screen uses endpoint ranges expanded to baseline, with strict numeric comparisons; it is an artifact guard, not an acoustic law or audibility bound.",
+        "A different hypothetical gain per partial overestimates feasibility; no common colour-gain closure or masked native engine was evaluated.",
+        "Pure zero-channel representation does not safely traverse current mixed-piano metadata. Soft ranks, mixed builds, numerical interval certification and tail observability remain unresolved.",
+        "Power diagnostics sum slots; later windows omit cross-slot interference, body/noise/halo and output processing. They are not complete-output dBFS or reference agreement."
+      ]
+    },
+    "soft_pedal_lane_transport": {
+      "decision": "Pending listening; not adopted. Mechanism correction and default-sound identity do not establish soft-pedal acoustic improvement.",
+      "candidate_source_sha256": "e6e8c22f851eaf9a2c738a5607266ca6331655cee632dc32e2bf24ec492b6991",
+      "mechanism": "Carry existing -0.28/0/0/+0.08 bias with canonical measured-anchor paired lanes instead of assigning by current decay rank; measured coefficients and poles unchanged.",
+      "recordings": {
+        "train_cases": 699,
+        "dev_cases": 234,
+        "paired_tolerance_regressions": 0,
+        "availability_changes": 0,
+        "by_model": {
+          "grand": {
+            "cases": 432,
+            "identical_case_rows": 429,
+            "max_absolute_numeric_score_delta": 1.7763568394002505e-15
+          },
+          "upright": {
+            "cases": 158,
+            "identical_case_rows": 158,
+            "max_absolute_numeric_score_delta": 0.0
+          },
+          "kawai": {
+            "cases": 127,
+            "identical_case_rows": 127,
+            "max_absolute_numeric_score_delta": 0.0
+          },
+          "hamburg": {
+            "cases": 48,
+            "identical_case_rows": 48,
+            "max_absolute_numeric_score_delta": 0.0
+          },
+          "newyork": {
+            "cases": 78,
+            "identical_case_rows": 78,
+            "max_absolute_numeric_score_delta": 0.0
+          },
+          "belmont": {
+            "cases": 90,
+            "identical_case_rows": 90,
+            "max_absolute_numeric_score_delta": 0.0
+          }
+        },
+        "all_three_roundoff_score_cases_long_audio_identical": true
+      },
+      "keyboard": {
+        "cases_per_build": 1584,
+        "soft": 1,
+        "velocities": [
+          32,
+          80,
+          120
+        ],
+        "audio_identical": 664,
+        "changed_interpolated_cases": 920,
+        "measured_anchor_edge_cases_identical": 465,
+        "availability_changed_cases": 0,
+        "all_finite": true,
+        "gain_halving_max_relative_error": 0.0,
+        "fresh_engine_repeat": {
+          "control": true,
+          "candidate": true
+        },
+        "by_model": {
+          "grand": {
+            "cases": 264,
+            "audio_identical": 81,
+            "rms_mean_delta_db": {
+              "early": -0.03762907542011133,
+              "middle": -0.049341624807351825,
+              "late": -0.027101360780887335
+            }
+          },
+          "upright": {
+            "cases": 264,
+            "audio_identical": 264,
+            "rms_mean_delta_db": {
+              "early": 0.0,
+              "middle": 0.0,
+              "late": 0.0
+            }
+          },
+          "kawai": {
+            "cases": 264,
+            "audio_identical": 87,
+            "rms_mean_delta_db": {
+              "early": 0.05685942185464856,
+              "middle": 0.03967884919578335,
+              "late": 0.016665638319560392
+            }
+          },
+          "hamburg": {
+            "cases": 264,
+            "audio_identical": 60,
+            "rms_mean_delta_db": {
+              "early": -0.008007535239166003,
+              "middle": -0.011672440076340392,
+              "late": -0.00811693804670137
+            }
+          },
+          "newyork": {
+            "cases": 264,
+            "audio_identical": 72,
+            "rms_mean_delta_db": {
+              "early": -0.019715642596609163,
+              "middle": -0.005707237831999288,
+              "late": -0.026450505334641813
+            }
+          },
+          "belmont": {
+            "cases": 264,
+            "audio_identical": 100,
+            "rms_mean_delta_db": {
+              "early": -0.03937281539811183,
+              "middle": -0.10485547025161257,
+              "late": -0.06589798498466644
+            }
+          }
+        },
+        "fresh_engine_repeat_scope": "First keyboard case in each build only; every case receives finite/half-gain checks."
+      },
+      "selected_full_grid_excursions": {
+        "belmont89_v120_middle_db": -2.398381,
+        "kawai35_v120_early_db": 1.517766,
+        "newyork101_v80_early_side_fraction": -0.10147,
+        "belmont86_to87_v32_middle_adjacent_magnitude_increase_db": 1.285945,
+        "rise_ms": {
+          "newyork32_v80": 38.083333,
+          "belmont28_v32": 31.9375,
+          "kawai25_v80": -28.083333
+        }
+      },
+      "rise_interpretation": "All three retain the same event onset. New York and Kawai chiefly switch the 90% crossing between peaks; Belmont also changes early RMS shape materially. Not a soft-pedal recording-error comparison.",
+      "native_gates": {
+        "engine_headroom": true,
+        "parameter_extremes": true,
+        "fuzz_seed": 1,
+        "fuzz_runs": 300,
+        "preset_demos": true,
+        "regression_tests_passed": 2,
+        "identity": {
+          "anchor_edge_native_layer_soft0_half_full_states": 2214,
+          "all_key_native_layer_soft0_states": 2904,
+          "short_full_waveforms": 12
+        },
+        "legacy_grand_mutations_rejected": 5,
+        "upright_negative_controls": 1
+      },
+      "cpu": {
+        "native_demos": 8,
+        "repeats": 3,
+        "relative_median_realtime_factor_change_percent_range": [
+          -4.17049392699147,
+          3.6495767984842997
+        ],
+        "maximum_candidate_realtime_factor": 0.112995342,
+        "scope": "Serial Apple M1 Max development-machine native runs; not Reason/DAW performance or a deadline guarantee."
+      },
+      "limits": [
+        "Pure-piano soft-on keyboard only; mixed-string builds still pair by rank.",
+        "Selected crossing contraction is a numerical regression test, not a whole-domain or audibility certificate.",
+        "Default reference scores use soft=0; no soft-pedal acoustic target supports adoption. No reference extraction, new fitting or sealed reads."
+      ]
+    }
   }
 }

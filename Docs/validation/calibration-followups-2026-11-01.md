@@ -1,10 +1,15 @@
 # Calibration follow-ups and runtime diagnosis — 2026-11-01
 
-Three additional experiments produced useful negative results. None changes
-the accepted 0.4.2 DSP or its measured numeric tables. The
+The calibration and pitch-transport experiments below remain rejected or
+bounded diagnostics. The separate soft-pedal candidate passes its recorded
+gates but awaits listening; it is not adopted. The
 [compact evidence](calibration-followups-2026-11-01.json) retains paired
 recording summaries, every tolerance regression, velocity-pilot aggregates,
 invariants and hashes of the complete local reports.
+
+These experiments use the accepted 0.4.2 source as their frozen reference.
+The independent reset fix for 0.4.3 is undergoing separate validation; this
+report makes no acceptance claim for that change.
 
 ## Retaining quiet observations in truncated recordings
 
@@ -121,6 +126,24 @@ These are isolated fundamental results, not full-piano recording scores.
 No all-piano refit follows. Complete results, unchanged-field controls and
 regressions are in `out/realism/runtime-fit-review/runtime-energy/`.
 
+The proposed remedy of fixing the slowest original pole does not protect the
+lost note-86 tail: the optimized basis already retains that pole, at about
+0.494/s and +2.79 Hz. It drops the **second slowest**, at 0.522190/s and
++2.087026 Hz. The quiet layer has 521 late observations above the existing
+floor plus 10 dB, spanning 3.500–6.215 s. Omitting that second component with
+the other old-basis coefficients fixed raises relative complex tail error
+from 0.46546 to 0.58642. That is conditional model sensitivity, not proof of
+a uniquely identified physical pole.
+
+Note 82 already retains its slowest component; note 84 replaces its slowest
+while improving native late errors on average. There is no common evidence
+for locking exactly one minimum-rate point estimate. A pinned pole can also
+receive zero excitation or be coherently cancelled. Any future search needs
+a predeclared retention check on the full observed late response across all
+15 layers and the complete export/native roundtrip, without coefficient floors
+or per-case winners. No new fit ran for this review; source-pinned evidence is
+under `out/realism/runtime-fit-review/slow-pole-design/`.
+
 ### A loud-layer regression contaminates quiet body excitation
 
 Tracing Kawai TRAIN note 80 establishes that the quiet-frame candidate's
@@ -163,6 +186,21 @@ if the resonant frequencies stay the same. Evidence and the explicitly
 superseded wider-mode diagnostic remain under
 `out/realism/censor-observations/body-trace/`.
 
+A broader bounded survey covers **65 TRAIN layers at 12 anchors**, selecting
+each piano's training pitch nearest MIDI 72 and 84, with lower-pitch ties.
+Native struck-body power minus recorded total power in 150–250 Hz over
+50–300 ms ranges from −8.540 to +2.297 dB; the softest 12 layers range from
+−8.540 to +1.073 dB. The Kawai80 quiet excess does not recur at comparable
+magnitude in this panel, so it does not support a global body gain repair.
+
+The comparison reverses only known gain and output scale; it does not undo
+the output signal path or identify an isolated recorded body stem. Its
+quietest complete one-second tail window is a selection-biased observational
+proxy, with no noise subtraction or confidence claim. Kawai72/84's softest
+recorded bands are only 9.14/6.04 dB above that proxy. Twelve half-gain controls
+and six official-renderer controls are exact. No dev/sealed reads or fits ran;
+the panel and full measurements remain under `out/realism/body-layer-survey/`.
+
 ### Colour normalization reintroduces pitch-boundary level steps
 
 The existing pitch interpolation normalizes coherent four-lane energy over
@@ -189,6 +227,75 @@ changes from +0.012 to −4.628 dB. Preserving endpoints does not repair the
 underlying phase-pattern switch. Mixed builds and realtime endpoint
 preparation remain unresolved. Complete evidence is under
 `out/realism/pitch-pattern-continuity/`.
+
+### Smooth whole-pattern pitch transport still distorts tails and stereo
+
+A four-lane stereo interpolation using a real-Hilbert spherical path removes
+the sampled midpoint switches in the same nine selected intervals. All 12
+disabled-hook and 30 enabled anchor/edge waveform controls match, and sampled
+midpoint power/ILD steps fall below 4.86e−7/6.61e−7 dB. However, the one-window
+50–750 ms construction is **rejected**: Upright53/layer15 late power exceeds
+the louder unchanged endpoint by 9.060 dB and its original value by 10.114 dB.
+Its normalization-window ILD changes by +7.503 dB. This occurs with positive
+overlap and modest residues, so a near-antipodal guard would not solve it.
+These are slot-summed model diagnostics; later windows omit cross-slot
+interference, body/noise and output processing.
+
+An existing-output eligibility study checks channel power, total power and ILD
+in four windows against the endpoint range expanded only to include baseline.
+Of 313 matched partials, 250 have complete native coverage; missing coverage is
+not a pass. Even an optimistic allowance for an arbitrary common gain leaves
+only 20 possible partials. Belmont retains 2.163% of its normalization power;
+every other selected case retains at most 0.00988%. This overestimates usable
+coverage because it permits a different hypothetical gain for each partial;
+a real note has one shared colour gain. No multiplier or mask was implemented.
+
+The nine difficult intervals and one selected layer per interval do not certify
+all velocities, unsampled pitches or the whole keyboard. Endpoint containment
+is an artifact guard, not an acoustic law, and weak tails lack independent
+noise/uncertainty qualification. Exact zero-channel representation is valid in
+the pure diagnostic but unsafe through current mixed-piano metadata; soft-rank
+behavior and mixed builds remain outside scope. No broad recording or listening
+test followed. The rejection and eligibility limits are frozen under
+`out/realism/pitch-pattern-continuity/transport-candidate/` and
+`out/realism/pitch-pattern-continuity/transport-eligibility/`.
+
+### Soft-pedal lane transport: validated candidate, pending listening
+
+The soft-pedal multiplier currently follows sorted decay rank. A rate crossing
+can therefore abruptly exchange its unchanged −0.28/0/0/+0.08 biases. The
+candidate assigns canonical measured-anchor biases and carries them along the
+existing paired lanes. It changes no measured coefficients, poles or soft
+constants. Six selected crossing tests contract toward continuity; the same
+assertion rejects all five legacy grand mutations, while upright is the
+negative control. These are numerical continuity checks, not audibility limits.
+
+All **933 frozen TRAIN/DEV default-soft recordings** have zero paired tolerance
+regressions and zero availability changes. Three score rows differ by at most
+1.78e−15; their full 4.6-second waveforms are bit-identical. The two complete
+soft-on keyboard grids each cover **1,584 cases**. All are finite and retain
+exact half-gain behavior; each build's first case passes its fresh-engine repeat
+check. All 465 measured-anchor
+and edge cases match, as do all 264 upright cases; 920 interpolated cases change.
+
+Those changes are not uniformly small: Belmont89/v120 middle power falls
+2.398 dB, Kawai35/v120 early power rises 1.518 dB, and NewYork101/v80 early
+side fraction falls 0.10147. Some adjacent-key differences grow, including
+Belmont86→87/v32 middle magnitude by 1.286 dB. The largest rise changes are
+NewYork32/v80 +38.083 ms, Belmont28/v32 +31.938 ms and Kawai25/v80 −28.083 ms.
+All three keep the same event onset. New York and Kawai chiefly move the 90%
+crossing between peaks; Belmont also changes its early RMS shape materially.
+These are sound changes against baseline, not soft-pedal recording errors.
+
+Native engine/headroom, parameter extremes, 300 seeded fuzz iterations and
+preset-demo checks pass. The staged regression adds 2,214 anchor/edge state
+checks, 2,904 all-key soft-off state checks and 12 short waveform controls.
+Eight serial native CPU demos, three repeats each, change median real-time
+factor by −4.17% to +3.65%; the candidate maximum is 0.113. This is development
+machine evidence, not a host or deadline guarantee. Mixed-string rank pairing
+still limits the continuity claim. **Listening remains pending; the candidate
+is not adopted.** Complete per-model, gap, edge and window results, excursions,
+commands and source hashes are under `out/realism/soft-order-audit/`.
 
 ### Noise covariance disagrees with its density calibration
 
