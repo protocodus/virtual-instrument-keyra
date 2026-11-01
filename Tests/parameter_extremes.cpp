@@ -95,7 +95,7 @@ Audio exercise(const Control& control, float value, double rate, bool automate, 
 
 int main() {
     unsigned cases = 0;
-    for (const auto piano : {keyra::Piano::grand, keyra::Piano::upright, keyra::Piano::kawai, keyra::Piano::hamburg, keyra::Piano::newyork}) {
+    for (const auto piano : {keyra::Piano::grand, keyra::Piano::upright, keyra::Piano::kawai, keyra::Piano::hamburg, keyra::Piano::newyork, keyra::Piano::belmont}) {
         for (const double rate : {44100., 48000., 96000.}) {
             for (const auto& control : controls) {
                 for (const bool automate : {false, true}) {

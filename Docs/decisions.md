@@ -2224,3 +2224,74 @@ FF take at 105's decay (5.54 to 29.05 dB/s)
 
 Fitted at the owner's request and checked by measurement; no one has listened to
 them yet.
+
+## 2026-11-01 — a sixth piano, the Belmont grand
+
+The owner asked for Pianobook's "Mom's 1974 Baby Grand" (The Imperfect
+Drummer, Brian Peat; Decent Sampler 1.5) as Belmont: a 1974 Wm. Knabe & Co.
+baby grand, reconditioned with its felts sanded, recorded by one pair of sE 8
+cardioids in X/Y at the hammers with the lid fully open, 48 kHz/24-bit. The
+library states no licence; it is credited in `THIRD_PARTY_NOTICES.md` as the
+other libraries are, and nothing from it is copied. It holds 30 pitches a
+minor third apart from A0 to C8 in three layers (Soft 1–48, Med 49–104, Hard
+105–127, one to three round robins in the first two), a key-release take per
+pitch and five sustain-pedal noises each way. `Tools/decode_belmont.py` reads
+the folder or the `.dslibrary` and `Tools/corpus/belmont-grand.json` pins
+every take's PCM and decoded WAV by SHA256.
+
+Before any fit, the split (`split-belmont-2026-11-01.json`) set each layer's
+first take of 27 pitches, their key releases and the first pedal noises down
+and up for training, D♯2, D♯4 and D♯6 for dev, and every later round robin
+and pedal noise as repeats. Nothing is sealed: a fourth held-out pitch would
+leave a sixth hole of six semitones, and the library holds no other session.
+
+Every note take is peak-normalised by layer (Soft −11.9, Med −9.9, Hard
+−7.9 dBFS), so the library records no level between its layers or its keys.
+Asked how the layers should be levelled, the owner chose the library's own
+velocity curve: Decent Sampler scales a note by velocity/127 when no group
+sets `ampVelTrack`, so each layer plays at its velocity midpoint's gain
+against Hard's (Soft −13.33 dB, Med −3.56 dB). At the owner's request each
+note is then brought to a smooth trend over the keyboard: per layer, a
+locally weighted line (tricube over ±10 semitones, two robust passes) through
+the training takes' 50–750 ms levels. Key to key, the median step at velocity
+80 went from 0.67 to 0.39 dB and the largest from 3.58 to 3.07 dB. Both are
+choices, not measurements: the recordings cannot say how loud the piano's
+layers or keys stood against each other. The key releases and pedal noises
+keep their recorded levels, and the preset's own balance plays them 3.5 dB
+under the notes (Key Vol 0.3 against 0.1 at +6 dB).
+
+The fit is the fixed fitter's (2026-11-01, the soundboard kept off the
+strings' leftovers): 27 anchors, 595 partials, 60 body modes, 17 noise bands,
+key-release knocks, and the pedal's knocks down and up, which Belmont plays as
+the Kakegawa grand plays its own. Its strings ring under the pedal at the
+Kakegawa grand's rates, as every piano's do.
+
+The other five pianos, a blend of all of them and both microphones render
+sample for sample as before. Belmont's typical playing reads −9 VU at an
+output scale of 1.2453.
+
+Through the tube alone its typical playing reads the pair's −9 VU at a tube
+scale of 1.7607, but its loudest chords there read +0.61 VU, in the red. Its
+A2 and D♯3 to F♯3 are recorded nearly all fundamental (A2's within 0.3 to
+2 dB of the whole note's level, where F♯2's and C3's sit 7 to 13 dB under),
+the tube's response favours that range, and the chord of A2, E3, A3, C4 and
+E4 at velocity 127 reads 1.7 dB over Belmont's next loudest through it. A
+quieter tube hardly moves those chords through the output stage's
+compressor: 1.1 dB under the pair they read +0.48 VU, 3 dB under +0.15 VU.
+Asked between letting them read up to +0.7 VU, a tube about 5 dB quieter
+and A2's fundamental drawn toward its neighbours', the owner chose the
+first: `KeyraLevels --check` allows Belmont alone loudest chords under
++0.7 VU at Mic 1. Every sample still stays under the stage's −1.5 dBFS
+ceiling, and Mic 0's loudest chords read −0.70 VU.
+
+On its 9 dev notes, against the Kakegawa grand's data played on them,
+Belmont's data sits closer in partial levels (7.00 against 9.68 dB), tuning
+(1.56 and 3.05 cents), attack (6.81 and 9.50 dB), early spectrum (7.47 and
+12.02 dB), sustain (8.43 and 11.88 dB), noise (7.75 and 14.83 dB) and level
+(0.44 and 1.68 dB), and further in decay (4.77 and 4.34 dB/s), envelope (4.61
+and 4.36 dB) and rise (20.54 and 10.74 ms), with seven regressions, largest
+D♯2's rise (13.95 to 34.59 ms)
+([report](validation/belmont-recording-benchmark-2026-11-01.md)).
+
+Fitted at the owner's request and checked by measurement; no one has listened to
+it yet.

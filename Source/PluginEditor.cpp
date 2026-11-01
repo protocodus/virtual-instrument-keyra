@@ -24,7 +24,7 @@ constexpr std::array<const char*, 3> modifierHints {{
     "How far each note's unison strings sit apart, from one pitch to three times as far as built. Applies from the next note.",
     "How long the strings ring, from half to twice as long as built. Applies from the next note."
 }};
-constexpr int gridLeft = 176, gridPitch = 82, rowTop = 188, rowPitch = 31;
+constexpr int gridLeft = 176, gridPitch = 69, rowTop = 188, rowPitch = 31;
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {

@@ -140,6 +140,17 @@ MODELS = {
                 'actions': 'The action\'s knocks on the body modes: the seven key-noise takes the library plays '
                            'as any key is let go, one to each recorded pitch in turn, in those recordings\' own '
                            'scale.'},
+    'belmont': {'title': 'the Pianobook "Mom\'s 1974 Baby Grand" (The Imperfect Drummer, Brian Peat); nothing from '
+                         'the library is copied',
+                'corpus': ROOT / 'Tools/corpus/belmont-grand.json',
+                'split': ROOT / 'Tools/corpus/split-belmont-2026-11-01.json',
+                'wav': ROOT / 'out/belmont/wav', 'cache': ROOT / 'out/calibration/belmont',
+                'header': ROOT / 'Source/DSP/MeasuredBelmontData.h',
+                'metadata': ROOT / 'Docs/research/belmont-modal-fit-2026-11-01.json',
+                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': ('pedalD1', 'pedalU1'), 'min_layers': 2,
+                'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
+                           'recorded pitch\'s key is let go and its first sustain-pedal noises down and up, from '
+                           'one take each in those recordings\' own scale.'},
 }
 # The keys from F6 up have no dampers: every strike sets their strings
 # ringing at their own pitches (halo_data). The analysis also searches the

@@ -28,7 +28,7 @@
 // pair's (KeyraEngine.cpp's tubeScale). --check fails unless each piano's
 // default sound reads targetVu within half a decibel at Mic 0 and at Mic 1
 // (the Kawai's down to 1.05 dB under there, below), where its loudest chords
-// also stay out of the red and play louder than at
+// also stay out of the red (Belmont's under +0.7 VU, below) and play louder than at
 // 110; every preset without felt reads within 2 dB of it; the loudest
 // chords of every preset stay out of the red, under 0 VU, with no sample over
 // the stage's ceiling; and the single notes and the chords still play louder
@@ -142,7 +142,7 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
 int run(int jobs,bool check){
   const auto& presets=keyra::factoryPresets;
   constexpr std::size_t pianos=keyra::pianoCount;
-  const char* const pianoNames[pianos]{"grand","upright","kawai","hamburg","newyork"};
+  const char* const pianoNames[pianos]{"grand","upright","kawai","hamburg","newyork","belmont"};
   const auto typicalEvents=typicalPlaying(),loudestEvents=chordRounds(127),strongEvents=chordRounds(110);
   const auto loudestNotes=singleNotes(127),strongNotes=singleNotes(110);
   // Tasks: each piano's default sound below the stage, at Mic 0 and at 1,
@@ -191,7 +191,13 @@ int run(int jobs,bool check){
     // (KeyraEngine.cpp's tubeScale, Docs/decisions.md, 2026-10-31).
     const double tubeBelow=static_cast<keyra::Piano>(piano)==keyra::Piano::kawai?1.05:.5;
     expect(tube-targetVu<=.5&&targetVu-tube<=tubeBelow,pianoNames[piano],"its sound at Mic 1 is not at the target",tube);
-    expect(loud<0,pianoNames[piano],"the loudest chords at Mic 1 reach the red",loud);
+    // Belmont's loudest chords at Mic 1 may read up to +0.7 VU: its A2 and
+    // D#3 to F#3 recordings are nearly all fundamental, the tube favours
+    // them, and through the compressor a quieter tube hardly moves those
+    // chords (+0.15 VU 3 dB under the target). The owner chose to keep the
+    // recordings and the tube's level (Docs/decisions.md, 2026-11-01).
+    const double red=static_cast<keyra::Piano>(piano)==keyra::Piano::belmont?.7:0;
+    expect(loud<red,pianoNames[piano],"the loudest chords at Mic 1 reach the red",loud);
     expect(step>0,pianoNames[piano],"the chords at velocity 127 are no louder than at 110 at Mic 1",step);
     expect(std::max(loudest.peakDbfs,strong.peakDbfs)<=20*std::log10(protocodus::OutputStage<2>::kCeiling)+.01,
            pianoNames[piano],"a sample at Mic 1 passes the ceiling",std::max(loudest.peakDbfs,strong.peakDbfs));

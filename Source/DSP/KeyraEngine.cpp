@@ -2,6 +2,7 @@
 #include "MeasuredKawaiData.h"
 #include "MeasuredHamburgData.h"
 #include "MeasuredNewYorkData.h"
+#include "MeasuredBelmontData.h"
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
@@ -26,10 +27,11 @@ namespace upright=measured::upright;
 namespace kawai=measured::kawai;
 namespace hamburg=measured::hamburg;
 namespace newyork=measured::newyork;
+namespace belmont=measured::belmont;
 // F6, the lowest key without a damper, and the undamped strings from it up.
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
-static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size(),
+static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size()&&belmont::haloStrings.size()==grand::haloStrings.size(),
               "every piano leaves the same keys undamped");
 // The damped strings, A0 to E6, which ring in sympathy as far as their
 // dampers are off (the open strings): each with its first openPartials
@@ -52,7 +54,7 @@ constexpr double openTop=5000;
 // from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
 // stay as fitted.
 constexpr double contactSmoothing=1e-4;
-static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing,
+static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing&&belmont::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
 // What the felt leaves ringing once it lands, the same on every piano: the
 // upright's measured shape over the keys and its slow rates
@@ -245,10 +247,35 @@ constexpr Model models[]{
    .6823,
    1.7227,
    true},
+  {belmont::layers,belmont::layerVelocity.data(),belmont::layerLevelDb.data(),belmont::anchors.data(),static_cast<int>(belmont::anchors.size()),
+   belmont::partials.data(),nullptr, // belmont::extras is empty, as kawai's
+   static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size()),
+   belmont::haloStrings.data(),belmont::haloLevels.data(),belmont::haloSlopeDb,belmont::haloSlopeRiseDb,belmont::haloPromptRate,
+   belmont::bodyModes.data(),static_cast<int>(belmont::bodyModes.size()),belmont::bodyRise,belmont::knocks.data(),
+   belmont::releaseKnocks.data(),belmont::pedalDown.data(),belmont::pedalUp.data(),belmont::actionRise,belmont::actionDecay,
+   // The library's preset plays its notes at its Key Vol default, 0.3, and
+   // its key releases and pedal noises at their groups' defaults, 0.1, each
+   // sample at +6 dB: both 3.5 dB under the notes, with no fade. No group
+   // sets ampVelTrack, so Decent Sampler scales notes and releases alike by
+   // velocity/127, and the notes' layers are levelled by that curve in
+   // decoding (Tools/decode_belmont.py). Its pedal noises are the first take
+   // of five each way.
+   -3.52,1,1,0,-3.52,-3.52,-3.52,
+   // Its rises are capped at the hammer's contact, as the upright's.
+   .002,
+   belmont::noiseBands.data(),belmont::noise.data(),
+   // Typical playing at -9 VU and the tube at the pair's, as above. Its A2
+   // and D#3 to F#3 are recorded nearly all fundamental, which the tube
+   // favours: its loudest chords through the tube read +0.61 VU, and a
+   // quieter tube hardly moves them through the compressor (+0.15 VU 3 dB
+   // under). The owner kept the tube's level (Docs/decisions.md, 2026-11-01).
+   1.2453,
+   1.7607,
+   true},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
-constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),
-              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size());
+constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()+belmont::partials.size()),
+              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size()+belmont::extras.size());
 // The most components beside the series two neighbouring recorded pitches of
 // a piano hold. A strike plays them from its build's two pianos at most, so
 // from the two pianos that hold the most.
@@ -258,7 +285,7 @@ template<std::size_t N> constexpr int mostExtras(const std::array<measured::Anch
   return most;
 }
 constexpr int maxExtras=[]{
-  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors)};
+  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors),mostExtras(belmont::anchors)};
   int first=0,second=0;
   for(const int m:most){if(m>first){second=first;first=m;}else if(m>second)second=m;}
   return first+second;
@@ -396,7 +423,7 @@ struct alignas(16) BodyBank {
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{},natural[lanes]{};
 };
 struct alignas(16) BodyPickup {V4 left{},rightRe{},rightIm{};};
-constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size()})),
+constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size(),belmont::bodyModes.size()})),
               bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
@@ -421,13 +448,13 @@ bool advance(Body& body) noexcept {
 // each of the ring's two stages and the knock, its left and right amplitude
 // at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
-static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size(),
+static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size()&&belmont::noiseBands.size()==grand::noiseBands.size(),
               "every piano's noise has the same bands");
 // The noise filters are designed once from the grand's centres for every
 // build, so every other piano's must be the same.
 constexpr bool sameCentres(std::size_t b=0) noexcept {
   return b==grand::noiseBands.size()||(grand::noiseBands[b].hz==upright::noiseBands[b].hz
-                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&sameCentres(b+1));
+                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&grand::noiseBands[b].hz==belmont::noiseBands[b].hz&&sameCentres(b+1));
 }
 static_assert(sameCentres(),"every piano's noise bands share the grand's centres");
 struct Burst {

@@ -260,7 +260,7 @@ int main()
             reopened.setStateInformation(future.getData(), static_cast<int>(future.getSize()));
             require(weightsAre(reopened, toward.strings, 0), "a session with both a piano and the weights was not refused");
             KeyraAudioProcessor thirds;
-            const auto last = static_cast<int>(keyra::factoryPresets.size()) - 1; // New York Grand
+            const auto last = static_cast<int>(keyra::factoryPresets.size()) - 1; // Belmont Grand
             thirds.setCurrentProgram(last);
             juce::MemoryBlock lastSaved;
             thirds.getStateInformation(lastSaved);

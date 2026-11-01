@@ -41,7 +41,7 @@ keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;return p;}
 keyra::Parameters dryUpright(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::upright);return p;}
 keyra::Parameters dryKawai(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::kawai);return p;}
 const char* pianoName(keyra::Piano piano){
-  static const std::array<const char*,keyra::pianoCount> names{"grand","upright","kawai","hamburg","newyork"};
+  static const std::array<const char*,keyra::pianoCount> names{"grand","upright","kawai","hamburg","newyork","belmont"};
   return names[static_cast<std::size_t>(piano)];
 }
 // C4's own strings: the amplitude of its first four partials, in both
@@ -579,7 +579,7 @@ int main(int argc,char** argv){
     // upright's up to 14.4 dB; the rises' corners, unsmoothed, reached 14 dB.
     // (From their onsets, the key's sound a few milliseconds before contact,
     // the grand's stayed at or under 0 dB.)
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont})
       for(const int key:{33,42,60,84})for(const float velocity:{31.f,61.f,101.f}){
       auto p=dry();p.build=keyra::measuredBuild(piano);
       keyra::Engine e;e.setParameters(p);e.noteOn(key,velocity/127);
@@ -635,7 +635,7 @@ int main(int argc,char** argv){
     // piano a key going down and coming back knocks twice as hard at 2 as
     // at 1, against 0, where it knocks nothing. The body is linear, and the
     // output stage passes a quiet note untouched.
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont}){
       const auto play=[piano](float mechanics){keyra::Engine e;auto p=dry();p.build=keyra::measuredBuild(piano);p.gain=.1f;
         p.mechanics=mechanics;e.setParameters(p);e.noteOn(60,.7f);render(e,12000);e.noteOff(60);return render(e,12000);};
       const auto none=play(0),once=play(1),twice=play(2);
@@ -756,7 +756,7 @@ int main(int argc,char** argv){
     // the body are not scaled).
     // It renders 5 s: the Hamburg grand's C4 at Ring 1 falls 20 dB after 3 s,
     // so a 3 s window was too short. The 10 % bound is unchanged.
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont}){
       const auto fall=[&](float ring){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.ring=ring;
         keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
@@ -842,7 +842,7 @@ int main(int argc,char** argv){
              <<" released_against_held_c4_db="<<20*std::log10(grand[1]/grand[3])<<','<<20*std::log10(upright[1]/upright[3])
              <<','<<20*std::log10(kawai[1]/kawai[3])<<'\n';
   }
-  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont})
     for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.build=keyra::measuredBuild(piano);p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
     for(int note:{21,60,108})e.noteOn(note,1);
@@ -1005,7 +1005,7 @@ int main(int argc,char** argv){
   // A fortissimo chord meets the output stage's limiter, never the emergency
   // bound ahead of it (4, +12 dBFS): read 24 dB down, where the stage passes
   // it untouched, its peak at the default Output stays 3 dB under the bound.
-  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})for(int count:{3,6,10}){
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont})for(int count:{3,6,10}){
     keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.gain/=16;e.setParameters(p);e.reset();
     for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));

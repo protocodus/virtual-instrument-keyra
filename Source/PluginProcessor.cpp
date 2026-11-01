@@ -7,10 +7,11 @@
 namespace {
 // The build's controls follow Quality: each part's weights (weightId), part
 // by part, then the three modifiers.
-constexpr std::array<const char*, 35> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
-    "quality", "strings1", "strings2", "strings3", "strings4", "strings5", "hammers1", "hammers2", "hammers3", "hammers4", "hammers5",
-    "soundboard1", "soundboard2", "soundboard3", "soundboard4", "soundboard5", "action1", "action2", "action3", "action4", "action5", "stiffness", "unisons", "ring", "mechanics", "mic" }};
-constexpr size_t qualityIndex = 9, weightIndex = 10, modifierIndex = 30, mechanicsIndex = 33, micIndex = 34;
+constexpr std::array<const char*, 39> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
+    "quality", "strings1", "strings2", "strings3", "strings4", "strings5", "strings6", "hammers1", "hammers2", "hammers3", "hammers4", "hammers5", "hammers6",
+    "soundboard1", "soundboard2", "soundboard3", "soundboard4", "soundboard5", "soundboard6", "action1", "action2", "action3", "action4", "action5", "action6",
+    "stiffness", "unisons", "ring", "mechanics", "mic" }};
+constexpr size_t qualityIndex = 9, weightIndex = 10, modifierIndex = 34, mechanicsIndex = 37, micIndex = 38;
 static_assert(modifierIndex - weightIndex == buildParts.size() * keyra::pianoCount, "every part has a weight of every piano");
 constexpr auto& programs = keyra::factoryPresets;
 // The parts' and the modifiers' values of a build, in the parameters' order.

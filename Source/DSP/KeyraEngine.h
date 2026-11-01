@@ -7,12 +7,13 @@ namespace keyra {
 // The measured pianos, each fitted from its own recordings: the grand from
 // the Salamander Grand Piano V3's, the upright from the Helsinki 1967
 // Tube-Ribbon Edition's, the Kawai grand from the VCSL Keys "Grand Piano,
-// K"'s, the Hamburg grand from the Decent Sampler "Steinway Grand"'s and the
-// New York grand from the Pianobook "Grandpa's Piano"'s. Saved songs and
+// K"'s, the Hamburg grand from the Decent Sampler "Steinway Grand"'s, the
+// New York grand from the Pianobook "Grandpa's Piano"'s and the Belmont
+// baby grand from the Pianobook "Mom's 1974 Baby Grand"'s. Saved songs and
 // patches recall a piano by its value, so pianos are only ever added at the
 // end.
-enum class Piano {grand,upright,kawai,hamburg,newyork};
-constexpr int pianoCount=5;
+enum class Piano {grand,upright,kawai,hamburg,newyork,belmont};
+constexpr int pianoCount=6;
 // How much of each measured piano a part of the build takes, by Piano:
 // weights from 0 to 1, played as shares of their sum, so that any number of
 // pianos mix in one part. A part with no weight plays the grand's.

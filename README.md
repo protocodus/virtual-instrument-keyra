@@ -350,6 +350,17 @@ the checkout from a fetched copy of the library.
   ([Hamburg](Docs/validation/hamburg-recording-benchmark-2026-10-31.md),
   [New York](Docs/validation/newyork-recording-benchmark-2026-10-31.md))
   ([benchmark](Docs/validation/kawai-recording-benchmark-2026-10-31.md)).
+- Adds a sixth piano, Belmont Grand (program 13), from Pianobook's "Mom's 1974
+  Baby Grand" by The Imperfect Drummer (Brian Peat), a 1974 Knabe baby grand,
+  with its keys let go and its sustain pedal going down and coming up. Its
+  library normalises every take, so its three layers are levelled by Decent
+  Sampler's own velocity curve and each note by a smooth trend over the
+  keyboard: a choice, not a measurement. The other pianos, their blends and
+  every demo render sample for sample as before. On its never-fitted
+  recordings its data sits closer to them than the first grand's in partial
+  levels, tuning, attack, spectra, noise and level and further in decay,
+  envelope and rise
+  ([benchmark](Docs/validation/belmont-recording-benchmark-2026-11-01.md)).
 - The soundboard no longer rings the strings' leftovers. Fitted with only the
   modes within 4 Hz of a recorded pitch's partials left out, the modes 4 to
   30 Hz from them took up what the partials' fit left of the strings, 10 to
@@ -1076,6 +1087,16 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   ring under the pedal at the Kakegawa grand's rates. Its second layer's
   takes from E3 up stop at a noise gate 0.6 to 15 s after the strike, and the
   fit reads them no further.
+- The Belmont grand's library peak-normalises every take, so how loud its
+  layers and keys stand against each other is not recorded: they are levelled
+  by Decent Sampler's own velocity curve and a smooth trend over the keyboard,
+  the owner's choices. Its three layers are 25, 77 and 116 in velocity, one
+  to three takes each, at pitches a minor third apart, and D♯2, D♯4 and D♯6
+  are its only never-fitted pitches. Its A2 and D♯3 to F♯3 are recorded
+  nearly all fundamental; through the tube its loudest chords read up to
+  +0.6 VU, in the red, which the owner accepted over a tube about 5 dB
+  quieter. Its strings ring under the pedal at the Kakegawa grand's rates
+  ([benchmark](Docs/validation/belmont-recording-benchmark-2026-11-01.md)).
 - Three pianos are measured. The other libraries the owner offered, a
   Steinway grand among them, need their authors' permission to be fitted,
   and a preset can only mix the measured pianos.
