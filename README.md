@@ -26,9 +26,9 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -15.2 dBFS |
 | 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -1.5 dBFS |
 | 6 | Helsinki Upright | [06-helsinki-upright.wav](Docs/audio/06-helsinki-upright.wav) | 11.6 s | -1.5 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.6 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
 | 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -5.4 dBFS |
-| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -1.9 dBFS |
+| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -2.6 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -415,7 +415,7 @@ the checkout from a fetched copy of the library.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 57](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41262811957/artifacts/13065804548)**, built from [`f9123df3a04d`](https://github.com/protocodus/virtual-instrument-keyra/commit/f9123df3a04d213674f942f81edc4c04c59cb4a0). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 58](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41280454511/artifacts/13073307964)**, built from [`fd5a71bd06e1`](https://github.com/protocodus/virtual-instrument-keyra/commit/fd5a71bd06e1631c517250c8d1b71ce73727ee70). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
