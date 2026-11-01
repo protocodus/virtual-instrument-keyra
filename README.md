@@ -359,20 +359,25 @@ the checkout from a fetched copy of the library.
   within a semitone of its partials and takes their knock from its measured
   neighbours, one rule over the keyboard: the body's share of Hamamatsu's C4
   falls from −19 to −30 dB under the partials, and the key-to-key steps over
-  3 dB in it go from 2 to none on Kakegawa, 5 to 1 on Hamamatsu and 1 to none
-  on New York. Lines that hardly fall are no longer taken for modes: New
-  York's at 704 Hz, which every strike set ringing for 14 s, and Hamburg's at
-  C♯2, D♯2 and D3. The body's onset rise is matched on shape, so it no longer
-  makes up for the partials' leftovers (Kakegawa 0.31 to 0.83 ms, Hamamatsu
-  0.38 to 1.24, New York 0.38 to 0.43, Hamburg 1.43 to 1.86). On their
-  recordings Kakegawa, Hamamatsu and New York hold; Hamburg's early spectrum
+  3 dB in it go from 2 to none on Kakegawa, 5 to 1 on Hamamatsu, 1 to none
+  on New York and 11 to 4 on Helsinki. Lines that hardly fall are no longer
+  taken for modes: New York's at 704 Hz, which every strike set ringing for
+  14 s, Hamburg's at C♯2, D♯2 and D3, and Helsinki's at 147 Hz (7.4 s) and
+  198 Hz (4 s), which beat against its D3 and G3. The body's onset rise is
+  matched on shape, so it no longer makes up for the partials' leftovers
+  (Kakegawa 0.31 to 0.83 ms, Hamamatsu 0.38 to 1.24, New York 0.38 to 0.43,
+  Hamburg 1.43 to 1.86, Helsinki 0.29 to 0.49). On their recordings Kakegawa,
+  Hamamatsu, New York and Helsinki's dev notes hold; Hamburg's early spectrum
   moves 0.8 dB and its noise between partials 0.7 dB further off, since its
-  recordings hold the three lines
+  recordings hold the three lines, and Helsinki's train treble 0.7 dB in its
+  early and sustained spectra. Helsinki's D4 now starts sharper than its
+  recording (onset rise 4 to 24 ms off): the modes beside its partials had
+  cancelled part of the partials' too-fast attack
   ([Kakegawa](Docs/validation/grand-soundboard-partials-benchmark-2026-11-01.md),
   [Hamamatsu](Docs/validation/kawai-soundboard-partials-benchmark-2026-11-01.md),
   [New York](Docs/validation/newyork-soundboard-partials-benchmark-2026-11-01.md),
-  [Hamburg](Docs/validation/hamburg-soundboard-partials-benchmark-2026-11-01.md)).
-  The Helsinki upright is not refitted yet (Known gaps).
+  [Hamburg](Docs/validation/hamburg-soundboard-partials-benchmark-2026-11-01.md),
+  [Helsinki](Docs/validation/upright-soundboard-partials-benchmark-2026-11-01.md)).
 - The pianos are builds of one model, at the owner's request. A Build view
   beside the voicing knobs mixes the measured pianos part by part: the
   strings, hammers, soundboard and action each take a share of every piano,
@@ -1036,10 +1041,6 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   there (above): the never-fitted C5's third partial, 4 cents from G6's
   string, now releases 6.6 dB from its take, where it was 3.5 dB with the
   felt taking all of it ([dampers](Docs/research/upright-dampers-2026-10-28.md)).
-- The Helsinki upright's soundboard still carries the leftovers the other
-  pianos' no longer do (Version history): its refit needs its library,
-  which this change did not have. Until then its G3 and the keys around its recorded
-  pitches keep their noisy haze, and its lines at D3 and G3 ring on.
 - The upright's treble is fitted worse than its middle. From C6 up its unison
   strings sound 6 to 20 cents apart (the grand's top octave up to 12). A
   partial's four lanes reach those within about 10 cents of it (above); each
