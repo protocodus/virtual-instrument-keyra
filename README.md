@@ -479,7 +479,7 @@ transition; the measured sound and interpolation are unchanged
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 61](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41295230214/artifacts/13082094101)**, built from [`ba3ee9908645`](https://github.com/protocodus/virtual-instrument-keyra/commit/ba3ee990864577464f9cf449b2c335c6788a465b). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 62](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/41339547023/artifacts/13097192730)**, built from [`ec62fe64dfad`](https://github.com/protocodus/virtual-instrument-keyra/commit/ec62fe64dfad241650c9d4a24f28c25256680d2d). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
