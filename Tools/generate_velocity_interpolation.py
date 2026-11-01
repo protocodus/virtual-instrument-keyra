@@ -125,6 +125,54 @@ def generate():
     return content, metadata
 
 
+def metadata_differences(expected, actual, path=()):
+    """Exact provenance/decisions; numerical equality only for dB reports.
+
+    Analytic integrals and polynomial roots can differ in their last bits
+    across libm/LAPACK implementations. Reuse the existing ROUNDING_DB only
+    for the reported excursions. Header bytes, source hashes, eligibility
+    booleans, interval identities/counts, nulls and every other field remain
+    exact. This does not change how any interval is accepted or rejected.
+    """
+    location = '/' + '/'.join(str(p).replace('~', '~0').replace('/', '~1') for p in path)
+    def difference():
+        return f'{location}: stored={expected!r}, generated={actual!r}'
+    if type(expected) is not type(actual):
+        yield difference()
+        return
+    if isinstance(expected, dict):
+        if expected.keys() != actual.keys():
+            yield f'{location}: stored keys={sorted(expected)}, generated keys={sorted(actual)}'
+        for key in sorted(expected.keys() & actual.keys()):
+            yield from metadata_differences(expected[key], actual[key], path+(key,))
+        return
+    if isinstance(expected, list):
+        if len(expected) != len(actual):
+            yield f'{location}: stored length={len(expected)}, generated length={len(actual)}'
+        for i, (a, b) in enumerate(zip(expected, actual)):
+            yield from metadata_differences(a, b, path+(i,))
+        return
+    diagnostic = (len(path) == 3 and path[0] == 'intervals'
+                  and isinstance(path[1], int) and path[2] == 'baseline_excursion_db') or (
+                  len(path) == 4 and path[0] == 'intervals' and isinstance(path[1], int)
+                  and path[2] == 'candidate_excursion_db' and isinstance(path[3], int))
+    if diagnostic and type(expected) in (int, float):
+        equal = (np.isfinite(expected) and np.isfinite(actual)
+                 and abs(expected-actual) <= ROUNDING_DB)
+    else:
+        equal = expected == actual
+    if not equal:
+        yield difference()
+
+
+def metadata_matches(expected, actual):
+    return next(metadata_differences(expected, actual), None) is None
+
+
+def artifacts_match(expected_header, actual_header, expected_metadata, actual_metadata):
+    return expected_header == actual_header and metadata_matches(expected_metadata, actual_metadata)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
@@ -133,8 +181,16 @@ def main():
     args = parser.parse_args()
     header, metadata = generate()
     if args.check:
-        if args.header.read_text() != header or json.loads(args.metadata.read_text()) != metadata:
-            raise SystemExit('velocity interpolation masks or provenance differ; regenerate')
+        stored_header, generated_header = args.header.read_bytes(), header.encode()
+        differences = list(metadata_differences(json.loads(args.metadata.read_text()), metadata))
+        if stored_header != generated_header:
+            differences.insert(0, 'header bytes: stored sha256=' + hashlib.sha256(stored_header).hexdigest()
+                               + ', generated sha256=' + hashlib.sha256(generated_header).hexdigest())
+        if differences:
+            detail = '\n'.join(differences[:20])
+            if len(differences) > 20:
+                detail += f'\n... {len(differences)-20} additional mismatches'
+            raise SystemExit('velocity interpolation masks or provenance differ; regenerate\n' + detail)
         print('velocity interpolation masks and provenance reproduce')
         return
     args.header.parent.mkdir(parents=True, exist_ok=True)
