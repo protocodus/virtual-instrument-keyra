@@ -37,6 +37,7 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import time
 import wave
 import xml.etree.ElementTree as ET
 import zipfile
@@ -179,6 +180,25 @@ def read_region(reader: wave.Wave_read, start: int, end: int) -> bytes:
     return pcm
 
 
+# A concurrent verifier can briefly keep Windows from replacing the existing
+# destination (WinError 5 or 32). Keep the complete temporary file and retry
+# only that case, with .95 s of total backoff. Permanent permissions and other
+# failures still propagate; readers never see an in-place/partially written file.
+_REPLACE_RETRY_DELAYS = (.01, .02, .04, .08, .16, .32, .32)
+
+
+def replace_published_file(temporary: Path, path: Path) -> None:
+    for attempt in range(len(_REPLACE_RETRY_DELAYS)+1):
+        try:
+            temporary.replace(path)
+            return
+        except OSError as error:
+            if (getattr(error, 'winerror', None) not in (5, 32) or not path.is_file()
+                    or attempt == len(_REPLACE_RETRY_DELAYS)):
+                raise
+            time.sleep(_REPLACE_RETRY_DELAYS[attempt])
+
+
 def write_or_verify_wav(path: Path, pcm: bytes, params: wave._wave_params) -> str:
     if path.exists():
         with wave.open(str(path), 'rb') as reader:
@@ -201,7 +221,7 @@ def write_or_verify_wav(path: Path, pcm: bytes, params: wave._wave_params) -> st
                     writer.setsampwidth(params.sampwidth)
                     writer.setframerate(params.framerate)
                     writer.writeframes(pcm)
-            temporary.replace(path)
+            replace_published_file(temporary, path)
         finally:
             if temporary is not None:
                 temporary.unlink(missing_ok=True)
@@ -262,7 +282,7 @@ def write_json(path: Path, value: dict) -> None:
                                          encoding='utf-8', delete=False) as pending:
             temporary = Path(pending.name)
             pending.write(json.dumps(value, indent=2) + '\n')
-        temporary.replace(path)
+        replace_published_file(temporary, path)
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)

@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import concurrent.futures
+import errno
 import json
 from pathlib import Path
 import tempfile
@@ -24,8 +25,11 @@ class YamahaImportTests(unittest.TestCase):
         barrier = threading.Barrier(2)
         temporary_names = []
         def publish(source, target):
-            temporary_names.append(source.name)
-            barrier.wait(timeout=5)
+            # A Windows sharing retry belongs to the same publisher; only its
+            # first attempt rendezvouses with the other complete temporary.
+            if source.name not in temporary_names:
+                temporary_names.append(source.name)
+                barrier.wait(timeout=5)
             return original_replace(source, target)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -48,6 +52,64 @@ class YamahaImportTests(unittest.TestCase):
             self.assertEqual(json.loads(metadata.read_text()), value)
             self.assertEqual(len(set(temporary_names)), 2)
             self.assertEqual(list(root.glob('*.part.json')), [])
+
+    def test_transient_windows_read_handle_contention_retries_atomic_publication(self):
+        original_replace = Path.replace
+        for winerror in (5, 32):
+            for kind in ('wav', 'json'):
+                with self.subTest(winerror=winerror, kind=kind), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    output = root/('region.'+kind)
+                    attempts = []
+                    def publish(source, target):
+                        attempts.append(source)
+                        if len(attempts) <= 2:
+                            # Another publisher won the initial creation; a
+                            # verifier holds that complete destination briefly.
+                            if not target.exists():
+                                target.write_bytes(source.read_bytes())
+                            error = PermissionError(errno.EACCES, 'reader denies replacement')
+                            error.winerror = winerror
+                            raise error
+                        return original_replace(source, target)
+                    with patch.object(Path, 'replace', publish), patch.object(yamaha.time, 'sleep') as sleep:
+                        if kind == 'wav':
+                            pcm = bytes((0, 0, 128, 255, 255, 127))*4
+                            params = wave._wave_params(2, 3, 48000, 4, 'NONE', 'not compressed')
+                            self.assertEqual(yamaha.write_or_verify_wav(output, pcm, params),
+                                             yamaha.wav_sha256(pcm, params))
+                            with wave.open(str(output), 'rb') as reader:
+                                self.assertEqual(reader.readframes(4), pcm)
+                        else:
+                            yamaha.write_json(output, {'complete': True})
+                            self.assertEqual(json.loads(output.read_text()), {'complete': True})
+                    self.assertEqual(len(attempts), 3)
+                    self.assertEqual(len(set(attempts)), 1)
+                    self.assertEqual(sleep.call_count, 2)
+                    self.assertEqual(list(root.glob('*.part.*')), [])
+
+    def test_publication_retry_is_bounded_and_does_not_hide_other_errors(self):
+        for winerror, exists in [(5, True), (32, True), (None, True), (5, False)]:
+            with self.subTest(winerror=winerror, exists=exists), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                output = root/'metadata.json'
+                if exists:
+                    output.write_text('{"old": true}')
+                error = PermissionError(errno.EACCES, 'denied')
+                if winerror is not None:
+                    error.winerror = winerror
+                with patch.object(Path, 'replace', side_effect=error) as replace, \
+                        patch.object(yamaha.time, 'sleep') as sleep, self.assertRaises(PermissionError):
+                    yamaha.write_json(output, {'new': True})
+                retries = len(yamaha._REPLACE_RETRY_DELAYS) if winerror in (5, 32) and exists else 0
+                self.assertEqual(replace.call_count, retries+1)
+                self.assertEqual(sleep.call_count, retries)
+                self.assertLessEqual(sum(call.args[0] for call in sleep.call_args_list), 1.)
+                self.assertEqual(list(root.glob('*.part.*')), [])
+                if exists:
+                    self.assertEqual(json.loads(output.read_text()), {'old': True})
+                else:
+                    self.assertFalse(output.exists())
 
     def test_inclusive_boundaries_preserve_stereo_pcm24(self):
         # Non-normalized bytes include both channel payloads and signed extremes.
