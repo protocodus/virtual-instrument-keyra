@@ -2231,8 +2231,9 @@ The owner asked for Pianobook's "Mom's 1974 Baby Grand" (The Imperfect
 Drummer, Brian Peat; Decent Sampler 1.5) as Belmont: a 1974 Wm. Knabe & Co.
 baby grand, reconditioned with its felts sanded, recorded by one pair of sE 8
 cardioids in X/Y at the hammers with the lid fully open, 48 kHz/24-bit. The
-library states no licence; it is credited in `THIRD_PARTY_NOTICES.md` as the
-other libraries are, and nothing from it is copied. It holds 30 pitches a
+library states no licence; the owner takes its use as allowed and asked for a
+credit only, given in `THIRD_PARTY_NOTICES.md` as for the other libraries, and
+nothing from it is copied. It holds 30 pitches a
 minor third apart from A0 to C8 in three layers (Soft 1–48, Med 49–104, Hard
 105–127, one to three round robins in the first two), a key-release take per
 pitch and five sustain-pedal noises each way. `Tools/decode_belmont.py` reads
