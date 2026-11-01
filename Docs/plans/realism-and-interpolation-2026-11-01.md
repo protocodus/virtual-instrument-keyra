@@ -80,6 +80,51 @@ records negative results, native controls and remaining limits. None of the
 rejected calibration candidates has replaced the accepted data. No fixed seed, favorable
 window or single piano may be selected afterwards to conceal a regression.
 
+### Source diagnosis after the six-piano Moonlight comparison
+
+The 0.4.5 [numeric diagnosis](../validation/colour-stereo-receiver-diagnosis-2026-11-01.json)
+narrows the next sound work. All six factory stereo-pair levels remain within
+0.11 dB of their existing target; the matched full performances and 72-note
+quiet-response panel do not establish a gain or velocity-curve repair.
+
+The apparent early soft-note midrange deficit largely comes from the owner's
+chosen additional velocity colour. On the frozen 24 TRAIN cases, a diagnostic
+that removes only that colour reduces early 500–1000 Hz mean absolute error
+from 3.280 to 0.204 dB, while causing documented attack and tail regressions.
+It is not adopted, and the accepted colour remains unchanged. A global EQ,
+body boost or noise addition would therefore target the wrong mechanism.
+
+An independent error remains in the coherent partial envelope and stereo
+image. With colour isolated, Helsinki G-sharp4's second partial loses about
+9.24/7.96 dB in the 1.5–3 s window at the two tested layers, despite matching
+early level closely. Belmont A4 has second-partial deficits of 8.93/6.40 dB;
+its louder layer also has a broader late decay deficit. The matched partials
+are present above the existing source-support proxies; adequacy of their
+modal basis remains unresolved.
+Helsinki's source itself has negative L/R correlation, but its native
+second-partial stereo distribution diverges locally: overall narrowing cannot
+repair it. The original Helsinki 68 raw fit cache is unavailable, so a fresh,
+bounded TRAIN reconstruction must distinguish fixed-pole fit, pickup
+compression and coefficient smoothing from runtime effects. The earlier
+82/84/86 fundamental trial does not determine capacity for these other poles.
+
+The Yamaha-context held-note panel now has passive dry/receiver accounting.
+All 48 observed native prefixes match the frozen original waveforms exactly;
+the direct signal is unchanged by pedal state in every measured window.
+The pedal-down receiver's late broadband power is 10.72–39.71 dB below dry,
+with signed interference and frequency-specific exceptions retained. This
+supports examining receiver input, loss and detuning before a reciprocal
+interaction candidate. It does not identify an acoustic coupling gain or
+justify matching every piano to Yamaha's recorded pedal contrast. This panel
+explicitly retains historical Mechanics 1, distinct from the new default.
+
+Next, test a native-observation reconstruction for the identified Helsinki and
+Belmont partials, retaining early, late and stereo errors separately. Any
+successful shared change must then survive all-six recording comparisons and
+the existing held-out roles, controller, native C++17, unit/audio/performance
+and appropriate listening gates. These diagnostics change the next experiment;
+they do not complete the realism goal or change production sound.
+
 The separate soft-pedal lane-bias change is accepted locally in 0.4.4 after the
 owner chose B for the new upper and bass Belmont phrases, which include known
 tradeoffs. Combined validation preserves the 933-case default-soft benchmark
@@ -90,9 +135,11 @@ Transporting existing biases removes selected rank-crossing discontinuities;
 including −2.398 dB middle level at Belmont89/v120 and larger adjacent gaps
 elsewhere. The choice supports this direction without claiming uniform audible
 improvement, a measured soft-pedal acoustic target or mixed-string continuity.
-Rack 0.4.4d1 now pins the accepted revision and passes native/sanitizer, SDK
-and package checks. Its fresh Recon creation/playback check is pending because
-another session is active; staging and packaging did not alter the live slot.
+Rack 0.4.4d1 pinned that accepted revision and passed native/sanitizer, SDK
+and package checks; fresh Recon playback was pending at that checkpoint.
+The later [0.4.5 mechanics validation](../validation/mechanics-default-2026-11-01.md)
+includes the corresponding Rack 0.4.5d1 build and protected host checks.
+The previous installed package was restored after testing.
 
 The independent reset fix is accepted locally as 0.4.3: all 37 reset-history
 cases match a fresh engine, the 933-case recording comparison has no regressions,
