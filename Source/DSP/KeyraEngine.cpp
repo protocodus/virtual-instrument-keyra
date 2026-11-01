@@ -202,7 +202,9 @@ constexpr Model models[]{
    // its neighbours in its three loudest layers, the keys between them play
    // toward it, and the tube's response favours the bass. The owner chose
    // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
-   1.3201,
+   // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
+   // it to -10.10; its loudest chords through the tube read -0.14 VU.
+   1.3308,
    true},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),
    hamburg::partials.data(),hamburg::extras.data(),

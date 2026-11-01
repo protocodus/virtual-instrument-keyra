@@ -350,6 +350,29 @@ the checkout from a fetched copy of the library.
   ([Hamburg](Docs/validation/hamburg-recording-benchmark-2026-10-31.md),
   [New York](Docs/validation/newyork-recording-benchmark-2026-10-31.md))
   ([benchmark](Docs/validation/kawai-recording-benchmark-2026-10-31.md)).
+- The soundboard no longer rings the strings' leftovers. Fitted with only the
+  modes within 4 Hz of a recorded pitch's partials left out, the modes 4 to
+  30 Hz from them took up what the partials' fit left of the strings, 10 to
+  18 dB over their knock elsewhere, and rang it a few hertz off the note: a
+  rough, noisy haze around each recorded pitch, worst in the middle register,
+  that stacked into fixed tones under chords. A pitch now leaves out the modes
+  within a semitone of its partials and takes their knock from its measured
+  neighbours, one rule over the keyboard: the body's share of Hamamatsu's C4
+  falls from −19 to −30 dB under the partials, and the key-to-key steps over
+  3 dB in it go from 2 to none on Kakegawa, 5 to 1 on Hamamatsu and 1 to none
+  on New York. Lines that hardly fall are no longer taken for modes: New
+  York's at 704 Hz, which every strike set ringing for 14 s, and Hamburg's at
+  C♯2, D♯2 and D3. The body's onset rise is matched on shape, so it no longer
+  makes up for the partials' leftovers (Kakegawa 0.31 to 0.83 ms, Hamamatsu
+  0.38 to 1.24, New York 0.38 to 0.43, Hamburg 1.43 to 1.86). On their
+  recordings Kakegawa, Hamamatsu and New York hold; Hamburg's early spectrum
+  moves 0.8 dB and its noise between partials 0.7 dB further off, since its
+  recordings hold the three lines
+  ([Kakegawa](Docs/validation/grand-soundboard-partials-benchmark-2026-11-01.md),
+  [Hamamatsu](Docs/validation/kawai-soundboard-partials-benchmark-2026-11-01.md),
+  [New York](Docs/validation/newyork-soundboard-partials-benchmark-2026-11-01.md),
+  [Hamburg](Docs/validation/hamburg-soundboard-partials-benchmark-2026-11-01.md)).
+  The Helsinki upright is not refitted yet (Known gaps).
 - The pianos are builds of one model, at the owner's request. A Build view
   beside the voicing knobs mixes the measured pianos part by part: the
   strings, hammers, soundboard and action each take a share of every piano,
@@ -642,12 +665,19 @@ every 10 ms from 0.4 to 1.5 s after contact, in the frames that stand 6 dB
 over the take's quietest second; a layer counts where that line falls 6 dB or
 more, is the slower and starts 3 dB or more under the first, which is then
 refitted on what the second leaves of the frames from 35 to 400 ms, and a mode
-takes the energy-weighted median of six or more layers' rates. A pitch's knock
+takes the energy-weighted median of six or more layers' rates; a line whose
+first stage falls less than 6 dB over those frames stands as a string does and
+is no mode. A pitch's knock
 on each stage is a line in the level of the layer that struck it, weighted by
 the knock's amplitude: the second stage's is fitted after 0.4 s first, the
 first's on what it leaves from 20 ms on, and again from 45 ms for the modes
 in the bands where the pitch's knock is found (by a first such fit in every
-band it can be measured in), which the knock's bands then play; the board
+band it can be measured in), which the knock's bands then play. A pitch leaves
+out the modes within a semitone of its partials, where what the partials leave
+of the strings would pass for their knock, and takes their knock from the
+nearest pitches that measure them, by note. The body's onset rise is the one
+under which the modes build up below 0.8 of the treble's fundamentals as the
+recordings do, matched on shape, not level. The board
 noise is measured
 in the gaps between the partials the recordings show and, above the highest of
 them, across whole bands, as the benchmark measures it. In the bands below a
@@ -1006,6 +1036,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   there (above): the never-fitted C5's third partial, 4 cents from G6's
   string, now releases 6.6 dB from its take, where it was 3.5 dB with the
   felt taking all of it ([dampers](Docs/research/upright-dampers-2026-10-28.md)).
+- The Helsinki upright's soundboard still carries the leftovers the other
+  pianos' no longer do (Version history): its refit needs its library,
+  which this change did not have. Until then its G3 and the keys around its recorded
+  pitches keep their noisy haze, and its lines at D3 and G3 ring on.
 - The upright's treble is fitted worse than its middle. From C6 up its unison
   strings sound 6 to 20 cents apart (the grand's top octave up to 12). A
   partial's four lanes reach those within about 10 cents of it (above); each

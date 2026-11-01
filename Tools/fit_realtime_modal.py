@@ -966,6 +966,22 @@ BODY_TAIL = .95                         # s after contact: the end of the knocks
 BODY_LATE = (.4, 1.5)                   # s after contact: the second stage's frames, to the take's fade-out at most
 BODY_RATE = 4000                        # Hz: the measurement's sample rate
 BODY_HUM = [50.0 * k for k in range(1, 11)]  # the room's mains lines, fitted and discarded
+# How near one of an anchor's partials a mode lies before the partials'
+# misfit passes for it (cents). The residual keeps what the partials' lanes
+# leave of the strings around each partial, and a mode there took it up as
+# its knock: fitted with only the modes within 4 Hz left out, a mode's knock
+# stood a median 10 to 18 dB over its knock at the other anchors 4 to 15 Hz
+# from a partial, 6 to 10 dB 15 to 30 Hz from it (anchors from 110 to 600
+# Hz, every piano), and by the interval to the nearest partial, 10 to 18 dB
+# within 30 cents, 5 to 9 dB from 30 to 75 and 2 to 4 dB from 75 to 100,
+# within the spread past that (each knock less its mode's and its anchor's
+# mean over the knocks 300 cents and 40 Hz or more from every partial). Rung
+# at their own frequencies, a few hertz off a note's partials, they beat with
+# them as a rough haze, worst in the middle register, where the modes are
+# dense and the recorded pitches far apart, and they stacked into a fixed
+# tone under chords. A mode inside this interval takes the nearest measured
+# keys' knock instead, as body_data fills it.
+BODY_PARTIAL_CENTS = 100.0
 
 
 def body_signal(result, i, contact, seconds=BODY_TAIL):
@@ -1035,7 +1051,8 @@ def body_modes(results, contacts, wav):
     where a layer measures one. Each stage's decay is the energy-weighted
     median over the layers whose band holds the mode (that measure the stage,
     for the second, which a mode keeps where six layers measure it; NaN
-    elsewhere).
+    elsewhere). A mode whose first stage falls less than 6 dB across its
+    frames is no mode and is left out.
     """
     import numpy as np
     from scipy import signal, stats
@@ -1095,8 +1112,17 @@ def body_modes(results, contacts, wav):
             weights.append(env[early].mean())
         if len(slopes) < 6:
             continue
+        # A ring falls: like the second stage, the first must fall 6 dB or
+        # more across its frames, or it is a line that stands there, not a
+        # mode. Those that did not (0.5 to 1.9/s, against 2.4 to 17/s for the
+        # rest) sat within 35 cents of a string's pitch, the upright's at D3
+        # and G3, the Hamburg grand's at C#2, D#2 and D3, the New York's at F5,
+        # and every strike rang them on for seconds a few hertz off the note.
+        first = -weighted_median(slopes, weights)
+        if first * (t[early][-1] - t[early][0]) < 6:
+            continue
         slow = (max(.05, -weighted_median(seconds, held_weights) / 8.686) if len(seconds) >= 6 else np.nan)
-        modes.append((float(fm), max(.5, -weighted_median(slopes, weights) / 8.686), slow))
+        modes.append((float(fm), max(.5, first / 8.686), slow))
     return np.array([m[0] for m in modes]), np.array([m[1] for m in modes]), np.array([m[2] for m in modes])
 
 
@@ -1115,13 +1141,13 @@ def body_amplitudes(result, contact, hz, rates, slow_rates, refit, ridge=1e-3):
     do, and rang it on at their own rates, so that 0.1 to 0.3 s after the
     strike the upright's notes from C6 up stood a median 5.6 to 9 dB over
     their recordings from 500 to 800 Hz. NaN for modes
-    within 4 Hz of one of the anchor's partials, whose misfit would pass for
-    them, and the second stage 0 where a mode has none. Also each layer's
+    within BODY_PARTIAL_CENTS of one of the anchor's partials, whose misfit
+    would pass for them, and the second stage 0 where a mode has none. Also each layer's
     fraction of the band's energy explained, and the first stage as fitted
     from BODY_SKIP, by which body_rise times the onset."""
     import math
     import numpy as np
-    usable = np.min(np.abs(hz[:, None] - np.asarray(result['freqs'])[None]), axis=1) > 4.0
+    usable = np.min(np.abs(1200 * np.log2(hz[:, None] / np.asarray(result['freqs'])[None])), axis=1) > BODY_PARTIAL_CENTS
     staged = usable & np.isfinite(slow_rates)
     f, rate, g, slow = hz[usable], rates[usable], hz[staged], slow_rates[staged]
 
@@ -1165,7 +1191,15 @@ def body_rise(result, contact, hz, rates, slow_rates, amplitudes, slow_amplitude
     the fitted modes' power below 0.8 f1 best builds up as the residual's
     does, from 2 ms before contact to `seconds` after, in dB at 0.25 ms steps
     with 0.5 ms smoothing above the floor before the onset where a take has
-    10 ms before it (as onset_rise measures it), else 50 dB under the peak."""
+    10 ms before it (as onset_rise measures it), else 50 dB under the peak.
+
+    The rise is fitted to the shape of the build-up, not its level, which the
+    knocks set: the band's skirt lets in the partials' misfit at f1, and
+    matched on level, the rise made up for whatever the modes near f1 did not
+    play of it. Keeping those modes off the partials (BODY_PARTIAL_CENTS)
+    took the New York's rise to the grid's 0.1 ms and the grand's and the
+    Kawai's down a third; matched on shape, their rises are the same with
+    and without them (0.83 and 1.24 ms), and the New York's 0.43 ms."""
     import math
     import numpy as np
     from scipy import ndimage, signal
@@ -1198,8 +1232,8 @@ def body_rise(result, contact, hz, rates, slow_rates, amplitudes, slow_amplitude
             floor = max(floor, float(np.median(recorded[:len(pre) - int(.005 * sr)])))
         frames = np.flatnonzero((t >= contact[i] - .002) & (t <= contact[i] + seconds))[::max(1, int(.00025 * sr))]
         target = 10 * np.log10(recorded[frames] + floor)
-        errors = [float(np.mean((10 * np.log10(power(model * (1 - np.exp(-tau / r))[:, None])[frames] + floor)
-                                 - target) ** 2)) for r in grid]
+        errors = [float(np.var(10 * np.log10(power(model * (1 - np.exp(-tau / r))[:, None])[frames] + floor)
+                               - target)) for r in grid]
         rises.append(float(grid[int(np.argmin(errors))]))
     return rises
 
