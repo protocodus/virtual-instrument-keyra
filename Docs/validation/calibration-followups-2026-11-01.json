@@ -1,6 +1,6 @@
 {
   "date": "2026-11-01",
-  "status": "Calibration and whole-pattern pitch-transport candidates remain rejected or bounded diagnostics. Soft-pedal transport is accepted locally as 0.4.4 after owner B preference and combined native/recording/frontend/CPU validation, retaining the accepted0.4.3 reset fix. Rack integration follows.",
+  "status": "Calibration and whole-pattern pitch-transport candidates remain rejected or bounded diagnostics. Soft-pedal transport is accepted locally as0.4.4, retaining0.4.3 reset. Rack0.4.4d1 is committed and build-ready; fresh Recon check remains pending while another session is active.",
   "protocol": "Quiet-frame candidate compared to accepted0.4.2 on933recordings and1584normal-playing renders. Paired errors use common metric cases andbaseline gain reference. Steinway/Salamander donor experiment uses numeric features only. No sealed observations used. Subsequent body and slow-pole diagnoses use TRAIN only; pitch eligibility reads frozen model outputs. Soft-pedal evaluation reuses all 933 frozen TRAIN/DEV recording caches and two 1584-case soft-on keyboard grids, with no new reference extraction or fitting.",
   "comparator_sha256": "8090abd041356c7186313a44ec5ce703c956f1ce0450bcf51bfbae9c53573fd8",
   "quiet_frame": {
@@ -2156,7 +2156,12 @@
     "out/realism/soft-order-audit/combined-044/receipt.json": "dcc1fa04ec2d0dbd924978b8b4906914136f90e67acd20db7f9335bd6f4cf7f8",
     "out/realism/soft-order-audit/combined-044/results.md": "66c6a98059a8b2c99b8c8e8998822eed7692a43aa583b7159bd31e582eed55ea",
     "out/realism/soft-order-audit/combined-044/frontend-cpu-receipt.json": "c46c9f6b942543dc13fd7cff676c1b72802332695b5a6a7bf9c07fd4ab82e86c",
-    "out/realism/soft-order-audit/combined-044/listening-parity/receipt.json": "29f7aef73e777b40d95817aa1eb487db77a196794ce85c83933512e772c79612"
+    "out/realism/soft-order-audit/combined-044/listening-parity/receipt.json": "29f7aef73e777b40d95817aa1eb487db77a196794ce85c83933512e772c79612",
+    "out/realism/soft-order-audit/memory-044/receipt.json": "7d658e5a15c1d0093d80aae6d32a184a50b17892d72c0f6cc2120d7539e02aea",
+    "out/realism/soft-order-audit/memory-044/report.txt": "df46424622afbae50870f1012a8d879f6dc78cd9c34c71ea41a671e34950f4ab",
+    "/Users/vojta/Dev/rack-keyra-realism-20261101/Examples/Keyra/Docs/validation/soft-pedal-2026-11-01.json": "bf631d23cbba96356a7170c2d66af15262e323a9c308428f312405b6306bb68c",
+    "/Users/vojta/Dev/rack-keyra-realism-20261101/Examples/Keyra/Docs/validation/soft-pedal-2026-11-01.md": "ae69112c73660eaf783f506b596318dd5c391c80cdf57a8617a016b7e96fe82c",
+    "/Users/vojta/Dev/rack-keyra-realism-20261101/out/keyra-044d1/committed-review.json": "b810efb2e8a5f78f71bf50b6212483d7cae4377cd7c8afc2de8043012db771f9"
   },
   "runtime_diagnosis": {
     "status": "Frozen research checkpoints retain accepted0.4.2 comparisons. Later hard-reset and soft-pedal promotion are recorded in top-level hard_reset and soft_pedal_promotion; rejected calibration candidates remain out of production.",
@@ -6320,7 +6325,7 @@
   },
   "soft_pedal_promotion": {
     "version": "0.4.4",
-    "status": "Accepted locally; Rack integration follows canonical commit.",
+    "status": "Accepted locally; Rack0.4.4d1 build-ready with fresh Recon check pending. See soft_pedal_rack_followup.",
     "owner_answer": "B",
     "interpretation": "Both new Belmont upper and bass phrases; no phrase-specific exception. Separate from earlier velocity B preference.",
     "decision_path": "Docs/decisions.md",
@@ -6586,13 +6591,128 @@
       }
     },
     "memory": {
-      "native64_fixed_storage_delta_bytes": 49984,
-      "sdk32": "Pending separate measurement; native64 padding claim is not portable."
+      "scope": "Fixed Impl storage only; native arm64 execution plus actual SDK32 and SDK64 chip layouts. No production modifications, shared builds, audio processing or timing.",
+      "findings": {
+        "native_arm64": {
+          "old_impl": 14647168,
+          "new_impl": 14697152,
+          "delta": 49984
+        },
+        "sdk64": {
+          "old_impl": 14647168,
+          "new_impl": 14697152,
+          "delta": 49984
+        },
+        "sdk32": {
+          "old_impl": 14580416,
+          "new_impl": 14643920,
+          "delta": 63504
+        }
+      },
+      "sdk32_partial_cache_bytes": [
+        904,
+        908
+      ],
+      "sdk64_partial_cache_bytes": [
+        912,
+        912
+      ],
+      "sdk32_extra_cache_bytes": 13528,
+      "sdk32_alignment_padding_delta_bytes": -8,
+      "no_callback_allocation_or_new_oscillators": true,
+      "limitations": [
+        "Fixed object storage is not RSS, stack high-water, allocator overhead, binary size or CPU cost.",
+        "Native execution was arm64; SDK64 is chip layout evidence, not x86 execution.",
+        "LLVM packed struct alignment is not the C++ allocation requirement; Impl is explicitly16-byte aligned.",
+        "Licensed chip disassembly must remain local, uncommitted."
+      ]
     },
     "limits": [
       "Known level/rise/adjacent-key tradeoffs preserved. No claim of universal audible improvement.",
       "No measured soft-pedal recording target, new fitted coefficients or new calibration constants.",
       "Mixed-string rank-pairing continuity remains unproven."
+    ]
+  },
+  "soft_pedal_rack_followup": {
+    "review": {
+      "completed_utc": "2026-11-01T12:18:30.617075+00:00",
+      "rack_commit": "63491f7db20697b226a80edea79018b428401d99",
+      "canonical_engine_commit": "0b96df11d4098dbb1a46748a6f2c08a22072c027",
+      "version": "0.4.4d1",
+      "status": "Committed locally; build-ready. Fresh Recon gate pending because another session is active.",
+      "validation_sha256": "bf631d23cbba96356a7170c2d66af15262e323a9c308428f312405b6306bb68c",
+      "archive_sha256": "018f9fdf92f13ca52c5b345a8346105a634719536044e385a78747151ea22d8b",
+      "reviewed": [
+        "Source/pin/patch/GUI scope",
+        "All log,source and16demo pins",
+        "Archive identity,14patches,35GUI2Dfiles,4chips",
+        "Release checksums and preserved0.4.3 archive",
+        "Front,rear,folded-rear andthumbnail asset QA"
+      ],
+      "live_install_performed": false,
+      "push_merge_upload_performed": false
+    },
+    "native_ctest": {
+      "passed": 4,
+      "failed": 0,
+      "seconds": 17.51
+    },
+    "asan_ubsan_wrapper": "pass",
+    "sdk": "JukeboxSDK_500_028",
+    "target_version": "5.0",
+    "sdk_compile_only": "pass",
+    "local45_deployment": "pass, task-owned staging destination only",
+    "universal45": "pass",
+    "package": {
+      "archive": "/Users/vojta/Dev/rack-keyra-realism-20261101/Examples/Keyra/Output/Universal45/Keyra.u45",
+      "archive_sha256": "018f9fdf92f13ca52c5b345a8346105a634719536044e385a78747151ea22d8b",
+      "archive_integrity": "pass",
+      "version": "0.4.4d1",
+      "sdk": "JukeboxSDK_500_028",
+      "target_version": "5.0",
+      "patch_count": 14,
+      "patches_match_source_and_stage": true,
+      "gui2d_files_match_source": 35,
+      "chip_sha256": {
+        "chip_binaries/Testing/Keyra32.ll": "c490ab047ee6e6e9fd2a065106fe180c12ab0eb4e079dd1f3f04b08db5420128",
+        "chip_binaries/Testing/Keyra64.ll": "b0b3f1200d4ae1a4373c8e2dd7be5df8626f44bdb750b56e440c378a1af1ba3f",
+        "chip_binaries/Deployment/Keyra32.ll": "c490ab047ee6e6e9fd2a065106fe180c12ab0eb4e079dd1f3f04b08db5420128",
+        "chip_binaries/Deployment/Keyra64.ll": "b0b3f1200d4ae1a4373c8e2dd7be5df8626f44bdb750b56e440c378a1af1ba3f"
+      },
+      "staged_payload": "/Users/vojta/Dev/rack-keyra-realism-20261101/out/keyra-044d1/staging/Keyra",
+      "staged_dylib_sha256": {
+        "Keyra-arm64.dylib": "eb9394aa2b62df40bf79bf6271090b96b98f89e623725c7915e624f7f22c4b1e",
+        "Keyra.dylib": "728d929d2b851cc2085255d23d72e147bc4cfb1e668fd4fddc745f42cb5e9701"
+      },
+      "staged_lua_matches_source": true
+    },
+    "patch_values_unchanged": true,
+    "wrapper_and_lua_unchanged": true,
+    "fresh_host_gate": "PENDING; no0.4.4 live install, default creation or factory-patch playback claim. Previous0.4.3 host result is historical only.",
+    "host_availability": {
+      "observed_utc": "2026-11-01T12:16:51.392292+00:00",
+      "shared_lock": "/tmp/protocodus-recon-validation.lock",
+      "lock_held_by_other": false,
+      "active_host_processes": [
+        "65891     1 /Applications/Reason Recon 14 RESDK4 Logging.app/Contents/MacOS/Reason Recon"
+      ],
+      "installation_performed": false,
+      "fresh_044_host_run_performed": false,
+      "live_keyra_payload_hashes_unchanged_since_intake": true,
+      "decision": "Build/package only; root reviews next bounded host check. Never interrupt unrelated host or overwrite unexpected new payload state."
+    },
+    "static_analysis_warnings": [
+      "KeyraEngine.cpp:1523:11 core.NullDereference in voice scan",
+      "KeyraEngine.cpp:1530:5 core.NullDereference at chosen voice"
+    ],
+    "untested": [
+      "fresh0.4.4 default creation and14patch Recon playback",
+      "interactive Random Piano/Build controls",
+      "all host views and overlays",
+      "RPG-8 auto-routing",
+      "song persistence and older-song host loading",
+      "target-chip CPU/retail Reason",
+      "Reason Studios cloud build/acceptance/publication"
     ]
   }
 }

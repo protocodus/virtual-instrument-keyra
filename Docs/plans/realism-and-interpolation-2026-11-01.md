@@ -90,7 +90,9 @@ Transporting existing biases removes selected rank-crossing discontinuities;
 including −2.398 dB middle level at Belmont89/v120 and larger adjacent gaps
 elsewhere. The choice supports this direction without claiming uniform audible
 improvement, a measured soft-pedal acoustic target or mixed-string continuity.
-Rack integration follows canonical acceptance.
+Rack 0.4.4d1 now pins the accepted revision and passes native/sanitizer, SDK
+and package checks. Its fresh Recon creation/playback check is pending because
+another session is active; staging and packaging did not alter the live slot.
 
 The independent reset fix is accepted locally as 0.4.3: all 37 reset-history
 cases match a fresh engine, the 933-case recording comparison has no regressions,

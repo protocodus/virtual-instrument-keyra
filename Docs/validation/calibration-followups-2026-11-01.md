@@ -46,14 +46,18 @@ strictness 10 with seed `0x4b455952`; CLAP validator 0.3.2 reports 17 passes,
 zero failures, three optional preset-discovery skips and a 114 ms scan warning
 against 100 ms. Execution was on arm64; x86_64 slices were built but not run.
 AU validation, manual DAW acceptance and target-host CPU qualification remain
-open. Rack integration follows this canonical acceptance.
+open. The later Rack build checkpoint below records the adapter integration.
 
 The selected B tradeoffs below remain: some intermediate levels, adjacent-key
 gaps and rise metrics get larger. This is not universal audible improvement or
 a measured acoustic soft-pedal fit. Measured endpoints and neutral-pedal
 controls are preserved; mixed-string rank pairing still limits continuity.
-Native64 fixed storage grows by 49,984 bytes; SDK32 storage needs its own
-measurement. There are no new callback allocations or oscillators.
+Native arm64 and SDK64 fixed storage grows by 49,984 bytes to 14,697,152 bytes.
+The later actual SDK32 audit measures 63,504 bytes of growth to 14,643,920:
+13,528 extra cache bytes, the same 49,984-byte assembly-buffer growth, and
+eight bytes less alignment padding. The totals match each chip's constructor
+allocation constant. This is fixed engine storage, not process memory or CPU.
+There are no new callback allocations or oscillators.
 
 Evidence is frozen under `out/realism/soft-order-audit/promotion-0.4.4/` and
 `out/realism/soft-order-audit/combined-044/`. The compact JSON links the exact
@@ -63,6 +67,31 @@ The evaluation's initial manifest accidentally captured a still-writing CPU
 log. That initial receipt is preserved; its corrected manifest excludes the
 separately owned frontend/CPU artifacts, which have their own final receipt.
 All corrected hashes were verified without rerunning or changing results.
+
+### Rack 0.4.4d1 — build-ready, fresh host check pending
+
+Rack commit `63491f7db20697b226a80edea79018b428401d99` pins accepted canonical
+`0b96df11d4098dbb1a46748a6f2c08a22072c027`. All four native tests, the
+ASan/UBSan wrapper check, SDK compile-only, staged local45 Deployment and
+universal45 pass with SDK `JukeboxSDK_500_028`, target 5.0. The archive verifies
+14 patches, 35 GUI2D files and all four Testing/Deployment 32-/64-bit chip inputs.
+Patch values, wrapper code, properties and public identity are unchanged.
+Fifteen of 16 retained demo WAVs are identical; the soft-pedal Felt Room demo
+changes, with its previous version preserved. Versioned artwork was reviewed.
+
+The U45 SHA-256 is
+`018f9fdf92f13ca52c5b345a8346105a634719536044e385a78747151ea22d8b`.
+The local handoff is `Examples/Keyra/Release/0.4.4d1/` in the Rack checkout;
+its validation, manifest and checksums were verified. The numeric record pins
+the Rack validation and independent target-memory receipt.
+
+**Fresh 0.4.4d1 Recon validation remains pending.** Another Recon session was
+active at the final availability check. Local45 installed only into task-owned
+staging; the live development payload was unchanged. No unrelated host was
+terminated or reused. The earlier 0.4.3d1 host result is historical, not proof
+of 0.4.4 creation or playback. Once the host is available, acquire the shared
+validation lock and complete fresh default-device creation and factory-patch
+playback before claiming that coverage. No push, merge or publication occurred.
 
 ## Hard reset after changing piano — accepted locally in 0.4.3
 
