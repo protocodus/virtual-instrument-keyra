@@ -2402,3 +2402,26 @@ The WAVs are review artifacts and are not committed.
 - A WAV SHA256: `c40418816a33cd6660c70d4b2ff389d0f73dffce766fd4a6bb0b64c104c635ea`.
 - B WAV SHA256: `4bb940ce17541fdc1b58cb4924e47cd440785cda8118a29daf2ef78885202654`.
 - C WAV SHA256: `968b08ba5265d082737b489b839290b6cfbe26a70612d3e79d41ae1daca75204`.
+
+## 2026-11-01 — Belmont clarity across dynamics
+
+The owner described Belmont as very dark and chose **C** in the subsequent
+three-way Moonlight comparison. A was unchanged 0.4.5 with additional velocity
+colour strength 0.4; B reduced this to 0.2; C removed this additional colour.
+All three retained the instrument's measured velocity layers, note envelopes,
+body, noise, pedals and mechanics. The identical 19.900049-second passage was
+rendered with its preceding history and controls, then matched in whole-excerpt
+stereo RMS to −24 dBFS with a single scalar per letter and identical 5 ms cut
+fades. There was no equalization or compression.
+
+Version 0.4.6 adopts C for Belmont's hammer contribution only. The other five
+pianos retain strength 0.4. A mixed build changes according to its Belmont
+hammer share. Existing Belmont presets and saved sessions intentionally gain
+this clearer voicing; control ranges and automation identifiers are unchanged.
+This is an owner's voicing preference, not a new estimate of physical hammer
+behaviour or a claim that every piano should have the same spectrum.
+
+The frozen review files and separate key are in
+`Downloads/Keyra Belmont Tone 2026-11-01/`; the reproducer is under
+`out/realism/belmont-colour-control-20261101/listening.py`. The retained C WAV
+SHA256 is `f8d0da8d6bef957482def9de751ec93178bfc55bab298cc42554722c5cb265fc`.

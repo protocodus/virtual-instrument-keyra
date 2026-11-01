@@ -6,6 +6,19 @@ consistent over A0–C8 and velocity while keeping its own character. Measuremen
 from other pianos should constrain gaps rather than replace the target piano's
 measured voicing.
 
+The owner's latest direction makes whole-keyboard playing quality the primary
+gate: balanced mechanics, continuous tone at every key and velocity, clean
+releases/pedals/repetitions, and each piano's distinct character. Recordings
+serve as sanity checks. The [dense quality audit](../validation/whole-keyboard-quality-2026-11-01.md)
+covers all 67,056 key/velocity/model combinations for the first 300 ms and
+thirteen velocities for held/released notes. It identifies a concrete Kawai
+midpoint phase-pattern switch, plus quiet Hamburg treble-release imbalance;
+neither is repaired by matching all models' spectra or turning down Hamburg's
+Mechanics control. The owner selected Belmont C's clearer velocity voicing
+for 0.4.6. Full Bugatti Step renders provide an identical musical stress test
+across all six models. Broader realism remains work in progress; finite output
+and a completed demo are not a certificate that no audible artifacts remain.
+
 The implementation baseline is `ba3ee9908645`, including the latest soundboard
 refits and Belmont. Work is isolated on `codex/keyra-realism-20261101`. Earlier
 research at `e96ce8a8bf58` remains historical evidence, not this baseline.

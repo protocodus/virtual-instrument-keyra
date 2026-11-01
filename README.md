@@ -43,7 +43,17 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### Unreleased — 0.4.5 — quieter, adjustable mechanics
+### Unreleased — 0.4.6 — clearer Belmont dynamics
+
+Belmont now retains its measured soft-strike tone without the additional
+velocity darkening, following the owner's C listening choice. Its recorded
+velocity layers remain expressive, and the other five measured pianos keep
+their voicing. Saved Belmont sounds also receive this change; parameter IDs
+and ranges are unchanged.
+Its tube-mic monitoring level is trimmed by 0.352 dB after the output guard
+to retain the existing level limits; the stereo-pair output is unchanged.
+
+### 0.4.5 — 2026-11-01 — quieter, adjustable mechanics
 
 New instruments use the quieter B action balance chosen in the Moonlight
 listening test. The Mechanics knob places that setting at **40%**, with finer

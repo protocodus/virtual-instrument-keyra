@@ -73,7 +73,17 @@ constexpr measured::Damper leftover{-46.f,upright::damper.shareSlopeDb,upright::
 // answer velocity more strongly than the recordings do (Docs/decisions.md,
 // 2026-10-29); a felt hammer stiffens as it is pressed in, so a harder blow is
 // brighter (Hall, JASA 92(1), 1992).
-constexpr double velocityColour=.4;
+// Belmont retains its measured velocity timbre: the owner chose C (no
+// additional colour) on 2026-11-01. The other pianos keep the chosen strength.
+constexpr std::array<double,pianoCount> additionalVelocityColour{.4,.4,.4,.4,.4,0};
+// Monitoring calibration after the shared guard, not string/body tone. With
+// Belmont's additional colour removed, KeyraLevels leaves 0.336856902 < trim
+// <= 0.366247976 dB between its existing +0.7 VU chord and -9.5 VU typical
+// limits. Use that interval's midpoint; a pre-guard tubeScale reduction fails
+// because the guard gives almost all of it back. Measurement and derivation:
+// Docs/validation/whole-keyboard-quality-2026-11-01.md, Tube output calibration.
+constexpr double belmontTubeOutputTrimDb=.351552439;
+
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
 }
@@ -979,6 +989,24 @@ struct Engine::Impl {
   struct Section {double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;};
   std::array<Section,measured::tubeSections> tube{};
   double tubeScale=1;
+  // The already-smoothed Mic contribution and smoothly changing hammer share
+  // set a monitoring gain. Its fixed history follows the guard's look-ahead,
+  // so automation changes the same input frame before and after the guard.
+  double tubeOutputTarget=1,tubeOutputGain=1;
+  std::array<float,protocodus::OutputStage<2>::kMaximumDelay> tubeOutputHistory{};
+  int tubeOutputIndex=0;
+  void resetTubeOutput() noexcept {
+    tubeOutputGain=tubeOutputTarget;tubeOutputIndex=0;
+    std::fill_n(tubeOutputHistory.data(),output.DelaySamples(),
+                static_cast<float>(1+mic*(tubeOutputGain-1)));
+  }
+  float delayedTubeOutput() noexcept {
+    tubeOutputGain+=smooth*(tubeOutputTarget-tubeOutputGain);
+    const float heard=tubeOutputHistory[tubeOutputIndex];
+    tubeOutputHistory[tubeOutputIndex]=static_cast<float>(1+mic*(tubeOutputGain-1));
+    if(++tubeOutputIndex==output.DelaySamples())tubeOutputIndex=0;
+    return heard;
+  }
   float contactShare=1; // a sample's step of the rise's smoothing
   double smooth=0,controlSmooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   float previousBrightness=.5f;
@@ -1104,6 +1132,8 @@ struct Engine::Impl {
     actionRise=fold(share.action,[&](int p){return static_cast<double>(models[p].actionRise);},pickLog);
     actionDecay=fold(share.action,[&](int p){return static_cast<double>(models[p].actionDecay);},pickLog);
     tubeScale=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
+    tubeOutputTarget=1+share.hammers[static_cast<int>(Piano::belmont)]
+                         *(std::pow(10.,-belmontTubeOutputTrimDb/20)-1);
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)
       coherence[k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].noiseBands[k].coherence);},pick);
@@ -1561,7 +1591,7 @@ struct Engine::Impl {
       // stretch and stiffness trend of the last two.
       x.t=std::max(0.,std::min(1.,static_cast<double>(note-x.a->note)/(x.b->note-x.a->note)));
       x.layerDb=levelAt(m,m.layerLevelDb,x.v);
-      x.colourDb=velocityColour*(x.layerDb-levelAt(m,m.layerLevelDb,100));
+      x.colourDb=additionalVelocityColour[p]*(x.layerDb-levelAt(m,m.layerLevelDb,100));
       // No partial rises faster than its recorded pitch's onset builds up.
       x.shortestRise=std::exp(mix(onsetRiseAt(m,*x.a,x.v),onsetRiseAt(m,*x.b,x.v),x.t));
       x.contact=m.contactTime*std::pow(2.,-(note-60)/24.);
@@ -2064,6 +2094,8 @@ struct Engine::Impl {
       const double yL=hpL*gain,yR=hpR*gain;
       std::array<float,2> frame{static_cast<float>(yL>4?4:yL< -4?-4:yL),static_cast<float>(yR>4?4:yR< -4?-4:yR)};
       output.Process(frame);
+      const float tubeOutput=delayedTubeOutput();
+      if(tubeOutput!=1.f){frame[0]*=tubeOutput;frame[1]*=tubeOutput;}
       left[i]=frame[0];right[i]=frame[1];
     }
   }
@@ -2123,7 +2155,7 @@ void Engine::reset() noexcept {
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-  p.output.Reset();
+  p.output.Reset();p.resetTubeOutput();
   for(int ch=0;ch<16;++ch)p.capture(ch);
   p.pedalHeld=false;p.pedalEdge(false);
 }
@@ -2190,7 +2222,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
-    if(!any){p.silenceStrings();p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();}
+    if(!any){p.silenceStrings();p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();}
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
@@ -2227,7 +2259,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
-    p.mute=p.parameters.mute;p.mic=p.parameters.mic;
+    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resetTubeOutput();
     for(auto& channel:p.channels)channel.smoothedMute=std::max(p.parameters.mute,channel.mute);
     return;
   }
@@ -2251,7 +2283,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
       p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       p.silenceStrings();p.silenceTube();
       p.silenceNoise();
-      p.output.Reset();
+      p.output.Reset();p.resetTubeOutput();
     }
   }
 }

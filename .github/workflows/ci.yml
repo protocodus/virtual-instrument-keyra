@@ -164,6 +164,10 @@ jobs:
         run: |
           cmake --build "build-plugin" --config Release --parallel --target "Keyra_VST3" "Keyra_CLAP" "Keyra_Standalone"
 
+      - name: Validate Windows plug-ins
+        shell: bash
+        run: ./scripts/validate-plugins.sh build-plugin Keyra aumu Kyra Ptoc 0x4b455952
+
       - name: Package Windows VST3, CLAP and standalone
         run: python scripts/package-windows.py --build-dir build-plugin
 
