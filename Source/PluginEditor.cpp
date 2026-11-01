@@ -384,8 +384,10 @@ void KeyraAudioProcessorEditor::resized()
         controls[static_cast<size_t>(voicing[i])].setBounds(74 + static_cast<int>(i) * 120, 170, 112, 126);
     for (size_t part = 0; part < buildParts.size(); ++part)
         for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
+            // JUCE reserves 30 px for the track before the 36 px value box.
+            // Keep both widths so a full "100%" remains visible in all six columns.
             weights[part * keyra::pianoCount + piano].setBounds(gridLeft + static_cast<int>(piano) * gridPitch,
-                rowTop + static_cast<int>(part) * rowPitch, gridPitch - 8, 26);
+                rowTop + static_cast<int>(part) * rowPitch, gridPitch - 3, 26);
     for (size_t i = 0; i < modifiers.size(); ++i)
         modifiers[i].setBounds(594 + static_cast<int>(i) * 104, 170, 104, 126);
     voicingTab.setBounds(410, 138, 80, 21);

@@ -2296,3 +2296,24 @@ D♯2's rise (13.95 to 34.59 ms)
 
 Fitted at the owner's request and checked by measurement; no one has listened to
 it yet.
+
+## 2026-11-01 — Mom’s Baby Grand velocity interpolation
+
+The owner compared the two lettered Mom’s Baby Grand clips and chose **B**:
+“B sounds more even.” A is the unchanged `ba3ee99` engine; B is the guarded
+whole-partial velocity interpolation, with the same poles, measured layers
+and piano data. This choice supports retaining that velocity-interpolation
+direction. It is a listening preference, separate from recording-error
+measurements; the pitch-rate interpolation was not part of these clips.
+
+The material is seven isolated A1/MIDI 33 notes at recording-layer coordinates
+77, 85, 92, 97, 102, 109 and 116. Each file is 8.4 seconds of 48 kHz stereo
+audio through the native engine in steady measurement mode, with identical
+controls, events and fresh-engine seeds. A and B share one trim derived from
+A; no independent file or per-note matching was applied because evenness of
+dynamics was being judged. Files, the separately written key and full receipt
+remain under `out/realism/listening/velocity-interpolation/`.
+
+A WAV SHA256: `43d851e01cbf3af10447fa24f4adc890ec6075932e3658225a6ec605919cc917`.
+
+B WAV SHA256: `8c7981564e8b8f7718e88cd4af75db52dc322cd8fc1628a715d1e75748c163d4`.

@@ -1111,9 +1111,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   measurements. Predictions between recorded pitches remain approximate;
   the [interpolation validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md)
   records the remaining pitch-gap and attack-fit limitations.
-- Only Linux VST3 and standalone builds have been validated
-  ([pluginval](Docs/validation/pluginval-2026-10-26.txt)); CLAP, the Audio Unit,
-  macOS, Windows and Reason are built by CI but not yet accepted in a host.
+- Linux VST3 and standalone have earlier validation
+  ([pluginval](Docs/validation/pluginval-2026-10-26.txt)). The local 0.4.2 macOS
+  arm64 VST3 and CLAP pass automated host validators, and its 0.4.2d1 Rack
+  adapter plays all fourteen factory patches in protected Recon
+  ([validation](Docs/validation/host-interpolation-2026-11-01.md)). The Audio
+  Unit is built but has not passed auval in this iteration. Windows, manual
+  DAW workflows, interactive Rack controls/song recall, retail Reason and
+  target-chip CPU acceptance remain unverified for this candidate.
 - The [production target](Docs/plans/production-readiness.md) lists the
   evidence a commercial release still needs.
 

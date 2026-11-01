@@ -1,0 +1,111 @@
+{
+  "date": "2026-11-01",
+  "version": "0.4.2",
+  "canonical_base": "60d89f00f12290d8d7ec599cf48e7905dbf01da6",
+  "change_since_base": "Build slider width 61 to 66 pixels; documentation; no DSP or numeric data changes",
+  "platform": {
+    "system": "macOS-26.5.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "hardware": "Apple M1 Max"
+  },
+  "source_sha256": {
+    "Source/DSP/KeyraEngine.cpp": "8afcba98abe2029b8adcff5b49e846312476b199f2e9383d8779f91957d55ee0",
+    "Source/DSP/KeyraEngine.h": "7d35d4680a780f55702d7415d873dee17e7a5ada0d432e783eb8acbb62a6f808",
+    "Source/DSP/MeasuredVelocityInterpolation.h": "c5167799cc571e22f15874ba67ba2260da46aaef2c4243ff72bc72490e4ba6ec",
+    "Source/PluginEditor.cpp": "e26358c14d8de71af01af63a3ace375ee657667efc8649d7f98097c8f104a2cd",
+    "Source/PluginProcessor.cpp": "07249ee83c9a2a5e5c91e703c24d8bb2b3f47eea32830bb5a0c3809b030cbd72",
+    "CMakeLists.txt": "aeba366f6d7f33d0d7cdb8af0960db775ad92a4dcc13f20768549934fe96efec"
+  },
+  "binaries": {
+    "VST3": {
+      "path": "build-plugin-realism/Keyra_artefacts/Release/VST3/Keyra.vst3/Contents/MacOS/Keyra",
+      "sha256": "6b03d50e001d2dc8cc5a866e3bc33f2560c99ed3f4ee245d82c250e5a682a95e",
+      "file": "Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit bundle x86_64] [arm64]\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/VST3/Keyra.vst3/Contents/MacOS/Keyra (for architecture x86_64):\tMach-O 64-bit bundle x86_64\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/VST3/Keyra.vst3/Contents/MacOS/Keyra (for architecture arm64):\tMach-O 64-bit bundle arm64"
+    },
+    "AU": {
+      "path": "build-plugin-realism/Keyra_artefacts/Release/AU/Keyra.component/Contents/MacOS/Keyra",
+      "sha256": "f3efc1c1bb975eed35b9b2bd9d9612b1537730a416ce33d0b2ac6d81fe51fd74",
+      "file": "Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit bundle x86_64] [arm64]\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/AU/Keyra.component/Contents/MacOS/Keyra (for architecture x86_64):\tMach-O 64-bit bundle x86_64\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/AU/Keyra.component/Contents/MacOS/Keyra (for architecture arm64):\tMach-O 64-bit bundle arm64"
+    },
+    "CLAP": {
+      "path": "build-plugin-realism/Keyra_artefacts/Release/CLAP/Keyra.clap/Contents/MacOS/Keyra",
+      "sha256": "95eaaf770f4bff403f3625e9ca79e973c8289bcbe7095c13f2c3ea1e3e7fdd1a",
+      "file": "Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit bundle x86_64] [arm64]\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/CLAP/Keyra.clap/Contents/MacOS/Keyra (for architecture x86_64):\tMach-O 64-bit bundle x86_64\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/CLAP/Keyra.clap/Contents/MacOS/Keyra (for architecture arm64):\tMach-O 64-bit bundle arm64"
+    },
+    "Standalone": {
+      "path": "build-plugin-realism/Keyra_artefacts/Release/Standalone/Keyra.app/Contents/MacOS/Keyra",
+      "sha256": "ccfa8e07edf4a3e233d0973f59e4dfdf5fd562148ce83bbac0934333c8c4b853",
+      "file": "Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64]\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/Standalone/Keyra.app/Contents/MacOS/Keyra (for architecture x86_64):\tMach-O 64-bit executable x86_64\n/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/Standalone/Keyra.app/Contents/MacOS/Keyra (for architecture arm64):\tMach-O 64-bit executable arm64"
+    }
+  },
+  "logs": {
+    "out/realism/host-validation/pluginval-layout.log": "156335ed0e449a79de3dbe33b4bd6ad2ff6656a1ce74e3fbe4dd6c0d229caa85",
+    "out/realism/host-validation/clap-layout.log": "6e29cd1c98dc3e5495fb62b0cb38f593b37c7b88851e330cfdaaf1fde6f2c3a6",
+    "out/realism/host-validation/validators.log": "eaa57177c8859c5a1c8439bcc7f6ac9d953b6aa0404e6e4e2a7c74fd0c01d71c",
+    "out/realism/host-validation/frontend-layout-tests.log": "cb6d22c104603be145dc8c3d0820ddf6f994a5ca936f0f5677c627d6d90dd863",
+    "out/realism/host-validation/keyra-build-fixed.png": "f212c5b8208982544e499b74a378770f5d00c9d69aed781c195ec6a8b617c129",
+    "out/realism/host-validation/validate-vst3-clap.sh": "81bc55543a6b2cb47bca1d777bdc9589915d6d8319d85084d3dcda9a024f691a"
+  },
+  "frontend_checks": {
+    "initial": [
+      "PluginProcessor pass 1.05s",
+      "ParameterMatrix --rotation --jobs 4 pass 14.23s",
+      "EditorRender pass 1.33s"
+    ],
+    "after_layout": [
+      "PluginProcessor pass 2.37s",
+      "EditorRender pass 0.70s"
+    ],
+    "parameter_matrix_scope": "rotating subset, not full sixteen-shard CI matrix"
+  },
+  "vst3": {
+    "validator": "pluginval 1.0.4",
+    "strictness": 10,
+    "seed": "0x4b455952",
+    "result": "SUCCESS",
+    "seconds": 17,
+    "cold_open_ms": 276,
+    "warm_open_ms": 6
+  },
+  "clap": {
+    "validator": "clap-validator 0.3.2",
+    "tests": 20,
+    "passed": 17,
+    "failed": 0,
+    "skipped": 3,
+    "skip_reason": "optional clap.preset-discovery-factory/draft-2 not implemented",
+    "warnings": 1,
+    "scan_ms": 111,
+    "scan_warning_threshold_ms": 100,
+    "previous_run_scan_ms": 704
+  },
+  "constructor_diagnostic": {
+    "protocol": "50 constructor+reset+destructor calls per run,3 runs,48kHz;processCPU and wall-clock; nativearm64developmentmachine, diagnostic nottiminggate",
+    "results": {
+      "baseline": "run=0 milliseconds_per_constructor_reset=2.15697 cpu_ms=2.15292\nrun=1 milliseconds_per_constructor_reset=2.14581 cpu_ms=2.13626\nrun=2 milliseconds_per_constructor_reset=2.11686 cpu_ms=2.11152\n",
+      "candidate": "run=0 milliseconds_per_constructor_reset=2.66107 cpu_ms=2.65614\nrun=1 milliseconds_per_constructor_reset=2.61292 cpu_ms=2.60862\nrun=2 milliseconds_per_constructor_reset=2.62174 cpu_ms=2.61568\n"
+    }
+  },
+  "rack": {
+    "commit": "1d0214d17e3cb5d61c7de3c7c5f68ebf711de630",
+    "version": "0.4.2d1",
+    "canonical_pin": "60d89f00f12290d8d7ec599cf48e7905dbf01da6",
+    "receipt_path": "Examples/Keyra/Docs/validation/interpolation-2026-11-01.json",
+    "receipt_sha256": "ec42fe290f12a851dea74f0f5862082947e02e4522446c99fbe2a87e4aca5bfb",
+    "package_sha256": "e80a5851de90e420db6c3b026925559c9d6d1b1fe209d983c07d1bad50ab7ab6",
+    "protected_recon_factory_patches_passed": 14
+  },
+  "unverified": [
+    "AU auval",
+    "manual standalone/DAW workflows",
+    "Windows candidate validation",
+    "interactive Rack controls/views",
+    "Rack song recall and older songs",
+    "RPG-8 auto-routing",
+    "Reason target-chip CPU",
+    "retail Reason",
+    "Reason cloud acceptance"
+  ],
+  "published": false,
+  "merged": false
+}
