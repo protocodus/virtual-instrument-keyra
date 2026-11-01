@@ -91,8 +91,10 @@ soft-pedal recording target or mixed-string continuity claim supports acceptance
 Frozen summaries and hashes are in the follow-up evidence; listening must settle
 the remaining audible tradeoff without selecting only favorable examples.
 
-The independent reset fix for 0.4.3 is undergoing separate validation. Its
-acceptance and adapter integration are not implied by any research result here.
+The independent reset fix is accepted locally as 0.4.3: all 37 reset-history
+cases match a fresh engine, the 933-case recording comparison has no regressions,
+and native unit/audio/performance and VST3/CLAP validation pass. Adapter
+integration follows separately. This does not adopt the pending sound candidates.
 
 Progress remains active until the sound and whole-range requirements have
 direct evidence for all six pianos. A prepared dataset, a favorable aggregate

@@ -8,8 +8,53 @@ recording summaries, every tolerance regression, velocity-pilot aggregates,
 invariants and hashes of the complete local reports.
 
 These experiments use the accepted 0.4.2 source as their frozen reference.
-The independent reset fix for 0.4.3 is undergoing separate validation; this
-report makes no acceptance claim for that change.
+The independent hard-reset correction is accepted locally as 0.4.3 after the
+separate checks below. It does not adopt any of the sound candidates.
+
+## Hard reset after changing piano — accepted locally in 0.4.3
+
+Changing the piano while its body rings starts a 10 ms pickup transition.
+Previously, an immediate hard reset cleared the resonators but retained the
+previous pickups and unfinished transition. The next strike therefore depended
+on the previous piano. For Grand→Upright, waveform error against a fresh engine
+was 11.389% of fresh-output RMS over the first 50 ms. This is waveform error,
+not a loudness increase.
+
+Reset now snaps the pickups to the current build's target, clears their steps
+and cancels the transition. Live build changes keep their existing smoothing.
+The permanent public-API regression covers all 30 different-model transitions,
+six same-model controls and a mixed build. The old source fails 31 of these
+37 cases; the correction passes all 37 with exact fresh-engine stereo output.
+The existing completed-transition and live-click tests remain unchanged.
+
+The complete 933-case TRAIN/DEV recording comparison has zero regressions or
+metric-availability changes. Of those score rows, 930 are exact; the remaining
+three differ by at most 1.78e−15 and have byte-identical 4.6-second audio.
+Thirty additional fresh-start playback controls are exact, covering all six
+pianos, soft pedal, both velocity paths and mixed/nondefault builds. No new
+reference extraction, fitting or sealed-data access occurred.
+
+The universal macOS Release build and C++17 compilation pass. All 12 unit and
+two audio tests pass, including callback-allocation checks. The eight-demo CPU
+gate passes at real-time factors 0.0301–0.0998 against the unchanged 0.6 budget,
+at 48 kHz/256-frame blocks, three repeats on an Apple M1 Max. These are native
+development-machine timings, not Reason target-chip measurements. Regenerating
+the velocity guard reproduces its numeric header exactly; only source-hash
+provenance changes.
+
+Universal VST3, AU, CLAP and standalone bundles build as 0.4.3 without user
+plug-in installation. The processor and final rotating parameter-matrix checks
+pass. VST3 passes pluginval 1.0.4, strictness 10, seed `0x4b455952`; CLAP passes
+17 applicable tests with zero failures, three optional preset-discovery skips
+and a 117 ms scan warning against 100 ms. The matrix's final run follows
+completed linking; the earlier potentially stale run is retained but not used
+as its acceptance evidence. AU/auval, manual DAW workflows and Windows remain
+unverified. Rack integration follows separately; earlier 0.4.2d1 host evidence
+does not validate a new Rack binary.
+
+The linked compact receipt retains source, build, test, benchmark and binary
+hashes. Full causal and validation evidence is under
+`out/realism/reset-body-audit/`. No push, upload or merge is part of this change.
 
 ## Retaining quiet observations in truncated recordings
 

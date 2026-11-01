@@ -2079,6 +2079,9 @@ void Engine::reset() noexcept {
   for(auto& channel:p.channels)channel=Channel{};
   p.silenceStrings();
   p.silenceBody();p.silenceNoise();
+  // A hard reset starts the current build afresh, even if a live model
+  // change had not finished gliding its pickups. Live changes still glide.
+  p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
   p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.mic=p.parameters.mic;p.silenceTube();
   p.previousBrightness=p.parameters.brightness;

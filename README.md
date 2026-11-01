@@ -43,6 +43,14 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### Unreleased — 0.4.3 — clean reset after changing piano
+
+A hard reset immediately after changing piano now starts with the selected
+soundboard's pickups. It no longer carries the previous piano's unfinished
+pickup transition into the next note. Live piano changes retain their smooth
+transition; the measured sound and interpolation are unchanged
+([validation](Docs/validation/calibration-followups-2026-11-01.md#hard-reset-after-changing-piano--accepted-locally-in-043)).
+
 ### Unreleased — 0.4.2 — interpolation between recorded notes and dynamics
 
 - Repairs selected cancellation dips and overshoots between velocity layers,

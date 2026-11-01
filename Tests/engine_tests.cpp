@@ -681,6 +681,32 @@ int main(int argc,char** argv){
     std::cout<<"build_change_level_db="<<level<<" click_over_unchanged_db="<<edge<<'\n';
     a.reset();keyra::Engine c;c.setParameters(dryUpright());a.noteOn(60,.7f);c.noteOn(60,.7f);
     check(render(a,24000)==render(c,24000),"a changed and reset engine plays as one built so from its start");
+
+    // Unlike the completed glide above, an immediate reset must discard a
+    // model change's still-running pickup glide. Use public APIs and compare
+    // with a fresh engine at the same controls/seeds, including same-build
+    // negative controls and a mixed soundboard. Resetting before changing
+    // the model would mask this regression.
+    const auto resetDuringBuildChange=[](const keyra::Build& from,const keyra::Build& to,const std::string& label){
+      keyra::Parameters before,after;before.gain/=16;after.gain/=16;
+      before.build=from;after.build=to;
+      keyra::Engine historical,fresh;
+      historical.setParameters(before);historical.reset();
+      historical.noteOn(60,.7f);render(historical,4800);
+      historical.setParameters(after);historical.reset();
+      fresh.setParameters(after);fresh.reset();
+      historical.noteOn(60,.7f);fresh.noteOn(60,.7f);
+      const bool identical=render(historical,9600)==render(fresh,9600);
+      if(!identical)std::cerr<<"reset_build_transition="<<label<<'\n';
+      check(identical,"reset during a build change clears historical body pickups");
+    };
+    for(int from=0;from<keyra::pianoCount;++from)for(int to=0;to<keyra::pianoCount;++to){
+      const auto a=static_cast<keyra::Piano>(from),b=static_cast<keyra::Piano>(to);
+      resetDuringBuildChange(keyra::measuredBuild(a),keyra::measuredBuild(b),
+                             std::string(pianoName(a))+"->"+pianoName(b));
+    }
+    resetDuringBuildChange(keyra::measuredBuild(keyra::Piano::grand),
+      keyra::buildToward(keyra::Piano::grand,keyra::Piano::upright,.25f,.75f,.5f,.5f,0,0,0),"grand->mixed");
   }
   {
     // The pianos are builds of one model, each part (strings, hammers,
