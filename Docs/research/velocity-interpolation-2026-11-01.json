@@ -3,10 +3,11 @@
   "protocol": "Guard velocity interpolation using only the six pianos' fitted numeric data.\n\nNo recordings or dev/sealed data are opened. Each complete partial/layer\ninterval is enabled only if the old interpolation leaves its endpoint-energy\nbounds and the phase-aligned alternative stays inside them in four windows.\nThe first 50 ms includes the runtime rise cap, floor and 48 kHz discrete contact\nsmoothing, checked at quarter recording-layer coordinates. The other windows\n(50-750 ms, .75-1.5 s, 1.5-3.5 s) exclude the rise, as windowPower does, and\ntheir entire intervals are certified from the real roots of the quartic\nderivative of exp(L*t)*quadratic(t)/quadratic(t). This is a modal-power guard,\nnot a proof about the complete acoustic waveform, other sample rates or the\nearly window between grid points. Recording benchmarks and listening follow.\n\npython3 Tools/generate_velocity_interpolation.py [--check]\n",
   "recordings_opened": false,
   "rounding_tolerance_db": 1e-08,
+  "reporting_tolerance_db": 1e-05,
   "early_window_sample_rate": 48000,
   "early_grid_layer_coordinate_step": 0.25,
   "sources": {
-    "Tools/generate_velocity_interpolation.py": "2dce7c32a892321903ab1dbc9a996a185ba3610673d6dcafa61e93e4ebc065d2",
+    "Tools/generate_velocity_interpolation.py": "f94b8baa2367cc4e4f28c667d009d5f729c6420ec4bc3cf81062f6249366b4e5",
     "Tools/VelocityInterpolationGuard.cpp": "b6200fcb52203b151dc01facd8dbe88ccef04d32d2685c5653c80ab1e9d7373c",
     "Source/DSP/KeyraEngine.cpp": "d584ab20776cc4b3994dcdf07e27f561b5e4e60eb6ff02661990f35dc5a6becb",
     "Source/DSP/MeasuredTypes.h": "6466918a652ac5e71d6fbcded1b0643ccbdb22faee655fc402ddc4b009c9f033",

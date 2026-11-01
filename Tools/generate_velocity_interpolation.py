@@ -36,6 +36,11 @@ DATA = ['MeasuredModalData.h', 'MeasuredUprightData.h', 'MeasuredKawaiData.h',
 # flat endpoints. 1e-8 dB is a numerical equality tolerance, not an audible
 # acceptance margin (relative power 2.3e-9).
 ROUNDING_DB = 1e-8
+# Reports also contain native float libm results (log/sin/cos of fitted lanes),
+# which vary across platforms before the double integrals. Compare these
+# diagnostics at 0.00001 dB resolution (~2.3 ppm power). This never participates
+# in interval eligibility: ROUNDING_DB, masks and every decision stay exact.
+REPORTING_TOLERANCE_DB = 1e-5
 
 
 def constant_window_extrema(pa, pb, rho, q):
@@ -110,7 +115,8 @@ def generate():
     sources = [Path(__file__).resolve(), ROOT/'Tools/VelocityInterpolationGuard.cpp', ROOT/'Source/DSP/KeyraEngine.cpp',
                ROOT/'Source/DSP/MeasuredTypes.h']+[ROOT/'Source/DSP'/name for name in DATA]
     metadata = {'schema_version': 1, 'protocol': __doc__, 'recordings_opened': False,
-                'rounding_tolerance_db': ROUNDING_DB, 'early_window_sample_rate': 48000,
+                'rounding_tolerance_db': ROUNDING_DB,
+                'reporting_tolerance_db': REPORTING_TOLERANCE_DB, 'early_window_sample_rate': 48000,
                 'early_grid_layer_coordinate_step': .25,
                 'sources': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
                 'partial_count': len(masks), 'enabled_intervals': count,
@@ -125,12 +131,12 @@ def generate():
     return content, metadata
 
 
-def metadata_differences(expected, actual, path=()):
+def metadata_differences(expected, actual, path=(), diagnostic_deltas=None):
     """Exact provenance/decisions; numerical equality only for dB reports.
 
-    Analytic integrals and polynomial roots can differ in their last bits
-    across libm/LAPACK implementations. Reuse the existing ROUNDING_DB only
-    for the reported excursions. Header bytes, source hashes, eligibility
+    Native float libm results, analytic integrals and polynomial roots can
+    differ across platforms. REPORTING_TOLERANCE_DB applies only to the
+    reported excursions. Header bytes, source hashes, eligibility
     booleans, interval identities/counts, nulls and every other field remain
     exact. This does not change how any interval is accepted or rejected.
     """
@@ -144,21 +150,24 @@ def metadata_differences(expected, actual, path=()):
         if expected.keys() != actual.keys():
             yield f'{location}: stored keys={sorted(expected)}, generated keys={sorted(actual)}'
         for key in sorted(expected.keys() & actual.keys()):
-            yield from metadata_differences(expected[key], actual[key], path+(key,))
+            yield from metadata_differences(expected[key], actual[key], path+(key,), diagnostic_deltas)
         return
     if isinstance(expected, list):
         if len(expected) != len(actual):
             yield f'{location}: stored length={len(expected)}, generated length={len(actual)}'
         for i, (a, b) in enumerate(zip(expected, actual)):
-            yield from metadata_differences(a, b, path+(i,))
+            yield from metadata_differences(a, b, path+(i,), diagnostic_deltas)
         return
     diagnostic = (len(path) == 3 and path[0] == 'intervals'
                   and isinstance(path[1], int) and path[2] == 'baseline_excursion_db') or (
                   len(path) == 4 and path[0] == 'intervals' and isinstance(path[1], int)
                   and path[2] == 'candidate_excursion_db' and isinstance(path[3], int))
     if diagnostic and type(expected) in (int, float):
-        equal = (np.isfinite(expected) and np.isfinite(actual)
-                 and abs(expected-actual) <= ROUNDING_DB)
+        finite = np.isfinite(expected) and np.isfinite(actual)
+        delta = abs(expected-actual) if finite else float('inf')
+        if finite and delta and diagnostic_deltas is not None:
+            diagnostic_deltas.append((delta, location))
+        equal = finite and delta <= REPORTING_TOLERANCE_DB
     else:
         equal = expected == actual
     if not equal:
@@ -182,7 +191,14 @@ def main():
     header, metadata = generate()
     if args.check:
         stored_header, generated_header = args.header.read_bytes(), header.encode()
-        differences = list(metadata_differences(json.loads(args.metadata.read_text()), metadata))
+        diagnostic_deltas = []
+        differences = list(metadata_differences(json.loads(args.metadata.read_text()), metadata,
+                                                diagnostic_deltas=diagnostic_deltas))
+        if diagnostic_deltas:
+            maximum, location = max(diagnostic_deltas)
+            print(f'report diagnostics: {len(diagnostic_deltas)} nonzero deltas; '
+                  f'maximum {maximum:.12g} dB at {location}; '
+                  f'tolerance {REPORTING_TOLERANCE_DB:g} dB', flush=True)
         if stored_header != generated_header:
             differences.insert(0, 'header bytes: stored sha256=' + hashlib.sha256(stored_header).hexdigest()
                                + ', generated sha256=' + hashlib.sha256(generated_header).hexdigest())

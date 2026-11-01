@@ -93,7 +93,7 @@ class VelocityInterpolation(unittest.TestCase):
                   'intervals': [{'candidate_excursion_db': [0.]}]}
         generated = copy.deepcopy(stored)
         generated['sources']['Source/DSP/KeyraEngine.cpp'] = 'new'
-        generated['intervals'][0]['candidate_excursion_db'][0] = 2*guard.ROUNDING_DB
+        generated['intervals'][0]['candidate_excursion_db'][0] = 2*guard.REPORTING_TOLERANCE_DB
         with tempfile.TemporaryDirectory(prefix='keyra-freshness-diagnostic-') as folder:
             header, metadata = Path(folder)/'data.h', Path(folder)/'data.json'
             # A newline-only change must not be hidden by text-mode reads.
@@ -107,13 +107,14 @@ class VelocityInterpolation(unittest.TestCase):
         message = str(error.exception)
         self.assertIn('header bytes: stored sha256=', message)
         self.assertIn('/sources/Source~1DSP~1KeyraEngine.cpp: stored=', message)
-        self.assertIn('/intervals/0/candidate_excursion_db/0: stored=0.0, generated=2e-08', message)
+        self.assertIn('/intervals/0/candidate_excursion_db/0: stored=0.0, generated=2e-05', message)
 
     def test_provenance_reporting_roundoff_keeps_decisions_and_hashes_exact(self):
         reference = {
             'sources': {'Source/DSP/KeyraEngine.cpp': 'source-hash'},
             'generated_header_sha256': 'header-hash', 'enabled_intervals': 1,
             'partial_count': 2, 'rounding_tolerance_db': guard.ROUNDING_DB,
+            'reporting_tolerance_db': guard.REPORTING_TOLERANCE_DB,
             'intervals': [{'model': 'grand', 'note': 60, 'order': 1, 'partial': 0,
                            'layer': 2, 'enabled': True, 'baseline_excursion_db': .1,
                            'candidate_excursion_db': [0., 0., None, 0.]}]}
@@ -122,15 +123,20 @@ class VelocityInterpolation(unittest.TestCase):
         for key, index in [('baseline_excursion_db', None), ('candidate_excursion_db', 0)]:
             small = copy.deepcopy(reference)
             if index is None:
-                small['intervals'][0][key] += guard.ROUNDING_DB/2
+                small['intervals'][0][key] += guard.REPORTING_TOLERANCE_DB/2
             else:
-                small['intervals'][0][key][index] += guard.ROUNDING_DB/2
+                small['intervals'][0][key][index] += guard.REPORTING_TOLERANCE_DB/2
             self.assertTrue(match(small))
+            deltas = []
+            self.assertEqual(list(guard.metadata_differences(reference, small, diagnostic_deltas=deltas)), [])
+            self.assertEqual(len(deltas), 1)
+            self.assertAlmostEqual(deltas[0][0], guard.REPORTING_TOLERANCE_DB/2)
+            self.assertTrue(deltas[0][1].startswith('/intervals/0/'))
             large = copy.deepcopy(reference)
             if index is None:
-                large['intervals'][0][key] += 2*guard.ROUNDING_DB
+                large['intervals'][0][key] += 2*guard.REPORTING_TOLERANCE_DB
             else:
-                large['intervals'][0][key][index] += 2*guard.ROUNDING_DB
+                large['intervals'][0][key][index] += 2*guard.REPORTING_TOLERANCE_DB
             self.assertFalse(match(large))
         for key, value in [('model', 'upright'), ('note', 61), ('order', 2),
                            ('partial', 1), ('layer', 3), ('enabled', False), ('enabled', 1)]:
@@ -138,7 +144,8 @@ class VelocityInterpolation(unittest.TestCase):
             self.assertFalse(match(changed), key)
         for key, value in [('enabled_intervals', 2), ('partial_count', 3),
                            ('generated_header_sha256', 'other'),
-                           ('rounding_tolerance_db', guard.ROUNDING_DB*2)]:
+                           ('rounding_tolerance_db', guard.ROUNDING_DB*2),
+                           ('reporting_tolerance_db', guard.REPORTING_TOLERANCE_DB*2)]:
             changed = copy.deepcopy(reference); changed[key] = value
             self.assertFalse(match(changed), key)
         changed = copy.deepcopy(reference); changed['sources']['Source/DSP/KeyraEngine.cpp'] = 'other'
