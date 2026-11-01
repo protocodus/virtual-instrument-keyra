@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "written_utc": "2026-11-01T09:26:07.649225+00:00",
+  "source_root": "/Users/vojta/Downloads/bitKlavierGrand_HouseORTF_44k16b",
+  "source_family": "bitklavier-grand-princeton-taplin-2021-all-mics-all-resolutions",
+  "metadata_scope": "All filenames and stat sizes only; no WAV header, content hash, or waveform opened before role freeze. README text read.",
+  "readme_sha256": "6e81c0c3e0f0cb910ecbea9a2ddbff2a6d17e26fb72af378f3e5222155d976fb",
+  "inventory_script_sha256": "0ff3126ded5a557b0f88c1e2da49d5c86ef3892158746b9347d220f67f8f486d",
+  "selection": "Pitch order only: sorted 30 main pitches in three blocks of10; zero-based block index3=dev,7=sealed, all others=train. No acoustic features or file sizes used. Same-pitch main/harm layers share role.",
+  "roles": {
+    "train": [
+      21,
+      24,
+      27,
+      33,
+      36,
+      39,
+      45,
+      48,
+      51,
+      54,
+      57,
+      63,
+      66,
+      69,
+      75,
+      78,
+      81,
+      84,
+      87,
+      93,
+      96,
+      99,
+      105,
+      108
+    ],
+    "dev": [
+      30,
+      60,
+      90
+    ],
+    "sealed": [
+      42,
+      72,
+      102
+    ]
+  },
+  "auxiliary_policy": "Hammer and pedal WAVs remain unopened and auxiliary_unassigned. Conventional rel index+20 MIDI mapping is recorded only as candidate; verify before any use. If confirmed, hammer of held pitch must inherit that pitch role.",
+  "rules": {
+    "train": "Only role permitted for initial measurement/fitting; masked training-layer or pitch CV may select future candidates.",
+    "dev": "Score only after predefined candidate. Never fit. Not opened in initial survey.",
+    "sealed": "Do not read WAV headers, hash content, decode or listen until explicit owner approval for a selected candidate; metadata names/sizes only.",
+    "family": "All mic images, resolutions, re-encodings and derived clips of this Princeton session share this pitch split. They are not independent donors.",
+    "duplicates": "No audio duplicate search performed. If same-strike duplicates or pitch shifts discovered across roles, quarantine the connected group before analysis; do not silently relabel evaluation as training."
+  },
+  "survey_plan": [
+    {
+      "midi": 21,
+      "layers": [
+        1,
+        8,
+        16
+      ]
+    },
+    {
+      "midi": 36,
+      "layers": [
+        1,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
+    {
+      "midi": 69,
+      "layers": [
+        1,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
+    {
+      "midi": 96,
+      "layers": [
+        1,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
+    {
+      "midi": 108,
+      "layers": [
+        1,
+        8,
+        16
+      ]
+    }
+  ],
+  "survey_case_count": 21
+}

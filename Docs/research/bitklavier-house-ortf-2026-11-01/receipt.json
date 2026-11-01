@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "written_utc": "2026-11-01T09:29:42.603696+00:00",
+  "canonical_head": "63cb09f576a567e5c1abd8b3d8c65ae60cfb960f",
+  "source_family": "bitklavier-grand-princeton-taplin-2021-all-mics-all-resolutions",
+  "readme_sha256": "6e81c0c3e0f0cb910ecbea9a2ddbff2a6d17e26fb72af378f3e5222155d976fb",
+  "primary_sources_checked_2026_11_01": [
+    "https://bitklavier.com/the-bitklavier-grand/",
+    "https://archive.org/details/bitKlavierGrand_HouseORTF_44k16b",
+    "https://www.pianobook.co.uk/packs/steinway-grand/",
+    "https://www.pianobook.co.uk/packs/grandpas-piano/"
+  ],
+  "public_primary_lookup_limitation": "Princeton DOI10.34770/5d16-w750 failed in browser tool; conclusions use verified publisher and publisher-linked archive, not a secondary dataset catalog.",
+  "files": {
+    "survey_train.py": "bd4cde79ce62808209f189bc56377faeefe9bd237a536b6ee475390fc5f2a8bf",
+    "split.sha256": "ee850b0c71ec0a960bfc74f918716efbdeed14ac763a12d241c32c604c24365a",
+    "report.txt": "d8fe49681b9f3f58aa948c9adc63941b42e1c6ab2bb9ac67dc5437bd2fc956a9",
+    "survey.json": "e6085ff5f18a80ad2ade5510d93a1bea540f99ac59bf849826a5a2b897e2f376",
+    "inventory.json": "9d3747e940055a8d58f04221da5785751411e3e24e8c7249e0251098d7848684",
+    "split.json": "1452c65b60f8d633cd21c9db05e9ccb79f1f0feb5ef12ba1c1e866093bc12db8",
+    "freeze_inventory.py": "0ff3126ded5a557b0f88c1e2da49d5c86ef3892158746b9347d220f67f8f486d"
+  },
+  "validation": "Split/script/inventory hashes match survey; exactly21 unique TRAIN cases; zero DEV/SEALED audio accesses; no audio outputs. These counters describe this controlled survey, not global filesystem auditing.",
+  "commands": [
+    "python3 out/realism/bitklavier-house-ortf/freeze_inventory.py",
+    "/Library/Frameworks/Python.framework/Versions/3.11/bin/python3 out/realism/bitklavier-house-ortf/survey_train.py"
+  ]
+}

@@ -10,6 +10,14 @@ The implementation baseline is `ba3ee9908645`, including the latest soundboard
 refits and Belmont. Work is isolated on `codex/keyra-realism-20261101`. Earlier
 research at `e96ce8a8bf58` remains historical evidence, not this baseline.
 
+The owner later supplied [bitKlavier's House ORTF Steinway D](../research/bitklavier-house-ortf-2026-11-01.md).
+Its 30 recorded pitches and 16 layers add a dense velocity-interpolation
+reference. Its source family and whole-pitch roles are frozen; an initial
+21-file training survey is complete. Test masked training layers before using
+it to fill another piano's gaps. Preserve its documented gain balancing,
+fades and room perspective as observation limits, and retain each target
+piano's own measured level and spectral anchors.
+
 ## Required evidence
 
 - Unchanged native baseline renderer, source hashes and train/dev recording
