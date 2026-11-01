@@ -332,11 +332,15 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.RecordingReferenceCache
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_reference_cache.py")
+        add_test(NAME Keyra.BenchmarkComparison
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_benchmark_comparison.py")
         add_test(NAME Keyra.KeyboardMetricContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
-                             Keyra.RateInterpolation Keyra.RecordingReferenceCache Keyra.KeyboardMetricContract
+                             Keyra.RateInterpolation Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
+                             Keyra.KeyboardMetricContract
                              PROPERTIES TIMEOUT 600
                              ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     else()
