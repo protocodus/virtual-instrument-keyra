@@ -1,5 +1,56 @@
 # Realism and whole-keyboard interpolation
 
+## Active consolidation goal
+
+The owner now requests a shared quality standard across all six models:
+consistent tone over the complete keyboard and velocity range, removal of
+range-specific artifacts, smaller unwanted differences in spectrum, volume,
+response and envelope, and dependable behavior throughout the parameter
+space. This is an intentional sound-quality revision. Preserve recognizable
+instrument character and the selected Belmont C voicing; an inherited sampler
+mapping or fitted irregularity is not automatically a quality requirement.
+
+The consolidation starts from `69b87ce` on
+`codex/keyra-quality-consolidation-20261101`. Its DSP is the validated 0.4.6
+engine; the intervening main commit refreshes generated media only. Frozen
+baseline sources and the renderer are retained under
+`out/consolidation-20261101/quality/baseline/` before any new DSP edits.
+
+Completion requires evidence for all four parts of the owner's request:
+
+1. **Keyboard and velocity consistency:** direct audio measurements for every
+   model, MIDI key 21–108 and velocity 1–127; attack, body and tail windows;
+   actual spectrum and stereo measurements; fixed regressions for identified
+   pitch holes and velocity reversals. Structural continuity of interpolation
+   must complement discrete-key measurements.
+2. **Artifact removal:** isolate and correct causes, then verify releases,
+   repetitions, pedals, long resonant tails and live controller changes.
+   Finite samples alone are insufficient. Retain failed candidates and every
+   material regression rather than selecting one favorable time window.
+3. **Shared calibration:** compare identical ordinary-playing stimuli across
+   pianos and registers for level, dynamic response, spectral balance and
+   envelope. Establish common quality limits before selecting a candidate;
+   report each model, not only a six-model average. Preserve distinct acoustic
+   profiles within those limits. Recording comparisons are sanity checks.
+4. **Parameter coverage and delivery:** inventory every native and Rack
+   control, quality state and physical mapping. Verify independent controls,
+   interacting combinations, part mixtures, live transitions, sample rates,
+   reset and controller history, allocation bounds, headroom and performance.
+   Use analytic bounds where possible and label finite sampling honestly;
+   a sampled parameter matrix is not an exhaustive guarantee over continuous
+   settings. Integrate accepted source into the Rack adapter and validate the
+   actual supported builds before calling the consolidation complete.
+
+Initial parallel work addresses whole-pattern pitch interpolation, a reusable
+quality audit, and action/resonance/live-control behavior. The first current
+source probe identifies abrupt held-note Brightness and Resonance changes
+across all six pianos; smoothing is separate from cross-piano voicing. No
+single repaired defect, passing test suite or demonstration completes this
+goal. New work is not authorized for an automatic merge merely because the
+previous 0.4.6 work was explicitly pushed to main.
+
+## Earlier realism work and evidence
+
 The owner requests improved realism for every Keyra piano, using recordings as
 benchmarks, primarily Yamaha C3, Belmont (Mom’s Baby Grand) and Helsinki upright. Every model must remain
 consistent over A0–C8 and velocity while keeping its own character. Measurements

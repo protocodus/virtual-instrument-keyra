@@ -4,7 +4,49 @@ The owner's priority is a common playing-quality standard across all six
 pianos, preserving each instrument's character. Recordings now serve as sanity
 checks rather than targets for making every piano resemble one recording.
 
-## Coverage and limits
+## Current consolidation baseline
+
+The consolidation baseline freezes main `69b87ce` and the accepted 0.4.6
+Belmont C sound. Its DSP SHA-256 is
+`d584ab20776cc4b3994dcdf07e27f561b5e4e60eb6ff02661990f35dc5a6becb`.
+`Tools/quality_audit.py` and `Tools/quality_probe.cpp` provide a reproducible
+public-engine audit, including source/observer hashes and resumable receipts.
+Independent synthetic-signal tests verify stereo power, cross-power, Hann
+spectra and Parseval normalization against NumPy, as well as coverage,
+unavailable measurements and rejection of incomplete or mismatched runs.
+
+The completed baseline includes 67,056 two-second strikes (six models,
+88 keys, all 127 velocities), 2,586 supplementary scenes and 324 separate
+Brightness/quality interaction scenes. The main grid measures onset,
+50–300 ms, 300–750 ms, 750–1,500 ms and release through two seconds. Additional
+panels cover 16-second tails, three qualities, rates, MIDI channels, live
+controls, interacting control corners and all 1,296 categorical four-part
+builds at one common note. All declared finite-output, ceiling, coverage,
+nonzero-primary-note, selected-repeat and zero-gain contracts pass.
+
+This is exhaustive only over the declared default-control integer key/velocity
+grid at 48 kHz. It uses the same normal first strike draw after reset, not
+independent randomized seeds. The other panels sample rates, controls, mixes
+and histories; passing them does not prove absence of every audible artifact.
+Raw window powers and absolute levels accompany relative diagnostics so a
+very quiet tail or frequency band is not mistaken for a loud defect.
+
+The main remaining findings are pitch-dependent phase/pickup changes,
+different soft-to-loud response across registers, and reduced-quality partials
+that cannot return after Brightness increases. For example, the soft upper
+registers differ much more than the loud ones: octave/register median spreads
+reach roughly 13–19 dB at velocity 32. Removing the extra velocity colour
+changes those soft treble levels by at most 0.067 dB in a separate causal
+panel. The response mapping, rather than a global colour adjustment, therefore
+needs calibration. This does not prescribe identical spectra for all pianos.
+
+The frozen baseline receipt is
+`out/consolidation-20261101/quality/baseline-final-receipt.json`
+(SHA-256 `fb89d5264da85cf469c3afb5217526a44fbd7d08d0468f4374bf20a78f82e017`).
+Its component receipts, complete numeric observations and plots are retained
+beside it. They predate the live-control fixes described below.
+
+## Earlier coverage and limits
 
 The unchanged 0.4.5 native engine rendered **67,056 isolated strikes**: six
 pianos, every MIDI key 21–108 and every velocity 1–127. Every strike uses the
@@ -113,7 +155,84 @@ candidate sample exceed its untrimmed control. Existing body-glide partition
 roundoff is measured against the unchanged control rather than attributed to
 the new gain path.
 
-## Reproduction
+## Consolidation: live-control continuity
+
+The subsequent consolidation starts from main `69b87ce` (unchanged 0.4.6
+DSP). A frozen same-history native probe found that moving Resonance changed
+the receiver's output gain immediately, and moving Brightness changed every
+held partial's gain at the next 32-frame boundary. Gain, Width and Mic already
+used a 12 ms glide. The discontinuities appeared across all six models in
+single-note and chord scenes, both on and between chunk boundaries.
+
+Resonance now uses the same 12 ms per-sample one-pole convention. Brightness
+sets each held partial's amplitude target at the existing boundary, then
+glides that amplitude every sample while retaining its stereo pickup. The
+stable rendering path is unchanged. Both trajectories remain between their
+old and new gains; neither changes oscillator poles or output latency. Silent
+Resonance changes start at the requested value, and reset/voice reuse discard
+old glide state.
+
+The independent regression covers all six models at 44.1, 48 and 192 kHz,
+closed-form state trajectories, an audio reference forced through the stable
+instantaneous-gain path, interrupted/reversed automation, chunk partitions,
+settling, reset/reuse and callback allocation. Both deliberate mutations that
+disconnect a glide from the audible output fail the same audio oracle.
+All 162 static endpoint renders match the frozen baseline byte-for-byte.
+Across 24 same-history witnesses per control at 48 kHz, the first changed
+sample's difference is reduced by 55.216 dB for Resonance and
+55.211–55.234 dB for Brightness. This is a first-step measurement, not a claim
+that every possible automation artifact is reduced by that amount.
+
+The initial moving-gain loop cost 2.46–2.75 times the baseline's CPU during
+continuous automation. Keeping its state local and separating rising from
+settled partial loops reduces that to 1.59–1.71 times while preserving the
+independent audio oracle exactly. With 16 held notes, Full quality, 48 kHz and
+128-frame blocks, the optimized moving cases use 12.2–18.6% of one CPU deadline
+on average; static cases remain within 1.8% of baseline cost. Three paired
+rounds per model/mode record zero CPU or wall deadline exceedances. The native
+instance grows by 262,160 bytes. These are bounded native measurements under
+concurrent audit load, not Rack timing or a maximum-polyphony/rate guarantee.
+
+The initial registered unit/audio tiers passed 17/17 checks. Quality-mode
+repair, cross-model calibration and native/Rack performance remain separate
+consolidation gates. The diagnostic dual-template pitch crossfade
+was rejected after 3,168 cases per path: it removes phase switches but worsens
+early note-to-note level curvature in all six models. It is not in production.
+
+The next change applies the same 12 ms one-pole to the hammers' tube gain.
+Soundboard changes rotate each live noise band's stereo mixing direction over
+12 ms, preserving unit power instead of independently fading its components.
+An interrupted rotation starts from the current direction; silent/reset or
+inactive bands snap to the target. Filter memories, burst amplitudes and RNG
+state are retained. No per-sample trigonometry or callback allocation is added.
+
+The new build-control regression covers all six models at 44.1, 48 and 192 kHz,
+independent closed-form/angle trajectories, audible-path mutations, partitions,
+reset, silence and interrupted automation. All 108 static pure/mixed/Mic
+renders match the preceding frozen source exactly. In the original causal
+scenes, first-step differences fall by about 55.2 dB for tube gain and
+52.5–56.5 dB for noise coherence. These measurements isolate the respective
+control changes; they are not whole-note noise-reduction claims. The additional
+state costs 688 bytes per instance, bringing the total increase over the
+0.4.6 baseline to 262,848 bytes.
+
+The combined source (`94891ed…`) passes all 20 registered checks, including
+the native CPU budget (179.12 seconds total). A separate paired timing panel
+uses the same 16-note/48 kHz/128-frame workload described above and adds
+continuous hammer/soundboard changes at Mic 1. Static mean CPU is within 3.7%
+of baseline; build automation is within 2.5%. Brightness/Resonance automation
+costs 1.68–1.81 times baseline and averages 14.2–21.9% of a block deadline.
+Across the 54 candidate runs there are zero thread-CPU deadline exceedances
+and four wall-time exceedances under concurrent work. Both timings are kept;
+this panel is not evidence of zero wall overruns or Rack performance. It does
+not repeatedly retrigger noise during measurement. The full timing rows and
+source/binary hashes are in `live-controls/performance-final-summary.json`.
+
+Evidence: `out/consolidation-20261101/interaction-audit/`,
+`out/consolidation-20261101/live-controls/` and
+`out/consolidation-20261101/pitch-candidate/`.
+
+## Earlier reproduction records
 
 Local working evidence is retained under:
 

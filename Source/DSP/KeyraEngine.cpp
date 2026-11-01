@@ -425,6 +425,8 @@ struct alignas(16) Partial {
   float riseRemaining=0,riseDecay=0;        // d's float copy, run one chunk from riseExact
   float riseSmoothed=0;                     // the rise through contactSmoothing
   float tint=1,audibility=1,targetAudibility=1;
+  double tintState=1;                      // sample-by-sample live Brightness gain
+  float targetTint=1;
   bool rising=false;
 };
 // Four of the body's modes, which every strike knocks: damped rotations at
@@ -486,6 +488,11 @@ struct Burst {
 constexpr int noiseSections=3;
 struct NoiseBand {
   double b0[noiseSections]{},a1[noiseSections]{},a2[noiseSections]{},scale=0,c=1,s=0;
+  // A live soundboard change rotates this unit mixing direction over 12 ms.
+  // The filters and random sources keep their state. Rotating, rather than
+  // independently fading c and s, preserves each band's marginal power.
+  double targetC=1,targetS=0,mixStepC=1,mixStepS=0;
+  int mixFrames=0;
   double x1[noiseSections][2]{},x2[noiseSections][2]{},y1[noiseSections][2]{},y2[noiseSections][2]{};
   double left=0,right=0,leftStep=0,rightStep=0,leftEnd=0,rightEnd=0;
   bool live=false;
@@ -981,14 +988,14 @@ struct Engine::Impl {
   std::uint32_t seed=1;
   bool hissing=false;
   Parameters parameters{};
-  double sampleRate=48000,gain=.7,width=.75,mute=0,mic=0;
+  double sampleRate=48000,gain=.7,width=.75,mute=0,mic=0,resonance=.25;
   // The tube's response (MeasuredMicData.h) designed at the engine's rate,
   // each section in transposed direct form II, and its level on the built
   // piano. It hears the stereo pair's mid only while the Mic control is over
   // 0, and starts from silence when it leaves 0.
   struct Section {double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;};
   std::array<Section,measured::tubeSections> tube{};
-  double tubeScale=1;
+  double tubeScale=1,tubeScaleTarget=1;
   // The already-smoothed Mic contribution and smoothly changing hammer share
   // set a monitoring gain. Its fixed history follows the guard's look-ahead,
   // so automation changes the same input frame before and after the guard.
@@ -1131,7 +1138,7 @@ struct Engine::Impl {
     bodyRise=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].bodyRise);},pickLog);
     actionRise=fold(share.action,[&](int p){return static_cast<double>(models[p].actionRise);},pickLog);
     actionDecay=fold(share.action,[&](int p){return static_cast<double>(models[p].actionDecay);},pickLog);
-    tubeScale=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
+    tubeScaleTarget=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
     tubeOutputTarget=1+share.hammers[static_cast<int>(Piano::belmont)]
                          *(std::pow(10.,-belmontTubeOutputTrimDb/20)-1);
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
@@ -1249,6 +1256,10 @@ struct Engine::Impl {
     const double re=1+a1*std::cos(w)+a2*std::cos(2*w),im=a1*std::sin(w)+a2*std::sin(2*w);
     return b0*b0*(2-2*std::cos(2*w))/(re*re+im*im);
   }
+  static void snapNoiseMix(NoiseBand& band) noexcept {
+    band.c=band.targetC;band.s=band.targetS;band.mixStepC=1;band.mixStepS=0;band.mixFrames=0;
+  }
+  void snapNoiseMixes() noexcept {for(auto& band:noise)snapNoiseMix(band);}
   void prepareNoise() noexcept {
     // Sixth-order Butterworth third-octave band-passes, the IEC 61260 kind,
     // with unit gain at their centres. Second-order band-passes fall only
@@ -1260,9 +1271,24 @@ struct Engine::Impl {
     for(auto& band:noise)band.scale=0;
     auto warp=[this](double f){const double x=pi*f/sampleRate;return 2*sampleRate*std::sin(x)/std::cos(x);};
     for(int b=0;b<noiseBands;++b){
+      auto& band=noise[b];
+      const double theta=std::acos(bounded(static_cast<float>(coherence[b])))/2;
+      const double targetC=std::cos(theta),targetS=std::sin(theta);
+      const bool changed=targetC!=band.targetC||targetS!=band.targetS;
+      band.targetC=targetC;band.targetS=targetS;
+      if(sleeping||!hissing||!band.live)snapNoiseMix(band);
+      else if(changed){
+        // atan2 starts an interrupted change from the direction actually
+        // heard. Trigonometry is confined to this control update; the audio
+        // loop uses one precomputed unit rotation and snaps exactly at its
+        // finite endpoint. Tests/test_build_control_smoothing.py checks the
+        // independent angle trajectory, norm and audible connection.
+        band.mixFrames=std::max(1,static_cast<int>(std::lround(.012*sampleRate)));
+        const double step=(theta-std::atan2(band.s,band.c))/band.mixFrames;
+        band.mixStepC=std::cos(step);band.mixStepS=std::sin(step);
+      }
       const double hz=grand::noiseBands[b].hz;
       if(hz*std::pow(2.,1/6.)>.45*sampleRate)continue;
-      auto& band=noise[b];
       // Each pole of the low-pass prototype maps to one pole pair of the band,
       // whose edges, a sixth of an octave either side, are prewarped for the
       // bilinear transform; every section has one zero at DC and one at Nyquist.
@@ -1281,8 +1307,7 @@ struct Engine::Impl {
         band.a1[j]=-2*z.re;band.a2[j]=z.re*z.re+z.im*z.im;
         band.b0[j]=1/std::sqrt(sectionPower(1,band.a1[j],band.a2[j],w));
       }
-      const double theta=std::acos(bounded(static_cast<float>(coherence[b])))/2;
-      band.c=std::cos(theta);band.s=std::sin(theta);band.scale=1;
+      band.scale=1;
     }
     for(int b=0;b<noiseBands;++b){auto& band=noise[b];if(band.scale==0)continue;
       const double w=2*pi*grand::noiseBands[b].hz/sampleRate;double overlap=0;
@@ -1325,6 +1350,7 @@ struct Engine::Impl {
     for(auto& band:noise){
       for(int j=0;j<noiseSections;++j)for(int k=0;k<2;++k)band.x1[j][k]=band.x2[j][k]=band.y1[j][k]=band.y2[j][k]=0;
       band.left=band.right=band.leftStep=band.rightStep=band.leftEnd=band.rightEnd=0;band.live=false;
+      snapNoiseMix(band);
     }
     seed=1;hissing=false;
   }
@@ -1355,6 +1381,7 @@ struct Engine::Impl {
       band.leftEnd=target[0][b];band.rightEnd=target[1][b];
       band.leftStep=(band.leftEnd-band.left)/chunk;band.rightStep=(band.rightEnd-band.right)/chunk;
       band.live=band.scale!=0&&std::max(std::max(band.left,band.leftEnd),std::max(band.right,band.rightEnd))>=1e-9;
+      if(!band.live)snapNoiseMix(band);
       any=any||band.left>0||band.right>0;}
     hissing=any;
   }
@@ -1365,6 +1392,11 @@ struct Engine::Impl {
         x=(static_cast<double>(seed)-2147483648.)*(1./2147483648.);}
       double l=0,r=0;
       for(auto& band:noise)if(band.live){
+        if(band.mixFrames>0){
+          if(--band.mixFrames==0)snapNoiseMix(band);
+          else{const double c=band.c*band.mixStepC-band.s*band.mixStepS;
+            band.s=band.s*band.mixStepC+band.c*band.mixStepS;band.c=c;}
+        }
         double y[2];
         for(int k=0;k<2;++k){y[k]=source[k];
           for(int j=0;j<noiseSections;++j){
@@ -1473,8 +1505,8 @@ struct Engine::Impl {
       double energy=0;
       for(int k=0;k<voice.count;){auto& partial=voice.partials[k];
         if(voice.retune)tunePartial(partial,ratio);
-        bool weights=tintChanged;
-        if(tintChanged)partial.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
+        bool weights=false;
+        if(tintChanged)partial.targetTint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
         if(partial.audibility!=partial.targetAudibility){
           const float step=static_cast<float>(controlSmooth)*(partial.targetAudibility-partial.audibility);
           partial.audibility=std::abs(step)<1e-6f?partial.targetAudibility:partial.audibility+step;weights=true;}
@@ -1856,6 +1888,7 @@ struct Engine::Impl {
   // A partial's rise, tuning, weights and state from its strike, `ahead`
   // samples before the next chunk boundary.
   void launch(const Voice& voice,Partial& partial,double rise,int ahead,double ratio) noexcept {
+    partial.tintState=partial.targetTint=partial.tint;
     partial.riseStep=std::exp(-1/(rise*sampleRate));
     partial.riseLeap=std::pow(partial.riseStep,chunk);
     partial.riseExact=std::pow(partial.riseStep,ahead);
@@ -2002,7 +2035,45 @@ struct Engine::Impl {
       for(int k=0;k<voice.count;++k){auto& partial=voice.partials[k];
         V4 re=partial.re,im=partial.im;
         const V4 c=partial.c,s=partial.s,lr=partial.leftRe,li=partial.leftIm,rr=partial.rightRe,ri=partial.rightIm;
-        if(partial.rising){
+        if(partial.tintState!=partial.targetTint){
+          // Smooth each partial's linear amplitude, retaining its measured
+          // stereo pickup. Targets change at the same chunk boundaries as
+          // before, but the gain now moves at every sample rather than making
+          // 32-frame steps. The stable path below remains exactly unchanged.
+          V4 baseLR{},baseLI{},baseRR{},baseRI{};
+          for(int j=0;j<lanes;++j){
+            setLane(baseLR,j,partial.baseLeftRe[j]);setLane(baseLI,j,partial.baseLeftIm[j]);
+            setLane(baseRR,j,partial.baseRightRe[j]);setLane(baseRI,j,partial.baseRightIm[j]);}
+          double state=partial.tintState;const double target=partial.targetTint,threshold=1e-9*target;
+          const float audible=partial.audibility;
+          const auto nextTint=[&]() noexcept {
+            state+=smooth*(target-state);
+            if(std::abs(target-state)<threshold)state=target;
+            return splat(static_cast<float>(state)*audible);
+          };
+          float d=partial.riseRemaining,rise=partial.riseSmoothed;
+          if(partial.rising){
+            const float decay=partial.riseDecay;
+            for(int i=0;i<frames;++i){
+              const V4 tint=nextTint();
+              const V4 tlr=baseLR*tint,tli=baseLI*tint,trr=baseRR*tint,tri=baseRI*tint;
+              rise+=contactShare*(1-d-rise);d*=decay;
+              const V4 g=splat(rise);
+              toLeft[i]+=(tlr*re-tli*im)*g;toRight[i]+=(trr*re-tri*im)*g;
+              const V4 next=re*c-im*s;im=re*s+im*c;re=next;
+            }
+          }else{
+            for(int i=0;i<frames;++i){
+              const V4 tint=nextTint();
+              const V4 tlr=baseLR*tint,tli=baseLI*tint,trr=baseRR*tint,tri=baseRI*tint;
+              toLeft[i]+=tlr*re-tli*im;toRight[i]+=trr*re-tri*im;
+              const V4 next=re*c-im*s;im=re*s+im*c;re=next;
+            }
+          }
+          partial.tintState=state;partial.tint=static_cast<float>(state);
+          partial.riseRemaining=d;partial.riseSmoothed=rise;
+          updateWeights(partial);
+        }else if(partial.rising){
           float d=partial.riseRemaining,smoothed=partial.riseSmoothed;const float decay=partial.riseDecay;
           for(int i=0;i<frames;++i){
             smoothed+=contactShare*(1-d-smoothed);
@@ -2072,10 +2143,18 @@ struct Engine::Impl {
     }
     for(int i=0;i<frames;++i){
       gain+=smooth*(parameters.gain-gain);
+      // Changing the receiver's monitoring level must not step an already
+      // ringing signal. Like Output, Width and Mic, it follows a bounded
+      // 12 ms sample-rate-independent glide; the resonators keep their state.
+      resonance+=smooth*(parameters.resonance-resonance);
+      // The hammers' tube calibration is an audible monitoring gain too:
+      // changing a build must not step an already sounding Mic signal.
+      // Keep advancing with Mic at zero so a later fade-in has no stale gain.
+      tubeScale+=smooth*(tubeScaleTarget-tubeScale);
       const V4 s4=openSum[i],p4=openPan[i];
       const double sum=static_cast<double>(lane(s4,0))+lane(s4,1)+lane(s4,2)+lane(s4,3);
       const double panned=(static_cast<double>(lane(p4,0))+lane(p4,1)+lane(p4,2)+lane(p4,3))*openWidth[i];
-      double outL=dryLeft[i]+(sum-panned)*parameters.resonance*.35,outR=dryRight[i]+(sum+panned)*parameters.resonance*.35;
+      double outL=dryLeft[i]+(sum-panned)*resonance*.35,outR=dryRight[i]+(sum+panned)*resonance*.35;
       // The tube hears the pair's mid through its response, the same on both
       // sides, and the Mic control mixes it in.
       if(mic>0||parameters.mic>0){
@@ -2151,7 +2230,7 @@ void Engine::reset() noexcept {
   // change had not finished gliding its pickups. Live changes still glide.
   p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
   p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
-  p.mic=p.parameters.mic;p.silenceTube();
+  p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.silenceTube();
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
@@ -2181,6 +2260,9 @@ void Engine::setParameters(const Parameters& input) noexcept {
     p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();}
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
+  // A setting selected before any sound starts is the new initial state,
+  // rather than a delayed transition from the previous silent preset.
+  if(p.sleeping){p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();}
   p.pedalEdge();
 }
 void Engine::noteOn(int note,float velocity,int channel) noexcept {
@@ -2222,7 +2304,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
-    if(!any){p.silenceStrings();p.silenceBody();p.silenceNoise();p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();}
+    if(!any){p.silenceStrings();p.silenceBody();p.silenceNoise();p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();}
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
@@ -2259,7 +2341,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
-    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resetTubeOutput();
+    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();p.resetTubeOutput();
     for(auto& channel:p.channels)channel.smoothedMute=std::max(p.parameters.mute,channel.mute);
     return;
   }
@@ -2282,7 +2364,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
       // are as quiet as the residue.
       p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       p.silenceStrings();p.silenceTube();
-      p.silenceNoise();
+      p.silenceNoise();p.tubeScale=p.tubeScaleTarget;
       p.output.Reset();p.resetTubeOutput();
     }
   }
