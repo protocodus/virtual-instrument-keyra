@@ -43,7 +43,17 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### Unreleased — 0.4.6 — clearer Belmont dynamics
+### Unreleased — 0.4.7 — smoother controls and quieter soft releases
+
+Live Brightness, Resonance and piano-build changes now transition smoothly.
+Balanced and Light quality retain harmonics that can become audible when
+Brightness increases after a strike. Quiet key releases follow the played-note
+level more closely, while the Mechanics default remains at 40% and all six
+piano voicings retain their character. Saved sounds receive these behavior
+fixes; parameter identities and ranges are unchanged.
+[Validation and remaining limits](Docs/validation/whole-keyboard-quality-2026-11-01.md).
+
+### 0.4.6 — 2026-11-01 — clearer Belmont dynamics
 
 Belmont now retains its measured soft-strike tone without the additional
 velocity darkening, following the owner's C listening choice. Its recorded

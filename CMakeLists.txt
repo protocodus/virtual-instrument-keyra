@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.6 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.7 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -336,6 +336,21 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.TubeOutputCalibration
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_tube_output_calibration.py")
+        add_test(NAME Keyra.LiveControlSmoothing
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_live_control_smoothing.py")
+        add_test(NAME Keyra.BuildControlSmoothing
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_build_control_smoothing.py")
+        add_test(NAME Keyra.QualityAuditContract
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_quality_audit.py")
+        add_test(NAME Keyra.QualityRetention
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_quality_retention.py")
+        add_test(NAME Keyra.ReleaseBalance
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_release_balance.py")
         add_test(NAME Keyra.RecordingReferenceCache
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_reference_cache.py")
@@ -347,6 +362,8 @@ if(BUILD_TESTING)
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
                              Keyra.RateInterpolation Keyra.SoftLaneContinuity Keyra.TubeOutputCalibration
+                             Keyra.LiveControlSmoothing Keyra.BuildControlSmoothing
+                             Keyra.QualityAuditContract Keyra.QualityRetention Keyra.ReleaseBalance
                              Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
                              Keyra.KeyboardMetricContract
                              PROPERTIES TIMEOUT 600
