@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.3 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.4 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -329,6 +329,9 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
+        add_test(NAME Keyra.SoftLaneContinuity
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_soft_lane_continuity.py")
         add_test(NAME Keyra.RecordingReferenceCache
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_reference_cache.py")
@@ -339,7 +342,8 @@ if(BUILD_TESTING)
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
-                             Keyra.RateInterpolation Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
+                             Keyra.RateInterpolation Keyra.SoftLaneContinuity
+                             Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
                              Keyra.KeyboardMetricContract
                              PROPERTIES TIMEOUT 600
                              ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")

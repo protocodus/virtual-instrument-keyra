@@ -2317,3 +2317,37 @@ remain under `out/realism/listening/velocity-interpolation/`.
 A WAV SHA256: `43d851e01cbf3af10447fa24f4adc890ec6075932e3658225a6ec605919cc917`.
 
 B WAV SHA256: `8c7981564e8b8f7718e88cd4af75db52dc322cd8fc1628a715d1e75748c163d4`.
+
+## 2026-11-01 — Mom’s Baby Grand soft-pedal interpolation
+
+Asked which new soft-pedal clips sounded more natural and consistent, with
+the option to choose differently for the upper and bass phrases, the owner
+answered **“B”**. With no phrase-specific exception, this records B for both.
+This is a separate decision from the earlier velocity-progression preference.
+
+A is accepted 0.4.2; B carries each measured component’s soft-pedal bias
+through interpolation instead of assigning it again after sorting decay rates.
+The latter sorting could abruptly exchange biases between components. B keeps
+the measured coefficients and pedal constants. The choice supports promoting
+this shared change while retaining 0.4.3’s independent reset fix; combined
+validation must establish fresh-playback equivalence to B. It does not establish
+that every piano or every intermediate note sounds better, or supply a recorded
+soft-pedal calibration target. Mixed-string continuity remains unproven.
+
+The upper phrase uses MIDI 84–93 at velocity 120 (11.5 seconds), including the
+known 86→87 and 89 level tradeoffs. The bass phrase uses MIDI 27–30 at velocity
+32 (11.75 seconds), with two-second holds including the changed rise at 28.
+Both use Belmont, soft pedal fully down, 48 kHz stereo, normal strike variation,
+identical events and controls, and a fresh seed of 1. B is whole-file RMS matched
+to A: +0.351716 dB upper, +0.294457 dB bass. Each pair then shares a trim to a
+maximum peak of −3 dBFS; there is no per-note matching. Files and the frozen
+pre-listening receipt/key remain under
+`out/realism/soft-order-audit/listening-tradeoffs/`; their then-pending status is
+historical, and this entry records the later answer.
+
+- A source SHA256: `8afcba98abe2029b8adcff5b49e846312476b199f2e9383d8779f91957d55ee0`.
+- B source SHA256: `e6e8c22f851eaf9a2c738a5607266ca6331655cee632dc32e2bf24ec492b6991`.
+- Upper A WAV SHA256: `4d91acea2ce521a45f146ba952a8420f7cf4ec92e9b5ab70a5344f448eb89285`.
+- Upper B WAV SHA256: `cbbc9d008b6d20388e7b574678448323d8837cefbaf9f8de37a2e1c0dd91cb1b`.
+- Bass A WAV SHA256: `b005eaaa8dd7e9d731584e73f2e192008e9b706b0b46142dd4dc12d324f14e24`.
+- Bass B WAV SHA256: `8c1c070b8495c40798755008c0907c83ff483ce10fa783da6357555db66916ac`.

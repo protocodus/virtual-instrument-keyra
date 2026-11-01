@@ -71,40 +71,47 @@ does not select the subsequent candidates below.
 | --- | --- | --- |
 | 1 | Continuous whole-pattern pitch interpolation: remove abrupt changes in note body, stereo image and tail between anchors. | Coherent colour normalization leaves phase/stereo/tail switches. The subsequent one-window spherical transport removes sampled switches but creates a 9.060 dB late-energy excursion above Upright53's anchors. Reject it. Optimistic multi-window eligibility leaves only small possible contributions in nine selected intervals, without full-velocity certification or common-gain closure. A different multi-window/stereo formulation is needed before a broad benchmark. |
 | 2 | Layer-resolved body excitation and better stereo representation: prevent quiet notes inheriting loud-layer body energy. | Kawai TRAIN80 proves a weighted-line error, but the completed 65-layer/12-anchor TRAIN panel does not show comparable quiet excess across all six pianos. Its softest-layer body-minus-recorded-total range is −8.540 to +1.073 dB, with no identified body-only target. Keep any repair specific to measured export-stage evidence; do not add a global body gain or invented resonance. |
-| 3 | Fit against the actual played observation model, including stereo compression, contact cap and smoothing. | Fixed-pole ALS and the corrected energy denominator have mixed exported attack/tail results. Pinning the slowest original pole would not prevent note86's loss: that pole is already retained; the second slowest is dropped, and a pinned pole's excitation may still vanish. Before any new search, declare full-coherent late-response retention checks for all 15 existing TRAIN layers and require the native roundtrip. No new fit was run for this proposal. |
+| 3 | Fit against the actual played observation model, including stereo compression, contact cap and smoothing. | The completed 15-layer final-excitation retention trial is rejected: four solver failures, seven tail case/window violations, and worse middle-window mean error at all three notes. Success-status cases still regress in full late tails and middle energy. Fixing one slow pole is insufficient, and an aggregate fit gain does not license a refit. Diagnose numerical conditioning and the mismatch between the objective and audible-window behavior before further fitting; this failure is not a capacity proof. |
 | 4 | Consistent stochastic noise covariance across bands and simultaneous strikes. | Independent bands repair a proven density-calibration mismatch. The 933-case recording comparison is mixed, with dev noise-error changes around −0.20 to +0.16 dB. Chord headroom and stereo covariance across strikes remain unresolved. Retain this as a separate shared-engine correction, not evidence of a large overall realism gain. |
 | 5 | Donor-informed uncertainty or structural priors for genuinely missing measurements. | The dense Steinway masked-layer pilot rejects direct transfer of another piano's velocity curvature in every primary aggregate. The tail prior also lacks reliable coverage. Keep target anchors and voicing; a useful donor method must win masked-target prediction before filling production gaps. |
 
 The [follow-up evidence](../validation/calibration-followups-2026-11-01.md)
-records negative results, native controls and remaining limits. None of these
-follow-up candidates has replaced accepted 0.4.2. No fixed seed, favorable
+records negative results, native controls and remaining limits. None of the
+rejected calibration candidates has replaced the accepted data. No fixed seed, favorable
 window or single piano may be selected afterwards to conceal a regression.
 
-The separate soft-pedal lane-bias candidate is ready for listening, not adopted.
-It preserves the 933-case default-soft benchmark and all 465 measured-anchor/
-edge cases in the full 1,584-case soft-on grid; native unit/headroom, parameter,
-fuzz and demo gates pass. Transporting the existing biases removes selected
-rank-crossing discontinuities, but 920 interpolated waveforms change, including
-a −2.398 dB middle-level change at Belmont89/v120 and larger adjacent differences
-elsewhere. Review those excursions as well as the selected crossings. No
-soft-pedal recording target or mixed-string continuity claim supports acceptance.
-Frozen summaries and hashes are in the follow-up evidence; listening must settle
-the remaining audible tradeoff without selecting only favorable examples.
+The separate soft-pedal lane-bias change is accepted locally in 0.4.4 after the
+owner chose B for the new upper and bass Belmont phrases, which include known
+tradeoffs. Combined validation preserves the 933-case default-soft benchmark
+against 0.4.3 and matches B exactly across all 1,584 soft-on keyboard cases and
+both selected phrases. Native unit/audio/performance and VST3/CLAP checks pass.
+Transporting existing biases removes selected rank-crossing discontinuities;
+920 interpolated waveforms still change against the older soft-on control,
+including −2.398 dB middle level at Belmont89/v120 and larger adjacent gaps
+elsewhere. The choice supports this direction without claiming uniform audible
+improvement, a measured soft-pedal acoustic target or mixed-string continuity.
+Rack integration follows canonical acceptance.
 
 The independent reset fix is accepted locally as 0.4.3: all 37 reset-history
 cases match a fresh engine, the 933-case recording comparison has no regressions,
 and native unit/audio/performance and VST3/CLAP validation pass. Rack 0.4.3d1
 pins that exact revision and passes native/sanitizer, SDK/package and protected
-fresh Recon playback checks. This does not adopt the pending sound candidates.
+fresh Recon playback checks. The reset fix remains in 0.4.4; the rejected
+calibration candidates remain out of production.
 
-The next bounded fitting trial uses final excitations at the published poles
-and pickups, with per-layer late-response retention and a scalar-only control.
-Its conservative convex subset contains shipping; an unsuccessful trial cannot
-prove the full representation impossible. Identity/export preflight and native
-scoring are required before any broader fit. Separately, Yamaha's twelve-pair
-pedal panel supports note-driven tail diagnostics, but its take/velocity
-variation and missing receiver-specific features do not justify a new shared
-decay law. A TRAIN-only repeatability intake will test that evidence limit.
+The bounded late-retention trial is complete and rejected. Identity/export
+preflight passes, but four solver failures and actual native tail/middle
+regressions prevent adoption. Its conservative convex subset contains shipping;
+this result cannot prove the full representation impossible. No new fit or
+broader calibration follows from the checkpoint.
+
+Yamaha's repeatability intake is also complete: sixteen new TRAIN regions plus
+eight existing controls at MIDI 48/69, P/MF and pedal up/down. The descriptive
+mapped-state tail contrast strengthens at MIDI 69 and remains mixed at MIDI 48.
+The tested exact-copy explanations are excluded, but independent strikes and
+equal physical velocity remain unproven. Retain all within-state variation;
+do not assign independent-replicate weights or infer a shared coupling gain,
+receiver identity or decay law. The existing 80% pedal lift remains unchanged.
 
 Progress remains active until the sound and whole-range requirements have
 direct evidence for all six pianos. A prepared dataset, a favorable aggregate

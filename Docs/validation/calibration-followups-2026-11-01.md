@@ -1,15 +1,68 @@
 # Calibration follow-ups and runtime diagnosis — 2026-11-01
 
-The calibration and pitch-transport experiments below remain rejected or
-bounded diagnostics. The separate soft-pedal candidate passes its recorded
-gates but awaits listening; it is not adopted. The
+The calibration and whole-pattern pitch-transport experiments below remain
+rejected or bounded diagnostics. The separate soft-pedal change is accepted
+locally in 0.4.4 after the owner's B preference and the combined checks below. The
 [compact evidence](calibration-followups-2026-11-01.json) retains paired
 recording summaries, every tolerance regression, velocity-pilot aggregates,
 invariants and hashes of the complete local reports.
 
 These experiments use the accepted 0.4.2 source as their frozen reference.
-The independent hard-reset correction is accepted locally as 0.4.3 after the
-separate checks below. It does not adopt any of the sound candidates.
+The independent hard-reset correction was accepted locally as 0.4.3 and is
+retained in 0.4.4. Neither release adopts the rejected calibration candidates.
+
+## Soft-pedal interpolation — accepted locally in 0.4.4
+
+The owner chose **B** for the new Belmont upper and bass phrases
+([decision and file identities](../decisions.md#2026-11-01--moms-baby-grand-soft-pedal-interpolation)).
+Version 0.4.4 carries the measured-anchor soft-pedal biases with the existing
+paired fitted components, preserving 0.4.3's reset fix exactly. A fitted
+component is not an independently identified physical string. The biases,
+measured poles and coefficients are unchanged; rate crossings no longer
+reassign the biases by current sorted rank.
+
+All **933 frozen TRAIN/DEV recording cases** were rerendered against accepted
+0.4.3 at soft pedal off: zero paired regressions and availability changes.
+928 score rows are identical; the remaining five differ by at most 7.11e−15
+and have byte-identical 4.6-second audio. All **1,584 fresh soft-on keyboard
+waveforms** match chosen B, as do both actual selected phrases. Thirty fresh
+multistrike, pedal, modifier and mixed-build controls also match their intended
+reference. The previous B feature/half-gain evidence is carried by waveform
+identity, not presented as newly extracted features or newly rendered half-gain
+pairs. No reference recordings were opened, parameters fitted or SEALED data
+used. TRAIN/DEV caches were rehashed unchanged.
+
+The combined universal Release build and C++17 object pass, with **13 unit and
+two audio tests**, including the reset-history and soft-lane regressions.
+Velocity guard numeric data is byte-identical; only source provenance changes.
+Eight serial CPU demos at 48 kHz/256 frames, three repeats each, have median
+real-time factors 0.030633–0.103050 against the unchanged 0.6 budget. The task's
+compilers and scoring/host pools had finished before timing. This is native
+development-machine evidence, not a host deadline or isolated-system guarantee.
+
+Universal VST3, AU, CLAP and standalone bundles report 0.4.4. Post-link processor
+and rotating parameter-matrix tests pass. VST3 passes pluginval 1.0.4 at
+strictness 10 with seed `0x4b455952`; CLAP validator 0.3.2 reports 17 passes,
+zero failures, three optional preset-discovery skips and a 114 ms scan warning
+against 100 ms. Execution was on arm64; x86_64 slices were built but not run.
+AU validation, manual DAW acceptance and target-host CPU qualification remain
+open. Rack integration follows this canonical acceptance.
+
+The selected B tradeoffs below remain: some intermediate levels, adjacent-key
+gaps and rise metrics get larger. This is not universal audible improvement or
+a measured acoustic soft-pedal fit. Measured endpoints and neutral-pedal
+controls are preserved; mixed-string rank pairing still limits continuity.
+Native64 fixed storage grows by 49,984 bytes; SDK32 storage needs its own
+measurement. There are no new callback allocations or oscillators.
+
+Evidence is frozen under `out/realism/soft-order-audit/promotion-0.4.4/` and
+`out/realism/soft-order-audit/combined-044/`. The compact JSON links the exact
+source, native gates, recording/grid evaluation, selected phrase parity and
+frontend/CPU receipts. No push, merge or publication is part of this acceptance.
+The evaluation's initial manifest accidentally captured a still-writing CPU
+log. That initial receipt is preserved; its corrected manifest excludes the
+separately owned frontend/CPU artifacts, which have their own final receipt.
+All corrected hashes were verified without rerunning or changing results.
 
 ## Hard reset after changing piano — accepted locally in 0.4.3
 
@@ -154,7 +207,7 @@ under `out/realism/tail-prior/`.
 
 A frozen panel reads 24 existing TRAIN feature caches: notes 24/48/69/96,
 three source velocity bins, pedal up/down. No source waveform or new model
-fit is used. The pairs are separate performances; their early levels differ
+fit is used. The pairs are separate mapped regions; their early levels differ
 by −4.87 to +6.97 dB. Every pair's supported broad-band late/early median is
 larger with pedal down, but only 98 of 122 supported band cells have that
 sign. At note 48, matched-order late-slope medians reverse sign in two of
@@ -169,9 +222,41 @@ from Salamander's pedal-alone recording, a different excitation condition.
 Yamaha can add a useful note-driven diagnostic but cannot replace that law
 from this panel. The owner's existing pedal-clearance preference is retained.
 The full findings and playback-metadata limits are frozen under
-`out/realism/yamaha-pedal-diagnostic/`. A separately pinned TRAIN repeatability
-intake is the next evidence step; distinct sample regions are not automatically
-independent strikes or calibrated equal velocities.
+`out/realism/yamaha-pedal-diagnostic/`. Distinct sample regions are not
+automatically independent strikes or calibrated equal velocities.
+
+### Completed TRAIN repeatability intake
+
+The bounded intake is complete: sixteen additional TRAIN regions at MIDI 48/69,
+P/MF, pedal up/down and original sequence positions 2/3, plus eight existing
+position-1 controls. All sixteen decoded PCM/WAV hashes match their pinned
+manifest. The unchanged feature operator reproduced the existing control's
+eighteen fields exactly. No DEV/sealed region, alternate microphone or
+release-trigger region was admitted, and no model fit was performed.
+
+All 132 same-pitch pairs were checked. None shared a predeclared nonconstant
+1,024-frame exact PCM block under the tested shifted/trimmed alignment. An
+attack-derived integer lag and scalar gain leave substantial later residuals;
+within-condition attack correlation nevertheless has median 0.99884. These
+findings exclude the tested exact-copy explanations, not fractional resampling,
+processing or shared-source variants. Independent strikes remain unproven, so
+the regions receive no independent-replicate weights.
+
+On bands supported in all six regions of each pitch/bin condition, the median
+down-minus-up late/early shape contrast is +6.03/+7.38 dB at MIDI 69 P/MF,
+against median maximum within-state ranges of 1.93/0.79 dB. At MIDI 48 the
+corresponding medians are +0.38/+0.60 dB, with both positive and negative
+bandwise contrasts. These are descriptive common-support statistics, not a
+waveform gain target or confidence interval. The early state-mean level
+differences also reverse sign between P and MF, so the bins do not establish
+equal physical strike velocity.
+
+This strengthens a mapped-state tail observation at MIDI 69, while MIDI 48
+remains frequency-dependent. It cannot identify receiver keys, reciprocity,
+coupling gain or individual decay rates. The owner's 80% lift and all six
+pianos' voicing remain unchanged. The full comparison and pinned receipt are
+under `out/realism/yamaha-pedal-repeatability/`; no new calibration target or
+production fit follows from this checkpoint.
 
 ## Fit, export and runtime diagnosis
 
@@ -240,6 +325,40 @@ velocity smoothing out of this representation question; a successful trial
 would still need an export-aware production recipe. No fit was run in the
 design checkpoint, frozen under
 `out/realism/runtime-fit-review/late-retention-design/`.
+
+### Completed late-retention trial — rejected
+
+The declared fifteen-layer Helsinki TRAIN trial has now run at notes 82/84/86,
+with published four-pole fundamentals, pickups, masks, weights and physical
+ridge fixed. All fifteen identity serialization/native controls are exact.
+Four solves reached the 4,000-iteration cap: 84/v108 and 86/v15/v108/v122.
+Two have material primal violations; the others still fail stationarity/dual
+checks. Eleven success statuses do not constitute complete KKT certificates.
+Shipping remains feasible, and an algebraic strict-interior witness exists
+for every case, so this is a numerical failure rather than an infeasibility
+or representation-capacity result. No failed layer was substituted or rerun.
+
+All fifteen finite returned vectors and scalar controls were serialized and
+rendered as diagnostics of the rejected recipe. Every scalar optimum is
+`a=1` and reproduces shipping exactly; every candidate repeat is exact. The
+aggregate native weighted objective improves from 2.963189 to 2.818442, but
+seven tail case/window entries violate retention. The count includes duplicate
+full/supported late1 entries. Success-status cases 86/v51 and v85 pass supported
+late2 yet worsen full late2 absolute power error by 0.018044 and 0.045295 dB.
+
+Mean middle-window absolute power error increases by 0.16742/0.87037/1.58164 dB
+at notes 82/84/86, well beyond the measured forward/rounding differences. Ten
+of eleven success-status cases also worsen in that window; the outcome cannot
+be attributed solely to the four failed solves. It does not predict what a
+correctly solved full set would do. Empirical recurrence agreement is not a
+universal error bound, and an aggregate objective win cannot waive individual
+retention failures.
+
+No change is adopted and no follow-up optimizer run, broader refit or production
+table edit follows. This remains an isolated-fundamental final-table diagnostic,
+without production SVD/gain/velocity smoothing or full-piano validation. Frozen
+results, all native outcomes and the receipt are under
+`out/realism/runtime-fit-review/late-retention-trial/`.
 
 ### A loud-layer regression contaminates quiet body excitation
 
@@ -357,9 +476,9 @@ test followed. The rejection and eligibility limits are frozen under
 `out/realism/pitch-pattern-continuity/transport-candidate/` and
 `out/realism/pitch-pattern-continuity/transport-eligibility/`.
 
-### Soft-pedal lane transport: validated candidate, pending listening
+### Soft-pedal lane transport: pre-promotion evidence
 
-The soft-pedal multiplier currently follows sorted decay rank. A rate crossing
+The pre-0.4.4 soft-pedal multiplier follows sorted decay rank. A rate crossing
 can therefore abruptly exchange its unchanged −0.28/0/0/+0.08 biases. The
 candidate assigns canonical measured-anchor biases and carries them along the
 existing paired lanes. It changes no measured coefficients, poles or soft
@@ -390,8 +509,9 @@ checks, 2,904 all-key soft-off state checks and 12 short waveform controls.
 Eight serial native CPU demos, three repeats each, change median real-time
 factor by −4.17% to +3.65%; the candidate maximum is 0.113. This is development
 machine evidence, not a host or deadline guarantee. Mixed-string rank pairing
-still limits the continuity claim. **Listening remains pending; the candidate
-is not adopted.** Complete per-model, gap, edge and window results, excursions,
+still limits the continuity claim. Listening was pending at this frozen
+checkpoint; the later B decision and combined 0.4.4 acceptance are recorded
+above. Complete per-model, gap, edge and window results, excursions,
 commands and source hashes are under `out/realism/soft-order-audit/`.
 
 ### Noise covariance disagrees with its density calibration

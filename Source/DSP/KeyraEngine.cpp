@@ -517,7 +517,7 @@ struct alignas(16) OpenBank {
 // the lane's decay. Read the original float, before its cached logarithm.
 // Tests/test_rate_interpolation.py checks the shared fitter bound and data.
 constexpr float fittedRateLowerBound=.003f;
-struct LaneData {double rate=0,offset=0,level=0,ratio=0,angle=0;Complex phase{1,0},left{},right{};bool rateIdentified=true;};
+struct LaneData {double rate=0,offset=0,level=0,ratio=0,angle=0,softBias=0;Complex phase{1,0},left{},right{};bool rateIdentified=true;};
 struct PartialData {int order=0;double cents=0,rise=0;LaneData lane[lanes]{};};
 // What every strike would otherwise recompute of a measured lane: its log
 // rate, its pickup's ratio and angle (see LaneData), its layers' phases as
@@ -532,6 +532,7 @@ struct VelocityInterpolation {
 };
 struct PartialCache : std::array<LaneCache,lanes> {
   std::uint16_t velocityMask=0;
+  std::uint8_t softRank[lanes]{0,1,2,3};
   const VelocityInterpolation* velocity=nullptr;
 };
 LaneCache cacheLane(const measured::Lane& m,int layers) noexcept {
@@ -575,6 +576,39 @@ std::array<int,lanes> pairing(const std::array<LaneCache,lanes>& a,const std::ar
     if(cost<least){least=cost;best=order;}
   }while(std::next_permutation(order.begin(),order.end()));
   return best;
+}
+
+
+// Keep the shipping una-corda choices at each measured key, then carry
+// those choices with its physical lanes instead of reassigning by rank
+// whenever interpolated rates cross. The existing bias constants are
+// unchanged; these ranks are calculated once, outside audio callbacks.
+constexpr double softBiasAtRank(int rank) noexcept {return rank==0?-.28:rank==lanes-1?.08:0.;}
+void cacheSoftRanks(const Model& model,PartialCache* cache) noexcept {
+  // upperAnchor() makes every measured key after the first the RIGHT end
+  // of the preceding interval. Its exact mix(a,b,1) rounding and pairing
+  // can reorder equal fitted rates. Reproduce that shipping context, not
+  // a fresh sort of the raw target rates or the next interval's t=0.
+  // A partial absent at the other endpoint uses single(), hence its
+  // original lane indices (the cache's default ranks).
+  struct EndpointLane {double rate;int measuredIndex;};
+  for(int anchor=0;anchor<model.anchorCount;++anchor){
+    const bool first=anchor==0;const int lower=first?0:anchor-1;
+    const auto& a=model.anchors[lower];const auto& b=model.anchors[lower+1];
+    int i=a.first,j=b.first;
+    while(i<a.first+a.count&&j<b.first+b.count){
+      const int oa=model.partials[i].order,ob=model.partials[j].order;
+      if(oa<ob){++i;continue;}if(ob<oa){++j;continue;}
+      const auto pair=pairing(cache[i],cache[j]);EndpointLane endpoint[lanes];
+      const double t=first?0.:1.;
+      for(int lane=0;lane<lanes;++lane)
+        endpoint[lane]={mix(cache[i][lane].logRate,cache[j][pair[lane]].logRate,t),first?lane:pair[lane]};
+      std::sort(endpoint,endpoint+lanes,[](const EndpointLane& x,const EndpointLane& y){return x.rate>y.rate;});
+      auto& target=cache[first?i:j];
+      for(int rank=0;rank<lanes;++rank)target.softRank[endpoint[rank].measuredIndex]=static_cast<std::uint8_t>(rank);
+      ++i;++j;
+    }
+  }
 }
 
 double levelAt(const Model& model,const float* db,double velocity) noexcept {
@@ -651,6 +685,7 @@ PartialData single(const Model& model,const measured::Partial& p,const std::arra
 LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
   LaneData l;
   l.rate=mix(x.rate,y.rate,t);l.offset=mix(x.offset,y.offset,t);l.level=mix(x.level,y.level,t);
+  l.softBias=pick(x.softBias,y.softBias,t); // exact endpoint bias, no rank switch
   // Phases come from the nearer anchor: each is one measured pattern of
   // the strike's arrival across the partials, and a blend of two is neither.
   l.phase=t<.5?x.phase:y.phase;
@@ -755,6 +790,7 @@ PartialData interpolateVelocity(PartialData d,const VelocityInterpolation& c,dou
 }
 PartialData single(const Model& model,const measured::Partial& p,const PartialCache& c,double velocity) noexcept {
   auto d=single(model,p,static_cast<const std::array<LaneCache,lanes>&>(c),velocity);
+  for(int j=0;j<lanes;++j)d.lane[j].softBias=softBiasAtRank(c.softRank[j]);
   if(!c.velocityMask||velocity<=model.layerVelocity[0]||velocity>=model.layerVelocity[model.layers-1])return d;
   int layer=0;while(velocity>model.layerVelocity[layer+1])++layer;
   if(velocity==model.layerVelocity[layer]||velocity==model.layerVelocity[layer+1]||!(c.velocityMask&(1u<<layer)))return d;
@@ -1670,7 +1706,6 @@ struct Engine::Impl {
       // energy from the prompt lane to the slowest one, as the unstruck
       // string is driven only through the bridge.
       const double felt=std::exp(-soft*.115*(order-1))*softGain*weight*colour(order);
-      const double laneSoft[lanes]={1-.28*soft,1,1,1+.08*soft};
       auto& partial=voice.partials[voice.count];
       partial.frequency=frequency;
       setDamper(partial);
@@ -1678,7 +1713,7 @@ struct Engine::Impl {
       partial.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
       double peak=0;
       for(int k=0;k<lanes;++k){const auto& l=d.lane[k];
-        const double amplitude=std::pow(10.,l.level/20)*felt*laneSoft[k];
+        const double amplitude=std::pow(10.,l.level/20)*felt*(1+soft*l.softBias);
         peak+=amplitude;
         partial.decay[k]=std::exp(-std::exp(l.rate+ring)/sampleRate);
         partial.hz[k]=frequency+l.offset*spread;
@@ -2055,6 +2090,7 @@ Engine::Engine(double sampleRate):impl(new Impl){
           p.velocityIntervals[nextVelocity++]=cacheVelocity(m,m.partials[i],c,layer);}
 #endif
     }
+    cacheSoftRanks(m,p.partialLanes.data()+m.partialFirst);
     for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
       p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);
   }

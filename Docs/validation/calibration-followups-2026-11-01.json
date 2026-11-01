@@ -1,6 +1,6 @@
 {
   "date": "2026-11-01",
-  "status": "Calibration and pitch-transport candidates rejected or bounded diagnostics; soft-pedal transport awaits listening and is not adopted. Frozen research reference remains accepted 0.4.2.",
+  "status": "Calibration and whole-pattern pitch-transport candidates remain rejected or bounded diagnostics. Soft-pedal transport is accepted locally as 0.4.4 after owner B preference and combined native/recording/frontend/CPU validation, retaining the accepted0.4.3 reset fix. Rack integration follows.",
   "protocol": "Quiet-frame candidate compared to accepted0.4.2 on933recordings and1584normal-playing renders. Paired errors use common metric cases andbaseline gain reference. Steinway/Salamander donor experiment uses numeric features only. No sealed observations used. Subsequent body and slow-pole diagnoses use TRAIN only; pitch eligibility reads frozen model outputs. Soft-pedal evaluation reuses all 933 frozen TRAIN/DEV recording caches and two 1584-case soft-on keyboard grids, with no new reference extraction or fitting.",
   "comparator_sha256": "8090abd041356c7186313a44ec5ce703c956f1ce0450bcf51bfbae9c53573fd8",
   "quiet_frame": {
@@ -2144,10 +2144,22 @@
     "out/realism/runtime-fit-review/late-retention-design/proposal.md": "98164ddbc8c1e7aedc9ccb020b9a7c25daaf0be1c2c3f606434f0f8e9c699add",
     "out/realism/runtime-fit-review/late-retention-design/evidence.json": "79b38cc1432a36d3ed36068c0b613bbee7d00ef0f9ce796fce317bfd89d84f2c",
     "out/realism/runtime-fit-review/late-retention-design/receipt.json": "134910b75ca7eef81ff188ea0bcc6f451138ad4813c161e268a3c35e9350ae18",
-    "out/realism/runtime-fit-review/late-retention-design/review.py": "31c8f5b9010ddb99d1e16ab4daed91e0a44afb1f77ff86dbe8a3ee51e6d3f0b0"
+    "out/realism/runtime-fit-review/late-retention-design/review.py": "31c8f5b9010ddb99d1e16ab4daed91e0a44afb1f77ff86dbe8a3ee51e6d3f0b0",
+    "out/realism/runtime-fit-review/late-retention-trial/results.md": "fd6feaa2880d97fdf7e8e7cc8e55384594e317bde9ce9363ac77ac1fd85064c5",
+    "out/realism/runtime-fit-review/late-retention-trial/receipt.json": "bc258258e679ee13e5c3b9d72ae88647671dfae4a4f00618cf0b17d5c07d80c9",
+    "out/realism/runtime-fit-review/late-retention-trial/native-summary.json": "941ca7fc1af2704cbdf934912697115eab86482e8379160d75e205ffe5df6443",
+    "out/realism/yamaha-pedal-repeatability/report.txt": "59e2990d0257bb43be9c88b5fa48b38032c0393d237f110d750802b51212b5b2",
+    "out/realism/yamaha-pedal-repeatability/receipt.json": "cfee4a9449c5e0d58dea03bce613ddca25fb043013fc956b2464e75e62f3e7de",
+    "out/realism/yamaha-pedal-repeatability/comparison.json": "f6556c0f7274dc7ec8bc5b0ff705be8b6e9915dda6455e0c5b473e301f4d5241",
+    "out/realism/soft-order-audit/promotion-0.4.4/receipt.json": "29bb842396abdd8139817be7598bf7ca4cd77475d2cb52c72dc568862a7f0369",
+    "out/realism/soft-order-audit/promotion-0.4.4/artifact-sha256.json": "84aeaae310cd7aa85b9af368f68a916ed8c9257eedd83268a16e79cced7ebe3b",
+    "out/realism/soft-order-audit/combined-044/receipt.json": "dcc1fa04ec2d0dbd924978b8b4906914136f90e67acd20db7f9335bd6f4cf7f8",
+    "out/realism/soft-order-audit/combined-044/results.md": "66c6a98059a8b2c99b8c8e8998822eed7692a43aa583b7159bd31e582eed55ea",
+    "out/realism/soft-order-audit/combined-044/frontend-cpu-receipt.json": "c46c9f6b942543dc13fd7cff676c1b72802332695b5a6a7bf9c07fd4ab82e86c",
+    "out/realism/soft-order-audit/combined-044/listening-parity/receipt.json": "29f7aef73e777b40d95817aa1eb487db77a196794ce85c83933512e772c79612"
   },
   "runtime_diagnosis": {
-    "status": "All research candidates remain out of production. Body survey and slow-pole review are bounded diagnoses; one-window pitch transport is rejected. Soft-pedal transport passes the recorded native/default-sound gates but has full-grid tradeoffs and awaits listening. Reset 0.4.3 is a separate validation underway; no acceptance claim is made here.",
+    "status": "Frozen research checkpoints retain accepted0.4.2 comparisons. Later hard-reset and soft-pedal promotion are recorded in top-level hard_reset and soft_pedal_promotion; rejected calibration candidates remain out of production.",
     "production_engine_sha256": "8afcba98abe2029b8adcff5b49e846312476b199f2e9383d8779f91957d55ee0",
     "body_observation": "TRAIN80 low body modes: loud-layer weighting contaminates soft excitation; independent fixed-pole fit and shared stereo pickup separately lose loud-layer energy. Observed total band is not a proven body-only target.",
     "body_loud_117": {
@@ -2160,9 +2172,9 @@
         0.1293,
         0.0997
       ],
-      "scope": "Regenerated-baseline trace, TRAIN80v117,150\u2013250Hz,50\u2013300ms aftercontact,originalsourceunits. Not exactshippingheadermeasurement."
+      "scope": "Regenerated-baseline trace, TRAIN80v117,150–250Hz,50–300ms aftercontact,originalsourceunits. Not exactshippingheadermeasurement."
     },
-    "colour_observation": "Later independent-lane infinite-energy normalization reintroduces gain steps after coherent50\u2013750ms interpolation. Coherent replacement removes isolated gain steps but shifts anchors and has mixed actual-key/window results.",
+    "colour_observation": "Later independent-lane infinite-energy normalization reintroduces gain steps after coherent50–750ms interpolation. Coherent replacement removes isolated gain steps but shifts anchors and has mixed actual-key/window results.",
     "noise_observation": "Shared random inputs across frequency bands disagree with power-sum density calibration. Independent-band candidate matches native stochastic predictions but fails existing chord-headroom margin.",
     "headroom_dbfs": {
       "limit": 9.041199826559248,
@@ -5366,7 +5378,7 @@
       ]
     },
     "soft_pedal_lane_transport": {
-      "decision": "Pending listening; not adopted. Mechanism correction and default-sound identity do not establish soft-pedal acoustic improvement.",
+      "decision": "Pre-listening checkpoint later superseded by the owner B preference and top-level soft_pedal_promotion for0.4.4. Historical tradeoffs and measurement limits remain unchanged.",
       "candidate_source_sha256": "e6e8c22f851eaf9a2c738a5607266ca6331655cee632dc32e2bf24ec492b6991",
       "mechanism": "Carry existing -0.28/0/0/+0.08 bias with canonical measured-anchor paired lanes instead of assigning by current decay rank; measured coefficients and poles unchanged.",
       "recordings": {
@@ -5544,7 +5556,96 @@
       "no_new_acoustic_tolerance": true,
       "non_improvement_limit": "No useful descent in this inner approximation is not impossibility in the full representation.",
       "production_limit": "Final-table diagnostic does not reproduce or replace production SVD/gain/velocity regularization.",
-      "identity_feasible_by_construction_if_preflight_passes": true
+      "identity_feasible_by_construction_if_preflight_passes": true,
+      "current_outcome": "The separately frozen late_retention_trial completed and was rejected; this historical design checkpoint remains unchanged."
+    },
+    "late_retention_trial": {
+      "status": "Completed and rejected; no adoption, optimizer rerun, broader refit or production table change.",
+      "source_commit": "ae731673760f486ab762cd021e3b2b7a4a757bbd",
+      "cases": 15,
+      "notes": [
+        82,
+        84,
+        86
+      ],
+      "identity_native_controls_exact": 15,
+      "fixed_representation": "Published four-pole fundamentals and stereo pickups; final complex layer excitations only. Frozen masks, weights, physical ridge and played observation model.",
+      "optimizer_runs": 15,
+      "optimizer_reruns": 0,
+      "source_waveform_reads": 0,
+      "solver_success_statuses": 11,
+      "solver_iteration_limit_failures": [
+        {
+          "note": 84,
+          "velocity": 108
+        },
+        {
+          "note": 86,
+          "velocity": 15
+        },
+        {
+          "note": 86,
+          "velocity": 108
+        },
+        {
+          "note": 86,
+          "velocity": 122
+        }
+      ],
+      "solver_failure_limit": 4000,
+      "success_status_is_complete_kkt_certificate": false,
+      "feasibility": "Shipping is feasible; every case also has an algebraic strict-interior witness. Failure is not an infeasibility or representation-capacity certificate.",
+      "scalar_control_coefficients": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scalar_native_matches_shipping": true,
+      "candidate_fresh_repeats_exact": 15,
+      "native_objective_totals": {
+        "candidate": 2.818441512090539,
+        "scalar": 2.963189043549917,
+        "baseline": 2.963189043549917
+      },
+      "native_objective_aggregate_resolved": true,
+      "native_tail_regression_case_window_entries": 7,
+      "tail_entry_count_note": "Seven entries across five note86 layers; full/supported late1 entries duplicate the same windows where both fail.",
+      "success_status_full_late2_power_error_regressions_db": [
+        {
+          "note": 86,
+          "velocity": 51,
+          "delta": 0.018044
+        },
+        {
+          "note": 86,
+          "velocity": 85,
+          "delta": 0.045295
+        }
+      ],
+      "middle_mean_absolute_power_error_delta_db": {
+        "82": 0.16742079174389438,
+        "84": 0.8703672541750649,
+        "86": 1.5816423863215294
+      },
+      "middle_regressions_among_success_status_cases": 10,
+      "accepted_bounded_trial": false,
+      "limits": [
+        "Empirical recurrence parity is not a universal error bound.",
+        "Failed finite iterates were rendered only as diagnostics; no case replacement or solver selection.",
+        "Isolated fundamental and final-table representation; no production SVD/gain/velocity smoothing or full-piano validation."
+      ]
     }
   },
   "hard_reset": {
@@ -6112,11 +6213,386 @@
     "positive_supported_band_cells": 98,
     "supported_band_cells": 122,
     "limits": [
-      "Separate performances; broad velocity bins, no equal-hammer-velocity inference",
+      "Separate mapped regions; physical strike velocity and region independence are not established.",
       "No receiver-resolved features or known key/pedal timing",
-      "Treble96 only2\u20134supported late bands andone latepartial per layer",
+      "Treble96 only2–4supported late bands andone latepartial per layer",
       "Distinct source regions are not automatically independent takes"
     ],
-    "next_step": "A separately pinned TRAIN repeatability intake; no fit or parameter selection."
+    "next_step": "The separately pinned TRAIN repeatability intake is complete; see yamaha_pedal_repeatability. No fit or parameter selection follows."
+  },
+  "yamaha_pedal_repeatability": {
+    "status": "Completed descriptive TRAIN intake; no independent-strike claim or coupling/decay calibration.",
+    "new_train_regions": 16,
+    "existing_train_controls": 8,
+    "notes": [
+      48,
+      69
+    ],
+    "source_bins": [
+      "P",
+      "MF"
+    ],
+    "mapped_states": [
+      "up",
+      "down"
+    ],
+    "new_original_sequence_positions": [
+      2,
+      3
+    ],
+    "new_pcm_and_wav_hashes_match": true,
+    "existing_control_feature_fields_exact": 18,
+    "same_pitch_pairs": 132,
+    "within_condition_pairs": 24,
+    "exact_nonconstant_1024_frame_block_sharing_pairs": 0,
+    "within_condition_attack_correlation": {
+      "minimum": 0.9768521115015439,
+      "median": 0.9988405744076556,
+      "maximum": 0.9997712403110023
+    },
+    "independent_strikes_established": false,
+    "independent_replicate_weights": false,
+    "late_band_shape_window_seconds": [
+      1.5,
+      3.0
+    ],
+    "early_band_shape_window_seconds": [
+      0.1,
+      0.5
+    ],
+    "group_summaries": [
+      {
+        "midi": 48,
+        "source_bin": "P",
+        "common_supported_bands": 12,
+        "median_state_mean_shape_contrast_db": 0.3754366334771122,
+        "median_maximum_within_state_range_db": 0.8005602428242682,
+        "all9_positive_bands": 5,
+        "all9_negative_bands": 2,
+        "overlapping_range_bands": 5,
+        "early_down_minus_up_mean_db": 3.2042035997548908
+      },
+      {
+        "midi": 48,
+        "source_bin": "MF",
+        "common_supported_bands": 13,
+        "median_state_mean_shape_contrast_db": 0.6009705643853991,
+        "median_maximum_within_state_range_db": 0.4505990086438345,
+        "all9_positive_bands": 7,
+        "all9_negative_bands": 3,
+        "overlapping_range_bands": 3,
+        "early_down_minus_up_mean_db": -3.263369327179724
+      },
+      {
+        "midi": 69,
+        "source_bin": "P",
+        "common_supported_bands": 6,
+        "median_state_mean_shape_contrast_db": 6.03065362636702,
+        "median_maximum_within_state_range_db": 1.9294330458057054,
+        "all9_positive_bands": 6,
+        "all9_negative_bands": 0,
+        "overlapping_range_bands": 0,
+        "early_down_minus_up_mean_db": 2.79566307808102
+      },
+      {
+        "midi": 69,
+        "source_bin": "MF",
+        "common_supported_bands": 7,
+        "median_state_mean_shape_contrast_db": 7.383490475319894,
+        "median_maximum_within_state_range_db": 0.7860748587142723,
+        "all9_positive_bands": 6,
+        "all9_negative_bands": 0,
+        "overlapping_range_bands": 1,
+        "early_down_minus_up_mean_db": -2.5732228829586106
+      }
+    ],
+    "observation": "Mapped pedal-state tail contrast strengthens at MIDI69; MIDI48 remains frequency-dependent and mixed.",
+    "inference_limits": [
+      "Conditional common support and descriptive ranges, not confidence intervals or a waveform gain target.",
+      "Integer-shift/trim/gain copy controls do not exclude fractional resampling, EQ, envelope processing or shared-source variants.",
+      "Physical velocity, recording gain, timing and strike independence remain confounded.",
+      "No receiver keys, reciprocity, coupling gain or individual decay law identified."
+    ],
+    "dev_or_sealed_regions_analyzed": 0,
+    "model_fits": 0,
+    "production_change": false,
+    "existing_80_percent_lift_retained": true
+  },
+  "soft_pedal_promotion": {
+    "version": "0.4.4",
+    "status": "Accepted locally; Rack integration follows canonical commit.",
+    "owner_answer": "B",
+    "interpretation": "Both new Belmont upper and bass phrases; no phrase-specific exception. Separate from earlier velocity B preference.",
+    "decision_path": "Docs/decisions.md",
+    "source_sha256": "2d8e6f891e7efceb8a77ba6c5d04c9455b468267f13cac59876576ff8d6429bd",
+    "native": {
+      "completed_utc": "2026-11-01T11:58:29.499898+00:00",
+      "version": "0.4.4",
+      "canonical_source_sha256": "2d8e6f891e7efceb8a77ba6c5d04c9455b468267f13cac59876576ff8d6429bd",
+      "chosen_soft_source_sha256": "e6e8c22f851eaf9a2c738a5607266ca6331655cee632dc32e2bf24ec492b6991",
+      "canonical_source_without_reset_fix_equals_chosen_soft": true,
+      "accepted043_reset_fix_retained": true,
+      "soft_constants_and_poles_unchanged_from_chosen_candidate": true,
+      "test_changes_from_frozen_staging": [
+        "-DNDEBUG added; staged test rerun passed before canonical build"
+      ],
+      "universal_release_build": true,
+      "architectures": "x86_64 arm64",
+      "cxx17_object_architectures": "x86_64 arm64",
+      "unit_tests": 13,
+      "unit_passed": 13,
+      "audio_tests": 2,
+      "audio_passed": 2,
+      "velocity_guard_header_sha256": "c5167799cc571e22f15874ba67ba2260da46aaef2c4243ff72bc72490e4ba6ec",
+      "velocity_guard_numeric_data_byte_identical": true,
+      "velocity_provenance_only_source_hash_changed": true,
+      "renderer_sha256": "9d81cc55fb6aba4439449f64800ef794ff1780a679b2962737f041f819b23063",
+      "perf_run": false,
+      "frontend_build_run_by_this_agent": false,
+      "recording_benchmark_owned_by_parent_and_market_research": true,
+      "no_recording_refit": true,
+      "no_commit": true,
+      "changed_canonical_files": [
+        "Source/DSP/KeyraEngine.cpp",
+        "Tests/test_soft_lane_continuity.py",
+        "CMakeLists.txt",
+        "Docs/research/velocity-interpolation-2026-11-01.json"
+      ],
+      "scope_limits": [
+        "Pure-piano soft-bias continuity is the accepted mechanism; broader cross-piano lane topology remains outside its guarantee.",
+        "Native64 cache-layout measurements do not prove Rack32 storage; SDK32 is evaluated separately."
+      ],
+      "receipts_sha256": {
+        "source-integration.json": "ccb7bb4e572007fcb59f7dc615e9250cf4e664809429d3abfab2f873458f2a29",
+        "generator-parity.json": "fdbd6ab61ea147cd3495aa37496a6dcd211be97fa1f2e863be4a429e5827d64d",
+        "build-receipt.json": "f6b44a08139ad53de15382ab46cfe5c1d7d78277c025641f4afd8422443fe38c",
+        "staged-release-test.log": "266c1baa604b605d77f051c78dc25a791d5bd09bef1b665ed53572e3ecfb38b9",
+        "unit.log": "6765623493df2e4e0bb3b31138bdafeabee4ee00b7d678fa40aebe91561a12e1",
+        "audio.log": "a4f0f437a59f287b69aae57bbb90a09787b4edfef316860641010cdec399518a",
+        "gates.json": "966703101086d88e05170bcaf5924cbab96912665dd30a03c38509003133453b",
+        "gates-completed.json": "ca67a1bb7bda52de76a30ac931aea1e03d2f1c6d3c644dd71d404511ae03aa66"
+      }
+    },
+    "evaluation": {
+      "completed_utc": "2026-11-01T12:04:56.151382+00:00",
+      "version": "0.4.4",
+      "scope": "Fresh combined chosen-soft-B + accepted-reset evaluation; out only, no production edits, reference audio reads, DEV fits, SEALED or perf.",
+      "recording_cases": 933,
+      "roles": {
+        "train": 699,
+        "dev": 234
+      },
+      "exact_metric_rows": 928,
+      "discrepant_rows_audio_identical": true,
+      "paired_regressions": 0,
+      "availability_changes": 0,
+      "soft1_keyboard_waveforms_identical_to_chosen_B": 1584,
+      "fresh_controls_exact": 30,
+      "selected_listening_phrases_byte_identical": [
+        "upper",
+        "bass"
+      ],
+      "source_sha256": "2d8e6f891e7efceb8a77ba6c5d04c9455b468267f13cac59876576ff8d6429bd",
+      "renderer_sha256": "9d81cc55fb6aba4439449f64800ef794ff1780a679b2962737f041f819b23063",
+      "canonical_gates": {
+        "unit_passed": 13,
+        "audio_passed": 2,
+        "reset_retained": true,
+        "performed_by": "engine_audit, independently linked receipt"
+      },
+      "all_reference_caches_rehashed_unchanged": true,
+      "source_recordings_opened": 0,
+      "known_B_nonuniform_changes_preserved": true,
+      "provenance_correction": {
+        "initial_receipt_path": "receipt-initial.json",
+        "initial_receipt_sha256": "3a029b25c31cce90b18bcb9b80b1a603ba35b396f05259d31237c50dd004de44",
+        "reason": "The initial recursive manifest accidentally included root-owned frontend/performance artifacts. canonical-perf.log was still live and empty when hashed; its later completed content did not match. The initial receipt is preserved verbatim as historical evidence and is superseded by this ownership-scoped receipt.",
+        "excluded_root_owned_files": [
+          "canonical-cpu.json",
+          "canonical-perf.log",
+          "clap.log",
+          "frontend-artifacts.json",
+          "frontend-cpu-receipt.json",
+          "frontend-tests.log",
+          "host-validators.json",
+          "plugin-build.log",
+          "pluginval-logs/Protocodus - Keyra 0.4.4 - Mac OSX 26.5.1 VST3_20261101T130043.646+0100.txt",
+          "pluginval.log"
+        ],
+        "removed_from_initial_manifest": [
+          "canonical-perf.log",
+          "clap.log",
+          "frontend-artifacts.json",
+          "frontend-tests.log",
+          "host-validators.json",
+          "plugin-build.log",
+          "pluginval-logs/Protocodus - Keyra 0.4.4 - Mac OSX 26.5.1 VST3_20261101T130043.646+0100.txt",
+          "pluginval.log"
+        ],
+        "observed_initial_mismatch": {
+          "canonical-perf.log": {
+            "initial_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "completed_sha256": "036e47536ed938850f00112c327f28ee2ba8dd71dd45847fc978bcbbc6c3c44b"
+          }
+        },
+        "separate_root_authority": "frontend-cpu-receipt.json; its logs/receipts are intentionally excluded from this evaluation manifest.",
+        "completed_selected_listening_parity_retained": true,
+        "rerun": false,
+        "data_or_score_changes": false,
+        "results_and_known_tradeoffs_unchanged": true,
+        "remaining_local_and_external_hashes_verified": true
+      }
+    },
+    "frontend_and_cpu": {
+      "completed_utc": "2026-11-01T12:02:32.188180+00:00",
+      "version": "0.4.4",
+      "source_sha256": "2d8e6f891e7efceb8a77ba6c5d04c9455b468267f13cac59876576ff8d6429bd",
+      "build_exit": 0,
+      "build_command": [
+        "cmake",
+        "--build",
+        "build-plugin-realism",
+        "--config",
+        "Release",
+        "-j",
+        "4"
+      ],
+      "frontend_tests": {
+        "exit": 0,
+        "processor_passed": true,
+        "matrix_passed": true,
+        "matrix_scope": "Rotating subset, four workers; run after full link completion."
+      },
+      "validators": [
+        {
+          "name": "pluginval",
+          "command": [
+            "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/validators/pluginval.app/Contents/MacOS/pluginval",
+            "--strictness-level",
+            "10",
+            "--random-seed",
+            "0x4b455952",
+            "--timeout-ms",
+            "120000",
+            "--verbose",
+            "--output-dir",
+            "/Users/vojta/Dev/keyra-realism-20261101/out/realism/soft-order-audit/combined-044/pluginval-logs",
+            "--validate",
+            "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/VST3/Keyra.vst3"
+          ],
+          "exit": 0,
+          "seconds": 16.5066312920535,
+          "log_sha256": "176f8eaca826739f093c7c7c74fd541e0354b7316791ec7fac7e26c53098423c"
+        },
+        {
+          "name": "clap",
+          "command": [
+            "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/validators/binaries/clap-validator",
+            "validate",
+            "/Users/vojta/Dev/keyra-realism-20261101/build-plugin-realism/Keyra_artefacts/Release/CLAP/Keyra.clap"
+          ],
+          "exit": 0,
+          "seconds": 2.5294776669470593,
+          "log_sha256": "abc7003eb287531211f6dfd77cefcbab97ad48b7152393f019a4190c8401ae72"
+        }
+      ],
+      "vst3": {
+        "validator": "pluginval1.0.4",
+        "strictness": 10,
+        "seed": "0x4b455952",
+        "result": "SUCCESS"
+      },
+      "clap": {
+        "validator": "clap-validator0.3.2",
+        "tests": 20,
+        "passed": 17,
+        "failed": 0,
+        "skipped": 3,
+        "skip_reason": "Optional preset discovery factory",
+        "warnings": 1,
+        "scan_ms": 114
+      },
+      "artifacts": [
+        {
+          "kind": "VST3",
+          "path": "build-plugin-realism/Keyra_artefacts/Release/VST3/Keyra.vst3/Contents/MacOS/Keyra",
+          "sha256": "dde71ba5cdfdc5626742a7a27ea01b62a7fd8514fea711236539984cc62871cd",
+          "architectures": "x86_64 arm64",
+          "version": "0.4.4"
+        },
+        {
+          "kind": "AU",
+          "path": "build-plugin-realism/Keyra_artefacts/Release/AU/Keyra.component/Contents/MacOS/Keyra",
+          "sha256": "5ec505d1f5d886ee330bc752434c5d1f6367c2fe8feda6b546b32f51e10edcb1",
+          "architectures": "x86_64 arm64",
+          "version": "0.4.4"
+        },
+        {
+          "kind": "CLAP",
+          "path": "build-plugin-realism/Keyra_artefacts/Release/CLAP/Keyra.clap/Contents/MacOS/Keyra",
+          "sha256": "fbf5079b903c9fb942be5c2bc6c56e426b63360d4ac3e02be546dae2c31eb6ad",
+          "architectures": "x86_64 arm64",
+          "version": "0.4.4"
+        },
+        {
+          "kind": "Standalone",
+          "path": "build-plugin-realism/Keyra_artefacts/Release/Standalone/Keyra.app/Contents/MacOS/Keyra",
+          "sha256": "45e11024db81f10488c07c7c4b6c9728ec0bddc15eef0250083f125a4612f39e",
+          "architectures": "x86_64 arm64",
+          "version": "0.4.4"
+        }
+      ],
+      "cpu": {
+        "exit": 0,
+        "command": [
+          "build-realism/RenderKeyraPresetDemos",
+          "--cpu",
+          "--json",
+          "out/realism/soft-order-audit/combined-044/canonical-cpu.json",
+          "Docs/audio/midi"
+        ],
+        "demos": 8,
+        "repeats": 3,
+        "sample_rate": 48000,
+        "block_frames": 256,
+        "budget": 0.6,
+        "realtime_factor_range": [
+          0.0306330131,
+          0.103050041
+        ],
+        "cpu_model": "Apple M1 Max",
+        "scope": "Serial native Release timing after this task’s build/scoring/host pools finished; development-machine evidence, not host deadline or isolated-system certification."
+      },
+      "selected_listening_phrase_parity": {
+        "upper": true,
+        "bass": true,
+        "scope": "Exact whole raw WAV bytes match the two B files used for the owner’s answer."
+      },
+      "limits": [
+        "Execution on arm64; x86_64 slices built but not separately executed.",
+        "AU and standalone built; AU not auval-validated and manual DAW acceptance remains open.",
+        "Rack integration follows canonical acceptance. No publishing, push or merge."
+      ],
+      "evidence_sha256": {
+        "out/realism/soft-order-audit/combined-044/plugin-build.log": "c825ec8ec3d5f05112fd148c085515b04555630d6036a8188044ef3affef7aa4",
+        "out/realism/soft-order-audit/combined-044/frontend-tests.log": "f120f63592554d42ce25fa768b1e5f6a9f581abdf399d0d7debdb71bc1f3da4e",
+        "out/realism/soft-order-audit/combined-044/pluginval.log": "176f8eaca826739f093c7c7c74fd541e0354b7316791ec7fac7e26c53098423c",
+        "out/realism/soft-order-audit/combined-044/clap.log": "abc7003eb287531211f6dfd77cefcbab97ad48b7152393f019a4190c8401ae72",
+        "out/realism/soft-order-audit/combined-044/host-validators.json": "bff779b20e97d0c0e96b35f194c0f452a167a724b3c1d85707f2536480ac54de",
+        "out/realism/soft-order-audit/combined-044/frontend-artifacts.json": "d3feeab401af154ea7aad2d36cd4b782405b7b734689504a9746a188d0fe3563",
+        "out/realism/soft-order-audit/combined-044/canonical-perf.log": "036e47536ed938850f00112c327f28ee2ba8dd71dd45847fc978bcbbc6c3c44b",
+        "out/realism/soft-order-audit/combined-044/canonical-cpu.json": "dacf57fb66c0a653132c451d204e366b56786ff8a13b51e25bdd6ecb66c4488f",
+        "out/realism/soft-order-audit/combined-044/listening-parity/receipt.json": "29f7aef73e777b40d95817aa1eb487db77a196794ce85c83933512e772c79612"
+      }
+    },
+    "memory": {
+      "native64_fixed_storage_delta_bytes": 49984,
+      "sdk32": "Pending separate measurement; native64 padding claim is not portable."
+    },
+    "limits": [
+      "Known level/rise/adjacent-key tradeoffs preserved. No claim of universal audible improvement.",
+      "No measured soft-pedal recording target, new fitted coefficients or new calibration constants.",
+      "Mixed-string rank-pairing continuity remains unproven."
+    ]
   }
 }

@@ -43,6 +43,21 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### Unreleased — 0.4.4 — consistent soft-pedal interpolation
+
+A grand’s soft-pedal weighting now follows the fitted components between
+measured notes and dynamics. Crossing decay rates no longer abruptly exchange
+those weights. The owner preferred this change in Belmont’s upper and bass
+phrases ([listening decision](Docs/decisions.md#2026-11-01--moms-baby-grand-soft-pedal-interpolation)).
+Measured endpoints, soft-pedal-off playback and the upright’s half-blow action
+are preserved. Some intermediate notes change level or rise time; this does
+not claim uniform improvement or continuity for every mixed piano. The 0.4.3
+reset fix is retained.
+
+The combined build passes native unit/audio/performance and VST3/CLAP checks;
+the [validation record](Docs/validation/calibration-followups-2026-11-01.md#soft-pedal-interpolation--accepted-locally-in-044)
+documents keyboard parity, remaining tradeoffs and host coverage.
+
 ### Unreleased — 0.4.3 — clean reset after changing piano
 
 A hard reset immediately after changing piano now starts with the selected
