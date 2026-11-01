@@ -1120,10 +1120,10 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   the [interpolation validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md)
   records the remaining pitch-gap and attack-fit limitations.
 - Linux VST3 and standalone have earlier validation
-  ([pluginval](Docs/validation/pluginval-2026-10-26.txt)). The local 0.4.2 macOS
-  arm64 VST3 and CLAP pass automated host validators, and its 0.4.2d1 Rack
+  ([pluginval](Docs/validation/pluginval-2026-10-26.txt)). The local 0.4.3 macOS
+  VST3 and CLAP pass automated host validators on arm64, and its 0.4.3d1 Rack
   adapter plays all fourteen factory patches in protected Recon
-  ([validation](Docs/validation/host-interpolation-2026-11-01.md)). The Audio
+  ([validation](Docs/validation/calibration-followups-2026-11-01.md#hard-reset-after-changing-piano--accepted-locally-in-043)). The Audio
   Unit is built but has not passed auval in this iteration. Windows, manual
   DAW workflows, interactive Rack controls/song recall, retail Reason and
   target-chip CPU acceptance remain unverified for this candidate.

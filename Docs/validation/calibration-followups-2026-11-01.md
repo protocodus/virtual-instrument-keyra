@@ -49,8 +49,18 @@ pass. VST3 passes pluginval 1.0.4, strictness 10, seed `0x4b455952`; CLAP passes
 and a 117 ms scan warning against 100 ms. The matrix's final run follows
 completed linking; the earlier potentially stale run is retained but not used
 as its acceptance evidence. AU/auval, manual DAW workflows and Windows remain
-unverified. Rack integration follows separately; earlier 0.4.2d1 host evidence
-does not validate a new Rack binary.
+unverified.
+
+Rack 0.4.3d1 now pins the accepted canonical revision `ae731673760f486ab762cd021e3b2b7a4a757bbd`,
+with adapter commit `7654ca3f737af0d200c0fa398b9cac00010bb9ce`. Its four native
+tests, sanitizer contract, SDK 5 compile/local45/universal45 and archive checks
+pass. Protected fresh Recon 14.1d48 build 20466 creates and exports all fourteen
+patches, preserving all 9,440 production files and restoring scratch/log state.
+Two denied graphics-cache writes are recorded separately from loading/playback
+errors. Interactive host GUI, song recall and target-chip CPU remain unverified.
+The adapter receipt is `Examples/Keyra/Docs/validation/reset-pickup-2026-11-01.json`;
+U45 SHA256 is `4ecbe1205407ebcaccfa678ceccb27ea06b611d594852097dcc39eb29dd878b8`.
+No wrapper behavior, patch values or demo audio changed in this sync.
 
 The linked compact receipt retains source, build, test, benchmark and binary
 hashes. Full causal and validation evidence is under
@@ -140,6 +150,29 @@ automatic clamp or a universal prediction for a genuinely truncated future.
 No such rule is adopted. The complete assessment and all predictions remain
 under `out/realism/tail-prior/`.
 
+## Yamaha pedal observations: complementary evidence, not a new rate law
+
+A frozen panel reads 24 existing TRAIN feature caches: notes 24/48/69/96,
+three source velocity bins, pedal up/down. No source waveform or new model
+fit is used. The pairs are separate performances; their early levels differ
+by −4.87 to +6.97 dB. Every pair's supported broad-band late/early median is
+larger with pedal down, but only 98 of 122 supported band cells have that
+sign. At note 48, matched-order late-slope medians reverse sign in two of
+three layers. Note 96 has only two to four supported late bands and one
+supported late partial per layer.
+
+These temporal contrasts remove a constant level factor, not differences in
+strike, beating, release timing or room response. The caches describe struck
+orders and broad bands; they do not identify individual sympathetic receivers
+or a coupling gain. All six models currently inherit the receiver rate law
+from Salamander's pedal-alone recording, a different excitation condition.
+Yamaha can add a useful note-driven diagnostic but cannot replace that law
+from this panel. The owner's existing pedal-clearance preference is retained.
+The full findings and playback-metadata limits are frozen under
+`out/realism/yamaha-pedal-diagnostic/`. A separately pinned TRAIN repeatability
+intake is the next evidence step; distinct sample regions are not automatically
+independent strikes or calibrated equal velocities.
+
 ## Fit, export and runtime diagnosis
 
 The following bounded diagnoses retain the accepted DSP and numeric tables.
@@ -188,6 +221,25 @@ a predeclared retention check on the full observed late response across all
 15 layers and the complete export/native roundtrip, without coefficient floors
 or per-case winners. No new fit ran for this review; source-pinned evidence is
 under `out/realism/runtime-fit-review/slow-pole-design/`.
+
+The subsequent frozen design proposes a final-excitation feasibility trial
+with published poles and pickups fixed. It constrains each layer's supported
+late response relative to shipping, using both coherent residual and power
+error; a scalar-only control separates pattern changes from gain changes.
+Exact lower-power bounds are nonconvex. The first trial uses a sufficient
+baseline-directed affine lower bound, with convex upper-power and residual
+bounds. Shipping is feasible by construction on each separately computed mask.
+A failure to find improvement in that conservative subset is not proof that
+the complete representation cannot improve.
+
+The current all-frame tail scores cannot be relabeled as supported-only:
+10,250 of 11,847 late2 frames meet the existing floor criterion. The design
+requires exact identity serialization/native controls before fitting and
+actual native retention afterward. It holds later SVD, gain compensation and
+velocity smoothing out of this representation question; a successful trial
+would still need an export-aware production recipe. No fit was run in the
+design checkpoint, frozen under
+`out/realism/runtime-fit-review/late-retention-design/`.
 
 ### A loud-layer regression contaminates quiet body excitation
 

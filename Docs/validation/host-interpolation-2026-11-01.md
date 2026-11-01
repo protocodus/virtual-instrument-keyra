@@ -58,11 +58,19 @@ voice selection remain recorded; no Rack-only DSP workaround was added.
 
 Protected Recon 14.1d48 build 20466 creates the default device and plays and
 exports all fourteen factory patches. Exports are finite and audible at
-44.1 kHz, with peaks from −5.585 to −1.49995 dBFS. No Keyra error or failed
+44.1 kHz, with peaks from −5.585 to −1.49995 dBFS. No device-loading or failed
 script API call occurs. The protected runner preserves all 9,440 production
 files, restores its scratch/log state and leaves the installed payload
 unchanged. Its controlled shutdown after the completion marker is not a
 timeout or crash.
+
+Correction recorded during the 0.4.3d1 audit: the earlier wording “No Keyra
+error” was too broad. The frozen log contains ten sandbox-denied Keyra
+graphics-cache bitmap writes. Its SHA256 is
+`e361a55495bb1adfbe62cc3e447a4d6200875b577a8a8d1067d9e584bee78613`;
+the adapter's `out/keyra-043d1/previous-host-log-qualification.json` records
+the exact lines. The original numeric receipt and log remain unchanged.
+Scripted audio playback does not establish host GUI acceptance.
 
 The adapter receipt and complete evidence are in the isolated Rack checkout
 under `Examples/Keyra/Docs/validation/interpolation-2026-11-01.{md,json}`.

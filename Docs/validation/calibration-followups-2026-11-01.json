@@ -2135,7 +2135,16 @@
     "out/realism/masked-velocity/artifact-sha256.json": "0deaf2781177044da2a4fd8105e10227bc3a92806afa78e91737e8cafe0146d3",
     "out/realism/tail-prior/assessment.md": "ccd8d84bdef10fed9e90a0cd1ba9a99f9b102004c6925f82bbdb4ef30960d59f",
     "out/realism/tail-prior/artifact-sha256.json": "556f72a6580a98351257f04e6f07d31ecf4b31a09379d11ae1ba958d3545fb6b",
-    "out/realism/reset-body-audit/canonical-validation.json": "304d1f7f00118a2787de74d7311467154ad7b922f2ea8ca734ac8504a556887d"
+    "out/realism/reset-body-audit/canonical-validation.json": "304d1f7f00118a2787de74d7311467154ad7b922f2ea8ca734ac8504a556887d",
+    "out/realism/yamaha-pedal-diagnostic/protocol.txt": "275fada18c8b05d9a0c8c846f9c91cdd1a80d62ee9bcc7c53088a6d6b8108064",
+    "out/realism/yamaha-pedal-diagnostic/panel.json": "0a9967ee53c39e70199651f226bec077141fa23ec986dc7b944819614a720204",
+    "out/realism/yamaha-pedal-diagnostic/report.txt": "bd36d88b959b046c9d328eef31520f44165c1d49e678588da43606668dfb937a",
+    "out/realism/yamaha-pedal-diagnostic/features-summary.json": "8ae1719ed27f16129af2ae6e725fc6303708b6913e67f8ae76a7f3983abb4d2b",
+    "out/realism/yamaha-pedal-diagnostic/artifact-sha256.json": "eb7aac6dd3af04d9e74969d0a5e97137bc382fbf606149cae8d2b67d4a451455",
+    "out/realism/runtime-fit-review/late-retention-design/proposal.md": "98164ddbc8c1e7aedc9ccb020b9a7c25daaf0be1c2c3f606434f0f8e9c699add",
+    "out/realism/runtime-fit-review/late-retention-design/evidence.json": "79b38cc1432a36d3ed36068c0b613bbee7d00ef0f9ce796fce317bfd89d84f2c",
+    "out/realism/runtime-fit-review/late-retention-design/receipt.json": "134910b75ca7eef81ff188ea0bcc6f451138ad4813c161e268a3c35e9350ae18",
+    "out/realism/runtime-fit-review/late-retention-design/review.py": "31c8f5b9010ddb99d1e16ab4daed91e0a44afb1f77ff86dbe8a3ee51e6d3f0b0"
   },
   "runtime_diagnosis": {
     "status": "All research candidates remain out of production. Body survey and slow-pole review are bounded diagnoses; one-window pitch transport is rejected. Soft-pedal transport passes the recorded native/default-sound gates but has full-grid tradeoffs and awaits listening. Reset 0.4.3 is a separate validation underway; no acceptance claim is made here.",
@@ -5517,6 +5526,25 @@
         "Selected crossing contraction is a numerical regression test, not a whole-domain or audibility certificate.",
         "Default reference scores use soft=0; no soft-pedal acoustic target supports adoption. No reference extraction, new fitting or sealed reads."
       ]
+    },
+    "late_retention_design": {
+      "status": "Frozen proposal; no fit or renderer run in design checkpoint. Trial must establish identity/operator preflight before solving.",
+      "cases": 15,
+      "notes": [
+        82,
+        84,
+        86
+      ],
+      "late2_supported_frames": 10250,
+      "late2_total_frames": 11847,
+      "fixed_representation": "Published four poles and pickups; final complex excitation coordinates.",
+      "constraints": "Baseline-relative coherent residual and power in supported late windows; convex inner lower halfspace, not the exact nonconvex lower-power constraint.",
+      "scope_of_feasibility": "Same real-arithmetic operator and separately computed mask; actual native/serialized output checked independently.",
+      "scalar_control": true,
+      "no_new_acoustic_tolerance": true,
+      "non_improvement_limit": "No useful descent in this inner approximation is not impossibility in the full representation.",
+      "production_limit": "Final-table diagnostic does not reproduce or replace production SVD/gain/velocity regularization.",
+      "identity_feasible_by_construction_if_preflight_passes": true
     }
   },
   "hard_reset": {
@@ -5801,5 +5829,294 @@
     ],
     "published": false,
     "merged": false
+  },
+  "hard_reset_rack_followup": {
+    "version": "0.4.3d1",
+    "commit": "7654ca3f737af0d200c0fa398b9cac00010bb9ce",
+    "canonical_pin": "ae731673760f486ab762cd021e3b2b7a4a757bbd",
+    "receipt_path": "Examples/Keyra/Docs/validation/reset-pickup-2026-11-01.json",
+    "receipt_sha256": "2b955047a287510c3acdbdbcdec7123e455201da23b187862b3f26113f381a6e",
+    "package_sha256": "4ecbe1205407ebcaccfa678ceccb27ea06b611d594852097dcc39eb29dd878b8",
+    "native_ctest": {
+      "passed": 4,
+      "failed": 0,
+      "seconds": 16.71
+    },
+    "asan_ubsan_wrapper": "pass",
+    "sdk": "JukeboxSDK_500_028",
+    "target_version": "5.0",
+    "builds": {
+      "sdk_compile_only": "pass",
+      "local45_deployment": "pass",
+      "universal45": "pass"
+    },
+    "host": {
+      "fresh_default_device_created": true,
+      "factory_patches_created": 14,
+      "factory_patches_exported": 14,
+      "failed_api_calls": [],
+      "unexpected_product_scoped_error_lines": [],
+      "expected_denied_graphics_cache_writes": [
+        "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/DeviceTrackListThumbnail.png'",
+        "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/DevicePaletteImage.png'"
+      ],
+      "audio": [
+        {
+          "patch": "belmont-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -3.7491580648187943,
+          "rms_dbfs": -29.709350127421903,
+          "sha256": "3bf59f53813b50df00fc8a16a288a7b462c27504e5547d89833dbc7498dd1a64"
+        },
+        {
+          "patch": "clear-studio",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -1.5552555484371566,
+          "rms_dbfs": -30.186067133999114,
+          "sha256": "f0aa3a969caf530e4ff8d0fca3a9c8859b83d81ebf3d814d68f136c560696da3"
+        },
+        {
+          "patch": "close-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -3.2226032993653146,
+          "rms_dbfs": -31.405615565240886,
+          "sha256": "3285750ee521736a5b360aa7c10e27f647ef481f23171614efb2538a31dca6aa"
+        },
+        {
+          "patch": "concert-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -1.7608995929888869,
+          "rms_dbfs": -29.97924759830567,
+          "sha256": "c9a3ed64dc799a67a80ea138e472564b085785f228e27d2c1650b8a8e65762e5"
+        },
+        {
+          "patch": "felt-room",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -5.528016836390529,
+          "rms_dbfs": -32.80748519773,
+          "sha256": "d11071dd27cc57b3fd533309208b28475fc529ecb7f9c38e8bf861ff1b062144"
+        },
+        {
+          "patch": "felt-upright",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -3.193840144270774,
+          "rms_dbfs": -34.538469522876,
+          "sha256": "f197dbb591705d93a181290817d16cef6575c94013e73314fc5d1d98b9ce6c57"
+        },
+        {
+          "patch": "hamamatsu-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -1.6112362818480408,
+          "rms_dbfs": -29.24699701796426,
+          "sha256": "20a744f85650c3d8a627682b987ad5ad4d420f0c2f6be51727e0164d5ff5dbee"
+        },
+        {
+          "patch": "hamburg-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -2.7800146072480283,
+          "rms_dbfs": -30.24757732747331,
+          "sha256": "795d526a50eb48dfef71fdeb913d72dc505c4105511921b5992d23230762d655"
+        },
+        {
+          "patch": "helsinki-upright",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -1.4999483342019322,
+          "rms_dbfs": -28.37471858106551,
+          "sha256": "06127bfe1519f8e170e236ad1ef0ff0cea5c4a2fd4d84ea049481bdc8300f51a"
+        },
+        {
+          "patch": "intimate-mono",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -5.50700378744625,
+          "rms_dbfs": -32.60530914300472,
+          "sha256": "ae3193b4f07131ba9a95abfddfc51f2efdf134c2e5ed2a10a251eab4e6864ba2"
+        },
+        {
+          "patch": "kakegawa-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -2.0185563887813336,
+          "rms_dbfs": -30.301497086591276,
+          "sha256": "b42c76f0516b053bc1f4e3dee12169e2dc5d2cdf7d5aac6d5e29b8cb731a4cb3"
+        },
+        {
+          "patch": "new-york-grand",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -1.4999483342019322,
+          "rms_dbfs": -29.941969919470264,
+          "sha256": "69ece7070d2bf9ee2ebbec2157d5faf9077c589cee52266b1f53ddb98a37ee4d"
+        },
+        {
+          "patch": "pop-upright",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -1.5889279857964278,
+          "rms_dbfs": -28.726063211746013,
+          "sha256": "ff8eb3c125d21dfe2eacdcc1f2fe12641fd5ed97eede55415f07c65ebd9892a2"
+        },
+        {
+          "patch": "three-cities",
+          "sample_rate": 44100,
+          "seconds": 16.0,
+          "channels": 2,
+          "sample_width_bytes": 2,
+          "peak_dbfs": -2.2882291425389996,
+          "rms_dbfs": -29.57129890503389,
+          "sha256": "0352526a45fe80d95ebc62abb6a49ab39ca26b4ffae3aec378ef98f1c90c3e52"
+        }
+      ],
+      "production_files_preserved": 9440,
+      "preflight": true,
+      "sdk5_capability": "Exact host binary hash matches prior audit; current strings include fJukeboxTargetVersion.IsNewEnough(NSJukebox::kJukeboxTargetVersion50)"
+    },
+    "protected_host_session": {
+      "error": null,
+      "exit_code": -15,
+      "finished_at_utc": "2026-11-01T11:28:21.368137+00:00",
+      "finished_by_script_marker": true,
+      "host_preserved": true,
+      "host_sha256": "ac3e2cc09e113fb3e691a13aa695d3a2cb23fca9504e1c0856f2273af9bcfb8b",
+      "host_version": "14.1d48 build 20466 TESTING VERSION",
+      "payload_unchanged": true,
+      "production_preserved": true,
+      "scratch_restored": true,
+      "script_logs_absent_after": true,
+      "script_logs_moved_to_runtime": true,
+      "session": "keyra-043d1",
+      "started_at_utc": "2026-11-01T11:26:19.047791+00:00",
+      "timed_out": false,
+      "version": "0.4.3d1"
+    },
+    "static_analysis_warnings": [
+      "KeyraEngine.cpp:1487:11 core.NullDereference in voice scan",
+      "KeyraEngine.cpp:1494:5 core.NullDereference at chosen voice"
+    ],
+    "previous_host_log_qualification": {
+      "path": "/Users/vojta/Dev/rack-keyra-realism-20261101/out/host/keyra-042d1/runtime/ReasonScriptLogs/session.log",
+      "sha256": "e361a55495bb1adfbe62cc3e447a4d6200875b577a8a8d1067d9e584bee78613",
+      "expected_denied_graphics_cache_writes": [
+        {
+          "line": 26722,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/DeviceTrackListThumbnail.png'"
+        },
+        {
+          "line": 26743,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/DevicePaletteImage.png'"
+        },
+        {
+          "line": 26764,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/NoteLamp.png'"
+        },
+        {
+          "line": 26788,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/Reason_GUI_front_root_Panel.png'"
+        },
+        {
+          "line": 26809,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/RandomPiano.png'"
+        },
+        {
+          "line": 26832,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/IvoryKnob.png'"
+        },
+        {
+          "line": 26853,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/PedalLatch.png'"
+        },
+        {
+          "line": 26874,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/PedalTravel.png'"
+        },
+        {
+          "line": 26895,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/DeviceNavigator.png'"
+        },
+        {
+          "line": 26916,
+          "text": "Failed to store bitmap to disk: 'rackext:/cz.protocodus.Keyra/HD/Pedal.png'"
+        }
+      ],
+      "count": 10,
+      "qualification": "The existing frozen numeric receipt did not classify these denied bitmap-cache writes. This correction does not establish GUI interaction or acceptance."
+    },
+    "untested": [
+      "interactive Random Piano/Build controls",
+      "all four host views and overlays",
+      "RPG-8 auto-routing",
+      "song persistence and older-song host loading",
+      "target-chip CPU/retail Reason",
+      "Reason Studios cloud build/acceptance/publication"
+    ],
+    "uploaded": false,
+    "pushed": false,
+    "merged": false
+  },
+  "yamaha_pedal_diagnostic": {
+    "status": "Descriptive TRAIN checkpoint; not a new coupling or receiver decay calibration.",
+    "cases": 24,
+    "pairs": 12,
+    "notes": [
+      24,
+      48,
+      69,
+      96
+    ],
+    "layers": [
+      "P",
+      "MF",
+      "F"
+    ],
+    "reference_waveform_reads": 0,
+    "raw_early_down_minus_up_range_db": [
+      -4.87,
+      6.97
+    ],
+    "positive_band_tail_medians": 12,
+    "positive_supported_band_cells": 98,
+    "supported_band_cells": 122,
+    "limits": [
+      "Separate performances; broad velocity bins, no equal-hammer-velocity inference",
+      "No receiver-resolved features or known key/pedal timing",
+      "Treble96 only2\u20134supported late bands andone latepartial per layer",
+      "Distinct source regions are not automatically independent takes"
+    ],
+    "next_step": "A separately pinned TRAIN repeatability intake; no fit or parameter selection."
   }
 }

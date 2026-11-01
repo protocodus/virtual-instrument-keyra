@@ -93,8 +93,18 @@ the remaining audible tradeoff without selecting only favorable examples.
 
 The independent reset fix is accepted locally as 0.4.3: all 37 reset-history
 cases match a fresh engine, the 933-case recording comparison has no regressions,
-and native unit/audio/performance and VST3/CLAP validation pass. Adapter
-integration follows separately. This does not adopt the pending sound candidates.
+and native unit/audio/performance and VST3/CLAP validation pass. Rack 0.4.3d1
+pins that exact revision and passes native/sanitizer, SDK/package and protected
+fresh Recon playback checks. This does not adopt the pending sound candidates.
+
+The next bounded fitting trial uses final excitations at the published poles
+and pickups, with per-layer late-response retention and a scalar-only control.
+Its conservative convex subset contains shipping; an unsuccessful trial cannot
+prove the full representation impossible. Identity/export preflight and native
+scoring are required before any broader fit. Separately, Yamaha's twelve-pair
+pedal panel supports note-driven tail diagnostics, but its take/velocity
+variation and missing receiver-specific features do not justify a new shared
+decay law. A TRAIN-only repeatability intake will test that evidence limit.
 
 Progress remains active until the sound and whole-range requirements have
 direct evidence for all six pianos. A prepared dataset, a favorable aggregate
