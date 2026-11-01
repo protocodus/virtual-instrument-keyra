@@ -95,6 +95,21 @@ float pedalLevel(float panel,float midi,std::uint16_t heldSwitches) noexcept {
 // The gain at velocity v (0..1) under an SFZ amp_veltrack of `tracking`, as
 // sfizz's Region::velocityCurve computes it.
 double trackingGain(double tracking,double v) noexcept {return 1-tracking+tracking*v*v;}
+// Performance balance, not another acoustic velocity law: below a nominal
+// MIDI80 strike, a key's return is no louder than that reference return
+// scaled by the requested strike level. This only attenuates; at/above the
+// reference it preserves the recorded/sampler balance. If strike calibration
+// adds a gain later, its reference-minus-current gain belongs in this bound,
+// so boosting a quiet note cannot silently boost its action above the bound.
+// Tracking ratios are positive for the engine's finite native coordinates.
+double releaseBalanceCapDb(double requestedDb,double referenceDb,double trackingRatio,
+                          double referenceTrackingRatio,double strikeCorrectionDb=0,
+                          double referenceCorrectionDb=0) noexcept {
+  if(requestedDb>=referenceDb)return 0;
+  return std::min(0.,requestedDb-referenceDb+referenceCorrectionDb-strikeCorrectionDb
+                    +20*std::log10(referenceTrackingRatio/trackingRatio));
+}
+
 // A piano: its fitted data (MeasuredTypes.h), where its lanes start in the
 // engine's caches, how loud the action's noises play against the notes, the
 // scale of its levels and how its soft pedal works (unaCorda: the hammers
@@ -510,6 +525,9 @@ struct Channel {
   // Each key's latest strike, which sets the noise of its release: where it
   // played on each piano's layers (0..1).
   std::array<std::array<float,88>,pianoCount> velocity{};
+  // Captured with the latest strike, including its touch draw. All models
+  // are retained because the action build can change before the key returns.
+  std::array<std::array<float,88>,pianoCount> releaseCapDb{};
   std::array<std::uint64_t,88> struck{};
   // Momentary C0/C#0/D0 switches have independent ownership from CC/panel.
   std::array<std::uint16_t,3> keySwitches{};
@@ -1609,6 +1627,9 @@ struct Engine::Impl {
     // draws summed, within 3.5 spreads) and plays the coordinate there.
     double draw=0;
     for(int k=0;k<4;++k){touch^=touch<<13;touch^=touch>>17;touch^=touch<<5;draw+=touch*(1./4294967296.)-.5;}
+    const double requestedDb=responseDb(127*hammer)+touchSpreadDb*std::sqrt(3.)*draw;
+    // Use the public float MIDI80 coordinate, with zero touch draw.
+    const double releaseReferenceDb=responseDb(127*double(80/127.f));
     const Build& build=parameters.build;
     const Shares &strings=share.strings,&hammers=share.hammers,&board=share.soundboard;
     // Every piano's, so that a key let go knocks as its strike played on
@@ -1618,6 +1639,14 @@ struct Engine::Impl {
       x.v=steady?std::max(1.,127.*hammer)
                 :layerAt(m,responseDb(127*hammer)+touchSpreadDb*std::sqrt(3.)*draw);
       channel.velocity[p][note-21]=static_cast<float>(x.v/127);
+      const double actual=channel.velocity[p][note-21];
+      const double reference=static_cast<float>(layerAt(m,releaseReferenceDb)/127.);
+      const double tracking=trackingGain(m.releaseTracking,actual)/trackingGain(m.noteTracking,actual);
+      const double referenceTracking=trackingGain(m.releaseTracking,reference)/trackingGain(m.noteTracking,reference);
+      // Raw native-layer measurements bypass the performance policy at the
+      // strike; changing measurement mode later cannot change this release.
+      channel.releaseCapDb[p][note-21]=static_cast<float>(steady?0:
+        releaseBalanceCapDb(requestedDb,releaseReferenceDb,tracking,referenceTracking));
       x.upper=upperAnchor(m,note);x.a=&m.anchors[x.upper-1];x.b=&m.anchors[x.upper];
       // Keys beyond the last recorded pitch keep its partials but follow the
       // stretch and stiffness trend of the last two.
@@ -1862,27 +1891,45 @@ struct Engine::Impl {
     if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
     if(voice.count==0)voice.active=false;
   }
-  // Below full quality a strike keeps only the slots that come within dropDb
-  // of its strongest, either at contact (the sum of their lanes' amplitudes)
-  // or over their whole ring with the key held (their lanes' energy to
-  // silence), at their tint. Over every third key from A0 to C8 at
-  // velocities 40 to 127, 3 s of each, the slots dropped at 60 dB change no
-  // third-octave band within 40 dB of the note's strongest by more than
-  // 0.04 dB and those dropped at 50 dB by 0.74 dB, while the grand plays 39
-  // and 50 % fewer slots and the upright 11 and 20 %. At 40 dB a soft bass
-  // note's band from 1 to 4 kHz, 35 to 40 dB under its strongest, loses up to
-  // 27 dB. Engine tests hold the keys whose bands changed the most.
+  // Below Full, retain a slot if its peak or diagonal held-energy proxy can
+  // come within dropDb of the strongest at ANY Brightness in [0,1]. Testing
+  // only the strike's tint discarded slots a later brightening needed.
+  // In log coordinates each ratio to another slot is affine in Brightness.
+  // Intersect every pairwise inequality: a slot can qualify only in the
+  // interior, so a union of the two endpoint masks is insufficient.
+  // These proxies omit coherent cancellation and do not bound every band's
+  // error in every time window. The historical .04/.74 dB observations were
+  // specific static tests, not guarantees for live controls or all six pianos.
   void keepAudible(Voice& voice,double dropDb) noexcept {
-    double peak[maxPartials],energy[maxPartials],peakTop=0,energyTop=0;
+    double peak[maxPartials],energy[maxPartials],slope[maxPartials];
     for(int k=0;k<voice.count;++k){const auto& x=voice.partials[k];double p=0,e=0;
       for(int j=0;j<lanes;++j){p+=std::sqrt(x.energyWeight[j]);e+=x.energyWeight[j]/(1-x.decay[j]*x.decay[j]);}
-      peak[k]=p*x.tint;energy[k]=e*x.tint*x.tint;
-      peakTop=std::max(peakTop,peak[k]);energyTop=std::max(energyTop,energy[k]);
+      peak[k]=p>0?std::log(p):-std::numeric_limits<double>::infinity();
+      energy[k]=e>0?std::log(e):-std::numeric_limits<double>::infinity();
+      slope[k]=std::log(2.)*x.tintScale;
     }
-    const double peakFloor=peakTop*std::pow(10.,-dropDb/20),energyFloor=energyTop*std::pow(10.,-dropDb/10);
+    const auto possible=[&](int k,const double* level,double exponent,double threshold){
+      if(!std::isfinite(level[k]))return false;
+      // Numerical allowance for float tint representation; this is a few
+      // millionths of a dB, not an additional acoustic pruning threshold.
+      threshold-=4*exponent*std::numeric_limits<float>::epsilon();
+      double low=0,high=1;
+      for(int j=0;j<voice.count;++j){if(!std::isfinite(level[j]))continue;
+        const double gradient=exponent*(slope[k]-slope[j]);
+        const double intercept=level[k]-level[j]-.5*gradient-threshold;
+        if(gradient>0)low=std::max(low,-intercept/gradient);
+        else if(gradient<0)high=std::min(high,-intercept/gradient);
+        else if(intercept<0)return false;
+        if(low>high)return false;
+      }
+      return low<=high;
+    };
     int kept=0;
     for(int k=0;k<voice.count;++k)
-      if(peak[k]>=peakFloor||energy[k]>=energyFloor){if(kept!=k)voice.partials[kept]=voice.partials[k];++kept;}
+      if(possible(k,peak,1.,-dropDb*std::log(10.)/20)
+         ||possible(k,energy,2.,-dropDb*std::log(10.)/10)){
+        if(kept!=k)voice.partials[kept]=voice.partials[k];++kept;
+      }
     voice.count=kept;
   }
   // A partial's rise, tuning, weights and state from its strike, `ahead`
@@ -1945,7 +1992,7 @@ struct Engine::Impl {
       const auto* x=m.releaseKnocks+(upper-1)*m.bodyModeCount;
       sides[p]={x,x+m.bodyModeCount,std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note))),
                 m.releaseDb+20*std::log10(trackingGain(m.releaseTracking,v)/trackingGain(m.noteTracking,v))
-                -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale),m.bodyModeCount};
+                -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale)+channel.releaseCapDb[p][key],m.bodyModeCount};
     }
     actionKnock(sides);
   }

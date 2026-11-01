@@ -232,6 +232,101 @@ Evidence: `out/consolidation-20261101/interaction-audit/`,
 `out/consolidation-20261101/live-controls/` and
 `out/consolidation-20261101/pitch-candidate/`.
 
+## Consolidation: retain partials needed by Brightness
+
+Reduced quality previously deleted partials using only the Brightness value
+at the strike. Raising Brightness later could not recover them. In a native
+Helsinki C4/velocity-100 Light case, a supported band near 6.35 kHz lost
+68.81 dB relative to Full after brightening; a Hamamatsu C4/velocity-40
+Balanced case lost 34.87 dB near 2 kHz. Absolute levels and the complete
+spectral panel are retained beside these relative diagnostics.
+
+The selected change retains a partial when either existing peak/held-energy
+criterion can include it anywhere in Brightness 0–1. Log ratios are affine
+in Brightness, so intersecting their linear inequalities covers the complete
+interval. Merely combining masks at the two endpoints would miss partials
+that qualify only in the middle. A few float epsilon units cover gain
+representation roundoff; this allowance changes no mask in the 60-strike
+analytic test panel. It is not a new acoustic threshold.
+
+The measured losses above become effectively zero with the current smooth
+Brightness path. All 180 Full static/interrupted/reversed histories match
+the frozen preceding source byte-for-byte; 1,080 comparison renders are
+finite. Independent breakpoint and dense float-tint oracles, an interior-only
+fixture, a deliberately restored legacy implementation, allocation and block
+partition checks verify the selected mechanism. Quality still applies to
+future strikes, with no new live Quality switching behavior.
+
+Alternating-order timing retains 9.27% Balanced and 14.98% Light callback CPU
+savings versus Full in the declared panel; it costs 11.06%/15.29% more than
+the former reduced modes. Persistent instance/voice/partial storage is
+unchanged, with 1 KiB more temporary strike storage and no heap allocation.
+The largest median 16-note strike is 0.850 ms in this native panel. Full CPU
+differs by 0.74% between equivalent binaries. Concurrent work remains a timing
+limitation; these are not Rack host measurements.
+
+Whole-three-second supported-band errors in the measured dark-to-bright
+panel remain 0.061 dB Balanced and 0.923 dB Light. These are observations,
+not a guarantee for every band or instant: a very quiet late band can have a
+large relative error (one Light example is −16.96 dB against a Full band at
+−108.51 dBFS, gain 0.07). The header now states the proxy's scope explicitly.
+The more complex dormant-state alternative is retained as an unselected
+experiment; it recovered the same witnesses with less CPU saving.
+
+Evidence: `out/consolidation-20261101/quality/pruning-recovery/` and
+`out/consolidation-20261101/quality/pruning-integration/`.
+
+## Consolidation: quiet-strike release balance
+
+The inherited sampler ratios made several pianos' key-return amplitudes
+nearly independent of strike velocity. The selected performance policy caps
+a quiet strike's return against the same model's nominal MIDI-80 return,
+scaled by the requested strike level. It only attenuates below that reference;
+at or above it the existing balance remains unchanged. This is a product
+balance rule, not a claim that note-on velocity measures key-return speed.
+
+Let `d` include the existing touch variation and half-blow hammer reduction,
+`d80` be the nominal zero-draw MIDI-80 reference, and `r` the existing
+release/note tracking ratio. The captured cap in dB is
+`min(0, d - d80 + 20 log10(r80/r))` for `d < d80`, otherwise zero.
+It is stored per model/key at the latest strike, so later action-build changes
+and overlapping presses use the correct strike history. Held-time decay,
+damper/pedal eligibility and channel ownership retain their existing rules.
+Raw native-layer measurement captures a zero cap and remains unaffected by
+later changes to that diagnostic mode.
+
+Key-landing sounds, pedal-only events and the Mechanics default are unchanged.
+If response calibration subsequently adds a strike gain, the cap helper also
+accepts the reference-minus-actual correction; the release must apply the
+corresponding stored actual correction. This prevents a quiet-note boost from
+defeating the intended relative balance. That calibration is still experimental.
+
+The causal prototype covers 426 histories across all six models, four
+registers, six velocities, two hold durations, action changes, soft pedal,
+repeated presses, channels, sustain/sostenuto and steady diagnostic seeds.
+All pre-release prefixes and all release-suppressed candidate/control renders
+are exact. No callback allocations, nonfinite samples or guard activity occur
+at the declared gain 0.07. For key 100/velocity 8 after a short hold, Hamburg's
+release contribution falls from −21.60 to −37.25 dB relative to the played
+note; New York's falls from −17.19 to −32.85 dB. This is a signed full-engine
+causal difference, not an independently recorded noise stem.
+
+The focused regression adds an independent gain-bound calculation, three
+sample rates, partition checks, stored-history ownership and an audible-path
+mutation. A coherent total waveform can increase slightly when one component
+is attenuated: the prototype's largest full post-release increase is 0.528 dB
+in a Kawai soft-pedal tail at approximately −117 dBFS. The component cap and
+the finite native panel do not promise that every total sample decreases.
+
+Evidence: `out/consolidation-20261101/interaction-audit/release-cap-prototype/`.
+
+The integrated retention/release source (`a734d0fe…`) passes all 22 registered
+checks, including the existing native CPU budget, in 223.66 seconds. Its
+velocity-interpolation generated data are unchanged; provenance now identifies
+the new source. The source changes above are accepted consolidation milestones.
+Cross-piano response calibration and phase/interpolation experiments remain
+separate and are not certified by this test result.
+
 ## Earlier reproduction records
 
 Local working evidence is retained under:

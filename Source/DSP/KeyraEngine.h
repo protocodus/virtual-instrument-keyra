@@ -61,10 +61,10 @@ constexpr Build buildToward(Piano piano,Piano toward,float strings,float hammers
 // The piano a measured piano's parts moved toward in those songs and
 // patches: the upright's for the grand, the grand's for every other.
 constexpr Piano partner(Piano piano) noexcept {return piano==Piano::grand?Piano::upright:Piano::grand;}
-// How much of each strike plays, for CPU: every partial, or only those that
-// come within 60 dB (balanced) or 50 dB (light) of the strike's strongest,
-// which no third-octave band of the note misses by more than 0.04 or 0.74 dB
-// (KeyraEngine.cpp, keepAudible). A change applies from the next strike.
+// How much of each strike plays, for CPU: every partial, or those whose peak
+// or held-energy proxy can come within 60 dB (balanced) or 50 dB (light) of
+// the strongest at any Brightness setting. These proxies do not guarantee
+// an error bound for every band/window. A change applies from the next strike.
 enum class Quality {full,balanced,light};
 struct Parameters {
   float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;

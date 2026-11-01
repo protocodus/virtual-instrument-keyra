@@ -345,6 +345,12 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.QualityAuditContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_quality_audit.py")
+        add_test(NAME Keyra.QualityRetention
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_quality_retention.py")
+        add_test(NAME Keyra.ReleaseBalance
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_release_balance.py")
         add_test(NAME Keyra.RecordingReferenceCache
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_reference_cache.py")
@@ -357,7 +363,7 @@ if(BUILD_TESTING)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
                              Keyra.RateInterpolation Keyra.SoftLaneContinuity Keyra.TubeOutputCalibration
                              Keyra.LiveControlSmoothing Keyra.BuildControlSmoothing
-                             Keyra.QualityAuditContract
+                             Keyra.QualityAuditContract Keyra.QualityRetention Keyra.ReleaseBalance
                              Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
                              Keyra.KeyboardMetricContract
                              PROPERTIES TIMEOUT 600
