@@ -1665,25 +1665,34 @@ struct Engine::Impl {
     auto& channel=channels[ch];
     if(channel.presses[note-21]<std::numeric_limits<std::uint16_t>::max())++channel.presses[note-21];
     if(note<firstHalo)receiverDamper[note-21]=0;
-    Voice* chosen=nullptr;
-    for(auto& voice:voices){
-      if(!voice.active){if(!chosen)chosen=&voice;continue;}
+    static_assert(maxVoices>0,"the fixed voice pool must have a first slot");
+    std::size_t chosen=0;
+    bool hasFree=false;
+    for(std::size_t i=0;i<voices.size();++i){
+      auto& voice=voices[i];
+      if(!voice.active){
+        if(!hasFree){chosen=i;hasFree=true;}
+        continue;
+      }
       // The key has already lifted its damper by hammer contact (Askenfelt &
       // Jansson, From touch to string vibrations). A previous strike still
       // ringing on this key clears the same felt and keeps its modal state.
       if(voice.channel==ch&&voice.note==note)voice.damper=0;
     }
-    if(!chosen){
-      // Prefer released tails, then the oldest strike. Fixed storage bounds
-      // CPU and memory under pathological repeated-note streams.
-      for(auto& voice:voices)
-        if(!chosen||((channels[voice.channel].presses[voice.note-21]==0)
-                    &&channels[chosen->channel].presses[chosen->note-21]>0)
-           ||((channels[voice.channel].presses[voice.note-21]>0)==
-              (channels[chosen->channel].presses[chosen->note-21]>0)
-              &&voice.serial<chosen->serial))chosen=&voice;
+    if(!hasFree){
+      // Prefer released tails, then the oldest strike in the same class.
+      // Strict serial comparison keeps the first slot on a tie.
+      const auto held=[this](const Voice& v){return channels[v.channel].presses[v.note-21]>0;};
+      bool chosenHeld=held(voices[chosen]);
+      for(std::size_t i=1;i<voices.size();++i){
+        const bool candidateHeld=held(voices[i]);
+        if((chosenHeld&&!candidateHeld)||
+           (chosenHeld==candidateHeld&&voices[i].serial<voices[chosen].serial)){
+          chosen=i;chosenHeld=candidateHeld;
+        }
+      }
     }
-    auto& voice=*chosen;voice.active=true;voice.note=note;voice.channel=ch;
+    auto& voice=voices[chosen];voice.active=true;voice.note=note;voice.channel=ch;
     voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
     // The soft pedal works through the action. A grand's shifts the hammers
