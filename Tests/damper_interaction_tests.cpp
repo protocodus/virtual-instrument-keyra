@@ -12,16 +12,14 @@
 #include <vector>
 #include "DSP/KeyraEngine.cpp"
 
-namespace {
-// Explicit instantiation permits naming a private member as its template
-// argument ([temp.explicit]). Expose only a const reference for observation.
-// The production class definition and standard headers retain their meaning.
-struct EngineMember { friend auto getMember(EngineMember); };
-template<auto member> struct ObserveMember {
-    friend auto getMember(EngineMember) { return member; }
+namespace keyra {
+struct DamperTestObserver {
+    static const auto& state(const Engine& engine) noexcept { return *engine.impl; }
 };
-template struct ObserveMember<&keyra::Engine::impl>;
-const auto& state(const keyra::Engine& e) { return *(e.*getMember(EngineMember{})); }
+}
+
+namespace {
+const auto& state(const keyra::Engine& e) { return keyra::DamperTestObserver::state(e); }
 
 using Audio = std::vector<float>;
 constexpr int receiver = 48; // C3's second partial is driven by the C4 strike.
