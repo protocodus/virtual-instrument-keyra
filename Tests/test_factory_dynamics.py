@@ -12,13 +12,13 @@ import check_factory_dynamics as dynamics
 class FactoryDynamics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        expected, exceptions = dynamics.reference_rows()
+        expected, floors = dynamics.reference_rows()
         cls.rows = {}
-        for key, (high_velocity, notes) in expected.items():
+        for key, (high_velocity, notes, _) in expected.items():
             panel, piano, mic, rnd, shape, low_velocity = key
-            step = exceptions.get(key, .25)
+            step = floors[key]
             cls.rows[key] = dict(zip(dynamics.COLUMNS, (panel, 'factory', .7, piano, mic, rnd, shape, notes,
-                                                       low_velocity, high_velocity, -10., -10. + step, step)))
+                                                       low_velocity, high_velocity, -80., -80. + step, step)))
 
     def check(self, change=None, remove=None, extra=None):
         stream = io.StringIO(newline='')
@@ -32,33 +32,44 @@ class FactoryDynamics(unittest.TestCase):
         stream.seek(0)
         return dynamics.check(stream)
 
-    def test_accepted_exceptions_and_improvements(self):
-        expected, exceptions = dynamics.reference_rows()
+    def test_floor_and_improvements(self):
+        expected, floors = dynamics.reference_rows()
         self.assertEqual(len(expected), 2544)
-        self.assertEqual(len(exceptions), 406)
+        original = [value for key, value in floors.items() if key[0] == 'original']
+        self.assertEqual(len(original), 480)
+        self.assertGreater(min(original), 0.)
         key = ('original', 'Belmont Grand', 0, 5, 1, 110)
-        self.assertAlmostEqual(exceptions[key], -.561, places=2)
-        self.assertEqual(self.check(change={key: {'step_db': .1, 'vu_high': -9.9}}), 2544)
+        improved = floors[key] + .35
+        self.assertEqual(self.check(change={key: {'step_db': improved, 'vu_high': -80 + improved}}), 2544)
 
-    def test_rejected_indicator_from_independent_chords(self):
-        # Measured in the rejected short-release, peak-first trial: this
-        # five-note Hamamatsu Tube chord turned down where stock increased.
+    def test_positive_step_losing_contrast_is_a_regression(self):
+        # A harder chord can still play louder while losing most of B's dynamics.
         key = ('independent', 'Hamamatsu Grand', 1, 5, 0, 101)
-        step = -.057344033
-        self.assertNotIn(key, dynamics.reference_rows()[1])
+        floor = dynamics.reference_rows()[1][key]
+        self.assertGreater(floor, .1)
         with self.assertRaisesRegex(ValueError, '1 factory dynamics regression'):
-            self.check(change={key: {'vu_high': -10 + step, 'step_db': step}})
+            self.check(change={key: {'vu_high': -79.99, 'step_db': .01}})
 
-    def test_old_reversal_is_a_floor_independent_of_other_improvements(self):
-        exceptions = dynamics.reference_rows()[1]
-        key = ('original', 'Belmont Grand', 0, 5, 1, 110)
+    def test_each_fine_reversal_has_its_own_floor(self):
+        floors = dynamics.reference_rows()[1]
+        key = min((k for k in floors if k[0] == 'expanded'), key=floors.get)
+        self.assertLess(floors[key], 0.)
+        slight = floors[key] - .0005
+        self.assertEqual(self.check(change={key: {'step_db': slight, 'vu_high': -80 + slight}}), 2544)
+        worse = floors[key] - .002
         other = ('expanded', 'Kakegawa Grand', 0, 1, 0, 112)
-        small = exceptions[key] - .0005
-        self.assertEqual(self.check(change={key: {'step_db': small, 'vu_high': -10 + small}}), 2544)
-        worse = exceptions[key] - .002
+        improved = floors[other] + .25
         with self.assertRaisesRegex(ValueError, '1 factory dynamics regression'):
-            self.check(change={key: {'step_db': worse, 'vu_high': -10 + worse},
-                               other: {'step_db': 1.25, 'vu_high': -8.75}})
+            self.check(change={key: {'step_db': worse, 'vu_high': -80 + worse},
+                               other: {'step_db': improved, 'vu_high': -80 + improved}})
+
+    def test_absolute_level_upper_bound_uses_the_matching_mic(self):
+        expected, floors = dynamics.reference_rows()
+        key = ('original', 'Belmont Grand', 1, 5, 1, 110)
+        maximum = expected[key][2] + .01
+        step = floors[key]
+        with self.assertRaisesRegex(ValueError, 'exceeds B limit'):
+            self.check(change={key: {'vu_low': maximum - step, 'vu_high': maximum}})
 
     def test_support_and_invalid_measurements(self):
         key = ('original', 'Kakegawa Grand', 0, 1, 0, 110)

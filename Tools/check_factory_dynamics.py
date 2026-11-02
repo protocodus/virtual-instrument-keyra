@@ -1,11 +1,7 @@
-"""Check a KeyraLevels factory CSV against the measured 0.4.10 exceptions.
+"""Check factory chord dynamics against the selected 0.4.11 output response.
 
-Every (piano, microphone, chord, round, velocity interval) is independent.
-An improvement cannot offset a regression elsewhere. For a nominally positive
-row the floor is zero. For an existing negative row it is the measured step.
-Both allow 0.001 dB of cross-build/reporting variation. This numerical allowance
-is not an audibility threshold or the stricter gate for a new DSP experiment.
-
+Each piano, microphone, chord, repeated strike and velocity interval has its
+own minimum step. The reference stores floors in thousandths of a decibel.
 --csv checks an existing audit without rendering. --renderer runs one fresh
 factory audit, saves its actual CSV under --output, then checks that same file.
 """
@@ -19,7 +15,7 @@ import sys
 import tempfile
 
 
-REFERENCE = Path(__file__).resolve().parents[1] / 'Tests/Fixtures/dynamics/factory-0.4.10.json'
+REFERENCE = Path(__file__).resolve().parents[1] / 'Tests/Fixtures/dynamics/factory-0.4.11.json'
 TOLERANCE_DB = 0.001
 COLUMNS = ('panel', 'drive', 'output_gain', 'piano', 'mic', 'round', 'shape', 'midi_notes',
            'velocity_low', 'velocity_high', 'vu_low', 'vu_high', 'step_db')
@@ -27,33 +23,39 @@ COLUMNS = ('panel', 'drive', 'output_gain', 'piano', 'mic', 'round', 'shape', 'm
 
 def reference_rows():
     ref = json.loads(REFERENCE.read_text(encoding='utf-8'))
-    if ref['version'] != 1 or ref['sample_rate_hz'] != 48000 or ref['output_gain'] != .7:
+    if ref['version'] != 2 or ref['sample_rate_hz'] != 48000 or ref['output_gain'] != .7:
         raise ValueError('unsupported factory dynamics reference')
-    if (ref['exception_fields'] != ['mic', 'round', 'shape', 'velocity_low', 'step_db']
-            or len(ref['pianos']) != 6 or len(set(ref['pianos'])) != 6):
-        raise ValueError('invalid factory dynamics reference dimensions')
+    if len(ref['pianos']) != 6 or len(set(ref['pianos'])) != 6:
+        raise ValueError('invalid factory piano list')
     expected = {}
+    floors = {}
     for panel, spec in ref['panels'].items():
         for piano in ref['pianos']:
-            for mic in range(2):
-                for rnd in range(1, spec['rounds'] + 1):
-                    for shape, notes in enumerate(spec['chords']):
-                        for low, high in zip(spec['velocities'], spec['velocities'][1:]):
-                            key = (panel, piano, mic, rnd, shape, low)
-                            expected[key] = (high, ' '.join(map(str, notes)))
-    exceptions = {}
-    for panel, pianos in ref['negative_steps'].items():
-        for piano, rows in pianos.items():
-            for mic, rnd, shape, low, step in rows:
-                key = (panel, piano, mic, rnd, shape, low)
-                if key not in expected or key in exceptions or not math.isfinite(step) or step >= 0:
-                    raise ValueError(f'invalid baseline exception {key}: {step}')
-                exceptions[key] = step
-    return expected, exceptions
+            microphones = ref['minimum_step_millidb'][panel][piano]
+            if len(microphones) != 2:
+                raise ValueError(f'expected two microphones for {panel}, {piano}')
+            for mic, values in enumerate(microphones):
+                level_limit = ref['approved_max_vu'][panel][piano][mic]
+                if not math.isfinite(level_limit):
+                    raise ValueError(f'invalid B level limit for {panel}, {piano}, mic {mic}')
+                cases = ((rnd, shape, notes, low, high)
+                         for rnd in range(1, spec['rounds'] + 1)
+                         for shape, notes in enumerate(spec['chords'])
+                         for low, high in zip(spec['velocities'], spec['velocities'][1:]))
+                count = spec['rounds'] * len(spec['chords']) * (len(spec['velocities']) - 1)
+                if len(values) != count:
+                    raise ValueError(f'incorrect number of step floors for {panel}, {piano}, mic {mic}')
+                for (rnd, shape, notes, low, high), value in zip(cases, values):
+                    key = (panel, piano, mic, rnd, shape, low)
+                    if type(value) is not int or (panel == 'original' and value <= 0):
+                        raise ValueError(f'invalid minimum step at {key}: {value}')
+                    expected[key] = (high, ' '.join(map(str, notes)), level_limit)
+                    floors[key] = value / 1000.
+    return expected, floors
 
 
 def check(stream):
-    expected, exceptions = reference_rows()
+    expected, floors = reference_rows()
     reader = csv.DictReader(stream, strict=True)
     if tuple(reader.fieldnames or ()) != COLUMNS:
         raise ValueError('invalid factory audit CSV header')
@@ -63,7 +65,7 @@ def check(stream):
         if None in r or None in r.values():
             raise ValueError(f'incomplete or extra CSV fields at line {reader.line_num}')
         key = (r['panel'], r['piano'], int(r['mic']), int(r['round']), int(r['shape']), int(r['velocity_low']))
-        if key not in expected or (int(r['velocity_high']), r['midi_notes']) != expected[key]:
+        if key not in expected or (int(r['velocity_high']), r['midi_notes']) != expected[key][:2]:
             raise ValueError(f'unexpected audit support at {key}, notes {r["midi_notes"]}, high {r["velocity_high"]}')
         if key in seen:
             raise ValueError(f'duplicate audit row {key}')
@@ -79,8 +81,11 @@ def check(stream):
         # The three columns are independently printed to nine decimals.
         if abs(high - low - step) > 1.6e-9:
             raise ValueError(f'inconsistent paired readings at {key}: {low}, {high}, {step}')
-        baseline = exceptions.get(key, 0.)
-        if step < baseline - TOLERANCE_DB:
+        limit = expected[key][2]
+        if max(low, high) > limit + TOLERANCE_DB:
+            regressions.append(f'{key}: maximum level {max(low, high):+.6f} VU exceeds B limit {limit:+.3f} VU')
+        baseline = floors[key]
+        if step < baseline - TOLERANCE_DB or (key[0] == 'original' and step <= 0):
             regressions.append(f'{key}: {step:+.6f} dB, baseline floor {baseline:+.6f} dB')
     missing = expected.keys() - seen
     if missing:
@@ -117,7 +122,7 @@ def main():
     except (OSError, csv.Error, ValueError, subprocess.CalledProcessError) as error:
         print(f'Factory dynamics check failed: {error}', file=sys.stderr)
         return 1
-    print(f'Factory dynamics passed on {count} paired rows against 0.4.10 (tolerance {TOLERANCE_DB} dB).')
+    print(f'Factory dynamics passed on {count} paired rows against 0.4.11 (tolerance {TOLERANCE_DB} dB).')
     return 0
 
 
