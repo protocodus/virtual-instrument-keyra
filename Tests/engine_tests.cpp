@@ -1115,7 +1115,7 @@ int main(int argc,char** argv){
         return 10*std::log10(winPower(1.0,2.0)/winPower(0.05,0.5));
       };
       const double bloomDb=measureBloom(1.f)-measureBloom(0.f);
-      check(bloomDb>1.0&&bloomDb<8.0,"pedal-down bridge unloading blooms held notes");
+      check(bloomDb>0.6&&bloomDb<5.0,"pedal-down bridge unloading blooms held notes");
       std::cout<<"pedal_bloom_piano="<<pianoName(piano)<<" sus_minus_nosus_db="<<bloomDb<<'\n';
     }
   }

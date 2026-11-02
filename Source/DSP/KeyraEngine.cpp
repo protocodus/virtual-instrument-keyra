@@ -1775,12 +1775,13 @@ struct Engine::Impl {
     const double highest=std::min(17000.,sampleRate*.43);
     const double strikeRefAmp=.015*std::pow(10.,requestedDb/20);
     const double restrikeRatio=restrikeEnergy>1e-5?std::sqrt(restrikeEnergy)/(std::sqrt(restrikeEnergy)+strikeRefAmp):0.;
-    const double shortestRise=fold(hammers,[&](int p){return sides[p].shortestRise;},pickLog)*(1-.25*restrikeRatio);
+    const double shortestRise=fold(hammers,[&](int p){return sides[p].shortestRise;},pickLog)*(1-.2*restrikeRatio);
     const double ratio=tuningRatio(ch);
     const double softGain=1-.28*soft;
+    const double restrikeBodyGain=1-.16*restrikeRatio;
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
-    const double colourDb=fold(hammers,[&](int p){return sides[p].colourDb;},pick)+1.35*restrikeRatio;
+    const double colourDb=fold(hammers,[&](int p){return sides[p].colourDb;},pick)+1.08*restrikeRatio;
     const auto colour=[colourDb](double order){return std::pow(10.,colourDb*std::min(4.,std::log2(order))/20);};
     double plain=0,coloured=0; // the strike's energy without and with its colour
     // The body's knock: on each piano, levels between the two pitches like the
@@ -1798,7 +1799,7 @@ struct Engine::Impl {
                  :mix(a.levelDb,b.levelDb,x.t)+mix(a.slopeDb,b.slopeDb,x.t)*x.layerDb)+x.scaleDb;
           ph=late?(x.t<.5?a.slowPhase:b.slowPhase):(x.t<.5?a.phase:b.phase);},level,phase);
         if(!knocked)continue;
-        const double amplitude=std::pow(10.,level/20)*softGain;
+        const double amplitude=std::pow(10.,level/20)*softGain*restrikeBodyGain;
         stage[late]={amplitude*std::cos(phase),amplitude*std::sin(phase)};
       }
       const Complex g=stage[0],slow=stage[1];
@@ -1833,7 +1834,7 @@ struct Engine::Impl {
         level[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)
                  +(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*x.layerDb+x.scaleDb;}
       const double amplitude=std::pow(10.,fold(hammers,[&](int p){return level[p];},pick)/20)*softGain*std::exp(-soft*.115*(order-1))
-                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)))*(1+.65*pedalOpenness);
+                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)))*(1+.35*pedalOpenness)*(1-.35*restrikeRatio);
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.);
       auto& string=haloRing[j];string.q+=amplitude*std::cos(phase);string.p+=amplitude*std::sin(phase);
       const double prompt=std::pow(10.,haloString[j].promptDb/20);
@@ -1862,7 +1863,7 @@ struct Engine::Impl {
         knockBalance[p]=mix(a.knockBalanceDb,b.knockBalanceDb,x.t);knockRate[p]=mix(std::log(a.knockRate),std::log(b.knockRate),x.t);
       }
       const double order=std::max(1.,grand::noiseBands[k].hz/f1);
-      const double tint=noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
+      const double tint=noise[k].scale*softGain*restrikeBodyGain*std::exp(-soft*.115*(order-1))
                         *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const auto built=[&](const double (&x)[pianoCount]){return fold(board,[&](int p){return x[p];},pick);};
       const double amplitude=std::pow(10.,built(density)/20)*tint,late=built(slow)*tint;
@@ -1887,7 +1888,9 @@ struct Engine::Impl {
     // stretch the unisons and the ring.
     int count[pianoCount]{},next[pianoCount]{};
     for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p):0;
-    const double ring=-static_cast<double>(build.ring)*std::log(2.)-.42*pedalOpenness;
+    const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)];
+    const double pedalUnload=(.28-.10*pedaledShare)*pedalOpenness;
+    const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
     const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
     while(voice.count<maxPartials){
       int lowest=1<<30;
@@ -2000,7 +2003,7 @@ struct Engine::Impl {
     // its sum, each lane's to silence, where the recordings put it, so
     // velocity sets the level as it did and the loudest chords keep their
     // headroom.
-    if(coloured>0){const double scale=std::sqrt(plain/coloured);
+    if(coloured>0){const double scale=std::sqrt(plain/coloured)*(1-.16*restrikeRatio);
       for(int k=0;k<voice.count;++k){auto& x=voice.partials[k];
         for(int j=0;j<lanes;++j){
           x.baseLeftRe[j]*=static_cast<float>(scale);x.baseLeftIm[j]*=static_cast<float>(scale);
@@ -2198,7 +2201,7 @@ struct Engine::Impl {
     bool anyVoice=false;
     for(auto& voice:voices)if(voice.active){
       anyVoice=true;
-      const float openBridgeGain=static_cast<float>(1+1.2*pedalOpenness);
+      const float openBridgeGain=static_cast<float>(1+.75*pedalOpenness);
       const int string=voice.note-21;const bool own=string<damped&&openness[string]>0;
       auto& toLeft=own?voiceLeft:mixLeft;auto& toRight=own?voiceRight:mixRight;
       if(own)for(int i=0;i<frames;++i){voiceLeft[i]=zero;voiceRight[i]=zero;}
@@ -2271,7 +2274,7 @@ struct Engine::Impl {
     glidePickups(frames);
     const bool noisy=hissing;
     if(noisy)hiss(frames);
-    const double openBridgeScale=anyVoice?1+1.2*pedalOpenness:1.;
+    const double openBridgeScale=anyVoice?1+.75*pedalOpenness:1.;
     for(int i=0;i<frames;++i){
       width+=smooth*(parameters.width-width);
       const V4 l4=mixLeft[i],r4=mixRight[i];
@@ -2292,7 +2295,7 @@ struct Engine::Impl {
           if(part->q<1e-30&&part->q>-1e-30)part->q=0;
           if(part->p<1e-30&&part->p>-1e-30)part->p=0;
         }
-        if(anyVoice&&pedalOpenness>0)string.p+=(1-string.decay)*.35*pedalOpenness*voiceMid;
+        if(anyVoice&&pedalOpenness>0)string.p+=(1-string.decay)*.18*pedalOpenness*voiceMid;
         // The bank turns the other way to the partials' lanes.
         const auto& pickup=haloString[j];const double q=string.q+prompt.q,im=string.p+prompt.p;
         l+=pickup.left*q;r+=pickup.rightRe*q+pickup.rightIm*im;
