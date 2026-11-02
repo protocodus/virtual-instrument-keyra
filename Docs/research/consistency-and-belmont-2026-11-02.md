@@ -405,8 +405,11 @@ contains shipping A and two existing-Brightness controls B/C, solo and with the
 same authored synthetic bass/drums/pad bed at three relative levels. Piano stems
 are matched by one scalar over the full performance before extracting phrases;
 the mixed files share one export gain. This is a repeatable context test, not a
-claim that a synthetic backing represents every mix. The separate key is intended
-to be read after the listening choice. No verdict has been inferred.
+claim that a synthetic backing represents every mix. The owner found that
+backing obscured the piano, revisited the solo clips, requested the key, and
+then chose C (Brightness 0.75). Version 0.4.9 applies that setting to the Belmont
+Grand factory preset; the [decision record](../decisions.md#2026-11-02--belmont-factory-brightness-c)
+distinguishes this choice from the earlier velocity-colour C audition.
 
 Detailed current evidence: `belmont-audit/report.md`,
 `velocity/rejected-broad-summary.md`, `velocity/shortarc-exact/report.md`,

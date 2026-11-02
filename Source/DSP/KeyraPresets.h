@@ -37,7 +37,8 @@ inline constexpr std::array<Preset, 13> factoryPresets {{
     { "Three Cities", thirds, .5f, .25f, .75f, 0.f },
     { "Hamburg Grand", hamburg, .5f, .25f, .75f, 0.f },
     { "New York Grand", newYork, .5f, .25f, .75f, 0.f },
-    { "Belmont Grand", belmont, .5f, .25f, .75f, 0.f }
+    // Owner's 2026-11-02 C audition choice; see Docs/decisions.md.
+    { "Belmont Grand", belmont, .75f, .25f, .75f, 0.f }
 }};
 
 inline Parameters withPreset(Parameters parameters, const Preset& preset) noexcept {

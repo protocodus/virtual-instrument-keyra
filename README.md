@@ -43,7 +43,12 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### Unreleased — 0.4.8 — local Belmont reconstruction repairs
+### Unreleased — 0.4.9 — brighter Belmont factory preset
+
+The Belmont Grand preset now starts with Brightness at 75%, following the
+owner's C audition choice. Existing saved settings retain their brightness.
+
+### 0.4.8 — local Belmont reconstruction repairs
 
 Belmont recovers missing sustain around C5 and A5 from its source measurements,
 while retaining the accepted voicing and Mechanics default. These are local
