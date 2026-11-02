@@ -60,6 +60,9 @@ compensation is not a claim of exact discrete waveform equality.
   a public-audio test isolating the sympathetic tail. The correction passes.
   Tests also cover rapid repedaling, sostenuto/channel ownership, damperless
   treble, uninterrupted state, reset, silent travel and host block sizes.
+  A panel sustain or sostenuto change while MIDI sustain already owns a
+  moving damper retains the elapsed travel, including when the engine is
+  asleep; the regression test exercises that controller hand-off on all six.
 - **933 isolated held-note renders** (699 TRAIN, 234 DEV) were byte-identical
   to 0.4.9 at the recording benchmark's frozen controls. Its 432 Kakegawa,
   158 Helsinki, 127 Hamamatsu, 48 Hamburg, 78 New York and 90 Belmont cases
@@ -82,3 +85,10 @@ compensation is not a claim of exact discrete waveform equality.
   The pedal phrase was **1.012×**, repeated notes **0.995×**, and a dense
   162-strike pedal scene **0.996×**. These are native measurements, not
   guarantees about a particular DAW or Reason's realtime meter.
+- Timing individual pedal-down and same-key note-on calls provides a check
+  the phrase averages could hide. In three alternating passes (240 timed
+  calls per gesture per piano per build), Kakegawa's calibrated pedal-down
+  rose from a **15.7 to 18.0 µs** median and **17.5 to 19.9 µs** at the 95th
+  percentile. The other five use no fitted pedal-down string impulse; their
+  pedal-down medians were at most 2.6 µs in both versions. These are wall
+  times on the development Mac for this particular pedal/restrike sequence.

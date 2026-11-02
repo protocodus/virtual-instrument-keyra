@@ -1148,7 +1148,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   3.5 dB (above), and its loudest would read 6.5 VU without the guard. On
   the Hamamatsu grand the guard takes all the step from velocity 110 to 127
   of its chords, which read 2.0 dB louder at 127 before it and 0.04 dB
-  quieter after; single notes keep it.
+  quieter after; single notes keep it. A check of each chord rather than its
+  median found 104 of 480 hard-chord pairs quieter at velocity 127 than at
+  110 across the six factory pianos and both mic endpoints. At 20 dB lower
+  Output all 480 increased. See the [factory dynamics audit](Docs/validation/factory-dynamics-2026-11-02.md)
+  for other voicings, remaining source-level dips and reproducible measurements.
 - No recording plays the upright's soft pedal: its half-blow assumes the rail
   brings the hammers halfway to the strings and that the key accelerates
   them evenly. It has no pedal recordings at all, so its pedals make no sound
