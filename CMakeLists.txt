@@ -317,6 +317,10 @@ if(BUILD_TESTING)
                          --metadata "${CMAKE_CURRENT_SOURCE_DIR}/Docs/research/belmont-stored-numbers-2026-11-02.json"
                          --check)
         set_tests_properties(Keyra.BelmontMeasurementFreshness PROPERTIES LABELS unit TIMEOUT 60)
+        add_test(NAME Keyra.FactoryDynamicsContract
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_factory_dynamics.py")
+        set_tests_properties(Keyra.FactoryDynamicsContract PROPERTIES LABELS unit TIMEOUT 60)
     endif()
 
     # Required in the primary Linux CI job. An explicit option keeps the
@@ -419,6 +423,16 @@ if(BUILD_TESTING)
         # out of the red (Tools/KeyraLevels.cpp).
         add_test(NAME Keyra.Levels COMMAND KeyraLevels --check --jobs 4)
         set_tests_properties(Keyra.Levels PROPERTIES TIMEOUT 900 LABELS audio)
+        if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
+            # Run a single fresh factory audit in the required Linux audio
+            # tier, retaining the same CSV the row-by-row checker inspected.
+            add_test(NAME Keyra.FactoryDynamics
+                     COMMAND "${Python3_EXECUTABLE}" -B
+                             "${CMAKE_CURRENT_SOURCE_DIR}/Tools/check_factory_dynamics.py"
+                             --renderer "$<TARGET_FILE:KeyraLevels>" --jobs 4
+                             --output "${CMAKE_CURRENT_BINARY_DIR}/factory-dynamics.csv")
+            set_tests_properties(Keyra.FactoryDynamics PROPERTIES LABELS audio TIMEOUT 900)
+        endif()
         # U7: the preset demos timed on one thread against the budget in
         # Tools/RenderPresetDemos.cpp. Timing means nothing instrumented.
         if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT KEYRA_ENABLE_SANITIZERS)

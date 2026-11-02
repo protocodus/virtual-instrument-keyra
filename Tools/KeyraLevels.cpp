@@ -92,7 +92,7 @@ std::vector<Event> chordRounds(int velocity,const std::vector<std::vector<int>>&
   return events;
 }
 
-struct Reading {std::vector<double> events;double peakDbfs=-300;};
+struct Reading {std::vector<double> events;double peakDbfs=-300;bool finite=true;};
 // Each event's highest reading on the meter, and the output's sample peak.
 Reading play(const keyra::Parameters& parameters,const std::vector<Event>& events){
   const auto slot=static_cast<long long>(slotSeconds*rate),hold=static_cast<long long>(holdSeconds*rate);
@@ -120,6 +120,7 @@ Reading play(const keyra::Parameters& parameters,const std::vector<Event>& event
   double sumLeft=0,sumRight=0,peak=0,highest=-300;
   for(long long i=0;i<total;++i){
     const auto at=static_cast<std::size_t>(i+latency);
+    if(!std::isfinite(left[at])||!std::isfinite(right[at]))result.finite=false;
     sumLeft+=static_cast<double>(left[at])*left[at];sumRight+=static_cast<double>(right[at])*right[at];
     if(i>=window){
       const auto gone=at-static_cast<std::size_t>(window);
@@ -184,6 +185,12 @@ int auditDynamics(int jobs,bool lowDrive){
       p.mic=static_cast<float>((index/bands)%2);
       readings[index]=play(p,chordRounds(panel.velocities[index%bands],panel.shapes,panel.repeats));
     });
+    // A maximum taken before a later NaN can still be finite. Keep that
+    // partial meter observation out of the CSV and its regression check.
+    if(std::any_of(readings.begin(),readings.end(),[](const Reading& r){return !r.finite;})){
+      std::fprintf(stderr,"Nonfinite rendered sample in factory dynamics panel %s\n",panel.name);
+      return 1;
+    }
     for(std::size_t piano=0;piano<programs.size();++piano)for(int mic=0;mic<2;++mic){
       const auto base=(piano*2+mic)*bands;
       for(std::size_t band=1;band<bands;++band){
