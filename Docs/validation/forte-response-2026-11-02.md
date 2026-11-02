@@ -23,7 +23,8 @@ excursion is 0.81 ms. The release uses a second, short look-ahead stage
 to reduce gain around those peaks. Between two block boundaries, the stereo
 gain follows a cubic with zero end slope. Each boundary takes the lesser of
 the gains permitted by its two adjacent blocks, so every sample in the block
-obeys its peak bound. Safe blocks with safe neighbors pass B unchanged.
+obeys its peak bound. Blocks below the ceiling with equally safe neighbors pass the unprotected
+half-drive ×2 signal unchanged.
 
 At 48 kHz the two guard stages contribute 96 and 24 frames of latency. The
 native engine reports their sum to its caller. There is one small, fixed
@@ -63,6 +64,11 @@ four velocity reversals on real bass chords. Across the actual isolated
 fortissimo A0/A1 tests at both mic endpoints, a single Hamburg tube A0
 crossed the ceiling, for 0.067% of its first 340 ms. Chords engage the
 protection more often.
+
+Five alternating timing rounds on one Mac covered all six pianos in a pedaled
+phrase, repeated notes and a dense 162-strike passage. Pooled process CPU
+was 0.997× the prior engine (round range 0.982–1.001×). The per-scene medians
+were 1.001×, 1.003× and 0.996× respectively.
 
 ## Remaining interpolation gaps
 

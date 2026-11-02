@@ -158,8 +158,7 @@ constexpr Model models[]{
    // The measured levels are the recordings' own. This scale brings typical
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
-   // the output stage's guard keeping the loudest chords out of the red
-   // (Tools/KeyraLevels.cpp).
+   // the factory Output control at 0.70 (Tools/KeyraLevels.cpp).
    .7680,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
@@ -1061,9 +1060,8 @@ struct Engine::Impl {
   // one's being its mute alone, from the last chunk boundary (1 with none
   // sounding), and the one the body's rotations were set for.
   double bodyContact=1,appliedBodyContact=-1;
-  // The portfolio's shared output stage, with the guard the newer
-  // instruments use: typical playing passes it untouched and the hardest
-  // chords stay out of the red (Tools/KeyraLevels.cpp).
+  // The half-drive response keeps normal playing at the calibrated level.
+  // A final stereo envelope protects restored peaks on hard chords.
   ForteOutput output;
 
   Complex rotation(double frequency) const noexcept {
