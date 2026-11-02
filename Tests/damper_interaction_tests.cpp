@@ -230,6 +230,58 @@ void pedalFromSilence(keyra::Piano piano) {
     }
 }
 
+void silentPanelHandoff(keyra::Piano piano) {
+    const auto target = [](float sustain) { return 1. - keyra::dampersLift * sustain; };
+    const auto after = [](double start, double end, int frames) {
+        return end + (start - end) * std::exp(-frames / (48000. * keyra::damperTravelSeconds));
+    };
+    const auto felt = [](const keyra::Engine& e) { return state(e).receiverDamper[receiver - 21]; };
+    const auto wakeAndCheck = [&](keyra::Engine& e, double expected) {
+        e.noteOn(72, .8f);
+        render(e, keyra::chunk, 13);
+        require(std::abs(felt(e) - expected) < 1e-8, "silent panel edit teleported a moving receiver");
+    };
+    // Neither the empty sostenuto capture nor the lower panel sustain can
+    // change the MIDI pedal's target. Its original travel must continue.
+    for (bool changeSostenuto : {false, true}) {
+        keyra::Engine e(48000);
+        auto p = controls(piano);
+        e.setParameters(p); e.reset();
+        e.controlChange(64, 127, 2);
+        render(e, 480, 127);
+        if (changeSostenuto) p.sostenuto = 1; else p.sustain = .4f;
+        e.setParameters(p);
+        wakeAndCheck(e, after(1, target(1), 480 + keyra::chunk));
+    }
+    // The original panel setting is already in position before the first
+    // note. Lowering it hands the felt to the CC on a different channel.
+    keyra::Engine e(48000);
+    auto p = controls(piano);
+    p.sustain = 1; e.setParameters(p);
+    require(felt(e) == target(1), "an initial panel sustain setting must start settled");
+    const float midi = 64 / 127.f;
+    e.controlChange(64, 64, 2);
+    render(e, 480, 127);
+    p.sustain = 0; e.setParameters(p);
+    render(e, 240, 127);
+    wakeAndCheck(e, after(target(1), target(midi), 240 + keyra::chunk));
+
+    // Reversing towards a new panel target after MIDI release starts at
+    // the current felt position, even though no CC is now held.
+    e.reset(); e.controlChange(64, 127, 2); render(e, 480, 127);
+    e.controlChange(64, 0, 2); render(e, 240, 127);
+    const double turning = after(after(1, target(1), 480), 1, 240);
+    p.sustain = .75f; e.setParameters(p);
+    wakeAndCheck(e, after(turning, target(.75f), keyra::chunk));
+
+    e.noteOn(receiver, .6f, 2); render(e, 32, 13);
+    p.sostenuto = 1; e.setParameters(p); e.noteOff(receiver, 2);
+    render(e, 64, 13);
+    require(felt(e) == 0, "a captured key must stay clear of the felt");
+    e.reset();
+    require(felt(e) == target(.75f), "reset must clear the capture and restore the panel position");
+}
+
 // Independently integrate the actual contact loss while the felt travels.
 // Only the excitation fitted from the late pedal ring needs this correction.
 void measuredLift() {
@@ -256,7 +308,7 @@ int main() {
     try { measuredLift(); }
     catch (const std::exception& error) { std::cerr << error.what() << '\n'; ++failures; }
     for (int i = 0; i < keyra::pianoCount; ++i) {
-        for (const auto test : {sharedFelt, restrikeOwnership, audibleTravel, resetAndPartition, pedalFromSilence}) {
+        for (const auto test : {sharedFelt, restrikeOwnership, audibleTravel, resetAndPartition, pedalFromSilence, silentPanelHandoff}) {
             try { test(static_cast<keyra::Piano>(i)); }
             catch (const std::exception& error) {
                 std::cerr << "model " << i << ": " << error.what() << '\n';

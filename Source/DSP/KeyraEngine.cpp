@@ -1233,11 +1233,14 @@ struct Engine::Impl {
   static double moveDamper(double position,double target,double fraction) noexcept {
     return position+fraction*(target-position);
   }
-  void updateReceiverDampers(double fraction) noexcept {
-    float sustain=parameters.sustain;
+  float sharedSustain(float panel) const noexcept {
+    float sustain=panel;
     for(const auto& channel:channels)
-      sustain=std::max(sustain,pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2]));
-    const double target=1-dampersLift*sustain,settledOpenness=1-feltContact(target);
+      sustain=std::max(sustain,pedalLevel(panel,channel.sustain,channel.keySwitches[2]));
+    return sustain;
+  }
+  void updateReceiverDampers(double fraction) noexcept {
+    const double target=1-dampersLift*sharedSustain(parameters.sustain),settledOpenness=1-feltContact(target);
     for(int key=0;key<damped;++key){
       bool held=false;
       for(const auto& channel:channels)
@@ -1260,6 +1263,20 @@ struct Engine::Impl {
       const double elapsed=static_cast<double>(clock-receiverClock)/sampleRate;
       updateReceiverDampers(1-std::exp(-elapsed/damperTravelSeconds));
       receiverClock=clock;
+    }
+  }
+  void prepareSleepingPedals(float sustain,float sostenuto) noexcept {
+    if(!sleeping||(sustain==parameters.sustain&&sostenuto==parameters.sostenuto))return;
+    // Close out travel under the old sustain and sostenuto ownership first.
+    advanceSleepingReceivers();
+    if(sustain==parameters.sustain||sharedSustain(0)>0)return;
+    // A panel-only setting can initialize a resting receiver immediately.
+    // Preserve held/captured (position zero) and already moving felts, and
+    // let a live MIDI/controller hand-off follow the same travel as CC64.
+    const double rest=1-dampersLift*parameters.sustain,target=1-dampersLift*sustain;
+    const double free=1-feltContact(target);
+    for(int key=0;key<damped;++key)if(receiverDamper[key]==rest){
+      receiverDamper[key]=target;openness[key]=free;
     }
   }
   void wake() noexcept {
@@ -2065,8 +2082,7 @@ struct Engine::Impl {
     if(down)liftDampers(level);
   }
   void pedalEdge(bool audible=true) noexcept {
-    float level=0;
-    for(const auto& c:channels)level=std::max(level,pedalLevel(parameters.sustain,c.sustain,c.keySwitches[2]));
+    const float level=sharedSustain(parameters.sustain);
     const bool held=level>=pedalClear||(pedalHeld&&level>pedalRest);
     if(audible&&held!=pedalHeld)soundPedal(held,level);
     pedalHeld=held;
@@ -2349,13 +2365,14 @@ void Engine::reset() noexcept {
 }
 void Engine::setParameters(const Parameters& input) noexcept {
   auto& p=*impl;const float oldTune=p.parameters.tuning;
-  const bool silentPedalChange=p.sleeping&&(p.parameters.sustain!=bounded(input.sustain)||p.parameters.sostenuto!=bounded(input.sostenuto));
+  const float sustain=bounded(input.sustain),sostenuto=bounded(input.sostenuto);
+  p.prepareSleepingPedals(sustain,sostenuto);
   p.parameters.gain=bounded(input.gain,0,2);p.parameters.brightness=bounded(input.brightness);
   p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);p.parameters.mic=bounded(input.mic);
   p.parameters.mechanics=bounded(input.mechanics,0,2);
   // Wrappers combine their 400..480 Hz user range with host master tuning.
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
-  p.parameters.sustain=bounded(input.sustain);p.parameters.sostenuto=bounded(input.sostenuto);
+  p.parameters.sustain=sustain;p.parameters.sostenuto=sostenuto;
   p.parameters.soft=bounded(input.soft);p.parameters.quality=input.quality;
   // The parts' weights from 0 to 1, a weight that is not a number none; the
   // modifiers within their ranges, one that is not a number left as built.
@@ -2373,7 +2390,6 @@ void Engine::setParameters(const Parameters& input) noexcept {
   // A setting selected before any sound starts is the new initial state,
   // rather than a delayed transition from the previous silent preset.
   if(p.sleeping){p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();}
-  if(silentPedalChange){p.updateReceiverDampers(1);p.receiverClock=p.clock;}
   p.pedalEdge();
 }
 void Engine::noteOn(int note,float velocity,int channel) noexcept {
