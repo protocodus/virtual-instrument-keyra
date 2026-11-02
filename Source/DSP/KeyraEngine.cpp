@@ -9,7 +9,7 @@
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredUprightData.h"
-#include "OutputStage.h"
+#include "ForteOutput.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -1033,7 +1033,7 @@ struct Engine::Impl {
   // set a monitoring gain. Its fixed history follows the guard's look-ahead,
   // so automation changes the same input frame before and after the guard.
   double tubeOutputTarget=1,tubeOutputGain=1;
-  std::array<float,protocodus::OutputStage<2>::kMaximumDelay> tubeOutputHistory{};
+  std::array<float,ForteOutput::maxDelay> tubeOutputHistory{};
   int tubeOutputIndex=0;
   void resetTubeOutput() noexcept {
     tubeOutputGain=tubeOutputTarget;tubeOutputIndex=0;
@@ -1064,7 +1064,7 @@ struct Engine::Impl {
   // The portfolio's shared output stage, with the guard the newer
   // instruments use: typical playing passes it untouched and the hardest
   // chords stay out of the red (Tools/KeyraLevels.cpp).
-  protocodus::OutputStage<2> output;
+  ForteOutput output;
 
   Complex rotation(double frequency) const noexcept {
     double phase=frequency/sampleRate;
@@ -2297,15 +2297,10 @@ struct Engine::Impl {
         outL+=mic*(heard-outL);outR+=mic*(heard-outR);
         if(mic==0)silenceTube();
       }
-      // DC blocker, a memoryless emergency bound where the clip at full scale
-      // used to be, then the output stage. The bound, +12 dBFS, keeps extreme
-      // 128-strike stacks finite and within the range the limiter holds
-      // exactly; nothing playable reaches it.
+      // Remove DC before measuring stereo peaks and applying the output gain.
       const double hpL=outL-previousL+highpassCoefficient*highpassL,hpR=outR-previousR+highpassCoefficient*highpassR;
       previousL=outL;previousR=outR;highpassL=hpL;highpassR=hpR;
-      const double yL=hpL*gain,yR=hpR*gain;
-      std::array<float,2> frame{static_cast<float>(yL>4?4:yL< -4?-4:yL),static_cast<float>(yR>4?4:yR< -4?-4:yR)};
-      output.Process(frame);
+      auto frame=output.Process(hpL*gain,hpR*gain);
       const float tubeOutput=delayedTubeOutput();
       if(tubeOutput!=1.f){frame[0]*=tubeOutput;frame[1]*=tubeOutput;}
       left[i]=frame[0];right[i]=frame[1];
@@ -2350,7 +2345,7 @@ void Engine::prepare(double sampleRate){
   p.retuneSympathetic();
   p.prepareBody();
   p.prepareNoise();
-  p.output.Prepare(p.sampleRate,protocodus::kVuGuard);
+  p.output.Prepare(p.sampleRate);
   p.prepareTube();
   reset();
 }
@@ -2503,7 +2498,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     if(residue<1e-14){
       // Chunks restart with the next strike, so a silent engine's output
       // does not depend on how long it has been silent. The output stage
-      // restarts empty too: its look-ahead holds only the last 2 ms, which
+      // restarts empty too: its look-ahead holds only the last few ms, which
       // are as quiet as the residue.
       p.sleeping=true;p.receiverClock=p.clock;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       p.silenceStrings();p.silenceTube();

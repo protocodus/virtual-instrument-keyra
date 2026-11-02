@@ -155,7 +155,7 @@ void audibleTravel(keyra::Piano piano) {
     const auto dryHeld = receiverTail(piano, false, 0, 127);
     const auto wetFall = receiverTail(piano, true, 1, 127);
     const auto dryFall = receiverTail(piano, true, 0, 127);
-    const int earlySamples = 2 * (protocodus::OutputStage<2>::DelayFor(48000) + 2 * keyra::chunk);
+    const int earlySamples = 2 * (keyra::ForteOutput::DelayFor(48000) + 2 * keyra::chunk);
     double earlyEnergy = 0, lateDifference = 0;
     for (std::size_t i = 0; i < wetHeld.size(); ++i) {
         const double held = double(wetHeld[i]) - dryHeld[i];

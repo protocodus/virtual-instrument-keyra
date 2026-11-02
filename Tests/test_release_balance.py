@@ -27,7 +27,7 @@ void* operator new[](std::size_t n){return ::operator new(n);}
 void operator delete(void*p)noexcept{std::free(p);}void operator delete[](void*p)noexcept{std::free(p);}
 #define private public
 #include "DSP/KeyraEngine.h"
-#include "DSP/OutputStage.h"
+#include "DSP/ForteOutput.h"
 #undef private
 #ifdef RELEASE_BASELINE
 namespace release_audit {inline bool enabled=true,suppress=false;inline int eligible=0;inline double lastDb=0;}
@@ -65,7 +65,10 @@ Render render(keyra::Engine&e,const Case&c,bool enabled,bool suppress){
    else if(z.kind==3){p.sustain=0;e.setParameters(p);}else if(z.kind==5){e.setSteadyStrikesForMeasurement(!c.steady);}else if(z.kind==4){p.build.action.fill(0);p.build.action[c.model]=.5f;p.build.action[c.extra]=.5f;e.setParameters(p);}tracking=false;
   }
   int count=std::min(blockSize,frames+latency-frame);if(next<int(events.size()))count=std::min(count,std::max(1,events[next].frame-frame));tracking=true;e.process(l.data(),r.data(),count);tracking=false;
-  result.compressor=std::min({result.compressor,double(e.impl->output.from_),double(e.impl->output.to_)});result.limiter=std::max(result.limiter,double(e.impl->output.reduction_));
+  const auto& output=e.impl->output;
+  result.compressor=std::min({result.compressor,double(output.primary_.from_),double(output.primary_.to_)});
+  const auto lowestCrestGain=*std::min_element(output.blockGains_.begin(),output.blockGains_.end());
+  result.limiter=std::max({result.limiter,double(output.primary_.reduction_),1.-lowestCrestGain});
   for(int i=0;i<count;++i)if(frame+i>=latency){const int at=frame+i-latency;result.audio[2*at]=l[i];result.audio[2*at+1]=r[i];}frame+=count;
  }
 #ifndef RELEASE_BASELINE
