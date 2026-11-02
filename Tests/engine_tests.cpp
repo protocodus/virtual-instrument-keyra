@@ -1094,5 +1094,44 @@ int main(int argc,char** argv){
     check(peak<4*std::pow(10.f,-3/20.f),"fortissimo chord has headroom before the emergency bound");
     std::cout<<"headroom_piano="<<pianoName(piano)<<" notes="<<count<<" peak_dbfs_before_stage="<<20*std::log10(peak)<<'\n';
   }
+  {
+    // Pedal-down bridge unloading and continuous treble halo coupling: even
+    // when a key is held continuously (its own damper already lifted), lifting
+    // the full damper bank via the sustain pedal unloads the bridge and couples
+    // the undamped treble halo strings, producing measurable sustain bloom
+    // (1.0-2.0 s relative to 0.05-0.5 s) across pianos.
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::hamburg,keyra::Piano::belmont}){
+      const auto measureBloom=[&](float sustain){
+        keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.mechanics=0;p.sustain=sustain;
+        e.setParameters(p);e.reset();e.setSteadyStrikesForMeasurement(true);
+        e.noteOn(60,.75f);
+        const auto audio=render(e,48000*2);
+        const auto winPower=[&](double t0,double t1){
+          double sum=0;const std::size_t i0=static_cast<std::size_t>(t0*48000),i1=static_cast<std::size_t>(t1*48000);
+          for(std::size_t i=i0;i<i1;++i)
+            sum+=static_cast<double>(audio[2*i])*audio[2*i]+static_cast<double>(audio[2*i+1])*audio[2*i+1];
+          return sum/std::max<std::size_t>(1,i1-i0);
+        };
+        return 10*std::log10(winPower(1.0,2.0)/winPower(0.05,0.5));
+      };
+      const double bloomDb=measureBloom(1.f)-measureBloom(0.f);
+      check(bloomDb>1.0&&bloomDb<8.0,"pedal-down bridge unloading blooms held notes");
+      std::cout<<"pedal_bloom_piano="<<pianoName(piano)<<" sus_minus_nosus_db="<<bloomDb<<'\n';
+    }
+  }
+  {
+    // Phase-aware hammer-string restrike interaction: restriking an actively
+    // vibrating string (damper lifted) brightens upper partials via felt
+    // pre-compression while remaining strictly invariant to block partitioning.
+    keyra::Engine a,b;
+    a.controlChange(64,127);b.controlChange(64,127);
+    a.noteOn(60,.7f);b.noteOn(60,.7f);
+    auto outA=render(a,7200,17),outB=render(b,7200,256);
+    a.noteOff(60);b.noteOff(60);
+    auto midA=render(a,2400,19),midB=render(b,2400,128);
+    a.noteOn(60,.7f);b.noteOn(60,.7f);
+    auto tailA=render(a,12000,23),tailB=render(b,12000,256);
+    check(outA==outB&&midA==midB&&tailA==tailB,"phase-aware restrike is invariant to audio block partitioning");
+  }
   std::cout<<"engine_failures="<<failures<<" live_allocations="<<allocations<<'\n';return failures?1:0;
 }
