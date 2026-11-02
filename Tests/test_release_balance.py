@@ -163,9 +163,15 @@ class ReleaseBalanceTests(unittest.TestCase):
         token = "double referenceCorrectionDb=0) noexcept {"
         self.assertEqual(source.count(token), 1)
         source = source.replace(token, token + "\n  if(!release_audit::enabled)return 0;", 1)
-        token = "    actionKnock(sides);\n  }\n  // After anything that moves"
-        self.assertEqual(source.count(token), 1)
-        source = source.replace(token, "    ++release_audit::eligible;\n    if(!release_audit::suppress)actionKnock(sides);\n  }\n  // After anything that moves", 1)
+        # Observe the key release only. The pedal can use the same action
+        # renderer; its position or introductory comment is not a contract.
+        start = source.index("  void release(int note,int ch) noexcept {")
+        end = source.index("\n  }", start)
+        release = source[start:end]
+        token = "    actionKnock(sides);"
+        self.assertEqual(release.count(token), 1)
+        release = release.replace(token, "    ++release_audit::eligible;\n    if(!release_audit::suppress)actionKnock(sides);", 1)
+        source = source[:start] + release + source[end:]
         if disconnect:
             token = "+channel.releaseCapDb[p][key]"
             self.assertEqual(source.count(token), 1)

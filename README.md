@@ -43,7 +43,15 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### Unreleased — 0.4.9 — brighter Belmont factory preset
+### Unreleased — 0.4.10 — damper motion on all six pianos
+
+When the player releases a key or moves the sustain pedal, strings ringing in
+sympathy now follow the same felt travel as struck strings. Repeating a note
+lifts the damper off its remaining vibration by the time the hammer strikes
+again. Each piano keeps its measured tuning, voicing and decay. See the
+[all-six comparison and recording checks](Docs/validation/damper-travel-2026-11-02.md).
+
+### 0.4.9 — brighter Belmont factory preset
 
 The Belmont Grand preset now starts with Brightness at 75%, following the
 owner's C audition choice. Existing saved settings retain their brightness.
@@ -906,6 +914,10 @@ under the recordings, in the attack, early and sustain windows.
 ### Pedals and keyswitches
 
 Sustain lifts the dampers continuously, so half pedalling damps part way.
+On a moving pedal or a released key, the damped sympathetic strings follow
+the same 18 ms travel model as the struck strings. When the key is struck
+again, its damper is clear for both the new strike and the vibration still
+ringing from earlier strikes on that MIDI channel.
 At the owner's request full pedal lifts them only 80 % of the way that clears
 the strings, so the felt still grazes every string, those ringing in sympathy
 with the rest: a chord of C3, C4, C5 and C6 let go under it falls 60 dB in

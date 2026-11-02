@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.9 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.10 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -256,6 +256,12 @@ if(BUILD_TESTING)
     add_executable(KeyraEngineTests Tests/engine_tests.cpp)
     target_link_libraries(KeyraEngineTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.Engine COMMAND KeyraEngineTests)
+
+    # Observe both ends of the shared damper in one test translation unit.
+    add_executable(KeyraDamperInteractionTests Tests/damper_interaction_tests.cpp)
+    target_include_directories(KeyraDamperInteractionTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraDamperInteractionTests PRIVATE cxx_std_17)
+    add_test(NAME Keyra.DamperInteraction COMMAND KeyraDamperInteractionTests)
 
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)

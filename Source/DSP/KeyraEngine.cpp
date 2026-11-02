@@ -334,11 +334,26 @@ constexpr float pedalClear=.92f,pedalRest=.08f;
 // (Docs/validation/grand-pedal-lift-benchmark-2026-10-30.md). The pedal's own
 // knocks still follow its travel.
 constexpr double dampersLift=.8;
+constexpr double damperTravelSeconds=.018;
 // How firmly a damper's felt lies on its strings where it stands (0 lifted
 // clear, 1 resting on them): not at all over the last 8 % of the lift, then
 // steeply more as it comes down. One law for the struck strings and the
 // strings that ring in sympathy, whose dampers the same pedal lifts.
-double feltContact(double damper) noexcept {return std::pow(std::max(0.,(damper-.08)/.92),2.5);}
+constexpr double feltClearance=.08,receiverFeltRate=60.;
+static_assert(1-dampersLift>feltClearance,"the full pedal still grazes the strings");
+double feltContact(double damper) noexcept {return std::pow(std::max(0.,(damper-feltClearance)/(1-feltClearance)),2.5);}
+// The recorded pedal excitation represents the already-freed string. Keep
+// its measured late level by undoing only the extra loss this *new impulse*
+// will encounter during the lift. Existing vibration still meets the felt.
+// The closed-form integral is derived in Docs/validation/damper-travel-2026-11-02.md.
+double liftImpulseGain(double start,double target) noexcept {
+  if(start==target)return 1;
+  const double q=(start-feltClearance)/(target-feltClearance);
+  const auto primitive=[](double u){const double u2=u*u;return u*(u2*u2/5+u2/3+1)-std::log1p(u);};
+  const double integral=2*(primitive(std::sqrt(std::max(0.,q)))-primitive(1))
+                       -(q<0?std::log1p(-q):0);
+  return std::exp(receiverFeltRate*damperTravelSeconds*feltContact(target)*integral);
+}
 // How far a player's strikes of one key at one intended force spread, in
 // level. Twelve of the upright library's second takes at train pitches, nine
 // of them at its softest layer, are new strikes rather than copies of the
@@ -964,7 +979,7 @@ struct Engine::Impl {
   // each key's damper is off its strings.
   std::array<OpenBank,openBanks> open{};
   std::array<double,damped*openPartials> openHz{},openRate{};
-  std::array<double,88> openness{};
+  std::array<double,damped> receiverDamper{},openness{};
   // Through a chunk, per damped key whose string is open, what its own
   // strikes play into the open strings' drive, and whether any do: its
   // string is their voices and does not ring with them. Driven by its own
@@ -1037,6 +1052,7 @@ struct Engine::Impl {
   float previousBrightness=.5f;
   std::uint64_t serial=0,frame=0;
   std::uint64_t clock=0; // samples processed since reset, asleep or not
+  std::uint64_t receiverClock=0; // last receiver position update while asleep
   bool legacyAttack=false,steady=false;
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset
   bool sleeping=true;
@@ -1198,7 +1214,7 @@ struct Engine::Impl {
   // all as the felt does.
   void steerOpen(OpenBank& bank,double openness) noexcept {
     for(int j=0;j<lanes;++j){
-      const double d=bank.decay[j]/(1+(1-openness)*60/sampleRate+180*mute*mute/sampleRate);
+      const double d=bank.decay[j]/(1+(1-openness)*receiverFeltRate/sampleRate+180*mute*mute/sampleRate);
       setLane(bank.c,j,static_cast<float>(bank.naturalC[j]*d));setLane(bank.s,j,static_cast<float>(bank.naturalS[j]*d));
       setLane(bank.drive,j,bank.heard[j]?static_cast<float>((1-bank.decay[j])*openness):0.f);
     }
@@ -1213,6 +1229,42 @@ struct Engine::Impl {
       bank.active=openness[string]>0||ringing;
       if(bank.active)steerOpen(bank,openness[string]);
     }
+  }
+  static double moveDamper(double position,double target,double fraction) noexcept {
+    return position+fraction*(target-position);
+  }
+  void updateReceiverDampers(double fraction) noexcept {
+    float sustain=parameters.sustain;
+    for(const auto& channel:channels)
+      sustain=std::max(sustain,pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2]));
+    const double target=1-dampersLift*sustain,settledOpenness=1-feltContact(target);
+    for(int key=0;key<damped;++key){
+      bool held=false;
+      for(const auto& channel:channels)
+        if(channel.presses[key]>0||channel.captured[key]){held=true;break;}
+      auto& position=receiverDamper[key];
+      if(held){position=0;openness[key]=1;continue;}
+      if(position!=target){
+        position=moveDamper(position,target,fraction);
+        // At the receiver's float precision the travel is over. At rest this
+        // gives exactly zero drive, so a silent receiver can retire.
+        if(static_cast<float>(position)==static_cast<float>(target))position=target;
+      }
+      openness[key]=position==target?settledOpenness:1-feltContact(position);
+    }
+  }
+  void advanceSleepingReceivers() noexcept {
+    if(sleeping&&clock!=receiverClock){
+      // There are no audio chunks while asleep. Integrate the same travel
+      // over the elapsed samples before a MIDI edge changes the target.
+      const double elapsed=static_cast<double>(clock-receiverClock)/sampleRate;
+      updateReceiverDampers(1-std::exp(-elapsed/damperTravelSeconds));
+      receiverClock=clock;
+    }
+  }
+  void wake() noexcept {
+    advanceSleepingReceivers();
+    sleeping=false;
   }
   void silenceStrings() noexcept {
     for(int j=0;j<halo;++j){haloRing[j].q=haloRing[j].p=haloPrompt[j].q=haloPrompt[j].p=0;}
@@ -1496,11 +1548,11 @@ struct Engine::Impl {
     if(hissing)advanceNoise();
     const bool tintChanged=previousBrightness!=parameters.brightness;
     previousBrightness=parameters.brightness;
-    for(int note=0;note<88;++note){
-      bool open=note>=68;double sustain=parameters.sustain;
-      for(const auto& channel:channels){sustain=std::max(sustain,static_cast<double>(pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])));open=open||channel.presses[note]>0||channel.captured[note];}
-      openness[note]=open?1:1-feltContact(1-dampersLift*sustain);
-    }
+    // A key's sympathetic vibration meets the same moving felt as its struck
+    // vibration. Lehtonen, Askenfelt & Valimaki (JASA 126, 2009, EL49-54)
+    // measured the transition into contact under partial pedal. Use the
+    // struck strings' existing travel time and contact law for the receivers.
+    updateReceiverDampers(controlSmooth);
     openChunk();
     double contact=1;
     for(auto& voice:voices)if(voice.active){
@@ -1509,7 +1561,7 @@ struct Engine::Impl {
       const bool open=channel.presses[key]>0||channel.captured[key];
       const double sustain=pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2]);
       const double target=open?0:1-dampersLift*sustain;
-      voice.damper+=controlSmooth*(target-voice.damper);
+      voice.damper=moveDamper(voice.damper,target,controlSmooth);
       // Continuous felt contact, including partial engagement and re-pedaling.
       // The undamped top twenty keys do not acquire a fictitious key damper.
       voice.contact=voice.note>=89?0:feltContact(voice.damper);
@@ -1592,11 +1644,18 @@ struct Engine::Impl {
     return n;
   }
   void strike(int note,float velocity,int ch) noexcept {
-    sleeping=false;
+    wake();
     auto& channel=channels[ch];
     if(channel.presses[note-21]<std::numeric_limits<std::uint16_t>::max())++channel.presses[note-21];
+    if(note<firstHalo)receiverDamper[note-21]=0;
     Voice* chosen=nullptr;
-    for(auto& voice:voices)if(!voice.active){chosen=&voice;break;}
+    for(auto& voice:voices){
+      if(!voice.active){if(!chosen)chosen=&voice;continue;}
+      // The key has already lifted its damper by hammer contact (Askenfelt &
+      // Jansson, From touch to string vibrations). A previous strike still
+      // ringing on this key clears the same felt and keeps its modal state.
+      if(voice.channel==ch&&voice.note==note)voice.damper=0;
+    }
     if(!chosen){
       // Prefer released tails, then the oldest strike. Fixed storage bounds
       // CPU and memory under pathological repeated-note streams.
@@ -1975,7 +2034,7 @@ struct Engine::Impl {
            knock(contactOnset[k/lanes],k%lanes,{struckContact*g.re,struckContact*g.im},ahead);}
       any=true;
     }
-    if(any){sleeping=false;actionRinging=true;rising=rising||struck;}
+    if(any){wake();actionRinging=true;rising=rising||struck;}
   }
   // A key let go: its damper falls back onto the strings unless a pedal holds
   // it off them, and the key returns. From F6 up there is no damper to fall,
@@ -1996,20 +2055,20 @@ struct Engine::Impl {
     }
     actionKnock(sides);
   }
-  // After anything that moves the sustain pedal: at an end of its travel it
-  // sounds, unless `audible` is false for a reset. Only the grand recorded
-  // its pedal.
+  // Each action's recorded pedal knock. The grand's down take also measures
+  // the strings newly freed by its dampers.
+  void soundPedal(bool down,float level) noexcept {
+    ActionSide sides[pianoCount];
+    for(int p=0;p<pianoCount;++p){const Model& m=models[p];const auto* k=down?m.pedalDown:m.pedalUp;
+      if(k)sides[p]={k,k,0,(down?m.pedalDownDb:m.pedalUpDb)+20*std::log10(m.outputScale),m.bodyModeCount};}
+    actionKnock(sides);
+    if(down)liftDampers(level);
+  }
   void pedalEdge(bool audible=true) noexcept {
     float level=0;
     for(const auto& c:channels)level=std::max(level,pedalLevel(parameters.sustain,c.sustain,c.keySwitches[2]));
     const bool held=level>=pedalClear||(pedalHeld&&level>pedalRest);
-    if(audible&&held!=pedalHeld){
-      ActionSide sides[pianoCount];
-      for(int p=0;p<pianoCount;++p){const Model& m=models[p];const auto* k=held?m.pedalDown:m.pedalUp;
-        if(k)sides[p]={k,k,0,(held?m.pedalDownDb:m.pedalUpDb)+20*std::log10(m.outputScale),m.bodyModeCount};}
-      actionKnock(sides);
-      if(held)liftDampers();
-    }
+    if(audible&&held!=pedalHeld)soundPedal(held,level);
     pedalHeld=held;
   }
   // The pedal lifting the dampers sets the strings it frees ringing, as the
@@ -2022,26 +2081,28 @@ struct Engine::Impl {
   // full pedal leaves grazing them (dampersLift). The Mechanics control scales
   // them with the pedal's knock. Each partial's phase is fixed by its string
   // and order.
-  void liftDampers() noexcept {
+  void liftDampers(float level) noexcept {
     const Model& g=models[static_cast<int>(Piano::grand)];
     const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];});
     if(grandShare<=0||!(parameters.mechanics>0))return;
+    wake();
+    const double target=1-dampersLift*level;
     const double scale=parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(grandShare)
                        /(Parameters{}.resonance*.35);
     constexpr int bands=static_cast<int>(grand::openStringLiftDb.size());
     for(int i=0;i<damped;++i){
       bool held=false;for(const auto& c:channels)held=held||c.presses[i]>0||c.captured[i];
       if(held)continue;
+      const double liftingScale=scale*liftImpulseGain(receiverDamper[i],target);
       for(int n=0;n<openPartials;++n){const int k=i*openPartials+n,j=k%lanes;auto& bank=open[k/lanes];
         if(!bank.heard[j])continue;
         const int band=std::max(0,std::min(bands-1,static_cast<int>(std::lround(3*std::log2(openHz[k]/1000)))+12));
-        const double amplitude=std::pow(10.,grand::openStringLiftDb[band]/20)*scale,phase=2*pi*std::fmod(.6180339887498949*k,1.);
+        const double amplitude=std::pow(10.,grand::openStringLiftDb[band]/20)*liftingScale,phase=2*pi*std::fmod(.6180339887498949*k,1.);
         setLane(bank.re,j,lane(bank.re,j)+static_cast<float>(amplitude*std::cos(phase)));
         setLane(bank.im,j,lane(bank.im,j)+static_cast<float>(amplitude*std::sin(phase)));
         if(!bank.active){bank.active=true;steerOpen(bank,openness[i]);}
       }
     }
-    sleeping=false;
   }
   void ringBody(Body& body,int frames) noexcept {
     const int gliding=std::min(frames,pickupGlide);
@@ -2259,7 +2320,7 @@ Engine::~Engine()=default;
 void Engine::prepare(double sampleRate){
   auto& p=*impl;p.sampleRate=sampleRate==sampleRate?std::max(8000.,std::min(192000.,sampleRate)):48000.;
   for(int i=0;i<=sineSize;++i)p.sine[i]=std::sin(2*pi*i/sineSize);
-  p.smooth=1-std::exp(-1/(.012*p.sampleRate));p.contactShare=static_cast<float>(1-std::exp(-1/(contactSmoothing*p.sampleRate)));p.controlSmooth=1-std::exp(-chunk/(.018*p.sampleRate));
+  p.smooth=1-std::exp(-1/(.012*p.sampleRate));p.contactShare=static_cast<float>(1-std::exp(-1/(contactSmoothing*p.sampleRate)));p.controlSmooth=1-std::exp(-chunk/(damperTravelSeconds*p.sampleRate));
   p.highpassCoefficient=std::exp(-2*pi*10/p.sampleRate);
   p.retuneSympathetic();
   p.prepareBody();
@@ -2276,17 +2337,19 @@ void Engine::reset() noexcept {
   // A hard reset starts the current build afresh, even if a live model
   // change had not finished gliding its pickups. Live changes still glide.
   p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
-  p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
+  p.serial=0;p.frame=0;p.clock=0;p.receiverClock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.silenceTube();
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
   p.output.Reset();p.resetTubeOutput();
   for(int ch=0;ch<16;++ch)p.capture(ch);
+  p.updateReceiverDampers(1);
   p.pedalHeld=false;p.pedalEdge(false);
 }
 void Engine::setParameters(const Parameters& input) noexcept {
   auto& p=*impl;const float oldTune=p.parameters.tuning;
+  const bool silentPedalChange=p.sleeping&&(p.parameters.sustain!=bounded(input.sustain)||p.parameters.sostenuto!=bounded(input.sostenuto));
   p.parameters.gain=bounded(input.gain,0,2);p.parameters.brightness=bounded(input.brightness);
   p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);p.parameters.mic=bounded(input.mic);
   p.parameters.mechanics=bounded(input.mechanics,0,2);
@@ -2310,6 +2373,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   // A setting selected before any sound starts is the new initial state,
   // rather than a delayed transition from the previous silent preset.
   if(p.sleeping){p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();}
+  if(silentPedalChange){p.updateReceiverDampers(1);p.receiverClock=p.clock;}
   p.pedalEdge();
 }
 void Engine::noteOn(int note,float velocity,int channel) noexcept {
@@ -2317,6 +2381,7 @@ void Engine::noteOn(int note,float velocity,int channel) noexcept {
   if(!(velocity>0)){noteOff(note,channel);return;}
   const int sw=switchIndex(note);
   if(sw>=0){
+    impl->advanceSleepingReceivers();
     auto& count=impl->channels[ch].keySwitches[sw];
     if(count<std::numeric_limits<std::uint16_t>::max())++count;
     if(sw==1)impl->capture(ch);
@@ -2330,18 +2395,21 @@ void Engine::noteOff(int note,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   const int sw=switchIndex(note);
   if(sw>=0){
+    impl->advanceSleepingReceivers();
     auto& count=impl->channels[ch].keySwitches[sw];if(count>0)--count;
     if(sw==1)impl->capture(ch);
     if(sw==2)impl->pedalEdge();
     return;
   }
   if(note<21||note>108)return;
+  impl->advanceSleepingReceivers();
   auto& count=impl->channels[ch].presses[note-21];
   if(count>0&&--count==0)impl->release(note,ch);
 }
 void Engine::controlChange(int cc,int value,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   auto& p=*impl;auto& state=p.channels[ch];const float amount=bounded(value/127.f);
+  if(cc==64||cc==66||cc==120||cc==121||cc==123)p.advanceSleepingReceivers();
   if(cc==1)state.mute=amount;
   else if(cc==64){state.sustain=amount;p.pedalEdge();}
   else if(cc==66){state.sostenuto=amount;p.capture(ch);}
@@ -2351,7 +2419,10 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
-    if(!any){p.silenceStrings();p.silenceBody();p.silenceNoise();p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();}
+    if(!any){
+      p.silenceStrings();p.updateReceiverDampers(1);p.silenceBody();p.silenceNoise();
+      p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();
+    }
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
@@ -2409,7 +2480,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
       // does not depend on how long it has been silent. The output stage
       // restarts empty too: its look-ahead holds only the last 2 ms, which
       // are as quiet as the residue.
-      p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
+      p.sleeping=true;p.receiverClock=p.clock;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       p.silenceStrings();p.silenceTube();
       p.silenceNoise();p.tubeScale=p.tubeScaleTarget;
       p.output.Reset();p.resetTubeOutput();
