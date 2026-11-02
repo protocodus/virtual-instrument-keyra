@@ -24,9 +24,10 @@ or impulse response enters a header.
   python3 Tools/fetch_salamander.py                  # the grand's corpus, once
   python3 Tools/decode_helsinki.py --library <path>  # the upright's, from a copy of the library
   python3 Tools/fit_realtime_modal.py --analyse      # measure the anchors (cached in out/)
-  python3 Tools/fit_realtime_modal.py                # regenerate the header and provenance
-  python3 Tools/fit_realtime_modal.py --check        # verify both reproduce exactly
-  python3 Tools/fit_realtime_modal.py --model upright [--analyse | --check]
+  python3 Tools/fit_realtime_modal.py --recalibrate  # export from measured anchor caches
+  python3 Tools/fit_realtime_modal.py --recalibrate --check  # verify cache-based export
+  python3 Tools/fit_realtime_modal.py --model upright [--analyse | --recalibrate]
+  python3 Tools/fit_realtime_modal.py --model belmont --measurements <snapshot.json.gz> [--check]
 """
 from __future__ import annotations
 
@@ -2605,7 +2606,10 @@ def same_provenance(stored, fresh) -> bool:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--model', choices=MODELS, default='grand')
-    parser.add_argument('--analyse', action='store_true', help='measure the train anchors into out/')
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--analyse', action='store_true', help='measure the train anchors into out/')
+    mode.add_argument('--recalibrate', action='store_true', help='export from measured anchor caches; run --analyse first to refresh fits; may replace conditional repairs')
+    mode.add_argument('--measurements', type=Path, help='regenerate stored numeric measurements; no audio/cache access or source recalibration')
     parser.add_argument('--jobs', type=int, default=os.cpu_count() or 1)
     parser.add_argument('--check', action='store_true', help='verify the header and provenance reproduce')
     parser.add_argument('--header', type=Path, help='default: the model\'s header in Source/DSP')
@@ -2613,6 +2617,30 @@ def main():
     args = parser.parse_args()
     model = MODELS[args.model]
     args.header = args.header or model['header']
+    if args.measurements:
+        from regenerate_modal_measurements import regenerate
+        import update_modal_measurements as measurements
+        measurements.protect_outputs([args.header, args.metadata],
+                                     [args.measurements, Path(__file__), Path(measurements.__file__),
+                                      Path(regenerate.__code__.co_filename)])
+        content, receipt = regenerate(args.measurements, args.model, header, model)
+        if args.check:
+            if args.header.read_bytes() != content.encode():
+                raise SystemExit('Header differs from stored-number regeneration')
+            # Stored-number regeneration has no volatile execution fields.
+            # Compare the whole receipt, including provenance and operation.
+            if args.metadata and measurements.json_bytes(measurements.read_json(args.metadata)) != measurements.json_bytes(receipt):
+                raise SystemExit('Metadata differs from stored-number regeneration')
+            print('stored numeric measurements reproduce exactly; no source recalibration')
+            return
+        args.header.parent.mkdir(parents=True, exist_ok=True)
+        # Generated header hashes cover UTF-8/LF bytes on every platform.
+        args.header.write_bytes(content.encode('utf-8'))
+        if args.metadata:
+            args.metadata.parent.mkdir(parents=True, exist_ok=True)
+            args.metadata.write_bytes((json.dumps(receipt, indent=2, allow_nan=False) + '\n').encode('utf-8'))
+        print('stored numeric measurements written; no source recalibration')
+        return
     args.metadata = args.metadata or model['metadata']
     if args.analyse:
         analyse(args.model, args.jobs)
@@ -2625,9 +2653,9 @@ def main():
             raise SystemExit('Measured modal provenance differs from the regenerated fit')
         print('measured modal header and provenance reproduce exactly')
         return
-    args.header.write_text(content)
+    args.header.write_bytes(content.encode('utf-8'))
     args.metadata.parent.mkdir(parents=True, exist_ok=True)
-    args.metadata.write_text(json.dumps(metadata, indent=2, allow_nan=False) + '\n')
+    args.metadata.write_bytes((json.dumps(metadata, indent=2, allow_nan=False) + '\n').encode('utf-8'))
     print(f'{len(metadata["anchors"])} anchors, '
           f'{sum(a["partials"] for a in metadata["anchors"])} partials written to {args.header}')
 
