@@ -7,6 +7,9 @@
 //   KeyraLevels --report [--jobs N]   every factory preset's readings and each
 //                                     piano's outputScale correction
 //   KeyraLevels --check [--jobs N]    the audio-tier test Keyra.Levels
+//   KeyraLevels --audit-dynamics [--low-drive] [--jobs N]   per-chord CSV for
+//     all six named pianos at both microphone endpoints. --low-drive plays
+//     the same events 20 dB down through the same output stage.
 //
 // Playing is at 48 kHz in 256-sample blocks, through the plug-in's velocity
 // response and strike variation, each event alone in a 1.5 s slot and held
@@ -46,11 +49,12 @@
 
 #include <algorithm>
 #include <atomic>
+#include <charconv>
 #include <cmath>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <functional>
+#include <string>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -82,9 +86,9 @@ std::vector<Event> typicalPlaying(){
 // decided the step's sign (the shipping upright read +0.08 dB over one round
 // and -0.04 dB over five).
 constexpr int rounds=5;
-std::vector<Event> chordRounds(int velocity){
+std::vector<Event> chordRounds(int velocity,const std::vector<std::vector<int>>& shapes=chords,int repeats=rounds){
   std::vector<Event> events;
-  for(int round=0;round<rounds;++round)for(const auto& chord:chords)events.push_back({chord,velocity});
+  for(int round=0;round<repeats;++round)for(const auto& chord:shapes)events.push_back({chord,velocity});
   return events;
 }
 
@@ -137,6 +141,69 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
   std::atomic<std::size_t> next{0};std::vector<std::thread> threads;
   for(int j=0;j<jobs;++j)threads.emplace_back([&]{for(std::size_t i=next++;i<count;i=next++)work(i);});
   for(auto& thread:threads)thread.join();
+}
+
+int auditDynamics(int jobs,bool lowDrive){
+  // Resolve the factory programs by name so the audit follows their voicing
+  // controls, including Belmont's brightness, as well as their measured build.
+  const char* const names[]{"Kakegawa Grand","Helsinki Upright","Hamamatsu Grand",
+                            "Hamburg Grand","New York Grand","Belmont Grand"};
+  std::vector<const keyra::Preset*> programs;
+  for(const char* name:names){
+    const auto& bank=keyra::factoryPresets;
+    const auto preset=std::find_if(bank.begin(),bank.end(),[&](const auto& p){return !std::strcmp(name,p.name);});
+    if(preset==bank.end()){std::fprintf(stderr,"Missing audit preset: %s\n",name);return 1;}
+    programs.push_back(&*preset);
+  }
+  struct Panel {
+    const char* name;
+    std::vector<std::vector<int>> shapes;
+    std::vector<int> velocities;
+    int repeats;
+  };
+  const Panel panels[]{
+    {"original",chords,{110,127},rounds},
+    {"independent",{{29,36,41,45,52},{38,45,50,54,57},{50,57,62,65},{61,64,68},
+                    {72,79},{33,52},{55,61},{64,74}},
+                   {101,121},rounds},
+    {"expanded",{{21,28,33,40},{28,35,40,47,52},{33,40,45,48,52,57},{36,43,51,58,63},
+                 {40,47,50,54,57},{45,52,60,65,69},{47,54,59,62,66},{52,59,65,71,76},
+                 {55,60,63,67},{60,66,72,76},{69,76,81,88},{76,83,90,95}},
+                {48,64,80,96,100,104,108,112,116,120,124,127},1}
+  };
+  keyra::Parameters settings;
+  if(lowDrive)settings.gain*=static_cast<float>(std::pow(10.,-belowDb/20));
+  std::puts("panel,drive,output_gain,piano,mic,round,shape,midi_notes,velocity_low,velocity_high,vu_low,vu_high,step_db");
+  for(const auto& panel:panels){
+    const auto bands=panel.velocities.size();
+    std::vector<Reading> readings(programs.size()*2*bands);
+    // Every velocity replays the whole sequence from reset for paired strike
+    // variation. Workers write separate slots; CSV order is independent of jobs.
+    parallel(readings.size(),std::min(jobs,static_cast<int>(readings.size())),[&](std::size_t index){
+      auto p=keyra::withPreset(settings,*programs[index/bands/2]);
+      p.mic=static_cast<float>((index/bands)%2);
+      readings[index]=play(p,chordRounds(panel.velocities[index%bands],panel.shapes,panel.repeats));
+    });
+    for(std::size_t piano=0;piano<programs.size();++piano)for(int mic=0;mic<2;++mic){
+      const auto base=(piano*2+mic)*bands;
+      for(std::size_t band=1;band<bands;++band){
+        const auto& low=readings[base+band-1].events;
+        const auto& high=readings[base+band].events;
+        for(std::size_t event=0;event<low.size();++event){
+          const auto shape=event%panel.shapes.size(),round=1+event/panel.shapes.size();
+          std::string notes;
+          for(int note:panel.shapes[shape]){
+            if(!notes.empty())notes+=' ';
+            notes+=std::to_string(note);
+          }
+          std::printf("%s,%s,%.6f,%s,%d,%zu,%zu,%s,%d,%d,%.9f,%.9f,%.9f\n",
+                      panel.name,lowDrive?"low":"factory",settings.gain,programs[piano]->name,mic,round,shape,notes.c_str(),
+                      panel.velocities[band-1],panel.velocities[band],low[event],high[event],high[event]-low[event]);
+        }
+      }
+    }
+  }
+  return std::ferror(stdout)?1:0;
 }
 
 int run(int jobs,bool check){
@@ -243,12 +310,25 @@ int run(int jobs,bool check){
 
 int main(int argc,char** argv){
   int jobs=static_cast<int>(std::max(1u,std::thread::hardware_concurrency()));
-  bool check=false,known=argc>=2;
-  if(known)check=!std::strcmp(argv[1],"--check"),known=check||!std::strcmp(argv[1],"--report");
+  const bool check=argc>=2&&!std::strcmp(argv[1],"--check");
+  const bool audit=argc>=2&&!std::strcmp(argv[1],"--audit-dynamics");
+  bool lowDrive=false,known=check||audit||(argc>=2&&!std::strcmp(argv[1],"--report"));
   for(int i=2;known&&i<argc;++i){
-    if(!std::strcmp(argv[i],"--jobs")&&i+1<argc)jobs=std::max(1,std::atoi(argv[++i]));
+    if(!std::strcmp(argv[i],"--jobs")&&i+1<argc){
+      const char* start=argv[++i];
+      const char* end=start+std::strlen(start);
+      const auto parsed=std::from_chars(start,end,jobs);
+      known=parsed.ec==std::errc{}&&parsed.ptr==end;
+      jobs=std::max(1,jobs);
+    }
+    else if(audit&&!std::strcmp(argv[i],"--low-drive"))lowDrive=true;
     else known=false;
   }
-  if(!known){std::fprintf(stderr,"usage: KeyraLevels --report | --check [--jobs N]\n");return 2;}
+  if(!known){
+    std::fprintf(stderr,"usage: KeyraLevels (--report | --check) [--jobs N]\n"
+                        "       KeyraLevels --audit-dynamics [--low-drive] [--jobs N]\n");
+    return 2;
+  }
+  if(audit)return auditDynamics(jobs,lowDrive);
   return run(jobs,check);
 }
