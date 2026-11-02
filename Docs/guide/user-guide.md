@@ -22,7 +22,7 @@ Each MIDI channel owns its key and controller state.
 | Strings, Hammers, Soundboard, Action | In the Build view: a row per part, with a weight from 0 to 100% for each measured piano (Kakegawa, Helsinki, Hamamatsu, Hamburg, New York, Belmont). The part mixes the pianos at their shares of its row, so 100% Kakegawa and 50% Helsinki plays two thirds of the one and a third of the other, and a row of zeros plays the Kakegawa grand's. Strings set the tuning stretch, stiffness, unisons and how the partials ring; Hammers how hard each partial is struck, how fast it rises and how the tone follows velocity; Soundboard the body's modes, the strike's knock and the board's noise; Action the knocks of keys, dampers and pedals and how the soft pedal works. A change applies from the next note: what sounds rings on, and held keys and pedals keep their state; the soundboard's modes move at once |
 | Stiffness, Unisons, Ring | In the Build view: the strings' inharmonicity from ×0.25 to ×4, how far each note's unison strings sit apart from ×0 (one pitch) to ×3, and how long the strings ring from ×0.5 to ×2, each ×1.00 as built. A change applies from the next note |
 | Quality | How much of each note plays, for CPU on slower machines. Full, the default, plays all of it; Balanced and Light leave out the partials 60 and 50 dB under the note's strongest, which changes no third of an octave of its spectrum by more than 0.04 and 0.74 dB. A change applies from the next note |
-| Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2 ms, which the plug-in reports to the host |
+| Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2.5 ms (120 frames at 48 kHz), which the plug-in reports to the host |
 | Brightness | Changes partial balance; the neutral setting is 50% |
 | Resonance | Amount of the reduced sympathetic response |
 | Width | Stereo spread, from centered to wide |
@@ -34,12 +34,14 @@ Each MIDI channel owns its key and controller state.
 | Sostenuto | Captures only keys held when the pedal crosses 50% upward; later notes release normally |
 | Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
 
-The thirteen factory presets set the build, Brightness, Resonance, Width and
+The nineteen factory presets set the build, Brightness, Resonance, Width and
 Felt mute; Output, Tuning, Quality, Tube Mic, Mechanics and the pedals keep
 their settings. Five play the Kakegawa grand and three the Helsinki upright,
-Hamamatsu Grand plays the Hamamatsu grand, and Three Cities plays every part
-at equal thirds of the first three; Hamburg Grand, New York Grand and
-Belmont Grand play those grands. The DAW interface's on-screen keyboard
+Hamamatsu Grand plays the Hamamatsu grand, Three Cities plays every part
+at equal thirds of the first three, Hamburg Grand and New York Grand play
+those grands, three play the Belmont grand (Belmont Grand, Belmont Soft,
+Belmont Warm), and four mix the six pianos into hybrid builds (Dark Chamber,
+Hybrid Studio, Upright Body, Bright Stage). The DAW interface's on-screen keyboard
 is playable. Three brass pedal controls
 show the effective soft, sostenuto and sustain positions, in the physical
 piano's left-to-right order. Hold a pedal to press it and release to lift it;

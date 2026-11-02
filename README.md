@@ -964,10 +964,12 @@ the build existed plays the grand as built at full quality, one saved with
 the Piano control the build it chose, one saved before Mechanics its action
 as calibrated, and one saved before Tube Mic hears the pair. Mechanics retains
 its raw 0–2 host parameter range for saved automation; only the custom knob's
-travel and percentage readout use the new taper. The thirteen factory
-presets in `Source/DSP/KeyraPresets.h`, five on the Kakegawa grand, three on
+travel and percentage readout use the new taper. The nineteen factory
+presets in `Source/DSP/KeyraPresets.h` — five on the Kakegawa grand, three on
 the Helsinki upright, Hamamatsu Grand, Three Cities, Hamburg Grand, New York
-Grand and Belmont Grand, set the build,
+Grand, three on the Belmont grand (`Belmont Grand`, `Belmont Soft`, `Belmont Warm`),
+and four multi-piano hybrids (`Dark Chamber`, `Hybrid Studio`, `Upright Body`,
+`Bright Stage`) — set the build,
 Brightness, Resonance, Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
 their sample positions; each MIDI channel owns its keys and pedals, and CC120,
 CC121 and CC123 are honoured per channel. The

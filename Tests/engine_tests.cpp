@@ -2,6 +2,7 @@
 #include "DSP/MeasuredKawaiData.h"
 #include "DSP/MeasuredHamburgData.h"
 #include "DSP/MeasuredNewYorkData.h"
+#include "DSP/MeasuredBelmontData.h"
 #include "DSP/MeasuredMicData.h"
 #include "DSP/MeasuredModalData.h"
 #include "DSP/MeasuredUprightData.h"
@@ -42,6 +43,7 @@ double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<d
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;p.mechanics=keyra::legacyMechanicsGain;return p;}
 keyra::Parameters dryUpright(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::upright);return p;}
 keyra::Parameters dryKawai(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::kawai);return p;}
+keyra::Parameters dryBelmont(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::belmont);return p;}
 const char* pianoName(keyra::Piano piano){
   static const std::array<const char*,keyra::pianoCount> names{"grand","upright","kawai","hamburg","newyork","belmont"};
   return names[static_cast<std::size_t>(piano)];
@@ -294,25 +296,35 @@ int main(int argc,char** argv){
     // the highest of the softest layers' levels, and plays where each
     // piano's measured layers reach it.
     namespace g=keyra::measured::grand;namespace u=keyra::measured::upright;namespace kw=keyra::measured::kawai;
+    namespace hm=keyra::measured::hamburg;namespace ny=keyra::measured::newyork;namespace bm=keyra::measured::belmont;
     auto level=[](const auto& v,const auto& l,int layers,double at){
       int i=0;while(i<layers-2&&at>v[i+1])++i;
       return l[i]+(l[i+1]-l[i])*(at-v[i])/(v[i+1]-v[i]);};
     const double floor=std::max({g::layerLevelDb[0],u::layerLevelDb[0],kw::layerLevelDb[0]});
-    double worst=0;float last[3]{};bool rising=true;
+    double worst=0;float last[keyra::pianoCount]{};bool rising=true;
     for(int midi=1;midi<=127;++midi){
       const double x=(midi-1)/126.,wanted=floor*(1-.5*(x+x*x*(3-2*x)));
-      const float at[3]{keyra::responseVelocity(keyra::Piano::grand,midi/127.f),
-                        keyra::responseVelocity(keyra::Piano::upright,midi/127.f),
-                        keyra::responseVelocity(keyra::Piano::kawai,midi/127.f)};
-      worst=std::max({worst,std::abs(level(g::layerVelocity,g::layerLevelDb,g::layers,at[0])-wanted),
-                      std::abs(level(u::layerVelocity,u::layerLevelDb,u::layers,at[1])-wanted),
-                      std::abs(level(kw::layerVelocity,kw::layerLevelDb,kw::layers,at[2])-wanted)});
-      for(int k=0;k<3;++k){rising=rising&&at[k]>=last[k];last[k]=at[k];}
+      const float at[keyra::pianoCount]{
+        keyra::responseVelocity(keyra::Piano::grand,midi/127.f),
+        keyra::responseVelocity(keyra::Piano::upright,midi/127.f),
+        keyra::responseVelocity(keyra::Piano::kawai,midi/127.f),
+        keyra::responseVelocity(keyra::Piano::hamburg,midi/127.f),
+        keyra::responseVelocity(keyra::Piano::newyork,midi/127.f),
+        keyra::responseVelocity(keyra::Piano::belmont,midi/127.f)};
+      worst=std::max({worst,
+                      std::abs(level(g::layerVelocity,g::layerLevelDb,g::layers,at[0])-std::max<double>(wanted,level(g::layerVelocity,g::layerLevelDb,g::layers,1.))),
+                      std::abs(level(u::layerVelocity,u::layerLevelDb,u::layers,at[1])-std::max<double>(wanted,level(u::layerVelocity,u::layerLevelDb,u::layers,1.))),
+                      std::abs(level(kw::layerVelocity,kw::layerLevelDb,kw::layers,at[2])-std::max<double>(wanted,level(kw::layerVelocity,kw::layerLevelDb,kw::layers,1.))),
+                      std::abs(level(hm::layerVelocity,hm::layerLevelDb,hm::layers,at[3])-std::max<double>(wanted,level(hm::layerVelocity,hm::layerLevelDb,hm::layers,1.))),
+                      std::abs(level(ny::layerVelocity,ny::layerLevelDb,ny::layers,at[4])-std::max<double>(wanted,level(ny::layerVelocity,ny::layerLevelDb,ny::layers,1.))),
+                      std::abs(level(bm::layerVelocity,bm::layerLevelDb,bm::layers,at[5])-std::max<double>(wanted,level(bm::layerVelocity,bm::layerLevelDb,bm::layers,1.)))});
+      for(int k=0;k<keyra::pianoCount;++k){rising=rising&&at[k]>=last[k];last[k]=at[k];}
     }
     std::cout<<"velocity_response_worst_db="<<worst<<'\n';
     check(worst<.01,"every piano plays the shared velocity response's level at every velocity");
     check(rising,"a harder strike never plays a softer layer");
-    check(last[0]==g::layerVelocity[g::layers-1]&&last[1]==u::layerVelocity[u::layers-1]&&last[2]==kw::layerVelocity[kw::layers-1],
+    check(last[0]==g::layerVelocity[g::layers-1]&&last[1]==u::layerVelocity[u::layers-1]&&last[2]==kw::layerVelocity[kw::layers-1]
+          &&last[3]==hm::layerVelocity[hm::layers-1]&&last[4]==ny::layerVelocity[ny::layers-1]&&last[5]==bm::layerVelocity[bm::layers-1],
           "velocity 127 plays each piano's loudest layer");
   }
   {
@@ -560,6 +572,7 @@ int main(int argc,char** argv){
     for(const int note:{51,75}){between(keyra::Piano::grand,keyra::measured::grand::anchors,note);
                                 between(keyra::Piano::upright,keyra::measured::upright::anchors,note);
                                 between(keyra::Piano::kawai,keyra::measured::kawai::anchors,note);}
+    for(const int note:{39,63})between(keyra::Piano::belmont,keyra::measured::belmont::anchors,note);
   }
   {
     // A key between two recorded pitches plays about as loud as they do. Its
@@ -800,9 +813,10 @@ int main(int argc,char** argv){
     // partial moves as B times a quarter and four times puts it, from each
     // piano's measured f1 and B at C2.
     const auto c2=[](const auto& anchors){for(const auto& x:anchors)if(x.note==36)return std::array<double,2>{x.f1,x.B};return std::array<double,2>{};};
-    const std::array<std::pair<keyra::Piano,std::array<double,2>>,3> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
+    const std::array<std::pair<keyra::Piano,std::array<double,2>>,4> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
                                                                            {keyra::Piano::upright,c2(keyra::measured::upright::anchors)},
-                                                                           {keyra::Piano::kawai,c2(keyra::measured::kawai::anchors)}}};
+                                                                           {keyra::Piano::kawai,c2(keyra::measured::kawai::anchors)},
+                                                                           {keyra::Piano::belmont,c2(keyra::measured::belmont::anchors)}}};
     for(const auto& [piano,anchor]:pianos){
       const auto twelfth=[&](float stiffness){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.stiffness=stiffness;
@@ -897,11 +911,11 @@ int main(int argc,char** argv){
       const double half=c4Strings(render(e,12000),anchors),stillHeld=c4Strings(render(held,12000),anchors);render(e,36000);
       return std::array<double,4>{before,half,c4Strings(render(e,12000),anchors),stillHeld};};
     const auto upright=fall(dryUpright(),keyra::measured::upright::anchors),grand=fall(dry(),keyra::measured::grand::anchors),
-               kawai=fall(dryKawai(),keyra::measured::kawai::anchors);
-    for(const auto& piano:{upright,grand,kawai}){
+               kawai=fall(dryKawai(),keyra::measured::kawai::anchors),belmont=fall(dryBelmont(),keyra::measured::belmont::anchors);
+    for(const auto& piano:{upright,grand,kawai,belmont}){
       check(piano[1]>piano[0]*1e-4&&piano[1]<piano[0]*.01,"the felt leaves a faint share of a released C4 ringing");
       check(piano[2]<piano[1]*.7,"what the felt leaves keeps falling");}
-    for(const auto& piano:{upright,kawai})
+    for(const auto& piano:{upright,kawai,belmont})
       check(std::abs(20*std::log10(piano[1]/piano[3]*grand[3]/grand[1]))<6,"every piano's felt leaves the same share");
     std::cout<<"upright_released_c4_db="<<20*std::log10(upright[1]/upright[0])<<','<<20*std::log10(upright[2]/upright[0])
              <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])
@@ -1079,6 +1093,45 @@ int main(int argc,char** argv){
     peak*=16;
     check(peak<4*std::pow(10.f,-3/20.f),"fortissimo chord has headroom before the emergency bound");
     std::cout<<"headroom_piano="<<pianoName(piano)<<" notes="<<count<<" peak_dbfs_before_stage="<<20*std::log10(peak)<<'\n';
+  }
+  {
+    // Pedal-down bridge unloading and continuous treble halo coupling: even
+    // when a key is held continuously (its own damper already lifted), lifting
+    // the full damper bank via the sustain pedal unloads the bridge and couples
+    // the undamped treble halo strings, producing measurable sustain bloom
+    // (1.0-2.0 s relative to 0.05-0.5 s) across pianos.
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::hamburg,keyra::Piano::belmont}){
+      const auto measureBloom=[&](float sustain){
+        keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.mechanics=0;p.sustain=sustain;
+        e.setParameters(p);e.reset();e.setSteadyStrikesForMeasurement(true);
+        e.noteOn(60,.75f);
+        const auto audio=render(e,48000*2);
+        const auto winPower=[&](double t0,double t1){
+          double sum=0;const std::size_t i0=static_cast<std::size_t>(t0*48000),i1=static_cast<std::size_t>(t1*48000);
+          for(std::size_t i=i0;i<i1;++i)
+            sum+=static_cast<double>(audio[2*i])*audio[2*i]+static_cast<double>(audio[2*i+1])*audio[2*i+1];
+          return sum/std::max<std::size_t>(1,i1-i0);
+        };
+        return 10*std::log10(winPower(1.0,2.0)/winPower(0.05,0.5));
+      };
+      const double bloomDb=measureBloom(1.f)-measureBloom(0.f);
+      check(bloomDb>0.6&&bloomDb<5.0,"pedal-down bridge unloading blooms held notes");
+      std::cout<<"pedal_bloom_piano="<<pianoName(piano)<<" sus_minus_nosus_db="<<bloomDb<<'\n';
+    }
+  }
+  {
+    // Phase-aware hammer-string restrike interaction: restriking an actively
+    // vibrating string (damper lifted) brightens upper partials via felt
+    // pre-compression while remaining strictly invariant to block partitioning.
+    keyra::Engine a,b;
+    a.controlChange(64,127);b.controlChange(64,127);
+    a.noteOn(60,.7f);b.noteOn(60,.7f);
+    auto outA=render(a,7200,17),outB=render(b,7200,256);
+    a.noteOff(60);b.noteOff(60);
+    auto midA=render(a,2400,19),midB=render(b,2400,128);
+    a.noteOn(60,.7f);b.noteOn(60,.7f);
+    auto tailA=render(a,12000,23),tailB=render(b,12000,256);
+    check(outA==outB&&midA==midB&&tailA==tailB,"phase-aware restrike is invariant to audio block partitioning");
   }
   std::cout<<"engine_failures="<<failures<<" live_allocations="<<allocations<<'\n';return failures?1:0;
 }
