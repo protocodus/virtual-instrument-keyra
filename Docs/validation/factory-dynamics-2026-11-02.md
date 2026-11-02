@@ -25,6 +25,12 @@ is 0.7 at factory and 0.07 at low drive. No post-render normalization is
 applied. Both use the production plug-in's DSP, at 48 kHz; low drive is not a
 software bypass. Belmont uses its chosen Brightness of 0.75 in both runs.
 
+The factory audio regression test reads that same per-event CSV. A previously
+rising pair must not turn negative, and a previously falling one must not get
+worse, to 0.001 dB numerical precision. Its recorded exceptions describe
+known problems, not desirable behavior. The maximum difference in any step
+in an independent x86-64 replay of the arm64 reference was 0.00000181 dB.
+
 The meter measures maximum RMS within a 300 ms sliding window on the louder
 channel. These are meter comparisons, not listener preference or acoustic
 ground truth. Each panel covers all six instruments and both mic endpoints:
@@ -110,9 +116,16 @@ pianos, and New York failed even the existing median check at both mic
 settings. No controller or model parameters were changed to pass the tests.
 
 These alternatives did not meet the criteria for changing factory output.
-For a player wanting more headroom today, reducing Keyra's Output *before*
-the guard preserves more of the difference between hard strikes. Lowering
-only the DAW fader cannot recover a difference already compressed in Keyra.
+For a player wanting more headroom, set **Output to 0.35**. In the original
+480-pair test that one change eliminated all 104 reversals and enlarged the
+median 110 → 127 increment from **0.29 to 1.67 dB**. In a finer test of the
+top three velocity increments on twelve voicings (432 pairs, both mics),
+reversals fell from 162 to 19. Typical level was about 6 dB lower on all
+six pianos. At Output 0.175 the same tests had zero and eight reversals,
+respectively, with typical level about 12 dB lower. Selecting another factory
+preset preserves this control. Adjust monitoring or track level afterward if
+needed, leaving headroom for the stronger peaks. Lowering only the DAW fader
+cannot recover a difference already compressed in Keyra.
 
 ## What is separate from output protection
 
