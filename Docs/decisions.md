@@ -2452,3 +2452,19 @@ before phrase extraction, followed by a common export gain. All MIDI, seeds,
 and other controls were identical. Those listening trims are not preset
 output-gain changes. Solo C WAV SHA256:
 `a077016ab499c334435897917f8125bf50a4a8d29db00448bd6a6e50ec664864`.
+
+## 2026-11-02 — ship B at the usual playing level
+
+The owner selected B in the six-piano forte comparison and asked to ship it
+without lowering piano levels. Both clips played three chords at MIDI 80,
+110 and 127. A used the previous factory Output of 0.70. B drove the same
+instrument at 0.35 and used one level match per piano for its moderate
+strikes. The same export gain was then applied to A and B within each piano.
+The owner’s choice was “B is indeed better, ship it”.
+
+0.4.11 makes the half-drive response available at factory Output 0.70 and
+restores 6.02 dB after the original guard. An additional short gain curve
+catches peaks above the sample ceiling. The decision favors the stronger
+forte response, including chords above 0 VU on a meter with 12 dB offset.
+The selected Mechanics position is 0.4 and the Belmont Grand factory
+Brightness is 0.75. [Measurements](validation/forte-response-2026-11-02.md).
