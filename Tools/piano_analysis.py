@@ -504,7 +504,8 @@ def _component_offsets(layers, span, count):
     return [float(grid[k]) for k in sorted(peaks, key=lambda k: -total[k])[:count]]
 
 
-def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, length=None, rise=True):
+def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, length=None, rise=True,
+                       *, component_warm_start=False, diagnostics=None):
     """Fit one partial jointly across velocity layers.
 
     `layers` is a list of dicts with `times` (seconds after that layer's
@@ -523,6 +524,12 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, l
     interpolation between pitches survives.
     With `rise` false the rise is not fitted: the lanes start at contact, its
     log held at the 0.2 ms bound and its slope at zero.
+    With `component_warm_start`, try one additional measured-frequency start
+    after the original search, retaining its optimized rate/rise values and
+    bounds. Only a lower original objective replaces the original winner.
+    Optional `diagnostics` receives this start and its outcome; it does not
+    change selection. This opt-in changes fitting and must enter caller cache
+    provenance before use in an analysis pipeline.
     Returns theta (`lanes` lane log rates, as many lane offsets in Hz, the log rise
     at velocity 64 and its slope), per-layer amplitudes a[layer, channel,
     lane] and per-layer relative errors (of the envelope alone), or None.
@@ -656,6 +663,36 @@ def fit_partial_layers(layers, f1, sr, n, hz, beat=.3, ridge=.03, lanes=LANES, l
                 best, theta = fit, np.r_[fit.x, pinned]
         if best is None:
             return None
+    if component_warm_start:
+        # An interior near-coincident solution can miss resolved components
+        # without triggering the bound-driven wider-reach retry above. Reuse
+        # that retry's measured offsets independently of whether a bound was
+        # reached; retain the final search's rates, rise and original limits.
+        found = _component_offsets(layers, span, lanes)
+        trace = {'baseline_cost': float(best.cost), 'baseline_theta': theta.tolist(),
+                 'measured_offsets': found, 'span': span, 'free_parameters': free,
+                 'selected': 'baseline'}
+        if len(found) >= 2:
+            theta0 = theta[:free].copy()
+            theta0[lanes:2 * lanes] = found + [0.0] * (lanes - len(found))
+            theta0 = np.clip(theta0, np.add(lower[:free], 1e-6), np.subtract(upper[:free], 1e-6))
+            trace['start'] = theta0.tolist()
+            try:
+                fit = optimize.least_squares(residual, theta0, jac=jacobian,
+                                             bounds=(lower[:free], upper[:free]), max_nfev=200,
+                                             x_scale=([1] * lanes + [.1] * lanes + [1, 1])[:free])
+                trace.update(candidate_cost=float(fit.cost), success=bool(fit.success),
+                             status=int(fit.status), message=str(fit.message),
+                             nfev=int(fit.nfev), optimality=float(fit.optimality))
+                if fit.cost < best.cost:
+                    best, theta = fit, np.r_[fit.x, pinned]
+                    trace['selected'] = 'component_warm_start'
+            except (ValueError, np.linalg.LinAlgError) as error:
+                trace['error'] = str(error)
+        else:
+            trace['skipped'] = 'fewer than two measured components'
+        if diagnostics is not None:
+            diagnostics['component_warm_start'] = trace
     res, amps = evaluate(theta)
     out_amps, errors, k = [], [], 0
     for p in prepared:

@@ -2425,3 +2425,46 @@ The frozen review files and separate key are in
 `Downloads/Keyra Belmont Tone 2026-11-01/`; the reproducer is under
 `out/realism/belmont-colour-control-20261101/listening.py`. The retained C WAV
 SHA256 is `f8d0da8d6bef957482def9de751ec93178bfc55bab298cc42554722c5cb265fc`.
+
+## 2026-11-02 — Belmont factory Brightness: C
+
+The owner chose **C** after revisiting the piano-only clips and asking for
+their key. A used the accepted Belmont voicing at Brightness 0.5; B used
+0.625; C used 0.75. This is a separate audition from the 2026-11-01 C choice
+above, which removed additional velocity darkening.
+
+The initial accompanied comparison did not establish a preference: the owner
+said the backing obscured the piano. The same 17.171938-second phrases were
+then presented solo, and the settings were disclosed before the final C
+selection. This is an informed voicing preference, not a blind listening
+result or an inferred physical measurement.
+
+Version 0.4.9 applies Brightness 0.75 when loading the **Belmont Grand** factory
+preset. The knob remains fully adjustable. Other presets and the engine's
+general parameter defaults remain as before; loading existing saved states
+restores their explicit brightness. Changing piano-build weights alone does
+not overwrite the current voicing controls. The agreed Mechanics default
+remains at UI 0.4 / raw gain 0.175.
+
+The frozen audition is in `Downloads/Keyra Belmont Mix Clarity 2026-11-02/`.
+Each complete piano performance received one scalar RMS match to −25.8 dBFS
+before phrase extraction, followed by a common export gain. All MIDI, seeds,
+and other controls were identical. Those listening trims are not preset
+output-gain changes. Solo C WAV SHA256:
+`a077016ab499c334435897917f8125bf50a4a8d29db00448bd6a6e50ec664864`.
+
+## 2026-11-02 — ship B at the usual playing level
+
+The owner selected B in the six-piano forte comparison and asked to ship it
+without lowering piano levels. Both clips played three chords at MIDI 80,
+110 and 127. A used the previous factory Output of 0.70. B drove the same
+instrument at 0.35 and used one level match per piano for its moderate
+strikes. The same export gain was then applied to A and B within each piano.
+The owner’s choice was “B is indeed better, ship it”.
+
+0.4.11 makes the half-drive response available at factory Output 0.70 and
+restores 6.02 dB after the original guard. An additional short gain curve
+catches peaks above the sample ceiling. The decision favors the stronger
+forte response, including chords above 0 VU on a meter with 12 dB offset.
+The selected Mechanics position is 0.4 and the Belmont Grand factory
+Brightness is 0.75. [Measurements](validation/forte-response-2026-11-02.md).

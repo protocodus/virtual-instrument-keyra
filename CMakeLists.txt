@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.7 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.11 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -257,6 +257,18 @@ if(BUILD_TESTING)
     target_link_libraries(KeyraEngineTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.Engine COMMAND KeyraEngineTests)
 
+    add_executable(KeyraForteOutputTests Tests/forte_output_tests.cpp)
+    target_include_directories(KeyraForteOutputTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraForteOutputTests PRIVATE cxx_std_17)
+    add_test(NAME Keyra.ForteOutput COMMAND KeyraForteOutputTests)
+    set_tests_properties(Keyra.ForteOutput PROPERTIES LABELS unit)
+
+    # Observe both ends of the shared damper in one test translation unit.
+    add_executable(KeyraDamperInteractionTests Tests/damper_interaction_tests.cpp)
+    target_include_directories(KeyraDamperInteractionTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraDamperInteractionTests PRIVATE cxx_std_17)
+    add_test(NAME Keyra.DamperInteraction COMMAND KeyraDamperInteractionTests)
+
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.ParameterExtremes COMMAND KeyraParameterExtremesTests)
@@ -302,6 +314,19 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.YamahaCorpusImport
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_yamaha_c3_import.py")
+        add_test(NAME Keyra.BelmontMeasurementFreshness
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_realtime_modal.py"
+                         --model belmont
+                         --measurements "${CMAKE_CURRENT_SOURCE_DIR}/Tools/measurements/belmont-2026-11-02.json.gz"
+                         --header "${CMAKE_CURRENT_SOURCE_DIR}/Source/DSP/MeasuredBelmontData.h"
+                         --metadata "${CMAKE_CURRENT_SOURCE_DIR}/Docs/research/belmont-stored-numbers-2026-11-02.json"
+                         --check)
+        set_tests_properties(Keyra.BelmontMeasurementFreshness PROPERTIES LABELS unit TIMEOUT 60)
+        add_test(NAME Keyra.FactoryDynamicsContract
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_factory_dynamics.py")
+        set_tests_properties(Keyra.FactoryDynamicsContract PROPERTIES LABELS unit TIMEOUT 60)
     endif()
 
     # Required in the primary Linux CI job. An explicit option keeps the
@@ -312,6 +337,8 @@ if(BUILD_TESTING)
             message(FATAL_ERROR "Model validation native probes require a GCC/Clang compiler driver")
         endif()
         find_program(KEYRA_MODEL_CXX NAMES c++ REQUIRED)
+        find_program(KEYRA_MODEL_FFMPEG NAMES ffmpeg REQUIRED)
+        find_program(KEYRA_MODEL_FFPROBE NAMES ffprobe REQUIRED)
         execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import numpy; import scipy"
                         RESULT_VARIABLE KEYRA_MODEL_PYTHON_RESULT
                         ERROR_VARIABLE KEYRA_MODEL_PYTHON_ERROR
@@ -330,6 +357,22 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
+        add_test(NAME Keyra.ComponentWarmStart
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_component_warm_start.py")
+        add_test(NAME Keyra.IncrementalMeasurements
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_incremental_measurements.py")
+        add_test(NAME Keyra.MeasurementSourceProvenance
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_source_provenance.py"
+                         --decoder-dir "${CMAKE_CURRENT_SOURCE_DIR}/Tools")
+        add_test(NAME Keyra.MeasurementSnapshots
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_measurement_snapshots.py")
+        add_test(NAME Keyra.MeasurementOutputSafety
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_measurement_output_safety.py")
         add_test(NAME Keyra.SoftLaneContinuity
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_soft_lane_continuity.py")
@@ -361,13 +404,16 @@ if(BUILD_TESTING)
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
-                             Keyra.RateInterpolation Keyra.SoftLaneContinuity Keyra.TubeOutputCalibration
+                             Keyra.RateInterpolation Keyra.ComponentWarmStart
+                             Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
+                             Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety
+                             Keyra.SoftLaneContinuity Keyra.TubeOutputCalibration
                              Keyra.LiveControlSmoothing Keyra.BuildControlSmoothing
                              Keyra.QualityAuditContract Keyra.QualityRetention Keyra.ReleaseBalance
                              Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
                              Keyra.KeyboardMetricContract
                              PROPERTIES TIMEOUT 600
-                             ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
+                             ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};KEYRA_MODEL_FFMPEG=${KEYRA_MODEL_FFMPEG};KEYRA_MODEL_FFPROBE=${KEYRA_MODEL_FFPROBE};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     else()
         message(STATUS "Numerical model validation disabled; enable KEYRA_ENABLE_MODEL_VALIDATION_TESTS for the required Linux CI tier")
     endif()
@@ -383,6 +429,16 @@ if(BUILD_TESTING)
         # out of the red (Tools/KeyraLevels.cpp).
         add_test(NAME Keyra.Levels COMMAND KeyraLevels --check --jobs 4)
         set_tests_properties(Keyra.Levels PROPERTIES TIMEOUT 900 LABELS audio)
+        if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
+            # Run a single fresh factory audit in the required Linux audio
+            # tier, retaining the same CSV the row-by-row checker inspected.
+            add_test(NAME Keyra.FactoryDynamics
+                     COMMAND "${Python3_EXECUTABLE}" -B
+                             "${CMAKE_CURRENT_SOURCE_DIR}/Tools/check_factory_dynamics.py"
+                             --renderer "$<TARGET_FILE:KeyraLevels>" --jobs 4
+                             --output "${CMAKE_CURRENT_BINARY_DIR}/factory-dynamics.csv")
+            set_tests_properties(Keyra.FactoryDynamics PROPERTIES LABELS audio TIMEOUT 900)
+        endif()
         # U7: the preset demos timed on one thread against the budget in
         # Tools/RenderPresetDemos.cpp. Timing means nothing instrumented.
         if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT KEYRA_ENABLE_SANITIZERS)

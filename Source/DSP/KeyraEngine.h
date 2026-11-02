@@ -108,9 +108,8 @@ public:
   // Channel0 returns maxima across all channels;1..16 return one channel.
   PedalState pedalState(int channel=0) const noexcept;
   void process(float* left,float* right,int frames) noexcept;
-  // How late the output is: the shared output stage's look-ahead
-  // (Source/DSP/OutputStage.h), 2 ms at the prepared rate. Front ends report
-  // it to the host.
+  // Total look-ahead of the piano output stage at the prepared rate.
+  // Front ends report this frame count to the host.
   int outputLatencySamples() const noexcept;
   // Offline diagnostic: fixed 2ms rise versus training-recording rise. This
   // changes only future strikes; it is deliberately absent from product UIs.
@@ -122,6 +121,8 @@ public:
 private:
   struct Impl;
   std::unique_ptr<Impl> impl;
+  // The native damper test compares the direct and sympathetic string state.
+  friend struct DamperTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
