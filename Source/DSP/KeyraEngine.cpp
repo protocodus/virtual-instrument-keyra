@@ -536,8 +536,8 @@ struct NoiseBand {
 struct Voice {
   std::array<Partial,maxPartials> partials{};
   int count=0,note=60,channel=0;
-  std::uint64_t serial=0,struckClock=0;
-  double damper=0,contact=0,appliedContact=-1,appliedMute=-1,pendingToneScale=1,pendingNoiseScale=1;
+  std::uint64_t serial=0;
+  double damper=0,contact=0,appliedContact=-1,appliedMute=-1;
   bool active=false,retune=false;
 };
 struct Channel {
@@ -1079,6 +1079,7 @@ struct Engine::Impl {
   std::uint64_t clock=0; // samples processed since reset, asleep or not
   std::uint64_t receiverClock=0; // last receiver position update while asleep
   std::uint64_t lastStrikeClock=0;
+  bool crowded=false;
   bool legacyAttack=false,steady=false;
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset
   bool sleeping=true;
@@ -1775,8 +1776,8 @@ struct Engine::Impl {
       }
     }
     auto& voice=voices[chosen];voice.active=true;voice.note=note;voice.channel=ch;
-    voice.count=0;voice.serial=++serial;voice.struckClock=clock;voice.damper=0;voice.contact=0;voice.retune=false;
-    voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;voice.pendingToneScale=1;voice.pendingNoiseScale=1;
+    voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
+    voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
     // The soft pedal works through the action. A grand's shifts the hammers
     // so that each meets fewer strings (una corda: `soft` below). An
     // upright's moves them toward the strings (half-blow): at full pedal a
@@ -1828,15 +1829,18 @@ struct Engine::Impl {
       const double rawToneDb=keyToneDb[p][note-21];
       x.toneDb=note>=96?(rawToneDb>0?rawToneDb*(1.-curMute):rawToneDb):0.;
     }
+    // Above C7 the trim goes in with the partials' levels (`Side::toneDb`);
+    // below it scales the finished voice and its noise burst.
+    double toneScale=1.,noiseScale=1.;
     if(note<96){
       const double curMute=std::max(parameters.mute,channel.mute);
       double tDb=fold(hammers,[&](int p){return keyToneDb[p][note-21];},pick);
       if(note>=firstHalo&&tDb>0)tDb*=1.-curMute;
-      voice.pendingToneScale=std::pow(10.,tDb/20);
+      toneScale=std::pow(10.,tDb/20);
       if(note>88){
         constexpr double nSlope[pianoCount]{0.,0.,.22,.18,.20,.42};
         const double nTrimDb=-fold(board,[&](int p){return (note-88)*nSlope[p];},pick);
-        voice.pendingNoiseScale=std::pow(10.,nTrimDb/20);
+        noiseScale=std::pow(10.,nTrimDb/20);
       }
     }
     channel.struck[note-21]=clock;
@@ -1856,8 +1860,13 @@ struct Engine::Impl {
     // The body's knock: on each piano, levels between the two pitches like the
     // partials', growing with the level the strike's layer plays at, phases
     // from the nearer pitch; between the pianos by the soundboard's build.
-    const double lateCrowdGain=!steady&&serial>1&&ringing&&clock>lastStrikeClock&&clock<lastStrikeClock+static_cast<std::uint64_t>(1.2*sampleRate)?.78:1.;
-    lastStrikeClock=clock;
+    // A chord is one event: every note struck since the last process() call
+    // shares the verdict of the first, whatever the order they arrive in.
+    if(clock!=lastStrikeClock){
+      crowded=serial>1&&ringing&&clock<lastStrikeClock+static_cast<std::uint64_t>(1.2*sampleRate);
+      lastStrikeClock=clock;
+    }
+    const double lateCrowdGain=!steady&&crowded?.78:1.;
     constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28,.42};
     int modes[pianoCount];
     for(int p=0;p<pianoCount;++p)modes[p]=models[p].bodyModeCount;
@@ -2094,34 +2103,19 @@ struct Engine::Impl {
         updateWeights(x);}}
     if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
     if(voice.count==0)voice.active=false;
-  }
-  void resolvePendingTone() noexcept {
-    for(std::size_t i=0;i<voices.size();++i){
-      auto& v=voices[i];
-      if(!v.active||(v.pendingToneScale==1.&&v.pendingNoiseScale==1.))continue;
-      int sameClock=0;
-      for(const auto& other:voices)if(other.active&&other.struckClock==v.struckClock)++sameClock;
-      if(sameClock==1){
-        const double s=v.pendingToneScale;
-        if(s!=1.){
-          const float sf=static_cast<float>(s);const double s2=s*s;
-          for(int k=0;k<v.count;++k){auto& x=v.partials[k];
-            for(int j=0;j<lanes;++j){
-              x.baseLeftRe[j]*=sf;x.baseLeftIm[j]*=sf;
-              x.baseRightRe[j]*=sf;x.baseRightIm[j]*=sf;
-              x.energyWeight[j]*=s2;}
-            updateWeights(x);}
-        }
-        const double ns=v.pendingNoiseScale;
-        if(ns!=1.){
-          for(auto& b:bursts)if(b.active&&b.serial==v.serial){
-            for(int k=0;k<noiseBands;++k){
-              b.left[k]*=ns;b.right[k]*=ns;b.slowLeft[k]*=ns;b.slowRight[k]*=ns;
-              b.knockLeft[k]*=ns;b.knockRight[k]*=ns;}
-          }
-        }
-      }
-      v.pendingToneScale=1.;v.pendingNoiseScale=1.;
+    if(toneScale!=1.){
+      const float sf=static_cast<float>(toneScale);const double s2=toneScale*toneScale;
+      for(int k=0;k<voice.count;++k){auto& x=voice.partials[k];
+        for(int j=0;j<lanes;++j){
+          x.baseLeftRe[j]*=sf;x.baseLeftIm[j]*=sf;
+          x.baseRightRe[j]*=sf;x.baseRightIm[j]*=sf;
+          x.energyWeight[j]*=s2;}
+        updateWeights(x);}
+    }
+    if(noiseScale!=1.){
+      for(int k=0;k<noiseBands;++k){
+        burst.left[k]*=noiseScale;burst.right[k]*=noiseScale;burst.slowLeft[k]*=noiseScale;burst.slowRight[k]*=noiseScale;
+        burst.knockLeft[k]*=noiseScale;burst.knockRight[k]*=noiseScale;}
     }
   }
   // Below Full, retain a slot if its peak or diagonal held-energy proxy can
@@ -2682,7 +2676,7 @@ void Engine::reset() noexcept {
   // A hard reset starts the current build afresh, even if a live model
   // change had not finished gliding its pickups. Live changes still glide.
   p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
-  p.serial=0;p.frame=0;p.clock=0;p.receiverClock=0;p.lastStrikeClock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
+  p.serial=0;p.frame=0;p.clock=0;p.receiverClock=0;p.lastStrikeClock=0;p.crowded=false;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.silenceTube();
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
@@ -2800,7 +2794,6 @@ float responseVelocity(Piano piano,float velocity) noexcept {
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;
-  p.resolvePendingTone();
   p.clock+=static_cast<std::uint64_t>(frames);
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);

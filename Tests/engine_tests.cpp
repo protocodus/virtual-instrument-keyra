@@ -266,6 +266,23 @@ int main(int argc,char** argv){
     check(played==twice(false),"an engine from its start replays the same strikes");
   }
   {
+    // A chord is the sum of its notes: every note of one struck together plays
+    // its per-key level trim and its crowding verdict exactly as it does alone.
+    // What remains is the shared body and output stage, well under the
+    // 1-2 dB trims a dropped trim leaves (-28 dB).
+    constexpr std::array<int,15> notes{38,42,45,50,53,57,61,66,70,75,79,83,87,91,94};
+    auto played=[](const int* first,int count){keyra::Engine e;e.setParameters(dry());e.setSteadyStrikesForMeasurement(true);
+      for(int i=0;i<count;++i)e.noteOn(first[i],80/127.f);return render(e,96000);};
+    const Audio chord=played(notes.data(),static_cast<int>(notes.size()));
+    Audio sum(chord.size());
+    for(std::size_t i=0;i<notes.size();++i){const Audio one=played(&notes[i],1);for(std::size_t k=0;k<sum.size();++k)sum[k]+=one[k];}
+    double error=0,total=0;
+    for(std::size_t k=0;k<sum.size();++k){const double d=chord[k]-sum[k];error+=d*d;total+=static_cast<double>(sum[k])*sum[k];}
+    const double residualDb=10*std::log10(error/total);
+    std::cout<<"chord_against_sum_of_notes_db="<<residualDb<<'\n';
+    check(residualDb<-35,"a chord struck at once is the sum of its notes struck alone");
+  }
+  {
     // Below full quality a strike leaves out only what no band of the note
     // hears (keepAudible). Over every third key at velocities 40, 80, 110 and
     // 127 these keys' bands changed the most, each piano's at each quality:
