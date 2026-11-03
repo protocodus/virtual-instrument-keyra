@@ -2479,8 +2479,8 @@ ring's crowding reduction likewise went to the first note of a chord alone,
 whichever note that was. A fifteen-note chord (`Keyra.Engine`, fifteen
 keys from D2 to A♯6 at velocity 80) summed to its notes struck alone to
 −29 dB; with the trim applied at the strike and one crowding verdict per
-chord it does to −38 dB, and the test pins it at −35 dB. Single notes are
-byte-identical to 0.4.13.
+chord it does to −38 dB, and the test pins it at −35 dB. The fix itself leaves
+single notes byte-identical to 0.4.13; the re-pin below is what changes them.
 
 The chords of the demos and of `KeyraLevels` now read lower: typical playing on
 the default controls −0.04 dB on the grand, −0.27 on the upright and −0.48 on
