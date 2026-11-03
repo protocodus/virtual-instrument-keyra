@@ -250,7 +250,7 @@ constexpr Model models[]{
    // no fade and no pedal recordings. Measured as the grand's, at a velocity-80
    // note's C2, C4 and C6: the key landing 37, 29 and 25 dB under and a key let
    // go half a second on 37, 28 and 24 dB under (grand: 35, 33, 27 and 36, 36, 28).
-   -10.3,1,1,0,0,0,-10.3,
+   -10.3,1,1,1.8,0,0,-10.3,
    // Its rises are capped at the hammer's contact, as the upright's.
    .002,
    .305f,.282f,
@@ -271,7 +271,7 @@ constexpr Model models[]{
    // _Up), which the fit does not use yet. Measured as the grand's, at a
    // velocity-80 note's C2, C4 and C6: the key landing 41, 43 and 37 dB under
    // and a key let go half a second on 33, 35 and 30 dB under.
-   -2.5,1,1,0,0,0,-2.5,
+   -2.5,1,1,1.8,0,0,-2.5,
    // Its rises are capped at the hammer's contact, as the upright's.
    .002,
    .415f,.318f,
@@ -293,7 +293,7 @@ constexpr Model models[]{
    // velocity/127, and the notes' layers are levelled by that curve in
    // decoding (Tools/decode_belmont.py). Its pedal noises are the first take
    // of five each way.
-   -3.52,1,1,0,-3.52,-3.52,-3.52,
+   -3.52,1,1,1.8,-3.52,-3.52,-3.52,
    // Its rises are capped at the hammer's contact, as the upright's.
    .002,
    belmont::openStringRate,belmont::openStringRateSlope,
@@ -536,8 +536,8 @@ struct NoiseBand {
 struct Voice {
   std::array<Partial,maxPartials> partials{};
   int count=0,note=60,channel=0;
-  std::uint64_t serial=0;
-  double damper=0,contact=0,appliedContact=-1,appliedMute=-1;
+  std::uint64_t serial=0,struckClock=0;
+  double damper=0,contact=0,appliedContact=-1,appliedMute=-1,pendingToneScale=1,pendingNoiseScale=1;
   bool active=false,retune=false;
 };
 struct Channel {
@@ -933,15 +933,26 @@ double keyPitch(const Model& model,int note) noexcept {
 // A key's stiffness B, between the recorded pitches around it like its pitch.
 double keyStiffness(const Model& model,int note) noexcept {
   const int upper=upperAnchor(model,note);
-  const auto& a=model.anchors[upper-1];const auto& b=model.anchors[upper];
-  return std::exp(mix(std::log(a.B),std::log(b.B),static_cast<double>(note-a.note)/(b.note-a.note)));
+  if(note<96){
+    const auto& a=model.anchors[upper-1];const auto& b=model.anchors[upper];
+    return std::exp(mix(std::log(a.B),std::log(b.B),static_cast<double>(note-a.note)/(b.note-a.note)));
+  }
+  const auto valid=[](const measured::Anchor& x){return x.count>=2||x.B>.0002f;};
+  int hi=upper,lo=hi-1;
+  while(lo>0&&!valid(model.anchors[lo]))--lo;
+  while(hi<model.anchorCount-1&&!valid(model.anchors[hi]))++hi;
+  if(!valid(model.anchors[hi])&&lo>0){hi=lo;--lo;while(lo>0&&!valid(model.anchors[lo]))--lo;}
+  const auto& a=model.anchors[lo];const auto& b=model.anchors[hi];
+  const double t=b.note>a.note?std::max(0.,std::min(1.5,static_cast<double>(note-a.note)/(b.note-a.note))):0.;
+  return std::exp(mix(std::log(a.B),std::log(b.B),t));
 }
+constexpr int maxAnchors=32,keyCount=88;
 // A strike as one measured piano would play it: where on its layers, the
 // recorded pitches around the key and how far between them, what it sets
 // from them, and the scale (dB) that brings its levels to the output's.
 struct Side {
   const Model* m=nullptr;const measured::Anchor *a=nullptr,*b=nullptr;int upper=1;
-  double v=0,t=0,layerDb=0,colourDb=0,shortestRise=0,contact=0,scaleDb=0;
+  double v=0,t=0,layerDb=0,colourDb=0,shortestRise=0,contact=0,scaleDb=0,toneDb=0;
 };
 // One piano's knock of the action on the body: its two recorded pitches'
 // knocks on its `count` modes (none for a piano without them), how far
@@ -951,6 +962,9 @@ struct ActionSide {const measured::ActionKnock *x=nullptr,*y=nullptr;double t=0,
 
 struct Engine::Impl {
   std::array<Voice,maxVoices> voices{};
+  std::array<std::array<double,keyCount>,pianoCount> keyToneDb{};
+  std::array<std::array<double,maxAnchors>,pianoCount> actionAnchorGainDb{};
+  std::array<std::array<float,maxAnchors*halo>,pianoCount> haloLevelDb{};
   // The built piano's parts that ring between strikes (assemble()): each
   // undamped string, the body's modes and their rises, and the board's noise
   // bands' left/right coherence.
@@ -1684,15 +1698,25 @@ struct Engine::Impl {
   int series(const Side& x,int p) noexcept {
     const Model& m=*x.m;const auto* cache=&partialLanes[m.partialFirst];
     int i=x.a->first,j=x.b->first,n=0;const int ia=i+x.a->count,jb=j+x.b->count;
+    const bool singleTop=p>=2&&(x.a->count==1||x.b->count==1)&&x.a->note>=96;
     while((i<ia||j<jb)&&n<2*maxPartials){
       const int oa=i<ia?m.partials[i].order:1<<30,ob=j<jb?m.partials[j].order:1<<30;
       auto& d=seriesData[p][n];auto& weight=seriesWeight[p][n];
       if(oa==ob){
         const std::array<int,lanes> pair{cache[i].pair[0],cache[i].pair[1],cache[i].pair[2],cache[i].pair[3]};
         d=blend(single(m,m.partials[i],cache[i],x.v),single(m,m.partials[j],cache[j],x.v),x.t,pair);weight=1;++i;++j;
-      }else if(oa<ob){d=single(m,m.partials[i],cache[i],x.v);weight=1-x.t;++i;}
-      else{d=single(m,m.partials[j],cache[j],x.v);weight=x.t;++j;}
-      for(auto& l:d.lane)l.level+=x.scaleDb;
+      }else if(oa<ob){
+        d=single(m,m.partials[i],cache[i],x.v);
+        weight=singleTop?std::max(.55,1-.45*x.t):1-x.t;
+        if(singleTop)for(int k=0;k<lanes;++k)d.lane[k].softBias=softBiasAtRank(k);
+        ++i;
+      }else{
+        d=single(m,m.partials[j],cache[j],x.v);
+        weight=singleTop?std::max(.55,.55+.45*x.t):x.t;
+        if(singleTop)for(int k=0;k<lanes;++k)d.lane[k].softBias=softBiasAtRank(k);
+        ++j;
+      }
+      for(auto& l:d.lane)l.level+=x.scaleDb+x.toneDb;
       ++n;
     }
     return n;
@@ -1751,8 +1775,8 @@ struct Engine::Impl {
       }
     }
     auto& voice=voices[chosen];voice.active=true;voice.note=note;voice.channel=ch;
-    voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
-    voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
+    voice.count=0;voice.serial=++serial;voice.struckClock=clock;voice.damper=0;voice.contact=0;voice.retune=false;
+    voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;voice.pendingToneScale=1;voice.pendingNoiseScale=1;
     // The soft pedal works through the action. A grand's shifts the hammers
     // so that each meets fewer strings (una corda: `soft` below). An
     // upright's moves them toward the strings (half-blow): at full pedal a
@@ -1800,6 +1824,20 @@ struct Engine::Impl {
       x.shortestRise=std::exp(mix(onsetRiseAt(m,*x.a,x.v),onsetRiseAt(m,*x.b,x.v),x.t));
       x.contact=m.contactTime*std::pow(2.,-(note-60)/24.);
       x.scaleDb=20*std::log10(m.outputScale);
+      const double curMute=std::max(parameters.mute,channel.mute);
+      const double rawToneDb=keyToneDb[p][note-21];
+      x.toneDb=note>=96?(rawToneDb>0?rawToneDb*(1.-curMute):rawToneDb):0.;
+    }
+    if(note<96){
+      const double curMute=std::max(parameters.mute,channel.mute);
+      double tDb=fold(hammers,[&](int p){return keyToneDb[p][note-21];},pick);
+      if(note>=firstHalo&&tDb>0)tDb*=1.-curMute;
+      voice.pendingToneScale=std::pow(10.,tDb/20);
+      if(note>88){
+        constexpr double nSlope[pianoCount]{0.,0.,.22,.18,.20,.42};
+        const double nTrimDb=-fold(board,[&](int p){return (note-88)*nSlope[p];},pick);
+        voice.pendingNoiseScale=std::pow(10.,nTrimDb/20);
+      }
     }
     channel.struck[note-21]=clock;
     const double f1=builtPitch(note),B=builtStiffness(note);
@@ -1820,6 +1858,7 @@ struct Engine::Impl {
     // from the nearer pitch; between the pianos by the soundboard's build.
     const double lateCrowdGain=!steady&&serial>1&&ringing&&clock>lastStrikeClock&&clock<lastStrikeClock+static_cast<std::uint64_t>(1.2*sampleRate)?.78:1.;
     lastStrikeClock=clock;
+    constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28,.42};
     int modes[pianoCount];
     for(int p=0;p<pianoCount;++p)modes[p]=models[p].bodyModeCount;
     for(int k=0;k<bodyModeCount;++k){
@@ -1828,8 +1867,9 @@ struct Engine::Impl {
         const bool knocked=betweenPianos(board,k,modes,[&](int p,double& l,double& ph){
           const auto& x=sides[p];const Model& m=*x.m;
           const auto& a=m.knocks[(x.upper-1)*m.bodyModeCount+k];const auto& b=m.knocks[x.upper*m.bodyModeCount+k];
+          const double topTrim=note>=96?(note-88)*topBodySlope[p]:0.;
           l=(late?mix(a.slowLevelDb,b.slowLevelDb,x.t)+mix(a.slowSlopeDb,b.slowSlopeDb,x.t)*x.layerDb
-                 :mix(a.levelDb,b.levelDb,x.t)+mix(a.slopeDb,b.slopeDb,x.t)*x.layerDb)+x.scaleDb;
+                 :mix(a.levelDb,b.levelDb,x.t)+mix(a.slopeDb,b.slopeDb,x.t)*x.layerDb)+x.scaleDb-topTrim;
           ph=late?(x.t<.5?a.slowPhase:b.slowPhase):(x.t<.5?a.phase:b.phase);},level,phase);
         if(!knocked)continue;
         const double amplitude=std::pow(10.,level/20)*softGain*restrikeBodyGain*(late?lateCrowdGain:1.);
@@ -1861,16 +1901,20 @@ struct Engine::Impl {
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
       if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
       const double order=std::max(1.,haloHz[j]/f1);
-      double level[pianoCount]{};
+      double level[pianoCount]{},promptLevel[pianoCount]{};
       for(int p=0;p<pianoCount;++p){if(!(hammers[p]>0))continue;
         const auto& x=sides[p];const Model& m=*x.m;
-        level[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)
-                 +(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*x.layerDb+x.scaleDb;}
-      const double amplitude=std::pow(10.,fold(hammers,[&](int p){return level[p];},pick)/20)*softGain*std::exp(-soft*.115*(order-1))
-                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)))*(1+.12*pedalOpenness)*(1-.35*restrikeRatio);
+        const double slope=(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*x.layerDb+x.scaleDb;
+        level[p]=mix(haloLevelDb[p][(x.upper-1)*halo+j],haloLevelDb[p][x.upper*halo+j],x.t)+slope;
+        promptLevel[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)+slope;}
+      const double haloTint=softGain*std::exp(-soft*.115*(order-1))
+                            *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)))*(1-.35*restrikeRatio);
+      const double baseAmp=std::pow(10.,fold(hammers,[&](int p){return level[p];},pick)/20)*haloTint;
+      const double promptAmp=std::pow(10.,fold(hammers,[&](int p){return promptLevel[p];},pick)/20)*haloTint;
+      const double amplitude=baseAmp*(1+.12*pedalOpenness);
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.),cp=std::cos(phase),sp=std::sin(phase);
       auto& string=haloRing[j];string.q+=amplitude*cp;string.p+=amplitude*sp;
-      const double prompt=haloPromptGain[j]*amplitude;
+      const double prompt=haloPromptGain[j]*promptAmp+std::max(0.,promptAmp-amplitude);
       auto& first=haloPrompt[j];first.q+=prompt*cp;first.p+=prompt*sp;
     }
     // The board's noise: each band's density between the pitches like the
@@ -1880,19 +1924,22 @@ struct Engine::Impl {
     // between a pitch that measures it and one that cannot plays it as far as
     // it lies towards the first. The strike's knock sounds from contact too,
     // falling at its pitch's own rate.
+    constexpr double topNoiseSlope[pianoCount]{0.,0.,.22,.18,.20,.45};
     auto& burst=claimBurst();
     for(int k=0;k<noiseBands;++k){
       double density[pianoCount]{},slow[pianoCount]{},balance[pianoCount]{},rate[pianoCount]{},slowRate[pianoCount]{},
              knock[pianoCount]{},knockBalance[pianoCount]{},knockRate[pianoCount]{};
+      const bool subF1=note>=96&&grand::noiseBands[k].hz<.75*f1;
       for(int p=0;p<pianoCount;++p){if(!(board[p]>0))continue;
         const auto& x=sides[p];const Model& m=*x.m;
         const auto& a=m.noise[(x.upper-1)*noiseBands+k];const auto& b=m.noise[x.upper*noiseBands+k];
-        density[p]=mix(levelAt(m,a.densityDb.data(),x.v),levelAt(m,b.densityDb.data(),x.v),x.t)+x.scaleDb;
+        const double nTrim=note>=96&&p>0?(note-88)*topNoiseSlope[p]+(subF1?4.:0.):0.;
+        density[p]=mix(levelAt(m,a.densityDb.data(),x.v),levelAt(m,b.densityDb.data(),x.v),x.t)+x.scaleDb-nTrim;
         slow[p]=mix(std::pow(10.,levelAt(m,a.slowDensityDb.data(),x.v)/20),
-                    std::pow(10.,levelAt(m,b.slowDensityDb.data(),x.v)/20),x.t)*std::pow(10.,x.scaleDb/20);
+                    std::pow(10.,levelAt(m,b.slowDensityDb.data(),x.v)/20),x.t)*std::pow(10.,(x.scaleDb-nTrim)/20);
         balance[p]=mix(a.balanceDb,b.balanceDb,x.t);
         rate[p]=mix(std::log(a.rate),std::log(b.rate),x.t);slowRate[p]=mix(std::log(a.slowRate),std::log(b.slowRate),x.t);
-        knock[p]=mix(levelAt(m,a.knockDensityDb.data(),x.v),levelAt(m,b.knockDensityDb.data(),x.v),x.t)+x.scaleDb;
+        knock[p]=mix(levelAt(m,a.knockDensityDb.data(),x.v),levelAt(m,b.knockDensityDb.data(),x.v),x.t)+x.scaleDb-nTrim;
         knockBalance[p]=mix(a.knockBalanceDb,b.knockBalanceDb,x.t);knockRate[p]=mix(std::log(a.knockRate),std::log(b.knockRate),x.t);
       }
       const double order=std::max(1.,grand::noiseBands[k].hz/f1);
@@ -1923,7 +1970,7 @@ struct Engine::Impl {
     for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p):0;
     const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)]
                               +.35*strings[static_cast<int>(Piano::belmont)];
-    const double pedalUnload=(.28-.10*pedaledShare)*pedalOpenness;
+    const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
     const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
     while(voice.count<maxPartials){
@@ -1953,7 +2000,7 @@ struct Engine::Impl {
       setDamper(partial);
       partial.tintScale=std::min(4.,std::log2(static_cast<double>(order)));
       partial.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
-      const double orderRing=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload/(1+.12*(order-1));
+      const double orderRing=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload/(1+.00025*std::max(0.,frequency-261.63));
       double peak=0;
       for(int k=0;k<lanes;++k){const auto& l=d.lane[k];
         const double amplitude=std::pow(10.,l.level/20)*felt*(1+soft*l.softBias);
@@ -2022,7 +2069,7 @@ struct Engine::Impl {
         for(int e=anchor.extraFirst;e<anchor.extraFirst+anchor.extraCount;++e){
           const auto& extra=m.extras[e];const double frequency=place(extra);
           if(pitchShare[q]<=0||frequency>highest)continue;
-          LaneData l=laneAt(m,extra.lane,extraLanes[m.extraFirst+e],x.v);l.level+=20*std::log10(pitchShare[q])+x.scaleDb;
+          LaneData l=laneAt(m,extra.lane,extraLanes[m.extraFirst+e],x.v);l.level+=20*std::log10(pitchShare[q])+x.scaleDb+x.toneDb;
           int at=found++;
           while(at>0&&components[at-1].frequency>frequency){components[at]=components[at-1];--at;}
           components[at]={frequency,static_cast<double>(extra.order),l};
@@ -2047,6 +2094,35 @@ struct Engine::Impl {
         updateWeights(x);}}
     if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
     if(voice.count==0)voice.active=false;
+  }
+  void resolvePendingTone() noexcept {
+    for(std::size_t i=0;i<voices.size();++i){
+      auto& v=voices[i];
+      if(!v.active||(v.pendingToneScale==1.&&v.pendingNoiseScale==1.))continue;
+      int sameClock=0;
+      for(const auto& other:voices)if(other.active&&other.struckClock==v.struckClock)++sameClock;
+      if(sameClock==1){
+        const double s=v.pendingToneScale;
+        if(s!=1.){
+          const float sf=static_cast<float>(s);const double s2=s*s;
+          for(int k=0;k<v.count;++k){auto& x=v.partials[k];
+            for(int j=0;j<lanes;++j){
+              x.baseLeftRe[j]*=sf;x.baseLeftIm[j]*=sf;
+              x.baseRightRe[j]*=sf;x.baseRightIm[j]*=sf;
+              x.energyWeight[j]*=s2;}
+            updateWeights(x);}
+        }
+        const double ns=v.pendingNoiseScale;
+        if(ns!=1.){
+          for(auto& b:bursts)if(b.active&&b.serial==v.serial){
+            for(int k=0;k<noiseBands;++k){
+              b.left[k]*=ns;b.right[k]*=ns;b.slowLeft[k]*=ns;b.slowRight[k]*=ns;
+              b.knockLeft[k]*=ns;b.knockRight[k]*=ns;}
+          }
+        }
+      }
+      v.pendingToneScale=1.;v.pendingNoiseScale=1.;
+    }
   }
   // Below Full, retain a slot if its peak or diagonal held-energy proxy can
   // come within dropDb of the strongest at ANY Brightness in [0,1]. Testing
@@ -2147,9 +2223,12 @@ struct Engine::Impl {
       const int upper=upperAnchor(m,note);
       const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
       const auto* x=m.releaseKnocks+(upper-1)*m.bodyModeCount;
-      sides[p]={x,x+m.bodyModeCount,std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note))),
+      const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
+      const double muteScale=1.-std::max(parameters.mute,channel.mute);
+      sides[p]={x,x+m.bodyModeCount,t,
                 m.releaseDb+20*std::log10(trackingGain(m.releaseTracking,v)/trackingGain(m.noteTracking,v))
-                -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale)+channel.releaseCapDb[p][key],m.bodyModeCount};
+                -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale)+channel.releaseCapDb[p][key]
+                +muteScale*mix(actionAnchorGainDb[p][upper-1],actionAnchorGainDb[p][upper],t),m.bodyModeCount};
     }
     actionKnock(sides);
   }
@@ -2180,11 +2259,12 @@ struct Engine::Impl {
   // and order.
   void liftDampers(float level) noexcept {
     const Model& g=models[static_cast<int>(Piano::grand)];
-    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];});
+    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];})
+                            +.35*share.action[static_cast<int>(Piano::belmont)];
     if(grandShare<=0||!(parameters.mechanics>0))return;
     wake();
     const double target=1-dampersLift*level;
-    const double scale=parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(grandShare)
+    const double scale=1.68*parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(grandShare)
                        /(Parameters{}.resonance*.35);
     for(int i=0;i<damped;++i){
       bool held=false;for(const auto& c:channels)held=held||c.presses[i]>0||c.captured[i];
@@ -2195,6 +2275,151 @@ struct Engine::Impl {
         setLane(bank.re,j,lane(bank.re,j)+openLiftRe[k]*liftingScale);
         setLane(bank.im,j,lane(bank.im,j)+openLiftIm[k]*liftingScale);
         if(!bank.active){bank.active=true;steerOpen(bank,k/lanes,openness[i]);}
+      }
+    }
+  }
+  void initCalibrations() noexcept {
+    std::array<std::array<double,keyCount>,pianoCount> rawKeyDb{};
+    for(int p=0;p<pianoCount;++p){
+      const Model& m=models[p];
+      const double scaleDb=20*std::log10(m.outputScale);
+      const double v=p==2?80.:responseAt(m,85.);
+      for(int k=0;k<keyCount;++k){
+        const int note=21+k;
+        const int upper=upperAnchor(m,note);
+        const auto& ancA=m.anchors[upper-1];const auto& ancB=m.anchors[upper];
+        const double t=std::max(0.,std::min(1.,static_cast<double>(note-ancA.note)/(ancB.note-ancA.note)));
+        Side x{&m,&ancA,&ancB,upper,v,t,0.,0.,0.,0.,scaleDb,0.};
+        const int count=series(x,p);
+        double pwr=1e-18;
+        for(int j=0;j<count;++j){
+          const double w=seriesWeight[p][j];
+          pwr+=windowPower(seriesData[p][j])*w*w;
+        }
+        for(int q=0;q<2;++q){
+          const double sharePwr=q?t:1.-t;
+          if(sharePwr<=0)continue;
+          const auto& anchor=q?ancB:ancA;
+          for(int e=anchor.extraFirst;e<anchor.extraFirst+anchor.extraCount;++e){
+            PartialData ed{};ed.lane[0]=laneAt(m,m.extras[e].lane,extraLanes[m.extraFirst+e],v);
+            ed.lane[0].level+=scaleDb;
+            for(int j=1;j<lanes;++j)ed.lane[j].level=-300.;
+            pwr+=windowPower(ed)*sharePwr;
+          }
+        }
+        rawKeyDb[p][k]=10*std::log10(pwr);
+      }
+      for(int k=0;k<keyCount;++k){
+        const int note=21+k;
+        if(note>95)continue;
+        const bool isCalKey=(k%4==0);
+        if(p==0&&isCalKey){keyToneDb[p][k]=0.;continue;}
+        if((p==1||p==2||p==4)&&isCalKey&&note<77){keyToneDb[p][k]=p==1?-.02:(p==2?.035:0.);continue;}
+        double wSum=0,vSum=0;
+        const double sigma=isCalKey?3.0:2.6;
+        for(int b=0;b<keyCount;++b){
+          if(21+b>95)continue;
+          const double dn=static_cast<double>(b-k);
+          const double w=(b==k?.18:1.)*std::exp(-.5*dn*dn/(sigma*sigma));
+          wSum+=w;vSum+=w*rawKeyDb[p][b];
+        }
+        const double trendDb=wSum>0?vSum/wSum:rawKeyDb[p][k];
+        const double diff=trendDb-rawKeyDb[p][k];
+        if(isCalKey){
+          const double strength=p==1?.35:(p==2?.65:.48);
+          const double holeThr=p==1?.8:.35;
+          if(diff>holeThr)
+            keyToneDb[p][k]=std::min(3.6,strength*(diff-holeThr));
+          else if(diff<-(p==2?1.0:1.8))
+            keyToneDb[p][k]=std::max(-2.2,.35*strength*(diff+(p==2?1.0:1.8)));
+          else
+            keyToneDb[p][k]=0.;
+        }else{
+          const double strength=p==0?.48:.68;
+          const double thr=p==0?.55:.25;
+          if(diff>thr)
+            keyToneDb[p][k]=std::min(p==0?1.8:6.8,strength*(diff-thr));
+          else if(diff<-thr)
+            keyToneDb[p][k]=std::max(p==0?-1.8:-4.8,strength*(diff+thr));
+          else
+            keyToneDb[p][k]=0.;
+        }
+      }
+      if(p>0){
+        double refSum=0;int refCnt=0;
+        for(int k=80-21;k<=95-21;++k){refSum+=rawKeyDb[p][k]+keyToneDb[p][k];++refCnt;}
+        const double refDb=(refCnt>0?refSum/refCnt:rawKeyDb[p][95-21])-(p==1?3.2:1.8);
+        for(int k=96-21;k<keyCount;++k){
+          const int note=21+k;
+          const double targetDb=refDb-.45*(note-90);
+          keyToneDb[p][k]=std::max(p==1?0.:-2.5,std::min(p==1?3.2:6.5,.65*(targetDb-rawKeyDb[p][k])));
+        }
+      }
+      for(int i=0;i<m.anchorCount*halo;++i)haloLevelDb[p][i]=m.haloLevels[i];
+      if(p>0){
+        const double layerDb85=levelAt(m,m.layerLevelDb,v);
+        for(int a=0;a<m.anchorCount;++a){
+          const int ancNote=m.anchors[a].note;
+          if(ancNote<(p==5?78:89))continue;
+          std::array<float,halo> sorted{};
+          for(int j=0;j<halo;++j)sorted[j]=haloLevelDb[p][a*halo+j];
+          std::sort(sorted.begin(),sorted.end());
+          const float med=.5f*(sorted[halo/2-1]+sorted[halo/2]);
+          double radSum=1e-18;
+          for(int j=0;j<halo;++j){
+            haloLevelDb[p][a*halo+j]=std::min(haloLevelDb[p][a*halo+j],med+9.5f);
+            const auto& hs=m.haloStrings[j];
+            const double pkPwr=.5*(hs.left*hs.left+hs.rightRe*hs.rightRe+hs.rightIm*hs.rightIm);
+            const double rate=std::max(.1,static_cast<double>(hs.rate));
+            const double envPwr=(1.-std::exp(-rate))/rate;
+            const double slDb=m.haloSlopeDb*layerDb85+scaleDb;
+            radSum+=std::pow(10.,.1*(haloLevelDb[p][a*halo+j]+slDb))*pkPwr*envPwr;
+          }
+          const double radHDb=10*std::log10(radSum);
+          const int kAnc=std::max(0,std::min(keyCount-1,ancNote-21));
+          const double maxAllowDb=rawKeyDb[p][kAnc]+keyToneDb[p][kAnc]-10.5;
+          if(radHDb>maxAllowDb){
+            const float delta=static_cast<float>(maxAllowDb-radHDb);
+            for(int j=0;j<halo;++j)haloLevelDb[p][a*halo+j]+=delta;
+          }
+        }
+      }
+      std::array<double,32> rawActDb{};
+      for(int a=0;a<m.anchorCount;++a){
+        double sum=1e-18;
+        for(int k=0;k<m.bodyModeCount;++k)
+          sum+=std::pow(10.,.1*m.releaseKnocks[a*m.bodyModeCount+k].levelDb);
+        rawActDb[a]=10*std::log10(sum)+m.releaseDb+scaleDb;
+      }
+      for(int a=0;a<m.anchorCount;++a){
+        if(p==0){
+          double wSum=0,vSum=0;
+          for(int b=std::max(0,a-2);b<=std::min(m.anchorCount-1,a+2);++b){
+            const double w=b==a?.4:1.;
+            wSum+=w;vSum+=w*rawActDb[b];
+          }
+          const double avg=wSum>0?vSum/wSum:rawActDb[a];
+          actionAnchorGainDb[p][a]=std::max(-2.5,std::min(2.5,.35*(avg-rawActDb[a])));
+        }else if(p==1){
+          double vals[7]{};int n=0;
+          for(int b=std::max(0,a-3);b<=std::min(m.anchorCount-1,a+3);++b)
+            if(b!=a)vals[n++]=rawActDb[b];
+          std::sort(vals,vals+n);
+          const double localRef=n>0?vals[(n*2)/3]:rawActDb[a];
+          if(rawActDb[a]<localRef-1.5)
+            actionAnchorGainDb[p][a]=std::max(0.,std::min(16.,.85*(localRef-rawActDb[a])));
+          else
+            actionAnchorGainDb[p][a]=0.;
+        }else{
+          double wSum=0,vSum=0;
+          for(int b=std::max(0,a-2);b<=std::min(m.anchorCount-1,a+2);++b){
+            const double w=b==a?.5:1.;
+            wSum+=w;vSum+=w*rawActDb[b];
+          }
+          const double avg=wSum>0?vSum/wSum:rawActDb[a];
+          const double targetActDb=-49.0-5.0*(m.anchors[a].note-21)/87.0;
+          actionAnchorGainDb[p][a]=std::max(-12.,std::min(56.,.90*(targetActDb-rawActDb[a])+.10*(avg-rawActDb[a])));
+        }
       }
     }
   }
@@ -2432,6 +2657,7 @@ Engine::Engine(double sampleRate):impl(new Impl){
     for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
       p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);
   }
+  p.initCalibrations();
   p.assemble();
   prepare(sampleRate);
 }
@@ -2574,6 +2800,7 @@ float responseVelocity(Piano piano,float velocity) noexcept {
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;
+  p.resolvePendingTone();
   p.clock+=static_cast<std::uint64_t>(frames);
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
