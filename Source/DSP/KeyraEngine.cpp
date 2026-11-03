@@ -2417,9 +2417,30 @@ struct Engine::Impl {
       }
     }
   }
+  // N banks whose pickups hold still, run together for the reason stableRun's
+  // partials are and added to the mix in the same order.
+  template<int N> void bodyRun(Body& body,int first,int frames) noexcept {
+    V4 re[N],im[N],c[N],s[N],l[N],rr[N],ri[N];
+    for(int n=0;n<N;++n){const auto& bank=body[first+n];const auto& p=pickup[first+n];
+      re[n]=bank.re;im[n]=bank.im;c[n]=bank.c;s[n]=bank.s;l[n]=p.left;rr[n]=p.rightRe;ri[n]=p.rightIm;}
+    for(int i=0;i<frames;++i){
+      V4 left=mixLeft[i],right=mixRight[i];
+      for(int n=0;n<N;++n){
+        left+=l[n]*re[n];right+=rr[n]*re[n]-ri[n]*im[n];
+        const V4 next=re[n]*c[n]-im[n]*s[n];im[n]=re[n]*s[n]+im[n]*c[n];re[n]=next;
+      }
+      mixLeft[i]=left;mixRight[i]=right;
+    }
+    for(int n=0;n<N;++n){body[first+n].re=re[n];body[first+n].im=im[n];}
+  }
   void ringBody(Body& body,int frames) noexcept {
     const int gliding=std::min(frames,pickupGlide);
-    for(int k=0;k<bodyBanks;++k){auto& bank=body[k];
+    int k=0;
+    if(gliding==0){
+      for(;k+4<=bodyBanks;k+=4)bodyRun<4>(body,k,frames);
+      if(k+2<=bodyBanks){bodyRun<2>(body,k,frames);k+=2;}
+    }
+    for(;k<bodyBanks;++k){auto& bank=body[k];
       V4 re=bank.re,im=bank.im,l=pickup[k].left,rr=pickup[k].rightRe,ri=pickup[k].rightIm;
       const V4 c=bank.c,s=bank.s;
       int i=0;
@@ -2445,6 +2466,25 @@ struct Engine::Impl {
     pickupGlide-=n;
     if(pickupGlide==0)pickup=pickupTarget;
   }
+  // Partials that neither rise nor change tint are N independent rotations
+  // summed into the mix. Run together, their dependent chains overlap, which
+  // a lone partial's cannot; each is added in order, so the mix is the same
+  // bit for bit as adding them one after another.
+  template<int N> static void stableRun(Partial* const* partials,V4* toLeft,V4* toRight,int frames) noexcept {
+    V4 re[N],im[N],c[N],s[N],lr[N],li[N],rr[N],ri[N];
+    for(int n=0;n<N;++n){const auto& x=*partials[n];
+      re[n]=x.re;im[n]=x.im;c[n]=x.c;s[n]=x.s;lr[n]=x.leftRe;li[n]=x.leftIm;rr[n]=x.rightRe;ri[n]=x.rightIm;}
+    for(int i=0;i<frames;++i){
+      V4 l=toLeft[i],r=toRight[i];
+      for(int n=0;n<N;++n){
+        l+=lr[n]*re[n]-li[n]*im[n];r+=rr[n]*re[n]-ri[n]*im[n];
+        const V4 next=re[n]*c[n]-im[n]*s[n];im[n]=re[n]*s[n]+im[n]*c[n];re[n]=next;
+      }
+      toLeft[i]=l;toRight[i]=r;
+    }
+    for(int n=0;n<N;++n){partials[n]->re=re[n];partials[n]->im=im[n];}
+  }
+  static bool steadyPartial(const Partial& x) noexcept {return x.tintState==x.targetTint&&!x.rising;}
   void render(float* left,float* right,int frames) noexcept {
     const V4 zero{};
     for(int i=0;i<frames;++i){mixLeft[i]=zero;mixRight[i]=zero;}
@@ -2457,6 +2497,16 @@ struct Engine::Impl {
       auto& toLeft=own?voiceLeft:mixLeft;auto& toRight=own?voiceRight:mixRight;
       if(own)for(int i=0;i<frames;++i){voiceLeft[i]=zero;voiceRight[i]=zero;}
       for(int k=0;k<voice.count;++k){auto& partial=voice.partials[k];
+        if(steadyPartial(partial)){
+          Partial* run[4];int n=0;
+          while(n<4&&k+n<voice.count&&steadyPartial(voice.partials[k+n])){run[n]=&voice.partials[k+n];++n;}
+          if(n==4)stableRun<4>(run,toLeft.data(),toRight.data(),frames);
+          else if(n>=2)stableRun<2>(run,toLeft.data(),toRight.data(),frames);
+          if(n>=2){
+            if(n==3)stableRun<1>(run+2,toLeft.data(),toRight.data(),frames);
+            k+=n-1;continue;
+          }
+        }
         V4 re=partial.re,im=partial.im;
         const V4 c=partial.c,s=partial.s,lr=partial.leftRe,li=partial.leftIm,rr=partial.rightRe,ri=partial.rightIm;
         if(partial.tintState!=partial.targetTint){
