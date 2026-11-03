@@ -77,12 +77,14 @@ constexpr measured::Damper leftover{-46.f,upright::damper.shareSlopeDb,upright::
 // additional colour) on 2026-11-01. The other pianos keep the chosen strength.
 constexpr std::array<double,pianoCount> additionalVelocityColour{.4,.4,.4,.4,.4,0};
 // Monitoring calibration after the shared guard, not string/body tone. With
-// Belmont's additional colour removed, KeyraLevels leaves 0.336856902 < trim
-// <= 0.366247976 dB between its existing +0.7 VU chord and -9.5 VU typical
-// limits. Use that interval's midpoint; a pre-guard tubeScale reduction fails
+// Belmont's additional colour removed it was .351552439 dB, the midpoint of
+// the interval KeyraLevels left between its existing +0.7 VU chord and -9.5 VU
+// typical limits; 0.4.14's chords, which now carry their per-key trims, read
+// 0.03 dB lower at Mic 1, so the trim is eased by that much to return typical
+// playing to the approved -9.485 VU. A pre-guard tubeScale reduction fails
 // because the guard gives almost all of it back. Measurement and derivation:
 // Docs/validation/whole-keyboard-quality-2026-11-01.md, Tube output calibration.
-constexpr double belmontTubeOutputTrimDb=.351552439;
+constexpr double belmontTubeOutputTrimDb=.3216;
 
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
@@ -198,8 +200,8 @@ constexpr Model models[]{
    // held, both channels' RMS from 50 to 750 ms after the strike, as the
    // benchmark sets a case's gain). Below it the shared velocity response
    // (responseAt) keeps the two medians within 1 dB of each other.
-   2.2755,
-   2.1763,
+   2.3474,
+   2.1097,
    false},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),
    kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
@@ -228,7 +230,7 @@ constexpr Model models[]{
    // Its typical playing at the grand's level, -9 VU (Tools/KeyraLevels.cpp),
    // which puts its median note 0.6 dB over the grand's at velocity 127 and
    // 1.4 dB over at velocity 30, measured as the upright's.
-   2.8267,
+   2.9873,
    // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
    // pair's: within 0.5 dB, its loudest chords through the tube reach the
    // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
@@ -237,7 +239,7 @@ constexpr Model models[]{
    // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
    // it to -10.10; its loudest chords through the tube read -0.14 VU.
-   1.3308,
+   1.3035,
    true},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),
    hamburg::partials.data(),hamburg::extras.data(),

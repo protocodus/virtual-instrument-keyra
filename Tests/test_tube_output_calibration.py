@@ -45,7 +45,7 @@ require(std::isfinite(x[i])&&std::abs(x[i])<=std::abs(y[i])&&std::abs(x[i])<=std
 keyra::Parameters at(int i,keyra::Parameters p){if(i==1003)p.mic=1;if(i==3001){p.build.hammers=keyra::only(keyra::Piano::grand);p.build.hammers[5]=1;}if(i==5003)p.mic=.25f;if(i==7001)p.mic=0;if(i==9003){p.build=keyra::measuredBuild(keyra::Piano::grand);p.mic=1;}return p;}
 Audio moving(int block,bool disabled=false){keyra::Engine e;auto p=params(5,0);e.setParameters(p);e.reset();if(disabled)untrim(e);strike(e);Audio all;int previous=0;for(int end:{1003,3001,5003,7001,9003,12000}){auto a=render(e,end-previous,block);all.insert(all.end(),a.begin(),a.end());p=at(end,p);e.setParameters(p);if(disabled)untrim(e);previous=end;}return all;}
 int main(){try{
- require(keyra::belmontTubeOutputTrimDb==.351552439,"measured monitoring calibration changed");
+ require(keyra::belmontTubeOutputTrimDb==.3216,"measured monitoring calibration changed");
  for(double sr:{44100.,48000.,192000.})for(int p=0;p<6;++p)for(float mic:{0.f,.5f,1.f})staticCase(sr,params(p,mic));
  auto mixed=params(0,.7f);mixed.build.hammers[5]=1;staticCase(48000,mixed);
  const auto segmented=moving(1),chunked=moving(257),oldSegmented=moving(1,true),oldChunked=moving(257,true);
