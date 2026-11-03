@@ -2157,7 +2157,8 @@ struct Engine::Impl {
     for(int k=0;k<voice.count;++k)
       if(possible(k,peak,1.,-dropDb*std::log(10.)/20)
          ||possible(k,energy,2.,-dropDb*std::log(10.)/10)){
-        if(kept!=k)voice.partials[kept]=voice.partials[k];++kept;
+        if(kept!=k)voice.partials[kept]=voice.partials[k];
+        ++kept;
       }
     voice.count=kept;
   }
@@ -2400,7 +2401,9 @@ struct Engine::Impl {
           double vals[7]{};int n=0;
           for(int b=std::max(0,a-3);b<=std::min(m.anchorCount-1,a+3);++b)
             if(b!=a)vals[n++]=rawActDb[b];
-          std::sort(vals,vals+n);
+          // Not std::sort: GCC 13 cannot bound n by 6 here and fails the Rack's -Werror.
+          for(int i=1;i<n;++i)
+            for(int j=i;j>0&&vals[j-1]>vals[j];--j)std::swap(vals[j-1],vals[j]);
           const double localRef=n>0?vals[(n*2)/3]:rawActDb[a];
           if(rawActDb[a]<localRef-1.5)
             actionAnchorGainDb[p][a]=std::max(0.,std::min(16.,.85*(localRef-rawActDb[a])));
