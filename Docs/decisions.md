@@ -2468,3 +2468,39 @@ catches peaks above the sample ceiling. The decision favors the stronger
 forte response, including chords above 0 VU on a meter with 12 dB offset.
 The selected Mechanics position is 0.4 and the Belmont Grand factory
 Brightness is 0.75. [Measurements](validation/forte-response-2026-11-02.md).
+
+## 2026-11-03 — chords carry their per-key trims
+
+Found in review, not chosen by ear. Since 0.4.13 the per-key level trim of the
+keys below C7 was applied one process() call after the strike and only for a
+voice no other voice shared a clock with, so a chord struck at once lost every
+note's trim while the same notes a sample apart kept them; the late body
+ring's crowding reduction likewise went to the first note of a chord alone,
+whichever note that was. A fifteen-note chord (`Keyra.Engine`, fifteen
+keys from D2 to A♯6 at velocity 80) summed to its notes struck alone to
+−29 dB; with the trim applied at the strike and one crowding verdict per
+chord it does to −38 dB, and the test pins it at −35 dB. Single notes are
+byte-identical to 0.4.13.
+
+The chords of the demos and of `KeyraLevels` now read lower: typical playing on
+the default controls −0.04 dB on the grand, −0.27 on the upright and −0.48 on
+the Kawai; the other pianos hold. Output scales are re-pinned as earlier
+decisions did (upright 2.2755 → 2.3474, Kawai 2.8267 → 2.9873) with their tube
+scales (2.1763 → 2.1097, 1.3308 → 1.3035) so that their default sound and Mic 1
+return to the readings approved on 2026-11-02, and the Belmont's tube trim
+is eased from 0.351552439 to 0.3216 dB for its Mic 1 (−9.52 → −9.49 VU, the
+approved −9.485). Four presets' typical levels still move and their rows in
+`Tests/Fixtures/dynamics/ApprovedLevels.h` are re-baselined to the two
+decimals the tool prints: Studio Grand −10.006 → −10.17 VU, Open Strings
+−7.985 → −8.04, Felt Upright −15.755 → −15.86 and Three Cities −10.500 →
+−10.29 (its three pianos' trims largely cancel, so it gains only the
+re-pinned scales). No preset's loudest chord rises over its approved level.
+These are measured level shifts of 0.06 to 0.21 dB, small enough that no
+listening test was run; the owner may keep the previous chord behaviour by
+reverting the commits "give every note of a chord its per-key trim and
+crowding verdict" and "re-pin the upright's, Kawai's and Belmont's levels".
+
+The same release runs steady partials and body banks four at a time. The
+eight factory demos are byte-identical before and after, and each takes 14 to
+21 % less DSP time (paired runs, median of three, 4-thread Xeon at 2.3 GHz).
+

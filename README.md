@@ -43,6 +43,40 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.14 — chords sound as their notes do
+
+Notes struck in the same instant now keep the per-key level trim that evens
+out the keyboard (below C7 it was skipped for them, so a chord lost the trims
+of every note while the same notes a sample apart kept them), and a chord
+shares one verdict for the late body ring's reduction in quick passages
+instead of giving it to the first note alone. A fifteen-note chord struck at
+once now sums to its notes struck alone to −38 dB, where it was −29 dB;
+single notes are unchanged byte for byte. The upright's and the Kawai's
+output scales are re-pinned by +0.27 and +0.48 dB, the Belmont's tube trim
+eased by 0.03 dB, to keep their default sound and tube at the approved
+readings; Studio Grand, Open Strings and Felt Upright read 0.06 to 0.16 dB
+lower and Three Cities 0.21 dB higher
+([decisions](Docs/decisions.md), 2026-11-03). Steady partials and the body's
+banks are summed four at a time, which makes the engine 14 to 22 % cheaper
+per second of audio on the factory demos with identical output.
+
+### 0.4.13 — 88-key tonal balance
+
+Recorded here from its commit, which carried no write-up. Keys whose level sits
+off the trend of their neighbours get a small per-key trim; the top octaves'
+body and noise follow gentler slopes per piano; the undamped strings' levels
+are capped against their median on the five pianos other than the grand; the
+action's level is eased between anchors; the strings the sustain pedal sets
+ringing play at a new scale.
+
+### 0.4.12 — restrikes and sympathetic resonance
+
+Recorded here from its commit, which carried no write-up. A key struck again
+while it still sounds plays with less body ring and colour, so the second
+strike stays clear; a note struck soon after another rings less late on the
+body; sympathetic resonance and the receivers' dampers were reworked, and the
+engine's CPU use reduced.
+
 ### 0.4.11 — more contrast on hard chords
 
 All six pianos use the approved B response at the usual Output setting of 0.70.
