@@ -51,10 +51,11 @@ of every note while the same notes a sample apart kept them), and a chord
 shares one verdict for the late body ring's reduction in quick passages
 instead of giving it to the first note alone. A fifteen-note chord struck at
 once now sums to its notes struck alone to −38 dB, where it was −29 dB;
-single notes are unchanged byte for byte. The upright's and the Kawai's
-output scales are re-pinned by +0.27 and +0.48 dB, the Belmont's tube trim
-eased by 0.03 dB, to keep their default sound and tube at the approved
-readings; Studio Grand, Open Strings and Felt Upright read 0.06 to 0.16 dB
+the fix itself leaves single notes unchanged byte for byte. Because the
+levels contract plays chords, the upright's and the Kawai's output scales are
+re-pinned by +0.27 and +0.48 dB (a single note of either is that much louder)
+and the Belmont's tube trim eased by 0.03 dB, to keep their default sound and
+tube at the approved readings; Studio Grand, Open Strings and Felt Upright read 0.06 to 0.16 dB
 lower and Three Cities 0.21 dB higher
 ([decisions](Docs/decisions.md), 2026-11-03). Steady partials and the body's
 banks are summed four at a time, which makes the engine 14 to 22 % cheaper
