@@ -43,7 +43,7 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### 0.4.14 — chords sound as their notes do
+### 0.4.14 — 2026-11-03 — chords sound as their notes do
 
 Notes struck in the same instant now keep the per-key level trim that evens
 out the keyboard (below C7 it was skipped for them, so a chord lost the trims
@@ -61,7 +61,7 @@ lower and Three Cities 0.21 dB higher
 banks are summed four at a time, which makes the engine 14 to 22 % cheaper
 per second of audio on the factory demos with identical output.
 
-### 0.4.13 — 88-key tonal balance
+### 0.4.13 — 2026-11-03 — 88-key tonal balance
 
 Recorded here from its commit, which carried no write-up. Keys whose level sits
 off the trend of their neighbours get a small per-key trim; the top octaves'
@@ -70,7 +70,7 @@ are capped against their median on the five pianos other than the grand; the
 action's level is eased between anchors; the strings the sustain pedal sets
 ringing play at a new scale.
 
-### 0.4.12 — restrikes and sympathetic resonance
+### 0.4.12 — 2026-11-03 — restrikes and sympathetic resonance
 
 Recorded here from its commit, which carried no write-up. A key struck again
 while it still sounds plays with less body ring and colour, so the second
@@ -78,7 +78,7 @@ strike stays clear; a note struck soon after another rings less late on the
 body; sympathetic resonance and the receivers' dampers were reworked, and the
 engine's CPU use reduced.
 
-### 0.4.11 — more contrast on hard chords
+### 0.4.11 — 2026-11-02 — more contrast on hard chords
 
 All six pianos use the approved B response at the usual Output setting of 0.70.
 Typical playing keeps its level. In the 480-pair factory chord test, striking
@@ -86,7 +86,7 @@ at velocity 127 after 110 now gives a median 1.40 dB rise, up from 0.29 dB.
 The stereo peak ceiling is −1.5 dBFS and the plug-in reports 120 frames of
 latency at 48 kHz. [Listening choice and measurements](Docs/validation/forte-response-2026-11-02.md).
 
-### 0.4.10 — damper motion on all six pianos
+### 0.4.10 — 2026-11-02 — damper motion on all six pianos
 
 When the player releases a key or moves the sustain pedal, strings ringing in
 sympathy now follow the same felt travel as struck strings. Repeating a note
@@ -94,19 +94,19 @@ lifts the damper off its remaining vibration by the time the hammer strikes
 again. Each piano keeps its measured tuning, voicing and decay. See the
 [all-six comparison and recording checks](Docs/validation/damper-travel-2026-11-02.md).
 
-### 0.4.9 — brighter Belmont factory preset
+### 0.4.9 — 2026-11-02 — brighter Belmont factory preset
 
 The Belmont Grand preset now starts with Brightness at 75%, following the
 owner's C audition choice. Existing saved settings retain their brightness.
 
-### 0.4.8 — local Belmont reconstruction repairs
+### 0.4.8 — 2026-11-02 — local Belmont reconstruction repairs
 
 Belmont recovers missing sustain around C5 and A5 from its source measurements,
 while retaining the accepted voicing and Mechanics default. These are local
 repairs with documented neighboring-note and quiet-tail tradeoffs, not a new
 global brightness setting. See the [measurement evidence](Docs/research/belmont-conditional-update-2026-11-02.md).
 
-### 0.4.7 — smoother controls and quieter soft releases
+### 0.4.7 — 2026-11-01 — smoother controls and quieter soft releases
 
 Live Brightness, Resonance and piano-build changes now transition smoothly.
 Balanced and Light quality retain harmonics that can become audible when
