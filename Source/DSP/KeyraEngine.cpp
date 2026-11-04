@@ -1688,7 +1688,15 @@ struct Engine::Impl {
         for(int j=0;j<lanes;++j){const Complex z=partial.exact[j];
           setLane(partial.re,j,static_cast<float>(z.re));setLane(partial.im,j,static_cast<float>(z.im));
           e+=(z.re*z.re+z.im*z.im)*partial.energyWeight[j];}
-        e*=partial.audibility*partial.audibility*partial.tint*partial.tint;
+        // The floor judges the gain the chunk's first sample plays: a gliding
+        // Brightness takes its first step there (nextTint in the render).
+        double tint=partial.tint;
+        if(partial.tintState!=partial.targetTint){
+          const double target=partial.targetTint;double state=partial.tintState+smooth*(target-partial.tintState);
+          if(std::abs(target-state)<1e-9*target)state=target;
+          tint=static_cast<float>(state);
+        }
+        e*=partial.audibility*partial.audibility*tint*tint;
         // A partial 120 dB under a full-scale peak (power in the output's
         // units under 1e-12) is dropped. Against 1e-15, dropping them changed
         // no 100 ms window of the demos by more than -112 dBFS and no

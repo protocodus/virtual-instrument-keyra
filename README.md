@@ -43,6 +43,13 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.17 — 2026-11-04 — the partial floor follows a Brightness move
+
+While Brightness glides, a partial now meets the 120 dB floor on the gain
+its chunk plays rather than the one the chunk before ended on, so a move
+stops a quiet partial when the setting it passes through would. The demos,
+which hold Brightness still, render the same samples as 0.4.16's.
+
 ### 0.4.16 — 2026-11-04 — a quarter less CPU on the heaviest demos
 
 A partial now stops once it falls 120 dB under full scale, where it stopped
