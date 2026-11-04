@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.17 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.18 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -287,6 +287,14 @@ if(BUILD_TESTING)
     target_compile_options(KeyraPitchBlendTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
     add_test(NAME Keyra.PitchBlend COMMAND KeyraPitchBlendTests)
 
+    # The phantom partials' square against the lines it makes, and each
+    # key's gain and gate in the engine, in one test translation unit.
+    add_executable(KeyraPhantomTests Tests/phantom_tests.cpp)
+    target_include_directories(KeyraPhantomTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraPhantomTests PRIVATE cxx_std_17)
+    target_compile_options(KeyraPhantomTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
+    add_test(NAME Keyra.Phantoms COMMAND KeyraPhantomTests)
+
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.ParameterExtremes COMMAND KeyraParameterExtremesTests)
@@ -363,6 +371,12 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.VelocityInterpolationFreshness
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/generate_velocity_interpolation.py" --check)
+        # The phantom gains are the ones their receipt gives, for the
+        # recorded pitches the engine has, and the receipt is the current
+        # fit's on the current modal data, split and corpus.
+        add_test(NAME Keyra.MeasuredPhantoms
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_phantoms.py" --check)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
@@ -409,7 +423,7 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.KeyboardMetricContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
-        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
+        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms
                              Keyra.RateInterpolation Keyra.ComponentWarmStart
                              Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
                              Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety

@@ -43,6 +43,15 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.18 — 2026-11-04 — phantom partials
+
+A key's partials now also sound the lines their square makes, at the sums
+and differences of every two of them and the double of each, at the gain
+each piano's recordings show at the pitch: 36 to 56 dB under a note at
+velocity 100 and 48 to 77 dB under at velocity 40, strongest in forte
+attacks. The bass, where the recordings do not decide them, plays none
+([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
+
 ### 0.4.17 — 2026-11-04 — the partial floor follows a Brightness move
 
 While Brightness glides, a partial now meets the 120 dB floor on the gain
@@ -660,6 +669,21 @@ than its lanes reach. They
 start at contact under the pitch's onset rise and share vectors four lanes to
 a slot, so a component costs a quarter of a partial.
 
+A string's tension grows with the square of its displacement, so its
+partials also sound lines at the sums and the differences of every two of
+their frequencies and at the double of each (phantom partials). The engine
+adds, in each channel, the square of a key's partials there, all its
+sounding strikes together, through the output's DC high-pass. The lines grow
+with the square of a strike's amplitude, so they are strongest in forte
+attacks and fade about twice as fast as the partials. Their gain is each
+piano's at the pitch, measured on its train takes and played between the
+recorded pitches around a key: it puts them 36 to 56 dB under a note at
+velocity 100 and 48 to 77 dB under at velocity 40. The takes decide it from
+F♯2 (C2 on the upright, A♭2 on the New York grand, A2 on the Hamburg) up to
+A6 on the grand, E5 on the upright, C5 on the Hamamatsu, F♯4 on the Hamburg
+and F6 on the New York; beyond them it fades to none
+([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
+
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, each ringing in two stages that add, a fast
 one over the first 0.4 s and then one about a fifth as fast, so the body
@@ -1119,6 +1143,18 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 - The modal engine does not model nonlinear hammer contact or a reciprocal
   soundboard; the full physical model in `Experiments/` does, but it is several
   times slower than real time.
+- Phantom partials play one gain per pitch, where the takes show the lines
+  from 1.6 to 3.2 kHz 6 to 8.5 dB over it at the grand's F♯3, C4 and F♯4, as
+  a longitudinal resonance of the strings, which the engine does not model,
+  would lift them, and the difference lines 0.8 to 11 times the sums' power
+  where both stand clear. The bass plays none, where the takes do not
+  decide; the grand's F♯6 and A6 rest on few lines. A line within a few
+  hertz of a measured partial adds to what the modal fit already put there,
+  soft strikes play the loud takes' gain, under what their own takes read,
+  and each key is squared alone, so no lines sound between two keys'
+  partials. The square's rise at a strike passes the DC high-pass as a pulse
+  under 120 Hz, 42 to 50 dB under a forte chord, which no take measures
+  ([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
 - Of the pedals only the grand's sustain pedal going down, alone, is scored
   against recordings, its strings' ring and fall (above). The recordings do
   not document pedal positions or timings, so half pedalling, repedalling and

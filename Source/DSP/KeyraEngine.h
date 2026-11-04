@@ -124,6 +124,8 @@ private:
   friend struct DamperTestObserver;
   // The native pitch-blend test reads the partials a strike plays.
   friend struct PitchBlendTestObserver;
+  // The native phantom test reads each key's phantom partials' state.
+  friend struct PhantomTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
