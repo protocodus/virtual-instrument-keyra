@@ -1,0 +1,43 @@
+{
+  "about": "Settings of Tools/keyboard_network.py: the libraries the keyboard network learns from, each piano's bass break, the network's sizes and its training. Docs/research/keyboard-network.md explains each field.",
+  "libraries": {
+    "grand": {"piano": "grand", "keyra": true},
+    "upright": {"piano": "upright", "keyra": true},
+    "kawai": {"piano": "kawai", "keyra": true},
+    "hamburg": {"piano": "hamburg", "keyra": true},
+    "newyork": {"piano": "newyork", "keyra": true},
+    "vcsl-kawai-legacy": {"piano": "kawai"},
+    "bitklavier": {"piano": "bitklavier"},
+    "vcsl-steinway-b": {"piano": "vcsl-steinway-b"},
+    "vcsl-knight": {"piano": "vcsl-knight"},
+    "vcsl-upright-y": {"piano": "vcsl-upright-y"}
+  },
+  "pianos": {
+    "grand": {"tenor": 47, "tenor_source": "inharmonicity step between the recorded pitches 45 and 48"},
+    "upright": {"tenor": 51, "tenor_source": "inharmonicity step between the recorded pitches 50 and 52"},
+    "kawai": {"tenor": 47, "tenor_source": "inharmonicity step between the recorded pitches 45 and 48"},
+    "hamburg": {"tenor": 52, "tenor_source": "inharmonicity step between the recorded pitches 45 and 59: uncertain"},
+    "newyork": {"tenor": 54, "tenor_source": "inharmonicity step between the recorded pitches 49 and 59: uncertain"},
+    "bitklavier": {"tenor": 50, "tenor_source": "no clear step; B rises steadily from pitch 45 to 57: uncertain"},
+    "vcsl-steinway-b": {"tenor": 52, "tenor_source": "no clear step; B rises steadily from pitch 48 to 58: uncertain"},
+    "vcsl-knight": {"tenor": 52, "tenor_source": "inharmonicity step between the recorded pitches 51 and 53"},
+    "vcsl-upright-y": {"tenor": 52, "tenor_source": "inharmonicity step between the recorded pitches 48 and 55: uncertain"}
+  },
+  "architectures": {
+    "small": {"code": 8, "width": 64, "depth": 3, "fourier": 0},
+    "medium": {"code": 12, "width": 128, "depth": 3, "fourier": 3},
+    "large": {"code": 16, "width": 192, "depth": 4, "fourier": 5}
+  },
+  "training": {
+    "steps": 3000,
+    "units_per_library": 6,
+    "learning_rate": 0.002,
+    "tune_weight": 0.05,
+    "tone_ridge": 0.01,
+    "fine_tune_steps": 600,
+    "fine_tune_learning_rate": 0.001
+  },
+  "knobs": [0.0, 1.0, 10.0, 100.0, 1000.0],
+  "folds": 5,
+  "seed": 1
+}

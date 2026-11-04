@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.15 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.18 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -48,6 +48,13 @@ option(KEYRA_ENABLE_MODEL_VALIDATION_TESTS
        "Require numerical model, generated-mask and native-probe checks (NumPy/SciPy, GCC/Clang)" OFF)
 if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS AND NOT BUILD_TESTING)
     message(FATAL_ERROR "KEYRA_ENABLE_MODEL_VALIDATION_TESTS requires BUILD_TESTING=ON")
+endif()
+# The keyboard network (Tools/keyboard_network.py) is an offline experiment
+# that needs PyTorch, which CI does not install; its `all` stage runs this
+# self-test first.
+option(KEYRA_ENABLE_NETWORK_TESTS "Require the keyboard network's self-test (NumPy, SciPy, PyTorch)" OFF)
+if(KEYRA_ENABLE_NETWORK_TESTS AND NOT BUILD_TESTING)
+    message(FATAL_ERROR "KEYRA_ENABLE_NETWORK_TESTS requires BUILD_TESTING=ON")
 endif()
 if(KEYRA_ENABLE_SANITIZERS)
     if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
@@ -247,7 +254,7 @@ endif()
 if(BUILD_TESTING)
     # CI requires the interpreter, so a missing one cannot silently register
     # fewer tests.
-    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
+    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS OR KEYRA_ENABLE_NETWORK_TESTS)
         find_package(Python3 COMPONENTS Interpreter REQUIRED)
     else()
         find_package(Python3 COMPONENTS Interpreter)
@@ -279,6 +286,14 @@ if(BUILD_TESTING)
     # about every class that holds one.
     target_compile_options(KeyraPitchBlendTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
     add_test(NAME Keyra.PitchBlend COMMAND KeyraPitchBlendTests)
+
+    # The phantom partials' square against the lines it makes, and each
+    # key's gain and gate in the engine, in one test translation unit.
+    add_executable(KeyraPhantomTests Tests/phantom_tests.cpp)
+    target_include_directories(KeyraPhantomTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraPhantomTests PRIVATE cxx_std_17)
+    target_compile_options(KeyraPhantomTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
+    add_test(NAME Keyra.Phantoms COMMAND KeyraPhantomTests)
 
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
@@ -356,6 +371,12 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.VelocityInterpolationFreshness
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/generate_velocity_interpolation.py" --check)
+        # The phantom gains are the ones their receipt gives, for the
+        # recorded pitches the engine has, and the receipt is the current
+        # fit's on the current modal data, split and corpus.
+        add_test(NAME Keyra.MeasuredPhantoms
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_phantoms.py" --check)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
@@ -402,7 +423,7 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.KeyboardMetricContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
-        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness
+        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms
                              Keyra.RateInterpolation Keyra.ComponentWarmStart
                              Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
                              Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety
@@ -415,6 +436,22 @@ if(BUILD_TESTING)
                              ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};KEYRA_MODEL_FFMPEG=${KEYRA_MODEL_FFMPEG};KEYRA_MODEL_FFPROBE=${KEYRA_MODEL_FFPROBE};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     else()
         message(STATUS "Numerical model validation disabled; enable KEYRA_ENABLE_MODEL_VALIDATION_TESTS for the required Linux CI tier")
+    endif()
+
+    if(KEYRA_ENABLE_NETWORK_TESTS)
+        execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import numpy; import scipy; import torch"
+                        RESULT_VARIABLE KEYRA_NETWORK_PYTHON_RESULT
+                        ERROR_VARIABLE KEYRA_NETWORK_PYTHON_ERROR
+                        OUTPUT_QUIET)
+        if(NOT KEYRA_NETWORK_PYTHON_RESULT EQUAL 0)
+            message(FATAL_ERROR
+                "The keyboard network's self-test needs NumPy, SciPy and PyTorch in ${Python3_EXECUTABLE}. "
+                "${KEYRA_NETWORK_PYTHON_ERROR}")
+        endif()
+        add_test(NAME Keyra.KeyboardNetwork
+                 COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_keyboard_network.py")
+        set_tests_properties(Keyra.KeyboardNetwork PROPERTIES LABELS unit TIMEOUT 300
+                             ENVIRONMENT "OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     endif()
 
     if(KEYRA_BUILD_TOOLS)
