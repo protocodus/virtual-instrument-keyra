@@ -2789,3 +2789,25 @@ fix, 588 on main), and 6 chords pass its maximum levels (11 after the stereo
 fix), all the Kakegawa grand's: its loudest reading above, and through its
 tube the chords struck at 101 by up to +0.47 dB and its velocity ladder by
 +0.07 dB. Its floors and limits are unchanged.
+
+## 2026-11-04 — the levels after phantom partials
+
+0.4.16 to 0.4.18 (faded partials and the felt's update, the floor following
+Brightness, and phantom partials, which also render a key's strikes together)
+move three presets' typical playing past `Keyra.Levels`' 0.05 dB guard: the
+Kakegawa Grand from −9.016195 to −9.066835 VU, Open Strings from −8.133493 to
+−8.081521 and the Hamburg Grand from −8.893996 to −8.953395. The phantom
+partials' lines make −0.009, +0.010 and −0.023 dB of it: with every phantom
+gain at zero, 0.4.18 reads −9.057675, −8.091657 and −8.930175 VU. Every
+preset's loudest chords stay under their approved ceilings, and no sample
+passes the −1.5 dBFS ceiling.
+
+Asked whether to accept these readings and merge, to merge after listening to
+the phantom partials' A/B set, or to merge 0.4.16 and 0.4.17 without them, the
+owner chose to accept them and merge now. The choice came ahead of the
+listening set, so no letter is recorded for the phantom partials.
+`Tests/Fixtures/dynamics/ApprovedLevels.h` now holds the three typical
+readings to six decimals. `Keyra.FactoryDynamics` still fails as on 0.4.17:
+1,049 of its 2,120 pairs sit under their step floors (1,048 on 0.4.17), and
+the same six chords pass its maximum levels. Its floors and limits are
+unchanged.
