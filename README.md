@@ -67,12 +67,16 @@ fault reported at the Hamamatsu's C4 struck at 127. The noise between the
 partials is now measured from the recordings by the median in every band, as
 it already was under the fundamental, and so passes over the phantom partials
 a hard strike adds there ([decisions](Docs/decisions.md), 2026-11-04).
-A chord's notes now add at other angles, so with the Mic at 1 each tube is
-re-pinned to keep typical playing at the pair's level: one note through the
-tube alone moves +0.27 dB on the Kakegawa grand, +0.55 on the upright, −0.42
-on the Hamamatsu, −0.53 on the Hamburg and +0.22 on the New York. Six presets'
-typical playing moves by at most 0.2 dB and the loudest chords by at most
-0.14 dB, which the owner accepted as the new approved levels.
+A chord's notes now add at other angles and the keys between recorded
+pitches read differently on Reason's meter, so each piano's output and tube
+are re-pinned to keep its default sound and its tube at their earlier
+readings: a recorded pitch's partials play 0.07 dB quieter on the Kakegawa
+grand, 0.24 on the upright, 0.20 on the Hamburg and 0.36 on the New York, and
+0.14 dB louder on the Hamamatsu, and one note through the tube alone moves
++0.23, +0.46, −0.40, −0.63 and +0.09 dB. Against 0.4.14's approved levels,
+Felt Upright's typical playing is 0.44 dB louder, every other preset's within
+0.12 dB, and four presets' loudest chords up to 0.16 dB higher, which the
+owner accepted as the new approved levels.
 
 ### 0.4.14 — 2026-11-03 — chords sound as their notes do
 
@@ -1073,7 +1077,7 @@ notes every fourth semitone and eight chords at velocities 70, 90 and 110
 for typical playing, and the chords at 127 for the loudest. Each piano's
 output scale brings its default sound's typical playing to −9 VU at the
 default Output, where the portfolio's newer instruments play; the other
-presets without felt read from −10.9 to −8.0 VU, Three Cities −10.4 VU. The
+presets without felt read from −11.0 to −8.1 VU, Three Cities −10.2 VU. The
 half-drive response chosen for 0.4.11 applies at factory Output. The level
 before the portfolio guard is halved and the level after it doubled. A short
 stereo gain curve protects the restored signal when an attack crosses the
@@ -1214,8 +1218,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   nine of them at its softest layer, and plays at every velocity on every
   piano: the grands' libraries hold one take of each note, so their own
   spread is unmeasured.
-- The felt presets read 7 to 9 dB under the others on the meter (Felt
-  Nocturne −18.1 VU, Felt Upright −15.9 VU): the felt stops each note within
+- The felt presets read 6 to 9 dB under the others on the meter (Felt
+  Nocturne −18.2 VU, Felt Upright −15.4 VU): the felt stops each note within
   a fraction of a second, so the meter's 300 ms holds less of it, while its
   attack peaks as high as the others'. Raising them to −9 VU would press
   every hard note into the limiter. The 0.4.11 factory response restores the hard-chord

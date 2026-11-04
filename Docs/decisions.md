@@ -2747,3 +2747,45 @@ decay 2.281 → 2.282 dB/s, pitch 0.190 → 0.190 cents and attack rise 4.080 �
 4.080 ms; the two edge cases' broad bands 4.659 → 4.665 dB, every other figure
 unchanged. No case moves by more than 0.033 dB or 0.062 ms. The in-between fix
 leaves these recorded pitches unchanged, so the refit accounts for all of it.
+
+## 2026-11-04 — the levels after the blend between pitches and the noise refit
+
+The two entries above move `Keyra.Levels`. At the shipping output and tube
+scales the five default sounds read 0.07 dB louder (Kakegawa), 0.24 (upright),
+0.20 (Hamburg) and 0.36 (New York), and 0.14 dB quieter on the Hamamatsu.
+Nearly all of it is the blend: with the blend alone every default sound and
+every preset's typical playing reads within 0.04 dB of its reading with both.
+The blend leaves every recorded pitch as it was, so its movement is in the
+keys between them.
+
+Each piano's `outputScale` and `tubeScale` are re-pinned so that its default
+sound and its tube read, to the hundredth of a dB, what they read before both
+changes: −9.06, −9.12, −8.99, −8.93 and −9.09 VU, and −9.07, −8.99, −9.98,
+−9.17 and −9.02 VU through the tubes (.7680 → .7615 and 1.5619 → 1.5671,
+2.3474 → 2.2837 and 2.2468 → 2.2864, 2.9873 → 3.0341 and 1.2426 → 1.2250,
+2.3152 → 2.2622 and 1.4988 → 1.5176, .6823 → .6543 and 1.7668 → 1.8141). A
+recorded pitch's partials therefore play 0.07 dB quieter on the Kakegawa
+grand, 0.24 on the upright, 0.20 on the Hamburg and 0.36 on the New York, and
+0.14 dB louder on the Hamamatsu; through the tube alone they move by −0.05,
+−0.09, +0.01, −0.09 and −0.13 dB.
+
+Seven presets then read off their approved levels: typical playing on Felt
+Upright by +0.44 dB (−15.86 → −15.42 VU), Three Cities +0.10, Pop Upright
+−0.09 and Warm Walnut −0.09, and the loudest chords rise over their approved
+ceilings on Felt Nocturne by +0.05 dB, Open Strings +0.03, Warm Walnut +0.02
+and the Kakegawa Grand +0.01. No sample passes the −1.5 dBFS ceiling. Felt
+Upright's rise is not one key's: struck chromatically from A0 to C8 at
+velocity 90 with its felt and without, the upright's keys keep the steps
+between neighbours they had, over 3 dB at 12 and 5 places (11 and 6 before),
+each within 1.1 dB of what it was. No Output trim brings Warm Walnut or the
+Kakegawa Grand back to both of its approved readings: its loudest chords need
+a larger cut than its typical playing allows. Asked whether to accept these
+readings and merge, accept them and merge after listening, or drop both fixes,
+the owner chose to accept them and merge, and
+`Tests/Fixtures/dynamics/ApprovedLevels.h` now holds the eight readings to six
+decimals. `Keyra.FactoryDynamics` still fails, as it did before both changes:
+1,048 of its 2,120 pairs sit under their step floors (988 after the stereo
+fix, 588 on main), and 6 chords pass its maximum levels (11 after the stereo
+fix), all the Kakegawa grand's: its loudest reading above, and through its
+tube the chords struck at 101 by up to +0.47 dB and its velocity ladder by
++0.07 dB. Its floors and limits are unchanged.
