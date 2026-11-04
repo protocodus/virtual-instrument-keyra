@@ -126,6 +126,9 @@ private:
   friend struct PitchBlendTestObserver;
   // The native phantom test reads each key's phantom partials' state.
   friend struct PhantomTestObserver;
+  // The native glide test reads each key's pitch glide and its voices'
+  // tuning.
+  friend struct GlideTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for

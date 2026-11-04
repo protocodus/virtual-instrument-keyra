@@ -8,6 +8,7 @@
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredPhantoms.h"
+#include "MeasuredGlide.h"
 #include "MeasuredUprightData.h"
 #include "ForteOutput.h"
 #include <algorithm>
@@ -24,6 +25,13 @@ constexpr double pi=3.14159265358979323846;
 // partial's exact double-precision state is carried from chunk to chunk and
 // the float lanes only ever run one chunk from it.
 constexpr int maxVoices=128, maxPartials=128, chunk=32, sineSize=4096;
+// A key's voices retune to its pitch glide whenever it has moved by this
+// many cents, so their partials stay within 0.05 cents of it, where
+// listeners need a cent or more to tell two steady pitches apart. Over ten
+// fortissimo strikes on the upright's bass and middle, retuning at every
+// chunk took 25 % more instructions than no glide, and this step 0.4 %
+// (2026-11-04).
+constexpr double glideStep=.05;
 constexpr int lanes=4; // a partial's measured lanes, one per vector lane
 namespace grand=measured::grand;
 namespace upright=measured::upright;
@@ -105,7 +113,8 @@ double releaseBalanceCapDb(double requestedDb,double referenceDb,double tracking
 // scale of its levels and how its soft pedal works (unaCorda: the hammers
 // shift along the strings, as a grand's do, rather than move toward them).
 // Tables over the recorded pitches hold a row per pitch; one without pedal
-// recordings has no pedal knocks.
+// recordings has no pedal knocks. Its strings' pitch glide
+// (MeasuredGlide.h) is fitted from its recordings like its phantom partials.
 struct Model {
   int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;const measured::Phantom* phantoms;
@@ -119,6 +128,7 @@ struct Model {
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
   double outputScale,tubeScale;
   bool unaCorda;
+  measured::Glide glide;
 };
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),grand::phantoms.data(),
@@ -158,7 +168,8 @@ constexpr Model models[]{
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
    1.5671,
-   true},
+   true,
+   grand::glide},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
@@ -190,7 +201,8 @@ constexpr Model models[]{
    // (responseAt) keeps the two medians within 1 dB of each other.
    2.2837,
    2.2864,
-   false},
+   false,
+   upright::glide},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),kawai::phantoms.data(),
    kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
    static_cast<int>(grand::partials.size()+upright::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()),
@@ -228,7 +240,8 @@ constexpr Model models[]{
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
    // it to -10.10; its loudest chords through the tube read -0.14 VU.
    1.2250,
-   true},
+   true,
+   kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
    hamburg::partials.data(),hamburg::extras.data(),
    static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()),
@@ -249,7 +262,8 @@ constexpr Model models[]{
    // the pair's (Tools/KeyraLevels.cpp).
    2.2622,
    1.5176,
-   true},
+   true,
+   hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),
    newyork::partials.data(),newyork::extras.data(),
    static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()),
@@ -269,7 +283,8 @@ constexpr Model models[]{
    // Typical playing at -9 VU and the tube at the pair's, as above.
    .6543,
    1.8141,
-   true},
+   true,
+   newyork::glide},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
 template<std::size_t A,std::size_t P> constexpr bool rowPerPitch(const std::array<measured::Anchor,A>& anchors,const std::array<measured::Phantom,P>& phantoms) noexcept {
@@ -534,6 +549,7 @@ struct Voice {
   int count=0,note=60,channel=0;
   std::uint64_t serial=0;
   double damper=0,contact=0,appliedContact=-1,appliedMute=-1;
+  double glide=0; // cents its partials are tuned sharp by
   bool active=false,retune=false;
 };
 struct Channel {
@@ -1009,6 +1025,13 @@ double keyPhantom(const Model& model,int note) noexcept {
   const auto& a=model.phantoms[upper-1];const auto& b=model.phantoms[upper];
   return mix(a.gain,b.gain,std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note))));
 }
+// A key's pitch glide, cents per unit of its partials' power in the
+// recordings' units: the piano's law (Tools/fit_glide.py) at the key, held
+// at the outermost pitches it was measured on.
+double keyGlide(const Model& model,int note) noexcept {
+  const auto& g=model.glide;
+  return g.cents*std::exp2(g.perOctave*(std::max(g.low,std::min(g.high,note))-60)/12.);
+}
 // A key's stiffness B, between the recorded pitches around it like its pitch.
 double keyStiffness(const Model& model,int note) noexcept {
   const int upper=upperAnchor(model,note);
@@ -1103,6 +1126,10 @@ struct Engine::Impl {
   std::array<bool,keyCount> phantomOn{};
   std::array<double,keyCount> keyEnergy{};
   std::array<Square,keyCount> phantom{};
+  // Each key's pitch glide on the strings as built, cents per unit of its
+  // partials' power in the output's units, and in cents at the last chunk
+  // boundary: its strings' tension follows their energy.
+  std::array<double,keyCount> builtGlide{},glideCents{};
   // Through a chunk, each key's first sounding voice in the pool and each
   // voice's next on its key (-1 for none).
   std::array<int,keyCount> keyVoice{};
@@ -1287,6 +1314,10 @@ struct Engine::Impl {
     // there.
     for(int k=0;k<keyCount;++k)
       builtPhantom[k]=static_cast<float>(fold(share.strings,[&](int p){return keyPhantom(models[p],k+21)/models[p].outputScale;},pick));
+    // A key's glide multiplies its partials' power, so in the output's units
+    // it is the recordings' over the square of the scale.
+    for(int k=0;k<keyCount;++k)
+      builtGlide[k]=fold(share.strings,[&](int p){return keyGlide(models[p],k+21)/(models[p].outputScale*models[p].outputScale);},pick);
     // The open strings are the keys' own: each partial where a strike of its
     // key plays it, decaying according to the built piano's scale length and
     // bridge impedance when the full damper bank is lifted.
@@ -1415,6 +1446,7 @@ struct Engine::Impl {
   void silenceStrings() noexcept {
     for(int j=0;j<halo;++j){haloRing[j].q=haloRing[j].p=haloPrompt[j].q=haloPrompt[j].p=0;}
     phantomOn.fill(false);for(auto& q:phantom)q.warm=false;
+    glideCents.fill(0);
     for(auto& bank:open){bank.re=bank.im=V4{};bank.active=false;bank.appliedOpenness=bank.appliedMute=bank.appliedPedalOpenness=-1;}
   }
   double stringResidue() const noexcept {
@@ -1727,7 +1759,11 @@ struct Engine::Impl {
       contact=std::min(contact,std::max(voice.contact,channel.smoothedMute*channel.smoothedMute));
       const bool damping=voice.contact!=voice.appliedContact||channel.smoothedMute!=voice.appliedMute;
       voice.appliedContact=voice.contact;voice.appliedMute=channel.smoothedMute;
-      const double ratio=voice.retune?tuningRatio(voice.channel):0;
+      // The strings play sharp in proportion to their energy (Tools/fit_glide.py):
+      // a key's voices retune to its glide at the last boundary whenever it
+      // has moved by glideStep.
+      if(std::abs(glideCents[key]-voice.glide)>=glideStep){voice.glide=glideCents[key];voice.retune=true;}
+      const double ratio=voice.retune?tuningRatio(voice.channel)*std::exp2(voice.glide/1200):0;
       double energy=0;
       for(int k=0;k<voice.count;){auto& partial=voice.partials[k];
         if(voice.retune)tunePartial(partial,ratio);
@@ -1779,6 +1815,7 @@ struct Engine::Impl {
     // lines' power in both channels is at most (g e)^2 where no two of them
     // fall together, and lines that do beat about the sum of theirs.
     for(int k=0;k<keyCount;++k){const double ge=phantomGain[k]*keyEnergy[k];phantomOn[k]=ge*ge>=1e-12;}
+    for(int k=0;k<keyCount;++k)glideCents[k]=builtGlide[k]*keyEnergy[k];
   }
   // A body mode's level (dB) and phase on the built piano at a part's shares
   // w, each piano's from get(p, level, phase) for its first counts[p] modes:
@@ -1885,7 +1922,7 @@ struct Engine::Impl {
       }
     }
     auto& voice=voices[chosen];voice.active=true;voice.note=note;voice.channel=ch;
-    voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
+    voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.glide=0;voice.retune=false;
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
     phantomGain[note-21]=builtPhantom[note-21];phantomOn[note-21]=phantomGain[note-21]>0;
     // The soft pedal works through the action. A grand's shifts the hammers

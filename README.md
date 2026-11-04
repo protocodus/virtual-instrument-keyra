@@ -43,6 +43,16 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.19 — 2026-11-04 — the upright's pitch glide
+
+A struck string's tension rises with its energy, so it starts sharp and
+settles as it decays. The upright's recordings show it, and a key on the
+upright now plays sharp in proportion to its partials' power: at velocity
+127, 50 ms after the strike, up to 8 cents from A0 to B1, 4.4 from C2 to F3
+and under 1.3 from F♯3 up, and at velocity 64 under a cent anywhere. The
+other four pianos' recordings do not show one, so they play none
+([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+
 ### 0.4.18 — 2026-11-04 — phantom partials
 
 A key's partials now also sound the lines their square makes, at the sums
@@ -684,6 +694,17 @@ A6 on the grand, E5 on the upright, C5 on the Hamamatsu, F♯4 on the Hamburg
 and F6 on the New York; beyond them it fades to none
 ([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
 
+A string's mean tension rises with the square of its slope, so a struck
+string plays sharp and settles as it decays (pitch glide). The upright's
+train takes show it: from 50 ms to a second after the onset, a loud take
+glides in proportion to how much its partials' power falls, by a law that
+grows 2.4 times per octave down. A key on the upright plays sharp by that law
+times its partials' power, and its voices retune whenever the key's glide
+has moved by 0.05 cents; at velocity 127 a C1 is 7.9 cents sharp 50 ms after
+the strike and 3.2 cents at 0.35 s. The other four pianos' takes do not
+decide a glide, so they play none, and the open strings do not glide
+([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, each ringing in two stages that add, a fast
 one over the first 0.4 s and then one about a fifth as fast, so the body
@@ -1155,6 +1176,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   partials. The square's rise at a strike passes the DC high-pass as a pulse
   under 120 Hz, 42 to 50 dB under a forte chord, which no take measures
   ([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
+- The pitch glide is one law per piano, read on the upright's loud takes from
+  50 ms to a second after the onset: its dev takes lean the law's way but are
+  too few and too noisy to confirm it, and before 50 ms it plays the law
+  unmeasured. It follows the output's power, which stands for the strings'
+  energy only as far as the board radiates the partials alike, so Brightness
+  also scales it. The other pianos' takes do not decide one, the New York
+  grand's falling just short
+  ([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
 - Of the pedals only the grand's sustain pedal going down, alone, is scored
   against recordings, its strings' ring and fall (above). The recordings do
   not document pedal positions or timings, so half pedalling, repedalling and
