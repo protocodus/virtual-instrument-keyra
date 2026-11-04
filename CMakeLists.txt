@@ -274,6 +274,10 @@ if(BUILD_TESTING)
     add_executable(KeyraPitchBlendTests Tests/pitch_blend_tests.cpp)
     target_include_directories(KeyraPitchBlendTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
     target_compile_features(KeyraPitchBlendTests PRIVATE cxx_std_17)
+    # It includes KeyraEngine.cpp to read the series a strike plays, so GCC
+    # finds the engine's internal-linkage types in an included file and warns
+    # about every class that holds one.
+    target_compile_options(KeyraPitchBlendTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
     add_test(NAME Keyra.PitchBlend COMMAND KeyraPitchBlendTests)
 
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
