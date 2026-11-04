@@ -101,7 +101,7 @@ void identity(){
    const auto a=render(engine,model,note,velocity,soft,false,-1,-1,6144),b=render(engine,model,note,velocity,soft,true,-1,-1,6144);
    require(bitEqual(a,b),"short full-waveform identity failed: "+context(model,note,velocity,soft));++shortWaves;}
  }
- require(anchors>0&&neutral>0&&shortWaves==12,"identity coverage missing");
+ require(anchors>0&&neutral>0&&shortWaves==2*keyra::pianoCount,"identity coverage missing");
  std::cout<<"anchor_edge_states="<<anchors<<" all_key_native_layer_soft0_states="<<neutral<<" short_full_waveform_controls="<<shortWaves<<'\n';
 }
 struct Crossing{int model,left,right,order;double velocity,root;};
@@ -113,8 +113,7 @@ constexpr Crossing cases[]{
  {1,68,70,1,15,.29893756496995544},
  {2,99,105,1,27,.0038094262021510865},
  {3,38,45,2,123,.7962699828359957},
- {4,99,104,1,117,.004172208383523488},
- {5,90,93,1,116,.4213437915031819}
+ {4,99,104,1,117,.004172208383523488}
 };
 void continuity(){
  keyra::Engine engine(sr);std::size_t rejectedLegacy=0,negativeControls=0;
@@ -142,7 +141,7 @@ void continuity(){
    else {require(!legacyPass,"legacy rank mutation escaped continuity assertion: "+context(c.model,note,c.velocity,soft));++rejectedLegacy;}
   }
  }
- require(rejectedLegacy==5&&negativeControls==1,"mutation/negative-control coverage missing");
+ require(rejectedLegacy==4&&negativeControls==1,"mutation/negative-control coverage missing");
  std::cout<<"legacy_grand_mutations_rejected="<<rejectedLegacy<<" upright_negative_controls="<<negativeControls<<" declared_numerical_allowance="<<allowance<<'\n';
 }
 int main(int argc,char**argv){try{std::cout<<std::setprecision(17);require(argc==2,"mode required");if(std::string(argv[1])=="identity")identity();else if(std::string(argv[1])=="continuity")continuity();else throw std::runtime_error("unknown mode");return 0;}catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

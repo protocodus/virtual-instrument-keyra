@@ -35,7 +35,7 @@ namespace release_audit {inline bool enabled=true,suppress=false;inline int elig
 #include "DSP/KeyraEngine.cpp"
 int sr=48000,blockSize=127;
 struct Case {std::string id,kind;int model,note,velocity,extra,steady;double held;std::uint32_t seed;};
-struct Render {std::vector<float> audio;double cap[6]{},requested=0,requested2=0,compressor=1,limiter=0;int eligible=0;};
+struct Render {std::vector<float> audio;double cap[keyra::pianoCount]{},requested=0,requested2=0,compressor=1,limiter=0;int eligible=0;};
 struct Event {int frame,kind,a,b,ch;};
 std::uint64_t hash(const std::vector<float>&x){std::uint64_t h=14695981039346656037ull;for(float f:x){std::uint32_t b;std::memcpy(&b,&f,4);for(int i=0;i<4;++i){h^=(b>>(i*8))&255;h*=1099511628211ull;}}return h;}
 Render render(keyra::Engine&e,const Case&c,bool enabled,bool suppress){
@@ -72,7 +72,7 @@ Render render(keyra::Engine&e,const Case&c,bool enabled,bool suppress){
   for(int i=0;i<count;++i)if(frame+i>=latency){const int at=frame+i-latency;result.audio[2*at]=l[i];result.audio[2*at+1]=r[i];}frame+=count;
  }
 #ifndef RELEASE_BASELINE
- for(int i=0;i<6;++i)result.cap[i]=e.impl->channels[0].releaseCapDb[i][c.note-21];
+ for(int i=0;i<keyra::pianoCount;++i)result.cap[i]=e.impl->channels[0].releaseCapDb[i][c.note-21];
 
 #endif
  result.eligible=release_audit::eligible;return result;
@@ -94,26 +94,26 @@ int main(){try{
   else require(r*std::pow(10.,(actual+c)/20)<=r80*std::pow(10.,(reference+distance)/20)*(1+256*std::numeric_limits<double>::epsilon()),"calibrated reference bound");
   ++mathCases;
  }
- for(int model=0;model<6;++model){
+ for(int model=0;model<keyra::pianoCount;++model){
   keyra::Engine e(48000);keyra::Parameters p;p.build=keyra::measuredBuild(static_cast<keyra::Piano>(model));p.gain=.07f;
   release_audit::enabled=true;release_audit::suppress=false;
   e.setParameters(p);e.reset();e.noteOn(100,8/127.f,1);e.noteOn(100,127/127.f,2);
   const auto cap=e.impl->channels[0].releaseCapDb;require(e.impl->channels[0].presses[79]==1&&e.impl->channels[1].presses[79]==1,"channel press ownership");
   const double requested=keyra::responseDb(127*double(8/127.f))+firstDraw();
-  for(int m=0;m<6;++m){const auto& md=keyra::models[m];const double v=e.impl->channels[0].velocity[m][79],v80=static_cast<float>(keyra::layerAt(md,ref)/127.);
+  for(int m=0;m<keyra::pianoCount;++m){const auto& md=keyra::models[m];const double v=e.impl->channels[0].velocity[m][79],v80=static_cast<float>(keyra::layerAt(md,ref)/127.);
    const double ratio=keyra::trackingGain(md.releaseTracking,v)/keyra::trackingGain(md.noteTracking,v),referenceRatio=keyra::trackingGain(md.releaseTracking,v80)/keyra::trackingGain(md.noteTracking,v80);
    const double expected=std::min(0.,requested-ref+20*std::log10(referenceRatio/ratio));
    require(std::abs(cap[m][79]-expected)<=4*std::numeric_limits<float>::epsilon()*std::max(1.,std::abs(expected)),"cached cap differs from independent strike oracle");
    require(e.impl->channels[1].releaseCapDb[m][79]==0,"hard other channel was capped");
   }
-  p.build.action.fill(0);p.build.action[(model+1)%6]=1;e.setParameters(p);require(e.impl->channels[0].releaseCapDb==cap,"action change rewrote strike reference");
+  p.build.action.fill(0);p.build.action[(model+1)%keyra::pianoCount]=1;e.setParameters(p);require(e.impl->channels[0].releaseCapDb==cap,"action change rewrote strike reference");
   release_audit::eligible=0;e.noteOff(100,1);require(release_audit::eligible==1&&e.impl->channels[1].presses[79]==1,"release crossed channel");e.noteOff(100,2);require(release_audit::eligible==2,"second channel missing release");
   e.reset();for(const auto& ch:e.impl->channels)for(const auto& caps:ch.releaseCapDb)for(float c:caps)require(c==0,"reset left stale cap");
   e.noteOn(100,1);e.noteOn(100,8/127.f);require(e.impl->channels[0].presses[79]==2&&e.impl->channels[0].releaseCapDb[model][79]<0,"latest soft strike not stored");
   release_audit::eligible=0;e.noteOff(100);require(release_audit::eligible==0,"first repeated release fired");e.noteOff(100);require(release_audit::eligible==1,"last repeated release missing");
  }
  for(int rate:{44100,48000,192000}){sr=rate;keyra::Engine e(rate);
-  for(int m=0;m<6;++m)for(int n:{28,52,100})for(int v:{8,127}){
+  for(int m=0;m<keyra::pianoCount;++m)for(int n:{28,52,100})for(int v:{8,127}){
    Case c{"case","pure",m,n,v,0,0,.2,1};auto a=render(e,c,false,false),b=render(e,c,true,false),zero=render(e,c,false,true),cz=render(e,c,true,true);const int off=std::lround(c.held*sr),end=a.audio.size()/2;
    require(std::memcmp(a.audio.data(),b.audio.data(),off*2*sizeof(float))==0,"pre-release audio changed");require(zero.audio==cz.audio,"cap leaked outside release action");
    require(a.compressor==1&&b.compressor==1&&a.limiter==0&&b.limiter==0,"causal test output guard active");
@@ -121,12 +121,12 @@ int main(){try{
    else {const double before=diffPower(a.audio,zero.audio,off,end),after=diffPower(b.audio,zero.audio,off,end);require(before>0&&after<before,"causal action did not attenuate");}
    for(float f:b.audio)require(std::isfinite(f),"nonfinite release audio");++audioCases;
   }
-  for(int m=0;m<6;++m){Case c{"partition","pure",m,100,8,0,0,.2,1};blockSize=127;auto a=render(e,c,true,false);for(int block:{1,257}){blockSize=block;auto b=render(e,c,true,false);require(a.audio==b.audio,"block partition changed release");++partitions;}blockSize=127;}
+  for(int m=0;m<keyra::pianoCount;++m){Case c{"partition","pure",m,100,8,0,0,.2,1};blockSize=127;auto a=render(e,c,true,false);for(int block:{1,257}){blockSize=block;auto b=render(e,c,true,false);require(a.audio==b.audio,"block partition changed release");++partitions;}blockSize=127;}
  }
  sr=48000;keyra::Engine e(sr);
- for(int m=0;m<6;++m){
+ for(int m=0;m<keyra::pianoCount;++m){
   for(const std::string kind:{"sustain","sostenuto","pedal_only","mixed_after","repeat_soft_last","repeat_hard_last","channels","toggle_on","toggle_off","steady"}){
-   Case c{"semantics",kind,m,kind=="pedal_only"?52:100,8,(m+1)%6,kind=="steady"||kind=="toggle_off",.2,1};
+   Case c{"semantics",kind,m,kind=="pedal_only"?52:100,8,(m+1)%keyra::pianoCount,kind=="steady"||kind=="toggle_off",.2,1};
    if(kind=="sustain"||kind=="sostenuto")c.note=52;
    auto a=render(e,c,false,false),b=render(e,c,true,false),zero=render(e,c,false,true),cz=render(e,c,true,true);
    require(zero.audio==cz.audio,"semantic cap leaked outside release");

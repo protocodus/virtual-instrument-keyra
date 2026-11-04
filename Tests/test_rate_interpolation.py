@@ -213,9 +213,10 @@ class RateInterpolation(unittest.TestCase):
                 binaries.append(binary)
             print(subprocess.check_output([str(binaries[0])], text=True).strip())
             audio = [subprocess.check_output([str(binary), 'audio'], text=True) for binary in binaries]
-            self.assertEqual(len(audio[0].splitlines()), 54)
+            # Three recorded pitches at three velocities for each of the five pianos.
+            self.assertEqual(len(audio[0].splitlines()), 45)
             self.assertEqual(audio[0], audio[1], 'native recorded-anchor audio changed')
-            print('bit-identical native anchor renders=54')
+            print('bit-identical native anchor renders=45')
 
 
 if __name__ == '__main__':

@@ -60,23 +60,25 @@ void warm(keyra::Engine& e,int frames){
   std::array<float,127> l{},r{};for(int at=0;at<frames;){const int n=std::min(127,frames-at);e.process(l.data(),r.data(),n);at+=n;}
 }
 struct Event{int at,choice;};
+// A choice is an offset from the base piano, or both of its neighbours at once.
+constexpr int mixedChoice=keyra::pianoCount;
 std::array<Event,6> events(double sr){return {{{0,1},{3,1},{int(std::lround(.006*sr))+7,3},
-  {int(std::lround(.019*sr))+13,6},{int(std::lround(.041*sr))+29,5},{int(std::lround(.08*sr))+1,0}}};}
+  {int(std::lround(.019*sr))+13,mixedChoice},{int(std::lround(.041*sr))+29,keyra::pianoCount-1},{int(std::lround(.08*sr))+1,0}}};}
 keyra::Mix selection(int base,int choice){
-  keyra::Mix w{};if(choice==6){w[(base+1)%6]=.5f;w[(base+5)%6]=.5f;}
-  else w[(base+choice)%6]=1;return w;
+  keyra::Mix w{};if(choice==mixedChoice){w[(base+1)%keyra::pianoCount]=.5f;w[(base+keyra::pianoCount-1)%keyra::pianoCount]=.5f;}
+  else w[(base+choice)%keyra::pianoCount]=1;return w;
 }
 void change(keyra::Parameters& p,int base,int choice,bool noise){
   if(noise)p.build.soundboard=selection(base,choice);else p.build.hammers=selection(base,choice);
 }
 double tubeTarget(const keyra::Parameters& p){
-  double logarithm=0;for(int k=0;k<6;++k)logarithm+=p.build.hammers[k]*std::log(keyra::models[k].tubeScale);
+  double logarithm=0;for(int k=0;k<keyra::pianoCount;++k)logarithm+=p.build.hammers[k]*std::log(keyra::models[k].tubeScale);
   // Pure endpoint folding retains the model's original value exactly.
-  for(int k=0;k<6;++k)if(p.build.hammers[k]==1)return keyra::models[k].tubeScale;
+  for(int k=0;k<keyra::pianoCount;++k)if(p.build.hammers[k]==1)return keyra::models[k].tubeScale;
   return std::exp(logarithm);
 }
 double noiseTarget(const keyra::Parameters& p,int b){
-  double coherence=0;for(int k=0;k<6;++k)coherence+=p.build.soundboard[k]*keyra::models[k].noiseBands[b].coherence;
+  double coherence=0;for(int k=0;k<keyra::pianoCount;++k)coherence+=p.build.soundboard[k]*keyra::models[k].noiseBands[b].coherence;
   return .5*std::acos(std::max(0.f,std::min(1.f,static_cast<float>(coherence))));
 }
 void tubeTrajectory(int model,double sr){
@@ -195,8 +197,8 @@ void lifecycle(int model,double sr){
   trap=false;
 }
 void staticAudio(){
-  for(double sr:{44100.,48000.,192000.})for(int model=0;model<6;++model)for(float mic:{0.f,.35f,1.f})for(bool mixed:{false,true}){
-    keyra::Engine e(sr);auto p=parameters(model,false);p.mic=mic;if(mixed)p.build=keyra::buildToward(static_cast<keyra::Piano>(model),static_cast<keyra::Piano>((model+1)%6),.5,.5,.5,.5,0,0,0);start(e,p);
+  for(double sr:{44100.,48000.,192000.})for(int model=0;model<keyra::pianoCount;++model)for(float mic:{0.f,.35f,1.f})for(bool mixed:{false,true}){
+    keyra::Engine e(sr);auto p=parameters(model,false);p.mic=mic;if(mixed)p.build=keyra::buildToward(static_cast<keyra::Piano>(model),static_cast<keyra::Piano>((model+1)%keyra::pianoCount),.5,.5,.5,.5,0,0,0);start(e,p);
     std::array<float,127> l{},r{};std::uint64_t h=14695981039346656037ull;trap=true;
     for(int block=0;block<64;++block){if(block==32)for(int n:{21,36,60,84,96})e.noteOff(n);
       e.process(l.data(),r.data(),127);for(int i=0;i<127;++i){h=hash(h,l[i]);h=hash(h,r[i]);}}
@@ -206,7 +208,7 @@ void staticAudio(){
 int main(int argc,char**argv){try{
   std::cout<<std::setprecision(17);const std::string mode=argc>1?argv[1]:"all";
   if(mode=="static"){staticAudio();require(allocations==0,"static callbacks allocate");return 0;}
-  for(double sr:{44100.,48000.,192000.})for(int model=0;model<6;++model){
+  for(double sr:{44100.,48000.,192000.})for(int model=0;model<keyra::pianoCount;++model){
     if(mode=="all"||mode=="tube")tubeTrajectory(model,sr);
     if(mode=="all"||mode=="noise")noiseTrajectory(model,sr);
     if(mode=="all"){lifecycle(model,sr);for(bool noise:{false,true})require(partitioned(model,sr,noise,false)==partitioned(model,sr,noise,true),"build smoother depends on block partition");}
@@ -250,10 +252,10 @@ class BuildControlSmoothingTests(unittest.TestCase):
                 self.assertNotEqual(mutation.returncode, 0, mode + ' raw target escaped the audio oracle')
                 self.assertIn(mode + ' audio oracle mismatch', mutation.stderr)
             audio = [subprocess.check_output([str(binary), 'static'], text=True) for binary in binaries]
-            self.assertEqual(len(audio[0].splitlines()), 108)
+            self.assertEqual(len(audio[0].splitlines()), 90)
             self.assertEqual(audio[0], audio[1], 'static tube output changed')
             self.assertEqual(audio[0], audio[2], 'static noise output changed')
-            print('both audible-path mutations rejected; static waveform hashes identical=108')
+            print('both audible-path mutations rejected; static waveform hashes identical=90')
 
 
 if __name__ == '__main__':
