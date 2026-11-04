@@ -872,9 +872,12 @@ velocity, taking phases from the nearer pitch. A partial's lanes are paired by
 the share of the partial they carry, each pair as alike in decay as the
 pairing allows; a partial's stereo pickup moves
 between the two pitches' channel level differences in dB and takes its
-channel phase difference from the nearer pitch with its phases, and its level is
-set so that its power over the first second or so, its lanes' beating
-included, sits between the two pitches' in dB. C8 is left out: its strongest
+channel phase difference from the nearer pitch with its phases, so its lanes
+sum as one pitch's do; its right channel is then turned as a whole so that
+its lag behind the left over the first second or so moves between the two
+pitches' along the shorter arc. Its level is set so that its power over the
+same window, its lanes' beating included, sits between the two pitches' in
+dB. C8 is left out: its strongest
 components sit 90–100 cents above the stretch that F♯7 and A7 set and no
 partial series explains the recording, so the keys above A7 play A7's data on
 the stretch curve. Only fitted numbers enter the header; no recorded waveform

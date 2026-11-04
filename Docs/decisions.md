@@ -2522,3 +2522,40 @@ tests, which ran on Belmont's archive, now run on Hamburg's
 Belmont's authored WAVs used is gone. The other pianos' measurements, fits
 and factory dynamics rows are unchanged by the removal; the velocity masks
 are regenerated because they are tabulated over the pianos.
+
+## 2026-11-04 — a key between two pitches keeps a stereo image between theirs
+
+Reported by the owner on Pop Upright: "huge difference in tone between B2 and
+A#2 (127)". Found by measurement, not chosen by ear. A key between two
+recorded pitches took its partials' phases and channel phase difference from
+the nearer pitch (2026-10-28, to keep a partial's lanes from cancelling in
+the right channel), so every partial's whole stereo image switched at the
+pitches' midpoint. On the upright A2 holds its second partial 3.5 dB more out
+of phase between the microphones than in phase and C3 9.4 dB more in phase:
+A♯2 played A2's image and B2 C3's, so the octave partial in the sum of the
+channels jumped 7.3 dB from A♯2 to B2 at velocity 127. A Width under 75 %
+mixes that sum into each channel: at Pop Upright's 50 % the left channel's
+octave partial jumped 6.9 dB there. Each lane's right channel is now turned by one angle per partial so that
+the partial's lag of right behind left over the 50–750 ms window moves from
+one pitch's to the other's along the shorter arc as the key moves between
+them. All lanes turn alike, so they sum as one pitch's do and no channel's
+power changes at the default Width. Across A2 to C3 the interchannel angle
+of partials 1 to 4 at the in-between keys sits within 3.2° of the straight
+line between the pitches', where it missed it by 36 to 56° (`Keyra.Engine`,
+held to 20°), and the octave partial in the sum of the channels steps 5.3 and
+3.3 dB from A2 to A♯2 to B2 where it stepped 1.0 and 7.3 dB. Recorded pitches
+are unchanged; every key between two of them changes in its stereo image
+only, and in its level per channel only where Width is under 75 %. Against
+the recordings' dev cases, which are all between recorded pitches, every
+benchmark score but the onset rise and the level moves by 0.04 or less on
+the Hamamatsu, Hamburg and upright. The level error falls or stays: upright
+2.53 → 2.41 dB, Hamburg 1.89 → 1.83, Hamamatsu 4.34 unchanged, New York
+5.62 → 2.25.
+The onset rise error grows on three pianos (Hamamatsu 5.24 → 6.09 ms, upright
+5.74 → 6.17, Hamburg 3.77 → 4.00) and falls on the New York (8.63 → 8.19):
+turning the right channel moves where its first peaks fall, and at the
+Hamamatsu's D♯2 the 90 % point of the summed envelope moves between two early
+peaks of nearly equal height, while each channel's own rise changes by under
+2 ms. A lettered listening set of the reported keys went to the
+owner (`ab-2026-11-04-pop-upright-a2-c3`).
+

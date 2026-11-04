@@ -758,6 +758,24 @@ double windowPower(const PartialData& d) noexcept {
   }
   return sum;
 }
+// The partial's left channel times the conjugate of its right, summed over
+// every pair of its lanes in the same 50-750 ms window as windowPower. Its
+// angle is how far the right channel lags the left as the lanes sum there.
+Complex windowChannels(const PartialData& d) noexcept {
+  constexpr double from=.05,to=.75;
+  Complex sum{};
+  for(int j=0;j<lanes;++j)for(int k=0;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
+    const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
+    const Complex channels=x.left*Complex{y.right.re,-y.right.im};
+    const double re=std::exp(x.rate)+std::exp(y.rate),im=2*pi*(y.offset-x.offset);
+    const auto at=[&](double s){const double e=std::exp(-re*s);return Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
+    const Complex a=at(from),b=at(to),span{a.re-b.re,a.im-b.im};
+    const Complex z=phase*channels*span*Complex{re/(re*re+im*im),-im/(re*re+im*im)};
+    const double amplitude=std::pow(10.,(x.level+y.level)/20);
+    sum.re+=amplitude*z.re;sum.im+=amplitude*z.im;
+  }
+  return sum;
+}
 // Complex inner product in the same 50-750 ms window as windowPower.
 // Its phase aligns two complete partials, rather than independently turning
 // each lane through a cancellation at an intermediate velocity.
@@ -850,6 +868,23 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
     if(pa>0&&pb>0&&pd>0){
       const double gain=10*(mix(std::log10(pa),std::log10(pb),t)-std::log10(pd));
       for(auto& l:d.lane)l.level+=gain;
+    }
+    // The lanes' phases and channel angles come from the nearer anchor, so
+    // the partial's whole stereo image switched at the pitches' midpoint:
+    // on the upright, A2 holds its second partial 3.5 dB more out of phase
+    // between the microphones than in phase and C3 9.4 dB more in phase, and
+    // A#2 played A2's image while B2 played C3's: the octave partial in the
+    // sum of the channels jumped 7.3 dB in one semitone, which a Width under
+    // 75 % mixes into each channel as a change of tone. The right channel is
+    // turned instead so the lag it has behind the left over the window moves
+    // between the two pitches' along the shorter arc, as their power does.
+    // Turning every lane's right channel alike leaves the power unchanged.
+    const Complex ca=windowChannels(a),cb=windowChannels(b),cd=windowChannels(d);
+    if(std::hypot(ca.re,ca.im)>0&&std::hypot(cb.re,cb.im)>0&&std::hypot(cd.re,cd.im)>0){
+      const double from=std::atan2(ca.im,ca.re),to=std::atan2(cb.im,cb.re);
+      const double turn=std::atan2(cd.im,cd.re)-(from+t*std::remainder(to-from,2*pi));
+      const Complex r{std::cos(turn),std::sin(turn)};
+      for(auto& l:d.lane){l.right=l.right*r;l.angle+=turn;}
     }
   }
   return d;

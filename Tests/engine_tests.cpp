@@ -179,6 +179,23 @@ double levelDifference(const Audio& audio,double low,double high,bool whole=fals
   }
   return whole?10*std::log10(sumRight/sumLeft):difference;
 }
+// How far the right channel lags the left (degrees) over a band: the angle
+// of the left's spectrum times the right's conjugate, summed over its bins
+// (0.25 Hz apart, Hann window).
+double channelLag(const Audio& audio,double low,double high){
+  constexpr double pi=3.14159265358979323846;
+  const std::size_t frames=audio.size()/2;std::vector<double> w(frames);
+  for(std::size_t i=0;i<frames;++i)w[i]=.5-.5*std::cos(2*pi*i/(frames-1));
+  double re=0,im=0;
+  for(double frequency=low;frequency<=high;frequency+=.25){
+    const double c=std::cos(2*pi*frequency/48000),s=std::sin(2*pi*frequency/48000);
+    double phaseC=1,phaseS=0,lr=0,li=0,rr=0,ri=0;
+    for(std::size_t i=0;i<frames;++i){const double l=w[i]*audio[2*i],r=w[i]*audio[2*i+1];
+      lr+=l*phaseC;li+=l*phaseS;rr+=r*phaseC;ri+=r*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
+    re+=lr*rr+li*ri;im+=li*rr-lr*ri;
+  }
+  return std::atan2(im,re)*180/pi;
+}
 std::string timing(int count){
   std::array<double,3> onset{},cpu{},wall{};
   for(int run=0;run<3;++run){keyra::Engine e;e.setParameters(dry());
@@ -585,6 +602,30 @@ int main(int argc,char** argv){
     for(const int note:{51,75}){between(keyra::Piano::grand,keyra::measured::grand::anchors,note);
                                 between(keyra::Piano::upright,keyra::measured::upright::anchors,note);
                                 between(keyra::Piano::kawai,keyra::measured::kawai::anchors,note);}
+  }
+  {
+    // A key between two recorded pitches hears each partial's right channel
+    // lag the left by an angle between theirs, at its place between them
+    // along the shorter arc. The lanes' channels came from the nearer pitch,
+    // so the upright's A#2 played A2's stereo image and B2 C3's, and Pop
+    // Upright's narrower Width turned the jump into a change of tone: the
+    // first four partials missed their places by 36 to 56 degrees.
+    const std::array<int,4> keys{45,46,47,48};
+    std::array<std::array<double,4>,4> lag{};
+    for(int key=0;key<4;++key){
+      keyra::Engine e;e.setParameters(dryUpright());e.noteOn(keys[key],1.f);
+      auto audio=render(e,36000);audio.erase(audio.begin(),audio.begin()+4800);
+      const double f=440*std::pow(2.,(keys[key]-69)/12.);
+      for(int k=0;k<4;++k)lag[key][k]=channelLag(audio,(k+1)*f*.97,(k+1)*f*1.03);
+    }
+    for(int k=0;k<4;++k){
+      const double arc=std::remainder(lag[3][k]-lag[0][k],360.);
+      for(int key=1;key<3;++key){
+        const double missed=std::remainder(lag[key][k]-(lag[0][k]+arc*key/3),360.);
+        std::cout<<"upright partial="<<k+1<<" key="<<keys[key]<<" channel_lag_deg="<<lag[key][k]<<" missed_deg="<<missed<<'\n';
+        check(std::abs(missed)<20,"an interpolated pitch's partials lag between the channels as its place between its recorded neighbours");
+      }
+    }
   }
   {
     // A key between two recorded pitches plays about as loud as they do. Its
