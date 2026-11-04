@@ -411,7 +411,7 @@ struct alignas(16) Partial {
   V4 re{},im{},c{},s{};
   V4 leftRe{},leftIm{},rightRe{},rightIm{};
   Complex exact[lanes]{};          // state at the next chunk boundary
-  Complex natural[lanes]{};        // undamped per-sample rotation
+  Complex natural[lanes]{},naturalLeap[lanes]{}; // undamped rotation per sample and per chunk
   Complex step[lanes]{},leap[lanes]{}; // damped rotation per sample and per chunk
   double decay[lanes]{},hz[lanes]{};
   float baseLeftRe[lanes]{},baseLeftIm[lanes]{},baseRightRe[lanes]{},baseRightIm[lanes]{};
@@ -420,6 +420,9 @@ struct alignas(16) Partial {
   // The share of the partial's power the felt holds only loosely, which falls
   // at slowScale under contact where the rest falls at damperScale.
   double slowShare=0,slowScale=0;
+  // Each share's power factor over a chunk under the felt, kept with the
+  // base it was raised from: once a damper lands, the base holds still.
+  double fastBase=0,fastLeap=0,slowBase=0,slowLeap=0;
   double riseExact=0,riseStep=0,riseLeap=0; // d at the next chunk boundary, per sample and per chunk
   float riseRemaining=0,riseDecay=0;        // d's float copy, run one chunk from riseExact
   float riseSmoothed=0;                     // the rise through contactSmoothing
@@ -1133,7 +1136,8 @@ struct Engine::Impl {
   double tuningRatio(int ch) const noexcept {return parameters.tuning/440.*std::pow(2.,channels[ch].bend/12.);}
   void tunePartial(Partial& partial,double ratio) noexcept {
     for(int j=0;j<lanes;++j){const Complex r=rotation(partial.hz[j]*ratio);
-      partial.natural[j]={r.re*partial.decay[j],r.im*partial.decay[j]};}
+      partial.natural[j]={r.re*partial.decay[j],r.im*partial.decay[j]};
+      partial.naturalLeap[j]=power(partial.natural[j],chunk);}
     partial.targetAudibility=partial.frequency*ratio<sampleRate*.45?1.f:0.f;
   }
   void capture(int ch) noexcept {
@@ -1581,10 +1585,11 @@ struct Engine::Impl {
   // at its own rate, and the loosely held share is then more of what is left.
   void feltChunk(const Voice& voice,Partial& partial) const noexcept {
     const double m=channels[voice.channel].smoothedMute,mute=180*m*m/sampleRate*(.5+partial.frequency*.00015);
-    const double fast=std::pow(1+voice.contact*partial.damperScale+mute,-2.*chunk),
-                 slow=std::pow(1+voice.contact*partial.slowScale+mute,-2.*chunk),
-                 total=(1-partial.slowShare)*fast+partial.slowShare*slow;
-    setRotation(partial,std::pow(total,.5/chunk));
+    const double fastBase=1+voice.contact*partial.damperScale+mute,slowBase=1+voice.contact*partial.slowScale+mute;
+    if(fastBase!=partial.fastBase){partial.fastBase=fastBase;partial.fastLeap=std::pow(fastBase,-2.*chunk);}
+    if(slowBase!=partial.slowBase){partial.slowBase=slowBase;partial.slowLeap=std::pow(slowBase,-2.*chunk);}
+    const double fast=partial.fastLeap,slow=partial.slowLeap,total=(1-partial.slowShare)*fast+partial.slowShare*slow;
+    setRotation(partial,std::pow(total,.5/chunk),std::sqrt(total));
     // Once the firmly held share is 60 dB under the rest it no longer counts.
     partial.slowShare=std::min(1.,partial.slowShare*slow/total);
     if(partial.slowShare>.999999)partial.slowShare=1;
@@ -1605,12 +1610,19 @@ struct Engine::Impl {
     partial.slowShare=std::min(1.,std::pow(10.,(leftover.shareDb+leftover.shareSlopeDb*x)/10));
     partial.slowScale=std::exp(leftover.logRate+leftover.logRateSlope*x)/sampleRate;
   }
-  static void setRotation(Partial& partial,double damping) noexcept {
+  // damping per sample; chunkDamping, damping to the power chunk, per chunk.
+  static void setRotation(Partial& partial,double damping,double chunkDamping) noexcept {
     for(int j=0;j<lanes;++j){
       partial.step[j]={partial.natural[j].re*damping,partial.natural[j].im*damping};
-      partial.leap[j]=power(partial.step[j],chunk);
+      partial.leap[j]={partial.naturalLeap[j].re*chunkDamping,partial.naturalLeap[j].im*chunkDamping};
       setLane(partial.c,j,static_cast<float>(partial.step[j].re));setLane(partial.s,j,static_cast<float>(partial.step[j].im));
     }
+  }
+  static void setRotation(Partial& partial,double damping) noexcept {
+    static_assert((chunk&(chunk-1))==0,"a chunk's damping is squared up from a sample's");
+    double chunkDamping=damping;
+    for(int n=1;n<chunk;n*=2)chunkDamping*=chunkDamping;
+    setRotation(partial,damping,chunkDamping);
   }
   void updateWeights(Partial& partial) noexcept {
     const float g=partial.tint*partial.audibility;
@@ -1677,7 +1689,13 @@ struct Engine::Impl {
           setLane(partial.re,j,static_cast<float>(z.re));setLane(partial.im,j,static_cast<float>(z.im));
           e+=(z.re*z.re+z.im*z.im)*partial.energyWeight[j];}
         e*=partial.audibility*partial.audibility*partial.tint*partial.tint;
-        if(e<1e-15&&partial.targetAudibility==partial.audibility){partial=voice.partials[--voice.count];continue;}
+        // A partial 120 dB under a full-scale peak (power in the output's
+        // units under 1e-12) is dropped. Against 1e-15, dropping them changed
+        // no 100 ms window of the demos by more than -112 dBFS and no
+        // third-octave band in one by more than -114 dBFS, under the smallest
+        // step of 16-bit audio, and saved a quarter of the heaviest demos'
+        // work (2026-11-04).
+        if(e<1e-12&&partial.targetAudibility==partial.audibility){partial=voice.partials[--voice.count];continue;}
         energy+=e;
         if(voice.contact>0&&partial.slowShare>0&&partial.slowShare<1)feltChunk(voice,partial);
         else if(damping||voice.retune)setRotation(partial,dampingFactor(voice,partial));

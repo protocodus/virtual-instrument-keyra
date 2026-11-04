@@ -43,6 +43,15 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.16 — 2026-11-04 — a quarter less CPU on the heaviest demos
+
+A partial now stops once it falls 120 dB under full scale, where it stopped
+at 150 dB, and a damper's felt reuses its update while it rests on the
+strings. The four heaviest demos execute 22 to 28 % fewer instructions. The
+change to their sound stays under −112 dBFS in every 100 ms, and 27 dB under
+the music in every third-octave band where the music reaches −90 dBFS
+([benchmark](Docs/benchmarks/cpu-trims-2026-11-04.md)).
+
 ### 0.4.15 — 2026-11-04 — five pianos, no jump between recorded pitches, no hiss at forte
 
 The Belmont grand is removed at the owner's request, with its preset and its
@@ -1054,7 +1063,7 @@ CC121 and CC123 are honoured per channel. The
 ### Quality
 
 Quality sets how much of each strike plays. Full, the default, plays all of
-it. Balanced and Light keep a strike's partials, and the components beside
+it, each partial until it falls 120 dB under full scale. Balanced and Light keep a strike's partials, and the components beside
 them, only where they come within 60 and 50 dB of its strongest: at contact,
 the sum of their lanes' amplitudes, or over their ring with the key held,
 their lanes' energy to silence, each at the strike's brightness. Over every
