@@ -7,7 +7,7 @@ and renderer are exercised. No legacy mode is added to production.
 
 Exact controls compare launched states at every stored anchor/edge and native
 layer for soft0/.5/1, and every keyboard key/native layer at soft0. Short full
-renders check selected anchor and neutral-pedal controls. Six previously
+renders check selected anchor and neutral-pedal controls. Five previously
 frozen rank crossings use a fixed carrier and exact layer, avoiding ordinary
 pitch change and the unrelated nearest-anchor phase switch at t=.5.
 
@@ -16,7 +16,7 @@ shrinking coordinate separation1000-fold must reduce normalized waveform L2
 difference at least10-fold, plus a declared float allowance of4*chunk*epsilon.
 That allowance is not a proven error bound under arbitrary cancellation or
 render lengths. Every measured distance and the allowance are printed. The
-legacy mutation must fail this SAME assertion in all five selected grands;
+legacy mutation must fail this SAME assertion in all four selected grands;
 the upright's distinct action remains a passing negative control. No claim
 covers every interval or mixed-string builds, whose cross-piano pairing still
 uses sorted rank. No current PCM hashes are stored as fixtures.
@@ -106,14 +106,20 @@ void identity(){
 }
 struct Crossing{int model,left,right,order;double velocity,root;};
 // Frozen selection: largest baseline partial soft-power change relative to
-// midpoint ordinary energy per model. Roots are diagnostic coordinates,
-// not stored PCM or asserted acoustic truth. See native-selection.json.
+// midpoint ordinary energy per model. Each root is the pitch coordinate at
+// which the partial's blended lanes change which one decays fastest or
+// slowest, so the legacy rank multiplier jumps there: a diagnostic
+// coordinate, not stored PCM or asserted acoustic truth. Lane rates have
+// been mixed in 1/s rather than in their logarithm since 2026-11-04, which
+// moved every crossing (the grand's from .0738 to .0384); the roots were
+// recomputed then for the same selection and the same pairs of lanes, each
+// interval's first crossing as before.
 constexpr Crossing cases[]{
- {0,102,105,1,14,.07377566935726457},
- {1,68,70,1,15,.29893756496995544},
- {2,99,105,1,27,.0038094262021510865},
- {3,38,45,2,123,.7962699828359957},
- {4,99,104,1,117,.004172208383523488}
+ {0,102,105,1,14,.038431191265448056},
+ {1,68,70,1,15,.075080330333073431},
+ {2,99,105,1,27,.001117318313440504},
+ {3,38,45,2,123,.95958703206468776},
+ {4,99,104,1,117,.0067451579922411208}
 };
 void continuity(){
  keyra::Engine engine(sr);std::size_t rejectedLegacy=0,negativeControls=0;

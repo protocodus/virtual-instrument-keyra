@@ -576,7 +576,7 @@ int main(int argc,char** argv){
     // half a turn apart; blended as vectors, those cancelled a channel and put
     // D#3's fundamental 12 dB further left than either. Blended lane by lane,
     // a refit's lanes cancelled in the right channel alone and put it 14 dB
-    // to the left, 9 dB beyond C3. D#3 and D#5 on both pianos, the first four
+    // to the left, 9 dB beyond C3. D#3 and D#5 on every piano, the first four
     // partials, each over its whole band: the strongest bin alone reads
     // whichever of its beating lanes is loudest there, not where the partial
     // sits.
@@ -601,7 +601,9 @@ int main(int argc,char** argv){
     };
     for(const int note:{51,75}){between(keyra::Piano::grand,keyra::measured::grand::anchors,note);
                                 between(keyra::Piano::upright,keyra::measured::upright::anchors,note);
-                                between(keyra::Piano::kawai,keyra::measured::kawai::anchors,note);}
+                                between(keyra::Piano::kawai,keyra::measured::kawai::anchors,note);
+                                between(keyra::Piano::hamburg,keyra::measured::hamburg::anchors,note);
+                                between(keyra::Piano::newyork,keyra::measured::newyork::anchors,note);}
   }
   {
     // A key between two recorded pitches hears each partial's right channel
@@ -644,7 +646,8 @@ int main(int argc,char** argv){
       }
     };
     scan(keyra::Piano::grand,keyra::measured::grand::anchors);scan(keyra::Piano::upright,keyra::measured::upright::anchors);
-    scan(keyra::Piano::kawai,keyra::measured::kawai::anchors);
+    scan(keyra::Piano::kawai,keyra::measured::kawai::anchors);scan(keyra::Piano::hamburg,keyra::measured::hamburg::anchors);
+    scan(keyra::Piano::newyork,keyra::measured::newyork::anchors);
     std::cout<<"between_pitches_outside_neighbours_db="<<worst<<'\n';
     check(worst<3,"a key between two recorded pitches plays within 3 dB of their levels");
   }

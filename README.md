@@ -55,6 +55,13 @@ switched the image at the midpoint: on the upright the octave partial in the
 sum of the channels jumped 7.3 dB from A♯2 to B2, a change of tone at a
 Width under 75 %. The image now moves between the two pitches' images, and
 recorded pitches sound as before ([decisions](Docs/decisions.md), 2026-11-04).
+Each partial of such a key also keeps its power in each channel between the
+two pitches' from 50 to 750 ms, and its components decay at rates between
+theirs: the Hamamatsu's A♯7 and B7 no longer ring their second partial 20 dB
+or more over A7 and C8. Against the recordings, the keys between recorded
+pitches sit 0.02 to 0.56 dB further from them in partial level, and closer in
+late decay on four pianos, by up to 0.48 dB/s, but 0.24 dB/s further on the
+Hamamatsu ([decisions](Docs/decisions.md), 2026-11-04).
 A chord's notes now add at other angles, so with the Mic at 1 each tube is
 re-pinned to keep typical playing at the pair's level: one note through the
 tube alone moves +0.27 dB on the Kakegawa grand, +0.55 on the upright, −0.42
@@ -889,14 +896,18 @@ there from 0.3 to 2.3 s, in the take's own scale. A strike interpolates
 between the recorded pitches by partial order and between the layers by
 velocity, taking phases from the nearer pitch. A partial's lanes are paired by
 the share of the partial they carry, each pair as alike in decay as the
-pairing allows; a partial's stereo pickup moves
+pairing allows; each lane's decay rate moves between the pair's in 1/s, so
+that with its level moving in dB its level at every moment moves between
+theirs; a partial's stereo pickup moves
 between the two pitches' channel level differences in dB and takes its
 channel phase difference from the nearer pitch with its phases, so its lanes
 sum as one pitch's do; its right channel is then turned as a whole so that
 its lag behind the left over the first second or so moves between the two
 pitches' along the shorter arc. Its level is set so that its power over the
 same window, its lanes' beating included, sits between the two pitches' in
-dB. C8 is left out: its strongest
+dB, and so does its balance, the left channel's power over the right's,
+unless that would take a channel outside both pitches': that channel then
+stops at the pitch's power it would pass. C8 is left out: its strongest
 components sit 90–100 cents above the stretch that F♯7 and A7 set and no
 partial series explains the recording, so the keys above A7 play A7's data on
 the stretch curve. Only fitted numbers enter the header; no recorded waveform
@@ -1129,6 +1140,13 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   to 7.5 dB over the line through F♯3's and D4's levels at every layer, and
   the never-fitted B3 beside it plays 1.7 dB louder against its recording
   than the median note does.
+- A key between two recorded pitches holds each partial's power and each
+  of its channels over 50 to 750 ms between theirs, but not the partial's
+  shape inside that window where the fit splits it into lanes differently at
+  the two pitches: struck at 127, the Hamamatsu's B7 plays its second partial
+  up to 7 dB over both A7's and C8's in its left channel from 200 to 450 ms,
+  and 6 dB over in its first 50 ms, where 0.4.14 played it 24 dB over from
+  200 to 450 ms ([decisions](Docs/decisions.md), 2026-11-04).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
   further than 0.3.0's. Each undamped key rings as one string at one pitch,

@@ -737,8 +737,9 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
 // measured over: every pair of its lanes, amplitudes and pickups, integrated
 // in closed form between the window's ends; the rise its lanes share is left
 // out. A lane that dies within the first 50 ms counts here for what the
-// window hears of it, not for its whole energy.
-double windowPower(const PartialData& d) noexcept {
+// window hears of it, not for its whole energy. The weights count each
+// channel's power: (1, 0) is the left channel's alone.
+double windowPower(const PartialData& d,double leftWeight=1,double rightWeight=1) noexcept {
   constexpr double from=.05,to=.75;
   double amplitude[lanes],rate[lanes];
   for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
@@ -747,7 +748,7 @@ double windowPower(const PartialData& d) noexcept {
     // Both lanes' phases and the pickups' inner product over the channels.
     const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
     const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
-    const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
+    const Complex product=phase*Complex{leftWeight*left.re+rightWeight*right.re,leftWeight*left.im+rightWeight*right.im};
     // The integral of e^(-ct) from `from` to `to`, c = re + i im.
     const double re=rate[j]+rate[k],im=2*pi*(y.offset-x.offset);
     const auto at=[&](double s){const double e=std::exp(-re*s);return j==k?Complex{e,0}:Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
@@ -837,15 +838,29 @@ PartialData single(const Model& model,const measured::Partial& p,const PartialCa
   int index=0;for(int i=0;i<layer;++i)if(c.velocityMask&(1u<<i))++index;
   return interpolateVelocity(d,c.velocity[index],(velocity-model.layerVelocity[layer])/(model.layerVelocity[layer+1]-model.layerVelocity[layer]));
 }
+// A lane's decay rate between two recorded pitches. It is mixed in 1/s, not
+// in its logarithm as the lane's other figures are: with its level mixed in
+// dB, the lane's level in dB at every moment is then the same mix of its two
+// pitches' at that moment, so it rings between them all through its decay.
+// Mixed in the logarithm, a lane paired between a quiet one barely decaying
+// and a loud fast one started between them but decayed far more slowly than
+// the loud one, and soon rang over both: the Kawai's A7 holds a lane of its
+// second partial at -103 dB decaying at .08/s, and C8 the lane it meets at
+// -45 dB and 36/s. B7's decayed at 4.8/s, and from 200 to 500 ms its second
+// partial played 20 dB or more over both pitches' in each channel.
 double pitchRate(const LaneData& x,const LaneData& y,double t) noexcept {
-  if(t<=0||t>=1||x.rateIdentified==y.rateIdentified)return mix(x.rate,y.rate,t);
-  // Quadratic Bezier in log(rate), its middle control point the identified
-  // endpoint. Unknown-left gives 2t-t^2; unknown-right t^2. The poles reach
-  // both measured endpoints continuously and stay between them. This is a
-  // support prior, not a measured pitch trend; it changes no lane offsets.
-  const double confidence=static_cast<double>(y.rateIdentified)-static_cast<double>(x.rateIdentified);
-  const double coordinate=t+t*(1-t)*confidence;
-  return mix(x.rate,y.rate,coordinate);
+  if(t<=0||t>=1)return mix(x.rate,y.rate,t);
+  double coordinate=t;
+  if(x.rateIdentified!=y.rateIdentified){
+    // Quadratic Bezier in the rate, its middle control point the identified
+    // endpoint. Unknown-left gives 2t-t^2; unknown-right t^2. The poles
+    // reach both measured endpoints continuously and stay between them. This
+    // is a support prior, not a measured pitch trend; it changes no lane
+    // offsets.
+    const double confidence=static_cast<double>(y.rateIdentified)-static_cast<double>(x.rateIdentified);
+    coordinate=t+t*(1-t)*confidence;
+  }
+  return std::log(mix(std::exp(x.rate),std::exp(y.rate),coordinate));
 }
 PartialData blend(const PartialData& a,const PartialData& b,double t,const std::array<int,lanes>& pair) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
@@ -860,14 +875,39 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
   // pickups neither pitch has, and a partial could play several dB under or
   // over both: grand B4 sat 4 dB under its neighbours. Its power over the
   // window the layers' levels are measured over is set between the two
-  // pitches' instead, in dB like the lanes' levels. (Its power from contact
-  // counts a lane that dies within 50 ms for its whole energy, as the
-  // Kawai's A6 fundamental does, and put its F#6 4.3 dB over both.)
+  // pitches' instead, in dB like the lanes' levels, and so is its balance,
+  // the left channel's power over the right's. (Its power from contact counts
+  // a lane that dies within 50 ms for its whole energy, as the Kawai's A6
+  // fundamental does, and put its F#6 4.3 dB over both.) With its power alone
+  // set, one channel could play far outside both pitches' while the other
+  // made up for it: the Hamburg's E1 struck at 127 played its twelfth
+  // partial's right channel 11.4 dB under both C1's and G1's. Where the
+  // balance between theirs would take a channel outside both pitches', that
+  // channel stops at the pitch's power it would pass. Set between in dB
+  // channel by channel instead, a partial whose image swaps sides between
+  // the pitches plays under both in all: the Kawai's A4 played 2.4 dB under
+  // both its neighbours.
   if(t>0&&t<1){
-    const double pa=windowPower(a),pb=windowPower(b),pd=windowPower(d);
-    if(pa>0&&pb>0&&pd>0){
-      const double gain=10*(mix(std::log10(pa),std::log10(pb),t)-std::log10(pd));
-      for(auto& l:d.lane)l.level+=gain;
+    const double la=windowPower(a,1,0),lb=windowPower(b,1,0),ld=windowPower(d,1,0);
+    const double ra=windowPower(a,0,1),rb=windowPower(b,0,1),rd=windowPower(d,0,1);
+    if(la>0&&lb>0&&ld>0&&ra>0&&rb>0&&rd>0){
+      const double total=std::pow(la+ra,1-t)*std::pow(lb+rb,t);
+      const double balance=mix(std::log(la/ra),std::log(lb/rb),t);
+      // The left powers that keep both channels within the pitches': never
+      // empty, as the total lies between the pitches' totals.
+      const double low=std::max(std::min(la,lb),total-std::max(ra,rb));
+      const double high=std::min(std::max(la,lb),total-std::min(ra,rb));
+      const double left=std::max(low,std::min(high,total/(1+std::exp(-balance))));
+      const double kl=left/ld,kr=(total-left)/rd;
+      // Each lane's left channel scaled by kl in power and its right by kr:
+      // its level is its mean channel power, `ratio` the right over the left.
+      for(auto& l:d.lane){
+        const double g=std::exp(l.ratio);
+        l.level+=10*std::log10((kl+kr*g*g)/(1+g*g));
+        l.ratio+=.5*std::log(kr/kl);
+        const double h=std::exp(l.ratio),pickup=std::sqrt(2/(1+h*h));
+        l.left={pickup,0};l.right={pickup*h*std::cos(l.angle),pickup*h*std::sin(l.angle)};
+      }
     }
     // The lanes' phases and channel angles come from the nearer anchor, so
     // the partial's whole stereo image switched at the pitches' midpoint:

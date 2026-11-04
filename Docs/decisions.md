@@ -2584,3 +2584,99 @@ accepted, and the grand's tube by up to +0.41 dB in the chords struck at 101
 and 121 and by +0.10 dB in the velocity ladder. Its floors and limits are
 unchanged.
 
+
+## 2026-11-04 — a key between two pitches keeps each partial between theirs
+
+Found by measurement after the A♯2/B2 fix, when the owner asked whether it
+covered every note of every piano and for a more robust way to prevent such
+jumps. Rendered for 1 s at the default controls, every key between two
+recorded pitches on the five pianos was measured for its first eight partials
+in each channel from 50 to 750 ms after the strike. At velocity 127, 66 of the
+312 such keys played a partial within 20 dB of their strongest more than 3 dB
+outside both neighbours in a channel, and 13 more than 6 dB outside. The worst
+was the Hamamatsu's B7, whose second partial played 21.5 dB over both A7's and
+C8's in the right channel. There were two causes. A lane's decay rate was
+mixed in its logarithm, so a lane paired between a quiet one barely decaying
+and a loud fast one started between them but decayed far more slowly than the
+loud one: the Hamamatsu's A7 holds a lane of its second partial at −103 dB
+decaying at 0.08/s, C8 the lane it meets at −45 dB and 36/s, and B7's decayed
+at 4.8/s. And a partial's level was set so that its power over both channels
+together sat between the pitches', so one channel could play far outside both
+pitches' while the other made up for it: the Hamburg's E1 at 127 played its
+twelfth partial's right channel 11.4 dB under both C1's and G1's.
+
+Each lane's decay rate is now mixed in 1/s, so that with its level mixed in dB
+its level at every moment is the same mix of its two pitches'. A partial's
+power over the 50–750 ms window stays where it was, at its place between the
+pitches' in dB, and its balance, the left channel's power over the right's, is
+now set at its place between theirs in dB too, unless that would take a
+channel outside both pitches': that channel then stops at the pitch's power it
+would pass. Recorded pitches are unchanged byte for byte, as is every train
+case's score on every piano: the per-key trims are derived from each key's
+total power, which does not move.
+
+The owner chose "Fix it, A/B the worst keys first", and a lettered set of each
+piano's two worst spans went to them (`ab-2026-11-04-between-keys`): A the
+shipping engine, B the decay rates mixed in 1/s, C each channel's power set
+between the pitches' in dB, D both. No letter has been reported. Measured
+before shipping, C failed where a partial's image swaps sides between the
+pitches: set channel by channel in dB, its total fell under both pitches', the
+Hamamatsu's A4 2.4 dB under both its neighbours and D's worst 5.2 dB, and the
+moved totals changed the per-key trims and with them the recorded pitches. The
+balance rule above replaced C; it was not itself in the set. Measured against
+the recordings, the balance rule alone moves the dev cases' partial error by 0
+to −0.05 dB and their channel level difference error by −0.22 to +0.07 dB,
+except +0.72 dB on the Hamburg. The decay rates mixed in 1/s cost +0.03,
++0.03, +0.29, +0.57 and +0.49 dB of partial error on the Kakegawa, upright,
+Hamamatsu, Hamburg and New York, and change the late decay error by −0.02,
+−0.43, +0.17, −0.52 and −0.14 dB/s. Asked "Land the decay-over-time part now,
+or leave it to the experiment?" with that cost, the owner chose "Land both
+parts now". The choice was made on these measurements, not by ear; it licenses
+this blend for keys between recorded pitches and no fit of any single key.
+
+Every dev case, paired, from `Tools/compare_benchmarks.py` (none of these
+pitches was fitted):
+
+| Piano | partial_db | decay_db_s | sustain_db | envelope_db | ild_db |
+| --- | --- | --- | --- | --- | --- |
+| Kakegawa | 5.31 → 5.33 | 2.26 → 2.24 | 5.33 → 5.42 | 2.69 → 2.74 | 2.42 → 2.48 |
+| Helsinki upright | 8.41 → 8.44 | 4.36 → 3.93 | 8.81 → 8.81 | 4.88 → 4.80 | 4.34 → 4.23 |
+| Hamamatsu | 9.82 → 10.09 | 5.16 → 5.40 | 9.53 → 9.64 | 5.08 → 5.39 | 5.36 → 5.27 |
+| Hamburg | 7.28 → 7.84 | 5.61 → 5.14 | 7.37 → 7.53 | 4.43 → 4.21 | 4.27 → 4.99 |
+| New York | 10.12 → 10.56 | 7.47 → 7.29 | 9.99 → 10.48 | 4.48 → 4.94 | 6.19 → 5.97 |
+
+It lists 20 regressions over its tolerances. On the Kakegawa, D♯7's ild_db
+rises 1.31 → 2.16. On the upright, B3's sustain_db rises 6.56 → 8.53 and its
+envelope_db 4.04 → 5.35. On the Hamamatsu, F♯7's ild_db rises 0.06 → 3.62, its
+icc 0.56 → 0.69, its decay_db_s 9.63 → 15.42, its partial_db 9.80 → 11.12 and
+its envelope_db 5.48 → 6.28; B5's ild_db rises 9.09 → 10.44, A♯3's envelope_db
+6.94 → 7.64 and G7's 3.32 → 3.83. On the Hamburg, E3's ild_db rises 4.50 →
+5.61 and C♯5's partial_db 5.76 → 6.82. On the New York, E7's envelope_db rises
+3.21 → 5.60, its decay_db_s 3.68 → 8.19, its partial_db 8.88 → 9.96 and its
+sustain_db 12.26 → 12.94; C6's envelope_db rises 5.15 → 6.28 and its
+sustain_db 10.17 → 11.29, and E4's partial_db 9.44 → 10.09.
+
+Over the same renders as the scan, keys with a partial more than 3 dB outside
+both neighbours fall at velocity 127 from 11, 10, 16, 21 and 8 to 4, 8, 15, 7
+and 5 on the Kakegawa, upright, Hamamatsu, Hamburg and New York. Keys more
+than 6 dB outside fall from 13 to 2, the Hamburg's and the New York's, and the
+worst miss falls from 21.5 to 6.7 dB, the New York's C♯7 fundamental, which
+was 6.2 dB outside. At velocity 80 they fall from 35 to 23, though the
+upright's rise 3 → 6 and the New York's 3 → 5, and those more than 6 dB
+outside fall from 3 to 1. The partials' data now sits between the pitches'
+exactly, so what remains comes from what these renders add to it, such as the
+body, the per-key trims and the hammer's contact; which of them, this does not
+measure. `Keyra.PitchBlend` now guards the data itself, on every piano at
+every recorded layer, halfway between layers and both velocity ends: across
+113,127 shared partials of 4,056 keys and velocities, each partial's power
+over both channels is within 3 × 10⁻¹³ dB of its place, each channel inside
+its pitches' (the shipping engine 13.0 dB outside, D's total 5.2 dB off its
+place), a balance off its place only where a channel is held at a pitch's
+(9,821 partials, up to 18.7 dB), and each lag on its line. `Keyra.Engine`'s
+whole-note check now covers all five pianos, its worst 1.91 dB at the New
+York's F2 against the 3 dB limit (shipping: 1.88). The Hamamatsu's B7 still
+plays its second partial up to 7 dB over both neighbours in its left channel
+from 200 to 450 ms, where the fit splits it into lanes differently at A7 and
+C8 (README, Known gaps). `Keyra.Levels` moves with it, by up to 0.27 dB in
+typical playing and 0.86 dB through the Hamamatsu's tube; the output and tube
+scales are re-pinned after the forte-noise refit, under their own entry.

@@ -269,6 +269,13 @@ if(BUILD_TESTING)
     target_compile_features(KeyraDamperInteractionTests PRIVATE cxx_std_17)
     add_test(NAME Keyra.DamperInteraction COMMAND KeyraDamperInteractionTests)
 
+    # Every key between two recorded pitches against them, from the partials
+    # a strike plays, in one test translation unit.
+    add_executable(KeyraPitchBlendTests Tests/pitch_blend_tests.cpp)
+    target_include_directories(KeyraPitchBlendTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraPitchBlendTests PRIVATE cxx_std_17)
+    add_test(NAME Keyra.PitchBlend COMMAND KeyraPitchBlendTests)
+
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.ParameterExtremes COMMAND KeyraParameterExtremesTests)

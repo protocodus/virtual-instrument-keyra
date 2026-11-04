@@ -122,6 +122,8 @@ private:
   std::unique_ptr<Impl> impl;
   // The native damper test compares the direct and sympathetic string state.
   friend struct DamperTestObserver;
+  // The native pitch-blend test reads the partials a strike plays.
+  friend struct PitchBlendTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
