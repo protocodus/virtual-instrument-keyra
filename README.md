@@ -43,6 +43,25 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.15 — 2026-11-04 — five pianos, and no jump between recorded pitches
+
+The Belmont grand is removed at the owner's request, with its preset and its
+Build column: Keyra plays the Kakegawa, Hamamatsu, Hamburg and New York grands
+and the Helsinki upright, and the factory bank holds twelve presets. A session
+saved with Belmont weights loads with them dropped, or with the Kakegawa
+grand's part where the Belmont was a part's only piano. A key between two
+recorded pitches no longer takes its stereo image from the nearer one, which
+switched the image at the midpoint: on the upright the octave partial in the
+sum of the channels jumped 7.3 dB from A♯2 to B2, a change of tone at a
+Width under 75 %. The image now moves between the two pitches' images, and
+recorded pitches sound as before ([decisions](Docs/decisions.md), 2026-11-04).
+A chord's notes now add at other angles, so with the Mic at 1 each tube is
+re-pinned to keep typical playing at the pair's level: one note through the
+tube alone moves +0.27 dB on the Kakegawa grand, +0.55 on the upright, −0.42
+on the Hamamatsu, −0.53 on the Hamburg and +0.22 on the New York. Six presets'
+typical playing moves by at most 0.2 dB and the loudest chords by at most
+0.14 dB, which the owner accepted as the new approved levels.
+
 ### 0.4.14 — 2026-11-03 — chords sound as their notes do
 
 Notes struck in the same instant now keep the per-key level trim that evens

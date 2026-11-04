@@ -156,7 +156,7 @@ constexpr Model models[]{
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5139,
+   1.5619,
    true},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
@@ -188,7 +188,7 @@ constexpr Model models[]{
    // benchmark sets a case's gain). Below it the shared velocity response
    // (responseAt) keeps the two medians within 1 dB of each other.
    2.3474,
-   2.1097,
+   2.2468,
    false},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),
    kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
@@ -226,7 +226,7 @@ constexpr Model models[]{
    // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
    // it to -10.10; its loudest chords through the tube read -0.14 VU.
-   1.3035,
+   1.2426,
    true},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),
    hamburg::partials.data(),hamburg::extras.data(),
@@ -247,7 +247,7 @@ constexpr Model models[]{
    // Each one's typical playing at the grand's level, -9 VU, and its tube at
    // the pair's (Tools/KeyraLevels.cpp).
    2.3152,
-   1.5936,
+   1.4988,
    true},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),
    newyork::partials.data(),newyork::extras.data(),
@@ -267,7 +267,7 @@ constexpr Model models[]{
    newyork::noiseBands.data(),newyork::noise.data(),
    // Typical playing at -9 VU and the tube at the pair's, as above.
    .6823,
-   1.7227,
+   1.7668,
    true},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");

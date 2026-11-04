@@ -2559,3 +2559,28 @@ peaks of nearly equal height, while each channel's own rise changes by under
 2 ms. A lettered listening set of the reported keys went to the
 owner (`ab-2026-11-04-pop-upright-a2-c3`).
 
+That no channel's power changes holds for one note. In a chord the notes'
+coincident partials now add at other angles, and the tube hears the sum of
+the channels, so `Keyra.Levels` moved. Typical playing through the tube alone
+read off its approved level by −0.27 dB on the grand, −0.55 on the upright,
++0.42 on the Kawai, +0.53 on the Hamburg and −0.22 on the New York, and each
+piano's `tubeScale` is re-pinned to bring it back (1.5139 → 1.5619, 2.1097 →
+2.2468, 1.3035 → 1.2426, 1.5936 → 1.4988, 1.7227 → 1.7668). Six presets'
+typical levels still read off theirs (Studio Grand −0.07 dB, Felt Nocturne
++0.05, Open Strings −0.09, Helsinki Upright −0.06, Pop Upright +0.20, New
+York Grand −0.05), and five loudest-chord readings rise over their approved
+ceilings (Kakegawa Grand +0.08 dB, Warm Walnut +0.14, Open Strings +0.01,
+Hamburg Grand +0.05, the grand through the tube +0.10); no sample passes the
+−1.5 dBFS ceiling. Asked whether to accept these readings, lower the grand
+and the Hamburg until no loudest chord rose, or drop the fix, the owner chose
+to accept them, and `Tests/Fixtures/dynamics/ApprovedLevels.h` now holds
+them. `Keyra.FactoryDynamics`, the 0.4.11 chord audit's step floors and
+level limits, already failed before the fix: with the Belmont removed 588 of
+its 2,120 pairs sat under their floors (699 on main with six pianos). With
+the fix and the re-pinned tubes 988 do, 179 of those 588 now clearing
+theirs, and 11 chords pass the audit's maximum levels: the Kakegawa grand's,
+its tube's and the Hamburg's loudest readings above, which the owner
+accepted, and the grand's tube by up to +0.41 dB in the chords struck at 101
+and 121 and by +0.10 dB in the velocity ladder. Its floors and limits are
+unchanged.
+
