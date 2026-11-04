@@ -43,7 +43,7 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
-### 0.4.15 — 2026-11-04 — five pianos, and no jump between recorded pitches
+### 0.4.15 — 2026-11-04 — five pianos, no jump between recorded pitches, no hiss at forte
 
 The Belmont grand is removed at the owner's request, with its preset and its
 Build column: Keyra plays the Kakegawa, Hamamatsu, Hamburg and New York grands
@@ -62,6 +62,11 @@ or more over A7 and C8. Against the recordings, the keys between recorded
 pitches sit 0.02 to 0.56 dB further from them in partial level, and closer in
 late decay on four pianos, by up to 0.48 dB/s, but 0.24 dB/s further on the
 Hamamatsu ([decisions](Docs/decisions.md), 2026-11-04).
+Forte notes no longer ring a hiss over their partials for half a second, the
+fault reported at the Hamamatsu's C4 struck at 127. The noise between the
+partials is now measured from the recordings by the median in every band, as
+it already was under the fundamental, and so passes over the phantom partials
+a hard strike adds there ([decisions](Docs/decisions.md), 2026-11-04).
 A chord's notes now add at other angles, so with the Mic at 1 each tube is
 re-pinned to keep typical playing at the pair's level: one note through the
 tube alone moves +0.27 dB on the Kakegawa grand, +0.55 on the upright, −0.42
@@ -866,10 +871,12 @@ under which the modes build up below 0.8 of the treble's fundamentals as the
 recordings do, matched on shape, not level. The board
 noise is measured
 in the gaps between the partials the recordings show and, above the highest of
-them, across whole bands, as the benchmark measures it. In the bands below a
-note's fundamental, which hold other strings' tones but none of its own, a
-gap's level is the median of its bins, which passes over those tones. There
-the ring falls in two stages: a second, slower line is fitted through the
+them, across whole bands, as the benchmark measures it. A gap's level is the
+median of its bins, which passes over the tones a gap holds: below a note's
+fundamental other strings', above it the phantom partials a hard strike adds
+at the sums of two partials' frequencies (until 0.4.15 the mean measured the
+bands above the fundamental, and the engine played those tones as a hiss over
+every forte note). Below the fundamental the ring falls in two stages: a second, slower line is fitted through the
 frames from 0.15 to 0.6 s after contact that stand 10 dB over the floor, and
 the first is refitted on what the second leaves of the early frames. Above
 the fundamental the late frames mix the ring with the note's own unresolved

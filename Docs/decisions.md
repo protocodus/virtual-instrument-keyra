@@ -2680,3 +2680,70 @@ from 200 to 450 ms, where the fit splits it into lanes differently at A7 and
 C8 (README, Known gaps). `Keyra.Levels` moves with it, by up to 0.27 dB in
 typical playing and 0.86 dB through the Hamamatsu's tube; the output and tube
 scales are re-pinned after the forte-noise refit, under their own entry.
+
+## 2026-11-04 — forte notes no longer ring a hiss over their partials
+
+Reported by the owner: "in all pianos, there is a weird noise, example: C4 at
+velocity 127 for hamamatsu". Between a note's partials the engine plays band
+noise, the board's ring after the strike, measured per third-octave band from
+the recordings. Above each note's fundamental a band's level was the mean
+power of the bins between the partials. At a hard strike those bins also hold
+tones that are not noise: the string's phantom partials at the sums of two
+partials' frequencies (the Hamamatsu's C4 at 127 holds f8+f9 at 4482 Hz, 135
+Hz under its 17th partial) and high partials the fit does not track. The mean
+counted them, and the engine played their power as a hiss that rang for about
+half a second over every forte note. On a spectrogram of the Hamamatsu's C4 it
+carried a cloud of noise from 2.5 to 12 kHz dying over half a second, where
+the recording of the same note shows tonal lines.
+
+`Tools/fit_realtime_modal.py` now measures every band by the median of its
+bins' powers over ln 2, the estimator it already used under the fundamental,
+which passes over the few bins a tone holds. Only the five pianos' `noise` and
+`noiseBands` change; partials, body, knock, action and the velocity masks are
+the same numbers. Measured on 0.4.14 with and without the refit, in the first
+300 ms of C4 at 127 the take's third-octave bands from 8 to 16 kHz fall by up
+to 10.5 dB on the Hamamatsu, 26 dB on the upright, 8.1 dB on the New York, 7.6
+dB on the Kakegawa and 1.8 dB on the Hamburg; below 5 kHz the partials
+dominate every band and none moves more than 2 dB. The upright's 12.7 kHz band
+falls silent after the knock, and its 8 kHz band at C4 rises 5.9 dB: with the
+median only two of that note's five layers measure it, and a band measured at
+fewer than three is filled from the neighbouring notes, as for every piano.
+The fit's receipts now name the fitter and analysis sources as they stand;
+since the Belmont's removal they had named the ones before it, so
+`Tools/evaluate_recordings.py` refused to run.
+
+A lettered set (`ab-2026-11-04-forte-noise`: A the shipping 0.4.14, B the
+median) went to the owner, and no letter has been reported. The refit lands
+under the owner's instruction to fix the issues already found and verified
+first, on their report and these measurements, not by ear.
+
+Against the recordings (`Tools/benchmark_recordings.py`, train and dev, the
+fix of the entry above in both runs), the noise score between the partials
+moves as follows, lower being closer: Kakegawa 5.68 → 5.86 (train) and 5.36 →
+5.42 (dev), upright 6.48 → 7.40 and 7.21 → 7.20, Hamamatsu 8.68 → 8.33 and
+9.23 → 9.01, Hamburg 6.93 → 7.12 and 6.17 → 6.74, New York 8.38 → 8.16 and
+9.67 → 9.62. That score measures the recordings with the mean, so it counts
+the phantom tones as noise and leans towards the old fit. Every other paired
+score moves by 0.09 or less in its unit (the New York's dev attack_db 9.28 →
+9.37 the most).
+
+`Tools/compare_benchmarks.py` lists 27 regressions over its tolerances, 25 of
+them in that noise score. On the Kakegawa: F♯1 4.42 → 5.34, C2 6.99 → 7.83 and
+C3 6.05 → 6.68 (train), A2 6.54 → 7.19, A0 4.14 → 4.72 and C1 3.83 → 4.35
+(dev). On the upright: A2 5.10 → 11.45, D3 5.97 → 12.26, C3 5.67 → 11.10, E3
+12.94 → 17.81, A1 6.45 → 9.73, C1 7.65 → 9.55, F♯3 6.89 → 8.41, C2 13.34 →
+14.77, A♯4 5.82 → 6.77, D♯1 9.23 → 10.08 and C4 4.78 → 5.36 (train), B3 7.50 →
+9.40 (dev). On the Hamamatsu: G♯3 6.72 → 9.62 and F♯3 8.85 → 11.71 (train),
+A♯3 6.11 → 8.51 (dev), and A7's early_db 11.94 → 12.78 (train). On the
+Hamburg: D2 8.57 → 10.70 and A2 4.67 → 6.04 (train), E3 3.50 → 5.07 (dev). On
+the New York, E7's partial_db 9.96 → 11.90 and its attack_db 13.13 → 13.78
+(dev).
+
+`Tools/evaluate_recordings.py`'s 24 Kakegawa cases, all at recorded pitches,
+were scored for the shipping 0.4.14 build and for this one (the measured
+attack): the twelve in-range held-out cases' broad bands 5.113 → 5.116 dB,
+their harmonic levels 4.002 → 4.002 dB, envelope 1.706 → 1.706 dB, partial
+decay 2.281 → 2.282 dB/s, pitch 0.190 → 0.190 cents and attack rise 4.080 →
+4.080 ms; the two edge cases' broad bands 4.659 → 4.665 dB, every other figure
+unchanged. No case moves by more than 0.033 dB or 0.062 ms. The in-between fix
+leaves these recorded pitches unchanged, so the refit accounts for all of it.
