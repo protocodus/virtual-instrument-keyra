@@ -49,6 +49,13 @@ option(KEYRA_ENABLE_MODEL_VALIDATION_TESTS
 if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS AND NOT BUILD_TESTING)
     message(FATAL_ERROR "KEYRA_ENABLE_MODEL_VALIDATION_TESTS requires BUILD_TESTING=ON")
 endif()
+# The keyboard network (Tools/keyboard_network.py) is an offline experiment
+# that needs PyTorch, which CI does not install; its `all` stage runs this
+# self-test first.
+option(KEYRA_ENABLE_NETWORK_TESTS "Require the keyboard network's self-test (NumPy, SciPy, PyTorch)" OFF)
+if(KEYRA_ENABLE_NETWORK_TESTS AND NOT BUILD_TESTING)
+    message(FATAL_ERROR "KEYRA_ENABLE_NETWORK_TESTS requires BUILD_TESTING=ON")
+endif()
 if(KEYRA_ENABLE_SANITIZERS)
     if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
         message(FATAL_ERROR "KEYRA_ENABLE_SANITIZERS requires Clang or GCC")
@@ -247,7 +254,7 @@ endif()
 if(BUILD_TESTING)
     # CI requires the interpreter, so a missing one cannot silently register
     # fewer tests.
-    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
+    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS OR KEYRA_ENABLE_NETWORK_TESTS)
         find_package(Python3 COMPONENTS Interpreter REQUIRED)
     else()
         find_package(Python3 COMPONENTS Interpreter)
@@ -415,6 +422,22 @@ if(BUILD_TESTING)
                              ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};KEYRA_MODEL_FFMPEG=${KEYRA_MODEL_FFMPEG};KEYRA_MODEL_FFPROBE=${KEYRA_MODEL_FFPROBE};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     else()
         message(STATUS "Numerical model validation disabled; enable KEYRA_ENABLE_MODEL_VALIDATION_TESTS for the required Linux CI tier")
+    endif()
+
+    if(KEYRA_ENABLE_NETWORK_TESTS)
+        execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import numpy; import scipy; import torch"
+                        RESULT_VARIABLE KEYRA_NETWORK_PYTHON_RESULT
+                        ERROR_VARIABLE KEYRA_NETWORK_PYTHON_ERROR
+                        OUTPUT_QUIET)
+        if(NOT KEYRA_NETWORK_PYTHON_RESULT EQUAL 0)
+            message(FATAL_ERROR
+                "The keyboard network's self-test needs NumPy, SciPy and PyTorch in ${Python3_EXECUTABLE}. "
+                "${KEYRA_NETWORK_PYTHON_ERROR}")
+        endif()
+        add_test(NAME Keyra.KeyboardNetwork
+                 COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_keyboard_network.py")
+        set_tests_properties(Keyra.KeyboardNetwork PROPERTIES LABELS unit TIMEOUT 300
+                             ENVIRONMENT "OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     endif()
 
     if(KEYRA_BUILD_TOOLS)
