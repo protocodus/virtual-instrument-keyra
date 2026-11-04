@@ -1184,6 +1184,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   also scales it. The other pianos' takes do not decide one, the New York
   grand's falling just short
   ([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+- The unison's coupled modes, and with them a restrike's or una corda's new
+  balance between its strings, the duplex segments and the damper's contact
+  position are not modelled: the takes' lanes read as coupled strings little
+  more often than random phases make them, a new strike moves the strings'
+  balance less than the two microphones disagree, no release take holds a
+  line a duplex segment would add, and the best contact laws improve the
+  release fits by about 1 %, nearly as much as shuffled controls do
+  ([realism candidates](Docs/research/realism-candidates-2026-11-04.md)).
 - Of the pedals only the grand's sustain pedal going down, alone, is scored
   against recordings, its strings' ring and fall (above). The recordings do
   not document pedal positions or timings, so half pedalling, repedalling and
