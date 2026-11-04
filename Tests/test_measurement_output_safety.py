@@ -51,7 +51,7 @@ class OutputSafety(unittest.TestCase):
             for kind in ['same', 'symlink', 'hardlink']:
                 with self.subTest(input=name, kind=kind):
                     output = self.alias(name + '-' + kind, path, kind)
-                    argv = ['archive', '--model', 'belmont', '--output', str(output)]
+                    argv = ['archive', '--model', 'hamburg', '--output', str(output)]
                     for key, value in inputs.items():
                         argv += ['--' + key, str(value)]
                     with patch.object(sys, 'argv', argv), patch.object(update, 'operators', side_effect=AssertionError('operator loaded')):

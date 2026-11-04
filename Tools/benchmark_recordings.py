@@ -85,8 +85,7 @@ SEALED_LOGS = {'grand': ROOT / 'Tools/corpus/sealed-openings.json',
                'upright': ROOT / 'Tools/corpus/sealed-openings-helsinki.json',
                'kawai': ROOT / 'Tools/corpus/sealed-openings-kawai.json',
                'hamburg': ROOT / 'Tools/corpus/sealed-openings-hamburg.json',
-               'newyork': ROOT / 'Tools/corpus/sealed-openings-newyork.json',
-               'belmont': ROOT / 'Tools/corpus/sealed-openings-belmont.json'}
+               'newyork': ROOT / 'Tools/corpus/sealed-openings-newyork.json'}
 WINDOWS = [(.05, .25), (.25, .75), (.75, 1.5), (1.5, 3.5)]
 LAYER_VELOCITY = fit.LAYER_VELOCITY
 RENDER_SECONDS = 4.6

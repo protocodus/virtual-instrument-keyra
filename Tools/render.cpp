@@ -16,7 +16,7 @@
 namespace {
 struct Event { double time;std::string type;int note;float value;int channel=1; };
 // The pianos by the names the fitter and benchmarks give them, in keyra::Piano's order.
-const std::array<const char*,keyra::pianoCount> pianoNames{"grand","upright","kawai","hamburg","newyork","belmont"};
+const std::array<const char*,keyra::pianoCount> pianoNames{"grand","upright","kawai","hamburg","newyork"};
 keyra::Piano pianoNamed(const std::string& name){
   for(std::size_t i=0;i<pianoNames.size();++i)if(name==pianoNames[i])return static_cast<keyra::Piano>(i);
   throw std::runtime_error("unknown model "+name);
@@ -34,7 +34,7 @@ int main(int argc,char** argv){try {
   for(int i=1;i<argc;++i){const std::string option=argv[i];
     auto value=[&](){if(++i>=argc)throw std::runtime_error("missing argument after "+option);return std::string(argv[i]);};
     if(option=="--help"){
-      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mic 0] [--mechanics .175] [--model grand|upright|kawai|hamburg|newyork|belmont] [--toward grand|upright|kawai|hamburg|newyork|belmont] [--build strings,hammers,soundboard,action[,stiffness,unisons,ring]] [--strings|--hammers|--soundboard|--action piano=weight[,piano=weight...]] [--quality full|balanced|light] [--legacy-attack] [--vary]\n"
+      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--width .75] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mic 0] [--mechanics .175] [--model grand|upright|kawai|hamburg|newyork] [--toward grand|upright|kawai|hamburg|newyork] [--build strings,hammers,soundboard,action[,stiffness,unisons,ring]] [--strings|--hammers|--soundboard|--action piano=weight[,piano=weight...]] [--quality full|balanced|light] [--legacy-attack] [--vary]\n"
       <<"The build's parts move from the model toward the --toward piano (by default the upright from the grand, the grand from any other): 0 the model's own, 1 the other's.\n"
       <<"A part given as piano=weight pairs mixes those pianos at their shares of the weights instead, as the plug-in's controls do.\n"
       <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain. Use cc for channel-specific pedal events.\n";return 0;
@@ -43,7 +43,8 @@ int main(int argc,char** argv){try {
     else if(option=="--duration")duration=std::stod(value());else if(option=="--legacy-attack")legacy=true;
     else if(option=="--vary")vary=true;
     else if(option=="--gain")parameters.gain=std::stof(value());else if(option=="--brightness")parameters.brightness=std::stof(value());
-    else if(option=="--resonance")parameters.resonance=std::stof(value());else if(option=="--mute")parameters.mute=std::stof(value());
+    else if(option=="--resonance")parameters.resonance=std::stof(value());else if(option=="--width")parameters.width=std::stof(value());
+    else if(option=="--mute")parameters.mute=std::stof(value());
     else if(option=="--sustain")parameters.sustain=std::stof(value());else if(option=="--soft")parameters.soft=std::stof(value());
     else if(option=="--sostenuto")parameters.sostenuto=std::stof(value());else if(option=="--mic")parameters.mic=std::stof(value());
     else if(option=="--mechanics")parameters.mechanics=std::stof(value());

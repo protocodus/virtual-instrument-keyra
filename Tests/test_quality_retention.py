@@ -92,7 +92,7 @@ void interior(){keyra::Engine e;keyra::Voice v;v.count=3;
     require(p[1]<top*1e-3,"synthetic case is not interior-only");}
 }
 void oracle(){interior();std::size_t denseChecks=0,analyticChecks=0;
-  for(int model=0;model<6;++model){keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(static_cast<keyra::Piano>(model));
+  for(int model=0;model<keyra::pianoCount;++model){keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(static_cast<keyra::Piano>(model));
     for(int note:{21,36,60,84,108})for(int velocity:{40,100}){
       e.setParameters(p);e.reset();e.noteOn(note,velocity/127.f);const auto v=e.impl->voices[0];const auto a=proxies(v);
       const auto peak=bestMargins(a.p,a.s,a.n,1),energy=bestMargins(a.e,a.s,a.n,2);
@@ -135,7 +135,7 @@ std::vector<float> audio(int model,int quality,int history,bool varied){
   }trap=false;return wave;
 }
 void render(const std::string& dir){
-  for(int model=0;model<6;++model)for(int quality=0;quality<3;++quality)for(int history=0;history<5;++history)for(int varied=0;varied<2;++varied){
+  for(int model=0;model<keyra::pianoCount;++model)for(int quality=0;quality<3;++quality)for(int history=0;history<5;++history)for(int varied=0;varied<2;++varied){
     const auto x=audio(model,quality,history,varied!=0);
     std::ofstream out(dir+"/m"+std::to_string(model)+"q"+std::to_string(quality)+"h"+std::to_string(history)+"p"+std::to_string(varied)+".f32",std::ios::binary);
     out.write(reinterpret_cast<const char*>(x.data()),static_cast<std::streamsize>(x.size()*sizeof(float)));require(bool(out),"wave write");
@@ -143,7 +143,7 @@ void render(const std::string& dir){
   std::cout<<"render_cases=180 callback_allocations="<<allocations<<'\n';
 }
 void future(){std::array<float,128> al{},ar{},bl{},br{};
-  for(int model=0;model<6;++model){keyra::Engine a,b;keyra::Parameters p;p.build=keyra::measuredBuild(static_cast<keyra::Piano>(model));p.gain=.07f;
+  for(int model=0;model<keyra::pianoCount;++model){keyra::Engine a,b;keyra::Parameters p;p.build=keyra::measuredBuild(static_cast<keyra::Piano>(model));p.gain=.07f;
     a.setParameters(p);b.setParameters(p);a.reset();b.reset();a.noteOn(60,.8f);b.noteOn(60,.8f);
     a.process(al.data(),ar.data(),128);b.process(bl.data(),br.data(),128);
     p.quality=keyra::Quality::light;a.setParameters(p);
@@ -190,7 +190,7 @@ class QualityRetention(unittest.TestCase):
             p=self.folder/variant/'waves';p.mkdir()
             subprocess.run([str(self.binaries[variant]),'audio',str(p)],check=True)
         path=lambda v,m,q,h,p:self.folder/v/'waves'/f'm{m}q{q}h{h}p{p}.f32'
-        for model in range(6):
+        for model in range(5):
             for history in range(5):
                 for partition in range(2):
                     self.assertEqual(path('candidate',model,0,history,partition).read_bytes(),

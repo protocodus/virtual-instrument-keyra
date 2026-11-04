@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard velocity interpolation using only the six pianos' fitted numeric data.
+"""Guard velocity interpolation using only the five pianos' fitted numeric data.
 
 No recordings or dev/sealed data are opened. Each complete partial/layer
 interval is enabled only if the old interpolation leaves its endpoint-energy
@@ -29,9 +29,9 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 HEADER = ROOT / 'Source/DSP/MeasuredVelocityInterpolation.h'
 METADATA = ROOT / 'Docs/research/velocity-interpolation-2026-11-01.json'
-PIANOS = ['grand', 'upright', 'kawai', 'hamburg', 'newyork', 'belmont']
+PIANOS = ['grand', 'upright', 'kawai', 'hamburg', 'newyork']
 DATA = ['MeasuredModalData.h', 'MeasuredUprightData.h', 'MeasuredKawaiData.h',
-        'MeasuredHamburgData.h', 'MeasuredNewYorkData.h', 'MeasuredBelmontData.h']
+        'MeasuredHamburgData.h', 'MeasuredNewYorkData.h']
 # Double analytic integrals and quartic roots lose their last bits for nearly
 # flat endpoints. 1e-8 dB is a numerical equality tolerance, not an audible
 # acceptance margin (relative power 2.3e-9).

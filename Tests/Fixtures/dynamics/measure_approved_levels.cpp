@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     const auto hard = chordRounds(127);
     const auto& presets = keyra::factoryPresets;
     constexpr std::size_t pianos = keyra::pianoCount;
-    const char* const pianoNames[pianos] = {"grand", "upright", "kawai", "hamburg", "newyork", "belmont"};
+    const char* const pianoNames[pianos] = {"grand", "upright", "kawai", "hamburg", "newyork"};
     struct Capture { double typicalVu; double hardVu; };
     std::vector<Capture> captures(presets.size() + pianos);
     parallel(captures.size(), 4, [&](std::size_t index) {

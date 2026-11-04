@@ -99,13 +99,19 @@ int main(int argc,char** argv){try{
         for(int lane=0;lane<keyra::lanes;++lane){const auto& x=a.lane[lane];const auto& y=b.lane[pair[lane]];
           if(x.rateIdentified!=y.rateIdentified)++mixed;else ++known;
           for(double t:{0.,1e-9,1e-6,.125,.5,.875,1-1e-6,1-1e-9,1.}){
-            const double rate=keyra::pitchRate(x,y,t),linear=keyra::mix(x.rate,y.rate,t);
+            // The rates mix in 1/s between the pitches; the endpoints are the
+            // measured rates exactly, as stored (their logarithms).
+            const double rate=keyra::pitchRate(x,y,t);
+            const double linear=t==0||t==1?keyra::mix(x.rate,y.rate,t):std::log(keyra::mix(std::exp(x.rate),std::exp(y.rate),t));
             const double tolerance=64*std::numeric_limits<double>::epsilon()*std::max({1.,std::abs(x.rate),std::abs(y.rate)});
             require(rate>=std::min(x.rate,y.rate)-tolerance&&rate<=std::max(x.rate,y.rate)+tolerance,"pitch pole leaves endpoint bounds");
             if(x.rateIdentified==y.rateIdentified||t==0||t==1)require(rate==linear,"same-support lane or measured endpoint changed");
-            // The quadratic coordinate has derivative magnitude at most two.
-            if(t<1e-5)require(std::abs(rate-x.rate)<=2*t*std::abs(y.rate-x.rate)+tolerance,"left pole discontinuity");
-            if(t>1-1e-5)require(std::abs(rate-y.rate)<=2*(1-t)*std::abs(y.rate-x.rate)+tolerance,"right pole discontinuity");
+            // The quadratic coordinate has derivative magnitude at most two,
+            // so the rate in 1/s, which it mixes, moves at most twice as far.
+            const double rx=std::exp(x.rate),ry=std::exp(y.rate),r=std::exp(rate);
+            const double rateTolerance=64*std::numeric_limits<double>::epsilon()*std::max({1.,rx,ry});
+            if(t<1e-5)require(std::abs(r-rx)<=2*t*std::abs(ry-rx)+rateTolerance,"left pole discontinuity");
+            if(t>1-1e-5)require(std::abs(r-ry)<=2*(1-t)*std::abs(ry-rx)+rateTolerance,"right pole discontinuity");
           }
         }
         // Confidence applies to pitch gaps, never to the between-piano path.
@@ -138,12 +144,12 @@ int main(int argc,char** argv){try{
           require(played!=nullptr,"shared partial missing from series");
           std::array<double,keyra::lanes> expected{},linearExpected{};
           for(int k=0;k<keyra::lanes;++k){const auto& x=va.lane[k];const auto& y=vb.lane[pair[k]];
-            linearExpected[k]=keyra::mix(x.rate,y.rate,t);
-            // Bernstein form independently states the quadratic contract:
-            // its middle control point is the identified endpoint.
+            linearExpected[k]=std::log(keyra::mix(std::exp(x.rate),std::exp(y.rate),t));
+            // Bernstein form independently states the quadratic contract in
+            // 1/s: its middle control point is the identified endpoint.
             const double control=x.rateIdentified?x.rate:y.rate;
             expected[k]=x.rateIdentified==y.rateIdentified?linearExpected[k]
-              :(1-t)*(1-t)*x.rate+2*t*(1-t)*control+t*t*y.rate;
+              :std::log((1-t)*(1-t)*std::exp(x.rate)+2*t*(1-t)*std::exp(control)+t*t*std::exp(y.rate));
           }
           std::sort(expected.begin(),expected.end(),std::greater<double>());
           std::sort(linearExpected.begin(),linearExpected.end(),std::greater<double>());
@@ -174,7 +180,7 @@ int main(int argc,char** argv){try{
   // A concrete unsupported/supported pair: the supported endpoint is the
   // middle Bezier control, giving quarter/three-quarter weights at halfway.
   keyra::LaneData unknown,supported;unknown.rate=std::log(.003);unknown.rateIdentified=false;supported.rate=std::log(2.);supported.rateIdentified=true;
-  require(std::abs(keyra::pitchRate(unknown,supported,.5)-(.25*unknown.rate+.75*supported.rate))<1e-14,"support prior is inactive");
+  require(std::abs(keyra::pitchRate(unknown,supported,.5)-std::log(.25*.003+.75*2.))<1e-14,"support prior is inactive");
   std::cout<<"lanes="<<lanes<<" bound_lanes="<<bound<<" mixed_pairs="<<mixed<<" equal_support_pairs="<<known<<" morph_checks="<<morphs<<" guarded_series_checks="<<guardedSeries<<" live_allocations="<<allocations<<'\n';
   return 0;
 }catch(const std::exception& e){trap=false;std::cerr<<e.what()<<'\n';return 1;}}
@@ -194,9 +200,9 @@ class RateInterpolation(unittest.TestCase):
 
     def test_native_support_continuity_morph_and_anchor_audio(self):
         source = (DSP/'KeyraEngine.cpp').read_text()
-        candidate = 'return mix(x.rate,y.rate,coordinate);'
+        candidate = 'coordinate=t+t*(1-t)*confidence;'
         self.assertEqual(source.count(candidate), 1)
-        control = source.replace(candidate, 'return mix(x.rate,y.rate,t);')
+        control = source.replace(candidate, 'coordinate=t;(void)confidence;')
         with tempfile.TemporaryDirectory(prefix='keyra-rate-test-') as directory:
             root = Path(directory)
             probe = root/'probe.cpp'
@@ -213,9 +219,10 @@ class RateInterpolation(unittest.TestCase):
                 binaries.append(binary)
             print(subprocess.check_output([str(binaries[0])], text=True).strip())
             audio = [subprocess.check_output([str(binary), 'audio'], text=True) for binary in binaries]
-            self.assertEqual(len(audio[0].splitlines()), 54)
+            # Three recorded pitches at three velocities for each of the five pianos.
+            self.assertEqual(len(audio[0].splitlines()), 45)
             self.assertEqual(audio[0], audio[1], 'native recorded-anchor audio changed')
-            print('bit-identical native anchor renders=54')
+            print('bit-identical native anchor renders=45')
 
 
 if __name__ == '__main__':

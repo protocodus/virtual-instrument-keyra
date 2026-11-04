@@ -29,7 +29,6 @@ import measurement_source_provenance as source_provenance
 
 SCHEMA = 'keyra-accepted-measurements-v1'
 MANIFEST = 'keyra-existing-partial-update-v2'
-LEGACY_MANIFEST = 'keyra-existing-partial-update-v1'
 
 class InvalidInput(ValueError):
     pass
@@ -157,7 +156,7 @@ def operators(paths):
 def preflight(manifest_path):
     manifest_path = Path(manifest_path).absolute()
     m = read_json(manifest_path)
-    require(m.get('schema') in (MANIFEST, LEGACY_MANIFEST), 'unsupported manifest schema')
+    require(m.get('schema') == MANIFEST, 'unsupported manifest schema')
     base, pins = manifest_path.parent, {str(manifest_path): digest(manifest_path), str(Path(__file__).absolute()): digest(__file__)}
     pins[str(Path(source_provenance.__file__).absolute())] = digest(source_provenance.__file__)
     importer_path = Path(__file__).with_name('import_modal_measurements.py').absolute()
@@ -197,17 +196,12 @@ def preflight(manifest_path):
             require(roles.get(q['id']) == 'train', 'non-TRAIN input: ' + q['id'])
             item = files.get(q['id'], {})
             require(item.get('midi') == note and item.get('kind') == 'note', 'wrong corpus note')
-            if m['schema'] == LEGACY_MANIFEST:
-                require(m['model'] == 'belmont', 'v1 source proof established only for Belmont')
-                require(item.get('wav_sha256') == q['wav']['sha256'], 'source differs from authored analysis WAV')
-                source_paths.append(pinned(q['wav'], base, pins))
-            else:
-                try:
-                    record = source_provenance.prepare(item, q, m['model'], base, pins, pinned)
-                except source_provenance.ProvenanceError as error:
-                    raise InvalidInput(str(error)) from error
-                source_records.append(record)
-                source_paths.append(Path(record['analysis_wav']))
+            try:
+                record = source_provenance.prepare(item, q, m['model'], base, pins, pinned)
+            except source_provenance.ProvenanceError as error:
+                raise InvalidInput(str(error)) from error
+            source_records.append(record)
+            source_paths.append(Path(record['analysis_wav']))
         require(len({p.parent for p in source_paths}) == 1, 'source WAVs need one directory')
         require(all(p.name == q['id'] + '.wav' for p, q in zip(source_paths, rows)), 'source filenames differ from cases')
         extra = {k: pinned(t[k], base, pins) for k in ['baseline_cache', 'candidate_cache', 'selection_receipt']}
@@ -400,7 +394,7 @@ def generate(manifest_path):
             octave = float(np.float32(np.float32(stored(cents)) / np.float32(1200)))
             halo_hz[key] = references[key] * 2 ** octave
     source_proofs = []
-    decoder_runtime = source_provenance.runtime() if any(record['kind'] != 'authored-wav-v1' for _, _, _, source_records in targets for record in source_records) else None
+    decoder_runtime = source_provenance.runtime() if any(source_records for _, _, _, source_records in targets) else None
     # Complete every transform proof before loading any raw fit pickle.
     for _, _, _, source_records in targets:
         for record in source_records:

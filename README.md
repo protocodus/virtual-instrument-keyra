@@ -3,8 +3,8 @@
 Keyra is a sample-free piano: a real-time modal engine whose strings,
 soundboard ring and stereo image are fitted from numerical measurements of
 acoustic piano recordings, with three visible pedals, momentary pedal
-keyswitches and felt muting from the modulation wheel. Six pianos are
-measured, five grands and an upright, and their strings, hammers, soundboard
+keyswitches and felt muting from the modulation wheel. Five pianos are
+measured, four grands and an upright, and their strings, hammers, soundboard
 and action mix part by part into pianos none of them is. It builds as VST3
 and CLAP plug-ins, an Audio Unit on macOS and a standalone application, and
 the Reason Rack Extension adapter plays the same engine. It is a development
@@ -42,6 +42,41 @@ comparisons that set Salamander notes beside the fits were removed on
 the checkout from a fetched copy of the library.
 
 ## Version history
+
+### 0.4.15 — 2026-11-04 — five pianos, no jump between recorded pitches, no hiss at forte
+
+The Belmont grand is removed at the owner's request, with its preset and its
+Build column: Keyra plays the Kakegawa, Hamamatsu, Hamburg and New York grands
+and the Helsinki upright, and the factory bank holds twelve presets. A session
+saved with Belmont weights loads with them dropped, or with the Kakegawa
+grand's part where the Belmont was a part's only piano. A key between two
+recorded pitches no longer takes its stereo image from the nearer one, which
+switched the image at the midpoint: on the upright the octave partial in the
+sum of the channels jumped 7.3 dB from A♯2 to B2, a change of tone at a
+Width under 75 %. The image now moves between the two pitches' images, and
+recorded pitches sound as before ([decisions](Docs/decisions.md), 2026-11-04).
+Each partial of such a key also keeps its power in each channel between the
+two pitches' from 50 to 750 ms, and its components decay at rates between
+theirs: the Hamamatsu's A♯7 and B7 no longer ring their second partial 20 dB
+or more over A7 and C8. Against the recordings, the keys between recorded
+pitches sit 0.02 to 0.56 dB further from them in partial level, and closer in
+late decay on four pianos, by up to 0.48 dB/s, but 0.24 dB/s further on the
+Hamamatsu ([decisions](Docs/decisions.md), 2026-11-04).
+Forte notes no longer ring a hiss over their partials for half a second, the
+fault reported at the Hamamatsu's C4 struck at 127. The noise between the
+partials is now measured from the recordings by the median in every band, as
+it already was under the fundamental, and so passes over the phantom partials
+a hard strike adds there ([decisions](Docs/decisions.md), 2026-11-04).
+A chord's notes now add at other angles and the keys between recorded
+pitches read differently on Reason's meter, so each piano's output and tube
+are re-pinned to keep its default sound and its tube at their earlier
+readings: a recorded pitch's partials play 0.07 dB quieter on the Kakegawa
+grand, 0.24 on the upright, 0.20 on the Hamburg and 0.36 on the New York, and
+0.14 dB louder on the Hamamatsu, and one note through the tube alone moves
++0.23, +0.46, −0.40, −0.63 and +0.09 dB. Against 0.4.14's approved levels,
+Felt Upright's typical playing is 0.44 dB louder, every other preset's within
+0.12 dB, and four presets' loudest chords up to 0.16 dB higher, which the
+owner accepted as the new approved levels.
 
 ### 0.4.14 — 2026-11-03 — chords sound as their notes do
 
@@ -671,12 +706,11 @@ silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
 40% on a continuous tapered knob. The action levels above describe raw gain 1;
 the separate hammer/body attack is not scaled by Mechanics.
 
-### Six pianos, one model
+### Five pianos, one model
 
 The pianos are builds of one model (`keyra::Build`): the Kakegawa grand
 (Salamander's), the Helsinki upright, the Hamamatsu grand (VCSL Keys'),
-the Hamburg and New York grands, and the Belmont baby grand (Mom's 1974),
-each fitted from its own recordings. Elsewhere in this document the grand is
+and the Hamburg and New York grands, each fitted from its own recordings. Elsewhere in this document the grand is
 the Kakegawa grand and the upright the Helsinki upright. Each of the model's
 four parts mixes the measured pianos by a weight from 0 to 1 for each of
 them (`keyra::Mix`), played as shares of their sum: the **strings** (their
@@ -841,10 +875,12 @@ under which the modes build up below 0.8 of the treble's fundamentals as the
 recordings do, matched on shape, not level. The board
 noise is measured
 in the gaps between the partials the recordings show and, above the highest of
-them, across whole bands, as the benchmark measures it. In the bands below a
-note's fundamental, which hold other strings' tones but none of its own, a
-gap's level is the median of its bins, which passes over those tones. There
-the ring falls in two stages: a second, slower line is fitted through the
+them, across whole bands, as the benchmark measures it. A gap's level is the
+median of its bins, which passes over the tones a gap holds: below a note's
+fundamental other strings', above it the phantom partials a hard strike adds
+at the sums of two partials' frequencies (until 0.4.15 the mean measured the
+bands above the fundamental, and the engine played those tones as a hiss over
+every forte note). Below the fundamental the ring falls in two stages: a second, slower line is fitted through the
 frames from 0.15 to 0.6 s after contact that stand 10 dB over the floor, and
 the first is refitted on what the second leaves of the early frames. Above
 the fundamental the late frames mix the ring with the note's own unresolved
@@ -871,11 +907,18 @@ there from 0.3 to 2.3 s, in the take's own scale. A strike interpolates
 between the recorded pitches by partial order and between the layers by
 velocity, taking phases from the nearer pitch. A partial's lanes are paired by
 the share of the partial they carry, each pair as alike in decay as the
-pairing allows; a partial's stereo pickup moves
+pairing allows; each lane's decay rate moves between the pair's in 1/s, so
+that with its level moving in dB its level at every moment moves between
+theirs; a partial's stereo pickup moves
 between the two pitches' channel level differences in dB and takes its
-channel phase difference from the nearer pitch with its phases, and its level is
-set so that its power over the first second or so, its lanes' beating
-included, sits between the two pitches' in dB. C8 is left out: its strongest
+channel phase difference from the nearer pitch with its phases, so its lanes
+sum as one pitch's do; its right channel is then turned as a whole so that
+its lag behind the left over the first second or so moves between the two
+pitches' along the shorter arc. Its level is set so that its power over the
+same window, its lanes' beating included, sits between the two pitches' in
+dB, and so does its balance, the left channel's power over the right's,
+unless that would take a channel outside both pitches': that channel then
+stops at the pitch's power it would pass. C8 is left out: its strongest
 components sit 90–100 cents above the stretch that F♯7 and A7 set and no
 partial series explains the recording, so the keys above A7 play A7's data on
 the stretch curve. Only fitted numbers enter the header; no recorded waveform
@@ -999,12 +1042,10 @@ the build existed plays the grand as built at full quality, one saved with
 the Piano control the build it chose, one saved before Mechanics its action
 as calibrated, and one saved before Tube Mic hears the pair. Mechanics retains
 its raw 0–2 host parameter range for saved automation; only the custom knob's
-travel and percentage readout use the new taper. The nineteen factory
+travel and percentage readout use the new taper. The twelve factory
 presets in `Source/DSP/KeyraPresets.h` — five on the Kakegawa grand, three on
-the Helsinki upright, Hamamatsu Grand, Three Cities, Hamburg Grand, New York
-Grand, three on the Belmont grand (`Belmont Grand`, `Belmont Soft`, `Belmont Warm`),
-and four multi-piano hybrids (`Dark Chamber`, `Hybrid Studio`, `Upright Body`,
-`Bright Stage`) — set the build,
+the Helsinki upright, Hamamatsu Grand, Three Cities, Hamburg Grand and New
+York Grand — set the build,
 Brightness, Resonance, Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
 their sample positions; each MIDI channel owns its keys and pedals, and CC120,
 CC121 and CC123 are honoured per channel. The
@@ -1036,14 +1077,14 @@ notes every fourth semitone and eight chords at velocities 70, 90 and 110
 for typical playing, and the chords at 127 for the loudest. Each piano's
 output scale brings its default sound's typical playing to −9 VU at the
 default Output, where the portfolio's newer instruments play; the other
-presets without felt read from −10.9 to −8.0 VU, Three Cities −10.4 VU. The
+presets without felt read from −11.0 to −8.1 VU, Three Cities −10.2 VU. The
 half-drive response chosen for 0.4.11 applies at factory Output. The level
 before the portfolio guard is halved and the level after it doubled. A short
 stereo gain curve protects the restored signal when an attack crosses the
 −1.5 dBFS sample ceiling. On a 48 kHz host this adds 24 frames to the
 portfolio stage's 96-frame look-ahead. The host receives the total delay.
 
-On the six named pianos the 110 → 127 comparison increased on every one of
+On the six named pianos of 0.4.11 the 110 → 127 comparison increased on every one of
 480 paired strikes across the close and tube mics. Typical preset levels
 stay within 0.04 dB of 0.4.10. A forte chord can now cross 0 VU on Reason's
 meter, which corresponds to −12 dBFS RMS. The per-preset level tests use
@@ -1110,6 +1151,13 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   to 7.5 dB over the line through F♯3's and D4's levels at every layer, and
   the never-fitted B3 beside it plays 1.7 dB louder against its recording
   than the median note does.
+- A key between two recorded pitches holds each partial's power and each
+  of its channels over 50 to 750 ms between theirs, but not the partial's
+  shape inside that window where the fit splits it into lanes differently at
+  the two pitches: struck at 127, the Hamamatsu's B7 plays its second partial
+  up to 7 dB over both A7's and C8's in its left channel from 200 to 450 ms,
+  and 6 dB over in its first 50 ms, where 0.4.14 played it 24 dB over from
+  200 to 450 ms ([decisions](Docs/decisions.md), 2026-11-04).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
   further than 0.3.0's. Each undamped key rings as one string at one pitch,
@@ -1170,8 +1218,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   nine of them at its softest layer, and plays at every velocity on every
   piano: the grands' libraries hold one take of each note, so their own
   spread is unmeasured.
-- The felt presets read 7 to 9 dB under the others on the meter (Felt
-  Nocturne −18.1 VU, Felt Upright −15.9 VU): the felt stops each note within
+- The felt presets read 6 to 9 dB under the others on the meter (Felt
+  Nocturne −18.2 VU, Felt Upright −15.4 VU): the felt stops each note within
   a fraction of a second, so the meter's 300 ms holds less of it, while its
   attack peaks as high as the others'. Raising them to −9 VU would press
   every hard note into the limiter. The 0.4.11 factory response restores the hard-chord
@@ -1220,16 +1268,7 @@ particularly when bass partials cancel in the tube mic. See the
   ring under the pedal at the Kakegawa grand's rates. Its second layer's
   takes from E3 up stop at a noise gate 0.6 to 15 s after the strike, and the
   fit reads them no further.
-- The Belmont grand's library peak-normalises every take, so how loud its
-  layers and keys stand against each other is not recorded: they are levelled
-  by Decent Sampler's own velocity curve and a smooth trend over the keyboard,
-  the owner's choices. Its three layers are 25, 77 and 116 in velocity, one
-  to three takes each, at pitches a minor third apart, and D♯2, D♯4 and D♯6
-  are its only never-fitted pitches. Its A2 and D♯3 to F♯3 are recorded
-  nearly all fundamental. The tube mic emphasizes this bass, so the loudest chords
-  read higher on the VU meter. Its strings ring under the pedal at the Kakegawa grand's rates
-  ([benchmark](Docs/validation/belmont-recording-benchmark-2026-11-01.md)).
-- Six pianos are measured separately. Yamaha C3 supplies additional calibration
+- Five pianos are measured separately. Yamaha C3 supplies additional calibration
   measurements. Predictions between recorded pitches remain approximate;
   the [interpolation validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md)
   records the remaining pitch-gap and attack-fit limitations.

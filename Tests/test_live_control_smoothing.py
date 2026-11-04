@@ -230,7 +230,7 @@ void brightnessLifecycle(int model,double sr){
   trap=false;
 }
 void staticAudio(){
-  for(double sr:{44100.,48000.,192000.})for(int model=0;model<6;++model)for(float v:{0.f,.25f,1.f})for(float brightness:{0.f,.5f,1.f}){
+  for(double sr:{44100.,48000.,192000.})for(int model=0;model<keyra::pianoCount;++model)for(float v:{0.f,.25f,1.f})for(float brightness:{0.f,.5f,1.f}){
     keyra::Engine e(sr);auto p=parameters(model,v);p.brightness=brightness;start(e,p);
     std::array<float,127> l{},r{};std::uint64_t h=14695981039346656037ull;
     trap=true;
@@ -243,13 +243,13 @@ int main(int argc,char**argv){try{
   std::cout<<std::setprecision(17);
   if(argc>1&&std::string(argv[1])=="static"){staticAudio();require(allocations==0,"static callbacks allocate");return 0;}
   if(argc>1&&std::string(argv[1])=="brightness"){
-    for(double sr:{44100.,48000.,192000.})for(int model=0;model<6;++model){
+    for(double sr:{44100.,48000.,192000.})for(int model=0;model<keyra::pianoCount;++model){
       brightnessTrajectory(model,sr);brightnessLifecycle(model,sr);
       require(brightnessPartitioned(model,sr,false)==brightnessPartitioned(model,sr,true),"brightness automation depends on block partition");
     }
     require(allocations==0,"brightness callbacks allocate");std::cout<<"brightness_models_rates=18 live_allocations="<<allocations<<'\n';return 0;
   }
-  for(double sr:{44100.,48000.,192000.})for(int model=0;model<6;++model){
+  for(double sr:{44100.,48000.,192000.})for(int model=0;model<keyra::pianoCount;++model){
     trajectory(model,sr);lifecycle(model,sr);
     const auto a=partitioned(model,sr,false),b=partitioned(model,sr,true);
     require(a==b,"resonance automation depends on block partition");
@@ -298,10 +298,10 @@ class LiveControlSmoothingTests(unittest.TestCase):
             self.assertNotEqual(tint_mutation.returncode, 0, 'raw tint target escaped the audio oracle')
             self.assertIn('brightness audio oracle mismatch', tint_mutation.stderr)
             audio = [subprocess.check_output([str(b), 'static'], text=True) for b in binaries]
-            self.assertEqual(len(audio[0].splitlines()), 162)
+            self.assertEqual(len(audio[0].splitlines()), 135)
             self.assertEqual(audio[0], audio[1], 'static Resonance endpoint audio changed')
             self.assertEqual(audio[0], audio[2], 'static Brightness endpoint audio changed')
-            print('both raw-target mutations rejected; static endpoint waveform hashes identical=162')
+            print('both raw-target mutations rejected; static endpoint waveform hashes identical=135')
 
 
 if __name__ == '__main__':

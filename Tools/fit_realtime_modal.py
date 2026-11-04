@@ -27,7 +27,7 @@ or impulse response enters a header.
   python3 Tools/fit_realtime_modal.py --recalibrate  # export from measured anchor caches
   python3 Tools/fit_realtime_modal.py --recalibrate --check  # verify cache-based export
   python3 Tools/fit_realtime_modal.py --model upright [--analyse | --recalibrate]
-  python3 Tools/fit_realtime_modal.py --model belmont --measurements <snapshot.json.gz> [--check]
+  python3 Tools/fit_realtime_modal.py --model hamburg --measurements <snapshot.json.gz> [--check]
 """
 from __future__ import annotations
 
@@ -141,17 +141,6 @@ MODELS = {
                 'actions': 'The action\'s knocks on the body modes: the seven key-noise takes the library plays '
                            'as any key is let go, one to each recorded pitch in turn, in those recordings\' own '
                            'scale.'},
-    'belmont': {'title': 'the Pianobook "Mom\'s 1974 Baby Grand" (The Imperfect Drummer, Brian Peat); nothing from '
-                         'the library is copied',
-                'corpus': ROOT / 'Tools/corpus/belmont-grand.json',
-                'split': ROOT / 'Tools/corpus/split-belmont-2026-11-01.json',
-                'wav': ROOT / 'out/belmont/wav', 'cache': ROOT / 'out/calibration/belmont',
-                'header': ROOT / 'Source/DSP/MeasuredBelmontData.h',
-                'metadata': ROOT / 'Docs/research/belmont-modal-fit-2026-11-01.json',
-                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': ('pedalD1', 'pedalU1'), 'min_layers': 2,
-                'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
-                           'recorded pitch\'s key is let go and its first sustain-pedal noises down and up, from '
-                           'one take each in those recordings\' own scale.'},
 }
 # The keys from F6 up have no dampers: every strike sets their strings
 # ringing at their own pitches (halo_data). The analysis also searches the
@@ -1778,21 +1767,25 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     Above the highest of them a band is measured whole, as the benchmark
     measures it: excluding every partial the stiff string could have left no
     band to measure below A3, whose keys then took the treble's louder noise.
-    A frame's density is the band's mean bin power, except in the bands
-    centred below the struck note's fundamental, where none of its own
-    partials can lie: there it is the median of the band's bin powers over
-    ln 2, each channel's, then the channels' mean (a noise bin's power is
+    A frame's density is the median of the band's bin powers over ln 2,
+    each channel's, then the channels' mean (a noise bin's power is
     exponential, whose median is ln 2 times its mean, and the median passes
-    over the few bins a tone holds). The tones there are other strings',
-    chiefly the undamped treble strings' detuned unisons, which the engine
-    rings at one pitch each and a one-pitch fit leaves partly in the residual
-    (B6's span 1957 to 1992 Hz). The mean took them for noise decaying at
-    their rate: the upright's 2 kHz band after C7 decayed at 17 dB/s, where
-    the noise between them falls at 170, and rang on as a hiss for seconds.
-    Above the fundamental the residue between the partials is mostly the
-    note's own unresolved partials, which have no voice but the noise:
-    measured by the median there too, the upright's 12.7 kHz band went silent
-    and E3's 8 kHz band fell 16 dB further under its recording.
+    over the few bins a tone holds). The tones between the partials are not
+    the board's noise. Under the fundamental they are other strings', chiefly
+    the undamped treble strings' detuned unisons, which the engine rings at
+    one pitch each and a one-pitch fit leaves partly in the residual (B6's
+    span 1957 to 1992 Hz): the mean took them for noise decaying at their
+    rate, so the upright's 2 kHz band after C7 decayed at 17 dB/s, where the
+    noise between them falls at 170, and rang on as a hiss for seconds.
+    Above it a hard strike adds the string's phantom partials at the sums of
+    two partials' frequencies (the Kawai's C4 at 127 holds f8+f9 at 4482 Hz,
+    135 Hz under its 17th partial). Until 2026-11-04 the mean measured the
+    bands above the fundamental, and the engine played those tones as a hiss
+    that rang for half a second over every forte note, reported as a fault
+    (Docs/decisions.md). The median gives that residue no voice: the
+    upright's 12.7 kHz band falls silent after the knock, and at E3 struck at
+    85 its 8 kHz band between the partials sits 24 dB under the recording's
+    as the benchmark measures it, where the mean left it 12 dB under.
     Under the fundamental a second line, the ring's slower second stage, is
     fitted through the frames every 10 ms over NOISE_LATE that stand 10 dB
     above the floor, and the first is refitted on the early density less the
@@ -1828,9 +1821,9 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
     below = [centre < result['f1'] for centre in NOISE_BANDS]
     scale = 2 / (sr * np.sum(w * w))                         # one-sided density per bin
 
-    def power(z, j):
+    def power(z):
         p = np.abs(z) ** 2 * scale
-        return float(np.mean(np.median(p, axis=0))) / math.log(2) if below[j] else float(np.mean(p))
+        return float(np.mean(np.median(p, axis=0))) / math.log(2)
     shape = (len(result['layers']), len(NOISE_BANDS))
     level, decay, floor, balance, coherence, slow, slow_decay = (np.full(shape, np.nan) for _ in range(7))
     times = np.arange(window / 2, window / 2 + .1001, hop)
@@ -1854,16 +1847,16 @@ def noise_bands(result, contact, wav, tail_floor, window=.04, hop=.002):
         for j, band in enumerate(bins):
             if band is None:
                 continue
-            density = 10 * np.log10(np.array([power(z[band], j) for _, z in frames]) + 1e-30)
+            density = 10 * np.log10(np.array([power(z[band]) for _, z in frames]) + 1e-30)
             if quiet:
-                floor[i, j] = 10 * math.log10(np.mean([power(z[band], j) for z in quiet]) + 1e-30)
+                floor[i, j] = 10 * math.log10(np.mean([power(z[band]) for z in quiet]) + 1e-30)
             clear = density > (floor[i, j] if quiet else -np.inf) + 10
             if clear.sum() < 10:
                 continue
             slope, intercept, _, _ = stats.theilslopes(density[clear], at[clear])
             level[i, j], decay[i, j] = intercept, slope
             if below[j] and lates:
-                late = 10 * np.log10(np.array([power(z[band], j) for _, z in lates]) + 1e-30)
+                late = 10 * np.log10(np.array([power(z[band]) for _, z in lates]) + 1e-30)
                 held = late > (floor[i, j] if quiet else -np.inf) + 10
                 if held.sum() >= 10:
                     second, start, _, _ = stats.theilslopes(late[held], lt[held])

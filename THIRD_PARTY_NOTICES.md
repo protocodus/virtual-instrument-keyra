@@ -41,8 +41,6 @@ The Hamburg grand is measured the same way from "Steinway Grand" for Decent Samp
 
 The New York grand, a 1933 Model L, is measured the same way from "Grandpa's Piano" by **David Hawkins** (Pianobook). Nothing from the library is copied: no recording, excerpt or impulse response of it is in this repository, a Keyra build or any audio Keyra publishes. Keyra measures its recordings, derives the piano's numerical parameters from them and benchmarks the result against them; `Tools/corpus/newyork-grand.json` pins the measured set by SHA256 and `Tools/decode_newyork.py` reads it from a copy of the library. This credit does not imply endorsement by the library's author or the instrument's maker.
 
-The Belmont grand, a 1974 Wm. Knabe & Co. baby grand, is measured the same way from "Mom's 1974 Baby Grand" by **The Imperfect Drummer (Brian Peat)** (Pianobook). Nothing from the library is copied: no recording, excerpt or impulse response of it is in this repository, a Keyra build or any audio Keyra publishes. Keyra measures its recordings, derives the piano's numerical parameters from them and benchmarks the result against them; `Tools/corpus/belmont-grand.json` pins the measured set by SHA256 and `Tools/decode_belmont.py` reads it from a copy of the library. This credit does not imply endorsement by the library's author or the instrument's maker.
-
 ## JUCE 8.0.14
 
 The DAW plug-in and standalone application use JUCE, Copyright (c) Raw

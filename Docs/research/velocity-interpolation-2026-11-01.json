@@ -1,25 +1,24 @@
 {
   "schema_version": 1,
-  "protocol": "Guard velocity interpolation using only the six pianos' fitted numeric data.\n\nNo recordings or dev/sealed data are opened. Each complete partial/layer\ninterval is enabled only if the old interpolation leaves its endpoint-energy\nbounds and the phase-aligned alternative stays inside them in four windows.\nThe first 50 ms includes the runtime rise cap, floor and 48 kHz discrete contact\nsmoothing, checked at quarter recording-layer coordinates. The other windows\n(50-750 ms, .75-1.5 s, 1.5-3.5 s) exclude the rise, as windowPower does, and\ntheir entire intervals are certified from the real roots of the quartic\nderivative of exp(L*t)*quadratic(t)/quadratic(t). This is a modal-power guard,\nnot a proof about the complete acoustic waveform, other sample rates or the\nearly window between grid points. Recording benchmarks and listening follow.\n\npython3 Tools/generate_velocity_interpolation.py [--check]\n",
+  "protocol": "Guard velocity interpolation using only the five pianos' fitted numeric data.\n\nNo recordings or dev/sealed data are opened. Each complete partial/layer\ninterval is enabled only if the old interpolation leaves its endpoint-energy\nbounds and the phase-aligned alternative stays inside them in four windows.\nThe first 50 ms includes the runtime rise cap, floor and 48 kHz discrete contact\nsmoothing, checked at quarter recording-layer coordinates. The other windows\n(50-750 ms, .75-1.5 s, 1.5-3.5 s) exclude the rise, as windowPower does, and\ntheir entire intervals are certified from the real roots of the quartic\nderivative of exp(L*t)*quadratic(t)/quadratic(t). This is a modal-power guard,\nnot a proof about the complete acoustic waveform, other sample rates or the\nearly window between grid points. Recording benchmarks and listening follow.\n\npython3 Tools/generate_velocity_interpolation.py [--check]\n",
   "recordings_opened": false,
   "rounding_tolerance_db": 1e-08,
   "reporting_tolerance_db": 1e-05,
   "early_window_sample_rate": 48000,
   "early_grid_layer_coordinate_step": 0.25,
   "sources": {
-    "Tools/generate_velocity_interpolation.py": "f94b8baa2367cc4e4f28c667d009d5f729c6420ec4bc3cf81062f6249366b4e5",
-    "Tools/VelocityInterpolationGuard.cpp": "b6200fcb52203b151dc01facd8dbe88ccef04d32d2685c5653c80ab1e9d7373c",
-    "Source/DSP/KeyraEngine.cpp": "30daa8fe584f70a3beeb3d564044f9e392480f5feb4b1bf45b2e30c4b5f3b0eb",
+    "Tools/generate_velocity_interpolation.py": "b4d38d82917e1503e1942431d0d3a24dc09cb68d947ed2c8a77adf348c0e2944",
+    "Tools/VelocityInterpolationGuard.cpp": "def40f299f9004431626df914b767cac6fac72c7447d9a5f1dde3b52be97bfcc",
+    "Source/DSP/KeyraEngine.cpp": "79cd9ae77c9b10ec1eba3bd89298e13dd368d28513f97880a26d0f1c449714d8",
     "Source/DSP/MeasuredTypes.h": "6466918a652ac5e71d6fbcded1b0643ccbdb22faee655fc402ddc4b009c9f033",
-    "Source/DSP/MeasuredModalData.h": "edd7ba272ef3e8e291d1306deb4d1f346df9989f38c66189c7fa8be0d7d2be99",
-    "Source/DSP/MeasuredUprightData.h": "c9a816902ff2b0e3ab32859419fc285941e5d4c2faf1320736481d573846719d",
-    "Source/DSP/MeasuredKawaiData.h": "082b9b1795c86933c3b736d6dec8776885a6d79d1c25249045b50a00a16438b3",
-    "Source/DSP/MeasuredHamburgData.h": "8f12423ea9b73beecc7f03232675a0970efcb995ece1a8c854084e6845d0d0e7",
-    "Source/DSP/MeasuredNewYorkData.h": "c41f0f5166ba41d3ce2dc7e8932095aca0c9cb8aaa4cbf8c83edeaec3866b8dc",
-    "Source/DSP/MeasuredBelmontData.h": "c8eadcc8f3a9bf3a5439ead81624de0486f6f68b5fc1c05f8b70611927c229d6"
+    "Source/DSP/MeasuredModalData.h": "fe30baf87b2bfd2f1c8c5fce031856f94c8f826988c6e9d3e277666d354e8408",
+    "Source/DSP/MeasuredUprightData.h": "932b6223946460d9c0dc1904fecdfb535763086a25ecab40c228f41dfd5faf6b",
+    "Source/DSP/MeasuredKawaiData.h": "8b9c22d666d45004e2f26bb380a9130cd3b9b43ba479c2a243689c9395b795ba",
+    "Source/DSP/MeasuredHamburgData.h": "3a97e4d1cf69b777916cde6295a3250ca175d137936e11af9a5eb1a75d3c711f",
+    "Source/DSP/MeasuredNewYorkData.h": "ad6bbe849064c19f1e08b9959bb910c0b663aabe998a3f5f303f48c519d18c4e"
   },
-  "partial_count": 3382,
-  "enabled_intervals": 405,
+  "partial_count": 2787,
+  "enabled_intervals": 361,
   "summary": {
     "grand": {
       "intervals": 9229,
@@ -40,13 +39,9 @@
     "newyork": {
       "intervals": 1460,
       "enabled": 57
-    },
-    "belmont": {
-      "intervals": 1190,
-      "enabled": 44
     }
   },
-  "examined_intervals": 17201,
+  "examined_intervals": 16011,
   "intervals": [
     {
       "model": "grand",
@@ -85,7 +80,7 @@
       "partial": 38,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 5.858751091,
+      "baseline_excursion_db": 5.85875109,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -100,12 +95,12 @@
       "partial": 41,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 3.415019995,
+      "baseline_excursion_db": 3.415020008,
       "candidate_excursion_db": [
-        0.007928692,
+        0.007928691,
         0.0,
-        0.521187457,
-        0.046948322
+        0.521187429,
+        0.046948319
       ]
     },
     {
@@ -115,12 +110,12 @@
       "partial": 44,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 5.617245598,
+      "baseline_excursion_db": 5.617245026,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.043908501
+        0.043908549
       ]
     },
     {
@@ -130,7 +125,7 @@
       "partial": 47,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 8.211262525,
+      "baseline_excursion_db": 8.21126253,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -175,7 +170,7 @@
       "partial": 53,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 4.53007254,
+      "baseline_excursion_db": 4.530072541,
       "candidate_excursion_db": [
         0.065686608,
         0.0,
@@ -295,12 +290,12 @@
       "partial": 64,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 0.023029853,
+      "baseline_excursion_db": 0.023029852,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.707410762
+        0.707410767
       ]
     },
     {
@@ -325,12 +320,12 @@
       "partial": 67,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.355017106,
+      "baseline_excursion_db": 0.355017104,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.017332335
+        0.017332338
       ]
     },
     {
@@ -340,7 +335,7 @@
       "partial": 67,
       "layer": 4,
       "enabled": true,
-      "baseline_excursion_db": 6.499909533,
+      "baseline_excursion_db": 6.49990951,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -430,12 +425,12 @@
       "partial": 75,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.483789537,
+      "baseline_excursion_db": 0.483789509,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.631917493,
-        0.637570104
+        0.631917481,
+        0.637570091
       ]
     },
     {
@@ -460,7 +455,7 @@
       "partial": 75,
       "layer": 7,
       "enabled": true,
-      "baseline_excursion_db": 0.241688162,
+      "baseline_excursion_db": 0.241688196,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -490,12 +485,12 @@
       "partial": 76,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 6.448135287,
+      "baseline_excursion_db": 6.448135258,
       "candidate_excursion_db": [
-        0.026715633,
+        0.026715619,
         0.0,
-        0.951868332,
-        0.430202177
+        0.951868303,
+        0.430202154
       ]
     },
     {
@@ -505,7 +500,7 @@
       "partial": 76,
       "layer": 5,
       "enabled": true,
-      "baseline_excursion_db": 0.003083277,
+      "baseline_excursion_db": 0.003083305,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -610,12 +605,12 @@
       "partial": 127,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.906254715,
+      "baseline_excursion_db": 0.906254726,
       "candidate_excursion_db": [
-        10.587607475,
+        10.587607607,
         0.0,
         0.0,
-        2.237920674
+        2.237920636
       ]
     },
     {
@@ -655,12 +650,12 @@
       "partial": 134,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.90990447,
+      "baseline_excursion_db": 0.909904469,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.025620852,
-        0.274135294
+        0.025620851,
+        0.274135292
       ]
     },
     {
@@ -730,12 +725,12 @@
       "partial": 138,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.168408109,
+      "baseline_excursion_db": 0.168408113,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.245323584
+        0.245323588
       ]
     },
     {
@@ -745,12 +740,12 @@
       "partial": 138,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 2.228050836,
+      "baseline_excursion_db": 2.228050835,
       "candidate_excursion_db": [
-        1.605566584,
+        1.605566587,
         0.0,
         0.0,
-        9.560353661
+        9.560353746
       ]
     },
     {
@@ -895,12 +890,12 @@
       "partial": 151,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.093737549,
+      "baseline_excursion_db": 0.093737547,
       "candidate_excursion_db": [
-        0.409131019,
+        0.40913103,
         0.0,
-        0.320124243,
-        0.174858435
+        0.320124251,
+        0.174858433
       ]
     },
     {
@@ -942,10 +937,10 @@
       "enabled": false,
       "baseline_excursion_db": 0.623104181,
       "candidate_excursion_db": [
-        0.072164944,
+        0.072164938,
         0.0,
         0.163281299,
-        0.103991771
+        0.10399177
       ]
     },
     {
@@ -1015,7 +1010,7 @@
       "partial": 194,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 1.047713596,
+      "baseline_excursion_db": 1.047713608,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -1030,7 +1025,7 @@
       "partial": 199,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 0.000378914,
+      "baseline_excursion_db": 0.000378915,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -1060,7 +1055,7 @@
       "partial": 208,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 0.050748313,
+      "baseline_excursion_db": 0.050748344,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -1075,12 +1070,12 @@
       "partial": 208,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 4.489668807,
+      "baseline_excursion_db": 4.48966906,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.500299123
+        0.500299166
       ]
     },
     {
@@ -1180,7 +1175,7 @@
       "partial": 233,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.042941999,
+      "baseline_excursion_db": 0.042941998,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -1225,12 +1220,12 @@
       "partial": 234,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.267756843,
+      "baseline_excursion_db": 0.267756694,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.544589323
+        0.544589297
       ]
     },
     {
@@ -1465,12 +1460,12 @@
       "partial": 304,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 2.924839309,
+      "baseline_excursion_db": 2.924839298,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.254190503,
-        0.7149988
+        1.25419051,
+        0.714998805
       ]
     },
     {
@@ -1705,7 +1700,7 @@
       "partial": 325,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.008159017,
+      "baseline_excursion_db": 0.008159014,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -1960,12 +1955,12 @@
       "partial": 390,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 1.803854362,
+      "baseline_excursion_db": 1.803854361,
       "candidate_excursion_db": [
-        6.928740997,
+        6.92874099,
         0.0,
         0.0,
-        3.065020614
+        3.065020628
       ]
     },
     {
@@ -2050,7 +2045,7 @@
       "partial": 396,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.094673095,
+      "baseline_excursion_db": 0.094673082,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -2095,11 +2090,11 @@
       "partial": 398,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 1.548418635,
+      "baseline_excursion_db": 1.548418667,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.375658171,
+        0.37565817,
         0.0
       ]
     },
@@ -2307,7 +2302,7 @@
       "enabled": false,
       "baseline_excursion_db": 0.049496653,
       "candidate_excursion_db": [
-        4.940281462,
+        4.940281381,
         0.0,
         0.0,
         0.360999476
@@ -2350,9 +2345,9 @@
       "partial": 447,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 2.456153107,
+      "baseline_excursion_db": 2.456153138,
       "candidate_excursion_db": [
-        0.48412176,
+        0.48412172,
         0.0,
         0.0,
         0.0
@@ -2425,7 +2420,7 @@
       "partial": 452,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 5.144816879,
+      "baseline_excursion_db": 5.144816938,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -2622,7 +2617,7 @@
       "enabled": false,
       "baseline_excursion_db": 0.447891328,
       "candidate_excursion_db": [
-        2.830442205,
+        2.8304422,
         0.0,
         0.343260828,
         0.0
@@ -2665,12 +2660,12 @@
       "partial": 469,
       "layer": 6,
       "enabled": false,
-      "baseline_excursion_db": 0.867745992,
+      "baseline_excursion_db": 0.867745946,
       "candidate_excursion_db": [
-        7.025695241,
+        7.025695376,
         0.0,
-        0.796852531,
-        0.473413644
+        0.796852504,
+        0.473413663
       ]
     },
     {
@@ -2980,7 +2975,7 @@
       "partial": 531,
       "layer": 6,
       "enabled": true,
-      "baseline_excursion_db": 0.04525477,
+      "baseline_excursion_db": 0.045254767,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -3040,12 +3035,12 @@
       "partial": 565,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.839224326,
+      "baseline_excursion_db": 0.839224299,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        3.660740731
+        3.660740785
       ]
     },
     {
@@ -3190,12 +3185,12 @@
       "partial": 578,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.107353826,
+      "baseline_excursion_db": 0.107353823,
       "candidate_excursion_db": [
-        0.181533935,
+        0.181533933,
         0.0,
         0.0,
-        0.052835272
+        0.052835255
       ]
     },
     {
@@ -3445,12 +3440,12 @@
       "partial": 592,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.382404857,
+      "baseline_excursion_db": 0.38240486,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.060864004
+        0.060864001
       ]
     },
     {
@@ -3565,12 +3560,12 @@
       "partial": 594,
       "layer": 6,
       "enabled": false,
-      "baseline_excursion_db": 0.055063878,
+      "baseline_excursion_db": 0.055063879,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.013401361,
-        0.000113294
+        0.013401365,
+        0.000113295
       ]
     },
     {
@@ -3580,7 +3575,7 @@
       "partial": 594,
       "layer": 7,
       "enabled": true,
-      "baseline_excursion_db": 0.150325477,
+      "baseline_excursion_db": 0.150325473,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -3625,11 +3620,11 @@
       "partial": 595,
       "layer": 6,
       "enabled": false,
-      "baseline_excursion_db": 0.17183658,
+      "baseline_excursion_db": 0.171836545,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.102349673,
+        0.102349663,
         0.0
       ]
     },
@@ -3775,12 +3770,12 @@
       "partial": 619,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 2.05767214,
+      "baseline_excursion_db": 2.057672173,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.865868211,
-        2.373597005
+        0.865868194,
+        2.373597029
       ]
     },
     {
@@ -3835,12 +3830,12 @@
       "partial": 624,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 3.697076856,
+      "baseline_excursion_db": 3.697076865,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.475230438
+        0.475230437
       ]
     },
     {
@@ -3850,11 +3845,11 @@
       "partial": 625,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.00073927,
+      "baseline_excursion_db": 0.000739271,
       "candidate_excursion_db": [
-        0.016556695,
+        0.016556699,
         0.0,
-        0.214547627,
+        0.214547637,
         0.0
       ]
     },
@@ -4015,7 +4010,7 @@
       "partial": 634,
       "layer": 5,
       "enabled": true,
-      "baseline_excursion_db": 0.213309917,
+      "baseline_excursion_db": 0.213309926,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -4165,12 +4160,12 @@
       "partial": 640,
       "layer": 8,
       "enabled": false,
-      "baseline_excursion_db": 0.548966426,
+      "baseline_excursion_db": 0.548966399,
       "candidate_excursion_db": [
-        1.351335583,
+        1.351335459,
         0.0,
-        0.062444995,
-        0.01258761
+        0.062445027,
+        0.012587627
       ]
     },
     {
@@ -4375,11 +4370,11 @@
       "partial": 660,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 1.677435045,
+      "baseline_excursion_db": 1.677435018,
       "candidate_excursion_db": [
-        0.14162849,
+        0.141628453,
         0.0,
-        0.459397806,
+        0.459397756,
         0.0
       ]
     },
@@ -4390,11 +4385,11 @@
       "partial": 661,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 4.150606408,
+      "baseline_excursion_db": 4.150606398,
       "candidate_excursion_db": [
-        1.528610449,
+        1.528610452,
         0.0,
-        3.26109369,
+        3.261093693,
         1.984645201
       ]
     },
@@ -4525,12 +4520,12 @@
       "partial": 669,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 0.999494608,
+      "baseline_excursion_db": 0.999494587,
       "candidate_excursion_db": [
-        0.674309202,
+        0.674309155,
         0.0,
-        21.643246934,
-        28.459765588
+        21.643247864,
+        28.459774234
       ]
     },
     {
@@ -4585,12 +4580,12 @@
       "partial": 670,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 2.334522666,
+      "baseline_excursion_db": 2.334522623,
       "candidate_excursion_db": [
-        0.40936989,
+        0.409369803,
         0.0,
-        10.065806898,
-        10.829347993
+        10.065807366,
+        10.829348503
       ]
     },
     {
@@ -4645,9 +4640,9 @@
       "partial": 671,
       "layer": 5,
       "enabled": false,
-      "baseline_excursion_db": 0.01364887,
+      "baseline_excursion_db": 0.013648879,
       "candidate_excursion_db": [
-        0.427385313,
+        0.4273853,
         0.0,
         0.0,
         0.0
@@ -4675,12 +4670,12 @@
       "partial": 673,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.084519018,
+      "baseline_excursion_db": 0.084519014,
       "candidate_excursion_db": [
-        0.17893465,
+        0.178934647,
         0.0,
-        0.445345952,
-        1.309733068
+        0.44534595,
+        1.309733075
       ]
     },
     {
@@ -4840,7 +4835,7 @@
       "partial": 678,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.00067546,
+      "baseline_excursion_db": 0.000675461,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -4900,12 +4895,12 @@
       "partial": 701,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.199203885,
+      "baseline_excursion_db": 0.199203888,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.100657416
+        0.100657417
       ]
     },
     {
@@ -4915,12 +4910,12 @@
       "partial": 702,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 1.683129447,
+      "baseline_excursion_db": 1.683129352,
       "candidate_excursion_db": [
-        0.142741323,
+        0.142741189,
         0.0,
-        0.494974517,
-        1.335202696
+        0.494974625,
+        1.335202738
       ]
     },
     {
@@ -5080,11 +5075,11 @@
       "partial": 712,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.376352162,
+      "baseline_excursion_db": 0.376352201,
       "candidate_excursion_db": [
-        0.691982326,
+        0.691982275,
         0.0,
-        0.042424783,
+        0.042424778,
         0.0
       ]
     },
@@ -5095,12 +5090,12 @@
       "partial": 712,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 2.489149346,
+      "baseline_excursion_db": 2.48914935,
       "candidate_excursion_db": [
-        4.444557612,
+        4.444557545,
         0.0,
-        0.001821353,
-        0.002537103
+        0.001821352,
+        0.002537102
       ]
     },
     {
@@ -5110,12 +5105,12 @@
       "partial": 712,
       "layer": 5,
       "enabled": false,
-      "baseline_excursion_db": 0.00745007,
+      "baseline_excursion_db": 0.007450073,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.860689334,
-        0.921756298
+        0.86068933,
+        0.921756296
       ]
     },
     {
@@ -5260,12 +5255,12 @@
       "partial": 737,
       "layer": 4,
       "enabled": false,
-      "baseline_excursion_db": 0.340812712,
+      "baseline_excursion_db": 0.34081272,
       "candidate_excursion_db": [
-        5.231313661,
+        5.231313874,
         0.0,
-        1.224403712,
-        1.085592138
+        1.224403746,
+        1.085592172
       ]
     },
     {
@@ -5320,12 +5315,12 @@
       "partial": 755,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.276621777,
+      "baseline_excursion_db": 0.276621771,
       "candidate_excursion_db": [
-        3.883736409,
+        3.883736377,
         0.0,
         0.001115634,
-        3.154508193
+        3.154508202
       ]
     },
     {
@@ -5515,12 +5510,12 @@
       "partial": 792,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.031125971,
+      "baseline_excursion_db": 0.031125986,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.780978416,
-        1.103689789
+        0.780978446,
+        1.103689826
       ]
     },
     {
@@ -5727,7 +5722,7 @@
       "enabled": false,
       "baseline_excursion_db": 0.262512515,
       "candidate_excursion_db": [
-        0.506649659,
+        0.506649657,
         0.0,
         0.0,
         0.0
@@ -5740,7 +5735,7 @@
       "partial": 819,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.05306998,
+      "baseline_excursion_db": 0.053069979,
       "candidate_excursion_db": [
         0.003837815,
         0.0,
@@ -5830,12 +5825,12 @@
       "partial": 830,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.51151148,
+      "baseline_excursion_db": 0.51151152,
       "candidate_excursion_db": [
-        0.77827775,
+        0.778277784,
         0.0,
-        0.738482525,
-        0.654657132
+        0.738482659,
+        0.654657233
       ]
     },
     {
@@ -5845,12 +5840,12 @@
       "partial": 830,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 2.003774205,
+      "baseline_excursion_db": 2.003774286,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        7.145151181,
-        9.17984399
+        7.145151733,
+        9.179844822
       ]
     },
     {
@@ -5894,8 +5889,8 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.549396997,
-        0.133709009
+        0.549397002,
+        0.133709011
       ]
     },
     {
@@ -5905,12 +5900,12 @@
       "partial": 833,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.127174266,
+      "baseline_excursion_db": 0.127174269,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.596101768,
-        1.880184897
+        1.596101771,
+        1.8801849
       ]
     },
     {
@@ -5920,12 +5915,12 @@
       "partial": 836,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.052058693,
+      "baseline_excursion_db": 0.052058837,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.309967904,
-        0.281643054
+        0.309967899,
+        0.281643046
       ]
     },
     {
@@ -6010,7 +6005,7 @@
       "partial": 846,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 1.121334916,
+      "baseline_excursion_db": 1.121334927,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6025,7 +6020,7 @@
       "partial": 846,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 2.714562298,
+      "baseline_excursion_db": 2.714562326,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6115,12 +6110,12 @@
       "partial": 849,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 5.899157765,
+      "baseline_excursion_db": 5.899157317,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.019209223
+        0.019209208
       ]
     },
     {
@@ -6235,12 +6230,12 @@
       "partial": 853,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 10.144346153,
+      "baseline_excursion_db": 10.144346117,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        4.739390149,
-        10.610848366
+        4.739390093,
+        10.610848228
       ]
     },
     {
@@ -6250,7 +6245,7 @@
       "partial": 854,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 2.436896549,
+      "baseline_excursion_db": 2.436896506,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6475,12 +6470,12 @@
       "partial": 864,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.77405522,
+      "baseline_excursion_db": 0.774055242,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.52497293,
-        0.403032305
+        0.524972937,
+        0.4030323
       ]
     },
     {
@@ -6535,12 +6530,12 @@
       "partial": 869,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.316958536,
+      "baseline_excursion_db": 0.316958541,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        4.975598689,
-        0.44232144
+        4.975598737,
+        0.442321446
       ]
     },
     {
@@ -6595,7 +6590,7 @@
       "partial": 875,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 1.635318696,
+      "baseline_excursion_db": 1.635318747,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6700,7 +6695,7 @@
       "partial": 879,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 3.321658569,
+      "baseline_excursion_db": 3.321658559,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6715,7 +6710,7 @@
       "partial": 879,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 9.378913993,
+      "baseline_excursion_db": 9.378913994,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6835,7 +6830,7 @@
       "partial": 883,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 7.260852662,
+      "baseline_excursion_db": 7.260853556,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -6925,12 +6920,12 @@
       "partial": 886,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 3.276958392,
+      "baseline_excursion_db": 3.27695842,
       "candidate_excursion_db": [
-        0.76846641,
+        0.768466405,
         0.0,
         0.043445549,
-        1.598922875
+        1.598922879
       ]
     },
     {
@@ -6940,12 +6935,12 @@
       "partial": 887,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.554122202,
+      "baseline_excursion_db": 0.554122204,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.270554741,
-        0.748584139
+        0.270554762,
+        0.74858416
       ]
     },
     {
@@ -6955,11 +6950,11 @@
       "partial": 888,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 6.48325098,
+      "baseline_excursion_db": 6.483250985,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.500323722,
+        2.500323705,
         0.0
       ]
     },
@@ -6970,7 +6965,7 @@
       "partial": 889,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 0.02460688,
+      "baseline_excursion_db": 0.024606881,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -7105,12 +7100,12 @@
       "partial": 898,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.170469772,
+      "baseline_excursion_db": 0.170469755,
       "candidate_excursion_db": [
-        0.025047539,
+        0.025047543,
         0.0,
-        3.499175704,
-        0.335533919
+        3.499175768,
+        0.335533859
       ]
     },
     {
@@ -7285,7 +7280,7 @@
       "partial": 918,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 2.422106951,
+      "baseline_excursion_db": 2.422106862,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -7300,7 +7295,7 @@
       "partial": 919,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 1.646886128,
+      "baseline_excursion_db": 1.646886151,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -7420,12 +7415,12 @@
       "partial": 925,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 3.31249024,
+      "baseline_excursion_db": 3.312490236,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        1.227594602
+        1.2275946
       ]
     },
     {
@@ -7495,11 +7490,11 @@
       "partial": 931,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.547138176,
+      "baseline_excursion_db": 1.547138168,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.628526519,
+        0.628526529,
         0.0
       ]
     },
@@ -7510,7 +7505,7 @@
       "partial": 932,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.87212304,
+      "baseline_excursion_db": 0.872123035,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -7540,7 +7535,7 @@
       "partial": 935,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 4.180969713,
+      "baseline_excursion_db": 4.180969719,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -7600,12 +7595,12 @@
       "partial": 938,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.629728919,
+      "baseline_excursion_db": 0.629728924,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.059410238,
-        0.059828019
+        0.059410306,
+        0.059828021
       ]
     },
     {
@@ -7825,12 +7820,12 @@
       "partial": 958,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.328638627,
+      "baseline_excursion_db": 1.328638626,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        3.001790956
+        3.001790959
       ]
     },
     {
@@ -7874,8 +7869,8 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.126519842,
-        0.138469771
+        0.126519856,
+        0.138469784
       ]
     },
     {
@@ -7900,12 +7895,12 @@
       "partial": 963,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 3.660034877,
+      "baseline_excursion_db": 3.66003486,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.623117543,
-        0.235630709
+        0.623117488,
+        0.235630672
       ]
     },
     {
@@ -8065,12 +8060,12 @@
       "partial": 979,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.434069387,
+      "baseline_excursion_db": 0.434069424,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.032517944,
-        0.4182787
+        0.032517931,
+        0.418278689
       ]
     },
     {
@@ -8140,11 +8135,11 @@
       "partial": 985,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.182950834,
+      "baseline_excursion_db": 0.182951246,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.327514818,
+        1.327514807,
         0.0
       ]
     },
@@ -8170,11 +8165,11 @@
       "partial": 988,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 3.232642121,
+      "baseline_excursion_db": 3.232642119,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.021375018,
+        0.021375019,
         0.001884667
       ]
     },
@@ -8290,12 +8285,12 @@
       "partial": 1000,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.028519599,
+      "baseline_excursion_db": 0.028519602,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.629693389,
-        9.949727361
+        2.629693382,
+        9.949727286
       ]
     },
     {
@@ -8320,7 +8315,7 @@
       "partial": 1002,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.494342559,
+      "baseline_excursion_db": 0.494342552,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -8380,12 +8375,12 @@
       "partial": 1008,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 3.498416259,
+      "baseline_excursion_db": 3.49841627,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        5.296113476,
-        7.231477068
+        5.296113479,
+        7.231477073
       ]
     },
     {
@@ -8395,11 +8390,11 @@
       "partial": 1009,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.029499629,
+      "baseline_excursion_db": 0.029499628,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.841227507,
+        0.841227511,
         0.0
       ]
     },
@@ -8455,7 +8450,7 @@
       "partial": 1013,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.47900226,
+      "baseline_excursion_db": 0.479002256,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -8485,7 +8480,7 @@
       "partial": 1016,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 1.273733921,
+      "baseline_excursion_db": 1.273733926,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -8500,7 +8495,7 @@
       "partial": 1016,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.267189674,
+      "baseline_excursion_db": 0.267189688,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -8530,12 +8525,12 @@
       "partial": 1018,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.40412012,
+      "baseline_excursion_db": 0.40412017,
       "candidate_excursion_db": [
-        1.311974916,
+        1.311974902,
         0.0,
-        3.969057678,
-        6.268081298
+        3.969057639,
+        6.26808112
       ]
     },
     {
@@ -8545,12 +8540,12 @@
       "partial": 1019,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 3.05295018,
+      "baseline_excursion_db": 3.052950115,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.460129151,
-        3.167035648
+        0.46012907,
+        3.167035753
       ]
     },
     {
@@ -8620,9 +8615,9 @@
       "partial": 1027,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.507400458,
+      "baseline_excursion_db": 0.507400314,
       "candidate_excursion_db": [
-        8.959114647,
+        8.959114655,
         0.0,
         0.0,
         0.0
@@ -8667,10 +8662,10 @@
       "enabled": false,
       "baseline_excursion_db": 0.911532937,
       "candidate_excursion_db": [
-        4.048244209,
+        4.048244208,
         0.0,
-        0.149266916,
-        2.172150581
+        0.149266915,
+        2.172150587
       ]
     },
     {
@@ -8740,12 +8735,12 @@
       "partial": 1035,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.228684874,
+      "baseline_excursion_db": 0.228684855,
       "candidate_excursion_db": [
-        0.784996957,
+        0.784996986,
         0.0,
-        4.187642006,
-        0.996696037
+        4.187642093,
+        0.996696019
       ]
     },
     {
@@ -8785,12 +8780,12 @@
       "partial": 1046,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 5.0159751,
+      "baseline_excursion_db": 5.01597509,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        6.492147224,
-        7.609491619
+        6.49214716,
+        7.609491604
       ]
     },
     {
@@ -8845,12 +8840,12 @@
       "partial": 1052,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.686442261,
+      "baseline_excursion_db": 0.686442256,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.192717761,
-        3.255963807
+        3.192717735,
+        3.25596378
       ]
     },
     {
@@ -9085,12 +9080,12 @@
       "partial": 1068,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.915043227,
+      "baseline_excursion_db": 2.915043277,
       "candidate_excursion_db": [
         1.597377366,
         0.0,
         1.040144667,
-        0.002647308
+        0.00264731
       ]
     },
     {
@@ -9130,12 +9125,12 @@
       "partial": 1071,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.079621792,
+      "baseline_excursion_db": 2.079622462,
       "candidate_excursion_db": [
-        0.468755247,
+        0.468755395,
         0.0,
         0.0,
-        3.919494356
+        3.919494585
       ]
     },
     {
@@ -9205,12 +9200,12 @@
       "partial": 1075,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.022917213,
+      "baseline_excursion_db": 0.022917214,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.307707606,
-        0.215894395
+        0.215894396
       ]
     },
     {
@@ -9220,12 +9215,12 @@
       "partial": 1076,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.022363348,
+      "baseline_excursion_db": 0.022363358,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        6.391177369,
-        8.411495095
+        6.391177307,
+        8.411494812
       ]
     },
     {
@@ -9370,12 +9365,12 @@
       "partial": 1095,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.097414458,
+      "baseline_excursion_db": 0.097414457,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.178678757,
-        2.232820976
+        3.178678745,
+        2.232820914
       ]
     },
     {
@@ -9430,9 +9425,9 @@
       "partial": 1100,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.68903372,
+      "baseline_excursion_db": 0.689033748,
       "candidate_excursion_db": [
-        0.213113062,
+        0.213113039,
         0.0,
         0.0,
         0.0
@@ -9460,12 +9455,12 @@
       "partial": 1102,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.004743688,
+      "baseline_excursion_db": 1.004743691,
       "candidate_excursion_db": [
-        3.290898167,
+        3.290898344,
         0.0,
-        0.033087095,
-        0.861053674
+        0.033087091,
+        0.861053617
       ]
     },
     {
@@ -9475,12 +9470,12 @@
       "partial": 1105,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.928661607,
+      "baseline_excursion_db": 1.928661488,
       "candidate_excursion_db": [
-        0.652984001,
+        0.652984002,
         0.0,
         0.0,
-        1.559225629
+        1.559225649
       ]
     },
     {
@@ -9490,11 +9485,11 @@
       "partial": 1107,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.056960782,
+      "baseline_excursion_db": 2.056960882,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.16122748,
+        0.161227495,
         0.0
       ]
     },
@@ -9505,12 +9500,12 @@
       "partial": 1108,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 4.819197015,
+      "baseline_excursion_db": 4.819197011,
       "candidate_excursion_db": [
-        6.391768423,
+        6.39176849,
         0.0,
-        0.548922739,
-        3.876442765
+        0.548922736,
+        3.876442801
       ]
     },
     {
@@ -9524,8 +9519,8 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.978713929,
-        0.96429155
+        0.978713914,
+        0.964291549
       ]
     },
     {
@@ -9565,11 +9560,11 @@
       "partial": 1119,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.868829019,
+      "baseline_excursion_db": 0.86882902,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.016125329,
+        3.016125327,
         0.0
       ]
     },
@@ -9715,12 +9710,12 @@
       "partial": 1158,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.917931435,
+      "baseline_excursion_db": 1.917931324,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.893574271,
-        6.550935337
+        3.893574111,
+        6.550935234
       ]
     },
     {
@@ -9775,12 +9770,12 @@
       "partial": 1168,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.944511166,
+      "baseline_excursion_db": 0.944511164,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        3.376930607
+        3.376930686
       ]
     },
     {
@@ -9880,12 +9875,12 @@
       "partial": 1203,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.632049366,
+      "baseline_excursion_db": 0.632049379,
       "candidate_excursion_db": [
-        0.133777237,
+        0.133777238,
         0.0,
         0.0,
-        0.140449322
+        0.140449324
       ]
     },
     {
@@ -9899,8 +9894,8 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.195344478,
-        4.686038878
+        1.195344479,
+        4.686038893
       ]
     },
     {
@@ -9970,12 +9965,12 @@
       "partial": 1212,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.173779036,
+      "baseline_excursion_db": 2.173779022,
       "candidate_excursion_db": [
-        0.810194116,
+        0.810194132,
         0.0,
-        3.824803979,
-        0.129452261
+        3.824803987,
+        0.129452256
       ]
     },
     {
@@ -9985,11 +9980,11 @@
       "partial": 1214,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.68052513,
+      "baseline_excursion_db": 1.680524963,
       "candidate_excursion_db": [
-        0.010664339,
+        0.010664345,
         0.0,
-        6.33138912,
+        6.331389366,
         0.0
       ]
     },
@@ -10000,12 +9995,12 @@
       "partial": 1215,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.840283916,
+      "baseline_excursion_db": 2.840283901,
       "candidate_excursion_db": [
-        5.392112184,
+        5.392112209,
         0.0,
-        3.334764084,
-        0.361224531
+        3.334764122,
+        0.361224569
       ]
     },
     {
@@ -10105,12 +10100,12 @@
       "partial": 1221,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.507333221,
+      "baseline_excursion_db": 1.507333135,
       "candidate_excursion_db": [
-        0.806362381,
+        0.806362652,
         0.0,
         0.0,
-        0.866898602
+        0.86689797
       ]
     },
     {
@@ -10135,12 +10130,12 @@
       "partial": 1224,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.688502004,
+      "baseline_excursion_db": 1.688502005,
       "candidate_excursion_db": [
-        5.320431752,
+        5.320431747,
         0.0,
-        4.616555553,
-        8.305672948
+        4.616555572,
+        8.305673193
       ]
     },
     {
@@ -10150,9 +10145,9 @@
       "partial": 1225,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.471173764,
+      "baseline_excursion_db": 0.471173761,
       "candidate_excursion_db": [
-        1.170429625,
+        1.170429616,
         0.0,
         0.0,
         0.0
@@ -10285,7 +10280,7 @@
       "partial": 1256,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.250702234,
+      "baseline_excursion_db": 0.250702225,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -10330,7 +10325,7 @@
       "partial": 1259,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.061701527,
+      "baseline_excursion_db": 0.061701583,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -10350,7 +10345,7 @@
         0.0,
         0.0,
         0.0,
-        7.706385638
+        7.706385635
       ]
     },
     {
@@ -10360,12 +10355,12 @@
       "partial": 1261,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.077226272,
+      "baseline_excursion_db": 0.077226275,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.556457846,
-        4.259988616
+        2.556457784,
+        4.259988562
       ]
     },
     {
@@ -10645,7 +10640,7 @@
       "partial": 1351,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 1.218235888,
+      "baseline_excursion_db": 1.218235979,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -10660,12 +10655,12 @@
       "partial": 1354,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.395074414,
+      "baseline_excursion_db": 2.395074403,
       "candidate_excursion_db": [
-        0.671412733,
+        0.671412724,
         0.0,
-        0.136979177,
-        0.029690568
+        0.136979149,
+        0.029690549
       ]
     },
     {
@@ -10705,12 +10700,12 @@
       "partial": 1363,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.739430565,
+      "baseline_excursion_db": 0.739430582,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.498185889,
-        0.505945233
+        0.498185894,
+        0.505945237
       ]
     },
     {
@@ -10737,7 +10732,7 @@
       "enabled": false,
       "baseline_excursion_db": 0.138522378,
       "candidate_excursion_db": [
-        0.014404099,
+        0.014404113,
         0.0,
         0.0,
         0.0
@@ -10782,7 +10777,7 @@
       "enabled": false,
       "baseline_excursion_db": 0.013346957,
       "candidate_excursion_db": [
-        3.015216065,
+        3.015216067,
         0.0,
         0.0,
         0.0
@@ -10840,7 +10835,7 @@
       "partial": 1413,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 2.70845092,
+      "baseline_excursion_db": 2.70845126,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -10885,7 +10880,7 @@
       "partial": 1415,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.347371225,
+      "baseline_excursion_db": 0.347371204,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -10915,12 +10910,12 @@
       "partial": 1418,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.047734598,
+      "baseline_excursion_db": 0.047734615,
       "candidate_excursion_db": [
-        0.463188142,
+        0.463188114,
         0.0,
         0.0,
-        0.0031352
+        0.003135198
       ]
     },
     {
@@ -10930,11 +10925,11 @@
       "partial": 1418,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.398143378,
+      "baseline_excursion_db": 0.398143337,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.961438828,
+        1.961438615,
         0.0
       ]
     },
@@ -10945,7 +10940,7 @@
       "partial": 1420,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 0.184756152,
+      "baseline_excursion_db": 0.184756153,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -11050,12 +11045,12 @@
       "partial": 1432,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.482834329,
+      "baseline_excursion_db": 0.482834309,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        5.743532376
+        5.743532337
       ]
     },
     {
@@ -11145,7 +11140,7 @@
         0.0,
         0.0,
         3.562816706,
-        3.833871872
+        3.833871871
       ]
     },
     {
@@ -11200,11 +11195,11 @@
       "partial": 1459,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 5.468063578,
+      "baseline_excursion_db": 5.468063613,
       "candidate_excursion_db": [
         0.521367627,
         0.0,
-        0.001624271,
+        0.00162427,
         0.005814711
       ]
     },
@@ -11230,12 +11225,12 @@
       "partial": 1462,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.946436814,
+      "baseline_excursion_db": 0.94643682,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.7008779,
-        2.640562794
+        2.700877898,
+        2.640562793
       ]
     },
     {
@@ -11395,12 +11390,12 @@
       "partial": 1477,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.073761482,
+      "baseline_excursion_db": 0.07376158,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.388821357
+        0.388821284
       ]
     },
     {
@@ -11485,12 +11480,12 @@
       "partial": 1487,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.032232603,
+      "baseline_excursion_db": 0.032232602,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.360377926,
-        1.11306001
+        1.360377925,
+        1.113060009
       ]
     },
     {
@@ -11650,12 +11645,12 @@
       "partial": 1514,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 5.521283799,
+      "baseline_excursion_db": 5.52128377,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.500087176,
-        1.69749135
+        2.500087202,
+        1.697491375
       ]
     },
     {
@@ -11755,12 +11750,12 @@
       "partial": 1537,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 4.33801936,
+      "baseline_excursion_db": 4.338019854,
       "candidate_excursion_db": [
-        0.042373903,
+        0.04237401,
         0.0,
-        1.384683323,
-        5.724068278
+        1.384683649,
+        5.724068859
       ]
     },
     {
@@ -11875,12 +11870,12 @@
       "partial": 1581,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.854895221,
+      "baseline_excursion_db": 0.85489525,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.672534581
+        0.67253459
       ]
     },
     {
@@ -11935,12 +11930,12 @@
       "partial": 1593,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.122216491,
+      "baseline_excursion_db": 0.122216506,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.494234364
+        0.494234704
       ]
     },
     {
@@ -11969,8 +11964,8 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.334116801,
-        0.342750689
+        2.334116826,
+        0.342750664
       ]
     },
     {
@@ -12010,11 +12005,11 @@
       "partial": 1608,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 2.106384417,
+      "baseline_excursion_db": 2.106384456,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.615067309,
+        3.615067328,
         0.0
       ]
     },
@@ -12059,8 +12054,8 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.192752053,
-        0.873219167
+        1.192752037,
+        0.873219176
       ]
     },
     {
@@ -12100,12 +12095,12 @@
       "partial": 1666,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.917108509,
+      "baseline_excursion_db": 0.917108496,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        1.273454262
+        1.273454264
       ]
     },
     {
@@ -12130,12 +12125,12 @@
       "partial": 1672,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 1.211667751,
+      "baseline_excursion_db": 1.211667646,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        16.82734741
+        16.827347019
       ]
     },
     {
@@ -12160,12 +12155,12 @@
       "partial": 1699,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.472767658,
+      "baseline_excursion_db": 0.472767622,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.677790078,
-        3.77624814
+        0.677790106,
+        3.776248017
       ]
     },
     {
@@ -12295,12 +12290,12 @@
       "partial": 1730,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 1.475489224,
+      "baseline_excursion_db": 1.475489303,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        7.684097098,
-        3.528636881
+        7.684097029,
+        3.528636928
       ]
     },
     {
@@ -12355,11 +12350,11 @@
       "partial": 1734,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.710650787,
+      "baseline_excursion_db": 0.710650811,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.433416924,
+        1.433417054,
         0.0
       ]
     },
@@ -12400,12 +12395,12 @@
       "partial": 1742,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 1.788730851,
+      "baseline_excursion_db": 1.788730844,
       "candidate_excursion_db": [
         0.33685718,
         0.0,
-        2.607574494,
-        2.606375861
+        2.607574487,
+        2.606375855
       ]
     },
     {
@@ -12509,7 +12504,7 @@
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.767350523,
+        0.767350546,
         0.0
       ]
     },
@@ -12520,12 +12515,12 @@
       "partial": 1749,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 2.756472365,
+      "baseline_excursion_db": 2.756472421,
       "candidate_excursion_db": [
-        0.12673928,
+        0.126739337,
         0.0,
-        8.350810683,
-        15.260602634
+        8.350810696,
+        15.260602611
       ]
     },
     {
@@ -12675,7 +12670,7 @@
         0.0,
         0.0,
         0.0,
-        1.171357698
+        1.171357704
       ]
     },
     {
@@ -12715,11 +12710,11 @@
       "partial": 1765,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.145919132,
+      "baseline_excursion_db": 0.145919138,
       "candidate_excursion_db": [
-        1.62879397,
+        1.628793958,
         0.0,
-        0.069225667,
+        0.069225764,
         0.0
       ]
     },
@@ -12730,12 +12725,12 @@
       "partial": 1766,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 2.013953835,
+      "baseline_excursion_db": 2.013953576,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.865643017
+        0.865643027
       ]
     },
     {
@@ -12745,12 +12740,12 @@
       "partial": 1775,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.70006056,
+      "baseline_excursion_db": 0.70006064,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        6.3296613,
-        0.435094544
+        6.329661544,
+        0.435094479
       ]
     },
     {
@@ -12775,7 +12770,7 @@
       "partial": 1792,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.776159824,
+      "baseline_excursion_db": 0.776159815,
       "candidate_excursion_db": [
         0.402145002,
         0.0,
@@ -12895,12 +12890,12 @@
       "partial": 1832,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.62001036,
+      "baseline_excursion_db": 0.620010359,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        8.441116126,
-        2.205763519
+        8.441116388,
+        2.205763751
       ]
     },
     {
@@ -13075,12 +13070,12 @@
       "partial": 1866,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.195316239,
+      "baseline_excursion_db": 0.195316237,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.528156925,
-        0.935317726
+        0.528156893,
+        0.935317668
       ]
     },
     {
@@ -13240,12 +13235,12 @@
       "partial": 1901,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 2.904097244,
+      "baseline_excursion_db": 2.90409717,
       "candidate_excursion_db": [
-        0.03264468,
+        0.032644687,
         0.0,
-        0.04693139,
-        0.016712405
+        0.046931389,
+        0.016712404
       ]
     },
     {
@@ -13300,12 +13295,12 @@
       "partial": 1905,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.3776236,
+      "baseline_excursion_db": 0.377623601,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.429553301,
-        2.438344688
+        1.429553304,
+        2.438344693
       ]
     },
     {
@@ -13360,9 +13355,9 @@
       "partial": 1919,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.10586827,
+      "baseline_excursion_db": 0.105868266,
       "candidate_excursion_db": [
-        1.466005016,
+        1.466005116,
         0.0,
         0.0,
         0.0
@@ -13585,12 +13580,12 @@
       "partial": 1944,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.396009946,
+      "baseline_excursion_db": 0.39600982,
       "candidate_excursion_db": [
-        4.567438879,
+        4.567439375,
         0.0,
-        3.563036236,
-        1.37239161
+        3.563033931,
+        1.372390956
       ]
     },
     {
@@ -13645,12 +13640,12 @@
       "partial": 1953,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 1.767637002,
+      "baseline_excursion_db": 1.767637009,
       "candidate_excursion_db": [
-        9.147325357,
+        9.147325375,
         0.0,
-        4.858777348,
-        11.527237869
+        4.858777343,
+        11.527237878
       ]
     },
     {
@@ -13675,9 +13670,9 @@
       "partial": 1956,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 1.020991414,
+      "baseline_excursion_db": 1.020991411,
       "candidate_excursion_db": [
-        1.263678871,
+        1.263678952,
         0.0,
         0.0,
         0.0
@@ -13765,12 +13760,12 @@
       "partial": 1970,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.348512704,
+      "baseline_excursion_db": 0.348512789,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        7.492076884,
-        7.340557803
+        7.492076842,
+        7.340557763
       ]
     },
     {
@@ -13780,7 +13775,7 @@
       "partial": 1976,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.032429163,
+      "baseline_excursion_db": 0.032429162,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -13885,12 +13880,12 @@
       "partial": 1997,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.529886327,
+      "baseline_excursion_db": 0.52988625,
       "candidate_excursion_db": [
-        0.054183568,
+        0.054183565,
         0.0,
-        0.378574874,
-        1.620076382
+        0.378574923,
+        1.62007648
       ]
     },
     {
@@ -13945,12 +13940,12 @@
       "partial": 2002,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.995154341,
+      "baseline_excursion_db": 0.995154335,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.085424881,
-        0.087364016
+        0.085424893,
+        0.087364028
       ]
     },
     {
@@ -14005,7 +14000,7 @@
       "partial": 2006,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.157208023,
+      "baseline_excursion_db": 0.157208051,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -14280,7 +14275,7 @@
         0.0,
         0.0,
         21.774982088,
-        21.834351546
+        21.834351541
       ]
     },
     {
@@ -14290,7 +14285,7 @@
       "partial": 2058,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 0.496483536,
+      "baseline_excursion_db": 0.496483535,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -14365,7 +14360,7 @@
       "partial": 2067,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 0.14325975,
+      "baseline_excursion_db": 0.143259728,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -14575,12 +14570,12 @@
       "partial": 2113,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.063095883,
+      "baseline_excursion_db": 0.063095847,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        6.143977417
+        6.143976871
       ]
     },
     {
@@ -14995,12 +14990,12 @@
       "partial": 2191,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 1.38985994,
+      "baseline_excursion_db": 1.389859943,
       "candidate_excursion_db": [
-        4.309185108,
+        4.309184665,
         0.0,
         0.0,
-        1.05222527
+        1.052225271
       ]
     },
     {
@@ -15265,7 +15260,7 @@
       "partial": 2232,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 3.62838865,
+      "baseline_excursion_db": 3.628388667,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -15325,7 +15320,7 @@
       "partial": 2240,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 0.411522598,
+      "baseline_excursion_db": 0.41152252,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -15385,12 +15380,12 @@
       "partial": 2250,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.34017712,
+      "baseline_excursion_db": 0.340177112,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.213190658
+        0.21319059
       ]
     },
     {
@@ -15415,12 +15410,12 @@
       "partial": 2253,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.983215808,
+      "baseline_excursion_db": 0.983215927,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.206304012
+        0.206303934
       ]
     },
     {
@@ -15445,7 +15440,7 @@
       "partial": 2255,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.060210045,
+      "baseline_excursion_db": 0.060210047,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -15535,12 +15530,12 @@
       "partial": 2268,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 2.118366542,
+      "baseline_excursion_db": 2.118366556,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.475474504,
-        0.462624894
+        0.475474502,
+        0.462624893
       ]
     },
     {
@@ -15550,12 +15545,12 @@
       "partial": 2268,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 1.083501837,
+      "baseline_excursion_db": 1.083501835,
       "candidate_excursion_db": [
-        0.470707315,
+        0.470707316,
         0.0,
         0.0,
-        0.895833631
+        0.895833632
       ]
     },
     {
@@ -15805,7 +15800,7 @@
       "partial": 2280,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 0.651714939,
+      "baseline_excursion_db": 0.651714936,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -15820,12 +15815,12 @@
       "partial": 2280,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 4.594336987,
+      "baseline_excursion_db": 4.59433698,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.90302533
+        0.903025295
       ]
     },
     {
@@ -16075,7 +16070,7 @@
       "partial": 2303,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 0.541590612,
+      "baseline_excursion_db": 0.541590607,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -16105,7 +16100,7 @@
       "partial": 2307,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 0.500489455,
+      "baseline_excursion_db": 0.500492348,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -16150,11 +16145,11 @@
       "partial": 2313,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.247570905,
+      "baseline_excursion_db": 0.247570807,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.00613932,
+        1.006139276,
         0.0
       ]
     },
@@ -16180,12 +16175,12 @@
       "partial": 2322,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.070223743,
+      "baseline_excursion_db": 0.070223746,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.017909599,
-        0.003242851
+        0.017909601,
+        0.00324285
       ]
     },
     {
@@ -16195,12 +16190,12 @@
       "partial": 2326,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.108295831,
+      "baseline_excursion_db": 0.108295817,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.684206063,
-        0.526043859
+        0.684206,
+        0.526043866
       ]
     },
     {
@@ -16465,12 +16460,12 @@
       "partial": 2389,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.578689608,
+      "baseline_excursion_db": 0.57868961,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.354465051,
-        0.817518249
+        0.354465044,
+        0.81751824
       ]
     },
     {
@@ -16930,12 +16925,12 @@
       "partial": 2437,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.059538229,
+      "baseline_excursion_db": 1.059538233,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.798580903
+        0.798580898
       ]
     },
     {
@@ -16990,7 +16985,7 @@
       "partial": 2441,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.321490272,
+      "baseline_excursion_db": 0.321490274,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -17110,7 +17105,7 @@
       "partial": 2448,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.02836996,
+      "baseline_excursion_db": 0.028369966,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -17155,12 +17150,12 @@
       "partial": 2453,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 4.728799434,
+      "baseline_excursion_db": 4.728799371,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.62254216,
-        4.848444642
+        2.622542156,
+        4.848444622
       ]
     },
     {
@@ -17245,7 +17240,7 @@
       "partial": 2457,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 9.838181697,
+      "baseline_excursion_db": 9.838181698,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -17365,12 +17360,12 @@
       "partial": 2466,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.056019201,
+      "baseline_excursion_db": 0.056019202,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.925754995,
-        4.232098259
+        3.925755023,
+        4.232098286
       ]
     },
     {
@@ -17470,12 +17465,12 @@
       "partial": 2480,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.423922215,
+      "baseline_excursion_db": 2.423922237,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.666922825
+        0.666922842
       ]
     },
     {
@@ -17530,12 +17525,12 @@
       "partial": 2488,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.253368819,
+      "baseline_excursion_db": 1.253368919,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.253655286,
-        0.949195781
+        0.253655261,
+        0.949195706
       ]
     },
     {
@@ -17560,7 +17555,7 @@
       "partial": 2492,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 2.846647857,
+      "baseline_excursion_db": 2.846647858,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -17740,7 +17735,7 @@
       "partial": 2500,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.012760697,
+      "baseline_excursion_db": 0.012760687,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -17755,12 +17750,12 @@
       "partial": 2500,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.486326883,
+      "baseline_excursion_db": 1.486326882,
       "candidate_excursion_db": [
-        0.480637194,
+        0.480637193,
         0.0,
-        1.798196094,
-        0.255937509
+        1.798196104,
+        0.25593752
       ]
     },
     {
@@ -17980,7 +17975,7 @@
       "partial": 2517,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 4.455721257,
+      "baseline_excursion_db": 4.455721255,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -18055,12 +18050,12 @@
       "partial": 2526,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 2.878814751,
+      "baseline_excursion_db": 2.878814577,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        2.534667229,
-        3.145750084
+        2.534667617,
+        3.145750599
       ]
     },
     {
@@ -18070,12 +18065,12 @@
       "partial": 2527,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.288455214,
+      "baseline_excursion_db": 0.288455161,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.285585046,
-        0.296928032
+        0.285585126,
+        0.29692811
       ]
     },
     {
@@ -18115,7 +18110,7 @@
       "partial": 2531,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 0.815340386,
+      "baseline_excursion_db": 0.815340389,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -18205,7 +18200,7 @@
       "partial": 2551,
       "layer": 2,
       "enabled": true,
-      "baseline_excursion_db": 0.093305632,
+      "baseline_excursion_db": 0.093305591,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -18265,7 +18260,7 @@
       "partial": 2554,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.119452564,
+      "baseline_excursion_db": 0.119452561,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -18340,12 +18335,12 @@
       "partial": 2559,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 10.968809418,
+      "baseline_excursion_db": 10.96880944,
       "candidate_excursion_db": [
-        7.793942899,
+        7.793942913,
         0.0,
         0.0,
-        4.774508811
+        4.774508803
       ]
     },
     {
@@ -18445,12 +18440,12 @@
       "partial": 2564,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 3.005590084,
+      "baseline_excursion_db": 3.005590105,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.992506883
+        0.992506895
       ]
     },
     {
@@ -18460,7 +18455,7 @@
       "partial": 2565,
       "layer": 0,
       "enabled": true,
-      "baseline_excursion_db": 0.013313163,
+      "baseline_excursion_db": 0.013313182,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -18805,12 +18800,12 @@
       "partial": 2596,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.583071645,
+      "baseline_excursion_db": 1.583071612,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.133895367,
-        0.046299955
+        0.133895409,
+        0.04629996
       ]
     },
     {
@@ -18940,12 +18935,12 @@
       "partial": 2617,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 1.251529907,
+      "baseline_excursion_db": 1.251529656,
       "candidate_excursion_db": [
         0.0,
         0.0,
         0.0,
-        0.039279732
+        0.039279677
       ]
     },
     {
@@ -19045,12 +19040,12 @@
       "partial": 2626,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 0.396440532,
+      "baseline_excursion_db": 0.396440533,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        1.01892189,
-        1.822591374
+        1.018921876,
+        1.822591349
       ]
     },
     {
@@ -19060,9 +19055,9 @@
       "partial": 2627,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 1.478502875,
+      "baseline_excursion_db": 1.478502873,
       "candidate_excursion_db": [
-        0.353786374,
+        0.353786336,
         0.0,
         0.002904542,
         0.000698584
@@ -19120,12 +19115,12 @@
       "partial": 2639,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 2.278082771,
+      "baseline_excursion_db": 2.278082773,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        3.357337772,
-        2.895973076
+        3.357337764,
+        2.895973072
       ]
     },
     {
@@ -19255,9 +19250,9 @@
       "partial": 2661,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.411263973,
+      "baseline_excursion_db": 0.411263971,
       "candidate_excursion_db": [
-        0.864143635,
+        0.864143619,
         0.0,
         0.0,
         0.0
@@ -19270,7 +19265,7 @@
       "partial": 2662,
       "layer": 3,
       "enabled": true,
-      "baseline_excursion_db": 0.729250749,
+      "baseline_excursion_db": 0.729250748,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -19420,11 +19415,11 @@
       "partial": 2677,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 0.06586573,
+      "baseline_excursion_db": 0.065865694,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        0.000795106,
+        0.000795099,
         0.0
       ]
     },
@@ -19705,12 +19700,12 @@
       "partial": 2702,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 0.335120448,
+      "baseline_excursion_db": 0.335120444,
       "candidate_excursion_db": [
         0.0,
         0.0,
-        7.386693569,
-        5.833482182
+        7.386693405,
+        5.833482108
       ]
     },
     {
@@ -19735,12 +19730,12 @@
       "partial": 2706,
       "layer": 3,
       "enabled": false,
-      "baseline_excursion_db": 4.689451184,
+      "baseline_excursion_db": 4.689451135,
       "candidate_excursion_db": [
-        0.308365083,
+        0.308365071,
         0.0,
-        1.101530174,
-        7.946368851
+        1.101530133,
+        7.946368802
       ]
     },
     {
@@ -19885,7 +19880,7 @@
       "partial": 2726,
       "layer": 2,
       "enabled": false,
-      "baseline_excursion_db": 0.684830982,
+      "baseline_excursion_db": 0.684830983,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -19990,12 +19985,12 @@
       "partial": 2747,
       "layer": 0,
       "enabled": false,
-      "baseline_excursion_db": 1.14955251,
+      "baseline_excursion_db": 1.149552524,
       "candidate_excursion_db": [
-        0.007397951,
+        0.007397948,
         0.0,
         0.0,
-        0.519369881
+        0.519370012
       ]
     },
     {
@@ -20005,7 +20000,7 @@
       "partial": 2747,
       "layer": 1,
       "enabled": true,
-      "baseline_excursion_db": 2.192640426,
+      "baseline_excursion_db": 2.192640416,
       "candidate_excursion_db": [
         0.0,
         0.0,
@@ -20050,9 +20045,9 @@
       "partial": 2750,
       "layer": 1,
       "enabled": false,
-      "baseline_excursion_db": 3.226072396,
+      "baseline_excursion_db": 3.22607239,
       "candidate_excursion_db": [
-        1.008043168,
+        1.008043179,
         0.0,
         0.0,
         0.0
@@ -20312,1327 +20307,7 @@
         0.0,
         0.0
       ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 2,
-      "partial": 2788,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 5.610340017,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 6,
-      "partial": 2792,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 7.081646128,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 6,
-      "partial": 2792,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 3.2739345,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 10,
-      "partial": 2796,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 4.738908957,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 12,
-      "partial": 2798,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 0.552929017,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.068495233
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 13,
-      "partial": 2799,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 7.387061546,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 15,
-      "partial": 2801,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 2.362599992,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.303458874
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 17,
-      "partial": 2803,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 0.346744472,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.632078989
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 19,
-      "partial": 2805,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 7.687499704,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.122434653
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 20,
-      "partial": 2806,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 2.727701246,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.042927774
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 21,
-      "partial": 2807,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 3.995915154,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.258524393
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 22,
-      "partial": 2808,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 6.140178348,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.341339942
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 23,
-      "partial": 2809,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 3.20647703,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.02379486
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 24,
-      "partial": 2810,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 2.23386787,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.009742231
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 25,
-      "partial": 2811,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 3.707938031,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 26,
-      "partial": 2812,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 2.947019087,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 27,
-      "partial": 2813,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 5.01633096,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 21,
-      "order": 49,
-      "partial": 2824,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.744818288,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        2.866429062
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 11,
-      "partial": 2838,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 8.851895523,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 12,
-      "partial": 2839,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.012782389,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 12,
-      "partial": 2839,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 2.85128482,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 15,
-      "partial": 2842,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 0.280011247,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 16,
-      "partial": 2843,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 2.26236855,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 20,
-      "partial": 2847,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 0.015234102,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 22,
-      "partial": 2849,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 3.081687758,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 24,
-      "order": 26,
-      "partial": 2853,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 1.355100549,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 6,
-      "partial": 2869,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 6.493495345,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 7,
-      "partial": 2870,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 3.033036928,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 7,
-      "partial": 2870,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 9.04882083,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 11,
-      "partial": 2874,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.194253047,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 11,
-      "partial": 2874,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 6.587032408,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 12,
-      "partial": 2875,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 2.535460406,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        5.5838e-05
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 13,
-      "partial": 2876,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.156519876,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 14,
-      "partial": 2877,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 8.702827476,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 14,
-      "partial": 2877,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 1.113479553,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.018531086
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 20,
-      "partial": 2883,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 0.469706208,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.481285393
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 27,
-      "order": 22,
-      "partial": 2885,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 10.185461458,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 1,
-      "partial": 2897,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 2.846468755,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 6,
-      "partial": 2902,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 5.080284584,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 10,
-      "partial": 2906,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 0.1814704,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 13,
-      "partial": 2909,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 0.886980372,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 15,
-      "partial": 2911,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 9.028019275,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 17,
-      "partial": 2913,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 4.595241949,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 19,
-      "partial": 2915,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 10.415001233,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 21,
-      "partial": 2917,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 1.743098629,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 30,
-      "order": 23,
-      "partial": 2919,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 5.674568731,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 33,
-      "order": 2,
-      "partial": 2939,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 1.413233401,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 36,
-      "order": 1,
-      "partial": 2980,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 1.704953838,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 36,
-      "order": 1,
-      "partial": 2980,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 5.403075683,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 36,
-      "order": 6,
-      "partial": 2985,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 3.425473101,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 36,
-      "order": 15,
-      "partial": 2994,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 0.586754314,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 42,
-      "order": 1,
-      "partial": 3027,
-      "layer": 1,
-      "enabled": true,
-      "baseline_excursion_db": 10.148445556,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 45,
-      "order": 44,
-      "partial": 3104,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.799610976,
-      "candidate_excursion_db": [
-        2.160681485,
-        0.0,
-        0.0,
-        0.339633456
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 48,
-      "order": 6,
-      "partial": 3110,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.714963618,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 48,
-      "order": 24,
-      "partial": 3128,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.001247822,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        3.730464913,
-        3.72004948
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 48,
-      "order": 33,
-      "partial": 3136,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 0.973679165,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        2.602333305,
-        0.348000797
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 48,
-      "order": 37,
-      "partial": 3140,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.19662477,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 51,
-      "order": 31,
-      "partial": 3178,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 2.22539154,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        2.01558561,
-        1.984742295
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 51,
-      "order": 35,
-      "partial": 3181,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 2.288028954,
-      "candidate_excursion_db": [
-        2.005996154,
-        0.0,
-        2.520756938,
-        0.068029571
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 51,
-      "order": 37,
-      "partial": 3182,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 3.669401357,
-      "candidate_excursion_db": [
-        1.11421539,
-        0.0,
-        2.511752011,
-        10.909541121
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 54,
-      "order": 36,
-      "partial": 3215,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.004004912,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        5.762509193,
-        6.308976562
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 57,
-      "order": 22,
-      "partial": 3236,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 2.122073527,
-      "candidate_excursion_db": [
-        0.001641142,
-        0.0,
-        0.76243995,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 57,
-      "order": 25,
-      "partial": 3239,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.307474771,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        9.503313807,
-        9.597850228
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 57,
-      "order": 26,
-      "partial": 3240,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 2.669288723,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.289801224,
-        6.469256557
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 57,
-      "order": 28,
-      "partial": 3241,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 1.321381374,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        1.558462743,
-        1.559188042
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 57,
-      "order": 29,
-      "partial": 3242,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 1.930947219,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        11.54830918,
-        11.531819785
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 60,
-      "order": 14,
-      "partial": 3257,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.946321518,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        5.512004804
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 60,
-      "order": 22,
-      "partial": 3265,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 4.373149433,
-      "candidate_excursion_db": [
-        1.106300132,
-        0.0,
-        0.143792919,
-        0.026201162
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 66,
-      "order": 16,
-      "partial": 3286,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.596709785,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        10.743590575,
-        10.830245035
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 66,
-      "order": 18,
-      "partial": 3288,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 2.264833007,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 66,
-      "order": 19,
-      "partial": 3289,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 1.442718643,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        1.929631367,
-        3.503589238
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 69,
-      "order": 13,
-      "partial": 3301,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 3.212354763,
-      "candidate_excursion_db": [
-        6.217441845,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 69,
-      "order": 14,
-      "partial": 3302,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 1.109953382,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        13.435700427,
-        13.418966224
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 69,
-      "order": 15,
-      "partial": 3303,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 7.370465738,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        2.478458488,
-        2.49845101
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 72,
-      "order": 12,
-      "partial": 3315,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.674922892,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 72,
-      "order": 20,
-      "partial": 3316,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 0.077318332,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        10.132404755,
-        10.66373891
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 75,
-      "order": 4,
-      "partial": 3320,
-      "layer": 0,
-      "enabled": true,
-      "baseline_excursion_db": 0.483354485,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 75,
-      "order": 14,
-      "partial": 3328,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.000708767,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        3.069620127,
-        3.22025618
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 78,
-      "order": 8,
-      "partial": 3337,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.426818745,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        2.399089288,
-        2.40190875
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 78,
-      "order": 10,
-      "partial": 3339,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.012572192,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        1.071302497,
-        1.063463333
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 78,
-      "order": 15,
-      "partial": 3343,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.445813109,
-      "candidate_excursion_db": [
-        0.470576814,
-        0.0,
-        1.133783971,
-        5.196036421
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 81,
-      "order": 7,
-      "partial": 3350,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.783533849,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.398066663,
-        0.189245577
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 81,
-      "order": 7,
-      "partial": 3350,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 0.903977237,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        6.625023657,
-        6.618426729
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 81,
-      "order": 8,
-      "partial": 3351,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 3.215195105,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        3.696630323,
-        3.694718003
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 81,
-      "order": 10,
-      "partial": 3353,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 5.034482533,
-      "candidate_excursion_db": [
-        0.426703276,
-        0.0,
-        7.034319629,
-        6.583478255
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 84,
-      "order": 6,
-      "partial": 3359,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 0.510322789,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.471936196,
-        1.080028938
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 84,
-      "order": 7,
-      "partial": 3360,
-      "layer": 0,
-      "enabled": false,
-      "baseline_excursion_db": 3.39709194,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        0.372812026,
-        0.371052536
-      ]
-    },
-    {
-      "model": "belmont",
-      "note": 90,
-      "order": 5,
-      "partial": 3365,
-      "layer": 1,
-      "enabled": false,
-      "baseline_excursion_db": 3.608615061,
-      "candidate_excursion_db": [
-        0.0,
-        0.0,
-        7.014571148,
-        7.108261864
-      ]
     }
   ],
-  "generated_header_sha256": "c5167799cc571e22f15874ba67ba2260da46aaef2c4243ff72bc72490e4ba6ec"
+  "generated_header_sha256": "c06eb894b59df0900b9154193633c19f0781d96645808687090bcf0138e3568c"
 }

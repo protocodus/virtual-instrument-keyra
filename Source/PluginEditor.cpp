@@ -24,7 +24,7 @@ constexpr std::array<const char*, 3> modifierHints {{
     "How far each note's unison strings sit apart, from one pitch to three times as far as built. Applies from the next note.",
     "How long the strings ring, from half to twice as long as built. Applies from the next note."
 }};
-constexpr int gridLeft = 176, gridPitch = 69, rowTop = 188, rowPitch = 31;
+constexpr int gridLeft = 176, gridPitch = 83, rowTop = 188, rowPitch = 31;
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {
@@ -400,7 +400,7 @@ void KeyraAudioProcessorEditor::resized()
     for (size_t part = 0; part < buildParts.size(); ++part)
         for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
             // JUCE reserves 30 px for the track before the 36 px value box.
-            // Keep both widths so a full "100%" remains visible in all six columns.
+            // Keep both widths so a full "100%" remains visible in every column.
             weights[part * keyra::pianoCount + piano].setBounds(gridLeft + static_cast<int>(piano) * gridPitch,
                 rowTop + static_cast<int>(part) * rowPitch, gridPitch - 3, 26);
     for (size_t i = 0; i < modifiers.size(); ++i)

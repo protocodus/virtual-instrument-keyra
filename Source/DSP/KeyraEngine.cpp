@@ -2,7 +2,6 @@
 #include "MeasuredKawaiData.h"
 #include "MeasuredHamburgData.h"
 #include "MeasuredNewYorkData.h"
-#include "MeasuredBelmontData.h"
 #ifndef KEYRA_GENERATING_VELOCITY_GUARD
 #include "MeasuredVelocityInterpolation.h"
 #endif
@@ -30,11 +29,10 @@ namespace upright=measured::upright;
 namespace kawai=measured::kawai;
 namespace hamburg=measured::hamburg;
 namespace newyork=measured::newyork;
-namespace belmont=measured::belmont;
 // F6, the lowest key without a damper, and the undamped strings from it up.
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
-static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size()&&belmont::haloStrings.size()==grand::haloStrings.size(),
+static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size(),
               "every piano leaves the same keys undamped");
 // The damped strings, A0 to E6, which ring in sympathy as far as their
 // dampers are off (the open strings): each with its first openPartials
@@ -57,7 +55,7 @@ constexpr double openTop=5000;
 // from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
 // stay as fitted.
 constexpr double contactSmoothing=1e-4;
-static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing&&belmont::bodyRise>2*contactSmoothing,
+static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
 // What the felt leaves ringing once it lands, the same on every piano: the
 // upright's measured shape over the keys and its slow rates
@@ -73,18 +71,7 @@ constexpr measured::Damper leftover{-46.f,upright::damper.shareSlopeDb,upright::
 // answer velocity more strongly than the recordings do (Docs/decisions.md,
 // 2026-10-29); a felt hammer stiffens as it is pressed in, so a harder blow is
 // brighter (Hall, JASA 92(1), 1992).
-// Belmont retains its measured velocity timbre: the owner chose C (no
-// additional colour) on 2026-11-01. The other pianos keep the chosen strength.
-constexpr std::array<double,pianoCount> additionalVelocityColour{.4,.4,.4,.4,.4,0};
-// Monitoring calibration after the shared guard, not string/body tone. With
-// Belmont's additional colour removed it was .351552439 dB, the midpoint of
-// the interval KeyraLevels left between its existing +0.7 VU chord and -9.5 VU
-// typical limits; 0.4.14's chords, which now carry their per-key trims, read
-// 0.03 dB lower at Mic 1, so the trim is eased by that much to return typical
-// playing to the approved -9.485 VU. A pre-guard tubeScale reduction fails
-// because the guard gives almost all of it back. Measurement and derivation:
-// Docs/validation/whole-keyboard-quality-2026-11-01.md, Tube output calibration.
-constexpr double belmontTubeOutputTrimDb=.3216;
+constexpr double additionalVelocityColour=.4;
 
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
@@ -163,13 +150,13 @@ constexpr Model models[]{
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
    // the factory Output control at 0.70 (Tools/KeyraLevels.cpp).
-   .7680,
+   .7615,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5139,
+   1.5671,
    true},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),
    upright::partials.data(),upright::extras.data(),
@@ -200,8 +187,8 @@ constexpr Model models[]{
    // held, both channels' RMS from 50 to 750 ms after the strike, as the
    // benchmark sets a case's gain). Below it the shared velocity response
    // (responseAt) keeps the two medians within 1 dB of each other.
-   2.3474,
-   2.1097,
+   2.2837,
+   2.2864,
    false},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),
    kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
@@ -230,7 +217,7 @@ constexpr Model models[]{
    // Its typical playing at the grand's level, -9 VU (Tools/KeyraLevels.cpp),
    // which puts its median note 0.6 dB over the grand's at velocity 127 and
    // 1.4 dB over at velocity 30, measured as the upright's.
-   2.9873,
+   3.0341,
    // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
    // pair's: within 0.5 dB, its loudest chords through the tube reach the
    // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
@@ -239,7 +226,7 @@ constexpr Model models[]{
    // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
    // it to -10.10; its loudest chords through the tube read -0.14 VU.
-   1.3035,
+   1.2250,
    true},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),
    hamburg::partials.data(),hamburg::extras.data(),
@@ -259,8 +246,8 @@ constexpr Model models[]{
    hamburg::noiseBands.data(),hamburg::noise.data(),
    // Each one's typical playing at the grand's level, -9 VU, and its tube at
    // the pair's (Tools/KeyraLevels.cpp).
-   2.3152,
-   1.5936,
+   2.2622,
+   1.5176,
    true},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),
    newyork::partials.data(),newyork::extras.data(),
@@ -279,39 +266,13 @@ constexpr Model models[]{
    .415f,.318f,
    newyork::noiseBands.data(),newyork::noise.data(),
    // Typical playing at -9 VU and the tube at the pair's, as above.
-   .6823,
-   1.7227,
-   true},
-  {belmont::layers,belmont::layerVelocity.data(),belmont::layerLevelDb.data(),belmont::anchors.data(),static_cast<int>(belmont::anchors.size()),
-   belmont::partials.data(),nullptr, // belmont::extras is empty, as kawai's
-   static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size()),
-   belmont::haloStrings.data(),belmont::haloLevels.data(),belmont::haloSlopeDb,belmont::haloSlopeRiseDb,belmont::haloPromptRate,
-   belmont::bodyModes.data(),static_cast<int>(belmont::bodyModes.size()),belmont::bodyRise,belmont::knocks.data(),
-   belmont::releaseKnocks.data(),belmont::pedalDown.data(),belmont::pedalUp.data(),belmont::actionRise,belmont::actionDecay,
-   // The library's preset plays its notes at its Key Vol default, 0.3, and
-   // its key releases and pedal noises at their groups' defaults, 0.1, each
-   // sample at +6 dB: both 3.5 dB under the notes, with no fade. No group
-   // sets ampVelTrack, so Decent Sampler scales notes and releases alike by
-   // velocity/127, and the notes' layers are levelled by that curve in
-   // decoding (Tools/decode_belmont.py). Its pedal noises are the first take
-   // of five each way.
-   -3.52,1,1,1.8,-3.52,-3.52,-3.52,
-   // Its rises are capped at the hammer's contact, as the upright's.
-   .002,
-   belmont::openStringRate,belmont::openStringRateSlope,
-   belmont::noiseBands.data(),belmont::noise.data(),
-   // Typical playing at -9 VU and the tube at the pair's, as above. Its A2
-   // and D#3 to F#3 are recorded nearly all fundamental, which the tube
-   // favours: its loudest chords through the tube read +0.61 VU, and a
-   // quieter tube hardly moves them through the compressor (+0.15 VU 3 dB
-   // under). The owner kept the tube's level (Docs/decisions.md, 2026-11-01).
-   1.2453,
-   1.7607,
+   .6543,
+   1.8141,
    true},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
-constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()+belmont::partials.size()),
-              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size()+belmont::extras.size());
+constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),
+              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size());
 // The most components beside the series two neighbouring recorded pitches of
 // a piano hold. A strike plays them from its build's two pianos at most, so
 // from the two pianos that hold the most.
@@ -321,7 +282,7 @@ template<std::size_t N> constexpr int mostExtras(const std::array<measured::Anch
   return most;
 }
 constexpr int maxExtras=[]{
-  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors),mostExtras(belmont::anchors)};
+  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors)};
   int first=0,second=0;
   for(const int m:most){if(m>first){second=first;first=m;}else if(m>second)second=m;}
   return first+second;
@@ -476,7 +437,7 @@ struct alignas(16) BodyBank {
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{},natural[lanes]{};
 };
 struct alignas(16) BodyPickup {V4 left{},rightRe{},rightIm{};};
-constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size(),belmont::bodyModes.size()})),
+constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size()})),
               bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
@@ -501,13 +462,13 @@ bool advance(Body& body) noexcept {
 // each of the ring's two stages and the knock, its left and right amplitude
 // at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
-static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size()&&belmont::noiseBands.size()==grand::noiseBands.size(),
+static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size(),
               "every piano's noise has the same bands");
 // The noise filters are designed once from the grand's centres for every
 // build, so every other piano's must be the same.
 constexpr bool sameCentres(std::size_t b=0) noexcept {
   return b==grand::noiseBands.size()||(grand::noiseBands[b].hz==upright::noiseBands[b].hz
-                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&grand::noiseBands[b].hz==belmont::noiseBands[b].hz&&sameCentres(b+1));
+                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&sameCentres(b+1));
 }
 static_assert(sameCentres(),"every piano's noise bands share the grand's centres");
 struct Burst {
@@ -776,8 +737,9 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
 // measured over: every pair of its lanes, amplitudes and pickups, integrated
 // in closed form between the window's ends; the rise its lanes share is left
 // out. A lane that dies within the first 50 ms counts here for what the
-// window hears of it, not for its whole energy.
-double windowPower(const PartialData& d) noexcept {
+// window hears of it, not for its whole energy. The weights count each
+// channel's power: (1, 0) is the left channel's alone.
+double windowPower(const PartialData& d,double leftWeight=1,double rightWeight=1) noexcept {
   constexpr double from=.05,to=.75;
   double amplitude[lanes],rate[lanes];
   for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
@@ -786,7 +748,7 @@ double windowPower(const PartialData& d) noexcept {
     // Both lanes' phases and the pickups' inner product over the channels.
     const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
     const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
-    const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
+    const Complex product=phase*Complex{leftWeight*left.re+rightWeight*right.re,leftWeight*left.im+rightWeight*right.im};
     // The integral of e^(-ct) from `from` to `to`, c = re + i im.
     const double re=rate[j]+rate[k],im=2*pi*(y.offset-x.offset);
     const auto at=[&](double s){const double e=std::exp(-re*s);return j==k?Complex{e,0}:Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
@@ -794,6 +756,24 @@ double windowPower(const PartialData& d) noexcept {
     const Complex integral=span*Complex{re/(re*re+im*im),-im/(re*re+im*im)};
     const double term=amplitude[j]*amplitude[k]*(product*integral).re;
     sum+=j==k?term:2*term;
+  }
+  return sum;
+}
+// The partial's left channel times the conjugate of its right, summed over
+// every pair of its lanes in the same 50-750 ms window as windowPower. Its
+// angle is how far the right channel lags the left as the lanes sum there.
+Complex windowChannels(const PartialData& d) noexcept {
+  constexpr double from=.05,to=.75;
+  Complex sum{};
+  for(int j=0;j<lanes;++j)for(int k=0;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
+    const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
+    const Complex channels=x.left*Complex{y.right.re,-y.right.im};
+    const double re=std::exp(x.rate)+std::exp(y.rate),im=2*pi*(y.offset-x.offset);
+    const auto at=[&](double s){const double e=std::exp(-re*s);return Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
+    const Complex a=at(from),b=at(to),span{a.re-b.re,a.im-b.im};
+    const Complex z=phase*channels*span*Complex{re/(re*re+im*im),-im/(re*re+im*im)};
+    const double amplitude=std::pow(10.,(x.level+y.level)/20);
+    sum.re+=amplitude*z.re;sum.im+=amplitude*z.im;
   }
   return sum;
 }
@@ -858,15 +838,29 @@ PartialData single(const Model& model,const measured::Partial& p,const PartialCa
   int index=0;for(int i=0;i<layer;++i)if(c.velocityMask&(1u<<i))++index;
   return interpolateVelocity(d,c.velocity[index],(velocity-model.layerVelocity[layer])/(model.layerVelocity[layer+1]-model.layerVelocity[layer]));
 }
+// A lane's decay rate between two recorded pitches. It is mixed in 1/s, not
+// in its logarithm as the lane's other figures are: with its level mixed in
+// dB, the lane's level in dB at every moment is then the same mix of its two
+// pitches' at that moment, so it rings between them all through its decay.
+// Mixed in the logarithm, a lane paired between a quiet one barely decaying
+// and a loud fast one started between them but decayed far more slowly than
+// the loud one, and soon rang over both: the Kawai's A7 holds a lane of its
+// second partial at -103 dB decaying at .08/s, and C8 the lane it meets at
+// -45 dB and 36/s. B7's decayed at 4.8/s, and from 200 to 500 ms its second
+// partial played 20 dB or more over both pitches' in each channel.
 double pitchRate(const LaneData& x,const LaneData& y,double t) noexcept {
-  if(t<=0||t>=1||x.rateIdentified==y.rateIdentified)return mix(x.rate,y.rate,t);
-  // Quadratic Bezier in log(rate), its middle control point the identified
-  // endpoint. Unknown-left gives 2t-t^2; unknown-right t^2. The poles reach
-  // both measured endpoints continuously and stay between them. This is a
-  // support prior, not a measured pitch trend; it changes no lane offsets.
-  const double confidence=static_cast<double>(y.rateIdentified)-static_cast<double>(x.rateIdentified);
-  const double coordinate=t+t*(1-t)*confidence;
-  return mix(x.rate,y.rate,coordinate);
+  if(t<=0||t>=1)return mix(x.rate,y.rate,t);
+  double coordinate=t;
+  if(x.rateIdentified!=y.rateIdentified){
+    // Quadratic Bezier in the rate, its middle control point the identified
+    // endpoint. Unknown-left gives 2t-t^2; unknown-right t^2. The poles
+    // reach both measured endpoints continuously and stay between them. This
+    // is a support prior, not a measured pitch trend; it changes no lane
+    // offsets.
+    const double confidence=static_cast<double>(y.rateIdentified)-static_cast<double>(x.rateIdentified);
+    coordinate=t+t*(1-t)*confidence;
+  }
+  return std::log(mix(std::exp(x.rate),std::exp(y.rate),coordinate));
 }
 PartialData blend(const PartialData& a,const PartialData& b,double t,const std::array<int,lanes>& pair) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
@@ -881,14 +875,56 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
   // pickups neither pitch has, and a partial could play several dB under or
   // over both: grand B4 sat 4 dB under its neighbours. Its power over the
   // window the layers' levels are measured over is set between the two
-  // pitches' instead, in dB like the lanes' levels. (Its power from contact
-  // counts a lane that dies within 50 ms for its whole energy, as the
-  // Kawai's A6 fundamental does, and put its F#6 4.3 dB over both.)
+  // pitches' instead, in dB like the lanes' levels, and so is its balance,
+  // the left channel's power over the right's. (Its power from contact counts
+  // a lane that dies within 50 ms for its whole energy, as the Kawai's A6
+  // fundamental does, and put its F#6 4.3 dB over both.) With its power alone
+  // set, one channel could play far outside both pitches' while the other
+  // made up for it: the Hamburg's E1 struck at 127 played its twelfth
+  // partial's right channel 11.4 dB under both C1's and G1's. Where the
+  // balance between theirs would take a channel outside both pitches', that
+  // channel stops at the pitch's power it would pass. Set between in dB
+  // channel by channel instead, a partial whose image swaps sides between
+  // the pitches plays under both in all: the Kawai's A4 played 2.4 dB under
+  // both its neighbours.
   if(t>0&&t<1){
-    const double pa=windowPower(a),pb=windowPower(b),pd=windowPower(d);
-    if(pa>0&&pb>0&&pd>0){
-      const double gain=10*(mix(std::log10(pa),std::log10(pb),t)-std::log10(pd));
-      for(auto& l:d.lane)l.level+=gain;
+    const double la=windowPower(a,1,0),lb=windowPower(b,1,0),ld=windowPower(d,1,0);
+    const double ra=windowPower(a,0,1),rb=windowPower(b,0,1),rd=windowPower(d,0,1);
+    if(la>0&&lb>0&&ld>0&&ra>0&&rb>0&&rd>0){
+      const double total=std::pow(la+ra,1-t)*std::pow(lb+rb,t);
+      const double balance=mix(std::log(la/ra),std::log(lb/rb),t);
+      // The left powers that keep both channels within the pitches': never
+      // empty, as the total lies between the pitches' totals.
+      const double low=std::max(std::min(la,lb),total-std::max(ra,rb));
+      const double high=std::min(std::max(la,lb),total-std::min(ra,rb));
+      const double left=std::max(low,std::min(high,total/(1+std::exp(-balance))));
+      const double kl=left/ld,kr=(total-left)/rd;
+      // Each lane's left channel scaled by kl in power and its right by kr:
+      // its level is its mean channel power, `ratio` the right over the left.
+      for(auto& l:d.lane){
+        const double g=std::exp(l.ratio);
+        l.level+=10*std::log10((kl+kr*g*g)/(1+g*g));
+        l.ratio+=.5*std::log(kr/kl);
+        const double h=std::exp(l.ratio),pickup=std::sqrt(2/(1+h*h));
+        l.left={pickup,0};l.right={pickup*h*std::cos(l.angle),pickup*h*std::sin(l.angle)};
+      }
+    }
+    // The lanes' phases and channel angles come from the nearer anchor, so
+    // the partial's whole stereo image switched at the pitches' midpoint:
+    // on the upright, A2 holds its second partial 3.5 dB more out of phase
+    // between the microphones than in phase and C3 9.4 dB more in phase, and
+    // A#2 played A2's image while B2 played C3's: the octave partial in the
+    // sum of the channels jumped 7.3 dB in one semitone, which a Width under
+    // 75 % mixes into each channel as a change of tone. The right channel is
+    // turned instead so the lag it has behind the left over the window moves
+    // between the two pitches' along the shorter arc, as their power does.
+    // Turning every lane's right channel alike leaves the power unchanged.
+    const Complex ca=windowChannels(a),cb=windowChannels(b),cd=windowChannels(d);
+    if(std::hypot(ca.re,ca.im)>0&&std::hypot(cb.re,cb.im)>0&&std::hypot(cd.re,cd.im)>0){
+      const double from=std::atan2(ca.im,ca.re),to=std::atan2(cb.im,cb.re);
+      const double turn=std::atan2(cd.im,cd.re)-(from+t*std::remainder(to-from,2*pi));
+      const Complex r{std::cos(turn),std::sin(turn)};
+      for(auto& l:d.lane){l.right=l.right*r;l.angle+=turn;}
     }
   }
   return d;
@@ -1056,24 +1092,6 @@ struct Engine::Impl {
   struct Section {double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;};
   std::array<Section,measured::tubeSections> tube{};
   double tubeScale=1,tubeScaleTarget=1;
-  // The already-smoothed Mic contribution and smoothly changing hammer share
-  // set a monitoring gain. Its fixed history follows the guard's look-ahead,
-  // so automation changes the same input frame before and after the guard.
-  double tubeOutputTarget=1,tubeOutputGain=1;
-  std::array<float,ForteOutput::maxDelay> tubeOutputHistory{};
-  int tubeOutputIndex=0;
-  void resetTubeOutput() noexcept {
-    tubeOutputGain=tubeOutputTarget;tubeOutputIndex=0;
-    std::fill_n(tubeOutputHistory.data(),output.DelaySamples(),
-                static_cast<float>(1+mic*(tubeOutputGain-1)));
-  }
-  float delayedTubeOutput() noexcept {
-    tubeOutputGain+=smooth*(tubeOutputTarget-tubeOutputGain);
-    const float heard=tubeOutputHistory[tubeOutputIndex];
-    tubeOutputHistory[tubeOutputIndex]=static_cast<float>(1+mic*(tubeOutputGain-1));
-    if(++tubeOutputIndex==output.DelaySamples())tubeOutputIndex=0;
-    return heard;
-  }
   float contactShare=1; // a sample's step of the rise's smoothing
   double smooth=0,controlSmooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   float previousBrightness=.5f;
@@ -1204,8 +1222,6 @@ struct Engine::Impl {
     actionRise=fold(share.action,[&](int p){return static_cast<double>(models[p].actionRise);},pickLog);
     actionDecay=fold(share.action,[&](int p){return static_cast<double>(models[p].actionDecay);},pickLog);
     tubeScaleTarget=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
-    tubeOutputTarget=1+share.hammers[static_cast<int>(Piano::belmont)]
-                         *(std::pow(10.,-belmontTubeOutputTrimDb/20)-1);
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)
       coherence[k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].noiseBands[k].coherence);},pick);
@@ -1822,7 +1838,7 @@ struct Engine::Impl {
       // stretch and stiffness trend of the last two.
       x.t=std::max(0.,std::min(1.,static_cast<double>(note-x.a->note)/(x.b->note-x.a->note)));
       x.layerDb=levelAt(m,m.layerLevelDb,x.v);
-      x.colourDb=additionalVelocityColour[p]*(x.layerDb-levelAt(m,m.layerLevelDb,100));
+      x.colourDb=additionalVelocityColour*(x.layerDb-levelAt(m,m.layerLevelDb,100));
       // No partial rises faster than its recorded pitch's onset builds up.
       x.shortestRise=std::exp(mix(onsetRiseAt(m,*x.a,x.v),onsetRiseAt(m,*x.b,x.v),x.t));
       x.contact=m.contactTime*std::pow(2.,-(note-60)/24.);
@@ -1840,7 +1856,7 @@ struct Engine::Impl {
       if(note>=firstHalo&&tDb>0)tDb*=1.-curMute;
       toneScale=std::pow(10.,tDb/20);
       if(note>88){
-        constexpr double nSlope[pianoCount]{0.,0.,.22,.18,.20,.42};
+        constexpr double nSlope[pianoCount]{0.,0.,.22,.18,.20};
         const double nTrimDb=-fold(board,[&](int p){return (note-88)*nSlope[p];},pick);
         noiseScale=std::pow(10.,nTrimDb/20);
       }
@@ -1869,7 +1885,7 @@ struct Engine::Impl {
       lastStrikeClock=clock;
     }
     const double lateCrowdGain=!steady&&crowded?.78:1.;
-    constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28,.42};
+    constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28};
     int modes[pianoCount];
     for(int p=0;p<pianoCount;++p)modes[p]=models[p].bodyModeCount;
     for(int k=0;k<bodyModeCount;++k){
@@ -1935,7 +1951,7 @@ struct Engine::Impl {
     // between a pitch that measures it and one that cannot plays it as far as
     // it lies towards the first. The strike's knock sounds from contact too,
     // falling at its pitch's own rate.
-    constexpr double topNoiseSlope[pianoCount]{0.,0.,.22,.18,.20,.45};
+    constexpr double topNoiseSlope[pianoCount]{0.,0.,.22,.18,.20};
     auto& burst=claimBurst();
     for(int k=0;k<noiseBands;++k){
       double density[pianoCount]{},slow[pianoCount]{},balance[pianoCount]{},rate[pianoCount]{},slowRate[pianoCount]{},
@@ -1979,8 +1995,7 @@ struct Engine::Impl {
     // stretch the unisons and the ring.
     int count[pianoCount]{},next[pianoCount]{};
     for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p):0;
-    const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)]
-                              +.35*strings[static_cast<int>(Piano::belmont)];
+    const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)];
     const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
     const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
@@ -2256,8 +2271,7 @@ struct Engine::Impl {
   // and order.
   void liftDampers(float level) noexcept {
     const Model& g=models[static_cast<int>(Piano::grand)];
-    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];})
-                            +.35*share.action[static_cast<int>(Piano::belmont)];
+    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];});
     if(grandShare<=0||!(parameters.mechanics>0))return;
     wake();
     const double target=1-dampersLift*level;
@@ -2673,9 +2687,7 @@ struct Engine::Impl {
       // Remove DC before measuring stereo peaks and applying the output gain.
       const double hpL=outL-previousL+highpassCoefficient*highpassL,hpR=outR-previousR+highpassCoefficient*highpassR;
       previousL=outL;previousR=outR;highpassL=hpL;highpassR=hpR;
-      auto frame=output.Process(hpL*gain,hpR*gain);
-      const float tubeOutput=delayedTubeOutput();
-      if(tubeOutput!=1.f){frame[0]*=tubeOutput;frame[1]*=tubeOutput;}
+      const auto frame=output.Process(hpL*gain,hpR*gain);
       left[i]=frame[0];right[i]=frame[1];
     }
   }
@@ -2736,7 +2748,7 @@ void Engine::reset() noexcept {
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-  p.output.Reset();p.resetTubeOutput();
+  p.output.Reset();
   for(int ch=0;ch<16;++ch)p.capture(ch);
   p.updateReceiverDampers(1);
   p.pedalHeld=false;p.pedalEdge(false);
@@ -2815,7 +2827,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
     if(!any){
       p.silenceStrings();p.updateReceiverDampers(1);p.silenceBody();p.silenceNoise();
-      p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();
+      p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();
     }
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
@@ -2853,7 +2865,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
-    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();p.resetTubeOutput();
+    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();
     for(auto& channel:p.channels)channel.smoothedMute=std::max(p.parameters.mute,channel.mute);
     return;
   }
@@ -2877,7 +2889,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
       p.sleeping=true;p.receiverClock=p.clock;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       p.silenceStrings();p.silenceTube();
       p.silenceNoise();p.tubeScale=p.tubeScaleTarget;
-      p.output.Reset();p.resetTubeOutput();
+      p.output.Reset();
     }
   }
 }

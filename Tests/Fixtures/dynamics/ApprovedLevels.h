@@ -8,6 +8,16 @@
 // decimals KeyraLevels prints, when the chords of the grand and the upright
 // gained their per-key trims and their output scales were re-pinned
 // (Docs/decisions.md, 2026-11-03); the other rows are the 0.4.10 readings.
+// The Belmont baby grand's rows were removed with that piano on 2026-11-04.
+// The same day the owner approved the readings of KeyraLevels after the
+// stereo image between recorded pitches changed how a chord's notes add:
+// six presets' typical levels, four presets' and the grand tube's loudest
+// chords, re-baselined to six decimals (Docs/decisions.md, 2026-11-04).
+// Later that day the blend between recorded pitches and the noise refit
+// moved seven presets, with each piano's default sound and tube re-pinned
+// to its earlier reading, and the owner approved the new readings: four
+// presets' typical levels and four presets' loudest chords, to six decimals
+// (Docs/decisions.md, 2026-11-04).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -15,28 +25,26 @@ struct ApprovedLevel {
     double loudestVu;
 };
 
-inline constexpr std::array<ApprovedLevel, 13> approvedPreset {{
-    {"Kakegawa Grand", -9.016195, 0.607447},
-    {"Studio Grand", -10.17, -0.019715},
-    {"Warm Walnut", -10.865286, -0.281824},
-    {"Felt Nocturne", -18.183847, -5.642349},
-    {"Open Strings", -8.04, 1.448367},
-    {"Helsinki Upright", -9.062881, 4.217296},
-    {"Felt Upright", -15.86, -0.127207},
-    {"Pop Upright", -9.277193, 3.904373},
+inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
+    {"Kakegawa Grand", -9.016195, 0.702634},
+    {"Studio Grand", -10.241775, -0.019715},
+    {"Warm Walnut", -10.950910, -0.123667},
+    {"Felt Nocturne", -18.132439, -5.597279},
+    {"Open Strings", -8.133493, 1.489288},
+    {"Helsinki Upright", -9.122448, 4.217296},
+    {"Felt Upright", -15.424076, -0.127207},
+    {"Pop Upright", -9.165020, 3.904373},
     {"Hamamatsu Grand", -9.012878, 4.003352},
-    {"Three Cities", -10.29, 2.871424},
-    {"Hamburg Grand", -8.893996, 1.638555},
-    {"New York Grand", -9.042460, 3.213257},
-    {"Belmont Grand", -7.912787, 3.668850},
+    {"Three Cities", -10.192568, 2.871424},
+    {"Hamburg Grand", -8.893996, 1.688414},
+    {"New York Grand", -9.092756, 3.213257},
 }};
 
-inline constexpr std::array<ApprovedLevel, 6> approvedTube {{
-    {"grand", -9.068710, 1.125506},
+inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
+    {"grand", -9.068710, 1.222194},
     {"upright", -8.993037, 4.328115},
     {"kawai", -9.985854, 3.199726},
     {"hamburg", -9.172983, 1.407187},
     {"newyork", -9.020263, 2.115038},
-    {"belmont", -9.485308, 5.872950},
 }};
 } // namespace keyra_test

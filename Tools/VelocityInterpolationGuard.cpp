@@ -41,7 +41,7 @@ double excursion(double power,double a,double b){
 }
 }
 int main(){try{
-  const char* names[]={"grand","upright","kawai","hamburg","newyork","belmont"};
+  const char* names[]={"grand","upright","kawai","hamburg","newyork"};
   const double from[]={.05,.75,1.5},to[]={.75,1.5,3.5};
   std::cout<<"model,note,order,partial,layer,baseline_excursion,early_excursion,pa,pb,rho,q00,q01,q02,q10,q11,q12,q20,q21,q22\n"<<std::setprecision(17);
   for(int piano=0;piano<keyra::pianoCount;++piano){const auto& m=keyra::models[piano];

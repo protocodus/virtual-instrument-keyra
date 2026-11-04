@@ -8,13 +8,12 @@ namespace keyra {
 // The measured pianos, each fitted from its own recordings: the grand from
 // the Salamander Grand Piano V3's, the upright from the Helsinki 1967
 // Tube-Ribbon Edition's, the Kawai grand from the VCSL Keys "Grand Piano,
-// K"'s, the Hamburg grand from the Decent Sampler "Steinway Grand"'s, the
-// New York grand from the Pianobook "Grandpa's Piano"'s and the Belmont
-// baby grand from the Pianobook "Mom's 1974 Baby Grand"'s. Saved songs and
-// patches recall a piano by its value, so pianos are only ever added at the
-// end.
-enum class Piano {grand,upright,kawai,hamburg,newyork,belmont};
-constexpr int pianoCount=6;
+// K"'s, the Hamburg grand from the Decent Sampler "Steinway Grand"'s and the
+// New York grand from the Pianobook "Grandpa's Piano"'s. Saved songs and
+// patches recall a piano by its value, so pianos are only ever added or
+// removed at the end: the sixth, the Belmont baby grand, was removed.
+enum class Piano {grand,upright,kawai,hamburg,newyork};
+constexpr int pianoCount=5;
 // How much of each measured piano a part of the build takes, by Piano:
 // weights from 0 to 1, played as shares of their sum, so that any number of
 // pianos mix in one part. A part with no weight plays the grand's.
@@ -123,6 +122,8 @@ private:
   std::unique_ptr<Impl> impl;
   // The native damper test compares the direct and sympathetic string state.
   friend struct DamperTestObserver;
+  // The native pitch-blend test reads the partials a strike plays.
+  friend struct PitchBlendTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
