@@ -2504,3 +2504,21 @@ The same release runs steady partials and body banks four at a time. The
 eight factory demos are byte-identical before and after, and each takes 14 to
 21 % less DSP time (paired runs, median of three, 4-thread Xeon at 2.3 GHz).
 
+## 2026-11-04 — the Belmont grand is removed
+
+The owner asked for it: "remove belmont piano, it sucks, keep only 5
+pianos". Keyra plays five measured pianos again, the Kakegawa, Hamamatsu,
+Hamburg and New York grands and the Helsinki upright, and its factory bank
+twelve presets. Removed with it: its measured header, decoder, corpus and
+split pins, stored-number archive, fit receipt, its factory preset and its
+Build column, the tube-output trim only it used, and its credit in
+`THIRD_PARTY_NOTICES.md`. `keyra::Piano` loses its last value, so the other
+pianos keep theirs. A session saved with Belmont weights loads with those
+weights dropped and plays the other pianos at their shares, or the Kakegawa
+grand's part where Belmont was a part's only piano; a session saved on the
+Belmont Grand program loads the first program. The stored-number pipeline's
+tests, which ran on Belmont's archive, now run on Hamburg's
+(`Tests/Fixtures/measurements/hamburg-accepted.json.gz`), and the recipe only
+Belmont's authored WAVs used is gone. The other pianos' measurements, fits
+and factory dynamics rows are unchanged by the removal; the velocity masks
+are regenerated because they are tabulated over the pianos.

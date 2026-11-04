@@ -22,7 +22,7 @@ import fit_realtime_modal as fit
 class Snapshots(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=Path(self.temp.name)
-        self.parent=HERE/'Tests/Fixtures/measurements/belmont-accepted.json.gz';self.archive=u.read_archive(self.parent)
+        self.parent=HERE/'Tests/Fixtures/measurements/hamburg-accepted.json.gz';self.archive=u.read_archive(self.parent)
 
     def save(self,value):
         path=self.root/'snapshot.json.gz';path.write_bytes(gzip.compress(u.json_bytes(u.encode(value)),mtime=0));return path
@@ -30,13 +30,13 @@ class Snapshots(unittest.TestCase):
     def child_recipe(self):
         values=copy.deepcopy(self.archive['measurements'])
         values['anchors'][0]['partials'][0]['lanes'][0]['level_db'][0]+=.125
-        content=fit.header(fit.MODELS['belmont'],**values)
+        content=fit.header(fit.MODELS['hamburg'],**values)
         manifest=self.root/'update.json'
         analysis=self.root/'analysis.py';analysis.write_text('# synthetic operator identity, never executed\n')
         manifest.write_bytes(u.json_bytes({'schema':u.MANIFEST,
             'analysis':{'path':analysis.name,'sha256':u.digest(analysis)},
             'fitter':{'path':str(Path(fit.__file__).resolve()),'sha256':u.digest(fit.__file__)}}))
-        receipt={'model':'belmont','accepted_archive_path':str(self.parent),'accepted_archive_sha256':u.digest(self.parent),
+        receipt={'model':'hamburg','accepted_archive_path':str(self.parent),'accepted_archive_sha256':u.digest(self.parent),
                  'output_sha256':hashlib.sha256(content.encode()).hexdigest(),'manifest_path':str(manifest),
                  'input_pins':{str(p):u.digest(p) for p in [self.parent,manifest,analysis,Path(fit.__file__),
                               Path(u.__file__).with_name('import_modal_measurements.py').absolute()]}}
@@ -48,7 +48,7 @@ class Snapshots(unittest.TestCase):
         return path,content,receipt
 
     def test_original_snapshot_exact(self):
-        content,receipt=r.regenerate(self.parent,'belmont',fit.header,fit.MODELS['belmont'])
+        content,receipt=r.regenerate(self.parent,'hamburg',fit.header,fit.MODELS['hamburg'])
         self.assertEqual(receipt['header_sha256'],self.archive['provenance']['header_sha256'])
 
     def test_updated_numbers_and_parent_provenance_exact(self):
@@ -57,13 +57,13 @@ class Snapshots(unittest.TestCase):
         self.assertEqual(a['provenance']['parent_header_sha256'],self.archive['provenance']['header_sha256'])
         self.assertEqual(a['provenance']['update_receipt_sha256'],hashlib.sha256(u.json_bytes(update)).hexdigest())
         self.assertNotIn('metadata_sha256',a['provenance'])
-        content,_=r.regenerate(path,'belmont',fit.header,fit.MODELS['belmont']);self.assertEqual(content,expected)
+        content,_=r.regenerate(path,'hamburg',fit.header,fit.MODELS['hamburg']);self.assertEqual(content,expected)
         self.assertEqual(u.read_archive(self.parent),self.archive)
 
     def test_no_cache_or_audio_calls(self):
         path,expected,_=self.child()
         with patch.object(pickle,'load',side_effect=AssertionError('cache accessed')),patch.object(u.source_provenance,'verify',side_effect=AssertionError('audio accessed')):
-            content,receipt=r.regenerate(path,'belmont',fit.header,fit.MODELS['belmont'])
+            content,receipt=r.regenerate(path,'hamburg',fit.header,fit.MODELS['hamburg'])
         self.assertEqual(content,expected);self.assertEqual(receipt['source_audio_reads'],0);self.assertEqual(receipt['raw_cache_reads'],0)
 
     def test_model_rejected(self):
@@ -74,22 +74,22 @@ class Snapshots(unittest.TestCase):
         def changed(model,**values):
             content=fit.header(model,**values);path.write_bytes(b'changed during formatting');return content
         with self.assertRaisesRegex(u.InvalidInput,'snapshot changed during regeneration'):
-            r.regenerate(path,'belmont',changed,fit.MODELS['belmont'])
+            r.regenerate(path,'hamburg',changed,fit.MODELS['hamburg'])
 
     def test_wrong_header_digest_rejected(self):
         a=copy.deepcopy(self.archive);a['provenance']['header_sha256']='0'*64
-        with self.assertRaisesRegex(u.InvalidInput,'SHA differs'):r.regenerate(self.save(a),'belmont',fit.header,fit.MODELS['belmont'])
+        with self.assertRaisesRegex(u.InvalidInput,'SHA differs'):r.regenerate(self.save(a),'hamburg',fit.header,fit.MODELS['hamburg'])
 
     def test_child_missing_parent_digest_rejected(self):
         path,_,_=self.child();a=u.read_archive(path);del a['provenance']['parent_header_sha256']
-        with self.assertRaisesRegex(u.InvalidInput,'provenance'):r.regenerate(self.save(a),'belmont',fit.header,fit.MODELS['belmont'])
+        with self.assertRaisesRegex(u.InvalidInput,'provenance'):r.regenerate(self.save(a),'hamburg',fit.header,fit.MODELS['hamburg'])
 
     def test_stale_metadata_label_rejected(self):
         path,_,_=self.child();a=u.read_archive(path);a['provenance']['metadata_sha256']='0'*64
-        with self.assertRaisesRegex(u.InvalidInput,'historical metadata'):r.regenerate(self.save(a),'belmont',fit.header,fit.MODELS['belmont'])
+        with self.assertRaisesRegex(u.InvalidInput,'historical metadata'):r.regenerate(self.save(a),'hamburg',fit.header,fit.MODELS['hamburg'])
 
     def test_no_implicit_source_recalibration(self):
-        result=subprocess.run([sys.executable,str(HERE/'Tools/fit_realtime_modal.py'),'--model','belmont'],capture_output=True,text=True)
+        result=subprocess.run([sys.executable,str(HERE/'Tools/fit_realtime_modal.py'),'--model','hamburg'],capture_output=True,text=True)
         self.assertEqual(result.returncode,2);self.assertIn('--recalibrate',result.stderr)
 
     def test_measurements_cli_and_check(self):
@@ -104,8 +104,8 @@ class Snapshots(unittest.TestCase):
     def test_measurements_publish_exact_bytes_without_platform_newline_translation(self):
         path,expected,_=self.child()
         header=self.root/'portable.h';metadata=self.root/'portable.json'
-        _,receipt=r.regenerate(path,'belmont',fit.header,fit.MODELS['belmont'])
-        argv=['fit_realtime_modal','--model','belmont','--measurements',str(path),
+        _,receipt=r.regenerate(path,'hamburg',fit.header,fit.MODELS['hamburg'])
+        argv=['fit_realtime_modal','--model','hamburg','--measurements',str(path),
               '--header',str(header),'--metadata',str(metadata)]
         # Path.write_text's default newline translation changes LF to CRLF on
         # Windows. The archive hashes UTF-8/LF bytes, so publication must avoid
@@ -118,11 +118,11 @@ class Snapshots(unittest.TestCase):
                          (json.dumps(receipt,indent=2,allow_nan=False)+'\n').encode('utf-8'))
 
     def command(self,archive,header):
-        return [sys.executable,str(HERE/'Tools/fit_realtime_modal.py'),'--model','belmont',
+        return [sys.executable,str(HERE/'Tools/fit_realtime_modal.py'),'--model','hamburg',
                 '--measurements',str(archive),'--header',str(header)]
 
     def test_measurements_check_rejects_incomplete_changed_or_extra_metadata(self):
-        content,receipt=r.regenerate(self.parent,'belmont',fit.header,fit.MODELS['belmont'])
+        content,receipt=r.regenerate(self.parent,'hamburg',fit.header,fit.MODELS['hamburg'])
         header=self.root/'out.h';header.write_text(content);metadata=self.root/'out.json'
         variants=[{},dict(receipt,header_sha256='0'*64),dict(receipt,undeclared_volatile='ignored?'),
                   dict(receipt,raw_cache_reads=False)]
@@ -219,7 +219,7 @@ class Snapshots(unittest.TestCase):
                       patch.object(Path,'write_text',side_effect=AssertionError('platform text writer used'))):
                     packed=u.snapshot(content,receipt)
                 snapshot=self.root/('shadow-'+str(cached)+'.gz');snapshot.write_bytes(packed)
-                actual,_=r.regenerate(snapshot,'belmont',fit.header,fit.MODELS['belmont'])
+                actual,_=r.regenerate(snapshot,'hamburg',fit.header,fit.MODELS['hamburg'])
                 self.assertEqual(actual.encode('utf-8'),content.encode('utf-8'))
 
     def test_snapshot_requires_sibling_importer_pin_before_loading(self):

@@ -8,7 +8,7 @@
 //                                     piano's outputScale correction
 //   KeyraLevels --check [--jobs N]    the audio-tier test Keyra.Levels
 //   KeyraLevels --audit-dynamics [--low-drive] [--jobs N]   per-chord CSV for
-//     all six named pianos at both microphone endpoints. --low-drive plays
+//     all five named pianos at both microphone endpoints. --low-drive plays
 //     the same events 20 dB down through the same output stage.
 //
 // Playing is at 48 kHz in 256-sample blocks, through the plug-in's velocity
@@ -137,9 +137,9 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
 
 int auditDynamics(int jobs,bool lowDrive){
   // Resolve the factory programs by name so the audit follows their voicing
-  // controls, including Belmont's brightness, as well as their measured build.
+  // controls as well as their measured build.
   const char* const names[]{"Kakegawa Grand","Helsinki Upright","Hamamatsu Grand",
-                            "Hamburg Grand","New York Grand","Belmont Grand"};
+                            "Hamburg Grand","New York Grand"};
   std::vector<const keyra::Preset*> programs;
   for(const char* name:names){
     const auto& bank=keyra::factoryPresets;
@@ -207,7 +207,7 @@ int auditDynamics(int jobs,bool lowDrive){
 int run(int jobs,bool check){
   const auto& presets=keyra::factoryPresets;
   constexpr std::size_t pianos=keyra::pianoCount;
-  const char* const pianoNames[pianos]{"grand","upright","kawai","hamburg","newyork","belmont"};
+  const char* const pianoNames[pianos]{"grand","upright","kawai","hamburg","newyork"};
   const auto typicalEvents=typicalPlaying(),loudestEvents=chordRounds(127),strongEvents=chordRounds(110);
   const auto loudestNotes=singleNotes(127),strongNotes=singleNotes(110);
   // Six builds: calibration at both microphones, then fortissimo, strong

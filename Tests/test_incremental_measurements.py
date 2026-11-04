@@ -22,7 +22,7 @@ sys.path.insert(0, str(HERE / 'Tools'))
 import update_modal_measurements as u
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--operator-dir', type=Path, default=HERE / 'Tools')
-parser.add_argument('--archive', type=Path, default=HERE / 'Tests/Fixtures/measurements/belmont-accepted.json.gz')
+parser.add_argument('--archive', type=Path, default=HERE / 'Tests/Fixtures/measurements/hamburg-accepted.json.gz')
 CONFIG, remaining = parser.parse_known_args()
 sys.argv = [sys.argv[0]] + remaining
 
@@ -39,13 +39,20 @@ class Contracts(unittest.TestCase):
         archive = u.read_archive(CONFIG.archive)
         anchor = archive['measurements']['anchors'][0]
         rows, files, roles = [], [], {'not-training': 'dev'}
+        # Hamburg's recipe: a 24-bit original cropped 20 ms before its preset
+        # start into a 32-bit analysis WAV.
         for i, velocity in enumerate(anchor['velocities']):
             case = f'fixture-layer-{i}'
-            p = root / (case + '.wav')
+            p, original = root / (case + '.wav'), root / (case + '-original.wav')
             p.write_bytes(('must not decode ' + case).encode())
+            original.write_bytes(('must not decode original ' + case).encode())
             rows.append({'id': case, 'velocity': velocity, 'wav': ref(p),
-                         'provenance': {'kind': 'authored-wav-v1', 'historical_cache_pin': u.digest(p)}})
-            files.append({'id': case, 'kind': 'note', 'midi': anchor['note'], 'wav_sha256': u.digest(p)})
+                         'provenance': {'kind': 'hamburg-preset-crop-v1', 'historical_cache_pin': u.digest(original),
+                                        'original': ref(original), 'decoder': ref(CONFIG.operator_dir/'decode_hamburg.py'),
+                                        'sample_rate': 48000, 'channels': 2, 'source_bits': 24,
+                                        'analysis_bits': 32, 'frame_span': [40, 1000]}})
+            files.append({'id': case, 'kind': 'note', 'midi': anchor['note'], 'start': 1000,
+                          'wav_sha256': u.digest(original), 'source': original.name})
             roles[case] = 'train'
         (root/'corpus.json').write_bytes(u.json_bytes({'files': files}))
         (root/'split.json').write_bytes(u.json_bytes({'cases': roles}))
@@ -198,7 +205,7 @@ class Contracts(unittest.TestCase):
         analysis = Path(self.fixture['baseline_analysis']['path'])
         h = hashlib.sha256(analysis.read_bytes())
         for q in t['sources']:
-            h.update(f"{q['id']}:{q['velocity']}:{q['wav']['sha256']}\n".encode())
+            h.update(f"{q['id']}:{q['velocity']}:{q['provenance']['historical_cache_pin']}\n".encode())
         old['cache_key'] = h.hexdigest()
         new = copy.deepcopy(old)
         new['diagnostic_parent_cache_sha256'] = t['baseline_cache']['sha256']
@@ -259,7 +266,7 @@ class Contracts(unittest.TestCase):
                 cache = root / f'{note}.pkl'
                 cache.write_bytes(pickle.dumps({'note': note}))
                 target = {'note': note, 'orders': [1], 'analysis_options': {}, 'noise_policy': 'accepted'}
-                sources = [{'kind': 'authored-wav-v1', 'case': f'n{note}v1r1'}]
+                sources = [{'kind': 'hamburg-preset-crop-v1', 'case': f'n{note}v1r1'}]
                 targets.append((target, {'baseline_cache': cache, 'candidate_cache': cache},
                                 [root / f'n{note}v1r1.wav'], sources))
             original_sources = copy.deepcopy([row[3] for row in targets])
@@ -275,7 +282,8 @@ class Contracts(unittest.TestCase):
                   patch.object(u, 'operators', return_value=(fit, object())),
                   patch.object(u, 'validate_caches'), patch.object(u, 'residual_proof', return_value=[]),
                   patch.object(u, 'fixed_clock_anchor', side_effect=conditioned),
-                  patch.object(u.source_provenance, 'verify', side_effect=lambda row: dict(row, verified=True))):
+                  patch.object(u.source_provenance, 'verify', side_effect=lambda row: dict(row, verified=True)),
+                  patch.object(u.source_provenance, 'runtime', return_value={})):
                 first_content, first = u.generate(root / 'manifest.json')
                 second_content, second = u.generate(root / 'manifest.json')
             self.assertEqual([row['note'] for row in first['targets']], [72, 81])

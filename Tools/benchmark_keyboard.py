@@ -68,7 +68,7 @@ import numpy as np
 from scipy.io import wavfile
 
 ROOT = Path(__file__).resolve().parents[1]
-MODELS = ('grand', 'upright', 'kawai', 'hamburg', 'newyork', 'belmont')
+MODELS = ('grand', 'upright', 'kawai', 'hamburg', 'newyork')
 WINDOWS = {'early': (0., .1), 'middle': (.1, .5), 'late': (.8, 1.6)}
 PROTOCOL = {
     'version': 1, 'sample_rate': 48000, 'onset_seconds': .05,

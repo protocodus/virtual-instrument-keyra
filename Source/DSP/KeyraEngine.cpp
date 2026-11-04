@@ -2,7 +2,6 @@
 #include "MeasuredKawaiData.h"
 #include "MeasuredHamburgData.h"
 #include "MeasuredNewYorkData.h"
-#include "MeasuredBelmontData.h"
 #ifndef KEYRA_GENERATING_VELOCITY_GUARD
 #include "MeasuredVelocityInterpolation.h"
 #endif
@@ -30,11 +29,10 @@ namespace upright=measured::upright;
 namespace kawai=measured::kawai;
 namespace hamburg=measured::hamburg;
 namespace newyork=measured::newyork;
-namespace belmont=measured::belmont;
 // F6, the lowest key without a damper, and the undamped strings from it up.
 constexpr int firstHalo=89,halo=static_cast<int>(grand::haloStrings.size());
 static_assert(firstHalo+halo-1==108,"the undamped strings run to the top key");
-static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size()&&belmont::haloStrings.size()==grand::haloStrings.size(),
+static_assert(upright::haloStrings.size()==grand::haloStrings.size()&&kawai::haloStrings.size()==grand::haloStrings.size()&&hamburg::haloStrings.size()==grand::haloStrings.size()&&newyork::haloStrings.size()==grand::haloStrings.size(),
               "every piano leaves the same keys undamped");
 // The damped strings, A0 to E6, which ring in sympathy as far as their
 // dampers are off (the open strings): each with its first openPartials
@@ -57,7 +55,7 @@ constexpr double openTop=5000;
 // from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
 // stay as fitted.
 constexpr double contactSmoothing=1e-4;
-static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing&&belmont::bodyRise>2*contactSmoothing,
+static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
 // What the felt leaves ringing once it lands, the same on every piano: the
 // upright's measured shape over the keys and its slow rates
@@ -73,18 +71,7 @@ constexpr measured::Damper leftover{-46.f,upright::damper.shareSlopeDb,upright::
 // answer velocity more strongly than the recordings do (Docs/decisions.md,
 // 2026-10-29); a felt hammer stiffens as it is pressed in, so a harder blow is
 // brighter (Hall, JASA 92(1), 1992).
-// Belmont retains its measured velocity timbre: the owner chose C (no
-// additional colour) on 2026-11-01. The other pianos keep the chosen strength.
-constexpr std::array<double,pianoCount> additionalVelocityColour{.4,.4,.4,.4,.4,0};
-// Monitoring calibration after the shared guard, not string/body tone. With
-// Belmont's additional colour removed it was .351552439 dB, the midpoint of
-// the interval KeyraLevels left between its existing +0.7 VU chord and -9.5 VU
-// typical limits; 0.4.14's chords, which now carry their per-key trims, read
-// 0.03 dB lower at Mic 1, so the trim is eased by that much to return typical
-// playing to the approved -9.485 VU. A pre-guard tubeScale reduction fails
-// because the guard gives almost all of it back. Measurement and derivation:
-// Docs/validation/whole-keyboard-quality-2026-11-01.md, Tube output calibration.
-constexpr double belmontTubeOutputTrimDb=.3216;
+constexpr double additionalVelocityColour=.4;
 
 float bounded(float x,float lo=0,float hi=1) noexcept {
   return x!=x?lo:x<lo?lo:x>hi?hi:x;
@@ -282,36 +269,10 @@ constexpr Model models[]{
    .6823,
    1.7227,
    true},
-  {belmont::layers,belmont::layerVelocity.data(),belmont::layerLevelDb.data(),belmont::anchors.data(),static_cast<int>(belmont::anchors.size()),
-   belmont::partials.data(),nullptr, // belmont::extras is empty, as kawai's
-   static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size()),
-   belmont::haloStrings.data(),belmont::haloLevels.data(),belmont::haloSlopeDb,belmont::haloSlopeRiseDb,belmont::haloPromptRate,
-   belmont::bodyModes.data(),static_cast<int>(belmont::bodyModes.size()),belmont::bodyRise,belmont::knocks.data(),
-   belmont::releaseKnocks.data(),belmont::pedalDown.data(),belmont::pedalUp.data(),belmont::actionRise,belmont::actionDecay,
-   // The library's preset plays its notes at its Key Vol default, 0.3, and
-   // its key releases and pedal noises at their groups' defaults, 0.1, each
-   // sample at +6 dB: both 3.5 dB under the notes, with no fade. No group
-   // sets ampVelTrack, so Decent Sampler scales notes and releases alike by
-   // velocity/127, and the notes' layers are levelled by that curve in
-   // decoding (Tools/decode_belmont.py). Its pedal noises are the first take
-   // of five each way.
-   -3.52,1,1,1.8,-3.52,-3.52,-3.52,
-   // Its rises are capped at the hammer's contact, as the upright's.
-   .002,
-   belmont::openStringRate,belmont::openStringRateSlope,
-   belmont::noiseBands.data(),belmont::noise.data(),
-   // Typical playing at -9 VU and the tube at the pair's, as above. Its A2
-   // and D#3 to F#3 are recorded nearly all fundamental, which the tube
-   // favours: its loudest chords through the tube read +0.61 VU, and a
-   // quieter tube hardly moves them through the compressor (+0.15 VU 3 dB
-   // under). The owner kept the tube's level (Docs/decisions.md, 2026-11-01).
-   1.2453,
-   1.7607,
-   true},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
-constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()+belmont::partials.size()),
-              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size()+belmont::extras.size());
+constexpr int partialCaches=static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()+newyork::partials.size()),
+              extraCaches=static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()+newyork::extras.size());
 // The most components beside the series two neighbouring recorded pitches of
 // a piano hold. A strike plays them from its build's two pianos at most, so
 // from the two pianos that hold the most.
@@ -321,7 +282,7 @@ template<std::size_t N> constexpr int mostExtras(const std::array<measured::Anch
   return most;
 }
 constexpr int maxExtras=[]{
-  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors),mostExtras(belmont::anchors)};
+  int most[]{mostExtras(grand::anchors),mostExtras(upright::anchors),mostExtras(kawai::anchors),mostExtras(hamburg::anchors),mostExtras(newyork::anchors)};
   int first=0,second=0;
   for(const int m:most){if(m>first){second=first;first=m;}else if(m>second)second=m;}
   return first+second;
@@ -476,7 +437,7 @@ struct alignas(16) BodyBank {
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{},natural[lanes]{};
 };
 struct alignas(16) BodyPickup {V4 left{},rightRe{},rightIm{};};
-constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size(),belmont::bodyModes.size()})),
+constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size(),kawai::bodyModes.size(),hamburg::bodyModes.size(),newyork::bodyModes.size()})),
               bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
 void knock(BodyBank& bank,int j,Complex g,int ahead) noexcept {
@@ -501,13 +462,13 @@ bool advance(Body& body) noexcept {
 // each of the ring's two stages and the knock, its left and right amplitude
 // at the next chunk boundary and its decay per chunk.
 constexpr int noiseBands=static_cast<int>(grand::noiseBands.size()),maxBursts=32;
-static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size()&&belmont::noiseBands.size()==grand::noiseBands.size(),
+static_assert(upright::noiseBands.size()==grand::noiseBands.size()&&kawai::noiseBands.size()==grand::noiseBands.size()&&hamburg::noiseBands.size()==grand::noiseBands.size()&&newyork::noiseBands.size()==grand::noiseBands.size(),
               "every piano's noise has the same bands");
 // The noise filters are designed once from the grand's centres for every
 // build, so every other piano's must be the same.
 constexpr bool sameCentres(std::size_t b=0) noexcept {
   return b==grand::noiseBands.size()||(grand::noiseBands[b].hz==upright::noiseBands[b].hz
-                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&grand::noiseBands[b].hz==belmont::noiseBands[b].hz&&sameCentres(b+1));
+                                       &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&sameCentres(b+1));
 }
 static_assert(sameCentres(),"every piano's noise bands share the grand's centres");
 struct Burst {
@@ -1056,24 +1017,6 @@ struct Engine::Impl {
   struct Section {double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;};
   std::array<Section,measured::tubeSections> tube{};
   double tubeScale=1,tubeScaleTarget=1;
-  // The already-smoothed Mic contribution and smoothly changing hammer share
-  // set a monitoring gain. Its fixed history follows the guard's look-ahead,
-  // so automation changes the same input frame before and after the guard.
-  double tubeOutputTarget=1,tubeOutputGain=1;
-  std::array<float,ForteOutput::maxDelay> tubeOutputHistory{};
-  int tubeOutputIndex=0;
-  void resetTubeOutput() noexcept {
-    tubeOutputGain=tubeOutputTarget;tubeOutputIndex=0;
-    std::fill_n(tubeOutputHistory.data(),output.DelaySamples(),
-                static_cast<float>(1+mic*(tubeOutputGain-1)));
-  }
-  float delayedTubeOutput() noexcept {
-    tubeOutputGain+=smooth*(tubeOutputTarget-tubeOutputGain);
-    const float heard=tubeOutputHistory[tubeOutputIndex];
-    tubeOutputHistory[tubeOutputIndex]=static_cast<float>(1+mic*(tubeOutputGain-1));
-    if(++tubeOutputIndex==output.DelaySamples())tubeOutputIndex=0;
-    return heard;
-  }
   float contactShare=1; // a sample's step of the rise's smoothing
   double smooth=0,controlSmooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   float previousBrightness=.5f;
@@ -1204,8 +1147,6 @@ struct Engine::Impl {
     actionRise=fold(share.action,[&](int p){return static_cast<double>(models[p].actionRise);},pickLog);
     actionDecay=fold(share.action,[&](int p){return static_cast<double>(models[p].actionDecay);},pickLog);
     tubeScaleTarget=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
-    tubeOutputTarget=1+share.hammers[static_cast<int>(Piano::belmont)]
-                         *(std::pow(10.,-belmontTubeOutputTrimDb/20)-1);
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)
       coherence[k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].noiseBands[k].coherence);},pick);
@@ -1822,7 +1763,7 @@ struct Engine::Impl {
       // stretch and stiffness trend of the last two.
       x.t=std::max(0.,std::min(1.,static_cast<double>(note-x.a->note)/(x.b->note-x.a->note)));
       x.layerDb=levelAt(m,m.layerLevelDb,x.v);
-      x.colourDb=additionalVelocityColour[p]*(x.layerDb-levelAt(m,m.layerLevelDb,100));
+      x.colourDb=additionalVelocityColour*(x.layerDb-levelAt(m,m.layerLevelDb,100));
       // No partial rises faster than its recorded pitch's onset builds up.
       x.shortestRise=std::exp(mix(onsetRiseAt(m,*x.a,x.v),onsetRiseAt(m,*x.b,x.v),x.t));
       x.contact=m.contactTime*std::pow(2.,-(note-60)/24.);
@@ -1840,7 +1781,7 @@ struct Engine::Impl {
       if(note>=firstHalo&&tDb>0)tDb*=1.-curMute;
       toneScale=std::pow(10.,tDb/20);
       if(note>88){
-        constexpr double nSlope[pianoCount]{0.,0.,.22,.18,.20,.42};
+        constexpr double nSlope[pianoCount]{0.,0.,.22,.18,.20};
         const double nTrimDb=-fold(board,[&](int p){return (note-88)*nSlope[p];},pick);
         noiseScale=std::pow(10.,nTrimDb/20);
       }
@@ -1869,7 +1810,7 @@ struct Engine::Impl {
       lastStrikeClock=clock;
     }
     const double lateCrowdGain=!steady&&crowded?.78:1.;
-    constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28,.42};
+    constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28};
     int modes[pianoCount];
     for(int p=0;p<pianoCount;++p)modes[p]=models[p].bodyModeCount;
     for(int k=0;k<bodyModeCount;++k){
@@ -1935,7 +1876,7 @@ struct Engine::Impl {
     // between a pitch that measures it and one that cannot plays it as far as
     // it lies towards the first. The strike's knock sounds from contact too,
     // falling at its pitch's own rate.
-    constexpr double topNoiseSlope[pianoCount]{0.,0.,.22,.18,.20,.45};
+    constexpr double topNoiseSlope[pianoCount]{0.,0.,.22,.18,.20};
     auto& burst=claimBurst();
     for(int k=0;k<noiseBands;++k){
       double density[pianoCount]{},slow[pianoCount]{},balance[pianoCount]{},rate[pianoCount]{},slowRate[pianoCount]{},
@@ -1979,8 +1920,7 @@ struct Engine::Impl {
     // stretch the unisons and the ring.
     int count[pianoCount]{},next[pianoCount]{};
     for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p):0;
-    const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)]
-                              +.35*strings[static_cast<int>(Piano::belmont)];
+    const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)];
     const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
     const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
@@ -2256,8 +2196,7 @@ struct Engine::Impl {
   // and order.
   void liftDampers(float level) noexcept {
     const Model& g=models[static_cast<int>(Piano::grand)];
-    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];})
-                            +.35*share.action[static_cast<int>(Piano::belmont)];
+    const double grandShare=shareWith(share.action,[](const Model& m){return &m==&models[static_cast<int>(Piano::grand)];});
     if(grandShare<=0||!(parameters.mechanics>0))return;
     wake();
     const double target=1-dampersLift*level;
@@ -2673,9 +2612,7 @@ struct Engine::Impl {
       // Remove DC before measuring stereo peaks and applying the output gain.
       const double hpL=outL-previousL+highpassCoefficient*highpassL,hpR=outR-previousR+highpassCoefficient*highpassR;
       previousL=outL;previousR=outR;highpassL=hpL;highpassR=hpR;
-      auto frame=output.Process(hpL*gain,hpR*gain);
-      const float tubeOutput=delayedTubeOutput();
-      if(tubeOutput!=1.f){frame[0]*=tubeOutput;frame[1]*=tubeOutput;}
+      const auto frame=output.Process(hpL*gain,hpR*gain);
       left[i]=frame[0];right[i]=frame[1];
     }
   }
@@ -2736,7 +2673,7 @@ void Engine::reset() noexcept {
   p.previousBrightness=p.parameters.brightness;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-  p.output.Reset();p.resetTubeOutput();
+  p.output.Reset();
   for(int ch=0;ch<16;++ch)p.capture(ch);
   p.updateReceiverDampers(1);
   p.pedalHeld=false;p.pedalEdge(false);
@@ -2815,7 +2752,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
     if(!any){
       p.silenceStrings();p.updateReceiverDampers(1);p.silenceBody();p.silenceNoise();
-      p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();p.resetTubeOutput();
+      p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();
     }
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
@@ -2853,7 +2790,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
-    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();p.resetTubeOutput();
+    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();
     for(auto& channel:p.channels)channel.smoothedMute=std::max(p.parameters.mute,channel.mute);
     return;
   }
@@ -2877,7 +2814,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
       p.sleeping=true;p.receiverClock=p.clock;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
       p.silenceStrings();p.silenceTube();
       p.silenceNoise();p.tubeScale=p.tubeScaleTarget;
-      p.output.Reset();p.resetTubeOutput();
+      p.output.Reset();
     }
   }
 }

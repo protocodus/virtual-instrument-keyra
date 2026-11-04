@@ -2,7 +2,6 @@
 #include "DSP/MeasuredKawaiData.h"
 #include "DSP/MeasuredHamburgData.h"
 #include "DSP/MeasuredNewYorkData.h"
-#include "DSP/MeasuredBelmontData.h"
 #include "DSP/MeasuredMicData.h"
 #include "DSP/MeasuredModalData.h"
 #include "DSP/MeasuredUprightData.h"
@@ -43,9 +42,8 @@ double rms(const Audio& audio){double sum=0;for(float x:audio)sum+=static_cast<d
 keyra::Parameters dry(){keyra::Parameters p;p.resonance=0;p.mechanics=keyra::legacyMechanicsGain;return p;}
 keyra::Parameters dryUpright(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::upright);return p;}
 keyra::Parameters dryKawai(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::kawai);return p;}
-keyra::Parameters dryBelmont(){auto p=dry();p.build=keyra::measuredBuild(keyra::Piano::belmont);return p;}
 const char* pianoName(keyra::Piano piano){
-  static const std::array<const char*,keyra::pianoCount> names{"grand","upright","kawai","hamburg","newyork","belmont"};
+  static const std::array<const char*,keyra::pianoCount> names{"grand","upright","kawai","hamburg","newyork"};
   return names[static_cast<std::size_t>(piano)];
 }
 // C4's own strings: the amplitude of its first four partials, in both
@@ -313,7 +311,7 @@ int main(int argc,char** argv){
     // the highest of the softest layers' levels, and plays where each
     // piano's measured layers reach it.
     namespace g=keyra::measured::grand;namespace u=keyra::measured::upright;namespace kw=keyra::measured::kawai;
-    namespace hm=keyra::measured::hamburg;namespace ny=keyra::measured::newyork;namespace bm=keyra::measured::belmont;
+    namespace hm=keyra::measured::hamburg;namespace ny=keyra::measured::newyork;
     auto level=[](const auto& v,const auto& l,int layers,double at){
       int i=0;while(i<layers-2&&at>v[i+1])++i;
       return l[i]+(l[i+1]-l[i])*(at-v[i])/(v[i+1]-v[i]);};
@@ -326,22 +324,20 @@ int main(int argc,char** argv){
         keyra::responseVelocity(keyra::Piano::upright,midi/127.f),
         keyra::responseVelocity(keyra::Piano::kawai,midi/127.f),
         keyra::responseVelocity(keyra::Piano::hamburg,midi/127.f),
-        keyra::responseVelocity(keyra::Piano::newyork,midi/127.f),
-        keyra::responseVelocity(keyra::Piano::belmont,midi/127.f)};
+        keyra::responseVelocity(keyra::Piano::newyork,midi/127.f)};
       worst=std::max({worst,
                       std::abs(level(g::layerVelocity,g::layerLevelDb,g::layers,at[0])-std::max<double>(wanted,level(g::layerVelocity,g::layerLevelDb,g::layers,1.))),
                       std::abs(level(u::layerVelocity,u::layerLevelDb,u::layers,at[1])-std::max<double>(wanted,level(u::layerVelocity,u::layerLevelDb,u::layers,1.))),
                       std::abs(level(kw::layerVelocity,kw::layerLevelDb,kw::layers,at[2])-std::max<double>(wanted,level(kw::layerVelocity,kw::layerLevelDb,kw::layers,1.))),
                       std::abs(level(hm::layerVelocity,hm::layerLevelDb,hm::layers,at[3])-std::max<double>(wanted,level(hm::layerVelocity,hm::layerLevelDb,hm::layers,1.))),
-                      std::abs(level(ny::layerVelocity,ny::layerLevelDb,ny::layers,at[4])-std::max<double>(wanted,level(ny::layerVelocity,ny::layerLevelDb,ny::layers,1.))),
-                      std::abs(level(bm::layerVelocity,bm::layerLevelDb,bm::layers,at[5])-std::max<double>(wanted,level(bm::layerVelocity,bm::layerLevelDb,bm::layers,1.)))});
+                      std::abs(level(ny::layerVelocity,ny::layerLevelDb,ny::layers,at[4])-std::max<double>(wanted,level(ny::layerVelocity,ny::layerLevelDb,ny::layers,1.)))});
       for(int k=0;k<keyra::pianoCount;++k){rising=rising&&at[k]>=last[k];last[k]=at[k];}
     }
     std::cout<<"velocity_response_worst_db="<<worst<<'\n';
     check(worst<.01,"every piano plays the shared velocity response's level at every velocity");
     check(rising,"a harder strike never plays a softer layer");
     check(last[0]==g::layerVelocity[g::layers-1]&&last[1]==u::layerVelocity[u::layers-1]&&last[2]==kw::layerVelocity[kw::layers-1]
-          &&last[3]==hm::layerVelocity[hm::layers-1]&&last[4]==ny::layerVelocity[ny::layers-1]&&last[5]==bm::layerVelocity[bm::layers-1],
+          &&last[3]==hm::layerVelocity[hm::layers-1]&&last[4]==ny::layerVelocity[ny::layers-1],
           "velocity 127 plays each piano's loudest layer");
   }
   {
@@ -589,7 +585,6 @@ int main(int argc,char** argv){
     for(const int note:{51,75}){between(keyra::Piano::grand,keyra::measured::grand::anchors,note);
                                 between(keyra::Piano::upright,keyra::measured::upright::anchors,note);
                                 between(keyra::Piano::kawai,keyra::measured::kawai::anchors,note);}
-    for(const int note:{39,63})between(keyra::Piano::belmont,keyra::measured::belmont::anchors,note);
   }
   {
     // A key between two recorded pitches plays about as loud as they do. Its
@@ -644,7 +639,7 @@ int main(int argc,char** argv){
     // upright's up to 14.4 dB; the rises' corners, unsmoothed, reached 14 dB.
     // (From their onsets, the key's sound a few milliseconds before contact,
     // the grand's stayed at or under 0 dB.)
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont})
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})
       for(const int key:{33,42,60,84})for(const float velocity:{31.f,61.f,101.f}){
       auto p=dry();p.build=keyra::measuredBuild(piano);
       keyra::Engine e;e.setParameters(p);e.noteOn(key,velocity/127);
@@ -700,7 +695,7 @@ int main(int argc,char** argv){
     // piano a key going down and coming back knocks twice as hard at 2 as
     // at 1, against 0, where it knocks nothing. The body is linear, and the
     // output stage passes a quiet note untouched.
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork}){
       const auto play=[piano](float mechanics,bool explicitGain=true){keyra::Engine e;keyra::Parameters p;
         p.resonance=0;p.build=keyra::measuredBuild(piano);p.gain=.1f;
         if(explicitGain)p.mechanics=mechanics;
@@ -830,10 +825,9 @@ int main(int argc,char** argv){
     // partial moves as B times a quarter and four times puts it, from each
     // piano's measured f1 and B at C2.
     const auto c2=[](const auto& anchors){for(const auto& x:anchors)if(x.note==36)return std::array<double,2>{x.f1,x.B};return std::array<double,2>{};};
-    const std::array<std::pair<keyra::Piano,std::array<double,2>>,4> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
+    const std::array<std::pair<keyra::Piano,std::array<double,2>>,3> pianos{{{keyra::Piano::grand,c2(keyra::measured::grand::anchors)},
                                                                            {keyra::Piano::upright,c2(keyra::measured::upright::anchors)},
-                                                                           {keyra::Piano::kawai,c2(keyra::measured::kawai::anchors)},
-                                                                           {keyra::Piano::belmont,c2(keyra::measured::belmont::anchors)}}};
+                                                                           {keyra::Piano::kawai,c2(keyra::measured::kawai::anchors)}}};
     for(const auto& [piano,anchor]:pianos){
       const auto twelfth=[&](float stiffness){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.stiffness=stiffness;
@@ -854,7 +848,7 @@ int main(int argc,char** argv){
     // the body are not scaled).
     // It renders 5 s: the Hamburg grand's C4 at Ring 1 falls 20 dB after 3 s,
     // so a 3 s window was too short. The 10 % bound is unchanged.
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork}){
       const auto fall=[&](float ring){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.ring=ring;
         keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
@@ -928,11 +922,11 @@ int main(int argc,char** argv){
       const double half=c4Strings(render(e,12000),anchors),stillHeld=c4Strings(render(held,12000),anchors);render(e,36000);
       return std::array<double,4>{before,half,c4Strings(render(e,12000),anchors),stillHeld};};
     const auto upright=fall(dryUpright(),keyra::measured::upright::anchors),grand=fall(dry(),keyra::measured::grand::anchors),
-               kawai=fall(dryKawai(),keyra::measured::kawai::anchors),belmont=fall(dryBelmont(),keyra::measured::belmont::anchors);
-    for(const auto& piano:{upright,grand,kawai,belmont}){
+               kawai=fall(dryKawai(),keyra::measured::kawai::anchors);
+    for(const auto& piano:{upright,grand,kawai}){
       check(piano[1]>piano[0]*1e-4&&piano[1]<piano[0]*.01,"the felt leaves a faint share of a released C4 ringing");
       check(piano[2]<piano[1]*.7,"what the felt leaves keeps falling");}
-    for(const auto& piano:{upright,kawai,belmont})
+    for(const auto& piano:{upright,kawai})
       check(std::abs(20*std::log10(piano[1]/piano[3]*grand[3]/grand[1]))<6,"every piano's felt leaves the same share");
     std::cout<<"upright_released_c4_db="<<20*std::log10(upright[1]/upright[0])<<','<<20*std::log10(upright[2]/upright[0])
              <<" grand_released_c4_db="<<20*std::log10(grand[1]/grand[0])
@@ -940,7 +934,7 @@ int main(int argc,char** argv){
              <<" released_against_held_c4_db="<<20*std::log10(grand[1]/grand[3])<<','<<20*std::log10(upright[1]/upright[3])
              <<','<<20*std::log10(kawai[1]/kawai[3])<<'\n';
   }
-  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont})
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})
     for(const double rate:{8000.,22050.,44100.,48000.,96000.,192000.}){
     keyra::Engine e(rate);auto p=dry();p.build=keyra::measuredBuild(piano);p.brightness=std::numeric_limits<float>::quiet_NaN();p.tuning=std::numeric_limits<float>::infinity();e.setParameters(p);
     for(int note:{21,60,108})e.noteOn(note,1);
@@ -1103,7 +1097,7 @@ int main(int argc,char** argv){
   // A fortissimo chord meets the output stage's limiter, never the emergency
   // bound ahead of it (4, +12 dBFS): read 24 dB down, where the stage passes
   // it untouched, its peak at the default Output stays 3 dB under the bound.
-  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork,keyra::Piano::belmont})for(int count:{3,6,10}){
+  for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})for(int count:{3,6,10}){
     keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.gain/=16;e.setParameters(p);e.reset();
     for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));
@@ -1117,7 +1111,7 @@ int main(int argc,char** argv){
     // the full damper bank via the sustain pedal unloads the bridge and couples
     // the undamped treble halo strings, producing measurable sustain bloom
     // (1.0-2.0 s relative to 0.05-0.5 s) across pianos.
-    for(const auto piano:{keyra::Piano::grand,keyra::Piano::hamburg,keyra::Piano::belmont}){
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::hamburg}){
       const auto measureBloom=[&](float sustain){
         keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.mechanics=0;p.sustain=sustain;
         e.setParameters(p);e.reset();e.setSteadyStrikesForMeasurement(true);

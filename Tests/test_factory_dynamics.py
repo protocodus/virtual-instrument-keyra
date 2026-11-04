@@ -34,13 +34,13 @@ class FactoryDynamics(unittest.TestCase):
 
     def test_floor_and_improvements(self):
         expected, floors = dynamics.reference_rows()
-        self.assertEqual(len(expected), 2544)
+        self.assertEqual(len(expected), 2120)
         original = [value for key, value in floors.items() if key[0] == 'original']
-        self.assertEqual(len(original), 480)
+        self.assertEqual(len(original), 400)
         self.assertGreater(min(original), 0.)
-        key = ('original', 'Belmont Grand', 0, 5, 1, 110)
+        key = ('original', 'New York Grand', 0, 5, 1, 110)
         improved = floors[key] + .35
-        self.assertEqual(self.check(change={key: {'step_db': improved, 'vu_high': -80 + improved}}), 2544)
+        self.assertEqual(self.check(change={key: {'step_db': improved, 'vu_high': -80 + improved}}), 2120)
 
     def test_positive_step_losing_contrast_is_a_regression(self):
         # A harder chord can still play louder while losing most of B's dynamics.
@@ -55,7 +55,7 @@ class FactoryDynamics(unittest.TestCase):
         key = min((k for k in floors if k[0] == 'expanded'), key=floors.get)
         self.assertLess(floors[key], 0.)
         slight = floors[key] - .0005
-        self.assertEqual(self.check(change={key: {'step_db': slight, 'vu_high': -80 + slight}}), 2544)
+        self.assertEqual(self.check(change={key: {'step_db': slight, 'vu_high': -80 + slight}}), 2120)
         worse = floors[key] - .002
         other = ('expanded', 'Kakegawa Grand', 0, 1, 0, 112)
         improved = floors[other] + .25
@@ -65,7 +65,7 @@ class FactoryDynamics(unittest.TestCase):
 
     def test_absolute_level_upper_bound_uses_the_matching_mic(self):
         expected, floors = dynamics.reference_rows()
-        key = ('original', 'Belmont Grand', 1, 5, 1, 110)
+        key = ('original', 'New York Grand', 1, 5, 1, 110)
         maximum = expected[key][2] + .01
         step = floors[key]
         with self.assertRaisesRegex(ValueError, 'exceeds B limit'):

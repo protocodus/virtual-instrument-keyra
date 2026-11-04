@@ -33,7 +33,7 @@ import time
 
 import numpy as np
 
-MODELS = ('grand', 'upright', 'kawai', 'hamburg', 'newyork', 'belmont')
+MODELS = ('grand', 'upright', 'kawai', 'hamburg', 'newyork')
 WINDOWS = ((0., .05), (.05, .3), (.3, .75), (.75, 1.5), (1.5, 2.))
 DEFAULTS = dict(gain=.07, brightness=.5, resonance=.25, width=.75,
                 tuning=440., mechanics=.175, mute=0., sustain=0.,

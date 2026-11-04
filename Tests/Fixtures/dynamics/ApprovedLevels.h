@@ -8,6 +8,7 @@
 // decimals KeyraLevels prints, when the chords of the grand and the upright
 // gained their per-key trims and their output scales were re-pinned
 // (Docs/decisions.md, 2026-11-03); the other rows are the 0.4.10 readings.
+// The Belmont baby grand's rows were removed with that piano on 2026-11-04.
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -15,7 +16,7 @@ struct ApprovedLevel {
     double loudestVu;
 };
 
-inline constexpr std::array<ApprovedLevel, 13> approvedPreset {{
+inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
     {"Kakegawa Grand", -9.016195, 0.607447},
     {"Studio Grand", -10.17, -0.019715},
     {"Warm Walnut", -10.865286, -0.281824},
@@ -28,15 +29,13 @@ inline constexpr std::array<ApprovedLevel, 13> approvedPreset {{
     {"Three Cities", -10.29, 2.871424},
     {"Hamburg Grand", -8.893996, 1.638555},
     {"New York Grand", -9.042460, 3.213257},
-    {"Belmont Grand", -7.912787, 3.668850},
 }};
 
-inline constexpr std::array<ApprovedLevel, 6> approvedTube {{
+inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
     {"grand", -9.068710, 1.125506},
     {"upright", -8.993037, 4.328115},
     {"kawai", -9.985854, 3.199726},
     {"hamburg", -9.172983, 1.407187},
     {"newyork", -9.020263, 2.115038},
-    {"belmont", -9.485308, 5.872950},
 }};
 } // namespace keyra_test

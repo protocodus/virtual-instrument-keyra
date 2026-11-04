@@ -3,8 +3,8 @@
 Keyra is a sample-free piano: a real-time modal engine whose strings,
 soundboard ring and stereo image are fitted from numerical measurements of
 acoustic piano recordings, with three visible pedals, momentary pedal
-keyswitches and felt muting from the modulation wheel. Six pianos are
-measured, five grands and an upright, and their strings, hammers, soundboard
+keyswitches and felt muting from the modulation wheel. Five pianos are
+measured, four grands and an upright, and their strings, hammers, soundboard
 and action mix part by part into pianos none of them is. It builds as VST3
 and CLAP plug-ins, an Audio Unit on macOS and a standalone application, and
 the Reason Rack Extension adapter plays the same engine. It is a development
@@ -671,12 +671,11 @@ silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
 40% on a continuous tapered knob. The action levels above describe raw gain 1;
 the separate hammer/body attack is not scaled by Mechanics.
 
-### Six pianos, one model
+### Five pianos, one model
 
 The pianos are builds of one model (`keyra::Build`): the Kakegawa grand
 (Salamander's), the Helsinki upright, the Hamamatsu grand (VCSL Keys'),
-the Hamburg and New York grands, and the Belmont baby grand (Mom's 1974),
-each fitted from its own recordings. Elsewhere in this document the grand is
+and the Hamburg and New York grands, each fitted from its own recordings. Elsewhere in this document the grand is
 the Kakegawa grand and the upright the Helsinki upright. Each of the model's
 four parts mixes the measured pianos by a weight from 0 to 1 for each of
 them (`keyra::Mix`), played as shares of their sum: the **strings** (their
@@ -999,12 +998,10 @@ the build existed plays the grand as built at full quality, one saved with
 the Piano control the build it chose, one saved before Mechanics its action
 as calibrated, and one saved before Tube Mic hears the pair. Mechanics retains
 its raw 0–2 host parameter range for saved automation; only the custom knob's
-travel and percentage readout use the new taper. The nineteen factory
+travel and percentage readout use the new taper. The twelve factory
 presets in `Source/DSP/KeyraPresets.h` — five on the Kakegawa grand, three on
-the Helsinki upright, Hamamatsu Grand, Three Cities, Hamburg Grand, New York
-Grand, three on the Belmont grand (`Belmont Grand`, `Belmont Soft`, `Belmont Warm`),
-and four multi-piano hybrids (`Dark Chamber`, `Hybrid Studio`, `Upright Body`,
-`Bright Stage`) — set the build,
+the Helsinki upright, Hamamatsu Grand, Three Cities, Hamburg Grand and New
+York Grand — set the build,
 Brightness, Resonance, Width and Felt mute and leave the rest alone. Notes, pedals and pitch bend (two semitones each way) are dispatched at
 their sample positions; each MIDI channel owns its keys and pedals, and CC120,
 CC121 and CC123 are honoured per channel. The
@@ -1043,7 +1040,7 @@ stereo gain curve protects the restored signal when an attack crosses the
 −1.5 dBFS sample ceiling. On a 48 kHz host this adds 24 frames to the
 portfolio stage's 96-frame look-ahead. The host receives the total delay.
 
-On the six named pianos the 110 → 127 comparison increased on every one of
+On the six named pianos of 0.4.11 the 110 → 127 comparison increased on every one of
 480 paired strikes across the close and tube mics. Typical preset levels
 stay within 0.04 dB of 0.4.10. A forte chord can now cross 0 VU on Reason's
 meter, which corresponds to −12 dBFS RMS. The per-preset level tests use
@@ -1220,16 +1217,7 @@ particularly when bass partials cancel in the tube mic. See the
   ring under the pedal at the Kakegawa grand's rates. Its second layer's
   takes from E3 up stop at a noise gate 0.6 to 15 s after the strike, and the
   fit reads them no further.
-- The Belmont grand's library peak-normalises every take, so how loud its
-  layers and keys stand against each other is not recorded: they are levelled
-  by Decent Sampler's own velocity curve and a smooth trend over the keyboard,
-  the owner's choices. Its three layers are 25, 77 and 116 in velocity, one
-  to three takes each, at pitches a minor third apart, and D♯2, D♯4 and D♯6
-  are its only never-fitted pitches. Its A2 and D♯3 to F♯3 are recorded
-  nearly all fundamental. The tube mic emphasizes this bass, so the loudest chords
-  read higher on the VU meter. Its strings ring under the pedal at the Kakegawa grand's rates
-  ([benchmark](Docs/validation/belmont-recording-benchmark-2026-11-01.md)).
-- Six pianos are measured separately. Yamaha C3 supplies additional calibration
+- Five pianos are measured separately. Yamaha C3 supplies additional calibration
   measurements. Predictions between recorded pitches remain approximate;
   the [interpolation validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md)
   records the remaining pitch-gap and attack-fit limitations.

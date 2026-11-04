@@ -25,7 +25,7 @@ def reference_rows():
     ref = json.loads(REFERENCE.read_text(encoding='utf-8'))
     if ref['version'] != 2 or ref['sample_rate_hz'] != 48000 or ref['output_gain'] != .7:
         raise ValueError('unsupported factory dynamics reference')
-    if len(ref['pianos']) != 6 or len(set(ref['pianos'])) != 6:
+    if len(ref['pianos']) != 5 or len(set(ref['pianos'])) != 5:
         raise ValueError('invalid factory piano list')
     expected = {}
     floors = {}

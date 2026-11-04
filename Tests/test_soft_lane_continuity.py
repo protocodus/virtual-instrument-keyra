@@ -51,7 +51,7 @@ PROBE = r'''
 #include "KeyraEngine.cpp"
 void require(bool ok,const std::string& message){if(!ok)throw std::runtime_error(message);}
 constexpr double sr=48000.;
-const char* names[]={"grand","upright","kawai","hamburg","newyork","belmont"};
+const char* names[]={"grand","upright","kawai","hamburg","newyork"};
 std::string context(int model,int note,double velocity,double soft){return std::string(names[model])+" note="+std::to_string(note)+" velocity="+std::to_string(velocity)+" soft="+std::to_string(soft);}
 template<class T>void append(std::vector<std::uint64_t>& out,T value){static_assert(sizeof(T)<=8,"scalar state only");std::uint64_t bits=0;std::memcpy(&bits,&value,sizeof(T));out.push_back(bits);}
 void launch(keyra::Engine& engine,int model,int note,float velocity,float soft,bool legacy,double pitch=-1,double layer=-1){

@@ -7,11 +7,11 @@
 namespace {
 // The build's controls follow Quality: each part's weights (weightId), part
 // by part, then the three modifiers.
-constexpr std::array<const char*, 39> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
-    "quality", "strings1", "strings2", "strings3", "strings4", "strings5", "strings6", "hammers1", "hammers2", "hammers3", "hammers4", "hammers5", "hammers6",
-    "soundboard1", "soundboard2", "soundboard3", "soundboard4", "soundboard5", "soundboard6", "action1", "action2", "action3", "action4", "action5", "action6",
+constexpr std::array<const char*, 35> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft",
+    "quality", "strings1", "strings2", "strings3", "strings4", "strings5", "hammers1", "hammers2", "hammers3", "hammers4", "hammers5",
+    "soundboard1", "soundboard2", "soundboard3", "soundboard4", "soundboard5", "action1", "action2", "action3", "action4", "action5",
     "stiffness", "unisons", "ring", "mechanics", "mic" }};
-constexpr size_t qualityIndex = 9, weightIndex = 10, modifierIndex = 34, mechanicsIndex = 37, micIndex = 38;
+constexpr size_t qualityIndex = 9, weightIndex = 10, modifierIndex = 30, mechanicsIndex = 33, micIndex = 34;
 static_assert(modifierIndex - weightIndex == buildParts.size() * keyra::pianoCount, "every part has a weight of every piano");
 constexpr auto& programs = keyra::factoryPresets;
 // The parts' and the modifiers' values of a build, in the parameters' order.
@@ -308,7 +308,7 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
     if (!state.isValid() || state.getProperty("schemaVersion", 1).toString() != "1") return;
     const auto programText = state.getProperty("program", 0).toString();
     if (programText.isEmpty() || programText.length() > 3 || !programText.containsOnly("0123456789")
-        || programText.getIntValue() >= static_cast<int>(programs.size())) return;
+        || programText.getIntValue() > static_cast<int>(programs.size())) return;
     // A session saved before the parts mixed every piano chose a piano,
     // "model" (0 the grand, 1 the upright), and moved each part from its own
     // toward the other's (keyra::buildToward), the parts under their names
@@ -341,6 +341,17 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
             }
         }
     }
+    // A session saved while the sixth piano, the Belmont baby grand, was
+    // offered loads without it: its weights are dropped,
+    // so a part only it played plays the grand's, and its preset, the last,
+    // reads as the first.
+    for (int i = state.getNumChildren(); --i >= 0;) {
+        const auto id = state.getChild(i).getProperty("id").toString();
+        for (const auto* part : buildParts)
+            if (id == juce::String(part) + "6") state.removeChild(i, nullptr);
+    }
+    auto program = programText.getIntValue();
+    if (program == static_cast<int>(programs.size())) program = 0;
     // Reject malformed or future state atomically. Never apply half a preset.
     std::array<bool, ids.size()> seen {};
     for (const auto child : state) {
@@ -371,7 +382,7 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
         state.appendChild(child, nullptr);
     }
     parameters.replaceState(state);
-    currentProgram.store(programText.getIntValue(), std::memory_order_relaxed);
+    currentProgram.store(program, std::memory_order_relaxed);
 }
 
 juce::AudioProcessorEditor* KeyraAudioProcessor::createEditor() { return new KeyraAudioProcessorEditor(*this); }

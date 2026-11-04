@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.14 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.15 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -314,15 +314,6 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.YamahaCorpusImport
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_yamaha_c3_import.py")
-        add_test(NAME Keyra.BelmontMeasurementFreshness
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_realtime_modal.py"
-                         --model belmont
-                         --measurements "${CMAKE_CURRENT_SOURCE_DIR}/Tools/measurements/belmont-2026-11-02.json.gz"
-                         --header "${CMAKE_CURRENT_SOURCE_DIR}/Source/DSP/MeasuredBelmontData.h"
-                         --metadata "${CMAKE_CURRENT_SOURCE_DIR}/Docs/research/belmont-stored-numbers-2026-11-02.json"
-                         --check)
-        set_tests_properties(Keyra.BelmontMeasurementFreshness PROPERTIES LABELS unit TIMEOUT 60)
         add_test(NAME Keyra.FactoryDynamicsContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_factory_dynamics.py")
@@ -376,9 +367,6 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.SoftLaneContinuity
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_soft_lane_continuity.py")
-        add_test(NAME Keyra.TubeOutputCalibration
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_tube_output_calibration.py")
         add_test(NAME Keyra.LiveControlSmoothing
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_live_control_smoothing.py")
@@ -407,7 +395,7 @@ if(BUILD_TESTING)
                              Keyra.RateInterpolation Keyra.ComponentWarmStart
                              Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
                              Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety
-                             Keyra.SoftLaneContinuity Keyra.TubeOutputCalibration
+                             Keyra.SoftLaneContinuity
                              Keyra.LiveControlSmoothing Keyra.BuildControlSmoothing
                              Keyra.QualityAuditContract Keyra.QualityRetention Keyra.ReleaseBalance
                              Keyra.RecordingReferenceCache Keyra.BenchmarkComparison

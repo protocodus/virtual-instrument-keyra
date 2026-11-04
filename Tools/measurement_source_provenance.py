@@ -1,4 +1,4 @@
-"""Exact provenance for the existing authored-WAV/AIFF/cropped-WAV recipes.
+"""Exact provenance for the existing AIFF and cropped-WAV recipes.
 
 No resampling, gain, channel conversion or tolerance is allowed. The original
 corpus pin is independent of the authored analysis-WAV pin. Container metadata
@@ -18,7 +18,7 @@ DECODERS = {
     'newyork-aiff-lossless-v1': ('newyork', '4f74f06be33be46e793a2d413c217de02dbf42ac5af1874d8691f24e790693d3', 44100),
     'hamburg-preset-crop-v1': ('hamburg', '88ad0e73e037aee99b5e3231600a426a6670fd71c0d1dc309d91fcfeac355eb7', 48000),
 }
-KINDS = {'belmont': 'authored-wav-v1', 'newyork': 'newyork-aiff-lossless-v1', 'hamburg': 'hamburg-preset-crop-v1'}
+KINDS = {'newyork': 'newyork-aiff-lossless-v1', 'hamburg': 'hamburg-preset-crop-v1'}
 
 class ProvenanceError(ValueError):
     pass
@@ -47,10 +47,6 @@ def prepare(item, source, model, base, pins, pinned):
     wav = pinned(source['wav'], base, pins)
     result = {'kind': kind, 'model': model, 'case': source['id'], 'analysis_wav': str(wav),
               'analysis_wav_sha256': source['wav']['sha256'], 'historical_cache_pin': cache_pin}
-    if kind == 'authored-wav-v1':
-        require(item.get('wav_sha256') == source['wav']['sha256'], 'authored WAV differs from corpus')
-        require(set(p) == {'kind', 'historical_cache_pin'}, 'undeclared authored-WAV transform')
-        return result
     require(set(p) == {'kind', 'historical_cache_pin', 'original', 'decoder', 'sample_rate',
                        'channels', 'source_bits', 'analysis_bits', 'frame_span'}, 'transform fields differ')
     _, decoder_sha, rate = DECODERS[kind]
@@ -128,8 +124,6 @@ def pcm(path, channels, span=None):
 
 def verify(record):
     """Exact streaming proof, after ALL manifest source roles/hashes pass."""
-    if record['kind'] == 'authored-wav-v1':
-        return dict(record, authored_hash_exact=True, transformed=False)
     a, b = probe(record['original']), probe(record['analysis_wav'])
     for label, value, bits in [('original', a, record['source_bits']), ('analysis', b, record['analysis_bits'])]:
         require(value['sample_rate'] == record['sample_rate'], label + ' sample rate mismatch')

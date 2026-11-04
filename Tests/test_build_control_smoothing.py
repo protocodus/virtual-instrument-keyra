@@ -90,8 +90,8 @@ void tubeTrajectory(int model,double sr){
       const double requested=tubeTarget(p);if(requested!=target){initial=oracle;target=requested;since=0;}
       tested.setParameters(p);reference.setParameters(p);}
     ++since;oracle=target+(initial-target)*std::exp(-double(since)/(.012*sr));
-    // Force both representations. Other smoothers, including the separate
-    // delayed Belmont monitoring trim, retain their own native trajectories.
+    // Force both representations. Other smoothers retain their own native
+    // trajectories.
     reference.impl->tubeScale=reference.impl->tubeScaleTarget=oracle;
     tested.process(&al,&ar,1);reference.process(&bl,&br,1);
     const double error=std::abs(tested.impl->tubeScale-oracle);maxState=std::max(maxState,error);

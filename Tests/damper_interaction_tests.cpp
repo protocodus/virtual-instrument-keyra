@@ -314,6 +314,6 @@ int main() {
             }
         }
     }
-    if (!failures) std::cout << "Six pianos passed receiver travel, restrike ownership, acoustic tail, reset and partition checks\n";
+    if (!failures) std::cout << "Five pianos passed receiver travel, restrike ownership, acoustic tail, reset and partition checks\n";
     return failures ? 1 : 0;
 }
