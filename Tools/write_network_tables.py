@@ -15,6 +15,23 @@ key, the order and each layer's level:
 - its lanes' decays, offsets, pickups and levels per layer. The network's
   level input is each layer's level under the loudest, layerLevelDb, the
   same median the network's own layer levels are measured as;
+- none of its lanes that decays faster than every lane of the two fits
+  around the key at the order: such a lane is silent, and goes last. The
+  fitter measures a partial through six periods of its fundamental (82 ms
+  at the Hamburg's D2), which smears a lane that falls within a few
+  milliseconds over every frame its start reaches, and the network, unlike
+  the fitter, pays nothing for a lane's amplitude. So it puts a burst on
+  the upper partials that the fits do not hold: from 4 kHz up the
+  Hamburg's network decays its fastest lanes at 150 to 410/s where the
+  fits' fastest median 9 to 25/s, and from 8 kHz up its recorded pitches
+  took 9 to 50 dB more power in their first 50 ms from the network than
+  from their fits. Played so, its keys between clicked: from 8 kHz up, the
+  5 ms after contact stood up to 46 dB over 20 to 40 ms later (the measure
+  of Tests/engine_tests.cpp, which fails 13 dB), where today's engine
+  stands at most 6.5 dB on every key, and with those lanes silent at most
+  3.5 dB. Kept at the fits' fastest decay instead, the lanes' energy put
+  the Hamburg's dev takes further off the recordings than today's engine
+  (12.74 against 11.04 dB);
 - its levels in the fits' units: the network's times its recording term for
   the piano's library, over the fits' channel gains against the same
   measurements (keyboard_network.py `baseline`);
@@ -36,7 +53,8 @@ key, the order and each layer's level:
 With --anchored the network's error at the two recorded pitches around a key
 is carried to the key as well: each partial's power in each channel over the
 window the layers' levels are measured over moves by what the fit at each
-pitch holds over the network's there, blended between the two in dB.
+pitch holds over the network's there, written as the keys between the two
+are (the same lanes silent), blended between the two in dB.
 
     python3 -I Tools/write_network_tables.py --weights Docs/research/keyboard-network-2026-11-04
     python3 -I Tools/write_network_tables.py --weights ... --check   # is the header what it writes?
@@ -148,6 +166,25 @@ def network(net, piano, library, note, orders, table, gain, f1, B, cents):
     return partials
 
 
+def fastest(q):
+    """A fitted partial's fastest decay rate (1/s)."""
+    return max(L['rate'] for L in q['lanes'])
+
+
+def bound(p, rate):
+    """Silence p's lanes that decay faster than `rate` and put them last, so
+    that the soft pedal's ranks, which the engine gives a key's lanes in
+    their order (fastest first, softBiasAtRank), fall on the lanes that
+    sound; how many it silenced."""
+    faster = p['rate'] > rate
+    p['level'][:, faster] = -200.0
+    order = np.r_[np.flatnonzero(~faster), np.flatnonzero(faster)]
+    for k in ('rate', 'offset', 'left', 'right'):
+        p[k] = p[k][order]
+    p['level'], p['phase'] = p['level'][:, order], p['phase'][:, order]
+    return int(faster.sum())
+
+
 def align(p, a, b, t):
     """Turn p's right channel to the lag between a's and b's (either may be
     None), one turn for every layer as its pickups are one, then its lanes
@@ -200,22 +237,27 @@ def piano_keys(name, net, piano, library, gain, anchored, log):
     table = kn.header_of(name)
     anchors = table['anchors']
     by_order = [{p['order']: p for p in x['partials']} for x in anchors]
-    residual = []
-    if anchored:
-        # What each fit holds over the network at its own pitch, per order,
-        # layer and channel (dB).
-        for x, held in zip(anchors, by_order):
-            orders = sorted(held)
-            ours = network(net, piano, library, x['note'], orders, table, gain, x['f1'], x['B'],
-                           [held[o]['cents'] for o in orders])
-            residual.append({o: 10 * np.log10(channel_powers(of_table(held[o])) / channel_powers(q))
-                             for o, q in zip(orders, ours)})
-        moved = np.concatenate([np.ravel(list(r.values())) for r in residual])
-        log(f'{name}: the fits over the network at their own pitches, per partial, layer and channel: '
-            f'{np.mean(moved):+.2f} dB mean, {np.sqrt(np.mean(moved ** 2)):.2f} dB rms')
-    keys = {}
+
+    def held_over(x, held, limit):
+        """What the fit at a recorded pitch holds over the network there,
+        written as the keys beside it are, per order, layer and channel (dB)."""
+        orders = sorted(held)
+        ours = network(net, piano, library, x['note'], orders, table, gain, x['f1'], x['B'],
+                       [held[o]['cents'] for o in orders])
+        for o, q in zip(orders, ours):
+            bound(q, limit[o])
+        return {o: 10 * np.log10(channel_powers(of_table(held[o])) / channel_powers(q)) for o, q in zip(orders, ours)}
+
+    keys, silenced, moved = {}, 0, []
     for lower in range(len(anchors) - 1):
         a, b = anchors[lower], anchors[lower + 1]
+        pair = by_order[lower], by_order[lower + 1]
+        # The fastest decay either fit holds at each order, which no lane of
+        # the keys between them exceeds.
+        limit = {o: max(fastest(held[o]) for held in pair if o in held) for o in set(pair[0]) | set(pair[1])}
+        if anchored:
+            residual = [held_over(x, held, limit) for x, held in zip((a, b), pair)]
+            moved += [np.ravel(list(r.values())) for r in residual]
         for note in range(a['note'] + 1, b['note']):
             t = (note - a['note']) / (b['note'] - a['note'])
             f1, B = key_tuning(a, b, t)
@@ -238,14 +280,19 @@ def piano_keys(name, net, piano, library, gain, anchored, log):
             ours = network(net, piano, library, note, orders, table, gain, f1, B, cents)
             for o, p in zip(orders, ours):
                 pa_, pb_ = by_order[lower].get(o), by_order[lower + 1].get(o)
+                silenced += bound(p, limit[o])
                 if anchored:
-                    ra, rb = residual[lower].get(o), residual[lower + 1].get(o)
+                    ra, rb = residual[0].get(o), residual[1].get(o)
                     move_power(p, ra + t * (rb - ra) if ra is not None and rb is not None
                                else ra if ra is not None else rb)
                 align(p, of_table(pa_) if pa_ else None, of_table(pb_) if pb_ else None, t)
             keys[note] = [(o, c, r[0], r[1], p) for o, c, r, p in zip(orders, cents, rises, ours)]
+    if anchored:
+        moved = np.concatenate(moved)
+        log(f'{name}: the fits over the network at their own pitches, per partial, layer and channel: '
+            f'{np.mean(moved):+.2f} dB mean, {np.sqrt(np.mean(moved ** 2)):.2f} dB rms')
     log(f'{name}: {len(keys)} keys between its {len(anchors)} recorded pitches, '
-        f'{sum(len(v) for v in keys.values())} partials')
+        f'{sum(len(v) for v in keys.values())} partials, {silenced} lanes silent')
     return keys
 
 
