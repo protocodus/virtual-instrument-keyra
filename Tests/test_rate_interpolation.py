@@ -120,8 +120,9 @@ int main(int argc,char** argv){try{
         for(double t:{0.,.2,.5,.8,1.}){
           require(samePartial(keyra::combine(a,b,t,1-t),keyra::combine(markedA,markedB,t,1-t)),"support leaked into piano morph");++morphs;
         }
-        // Exercise the real single -> guarded velocity -> pitch blend ->
-        // series path, not just pitchRate in isolation. A disconnected
+        // Exercise the real single -> guarded velocity -> pitch blend path,
+        // which series() plays wherever the keyboard network's table holds
+        // none of the key, not just pitchRate in isolation. A disconnected
         // helper would still preserve every recorded-anchor audio hash.
         bool mixedSupport=false;
         for(int k=0;k<keyra::lanes;++k)mixedSupport|=a.lane[k].rateIdentified!=b.lane[pair[k]].rateIdentified;
@@ -139,7 +140,7 @@ int main(int argc,char** argv){try{
           }
           const double t=static_cast<double>(note-aa.note)/(bb.note-aa.note);
           keyra::Side side;side.m=&m;side.a=&aa;side.b=&bb;side.v=velocity;side.t=t;
-          const int count=engine.impl->series(side,p);const keyra::PartialData* played=nullptr;
+          const int count=engine.impl->blended(side,p);const keyra::PartialData* played=nullptr;
           for(int k=0;k<count;++k)if(engine.impl->seriesData[p][k].order==va.order)played=&engine.impl->seriesData[p][k];
           require(played!=nullptr,"shared partial missing from series");
           std::array<double,keyra::lanes> expected{},linearExpected{};
@@ -156,11 +157,11 @@ int main(int argc,char** argv){try{
           const auto linear=keyra::blend(supportedA,supportedB,t,pair);bool changed=false;
           for(int k=0;k<keyra::lanes;++k){
             const double tolerance=64*std::numeric_limits<double>::epsilon()*std::max(1.,std::abs(expected[k]));
-            require(std::abs(played->lane[k].rate-expected[k])<=tolerance,"series bypasses supported pitch interpolation");
+            require(std::abs(played->lane[k].rate-expected[k])<=tolerance,"blend bypasses supported pitch interpolation");
             require(std::abs(linear.lane[k].rate-linearExpected[k])<=tolerance,"equal-support blend changed");
             changed|=std::abs(played->lane[k].rate-linear.lane[k].rate)>tolerance;
           }
-          require(changed,"guarded interior series did not apply support prior");
+          require(changed,"guarded interior blend did not apply support prior");
           for(double edge:{0.,1.})require(samePartial(keyra::blend(va,vb,edge,pair),keyra::blend(supportedA,supportedB,edge,pair)),
                                         "support changed pitch endpoint");
           ++guardedSeries;
