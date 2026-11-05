@@ -169,14 +169,19 @@ constexpr Model models[]{
    // The measured levels are the recordings' own. This scale brings typical
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
-   // the factory Output control at 0.70 (Tools/KeyraLevels.cpp).
-   .7615,
+   // the factory Output control at 0.70 (Tools/KeyraLevels.cpp). Re-pinned
+   // in 0.4.23 to the -9.07 VU it read before, from .7615: the correction to
+   // the blend between recorded pitches (MeasuredNetworkKeys.h) took it to
+   // -9.05.
+   .7603,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5671,
+   // Re-pinned in 0.4.23 to the -9.07 VU it read before, from 1.5671: the
+   // correction took it to -8.97.
+   1.5524,
    true,
    grand::glide},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
@@ -208,8 +213,11 @@ constexpr Model models[]{
    // held, both channels' RMS from 50 to 750 ms after the strike, as the
    // benchmark sets a case's gain). Below it the shared velocity response
    // (responseAt) keeps the two medians within 1 dB of each other.
-   2.2837,
-   2.2864,
+   // Re-pinned in 0.4.23, with its tube, to the -9.12 and -8.99 VU they read
+   // before, from 2.2837 and 2.2864: the correction to the blend between
+   // recorded pitches (MeasuredNetworkKeys.h) took them to -9.14 and -9.11.
+   2.2878,
+   2.3123,
    false,
    upright::glide},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),kawai::phantoms.data(),
@@ -790,14 +798,6 @@ double layerAt(const Model& model,double db) noexcept {
   return std::max(1.,std::min(127.,v[i]+(v[i+1]-v[i])*(db-l[i])/(l[i+1]-l[i])));
 }
 double responseAt(const Model& model,double midi) noexcept {return layerAt(model,responseDb(midi));}
-// Linear between the recorded layers, held beyond them.
-double heldAt(const Model& model,const float* x,double velocity) noexcept {
-  const float* v=model.layerVelocity;const int last=model.layers-1;
-  if(velocity<=v[0])return x[0];
-  if(velocity>=v[last])return x[last];
-  int i=0;while(velocity>v[i+1])++i;
-  return mix(x[i],x[i+1],(velocity-v[i])/(v[i+1]-v[i]));
-}
 double onsetRiseAt(const Model& model,const measured::Anchor& anchor,double velocity) noexcept {
   // Log-linear between the recorded layers, held beyond them.
   const float* v=model.layerVelocity;const auto& r=anchor.onsetRise;
@@ -1973,7 +1973,7 @@ struct Engine::Impl {
     const auto& key=networkSeries[p].keys[note-21];
     if(!key.count){
       const int n=blended(x,p);
-      correct(x,p,note,n);
+      correct(p,note,n);
       return n;
     }
     // The network's partials play alone, at their own levels, each lane
@@ -1990,9 +1990,13 @@ struct Engine::Impl {
     return n;
   }
   // The network's corrections at a key to the first `count` partials of its
-  // blend, by order: every lane's decay rate scaled by e^rateShift, and each
-  // channel's power moved by its dB at the strike's layer coordinate.
-  void correct(const Side& x,int p,int note,int count) noexcept {
+  // blend, by order: every lane's decay rate scaled by e^rateShift and its
+  // level moved by tiltDb times the tanh of its log rate's distance from the
+  // lanes' power-weighted mean, and each channel's power over windowPower's
+  // window put back where the blend has it, so the per-key trims play the
+  // key as loud as they play the blend (keyboard_network.py
+  // correction_prediction).
+  void correct(int p,int note,int count) noexcept {
     const auto& key=networkSeries[p].corrected[note-21];
     const auto* c=networkSeries[p].corrections+key.first;
     const auto* const end=c+key.count;
@@ -2000,8 +2004,13 @@ struct Engine::Impl {
       auto& d=seriesData[p][n];
       while(c<end&&c->order<d.order)++c;
       if(c==end||c->order!=d.order)continue;
+      const double left=windowPower(d,1,0),right=windowPower(d,0,1);
       for(auto& l:d.lane)l.rate+=c->rateShift;
-      scaleChannels(d,std::pow(10.,.1*heldAt(*x.m,c->leftDb.data(),x.v)),std::pow(10.,.1*heldAt(*x.m,c->rightDb.data(),x.v)));
+      double weight=0,centre=0;
+      for(const auto& l:d.lane){const double w=std::pow(10.,.1*l.level);weight+=w;centre+=w*l.rate;}
+      if(weight>0)for(auto& l:d.lane)l.level+=c->tiltDb*std::tanh(l.rate-centre/weight);
+      const double movedLeft=windowPower(d,1,0),movedRight=windowPower(d,0,1);
+      if(left>0&&right>0&&movedLeft>0&&movedRight>0)scaleChannels(d,left/movedLeft,right/movedRight);
     }
   }
   // The two recorded pitches' series merged by order, blended where both

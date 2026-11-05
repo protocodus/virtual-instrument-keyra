@@ -380,14 +380,59 @@ class BlendCorrection(unittest.TestCase):
                 w.add_(.3 * torch.randn(w.shape, generator=torch.Generator().manual_seed(2)))
         rows = 6
         args = (torch.zeros(rows, dtype=torch.long), None, torch.tensor([1., 2., 3., 5., 8., 13.]),
-                torch.linspace(-30, 0, rows), torch.full((rows,), 40.), torch.full((rows,), 47.))
+                torch.full((rows,), 40.), torch.full((rows,), 47.))
         with torch.no_grad():
             for note, t in ((40., 0.), (47., 1.)):
                 d = kn.departure(net, args[0], torch.full((rows,), note), *args[2:], torch.full((rows,), t))
                 for k, v in d.items():
                     self.assertTrue(torch.all(v == 0), k)
             d = kn.departure(net, args[0], torch.full((rows,), 43.), *args[2:], torch.full((rows,), 3 / 7))
-        self.assertGreater(float(torch.abs(d['level_db']).max()), 1e-3)
+        for k in ('rate_shift', 'tilt'):
+            self.assertGreater(float(torch.abs(d[k]).max()), 1e-3, k)
+
+    def test_correction_reshapes_the_decay_and_keeps_the_window_power(self):
+        """A shift of 0.3 in log rate and a tilt of 3 dB alone, halfway
+        across a gap: every lane decays e^0.3 times as fast and each lane's
+        level in both channels moves by 3 dB times the tanh of its log rate's
+        distance from the lanes' mean, weighed by their power, before each
+        channel's power over the window goes back where the blend had it. So
+        the faster lanes gain on the slower ones, no two by more than 6 dB,
+        and the window holds what it held."""
+        net = kn.Correction(['p'], [[50]], {'code': 2, 'width': 16, 'depth': 1, 'fourier': 1})
+        with torch.no_grad():
+            net.string_out.weight.zero_()
+            net.string_out.bias.copy_(torch.tensor([math.atanh(.3), math.atanh(3 / 6)]))
+        # The slowest lane as a fit holds an untimed one: weak, at the slowest rate.
+        level, rate = np.array([0., -6., -12., -40.]), np.log([20., 5., 1., pa.SLOWEST_RATE])
+        s = -np.exp(rate) + 2j * np.pi * np.array([.4, -.3, .2, -.1])
+        S = np.r_[s, s - 1 / .003]
+        C = np.array([10 ** (level / 20) * .6, 10 ** (level / 20) * .8 * np.exp(.5j)])
+
+        def row(v):
+            return torch.tensor([v], dtype=torch.float64)
+        b = {'piano': torch.zeros(1, dtype=torch.long), 'note': row(43.), 'order': row(2.),
+             'lower': row(40.), 'upper': row(46.), 'mix': row(.5), 'fd': row(200.),
+             'blend_S': torch.from_numpy(S[None]), 'blend_C': torch.from_numpy(C[None]),
+             'blend_level': torch.from_numpy(level[None])}
+        with torch.no_grad():
+            S1, C1, _ = kn.correction_prediction(net, b)
+        S1, C1 = S1[0].numpy(), C1[0].numpy()
+        np.testing.assert_allclose(S1[:4].real, s.real * math.exp(.3), rtol=1e-12)
+        np.testing.assert_allclose(S1[:4].imag, s.imag, rtol=1e-12)
+        np.testing.assert_allclose(S1[:4] - S1[4:], S[:4] - S[4:], rtol=1e-12)
+        weight = 10 ** (level / 10)
+        moved = 3 * np.tanh(rate - np.sum(weight * rate) / np.sum(weight))
+        for scaled in C1 / C:   # each channel as a whole, its lanes apart by the tilt
+            np.testing.assert_allclose(20 * np.log10(np.abs(scaled / scaled[0])), moved - moved[0], atol=1e-9)
+            np.testing.assert_allclose(np.angle(scaled), 0, atol=1e-12)
+
+        def power(s, C):
+            t = np.linspace(*kn.WINDOW, 140001)
+            return np.trapezoid(np.abs(C @ np.exp(np.outer(s, t))) ** 2, t, axis=1)
+        np.testing.assert_allclose(power(S1[:4], C1), power(S[:4], C), rtol=1e-6)
+        self.assertGreater(moved[0], 0)
+        self.assertLess(moved[-1], 0)
+        self.assertLess(float(np.ptp(moved)), 6.0)
 
     def test_window_powers_leave_the_beats_alone(self):
         """Two lanes beating at 4 Hz measured and the same two beating at
@@ -414,14 +459,20 @@ class BlendCorrection(unittest.TestCase):
         C6.requires_grad_()
         loss = kn.power_misfit(b, S6, C6).sum()
         loss.backward()
-        self.assertEqual(float(loss), 0.0)
+        self.assertEqual(float(loss.detach()), 0.0)
         self.assertTrue(bool(torch.all(torch.isfinite(C6.grad))))
 
     def test_short_run_learns_a_synthetic_correction(self):
-        """Hidden pitches whose fits stand 2.5 to 4 dB over the blend around
-        them, the more the higher the partial, and decay faster: a short run
-        takes the loss well under where it starts."""
+        """Hidden pitches whose fits decay faster than the blend around them
+        and hold more of their power in their fast lanes, over the first
+        window as much as the blend: a short run takes the loss well under
+        where it starts."""
         notes, orders, velocities = [33, 45, 57, 69, 81], [1, 2, 3, 4], [50, 110]
+
+        def window_power(s, C):   # each channel's over kn.WINDOW
+            z = s[:, None] + s.conj()[None, :]
+            span = (np.exp(z * kn.WINDOW[1]) - np.exp(z * kn.WINDOW[0])) / z
+            return np.einsum('cj,ck,jk->c', C, C.conj(), span).real
         pitches, blends = [], {}
         for note in notes:
             fd = [float(pa.stiff(pa.midi_hz(note), 3e-4, n)) for n in orders]
@@ -439,13 +490,17 @@ class BlendCorrection(unittest.TestCase):
             for i in range(len(velocities)):
                 for j in range(len(orders)):
                     S, C = figures(i, j)
-                    S = np.r_[S[:4].real * .8 + 1j * S[:4].imag, S[:4].real * .8 + 1j * S[:4].imag - 1 / .003]
-                    blends[note, i, j] = S, C * 10 ** (-(2 + orders[j] / 2) / 20)
+                    s = S[:4].real * .8 + 1j * S[:4].imag
+                    tilted = C * 10 ** (-2 * np.tanh(np.log(-s.real) - np.log(-s[1].real)) / 20)
+                    tilted *= np.sqrt(window_power(S[:4], C) / window_power(s, tilted))[:, None]
+                    blends[note, i, j] = np.r_[s, s - 1 / .003], tilted
         units = load(pitches)
         for u in units:
             i, k = velocities.index(u['velocity']), u['group']['note']
             u.update(blend_S=np.array([blends[k, i, orders.index(int(o))][0] for o in u['order']]),
                      blend_C=np.array([blends[k, i, orders.index(int(o))][1] for o in u['order']]),
+                     blend_level=np.array([20 * np.log10(np.abs(blends[k, i, orders.index(int(o))][1][0]))
+                                           for o in u['order']]),
                      lower=k - 6, upper=k + 6, mix=.5)
         net = kn.Correction(['p'], [[50]], {'code': 2, 'width': 16, 'depth': 2, 'fourier': 1})
         settings = dict(kn.load_config()['training'], units_per_library=4)

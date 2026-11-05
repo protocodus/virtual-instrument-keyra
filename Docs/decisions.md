@@ -2935,3 +2935,151 @@ against 1.64 and 2.20 against 1.41. Its floors and limits are unchanged.
 at velocities 40 and 100 with the pedal down, the Hamburg renders in a
 median 9.45 s of CPU where 0.4.21 took 14.34 s (seven alternating runs of
 each, on the development machine).
+
+## 2026-11-05 — a realistic piano with a recorded piano's character
+
+The owner asked for a way to bring what the pianos recorded at many pitches
+measure to the keys between a sparser piano's recorded pitches, rather than
+relying on blending alone. Told that a correction learned at hidden recorded
+pitches carries how pianos generally behave between two pitches, not one
+piano's own quirks, the owner answered: "our goal is not to replicate an
+exact piano, but create a realistic sounding piano with a character that is
+similar to some exact piano - so we are fine".
+
+This licenses playing the keys between a piano's recorded pitches with
+behaviour learned from all five pianos' fits. It does not make such a key a
+measurement of that piano: its recorded pitches keep their own fits, and
+the recordings of the keys between, which nothing is fitted to, stay the
+test of whether the keys between sound like the piano around them.
+
+## 2026-11-05 — correct the blend at the grand's and the upright's keys between recorded pitches
+
+The owner's answer above licenses playing the keys between a piano's
+recorded pitches with behaviour learned from all five pianos' fits. 0.4.23
+does so at the Kakegawa grand's and the upright's: their keys between blend
+the two pitches' fits as before and then take, for each partial, a shift of
+its lanes' decay rates and a tilt of their levels between its fast lanes and
+its slow, both vanishing at the recorded pitches, with each channel's power
+over 50 to 750 ms held where the blend has it (`Tools/keyboard_network.py
+correct`, the medium network at the knob 1000, kept in
+`Docs/research/keyboard-network-correction-2026-11-05/`). The Kawai, the
+Hamburg and New York render as in 0.4.22, sample for sample. It was chosen
+on measurements. No listening test was run and no listening preference is
+recorded.
+
+A piano takes the correction where its dev takes, which no fit holds, come
+closer on most of `Tools/benchmark_recordings.py`'s twelve measures, paired
+against 0.4.22, with no pitch further on a measure by more than its
+tolerance, and where its corrected keys come out no quieter or shorter
+beside their recorded neighbours than blended. On the grand's 156 dev takes
+0.4.23 stands closer on 8 measures: rise −0.22 ms, sustain −0.16 dB,
+envelope −0.12 dB, decay −0.09 dB/s, partial levels −0.08 dB, noise
+−0.007 dB, early −0.006 dB and image −0.004 dB; and further on 4: tuning
++0.011 cents, attack +0.007 dB, coherence +0.002 and level +0.002 dB. On
+the upright's 21, closer on 7: envelope −0.19 dB, partial levels −0.13 dB,
+sustain −0.12 dB, early −0.03 dB, attack −0.02 dB, level −0.01 dB and
+coherence −0.0007; and further on 5: tuning +0.046 cents, noise +0.033 dB,
+decay +0.029 dB/s, rise +0.021 ms and image +0.006 dB. No pitch passes a
+tolerance on either
+([grand](validation/grand-blend-correction-benchmark-2026-11-05.md),
+[upright](validation/upright-blend-correction-benchmark-2026-11-05.md)).
+The train takes, at the recorded pitches, score as before to four decimals
+but for the level, which the re-pin below moves by 0.002 dB or less.
+
+With the correction, the Kawai's 23 dev takes stand closer on 7 measures
+and further on 5, sustain +0.29 dB the most, and six measures pass a
+tolerance at five pitches: F♯7's sustain 7.18 → 8.20 dB and envelope
+6.27 → 6.95 dB, A♯5's sustain 10.25 → 11.26 dB, D5's decay 6.16 →
+7.40 dB/s, D♯2's envelope 2.66 → 3.43 dB and B5's 3.62 → 4.13 dB. New
+York's 17 stand closer on 6 and further on 6, decay +1.09 dB/s the most,
+and six pass a tolerance at C6 and E4, both in ten-key gaps: C6's decay
+8.27 → 10.79 dB/s, partial levels 10.71 → 11.29 dB and coherence 0.22 →
+0.25, and E4's envelope 3.82 → 4.70 dB, decay 5.17 → 6.41 dB/s and attack
+7.86 → 8.37 dB. In place of the Hamburg's network keys, its 8 stand closer
+on 4 and further on 8, envelope +2.11 dB the most, and nine pass a
+tolerance at C♯5 and E3, C♯5's envelope 3.12 → 6.35 dB and sustain 5.70 →
+8.30 dB the most. So those three play as before. These dev takes compared
+the candidates below, so they are no longer untouched held-out evidence for
+the correction.
+
+Earlier forms of the correction measured worse:
+
+- moving each partial's decay rates and each channel's power at each
+  velocity layer, trained frame by frame: it played the keys between
+  quieter than the blend over their first 0.75 s on every piano, by 0.25 to
+  1.8 dB, where the recordings of those keys put four pianos' louder;
+- the same trained on each channel's energy over 0.05 to 0.75, 0.75 to 1.5
+  and 1.5 to 3.5 s, at the knob 1000: the grand's dev takes closer on 7
+  measures and further on 5, with four measures past a tolerance at three
+  pitches, D♯1's rise 8.65 → 16.79 ms the most, and the upright's closer on
+  8 and further on 4, with seven past a tolerance at four pitches, G♯3's
+  level 2.86 → 4.10 dB the most; its powers moved the train takes too, the
+  grand's rise 0.06 ms and level 0.06 dB further;
+- the shift and the tilt with each channel's power at each layer moved as
+  well, at the knob 1000: 8.14 dB off the grand's dev takes' energies and
+  8.24 off the upright's, where the blend stands 8.03 and 8.09 and the
+  shipped form 7.89 and 8.03.
+
+Struck key by key at velocity 72, each key between against the line
+through its recorded neighbours' levels, the Kakegawa Grand preset's keys
+between stood on average −0.02, −0.10, −0.72 and −1.11 dB under it over
+0.05 to 0.30, 0.05 to 0.75, 0.75 to 1.5 and 1.5 to 3.5 s, and stand +0.01,
+−0.09, −0.37 and −0.37 dB corrected; the Helsinki Upright's −0.15, −0.27,
+−1.13 and −1.10, now −0.14, −0.26, −0.95 and −0.97; Pop Upright's from
+0.75 s −1.23 and −1.12, now −1.07 and −0.98; Felt Nocturne's and Felt
+Upright's within 0.04 dB of before in every window.
+
+The reshaped decays moved the two pianos' readings on Reason's meter
+(`Tools/KeyraLevels.cpp`): the grand's default sound to −9.05 VU and its
+tube to −8.97, the upright's to −9.14 and −9.11, where they read −9.07,
+−9.07, −9.12 and −8.99. As for the Hamburg in 0.4.22, `outputScale` and
+`tubeScale` are re-pinned to what they read before: the grand's .7615 →
+.7603 and 1.5671 → 1.5524, the upright's 2.2837 → 2.2878 and 2.2864 →
+2.3123, which read −9.066676, −9.068641, −9.122541 and −8.993702 VU against
+the approved −9.066835, −9.068710, −9.122448 and −8.993037. The grand then
+plays 0.014 dB quieter than in 0.4.22, and through the tube alone 0.096 dB
+quieter, and the upright 0.016 and 0.114 dB louder.
+
+Four presets then read past `Keyra.Levels`' guard of their approved levels:
+Felt Nocturne's typical playing −18.049861 VU against −18.132439, Felt
+Upright's −15.651603 against −15.424076 and Pop Upright's −8.926658 against
+−9.165020, each more than 0.05 VU off, and Open Strings' loudest chords
+1.492778 VU against 1.489288, more than 0.001 over. Typical playing is the
+median of ninety events' loudest 300 ms. Read event by event against
+0.4.22's, Felt Nocturne's events moved by a median −0.014 dB (from −0.62 to
++0.56), Felt Upright's by −0.006 dB (−0.57 to +1.01) and Pop Upright's by
+−0.012 dB (−0.41 to +0.81), and other events now sit either side of each
+median, which moved the readings by +0.11, −0.23 and +0.24 VU from 0.4.22's.
+Open Strings' loudest chord reads 0.009 VU over 0.4.22's. Every other
+preset, both pianos and their tubes pass. These four readings go to the
+owner with the version: `Tests/Fixtures/dynamics/ApprovedLevels.h` is
+unchanged until then, and `Keyra.Levels` fails on them.
+
+`Keyra.FactoryDynamics` fails as it did on 0.4.22, with 1,093 of its pairs
+under their step floors (1,090 on 0.4.22: the Kakegawa Grand's 14 new and 15
+gone, the Helsinki Upright's 14 new and 10 gone, no other preset's moving)
+and the same 30 chords past its maximum levels. Its floors and limits are
+unchanged. The `unit` tier (37 tests, `Keyra.KeyboardNetwork` and
+`Keyra.MeasuredNetworkKeys` among them), `Keyra.AudioDemos` and
+`Keyra.CpuBudget` pass, and `KeyraDSPCxx17` builds. Struck chromatically at
+velocities 40 and 100 with the pedal down, as 0.4.22 was measured, the grand
+renders in a median 6.70 s of CPU where 0.4.22 took 6.68 s, and the upright
+in 4.91 s where it took 4.96 s (seven alternating runs of each, 48 s of
+audio, on the development machine), a difference within the runs' spread.
+`Tools/evaluate_recordings.py`'s 24 cases, the twelve in-range held-out and
+both edge cases among them, are all recorded pitches, and every one scores
+as in 0.4.22 within 0.0001 on every measure.
+
+The grand's sealed takes, D♯2, D♯4 and D♯6 at all sixteen layers, were
+opened for this candidate beside 0.4.22 (`Tools/corpus/sealed-openings.json`;
+fetched for the run, as the workspace held none). On those 48 takes it
+stands closer on 8 of the 12 measures, partial levels −0.65 dB, sustain
+−0.62 dB, decay −0.61 dB/s and envelope −0.41 dB the most, and further on
+4, rise +2.42 ms, noise +0.08 dB, attack +0.05 dB and image +0.03 dB
+([report](validation/grand-blend-correction-sealed-2026-11-05.md)). Two
+measures pass a tolerance, both at D♯2: its rise 9.12 → 16.28 ms and its
+envelope 1.86 → 2.38 dB. The upright's sealed takes were not scored: its
+library is on the owner's computer, which was offline.
+
+The owner is asked to approve 0.4.23 with the four presets' readings and to
+merge it.

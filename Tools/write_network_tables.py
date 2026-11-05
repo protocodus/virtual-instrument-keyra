@@ -65,10 +65,10 @@ takes from the network, at the key, the order and each layer's level:
 With --corrections and --corrected it writes, for the pianos named there, a
 correction to the blend at each of those keys instead (keyboard_network.py
 `correct`): for every order the blend plays, a shift of its lanes' decay
-rates in log and each layer's change to each channel's power in dB, which
-the engine applies to the blend at the strike's layer coordinate, held
-beyond the end layers. A piano takes the network's partials or the
-correction, not both.
+rates in log and a tilt of their levels between the fast lanes and the slow
+(dB), which the engine applies to the blend, keeping each channel's power
+over 50 to 750 ms where the blend puts it. A piano takes the network's
+partials or the correction, not both.
 
 Its defaults write the table that ships (WEIGHTS, SHIPPED, CORRECTION and
 CORRECTED below):
@@ -116,9 +116,18 @@ PIANOS = kn.ENGINE_PIANOS
 SHIPPED = ['hamburg']
 # The pianos whose keys between recorded pitches blend them with the
 # correction's departure applied (keyboard_network.py correct), and the
-# correction they take it from.
-CORRECTION = None
-CORRECTED = []
+# correction they take it from: those whose dev takes it brought closer on
+# most measures of Tools/benchmark_recordings.py with no pitch further on a
+# measure by more than its tolerance (Docs/decisions.md, 2026-11-05). Trained
+# at the knob 1000, it brings the grand's 156 closer on 8 of the 12 measures
+# (rise 0.22 ms, sustain 0.16 dB, envelope 0.12 dB, decay 0.09 dB/s, partial
+# levels 0.08 dB) and the upright's 21 on 7 (envelope 0.19 dB, partial levels
+# 0.13 dB, sustain 0.12 dB), each other measure moving 0.05 or less. It takes
+# six measures past a tolerance at five of the Kawai's dev pitches and six at
+# two of New York's, New York's decay 1.09 dB/s further, and leaves the
+# Hamburg's further than its network keys (sustain 1.78 dB, envelope 2.11 dB).
+CORRECTION = ROOT / 'Docs/research/keyboard-network-correction-2026-11-05/correction-medium-1000.npz'
+CORRECTED = ['grand', 'upright']
 FROM, TO = .05, .75   # KeyraEngine.cpp windowPower: the window the layers' levels are measured over
 
 
@@ -346,30 +355,22 @@ def load_correction(path):
 def piano_corrections(name, net, log):
     """The correction's departure at every key strictly between two recorded
     pitches of the piano, at every order either holds (all of which the blend
-    plays) and each layer's level, layerLevelDb, as the correction was
-    trained at the takes' layer levels: per key, (order, rate shift, each
-    layer's left and right dB). The shift is the strings', the same at every
-    layer."""
+    plays): per key, (order, rate shift, tilt)."""
     table = kn.header_of(name)
-    anchors, levels = table['anchors'], np.asarray(table['layer_level'], float)
+    anchors = table['anchors']
     piano, keys = net.pianos.index(name), {}
     for a, b in zip(anchors, anchors[1:]):
         orders = sorted({q['order'] for q in a['partials']} | {q['order'] for q in b['partials']})
-        rows = len(orders) * len(levels)
-        order = torch.from_numpy(np.repeat(np.asarray(orders, float), len(levels)))
-        level = torch.from_numpy(np.tile(levels, len(orders)))
+        order = torch.tensor(orders, dtype=torch.float64)
         for note in range(a['note'] + 1, b['note']):
             def full(v):
-                return torch.full((rows,), float(v))
-            d = kn.departure(net, torch.full((rows,), piano, dtype=torch.long), full(note), order, level,
+                return torch.full((len(orders),), float(v))
+            d = kn.departure(net, torch.full((len(orders),), piano, dtype=torch.long), full(note), order,
                              full(a['note']), full(b['note']), full((note - a['note']) / (b['note'] - a['note'])))
-            shift = d['rate_shift'].numpy().reshape(len(orders), len(levels))[:, 0]
-            db = d['level_db'].numpy().reshape(len(orders), len(levels), 2)
-            keys[note] = [(o, shift[i], db[i, :, 0], db[i, :, 1]) for i, o in enumerate(orders)]
-    db = np.concatenate([np.r_[r[2], r[3]] for rows in keys.values() for r in rows])
-    shift = np.array([r[1] for rows in keys.values() for r in rows])
+            keys[note] = list(zip(orders, d['rate_shift'].numpy(), d['tilt'].numpy()))
+    shift, tilt = (np.array([r[k] for rows in keys.values() for r in rows]) for k in (1, 2))
     log(f'{name}: corrections at {len(keys)} keys, {len(shift)} partials: decay rates moved by '
-        f'{np.sqrt(np.mean(shift ** 2)):.3f} rms in log, channel powers by {np.sqrt(np.mean(db ** 2)):.2f} dB rms')
+        f'{np.sqrt(np.mean(shift ** 2)):.3f} rms in log, lanes tilted by {np.sqrt(np.mean(tilt ** 2)):.2f} dB rms')
     return keys
 
 
@@ -387,7 +388,7 @@ def header(written, sources, corrected=None, correction=None):
             + '; anchored at the recorded pitches') if sources else \
         'with no piano\'s network: every key plays as the fits give it'
     if correction:
-        made += (f'; and the corrections to the blend at {", ".join(sorted(corrected))}\'s keys from the '
+        made += (f'; and the corrections to the blend at the keys of {", ".join(sorted(corrected))} from the '
                  f'correction {correction[0]} (sha256 {correction[1][:16]})')
     lines = fit.wrap(f'Generated by Tools/write_network_tables.py {made}; regenerate, never edit.')
     lines += fit.wrap('Each Keyra piano\'s keys between two recorded pitches, which KeyraEngine.cpp plays '
@@ -428,9 +429,8 @@ def header(written, sources, corrected=None, correction=None):
             lines.append(f'constexpr std::array<Correction,{first}> corrections{{{{')
             for note in sorted(fixes):
                 lines.append(f'  // MIDI {note}')
-                for order, shift, left, right in fixes[note]:
-                    lines.append(f'  {{{order},{fit.number(shift)},{{{{' + ','.join(fit.number(x) for x in left)
-                                 + '}},{{' + ','.join(fit.number(x) for x in right) + '}}},')
+                for order, shift, tilt in fixes[note]:
+                    lines.append(f'  {{{order},{fit.number(shift)},{fit.number(tilt)}}},')
             lines.append('}};')
         lines.append(f'}} // namespace {name}')
     lines += ['}}} // namespace keyra::measured::network', '']

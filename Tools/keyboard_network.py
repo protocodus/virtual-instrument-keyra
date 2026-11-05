@@ -67,11 +67,13 @@ tables hold each key's own fit. The sealed takes are never measured here.
 figures but a correction to the engine's blend between two recorded pitches,
 learned by hiding the recorded pitches of the five pianos one to three in a
 row and comparing the blend of those around them with the hidden pitches'
-own fits. It moves each partial's decay rates and its power in each channel
-and vanishes at the recorded pitches; its section below says why it is
-learned against the fits, and from each channel's energy over three windows
-rather than frame by frame. The table writer writes it for the engine to
-apply to its blend (`--corrections`).
+own fits. It shifts each partial's decay rates and tilts its lanes' levels
+between the fast and the slow, keeps each channel's power over the first
+0.75 s where the blend puts it, and vanishes at the recorded pitches; its
+section below says why it is learned against the fits, from each channel's
+energy over three windows rather than frame by frame, and with that power
+kept. The table writer writes it for the engine to apply to its blend
+(`--corrections`).
 
   python3 Tools/keyboard_network.py all --run alone --alone  # every step below, unattended
   python3 Tools/keyboard_network.py measure            # measure what is missing or stale
@@ -487,10 +489,11 @@ def batch_of(units):
     b['h'] = torch.tensor([u['group']['window']['h'] for u in units])
     b['half'] = torch.tensor([u['group']['window']['half'] for u in units])
     if 'blend_S' in units[0]:
-        # The engine's blend at each series of a correction's examples, and
-        # the two recorded pitches around it (correction_examples).
-        b['blend_S'] = torch.from_numpy(np.concatenate([u['blend_S'] for u in units]))
-        b['blend_C'] = torch.from_numpy(np.concatenate([u['blend_C'] for u in units]))
+        # The engine's blend at each series of a correction's examples, its
+        # lanes' levels, and the two recorded pitches around it
+        # (correction_examples).
+        for k in ('blend_S', 'blend_C', 'blend_level'):
+            b[k] = torch.from_numpy(np.concatenate([u[k] for u in units]))
         for k in ('lower', 'upper', 'mix'):
             b[k] = torch.from_numpy(np.concatenate([np.full(len(u['order']), float(u[k])) for u in units]))
     return b
@@ -677,7 +680,7 @@ def roughness(net, gen, pianos, orders=4):
         # Along the keyboard at a gap and a place in it, both drawn per row.
         gap = torch.tensor(np.exp(gen.uniform(math.log(2), math.log(WIDEST), len(rows)))).repeat_interleave(len(KEYS))
         t = torch.tensor(gen.uniform(0, 1, len(rows))).repeat_interleave(len(KEYS))
-        out = net(piano, note, order, level, gap, t)
+        out = net(piano, note, order, gap, t)
         scales = CORRECTION_ROUGH
     else:
         out = net(piano, note, order, level)
@@ -1143,11 +1146,15 @@ def baseline(config, chunk=40):
 # them is compared with the hidden pitch's own fit. The pianos recorded every
 # 2 to 6 keys (the grand, the upright, the Kawai) so give gaps as wide as the
 # Hamburg's 7 and 14 keys and New York's 5 and 10, at pitches whose fits say
-# what lies between. For any piano, key, partial and layer level, and the
-# gap the key lies in and its place there, it shifts the partial's decay
-# rates (in log) and its power in each channel (dB), times 4t(1 - t) at the
-# key's place t between the two recorded pitches (`departure`): so it
-# vanishes at the recorded pitches, which play their fits as they are. Its
+# what lies between. For any piano, key and partial, and the gap the key
+# lies in and its place there, it shifts the partial's decay rates (in log)
+# and tilts its lanes' levels between its fast lanes and its slow ones (dB),
+# times 4t(1 - t) at the key's place t between the two recorded pitches
+# (`departure`): so it vanishes at the recorded pitches, which play their
+# fits as they are. It leaves the partial's power in each channel over
+# WINDOW where the blend puts it, between the two recorded pitches' in dB
+# (KeyraEngine.cpp blend()), so the per-key trims, which weigh each key's
+# power over WINDOW, play every key as loud as they do the blend. Its
 # lanes stay the fits', so no lane decays faster than the fits' do (the first
 # run's tables, whose lanes were the network's, put bursts on the upper
 # partials that had to be left out).
@@ -1178,6 +1185,24 @@ def baseline(config, chunk=40):
 # those keys, levelled as the recorded pitches are, put four pianos' louder
 # than the blend. So a correction learns each channel's energy over
 # POWER_WINDOWS instead, which no beat moves (power_misfit).
+#
+# With its power in each channel free as well, a correction traded the
+# first window for the later ones: trained so (knob 1000), at the 1st to
+# 15th partials, which carry 97.8 to 99.6% of the first window's energy, it
+# left the hidden pitches a mean 0.7 to 2.1 dB under their fits over the
+# first window on every piano, where the blend stands within 0.6 dB of them,
+# and played the dev takes 1.3 to 3.2 dB quieter there than the blend did;
+# the benchmark found the keys between less even in loudness on the grand,
+# the upright and the Kawai. Tilting the lanes' levels by their decay rates
+# as well still left them 0.8 to 1.7 dB under. So a correction keeps each
+# channel's power over WINDOW where the blend puts it and changes only how
+# the partial decays: the shift, and a tilt that moves power between its fast
+# lanes and its slow ones, each lane's level by `tilt` dB times the tanh of
+# its log rate's distance from the lanes' mean, weighed by their power. A
+# tenth of the fits' lanes stand more than 3 units of log rate from that
+# mean, almost all slower and 14 to 60 dB weaker, many at the slowest rate a
+# fit times (pa.SLOWEST_RATE): a tilt in proportion to the distance would
+# move those most, so it stops at `tilt`.
 
 HIDDEN = 3            # recorded pitches hidden in a row, at most, in one example
 WIDEST = 21           # keys: no example spans more (the Hamburg's widest gap is 14)
@@ -1186,16 +1211,16 @@ WINDOW = (.05, .75)   # KeyraEngine.cpp windowPower: the window the layers' leve
 POWER_WINDOWS = (WINDOW, (.75, 1.5), (1.5, 3.5))   # s after contact: a correction's loss weighs each one's energy
 POWER_FLOOR = 1e-4    # of a series' energy over the first window: a later one counts down to 40 dB under it
 # The knob's units for a correction's figures, as ROUGH's for the network's.
-CORRECTION_ROUGH = {'rate_shift': ROUGH['log_rate'], 'level_db': ROUGH['level_db']}
+CORRECTION_ROUGH = {'rate_shift': ROUGH['log_rate'], 'tilt': ROUGH['level_db']}
 
 
 class Correction(torch.nn.Module):
-    """What the engine's blend between two recorded pitches misses, for each
-    (piano, key, partial, layer level) in a gap of `gap` keys at t of the way
-    across it: a shift of the partial's decay rates in log, from the key, the
-    partial and its place (the strings), and of its power in each channel in
-    dB, from those and the layer level (the strike). The key features and
-    each piano's code are the network's (Net)."""
+    """What the engine's blend between two recorded pitches misses of how a
+    partial decays, for each (piano, key, partial) in a gap of `gap` keys at
+    t of the way across it: a shift of its decay rates in log and a tilt of
+    its lanes' levels between its fast lanes and its slow ones in dB, from
+    the key, the partial and its place. The key features and each piano's
+    code are the network's (Net)."""
 
     def __init__(self, pianos, breaks, arch):
         super().__init__()
@@ -1206,43 +1231,54 @@ class Correction(torch.nn.Module):
             torch.manual_seed(0)
             self.codes = torch.nn.Parameter(.1 * torch.randn(len(pianos), arch['code']))
             self.string = mlp(n_key + 3, arch['width'], arch['depth'])
-            self.string_out = torch.nn.Linear(arch['width'], 1)
-            self.strike = mlp(arch['width'] + 1, arch['width'], 2)
-            self.strike_out = torch.nn.Linear(arch['width'], 2)
+            self.string_out = torch.nn.Linear(arch['width'], 2)
         with torch.no_grad():
             # From no correction: the blend as the engine plays it.
-            for head in (self.string_out, self.strike_out):
-                head.weight.mul_(.1)
-                head.bias.zero_()
+            self.string_out.weight.mul_(.1)
+            self.string_out.bias.zero_()
 
     key_features = Net.key_features
 
-    def forward(self, piano, note, order, level, gap, t):
+    def forward(self, piano, note, order, gap, t):
         kf = self.key_features(piano, note)
         place = [(torch.log2(order) / 7)[:, None], (torch.log2(gap) / 4)[:, None], (t - .5)[:, None]]
-        hidden = self.string(torch.cat([kf, *place], 1))
-        strike = self.strike_out(self.strike(torch.cat([hidden, (level / 30)[:, None]], 1)))
-        # At most a factor e on the decay rates and 12 dB on a channel's power.
-        return {'rate_shift': torch.tanh(self.string_out(hidden)[:, 0]), 'level_db': 12 * torch.tanh(strike)}
+        out = self.string_out(self.string(torch.cat([kf, *place], 1)))
+        # At most a factor e on the decay rates and 6 dB on a lane's level.
+        return {'rate_shift': torch.tanh(out[:, 0]), 'tilt': 6 * torch.tanh(out[:, 1])}
 
 
-def departure(net, piano, note, order, level, lower, upper, t):
+def departure(net, piano, note, order, lower, upper, t):
     """The correction at each row, between the recorded pitches `lower` and
     `upper`, `t` of the way, times 4t(1 - t): none at either pitch."""
-    out = net(piano, note, order, level, upper - lower, t)
     bump = 4 * t * (1 - t)
-    return {k: v * (bump[:, None] if v.dim() > 1 else bump) for k, v in out.items()}
+    return {k: v * bump for k, v in net(piano, note, order, upper - lower, t).items()}
+
+
+def window_powers(s, C):
+    """Each channel's power over WINDOW of lanes with complex rates s (series
+    x lanes) and channel amplitudes C (series x 2 x lanes), the rise left
+    out: KeyraEngine.cpp windowPower's, in C's units."""
+    z = s[:, :, None] + s.conj()[:, None, :]
+    span = (torch.exp(z * WINDOW[1]) - torch.exp(z * WINDOW[0])) / z
+    return torch.einsum('ncj,nck,njk->nc', C, C.conj(), span).real
 
 
 def correction_prediction(net, b):
     """The engine's blend at every series of the batch (blend_S, blend_C)
-    with the correction's departure applied: every lane's decay rate scaled
-    by e^shift, the rise kept, and each channel's power moved."""
-    d = departure(net, b['piano'], b['note'], b['order'], b['x'], b['lower'], b['upper'], b['mix'])
-    S0 = b['blend_S']
+    with the correction's departure applied as KeyraEngine.cpp correct()
+    applies it: every lane's decay rate scaled by e^shift, the rise kept,
+    each lane's level moved by the tilt times the tanh of its log rate's
+    distance from the lanes' mean, weighed by their power (blend_level), and
+    each channel's power over WINDOW put back where the blend has it."""
+    d = departure(net, b['piano'], b['note'], b['order'], b['lower'], b['upper'], b['mix'])
+    S0, C0 = b['blend_S'], b['blend_C']
     rise = S0[:, :4] - S0[:, 4:]
     s = torch.complex(S0[:, :4].real * torch.exp(d['rate_shift'])[:, None], S0[:, :4].imag)
-    C = b['blend_C'] * (10 ** (d['level_db'] / 20))[:, :, None]
+    rate = torch.log(-S0[:, :4].real)
+    weight = 10 ** (b['blend_level'] / 10)
+    centre = torch.sum(weight * rate, 1, keepdim=True) / torch.sum(weight, 1, keepdim=True)
+    C = C0 * (10 ** (d['tilt'][:, None] * torch.tanh(rate - centre) / 20))[:, None, :]
+    C = C * torch.sqrt(window_powers(S0[:, :4], C0) / window_powers(s, C))[:, :, None]
     return torch.cat([s, s - rise], 1), C, torch.zeros(len(b['fd']))
 
 
@@ -1537,6 +1573,7 @@ def correction_examples(name, groups, gain, dev=False):
                 e = subset(u, keep)
                 forms = [closed_form(*blends[int(o)], gain) for o in e['order']]
                 e.update(blend_S=np.array([f[0] for f in forms]), blend_C=np.array([f[1] for f in forms]),
+                         blend_level=np.array([[L['level'] for L in blends[int(o)][0]['lanes']] for o in e['order']]),
                          lower=notes[lo], upper=notes[hi], mix=t)
                 out.append(e)
     return out
