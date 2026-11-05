@@ -2867,9 +2867,9 @@ struct Engine::Impl {
   }
   // N banks whose pickups hold still, run together for the reason stableRun's
   // partials are and added to the mix in the same order.
-  template<int N> void bodyRun(Body& body,int first,int frames) noexcept {
+  template<int N> void bodyRun(Body& body,const int* banks,int frames) noexcept {
     V4 re[N],im[N],c[N],s[N],l[N],rr[N],ri[N];
-    for(int n=0;n<N;++n){const auto& bank=body[first+n];const auto& p=pickup[first+n];
+    for(int n=0;n<N;++n){const auto& bank=body[banks[n]];const auto& p=pickup[banks[n]];
       re[n]=bank.re;im[n]=bank.im;c[n]=bank.c;s[n]=bank.s;l[n]=p.left;rr[n]=p.rightRe;ri[n]=p.rightIm;}
     for(int i=0;i<frames;++i){
       V4 left=mixLeft[i],right=mixRight[i];
@@ -2879,16 +2879,23 @@ struct Engine::Impl {
       }
       mixLeft[i]=left;mixRight[i]=right;
     }
-    for(int n=0;n<N;++n){body[first+n].re=re[n];body[first+n].im=im[n];}
+    for(int n=0;n<N;++n){body[banks[n]].re=re[n];body[banks[n]].im=im[n];}
   }
   void ringBody(Body& body,int frames) noexcept {
+    // A bank at rest stays at rest and adds nothing: every bank past the
+    // built piano's last mode (the Kawai has 38 modes of the 108 the banks
+    // hold), and a body's whole bank once it falls silent.
+    int sounding[bodyBanks],count=0;
+    for(int k=0;k<bodyBanks;++k){const auto& bank=body[k];
+      bool rest=true;for(int j=0;j<lanes;++j)rest=rest&&lane(bank.re,j)==0&&lane(bank.im,j)==0;
+      if(!rest)sounding[count++]=k;}
     const int gliding=std::min(frames,pickupGlide);
-    int k=0;
+    int n=0;
     if(gliding==0){
-      for(;k+4<=bodyBanks;k+=4)bodyRun<4>(body,k,frames);
-      if(k+2<=bodyBanks){bodyRun<2>(body,k,frames);k+=2;}
+      for(;n+4<=count;n+=4)bodyRun<4>(body,sounding+n,frames);
+      if(n+2<=count){bodyRun<2>(body,sounding+n,frames);n+=2;}
     }
-    for(;k<bodyBanks;++k){auto& bank=body[k];
+    for(;n<count;++n){const int k=sounding[n];auto& bank=body[k];
       V4 re=bank.re,im=bank.im,l=pickup[k].left,rr=pickup[k].rightRe,ri=pickup[k].rightIm;
       const V4 c=bank.c,s=bank.s;
       int i=0;
