@@ -69,8 +69,9 @@ learned by hiding the recorded pitches of the five pianos one to three in a
 row and comparing the blend of those around them with the hidden pitches'
 own fits. It moves each partial's decay rates and its power in each channel
 and vanishes at the recorded pitches; its section below says why it is
-learned against the fits. The table writer writes it for the engine to apply
-to its blend (`--corrections`).
+learned against the fits, and from each channel's energy over three windows
+rather than frame by frame. The table writer writes it for the engine to
+apply to its blend (`--corrections`).
 
   python3 Tools/keyboard_network.py all --run alone --alone  # every step below, unattended
   python3 Tools/keyboard_network.py measure            # measure what is missing or stale
@@ -723,11 +724,11 @@ def units_of(data, names, held=None, fold_only=False):
 
 def loss_of(net, units, weights, tune_weight):
     """The training loss on a batch of units: each library's mean envelope
-    misfit over its series, averaged with the libraries' weights, and the
-    tuning term."""
+    misfit (a correction's power misfit) over its series, averaged with the
+    libraries' weights, and the tuning term."""
     b = batch_of(units)
     S, C, cents = network_prediction(net, b)
-    per = envelope_misfit(b, S, C)
+    per = (power_misfit if isinstance(net, Correction) else envelope_misfit)(b, S, C)
     libs = b['library']
     total, weight = 0.0, 0.0
     for li in torch.unique(libs).tolist():
@@ -1163,11 +1164,27 @@ def baseline(config, chunk=40):
 # correction being a curve's departure along the keyboard from its chord,
 # which grows with the square of the gap alone. The dev takes, which no fit
 # holds, are scored against their recordings.
+#
+# The correction moves each channel's power and the pace of the decay, not
+# where the lanes beat, and the blend's beats fall elsewhere than the hidden
+# pitch's. Scored frame by frame (envelope_misfit), that pulls it quieter
+# and faster: a prediction's nulls sit on the floor whatever its level, so
+# lowering it only shrinks its excess at the target's nulls. On the
+# Hamburg's partials from the 40th the frame loss falls from 11.66 to
+# 10.03 dB with every decay rate 35% faster and 4 dB less power. Trained so,
+# the correction played the keys between quieter than the blend alone over
+# their first 0.75 s on every piano, by 0.25 to 1.8 dB summed over the
+# partials (the Kawai's from 1.5 s by 4 dB more), where the recordings of
+# those keys, levelled as the recorded pitches are, put four pianos' louder
+# than the blend. So a correction learns each channel's energy over
+# POWER_WINDOWS instead, which no beat moves (power_misfit).
 
 HIDDEN = 3            # recorded pitches hidden in a row, at most, in one example
 WIDEST = 21           # keys: no example spans more (the Hamburg's widest gap is 14)
 HEARD = .4            # KeyraEngine.cpp heard: shareLanes weighs a lane's power by e^(-t/heard)
 WINDOW = (.05, .75)   # KeyraEngine.cpp windowPower: the window the layers' levels are measured over
+POWER_WINDOWS = (WINDOW, (.75, 1.5), (1.5, 3.5))   # s after contact: a correction's loss weighs each one's energy
+POWER_FLOOR = 1e-4    # of a series' energy over the first window: a later one counts down to 40 dB under it
 # The knob's units for a correction's figures, as ROUGH's for the network's.
 CORRECTION_ROUGH = {'rate_shift': ROUGH['log_rate'], 'level_db': ROUGH['level_db']}
 
@@ -1227,6 +1244,78 @@ def correction_prediction(net, b):
     s = torch.complex(S0[:, :4].real * torch.exp(d['rate_shift'])[:, None], S0[:, :4].imag)
     C = b['blend_C'] * (10 ** (d['level_db'] / 20))[:, :, None]
     return torch.cat([s, s - rise], 1), C, torch.zeros(len(b['fd']))
+
+
+def frame_spans(b):
+    """Each frame's share of its series' time: half the way to the frames
+    either side of it."""
+    t, sid = b['t'], b['sid']
+    gap = torch.where(sid[1:] == sid[:-1], t[1:] - t[:-1], torch.zeros_like(t[1:]))
+    zero = gap.new_zeros(1)
+    return (torch.cat([zero, gap]) + torch.cat([gap, zero])) / 2
+
+
+def window_energies(b, pw):
+    """Each series' energy in each channel over each of POWER_WINDOWS (series
+    x windows x 2) from frames pw through the frames' weights, as
+    predicted_frames gives a prediction's and b['zw'] holds the measured,
+    and how many frames each window holds (series x windows)."""
+    t, sid, n = b['t'], b['sid'], len(b['fd'])
+    raw = (pw.real ** 2 + pw.imag ** 2) / (b['w'] ** 2)[:, None]
+    span = frame_spans(b)
+    energy, held = [], []
+    for lo, hi in POWER_WINDOWS:
+        inside = ((t >= lo) & (t < hi)).to(raw.dtype)
+        energy.append(torch.zeros((n, 2), dtype=raw.dtype).index_add(0, sid, raw * (span * inside)[:, None]))
+        held.append(torch.zeros(n, dtype=raw.dtype).index_add(0, sid, inside))
+    return torch.stack(energy, 1), torch.stack(held, 1)
+
+
+def window_ratio(b, pw):
+    """Each series' predicted (pw) over measured energy in each channel and
+    window, in natural log, each floored at POWER_FLOOR of the measured over
+    the first window, and which windows hold frames. No take's level is
+    taken out: the Keyra pianos' libraries normalise none."""
+    if bool(b['normalised'].any()):
+        raise ValueError('window_ratio leaves every take its level, and these takes were normalised')
+    P, held = window_energies(b, pw)
+    M, _ = window_energies(b, b['zw'])
+    floor = POWER_FLOOR * M[:, :1, :].mean(2, keepdim=True)
+    # A series whose frames all end before the first window (a bass key's
+    # highest partials, gone within 50 ms) holds none: a floor of 1 leaves
+    # it ratios of 0 and no gradient.
+    floor = torch.where(floor > 0, floor, torch.ones_like(floor))
+    return torch.log(P + floor) - torch.log(M + floor), held > 0
+
+
+def series_power_misfit(b, pw):
+    r, held = window_ratio(b, pw)
+    k = held.to(r.dtype)
+    return torch.sum(r ** 2 * k[:, :, None], (1, 2)) / (2 * torch.clamp(k.sum(1), min=1))
+
+
+def power_misfit(b, S, C):
+    """A correction's training loss: each series' mean squared log energy
+    ratio over its channels and the windows that hold frames."""
+    return series_power_misfit(b, predicted_frames(b, S, C))
+
+
+@torch.no_grad()
+def power_scores(predictions):
+    """From (S, C, batch) triples, the mean power_misfit of the series that
+    hold a window as an rms error in dB, and each window's mean error (dB,
+    signed) over the series' channels: below zero the prediction plays
+    quieter than measured."""
+    per, total, count = [], torch.zeros(len(POWER_WINDOWS)), torch.zeros(len(POWER_WINDOWS))
+    for S, C, b in predictions:
+        pw = predicted_frames(b, S, C)
+        r, held = window_ratio(b, pw)
+        per.append(series_power_misfit(b, pw)[held.any(1)])
+        k = held.to(r.dtype)
+        total += torch.sum(r * k[:, :, None], (0, 2))
+        count += 2 * k.sum(0)
+    return {'power_db': decibels(float(torch.cat(per).mean())),
+            'window_bias_db': [10 / math.log(10) * float(x) for x in total / torch.clamp(count, min=1)]}
 
 
 def engine_partial(p, grid, v):
@@ -1470,8 +1559,17 @@ def all_examples(config, names, data, gains):
 
 @torch.no_grad()
 def blend_scores(examples, chunk=40):
-    """The engine's blend alone at a library's examples, scored as `score` scores a network."""
-    return scores_of([(b['blend_S'], b['blend_C'], b) for b in batches(examples, chunk)])
+    """The engine's blend alone at a library's examples, scored as
+    correction_scores scores a correction."""
+    predictions = [(b['blend_S'], b['blend_C'], b) for b in batches(examples, chunk)]
+    return {**scores_of(predictions), **power_scores(predictions)}
+
+
+@torch.no_grad()
+def correction_scores(net, examples, chunk=40):
+    """A correction at a library's examples: `score`'s scores and the power scores."""
+    predictions = [network_prediction(net, b)[:2] + (b,) for b in batches(examples, chunk)]
+    return {**scores_of(predictions), **power_scores(predictions)}
 
 
 def correction_entry(arch, knob, folder, log_path):
@@ -1488,9 +1586,11 @@ def correction_entry(arch, knob, folder, log_path):
     export(net, Path(folder) / f'correction-{arch}-{knob:g}.npz', {'knob': knob, 'correction': True})
     entry = {}
     for role, units in examples.items():
-        entry[role] = score(net, units)
+        entry[role] = {}
         for name, us in units.items():
-            entry[role][name]['blend_level_db'] = blend_scores(us)['level_db']
+            blend = blend_scores(us)
+            entry[role][name] = {**correction_scores(net, us),
+                                 **{'blend_' + k: blend[k] for k in ('level_db', 'power_db', 'window_bias_db')}}
     entry['seconds'] = round(time.time() - started)
     log(f'done in {entry["seconds"]} s')
     return entry
@@ -1517,8 +1617,8 @@ def corrections(config, run, archs, knobs, gains, workers=1, threads=1, log=prin
         entry['settings'] = tags[key]
         results[key] = entry
         path.write_text(json.dumps(results, indent=1, sort_keys=True))
-        log(f'{run}: {key} dev takes, level error ' + ', '.join(
-            f'{n} {e["level_db"]:.2f} dB (blend {e["blend_level_db"]:.2f})' for n, e in entry['dev'].items())
+        log(f'{run}: {key} dev takes, power error ' + ', '.join(
+            f'{n} {e["power_db"]:.2f} dB (blend {e["blend_power_db"]:.2f})' for n, e in entry['dev'].items())
             + f' ({entry["seconds"]} s)')
     run_jobs(config, True, workers, threads, correction_entry, jobs, done, gains)
     return results

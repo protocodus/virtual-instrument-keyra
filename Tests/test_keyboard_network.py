@@ -389,6 +389,34 @@ class BlendCorrection(unittest.TestCase):
             d = kn.departure(net, args[0], torch.full((rows,), 43.), *args[2:], torch.full((rows,), 3 / 7))
         self.assertGreater(float(torch.abs(d['level_db']).max()), 1e-3)
 
+    def test_window_powers_leave_the_beats_alone(self):
+        """Two lanes beating at 4 Hz measured and the same two beating at
+        6 Hz predicted: frame by frame they stand several dB apart, over each
+        window their energies meet, and the level that meets them best is
+        the measured one. A level alone reads as itself in every window."""
+        def figures(beat):
+            s = -np.array([1.2, 1.2, 3.0, 3.0]) + 2j * np.pi * np.array([0, beat, .1, .2])
+            C = np.array([[.5, .5, 0, 0], [.4, .4, 0, 0]], complex)
+            return np.r_[s, s - 1 / .003], C
+        S, C = figures(4.0)
+        b = kn.batch_of(load([pitch(57, [80], [1], lambda i, k: measured(TIMES, S, C), [F1])]))
+        S6, C6 = (torch.from_numpy(x[None]) for x in figures(6.0))
+        self.assertGreater(kn.decibels(float(kn.envelope_misfit(b, S6, C6).mean())), 3.0)
+        self.assertLess(kn.decibels(float(kn.power_misfit(b, S6, C6).mean())), .5)
+        best = min(np.arange(-3, 3.01, .25), key=lambda db: float(kn.power_misfit(b, S6, C6 * 10 ** (db / 20)).mean()))
+        self.assertLessEqual(abs(best), .25)
+        S4, C4 = (torch.from_numpy(x[None]) for x in figures(4.0))
+        for bias in kn.power_scores([(S4, C4 * 10 ** (3 / 20), b)])['window_bias_db']:
+            self.assertAlmostEqual(bias, 3.0, delta=.1)
+        # A partial gone before the first window holds none: no loss, no gradient.
+        t = TIMES[TIMES < .04]
+        b = kn.batch_of(load([pitch(57, [80], [1], lambda i, k: measured(t, S, C), [F1], t=t)]))
+        C6.requires_grad_()
+        loss = kn.power_misfit(b, S6, C6).sum()
+        loss.backward()
+        self.assertEqual(float(loss), 0.0)
+        self.assertTrue(bool(torch.all(torch.isfinite(C6.grad))))
+
     def test_short_run_learns_a_synthetic_correction(self):
         """Hidden pitches whose fits stand 2.5 to 4 dB over the blend around
         them, the more the higher the partial, and decay faster: a short run
