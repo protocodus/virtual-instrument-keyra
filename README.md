@@ -59,7 +59,8 @@ further, the tone of the first 100 ms 0.13 dB and the level 0.31 dB
 ([benchmark](Docs/validation/hamburg-network-keys-benchmark-2026-11-05.md)).
 These keys strike weaker over their first 100 ms than the blend did, 2.3 dB
 at velocity 80, so the Hamburg's output is re-pinned 1.9 dB up to the
-−8.95 VU it read before, and its loudest chords read 0.9 dB higher. On the
+−8.95 VU it read before, and its loudest chords read 0.9 dB higher, which
+the owner accepted as their approved level. On the
 other four pianos the network did not bring the never-fitted recordings
 closer, and they play as before, sample for sample
 ([keyboard network](Docs/research/keyboard-network.md#in-the-engine)).

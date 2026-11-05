@@ -2920,9 +2920,12 @@ its tube −10.49. Its `outputScale` and `tubeScale` are re-pinned, as on
 louder, and through the tube alone 1.31 dB louder. The Hamburg Grand
 preset's typical playing reads −8.95 VU as approved, but its loudest chords
 read 2.40 VU against an approved 1.69, and through the tube 2.20 against
-1.41, with no sample past the −1.5 dBFS ceiling; `Keyra.Levels` fails on
-those two readings until the owner accepts them, and
-`Tests/Fixtures/dynamics/ApprovedLevels.h` is unchanged. `Keyra.FactoryDynamics`
+1.41, with no sample past the −1.5 dBFS ceiling. Asked whether to accept
+these readings and merge, to listen to a keyed A/B first, or to keep the
+Hamburg blending, the owner chose to accept them and merge:
+`Tests/Fixtures/dynamics/ApprovedLevels.h` now holds the two loudest
+readings to six decimals, 2.404007 VU for the preset and 2.196889 VU for
+the tube, and `Keyra.Levels` passes. `Keyra.FactoryDynamics`
 fails as it did on 0.4.21, with 1,090 of its pairs under their step floors
 (1,046 on 0.4.21: the Hamburg Grand's 102 new and 58 gone, no other
 preset's moving) and 30 chords past its maximum levels (6 on 0.4.21): the
