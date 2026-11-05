@@ -18,6 +18,10 @@ struct Lane { float rate, offsetHz, left, rightRe, rightIm; std::array<float,max
 // the rise 1 - e^(-t/rise) its lanes share (seconds at velocity 64; log
 // slope per 64 velocity), and its lanes, fastest first.
 struct Partial { int order; float cents, riseSeconds, riseSlope; std::array<Lane,4> lanes; };
+// A key between two recorded pitches as the keyboard network plays it
+// (MeasuredNetworkKeys.h): `count` partials of its piano's network table from
+// `first`, none where the key plays the recorded pitches' blend.
+struct NetworkKey { int first, count; };
 // A component beside the series (below A3: the unison strings' own series
 // at high orders and phantom partials): one lane at its place by the
 // series (cents from an order), starting at contact.
