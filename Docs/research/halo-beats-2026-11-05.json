@@ -1,0 +1,1084 @@
+{
+ "tool": "Tools/fit_halo_beats.py",
+ "tool_sha256": "4aaf46a7d2277c886ff3ca606658497087f2eafc91fee5e993924afc623cc76d",
+ "protocol": {
+  "start_seconds": 0.3,
+  "end_seconds": 3.0,
+  "rate_hz": 100,
+  "lowpass_hz": 4.0,
+  "envelope_clear_db": 20.0,
+  "sign_p": 0.05,
+  "halo_lowest": 54,
+  "halo_apart_hz": 10.0,
+  "halo_times": [
+   1.0,
+   1.25,
+   1.5,
+   1.75,
+   2.0
+  ]
+ },
+ "pianos": {
+  "grand": {
+   "header": "Source/DSP/MeasuredModalData.h",
+   "header_sha256": "fe30baf87b2bfd2f1c8c5fce031856f94c8f826988c6e9d3e277666d354e8408",
+   "split": "Tools/corpus/split-2026-10-27.json",
+   "split_sha256": "8f992855c06b829146070e1ae545854ec64210e4e81bb230b6472570583602a4",
+   "corpus": "Tools/corpus/salamander-v3.json",
+   "corpus_sha256": "1496e60d81bbaf3aecdde3e2a87f0ca7dae1459e27c9ee5fc4aa2432b36e91a9",
+   "train_envelopes": 566,
+   "dev_envelopes": 413,
+   "strings": {
+    "90": {
+     "pitches": 10,
+     "envelopes": 70,
+     "beat": {
+      "split_hz": 0.8886029596101412,
+      "second_db": -5.165776760913939,
+      "phase": -0.14075230395089616,
+      "phase_concentration": 0.8062046360505443
+     },
+     "held_out_log_ratio": {
+      "57": -0.01733364601103615,
+      "60": -0.05355829956146735,
+      "69": -0.5370626363542547,
+      "72": -0.2993412062853231,
+      "81": -0.09224959020409806,
+      "84": -0.22376021032886223,
+      "93": -0.40354797224859573,
+      "96": -0.39983860406150684,
+      "102": -0.2971590732986834,
+      "105": -0.35034850077939306
+     },
+     "pitches_better": 10,
+     "sign_p": 0.0009765625,
+     "decided": true,
+     "rate_scale": 0.8432476311277373,
+     "first_db": -3.1432451630966085,
+     "fall_db": 1.902276169873094,
+     "fall_bias_db": [
+      0.3783795680035844,
+      1.8238730573675284,
+      4.141726028842625
+     ],
+     "dev": {
+      "envelopes": 47,
+      "mean_log_ratio": -0.3084621830515416,
+      "better": 0.9787234042553191
+     }
+    },
+    "91": {
+     "pitches": 11,
+     "envelopes": 50,
+     "beat": {
+      "split_hz": 1.2006248770816406,
+      "second_db": -4.458118802395056,
+      "phase": 0.3789359909529415,
+      "phase_concentration": 0.2044742354006563
+     },
+     "held_out_log_ratio": {
+      "54": 0.3371153979792155,
+      "57": 0.2882399348021969,
+      "66": 0.03548905665539589,
+      "78": 0.29212802734170173,
+      "81": 0.06263865568642286,
+      "84": 0.15776631648031383,
+      "90": 0.05085372332479828,
+      "93": 0.07586797176202628,
+      "96": -0.050695738525738825,
+      "102": 0.15698972517887375,
+      "105": 0.16640394165763603
+     },
+     "pitches_better": 1,
+     "sign_p": 0.99951171875,
+     "decided": false
+    },
+    "92": {
+     "pitches": 2,
+     "envelopes": 13,
+     "beat": {
+      "split_hz": 2.9527118233122502,
+      "second_db": -2.5424337800975065,
+      "phase": -1.0656180701776465,
+      "phase_concentration": 0.7699986552411249
+     },
+     "held_out_log_ratio": {
+      "90": -0.0194076898245793,
+      "93": 0.11751953844048196
+     },
+     "pitches_better": 1,
+     "sign_p": 0.75,
+     "decided": false
+    },
+    "93": {
+     "pitches": 7,
+     "envelopes": 30,
+     "beat": {
+      "split_hz": 3.4219610139571905,
+      "second_db": -3.4897065916782455,
+      "phase": -1.6397707046046812,
+      "phase_concentration": 0.43619462150400257
+     },
+     "held_out_log_ratio": {
+      "66": 0.3075264257118953,
+      "72": 0.2537468095079063,
+      "78": 0.41480346145805785,
+      "84": 0.4559804132884839,
+      "90": -0.29413065583051184,
+      "96": 0.007371468303254321,
+      "102": -0.24199182567278552
+     },
+     "pitches_better": 2,
+     "sign_p": 0.9375,
+     "decided": false
+    },
+    "94": {
+     "pitches": 11,
+     "envelopes": 65,
+     "beat": {
+      "split_hz": 1.616193287573124,
+      "second_db": -10.872899386098853,
+      "phase": 0.9959192249308221,
+      "phase_concentration": 0.712366974286581
+     },
+     "held_out_log_ratio": {
+      "57": -0.0032493439161219153,
+      "60": -0.003861567637211795,
+      "66": 0.005344010623788312,
+      "69": 0.02355974192016534,
+      "78": -0.19933403228867236,
+      "81": -0.13810805872717094,
+      "90": -0.10081027624657567,
+      "93": -0.08839698137147271,
+      "96": -0.13847789879241643,
+      "102": -0.17287697029937996,
+      "105": -0.21749889190137772
+     },
+     "pitches_better": 9,
+     "sign_p": 0.03271484375,
+     "decided": true,
+     "rate_scale": 0.8844024336253559,
+     "first_db": -1.946422086330907,
+     "fall_db": 1.2368464802351546,
+     "fall_bias_db": [
+      0.4528393826952257,
+      1.52240331732839,
+      1.8444588576121355
+     ],
+     "dev": {
+      "envelopes": 44,
+      "mean_log_ratio": -0.1771814564443689,
+      "better": 0.9772727272727273
+     }
+    },
+    "95": {
+     "pitches": 6,
+     "envelopes": 39,
+     "beat": {
+      "split_hz": 2.148623436401219,
+      "second_db": -3.0398878761741277,
+      "phase": 2.933341434127629,
+      "phase_concentration": 0.5747748672712967
+     },
+     "held_out_log_ratio": {
+      "66": -0.0613362962872022,
+      "90": 0.13094744167947087,
+      "93": 0.7115620380295705,
+      "96": 0.5466704670518928,
+      "102": 0.5575385599731446,
+      "105": 0.3662336798182259
+     },
+     "pitches_better": 1,
+     "sign_p": 0.984375,
+     "decided": false
+    },
+    "96": {
+     "pitches": 4,
+     "envelopes": 6,
+     "beat": {
+      "split_hz": 5.622472773304757,
+      "second_db": -2.0563461681084263,
+      "phase": 2.0610495008680365,
+      "phase_concentration": 0.4094737819119397
+     },
+     "held_out_log_ratio": {
+      "90": -0.055088975543361896,
+      "93": 0.0912711492634202,
+      "102": 0.2954964703727847,
+      "105": -0.11717180727336858
+     },
+     "pitches_better": 2,
+     "sign_p": 0.6875,
+     "decided": false
+    },
+    "97": {
+     "pitches": 9,
+     "envelopes": 66,
+     "beat": {
+      "split_hz": 0.8336960934051156,
+      "second_db": -1.1476432463185964,
+      "phase": 0.6612560095460611,
+      "phase_concentration": 0.8449137225805171
+     },
+     "held_out_log_ratio": {
+      "69": -0.04028032105705261,
+      "72": -0.5532075324248914,
+      "81": -0.37214836649097727,
+      "84": -0.011172858000403945,
+      "90": -0.2272488276625392,
+      "93": -0.2890854918354161,
+      "96": 0.5839021363370428,
+      "102": -1.7005273557864224,
+      "105": -0.6020840722549663
+     },
+     "pitches_better": 8,
+     "sign_p": 0.01953125,
+     "decided": true,
+     "rate_scale": 0.8251842582617686,
+     "first_db": -4.196385843091736,
+     "fall_db": 2.459025006796532,
+     "fall_bias_db": [
+      0.659565013030178,
+      1.625964482005804,
+      4.435074371993715
+     ],
+     "dev": {
+      "envelopes": 48,
+      "mean_log_ratio": -0.6263043572573745,
+      "better": 0.875
+     }
+    },
+    "98": {
+     "pitches": 8,
+     "envelopes": 45,
+     "beat": {
+      "split_hz": 2.954478937524223,
+      "second_db": -10.091950370588416,
+      "phase": -2.158779600316042,
+      "phase_concentration": 0.5097014128502986
+     },
+     "held_out_log_ratio": {
+      "66": 0.33730761254492186,
+      "78": 0.06534254416336002,
+      "81": 0.16270563383922798,
+      "90": 0.3801048205573709,
+      "93": 0.14613518101728468,
+      "96": 0.26350194912160346,
+      "102": 0.06588800324657386,
+      "105": 0.03223687120244585
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "99": {
+     "pitches": 7,
+     "envelopes": 45,
+     "beat": {
+      "split_hz": 1.0135189572778374,
+      "second_db": -4.257957063730739,
+      "phase": -0.6798913342356241,
+      "phase_concentration": 0.667413138348626
+     },
+     "held_out_log_ratio": {
+      "78": -0.039992552740925225,
+      "81": 0.009550319482658593,
+      "90": 0.06609828248832157,
+      "93": 0.0901266627224723,
+      "96": 0.13514250064142877,
+      "102": 0.4535165584355097,
+      "105": 0.13363931234965298
+     },
+     "pitches_better": 1,
+     "sign_p": 0.9921875,
+     "decided": false
+    },
+    "100": {
+     "pitches": 8,
+     "envelopes": 38,
+     "beat": {
+      "split_hz": 1.8401679648293583,
+      "second_db": -3.433421252355765,
+      "phase": -0.5614035507357387,
+      "phase_concentration": 0.3481576467037861
+     },
+     "held_out_log_ratio": {
+      "54": -0.03061243831477489,
+      "72": 0.44113636836347336,
+      "84": 0.23428071361742703,
+      "90": 0.758611907703874,
+      "93": 0.41992660143175164,
+      "96": 0.5020839942728492,
+      "102": 1.2377502429630889,
+      "105": 0.05125571332226893
+     },
+     "pitches_better": 1,
+     "sign_p": 0.99609375,
+     "decided": false
+    },
+    "101": {
+     "pitches": 7,
+     "envelopes": 27,
+     "beat": {
+      "split_hz": 2.403501526303048,
+      "second_db": -5.099553196475124,
+      "phase": -2.943547006022666,
+      "phase_concentration": 0.4588082352578334
+     },
+     "held_out_log_ratio": {
+      "78": -0.12655944735721605,
+      "81": 0.03799546491188276,
+      "84": -0.15012430604111288,
+      "90": -0.23808026008816882,
+      "96": 0.3492658504398021,
+      "102": -0.6658975449855217,
+      "105": 0.10434949979455903
+     },
+     "pitches_better": 4,
+     "sign_p": 0.5,
+     "decided": false
+    },
+    "103": {
+     "pitches": 4,
+     "envelopes": 23,
+     "beat": {
+      "split_hz": 0.8016914201791071,
+      "second_db": -1.9119473128181141,
+      "phase": 1.1366452894592711,
+      "phase_concentration": 0.7484708461207664
+     },
+     "held_out_log_ratio": {
+      "57": 1.2345940960148272,
+      "93": -0.31610316995926563,
+      "96": -0.47023221077874133,
+      "102": -0.7054487492201864
+     },
+     "pitches_better": 3,
+     "sign_p": 0.3125,
+     "decided": false
+    },
+    "104": {
+     "pitches": 1,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 0.3487808437135187,
+      "second_db": -7.001092857044951,
+      "phase": 1.8089277220774005,
+      "phase_concentration": 0.6288001792064668
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "105": {
+     "pitches": 3,
+     "envelopes": 9,
+     "beat": {
+      "split_hz": 2.0572756165310055,
+      "second_db": -0.7372444800442134,
+      "phase": -2.491702214747134,
+      "phase_concentration": 0.48982586432305814
+     },
+     "held_out_log_ratio": {
+      "90": 1.8896830318434046,
+      "96": -0.1208886620057998,
+      "102": 0.8446226387355223
+     },
+     "pitches_better": 1,
+     "sign_p": 0.875,
+     "decided": false
+    },
+    "106": {
+     "pitches": 3,
+     "envelopes": 8,
+     "beat": {
+      "split_hz": 3.185400879512212,
+      "second_db": -6.440365101010379,
+      "phase": 2.3138096689763277,
+      "phase_concentration": 0.5541941826617856
+     },
+     "held_out_log_ratio": {
+      "90": 0.04666796536631434,
+      "96": 0.016397470664318,
+      "102": 0.4909125257757412
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "107": {
+     "pitches": 4,
+     "envelopes": 11,
+     "beat": {
+      "split_hz": 2.7757250808801497,
+      "second_db": -5.06490104417454,
+      "phase": -0.7629646469646494,
+      "phase_concentration": 0.26936813629791334
+     },
+     "held_out_log_ratio": {
+      "93": -0.12360201116663071,
+      "96": -0.15956799798271254,
+      "102": -0.03204635233866994,
+      "105": -0.1349760827356867
+     },
+     "pitches_better": 4,
+     "sign_p": 0.0625,
+     "decided": false
+    },
+    "108": {
+     "pitches": 4,
+     "envelopes": 18,
+     "beat": {
+      "split_hz": 3.001372286157912,
+      "second_db": -6.437631793124817,
+      "phase": 0.9204585079059913,
+      "phase_concentration": 0.30012351360895495
+     },
+     "held_out_log_ratio": {
+      "90": 0.5064172471788627,
+      "96": 0.28008244287192346,
+      "102": -0.17773966792302284,
+      "105": -0.23125265558033248
+     },
+     "pitches_better": 2,
+     "sign_p": 0.6875,
+     "decided": false
+    }
+   }
+  },
+  "upright": {
+   "header": "Source/DSP/MeasuredUprightData.h",
+   "header_sha256": "932b6223946460d9c0dc1904fecdfb535763086a25ecab40c228f41dfd5faf6b",
+   "split": "Tools/corpus/split-helsinki-2026-10-28.json",
+   "split_sha256": "9bda3a9141f949d8737ae4f67ad156ba78d057601c673126d54f2748115d1fd9",
+   "corpus": "Tools/corpus/helsinki-1967.json",
+   "corpus_sha256": "e7bf0035e2de39b205f75427cb2cdfafb5d23b074b7abf05f7801e19c524f328",
+   "train_envelopes": 141,
+   "dev_envelopes": 18,
+   "strings": {
+    "89": {
+     "pitches": 9,
+     "envelopes": 24,
+     "beat": {
+      "split_hz": 2.693903643452553,
+      "second_db": -8.511579867304555,
+      "phase": 2.85683029706837,
+      "phase_concentration": 0.9021033736992724
+     },
+     "held_out_log_ratio": {
+      "78": -0.4390759871064076,
+      "82": -0.2901009442604423,
+      "86": -0.09878293202910737,
+      "90": 0.00179115178310435,
+      "92": 0.07837995166833012,
+      "94": -0.2411208757995132,
+      "96": -0.1067760913530651,
+      "100": -0.09141152548509823,
+      "103": -0.07834168458617254
+     },
+     "pitches_better": 7,
+     "sign_p": 0.08984375,
+     "decided": false
+    },
+    "90": {
+     "pitches": 3,
+     "envelopes": 10,
+     "beat": {
+      "split_hz": 2.6020557415570313,
+      "second_db": -5.067937384257164,
+      "phase": -0.7564559227068269,
+      "phase_concentration": 0.45751693514556396
+     },
+     "held_out_log_ratio": {
+      "92": -0.319359863473418,
+      "94": -0.4330859062969856,
+      "96": -0.5345500561018125
+     },
+     "pitches_better": 3,
+     "sign_p": 0.125,
+     "decided": false
+    },
+    "91": {
+     "pitches": 10,
+     "envelopes": 24,
+     "beat": {
+      "split_hz": 3.6724957737650747,
+      "second_db": -7.941807435218702,
+      "phase": -3.0058710651191776,
+      "phase_concentration": 0.7604435292666489
+     },
+     "held_out_log_ratio": {
+      "70": 0.35312436239616296,
+      "78": 0.5102658790908545,
+      "82": 0.44529264075809044,
+      "86": 0.24449502979686416,
+      "90": 0.5057223749934567,
+      "92": 0.4926039030031387,
+      "94": 0.5039516545432899,
+      "96": 0.4205604880552874,
+      "100": 0.15706322353392088,
+      "103": 0.2720192606668267
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "92": {
+     "pitches": 6,
+     "envelopes": 12,
+     "beat": {
+      "split_hz": 2.0364574428335134,
+      "second_db": -10.003820983620574,
+      "phase": 2.1088353588416195,
+      "phase_concentration": 0.09276593113502327
+     },
+     "held_out_log_ratio": {
+      "54": 0.3070915273608403,
+      "90": 0.5808826434734922,
+      "94": 0.026705313566733724,
+      "96": 0.1786728071398019,
+      "100": 0.1835090338866488,
+      "103": 0.04116544739806899
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "93": {
+     "pitches": 5,
+     "envelopes": 15,
+     "beat": {
+      "split_hz": 2.9232630953796277,
+      "second_db": -1.8954526605615323,
+      "phase": -0.14539105141857958,
+      "phase_concentration": 0.7129779298020646
+     },
+     "held_out_log_ratio": {
+      "90": 1.5899053494404674,
+      "92": 1.653567607279398,
+      "94": 1.2284446837577163,
+      "96": 1.211862438647883,
+      "100": 0.7205134326240059
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "95": {
+     "pitches": 4,
+     "envelopes": 10,
+     "beat": {
+      "split_hz": 1.8616903534042217,
+      "second_db": -14.060543492532627,
+      "phase": -2.6326331543720958,
+      "phase_concentration": 0.10370861295576773
+     },
+     "held_out_log_ratio": {
+      "94": -0.0751708589768664,
+      "96": 0.05695107363422926,
+      "100": 0.10140489295427985,
+      "103": 0.023320826575149143
+     },
+     "pitches_better": 1,
+     "sign_p": 0.9375,
+     "decided": false
+    },
+    "96": {
+     "pitches": 8,
+     "envelopes": 20,
+     "beat": {
+      "split_hz": 0.9920384878058279,
+      "second_db": -5.24328760514341,
+      "phase": 1.9629506508574377,
+      "phase_concentration": 0.7564131759201104
+     },
+     "held_out_log_ratio": {
+      "62": -0.11139980845030178,
+      "78": -0.3118743532227197,
+      "86": -0.03750817155150961,
+      "90": -0.23367806687043424,
+      "92": -0.22970644704264323,
+      "94": -0.14094306402726967,
+      "100": -0.13923993147747576,
+      "103": -0.20231275298363774
+     },
+     "pitches_better": 8,
+     "sign_p": 0.00390625,
+     "decided": true,
+     "rate_scale": 1.0077359895236326,
+     "first_db": 0.1174133830300832,
+     "fall_db": -0.19795089418715506,
+     "fall_bias_db": [
+      -0.6145358097380029,
+      0.06426976658100614,
+      0.5203019690138424
+     ],
+     "dev": {
+      "envelopes": 3,
+      "mean_log_ratio": -0.24654005679394086,
+      "better": 1.0
+     }
+    },
+    "97": {
+     "pitches": 5,
+     "envelopes": 11,
+     "beat": {
+      "split_hz": 1.353771170361084,
+      "second_db": -2.3399656428805864,
+      "phase": 0.9623352907509715,
+      "phase_concentration": 0.3328790045242417
+     },
+     "held_out_log_ratio": {
+      "92": 0.11664660898292575,
+      "94": -0.0672828157122318,
+      "96": 0.6831933443720142,
+      "100": 0.4441726551263847,
+      "103": -0.3705507921235229
+     },
+     "pitches_better": 2,
+     "sign_p": 0.8125,
+     "decided": false
+    },
+    "98": {
+     "pitches": 2,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 3.1748299927848684,
+      "second_db": -4.143825984665439,
+      "phase": 1.0551270319290662,
+      "phase_concentration": 0.6108475380760048
+     },
+     "held_out_log_ratio": {
+      "100": 2.093753038602333,
+      "103": 0.6853429267650187
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "99": {
+     "pitches": 4,
+     "envelopes": 7,
+     "beat": {
+      "split_hz": 3.257199635653663,
+      "second_db": -3.1722421738650493,
+      "phase": -0.007321657515385183,
+      "phase_concentration": 0.7354773555203801
+     },
+     "held_out_log_ratio": {
+      "94": 0.10173145021103526,
+      "96": 0.03753677934178243,
+      "100": 0.5811361886817717,
+      "103": 0.23456407126392942
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "100": {
+     "pitches": 1,
+     "envelopes": 2,
+     "beat": {
+      "split_hz": 2.1141847415914383,
+      "second_db": -5.8542806550429045,
+      "phase": -0.6176567588661106,
+      "phase_concentration": 0.7480140662181614
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "108": {
+     "pitches": 1,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 3.3337889472198965,
+      "second_db": -3.2265392748303956,
+      "phase": 2.8403602091687747,
+      "phase_concentration": 0.860122934351461
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    }
+   }
+  },
+  "kawai": {
+   "header": "Source/DSP/MeasuredKawaiData.h",
+   "header_sha256": "8b9c22d666d45004e2f26bb380a9130cd3b9b43ba479c2a243689c9395b795ba",
+   "split": "Tools/corpus/split-vcsl-kawai-2026-10-31.json",
+   "split_sha256": "79fc59f8221ca85feccc5ea0fe1ee245202b021cfdad6f69987b0f27ceeca165",
+   "corpus": "Tools/corpus/vcsl-kawai.json",
+   "corpus_sha256": "36fadc7bca1609381d2c7aaa6b943fdf8a054bbf88304546392425bfb6d61046",
+   "train_envelopes": 35,
+   "dev_envelopes": 5,
+   "strings": {
+    "90": {
+     "pitches": 2,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 2.439164789277579,
+      "second_db": -17.54196722976849,
+      "phase": -2.037622779990685,
+      "phase_concentration": 0.918058350689461
+     },
+     "held_out_log_ratio": {
+      "84": 0.21976125756584874,
+      "87": 0.09259525172355826
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "91": {
+     "pitches": 2,
+     "envelopes": 2,
+     "beat": {
+      "split_hz": 2.294476201916151,
+      "second_db": -6.547538622740953,
+      "phase": -1.4530125953323683,
+      "phase_concentration": 0.9712310202964355
+     },
+     "held_out_log_ratio": {
+      "87": 0.4129384633278336,
+      "96": -0.36416584843036326
+     },
+     "pitches_better": 1,
+     "sign_p": 0.75,
+     "decided": false
+    },
+    "92": {
+     "pitches": 4,
+     "envelopes": 6,
+     "beat": {
+      "split_hz": 3.6172087329069225,
+      "second_db": -5.691063119116962,
+      "phase": 0.8322576138534836,
+      "phase_concentration": 0.5956047828440213
+     },
+     "held_out_log_ratio": {
+      "72": -0.13768944173771963,
+      "84": -0.17021894163890167,
+      "87": 0.5337442590264527,
+      "96": -0.19143513752273014
+     },
+     "pitches_better": 3,
+     "sign_p": 0.3125,
+     "decided": false
+    },
+    "93": {
+     "pitches": 3,
+     "envelopes": 4,
+     "beat": {
+      "split_hz": 4.5847350698104075,
+      "second_db": -9.3492660434094,
+      "phase": -0.2502764527931143,
+      "phase_concentration": 0.6059714542752276
+     },
+     "held_out_log_ratio": {
+      "84": 2.5293887638726087,
+      "87": 0.06732513672733416,
+      "96": 0.19591639346085943
+     },
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "94": {
+     "pitches": 3,
+     "envelopes": 4,
+     "beat": {
+      "split_hz": 2.2089518132889774,
+      "second_db": -2.5820851651170136,
+      "phase": 1.7561433902514245,
+      "phase_concentration": 0.9300340695084465
+     },
+     "held_out_log_ratio": {
+      "84": -0.604082163090156,
+      "93": 0.8294812091763947,
+      "96": -0.19252173536324974
+     },
+     "pitches_better": 2,
+     "sign_p": 0.5,
+     "decided": false
+    },
+    "95": {
+     "pitches": 3,
+     "envelopes": 6,
+     "beat": {
+      "split_hz": 1.8968400391068805,
+      "second_db": -2.6764628402304385,
+      "phase": 1.0293282827824184,
+      "phase_concentration": 0.5463024303807046
+     },
+     "held_out_log_ratio": {
+      "84": -0.47816114404191545,
+      "93": -0.7241784212459564,
+      "96": 0.10500235828436373
+     },
+     "pitches_better": 2,
+     "sign_p": 0.5,
+     "decided": false
+    },
+    "96": {
+     "pitches": 3,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 2.176269533623938,
+      "second_db": -3.4731482881796714,
+      "phase": -0.6818157787184052,
+      "phase_concentration": 0.6991963441835493
+     },
+     "held_out_log_ratio": {
+      "72": 0.012320567815994433,
+      "84": -0.6960256939280375,
+      "87": -0.16520364752016944
+     },
+     "pitches_better": 2,
+     "sign_p": 0.5,
+     "decided": false
+    },
+    "98": {
+     "pitches": 1,
+     "envelopes": 2,
+     "beat": {
+      "split_hz": 0.968460654196137,
+      "second_db": -7.344639985054128,
+      "phase": 0.32338349118537896,
+      "phase_concentration": 0.9087164778824399
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "100": {
+     "pitches": 1,
+     "envelopes": 1,
+     "beat": {
+      "split_hz": 2.0205078220798844,
+      "second_db": -3.5582551073895163,
+      "phase": 2.940439842578243,
+      "phase_concentration": 0.9977622155690828
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "101": {
+     "pitches": 2,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 0.517036660609028,
+      "second_db": -5.6007629138070305,
+      "phase": 2.270008595383402,
+      "phase_concentration": 0.8162880407087832
+     },
+     "held_out_log_ratio": {
+      "54": -0.10978053966464466,
+      "108": -0.03663217156974581
+     },
+     "pitches_better": 2,
+     "sign_p": 0.25,
+     "decided": false
+    },
+    "104": {
+     "pitches": 1,
+     "envelopes": 1,
+     "beat": {
+      "split_hz": 1.5051889678333172,
+      "second_db": -1.5608605844233252,
+      "phase": 1.2639493961238113,
+      "phase_concentration": 0.8325337480687253
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    }
+   }
+  },
+  "hamburg": {
+   "header": "Source/DSP/MeasuredHamburgData.h",
+   "header_sha256": "3a97e4d1cf69b777916cde6295a3250ca175d137936e11af9a5eb1a75d3c711f",
+   "split": "Tools/corpus/split-hamburg-2026-10-31.json",
+   "split_sha256": "d723a68a27718d571e3b1f45c9ea98d38747e71c60bba9900b184243258e75db",
+   "corpus": "Tools/corpus/hamburg-grand.json",
+   "corpus_sha256": "d28aae9e980302d8b9d83fa3792fac5ae7baddd280ced6d6dc18653fdbd35ef5",
+   "train_envelopes": 0,
+   "dev_envelopes": 0,
+   "strings": {}
+  },
+  "newyork": {
+   "header": "Source/DSP/MeasuredNewYorkData.h",
+   "header_sha256": "ad6bbe849064c19f1e08b9959bb910c0b663aabe998a3f5f303f48c519d18c4e",
+   "split": "Tools/corpus/split-newyork-2026-10-31.json",
+   "split_sha256": "534da876cf25ac4a724aba60286bd05796975bfb5002c2fb27e220d771980072",
+   "corpus": "Tools/corpus/newyork-grand.json",
+   "corpus_sha256": "064726e5ebcc98902002633fc5d39c4c9a5e9ba5337b2a802a8c2c3db4b82020",
+   "train_envelopes": 32,
+   "dev_envelopes": 22,
+   "strings": {
+    "90": {
+     "pitches": 3,
+     "envelopes": 5,
+     "beat": {
+      "split_hz": 1.817281290589753,
+      "second_db": -14.820232944370355,
+      "phase": -0.7626362101597147,
+      "phase_concentration": 0.17145037776533478
+     },
+     "held_out_log_ratio": {
+      "89": 0.22293231486366397,
+      "94": -0.023267455713975715,
+      "104": 0.06983556260510046
+     },
+     "pitches_better": 1,
+     "sign_p": 0.875,
+     "decided": false
+    },
+    "91": {
+     "pitches": 2,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 3.7879145235726064,
+      "second_db": -4.793677668800065,
+      "phase": -2.747720374548128,
+      "phase_concentration": 0.5319560064515203
+     },
+     "held_out_log_ratio": {
+      "89": -0.1553793013902996,
+      "94": 0.24654414899106666
+     },
+     "pitches_better": 1,
+     "sign_p": 0.75,
+     "decided": false
+    },
+    "92": {
+     "pitches": 4,
+     "envelopes": 6,
+     "beat": {
+      "split_hz": 5.313472888497884,
+      "second_db": -2.469741094562501,
+      "phase": 1.7750285970334363,
+      "phase_concentration": 0.5511240898169103
+     },
+     "held_out_log_ratio": {
+      "89": 0.11233155255276737,
+      "94": 0.33329011420486726,
+      "99": 0.06559948729225747,
+      "104": -0.007323701527766905
+     },
+     "pitches_better": 1,
+     "sign_p": 0.9375,
+     "decided": false
+    },
+    "93": {
+     "pitches": 1,
+     "envelopes": 1,
+     "beat": {
+      "split_hz": 4.084894653300425,
+      "second_db": -0.462787980953773,
+      "phase": 1.2982811197505646,
+      "phase_concentration": 0.9466300681224301
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    },
+    "94": {
+     "pitches": 3,
+     "envelopes": 5,
+     "beat": {
+      "split_hz": 5.184816309355067,
+      "second_db": -1.970438294190425,
+      "phase": -1.746764137651494,
+      "phase_concentration": 0.16821065790189652
+     },
+     "held_out_log_ratio": {
+      "89": -0.0028128447265017486,
+      "99": 0.5819134926484081,
+      "104": 0.18776791683816815
+     },
+     "pitches_better": 1,
+     "sign_p": 0.875,
+     "decided": false
+    },
+    "95": {
+     "pitches": 4,
+     "envelopes": 5,
+     "beat": {
+      "split_hz": 3.0586682045671636,
+      "second_db": -2.004763479099441,
+      "phase": -2.9576852516695142,
+      "phase_concentration": 0.3288400459069356
+     },
+     "held_out_log_ratio": {
+      "89": -0.6700307713607099,
+      "94": 0.21267791042829592,
+      "99": 0.1372761146012799,
+      "104": -0.13343520807249623
+     },
+     "pitches_better": 2,
+     "sign_p": 0.6875,
+     "decided": false
+    },
+    "97": {
+     "pitches": 3,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 3.14157431827343,
+      "second_db": -1.1803668397940372,
+      "phase": 0.9772373526839807,
+      "phase_concentration": 0.7105445090778206
+     },
+     "held_out_log_ratio": {
+      "89": -0.0021352652361058644,
+      "94": 1.3101386500641283,
+      "99": -0.6083546299304774
+     },
+     "pitches_better": 2,
+     "sign_p": 0.5,
+     "decided": false
+    },
+    "100": {
+     "pitches": 3,
+     "envelopes": 3,
+     "beat": {
+      "split_hz": 6.518072041285331,
+      "second_db": -1.325055141266571,
+      "phase": 1.207178074965533,
+      "phase_concentration": 0.18644603100273913
+     },
+     "held_out_log_ratio": {
+      "89": -0.009902183927541339,
+      "94": 0.6051905558642968,
+      "99": -0.7089591849084881
+     },
+     "pitches_better": 2,
+     "sign_p": 0.5,
+     "decided": false
+    },
+    "102": {
+     "pitches": 1,
+     "envelopes": 1,
+     "beat": {
+      "split_hz": 7.42652916890875,
+      "second_db": -0.18096814878275455,
+      "phase": -0.10395586578047947,
+      "phase_concentration": 0.9983990063824183
+     },
+     "held_out_log_ratio": {},
+     "pitches_better": 0,
+     "sign_p": 1.0,
+     "decided": false
+    }
+   }
+  }
+ }
+}

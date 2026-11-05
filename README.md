@@ -43,6 +43,46 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.21 — 2026-11-05 — beating in the undamped strings
+
+A unison's strings, a little mistuned and coupled through the bridge, ring as
+two components that beat, and so do the undamped strings from F6 up that
+every strike sets ringing. Where the recordings decide it, on the Kakegawa
+grand's F♯6, A♯6 and C♯7 and the upright's C7, a string's aftersound now
+plays as two components 0.83 to 1.62 Hz apart, at the level and phase the
+recordings show the second against the first. Under the beat the grand's
+three fall 12 to 18 % slower, so that, read as the fit reads a string, they
+keep the decay and level it measured. In a phrase let go and left to ring,
+the beat changes the sound 7 to 36 dB under what still sounds on the grand
+and 37 to 58 dB under on the upright. Every other string, and every string of
+the other three pianos, rings as one tone as before
+([string beat](Docs/research/halo-beats-2026-11-05.md)).
+
+### 0.4.20 — 2026-11-05 — the action's click
+
+A key let go and the grand's pedal coming up now also click above the body's
+modes, as each piano's release recordings show: in each noise band from 1.26
+to 16 kHz a burst that builds up with the knock and dies away, at the level,
+balance and decay the recordings show at the pitch. On the Kakegawa and
+Hamburg grands a key's click stands 4 to 19 dB under its knock, A-weighted,
+on the New York grand from 22 dB under to 1 dB over, and the Kakegawa
+grand's pedal clicks 1 dB under its knock coming up. The Helsinki upright
+clicks in at most three bands, a median 31 dB under its knock; the Hamamatsu
+grand, whose release takes hold sounding strings, plays none.
+Mechanics scales it with the knocks: at its default the click sits 46 to
+72 dB under what still sounds after a key-up, A-weighted
+([action click](Docs/research/action-click-2026-11-05.md)).
+
+### 0.4.19 — 2026-11-04 — the upright's pitch glide
+
+A struck string's tension rises with its energy, so it starts sharp and
+settles as it decays. The upright's recordings show it, and a key on the
+upright now plays sharp in proportion to its partials' power: at velocity
+127, 50 ms after the strike, up to 8 cents from A0 to B1, 4.4 from C2 to F3
+and under 1.3 from F♯3 up, and at velocity 64 under a cent anywhere. The
+other four pianos' recordings do not show one, so they play none
+([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+
 ### 0.4.18 — 2026-11-04 — phantom partials
 
 A key's partials now also sound the lines their square makes, at the sums
@@ -684,6 +724,17 @@ A6 on the grand, E5 on the upright, C5 on the Hamamatsu, F♯4 on the Hamburg
 and F6 on the New York; beyond them it fades to none
 ([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
 
+A string's mean tension rises with the square of its slope, so a struck
+string plays sharp and settles as it decays (pitch glide). The upright's
+train takes show it: from 50 ms to a second after the onset, a loud take
+glides in proportion to how much its partials' power falls, by a law that
+grows 2.4 times per octave down. A key on the upright plays sharp by that law
+times its partials' power, and its voices retune whenever the key's glide
+has moved by 0.05 cents; at velocity 127 a C1 is 7.9 cents sharp 50 ms after
+the strike and 3.2 cents at 0.35 s. The other four pianos' takes do not
+decide a glide, so they play none, and the open strings do not glide
+([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+
 Every strike also knocks the body: a bank of 91 soundboard and case modes from
 29 to 945 Hz, shared by every key, each ringing in two stages that add, a fast
 one over the first 0.4 s and then one about a fifth as fast, so the body
@@ -706,19 +757,27 @@ pitches around the key set it, and each at its own measured pitch, decay and
 stereo pickup whichever key struck it. Each starts with its own prompt part,
 as a struck unison does, that is gone within a few tenths of a second: at
 contact from too little to hear up to 25 dB over the string's own on the
-grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. They ring
-on after the key is let go; the felt mute damps them. The damped strings, A0
-to E6, ring in sympathy as far as their dampers are off, under the sustain
-pedal or a held key, at the level the Resonance control sets: each key's
-first eight partials under 5 kHz, at the frequencies a strike of that key
-plays them, driven by the piano's output at unity gain at resonance and heard
-at the key's place in the image. A key's own strikes do not drive its
-string: they are its sound. They decay at the rate the grand's pedal-down
-recording measures for their frequency, 0.32/s at middle C (2.8 dB/s) and a
-third faster per octave up, and the pedal going down sets the strings it frees
-ringing, at the level per third-octave band that recording rings them with;
-under full pedal's grazing felt (**Pedals and keyswitches**) they fall faster
-than its strings do.
+grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. Where a
+piano's recordings decide it, a string's aftersound is two components a
+little apart, which beat, as a coupled unison's strings do: on the Kakegawa
+grand's F♯6, A♯6 and C♯7, 0.89, 1.62 and 0.83 Hz apart, the second 5.2,
+10.9 and 1.1 dB under the first, and on the upright's C7, 0.99 Hz apart and
+5.2 dB under, each at the phase the recordings show at contact. Both fall at
+one rate, at which, read through the fit's windows from 1 to 2 s, they fall
+as the fit measured the string: on the grand 12 to 18 % slower than the rate
+it gave the string as one tone. The unisons modifier spreads a string's beat
+as it spreads a strike's. They ring on after the key is let go; the felt mute
+damps them. The damped strings, A0 to E6, ring in sympathy as far as their
+dampers are off, under the sustain pedal or a held key, at the level the
+Resonance control sets: each key's first eight partials under 5 kHz, at the
+frequencies a strike of that key plays them, driven by the piano's output at
+unity gain at resonance and heard at the key's place in the image. A key's own
+strikes do not drive its string: they are its sound. They decay at the rate
+the grand's pedal-down recording measures for their frequency, 0.32/s at
+middle C (2.8 dB/s) and a third faster per octave up, and the pedal going down
+sets the strings it frees ringing, at the level per third-octave band that
+recording rings them with; under full pedal's grazing felt
+(**Pedals and keyswitches**) they fall faster than its strings do.
 
 A strike's tone moves with velocity beyond its layer: each partial gains
 0.4 dB per octave of its order (up to four) for every decibel its layer plays
@@ -736,13 +795,18 @@ board's own ring of it whatever the dampers do, as the release recordings'
 knocks fall. A key going down knocks them with its strike, about 28 dB under a
 velocity-80 note at C2, C4 and C6 (30 dB on the upright), growing with the
 strike's layer. A key let go knocks them as its damper lands, building up over
-the 152 ms the release recordings show (108 ms on the upright) rather than
-clicking, and quieter the longer the key was held; under the sustain pedal or
+the 152 ms the release recordings show (91 ms on the upright) rather than
+at once, and quieter the longer the key was held; under the sustain pedal or
 sostenuto no damper falls and the key-up is silent, while from F6 up, where
 there is no damper, the key's own return knocks them whatever the pedals do.
-The sustain pedal knocks them going down and coming up. The Mechanics control
-scales every knock of the action, and the ring the pedal sets going down, from
-silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
+The sustain pedal knocks them going down and coming up. Above the modes, from
+1.26 to 16 kHz, a key let go and the Kakegawa grand's pedal coming up also
+click: in each noise band, the burst the piano's release takes hold at the
+pitch, building up under the knock's rise and mixed between the recorded
+pitches as the knock's modes are. The Hamamatsu grand plays none, as its
+release takes hold sounding strings. The Mechanics control
+scales every knock and click of the action, and the ring the pedal sets going
+down, from silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
 40% on a continuous tapered knob. The action levels above describe raw gain 1;
 the separate hammer/body attack is not scaled by Mechanics.
 
@@ -894,15 +958,20 @@ rings clear 10 dB over the median 16–60 Hz either side: each window's excess
 over the string's own line. One decay serves every string, fitted where they
 ring clear; each string's level counts the windows where the noise hides it as
 upper bounds and is drawn towards the strings' median by ten layers' worth of
-windows. The body modes are found below the treble's fundamentals, where no
-string sounds. Each mode's second stage is a line through its ±3 Hz envelope
-every 10 ms from 0.4 to 1.5 s after contact, in the frames that stand 6 dB
-over the take's quietest second; a layer counts where that line falls 6 dB or
-more, is the slower and starts 3 dB or more under the first, which is then
-refitted on what the second leaves of the frames from 35 to 400 ms, and a mode
-takes the energy-weighted median of six or more layers' rates; a line whose
-first stage falls less than 6 dB over those frames stands as a string does and
-is no mode. A pitch's knock
+windows. A string's beat is read on each train take where its tone stands 20
+dB clear at 1 s (`Tools/fit_halo_beats.py`): its envelope from 0.3 to 3 s,
+demodulated at its pitch, gives two components, and the string beats where the
+median beat its other recorded pitches give explains a pitch's envelopes
+better than one component on so many pitches that tossed coins would do as
+well in 5 % of draws or fewer. The body modes are found below the treble's
+fundamentals, where no string sounds. Each mode's second stage is a line
+through its ±3 Hz envelope every 10 ms from 0.4 to 1.5 s after contact, in the
+frames that stand 6 dB over the take's quietest second; a layer counts where
+that line falls 6 dB or more, is the slower and starts 3 dB or more under the
+first, which is then refitted on what the second leaves of the frames from 35
+to 400 ms, and a mode takes the energy-weighted median of six or more layers'
+rates; a line whose first stage falls less than 6 dB over those frames stands
+as a string does and is no mode. A pitch's knock
 on each stage is a line in the level of the layer that struck it, weighted by
 the knock's amplitude: the second stage's is fitted after 0.4 s first, the
 first's on what it leaves from 20 ms on, and again from 45 ms for the modes
@@ -1155,6 +1224,22 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   partials. The square's rise at a strike passes the DC high-pass as a pulse
   under 120 Hz, 42 to 50 dB under a forte chord, which no take measures
   ([phantom partials](Docs/research/phantom-partials-2026-11-04.md)).
+- The pitch glide is one law per piano, read on the upright's loud takes from
+  50 ms to a second after the onset: its dev takes lean the law's way but are
+  too few and too noisy to confirm it, and before 50 ms it plays the law
+  unmeasured. It follows the output's power, which stands for the strings'
+  energy only as far as the board radiates the partials alike, so Brightness
+  also scales it. The other pianos' takes do not decide one, the New York
+  grand's falling just short
+  ([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+- The unison's coupled modes, and with them a restrike's or una corda's new
+  balance between its strings, the duplex segments and the damper's contact
+  position are not modelled: the takes' lanes read as coupled strings little
+  more often than random phases make them, a new strike moves the strings'
+  balance less than the two microphones disagree, no release take holds a
+  line a duplex segment would add, and the best contact laws improve the
+  release fits by about 1 %, nearly as much as shuffled controls do
+  ([realism candidates](Docs/research/realism-candidates-2026-11-04.md)).
 - Of the pedals only the grand's sustain pedal going down, alone, is scored
   against recordings, its strings' ring and fall (above). The recordings do
   not document pedal positions or timings, so half pedalling, repedalling and
@@ -1170,9 +1255,15 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   library's mix and the key knocks at a level the owner chose by ear, not a
   measured level, and only as far as the
   body's modes hold them: 24 to 70 % of each of the grand's recorded knocks
-  below 1 kHz (the upright's 38 to 86 %), and all of it above, is left out,
-  so a released C4 knocks 4 to 5 dB under the library's balance
+  below 1 kHz (the upright's 38 to 86 %) is left out, so a released C4
+  knocks 4 to 5 dB under the library's balance, measured before 0.4.20
+  played the click above 1 kHz
   ([release recordings](Docs/research/release-recordings-2026-10-27.md)).
+  The click is fitted on one take per recorded pitch, let go at velocity 85
+  after 1.5 s held, and follows the knock's tracking elsewhere, unmeasured;
+  the upright's mostly sounds one band near its takes' floor, and the
+  Hamamatsu grand's, which its takes do not hold apart from their strings,
+  is not played ([action click](Docs/research/action-click-2026-11-05.md)).
   The room is not calibrated, and the key noise the recordings carry 1 to
   28 ms before string contact is not played: a note sounds from contact.
   Under the lowest body mode (29 Hz) the middle register's recordings hold a
@@ -1212,13 +1303,22 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   200 to 450 ms ([decisions](Docs/decisions.md), 2026-11-04).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
-  further than 0.3.0's. Each undamped key rings as one string at one pitch,
-  without its unison's beating, which dips the recordings' strings 3 to 10 dB
-  from half a second on, and past its prompt part falls at its rate from 1 to
-  2 s, where the real strings fall more slowly later: the strings that ring
-  clear sit a median 1.2 dB over the grand's never-fitted recordings at 1 s
-  and 1.0 dB under at 3 s, when 10 % of them are 10 dB or more under, and 0.7
-  and 9 dB under the upright's train recordings. The prompt parts share one
+  further than 0.3.0's. All but four undamped keys ring as one string at one
+  pitch, without their unison's beating, which dips the recordings' strings 3
+  to 10 dB from half a second on. The four that beat, the Kakegawa grand's
+  F♯6, A♯6 and C♯7 and the upright's C7, play one median beat whichever key
+  strikes them, where each recording's beat peaks and dips at its own times:
+  measured at 1 and 2 s, the grand's F♯6 and C♯7 sit 0.8 to 1.7 dB further
+  from the recordings than one tone did, and C♯7 reads a median 6 to 9 dB
+  under them at 0.375 and 0.5 s
+  ([string beat](Docs/research/halo-beats-2026-11-05.md)). Past
+  its prompt part a string falls at its rate from 1 to 2 s, where the real
+  strings fall more slowly later: the strings that ring clear sit a median
+  0.9 dB over the grand's never-fitted recordings at 1 s and 1.1 dB under at
+  3 s, when 11 % of them are 10 dB or more under, and 4.3 and 15.2 dB under
+  the upright's train recordings (0.4.20 measures all of these within 0.5 dB;
+  the 0.7 and 9 dB this item gave for the upright were measured on 0.4.11 or
+  earlier). The prompt parts share one
   decay, and a string that few strikes measure takes much of the strings'
   median level: at 0.125 s 4 % of the strings ring 10 dB or more over the
   grand's never-fitted recordings and 6 % over the upright's. The upright's G7

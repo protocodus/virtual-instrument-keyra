@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.18 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.21 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -295,6 +295,29 @@ if(BUILD_TESTING)
     target_compile_options(KeyraPhantomTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
     add_test(NAME Keyra.Phantoms COMMAND KeyraPhantomTests)
 
+    # Each key's pitch glide in the engine and its voices' tuning to it, in
+    # one test translation unit.
+    add_executable(KeyraGlideTests Tests/glide_tests.cpp)
+    target_include_directories(KeyraGlideTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraGlideTests PRIVATE cxx_std_17)
+    target_compile_options(KeyraGlideTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
+    add_test(NAME Keyra.Glide COMMAND KeyraGlideTests)
+
+    # The action's click in the engine's noise bands, in one test translation
+    # unit.
+    add_executable(KeyraActionClickTests Tests/action_click_tests.cpp)
+    target_include_directories(KeyraActionClickTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraActionClickTests PRIVATE cxx_std_17)
+    target_compile_options(KeyraActionClickTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
+    add_test(NAME Keyra.ActionClick COMMAND KeyraActionClickTests)
+
+    # The undamped strings' beat in the engine, in one test translation unit.
+    add_executable(KeyraHaloBeatTests Tests/halo_beat_tests.cpp)
+    target_include_directories(KeyraHaloBeatTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraHaloBeatTests PRIVATE cxx_std_17)
+    target_compile_options(KeyraHaloBeatTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
+    add_test(NAME Keyra.HaloBeat COMMAND KeyraHaloBeatTests)
+
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.ParameterExtremes COMMAND KeyraParameterExtremesTests)
@@ -377,6 +400,23 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.MeasuredPhantoms
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_phantoms.py" --check)
+        # The glide is the one its receipt gives, and the receipt is the
+        # current fit's on the current modal data, split and corpus.
+        add_test(NAME Keyra.MeasuredGlide
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_glide.py" --check)
+        # The action's clicks are the ones their receipt gives, and the
+        # receipt is the current fit's on the current modal data, split and
+        # corpus.
+        add_test(NAME Keyra.MeasuredActionNoise
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_action_noise.py" --check)
+        # The undamped strings' beats are the ones their receipt gives, and
+        # the receipt is the current fit's on the current modal data, split
+        # and corpus.
+        add_test(NAME Keyra.MeasuredHaloBeats
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_halo_beats.py" --check)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
@@ -423,7 +463,8 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.KeyboardMetricContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
-        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms
+        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms Keyra.MeasuredGlide
+                             Keyra.MeasuredActionNoise Keyra.MeasuredHaloBeats
                              Keyra.RateInterpolation Keyra.ComponentWarmStart
                              Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
                              Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety

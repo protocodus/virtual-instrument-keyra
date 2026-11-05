@@ -8,6 +8,9 @@
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
 #include "MeasuredPhantoms.h"
+#include "MeasuredGlide.h"
+#include "MeasuredActionNoise.h"
+#include "MeasuredHaloBeats.h"
 #include "MeasuredUprightData.h"
 #include "ForteOutput.h"
 #include <algorithm>
@@ -24,6 +27,13 @@ constexpr double pi=3.14159265358979323846;
 // partial's exact double-precision state is carried from chunk to chunk and
 // the float lanes only ever run one chunk from it.
 constexpr int maxVoices=128, maxPartials=128, chunk=32, sineSize=4096;
+// A key's voices retune to its pitch glide whenever it has moved by this
+// many cents, so their partials stay within 0.05 cents of it, where
+// listeners need a cent or more to tell two steady pitches apart. Over ten
+// fortissimo strikes on the upright's bass and middle, retuning at every
+// chunk took 25 % more instructions than no glide, and this step 0.4 %
+// (2026-11-04).
+constexpr double glideStep=.05;
 constexpr int lanes=4; // a partial's measured lanes, one per vector lane
 namespace grand=measured::grand;
 namespace upright=measured::upright;
@@ -105,27 +115,35 @@ double releaseBalanceCapDb(double requestedDb,double referenceDb,double tracking
 // scale of its levels and how its soft pedal works (unaCorda: the hammers
 // shift along the strings, as a grand's do, rather than move toward them).
 // Tables over the recorded pitches hold a row per pitch; one without pedal
-// recordings has no pedal knocks.
+// recordings has no pedal knocks. Its strings' pitch glide
+// (MeasuredGlide.h) is fitted from its recordings like its phantom partials,
+// and its action's clicks above the body modes (MeasuredActionNoise.h) like
+// its knocks; one whose release takes hold their strings has none. Its
+// undamped strings beat (MeasuredHaloBeats.h) where its takes decide it.
 struct Model {
   int layers;const float *layerVelocity,*layerLevelDb;
   const measured::Anchor* anchors;int anchorCount;const measured::Phantom* phantoms;
   const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
   const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloSlopeRiseDb,haloPromptRate;
+  const measured::HaloBeat* haloBeats;
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise,actionDecay;
+  const measured::ActionNoise *releaseNoise,*pedalUpNoise;
   double releaseDb,releaseTracking,noteTracking,releaseFadeDbPerSecond,pedalDownDb,pedalUpDb,keyDownDb;
   double contactTime;
   float openStringRate,openStringRateSlope;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
   double outputScale,tubeScale;
   bool unaCorda;
+  measured::Glide glide;
 };
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),grand::phantoms.data(),
    grand::partials.data(),grand::extras.data(),0,0,
-   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,
+   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,grand::haloBeats.data(),
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
    grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,grand::actionDecay,
+   grand::releaseNoise.data(),grand::pedalUpNoise.data(),
    // The action's noises against the notes. The library's own SFZ
    // (Salamander Grand Piano V3, kinwie's SFZ v2 mapping, Data/hammer.txt and
    // Data/pedal.txt) mixes a key let go at -37 dB with 82 % velocity
@@ -158,13 +176,14 @@ constexpr Model models[]{
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
    1.5671,
-   true},
+   true,
+   grand::glide},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
-   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloSlopeRiseDb,upright::haloPromptRate,
+   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloSlopeRiseDb,upright::haloPromptRate,upright::haloBeats.data(),
    upright::bodyModes.data(),static_cast<int>(upright::bodyModes.size()),upright::bodyRise,upright::knocks.data(),
-   upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,upright::actionDecay,
+   upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,upright::actionDecay,upright::releaseNoise.data(),nullptr,
    // The library's Stereo Ribbon preset plays every recording at its own
    // level (ampVelTrack 0) and a key let go as the hammer noise recorded
    // with that key at a fixed -14 dB, which played 50 to 72 dB under the
@@ -190,13 +209,14 @@ constexpr Model models[]{
    // (responseAt) keeps the two medians within 1 dB of each other.
    2.2837,
    2.2864,
-   false},
+   false,
+   upright::glide},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),kawai::phantoms.data(),
    kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
    static_cast<int>(grand::partials.size()+upright::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()),
-   kawai::haloStrings.data(),kawai::haloLevels.data(),kawai::haloSlopeDb,kawai::haloSlopeRiseDb,kawai::haloPromptRate,
+   kawai::haloStrings.data(),kawai::haloLevels.data(),kawai::haloSlopeDb,kawai::haloSlopeRiseDb,kawai::haloPromptRate,kawai::haloBeats.data(),
    kawai::bodyModes.data(),static_cast<int>(kawai::bodyModes.size()),kawai::bodyRise,kawai::knocks.data(),
-   kawai::releaseKnocks.data(),nullptr,nullptr,kawai::actionRise,kawai::actionDecay,
+   kawai::releaseKnocks.data(),nullptr,nullptr,kawai::actionRise,kawai::actionDecay,nullptr,nullptr,
    // The library's SFZ (VCSL Keys, Grand Piano, K.sfz) tracks velocity at
    // 88 % for the notes and the keys let go alike, so a release plays the
    // same against its note at every velocity, and fades it 4 dB for each
@@ -228,13 +248,14 @@ constexpr Model models[]{
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
    // it to -10.10; its loudest chords through the tube read -0.14 VU.
    1.2250,
-   true},
+   true,
+   kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
    hamburg::partials.data(),hamburg::extras.data(),
    static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()),
-   hamburg::haloStrings.data(),hamburg::haloLevels.data(),hamburg::haloSlopeDb,hamburg::haloSlopeRiseDb,hamburg::haloPromptRate,
+   hamburg::haloStrings.data(),hamburg::haloLevels.data(),hamburg::haloSlopeDb,hamburg::haloSlopeRiseDb,hamburg::haloPromptRate,hamburg::haloBeats.data(),
    hamburg::bodyModes.data(),static_cast<int>(hamburg::bodyModes.size()),hamburg::bodyRise,hamburg::knocks.data(),
-   hamburg::releaseKnocks.data(),nullptr,nullptr,hamburg::actionRise,hamburg::actionDecay,
+   hamburg::releaseKnocks.data(),nullptr,nullptr,hamburg::actionRise,hamburg::actionDecay,hamburg::releaseNoise.data(),nullptr,
    // The library's preset plays its release takes at its "rt volume" default,
    // 0.305 (-10.3 dB), tracking velocity as its notes do (ampVelTrack 1), with
    // no fade and no pedal recordings. Measured as the grand's, at a velocity-80
@@ -249,13 +270,14 @@ constexpr Model models[]{
    // the pair's (Tools/KeyraLevels.cpp).
    2.2622,
    1.5176,
-   true},
+   true,
+   hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),
    newyork::partials.data(),newyork::extras.data(),
    static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()),
-   newyork::haloStrings.data(),newyork::haloLevels.data(),newyork::haloSlopeDb,newyork::haloSlopeRiseDb,newyork::haloPromptRate,
+   newyork::haloStrings.data(),newyork::haloLevels.data(),newyork::haloSlopeDb,newyork::haloSlopeRiseDb,newyork::haloPromptRate,newyork::haloBeats.data(),
    newyork::bodyModes.data(),static_cast<int>(newyork::bodyModes.size()),newyork::bodyRise,newyork::knocks.data(),
-   newyork::releaseKnocks.data(),nullptr,nullptr,newyork::actionRise,newyork::actionDecay,
+   newyork::releaseKnocks.data(),nullptr,nullptr,newyork::actionRise,newyork::actionDecay,newyork::releaseNoise.data(),nullptr,
    // The library's preset plays its seven key noises at group volume 0.75
    // (-2.5 dB), on any key. It records pedal noises (Steinway_Pedal_Down and
    // _Up), which the fit does not use yet. Measured as the grand's, at a
@@ -269,7 +291,8 @@ constexpr Model models[]{
    // Typical playing at -9 VU and the tube at the pair's, as above.
    .6543,
    1.8141,
-   true},
+   true,
+   newyork::glide},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
 template<std::size_t A,std::size_t P> constexpr bool rowPerPitch(const std::array<measured::Anchor,A>& anchors,const std::array<measured::Phantom,P>& phantoms) noexcept {
@@ -387,6 +410,9 @@ double mix(double a,double b,double t) noexcept {return a+(b-a)*t;}
 // ends, linear or in the log domain between them.
 double pick(double a,double b,double t) noexcept {return t<=0?a:t>=1?b:mix(a,b,t);}
 double pickLog(double a,double b,double t) noexcept {return t<=0?a:t>=1?b:std::exp(mix(std::log(a),std::log(b),t));}
+// How far the unison strings sit apart against the built piano's: pure at
+// the build's unisons -1, three times as far at 1.
+double unisonSpread(const Build& build) noexcept {return build.unisons<0?1+build.unisons:1+2*build.unisons;}
 // A part's shares of the pianos, by Piano, summing to 1.
 using Shares=std::array<double,pianoCount>;
 // A part's weights (0 to 1) as shares of their sum; a part with none plays
@@ -508,6 +534,9 @@ struct Burst {
   double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
   double slowLeft[noiseBands]{},slowRight[noiseBands]{},slowStep[noiseBands]{};
   double knockLeft[noiseBands]{},knockRight[noiseBands]{},knockStep[noiseBands]{};
+  // An action's click builds up under the action's rise: its knock stage
+  // less this, which falls the faster by the rise's rate. None for a strike.
+  double riseLeft[noiseBands]{},riseRight[noiseBands]{},riseStep[noiseBands]{};
   std::uint64_t serial=0;
   bool active=false;
 };
@@ -534,6 +563,7 @@ struct Voice {
   int count=0,note=60,channel=0;
   std::uint64_t serial=0;
   double damper=0,contact=0,appliedContact=-1,appliedMute=-1;
+  double glide=0; // cents its partials are tuned sharp by
   bool active=false,retune=false;
 };
 struct Channel {
@@ -552,7 +582,17 @@ struct Channel {
   double smoothedMute=0;
   bool sostDown=false;
 };
-struct Resonator {double q=0,p=0,c=1,s=0,decay=1;};
+// A damped rotation (an undamped string's part): turn() advances it one
+// sample, its decay times `damp`, and flushes what falls under 1e-30.
+struct Resonator {double q=0,p=0,c=1,s=0,decay=1;
+  void turn(double damp) noexcept {
+    if(q==0&&p==0)return;
+    const double d=decay*damp,x=q,y=p;
+    q=d*(c*x+s*y);p=d*(c*y-s*x);
+    if(q<1e-30&&q>-1e-30)q=0;
+    if(p<1e-30&&p>-1e-30)p=0;
+  }
+};
 // Four partials of an open string: damped rotations the output drives (c, s
 // and drive for this chunk, from the undamped rotation, the decay per sample
 // and how open the string is), heard at their key's place (pan).
@@ -1009,6 +1049,13 @@ double keyPhantom(const Model& model,int note) noexcept {
   const auto& a=model.phantoms[upper-1];const auto& b=model.phantoms[upper];
   return mix(a.gain,b.gain,std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note))));
 }
+// A key's pitch glide, cents per unit of its partials' power in the
+// recordings' units: the piano's law (Tools/fit_glide.py) at the key, held
+// at the outermost pitches it was measured on.
+double keyGlide(const Model& model,int note) noexcept {
+  const auto& g=model.glide;
+  return g.cents*std::exp2(g.perOctave*(std::max(g.low,std::min(g.high,note))-60)/12.);
+}
 // A key's stiffness B, between the recorded pitches around it like its pitch.
 double keyStiffness(const Model& model,int note) noexcept {
   const int upper=upperAnchor(model,note);
@@ -1035,8 +1082,10 @@ struct Side {
 };
 // One piano's knock of the action on the body: its two recorded pitches'
 // knocks on its `count` modes (none for a piano without them), how far
-// between them, and its level (dB, in the output's units).
-struct ActionSide {const measured::ActionKnock *x=nullptr,*y=nullptr;double t=0,gainDb=0;int count=0;};
+// between them, and its level (dB, in the output's units); and their clicks
+// above the modes, per noise band (none where it has no click to play).
+struct ActionSide {const measured::ActionKnock *x=nullptr,*y=nullptr;double t=0,gainDb=0;int count=0;
+                   const measured::ActionNoise *noiseX=nullptr,*noiseY=nullptr;};
 }
 
 struct Engine::Impl {
@@ -1050,6 +1099,16 @@ struct Engine::Impl {
   std::array<measured::HaloString,halo> haloString{};
   std::array<double,halo> haloPromptGain{};
   double haloPromptRate=0;
+  // Each undamped string's beat: its first component's gain, its second's
+  // amplitude against the strike's (analytic; zero where no piano's string
+  // beats) and how far above the first it lies (Hz at A4 = 440 Hz).
+  std::array<double,halo> haloFirst{};
+  std::array<Complex,halo> haloSecond{};
+  std::array<double,halo> haloSplit{};
+  // The strings whose second components ring: those that beat on the built
+  // piano, and any still ringing out from an earlier build.
+  std::array<int,halo> beating{};
+  int beatingCount=0;
   std::array<measured::BodyMode,bodyModes> bodyMode{};
   int bodyModeCount=0;
   double bodyRise=0,actionRise=0,actionDecay=1;
@@ -1075,8 +1134,9 @@ struct Engine::Impl {
   // Each undamped string's frequency (Hz at A4 = 440 Hz).
   std::array<double,halo> haloHz{};
   std::array<Channel,16> channels{};
-  // Each undamped string, and the prompt part it starts with.
-  std::array<Resonator,halo> haloRing{},haloPrompt{};
+  // Each undamped string, the prompt part it starts with, and the second
+  // component of its aftersound, which it beats with.
+  std::array<Resonator,halo> haloRing{},haloPrompt{},haloBeat{};
   // The open strings' partials, string by string, and each one's frequency
   // (Hz at A4 = 440 Hz) and decay rate (1/s) on the built piano; how far
   // each key's damper is off its strings.
@@ -1103,6 +1163,10 @@ struct Engine::Impl {
   std::array<bool,keyCount> phantomOn{};
   std::array<double,keyCount> keyEnergy{};
   std::array<Square,keyCount> phantom{};
+  // Each key's pitch glide on the strings as built, cents per unit of its
+  // partials' power in the output's units, and in cents at the last chunk
+  // boundary: its strings' tension follows their energy.
+  std::array<double,keyCount> builtGlide{},glideCents{};
   // Through a chunk, each key's first sounding voice in the pool and each
   // voice's next on its key (-1 for none).
   std::array<int,keyCount> keyVoice{};
@@ -1252,12 +1316,28 @@ struct Engine::Impl {
     for(int j=0;j<halo;++j){auto& z=haloString[j];
       const auto at=[&](int p)->const measured::HaloString&{return models[p].haloStrings[j];};
       z.cents=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).cents);},pick));
-      z.rate=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).rate);},pickLog)*ring);
+      const auto beat=[&](int p)->const measured::HaloBeat&{return models[p].haloBeats[j];};
+      z.rate=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).rate)*beat(p).rateScale;},pickLog)*ring);
       z.promptDb=static_cast<float>(fold(share.strings,[&](int p){return static_cast<double>(at(p).promptDb);},pick));
       haloPromptGain[j]=std::pow(10.,z.promptDb/20.);
       const Pickup p=fold(share.strings,[&](int q){return pickupOf(at(q));},blendPickup);
       z.left=static_cast<float>(p.left);z.rightRe=static_cast<float>(p.rightRe);z.rightIm=static_cast<float>(p.rightIm);
+      // Its beat: the first component's level in dB; the second's power by
+      // the strings' build, so that a piano whose string does not beat fades
+      // it, and its offset (log domain) and phase (the shorter arc) from the
+      // pianos whose strings do. The unisons spread the offset as they spread
+      // a strike's.
+      haloFirst[j]=std::pow(10.,fold(share.strings,[&](int p){return static_cast<double>(beat(p).firstDb);},pick)/20);
+      const double second=std::sqrt(fold(share.strings,[&](int p){return beat(p).secondDb>-200?std::pow(10.,beat(p).secondDb/10.):0.;},pick));
+      const Shares beats=among(share.strings,[&](int p){return beat(p).secondDb>-200;});
+      const double phase=fold(beats,[&](int p){return static_cast<double>(beat(p).phase);},
+                              [](double a,double b,double t){return t<=0?a:t>=1?b:a+t*std::remainder(b-a,2*pi);});
+      haloSecond[j]={haloFirst[j]*second*std::cos(phase),haloFirst[j]*second*std::sin(phase)};
+      haloSplit[j]=fold(beats,[&](int p){return static_cast<double>(beat(p).splitHz);},pickLog)*unisonSpread(build);
     }
+    beatingCount=0;
+    for(int j=0;j<halo;++j)
+      if(haloSecond[j].re!=0||haloSecond[j].im!=0||haloBeat[j].q!=0||haloBeat[j].p!=0)beating[beatingCount++]=j;
     haloPromptRate=fold(share.strings,[&](int p){return static_cast<double>(models[p].haloPromptRate);},pickLog)*ring;
     bodyModeCount=0;
     for(int p=0;p<pianoCount;++p)if(share.soundboard[p]>0)bodyModeCount=std::max(bodyModeCount,models[p].bodyModeCount);
@@ -1287,6 +1367,10 @@ struct Engine::Impl {
     // there.
     for(int k=0;k<keyCount;++k)
       builtPhantom[k]=static_cast<float>(fold(share.strings,[&](int p){return keyPhantom(models[p],k+21)/models[p].outputScale;},pick));
+    // A key's glide multiplies its partials' power, so in the output's units
+    // it is the recordings' over the square of the scale.
+    for(int k=0;k<keyCount;++k)
+      builtGlide[k]=fold(share.strings,[&](int p){return keyGlide(models[p],k+21)/(models[p].outputScale*models[p].outputScale);},pick);
     // The open strings are the keys' own: each partial where a strike of its
     // key plays it, decaying according to the built piano's scale length and
     // bridge impedance when the full damper bank is lifted.
@@ -1309,10 +1393,12 @@ struct Engine::Impl {
   void retuneSympathetic() noexcept {
     // The strings that ring in sympathy follow concert tuning, independently
     // of channel pitch bends. Rebuild coefficients without resetting their
-    // state. The undamped strings ring at their measured frequencies and rates.
-    for(int j=0;j<halo;++j){auto& string=haloRing[j];auto& prompt=haloPrompt[j];
+    // state. The undamped strings ring at their measured frequencies and rates,
+    // the second components they beat with their offsets above them.
+    for(int j=0;j<halo;++j){auto& string=haloRing[j];auto& prompt=haloPrompt[j];auto& beat=haloBeat[j];
       const Complex r=rotation(haloHz[j]*parameters.tuning/440);string.c=prompt.c=r.re;string.s=prompt.s=r.im;
-      string.decay=std::exp(-haloString[j].rate/sampleRate);prompt.decay=std::exp(-haloPromptRate/sampleRate);}
+      const Complex b=rotation((haloHz[j]+haloSplit[j])*parameters.tuning/440);beat.c=b.re;beat.s=b.im;
+      string.decay=beat.decay=std::exp(-haloString[j].rate/sampleRate);prompt.decay=std::exp(-haloPromptRate/sampleRate);}
     for(int b=0;b<openBanks;++b){auto& bank=open[b];bool anyHeard=false;
       for(int j=0;j<lanes;++j){const int k=b*lanes+j;
         const double frequency=openHz[k]*parameters.tuning/440;
@@ -1413,13 +1499,15 @@ struct Engine::Impl {
     sleeping=false;
   }
   void silenceStrings() noexcept {
-    for(int j=0;j<halo;++j){haloRing[j].q=haloRing[j].p=haloPrompt[j].q=haloPrompt[j].p=0;}
+    for(int j=0;j<halo;++j){haloRing[j].q=haloRing[j].p=haloPrompt[j].q=haloPrompt[j].p=haloBeat[j].q=haloBeat[j].p=0;}
     phantomOn.fill(false);for(auto& q:phantom)q.warm=false;
+    glideCents.fill(0);
     for(auto& bank:open){bank.re=bank.im=V4{};bank.active=false;bank.appliedOpenness=bank.appliedMute=bank.appliedPedalOpenness=-1;}
   }
   double stringResidue() const noexcept {
     double residue=0;
-    for(int j=0;j<halo;++j)residue+=std::abs(haloRing[j].q)+std::abs(haloRing[j].p)+std::abs(haloPrompt[j].q)+std::abs(haloPrompt[j].p);
+    for(int j=0;j<halo;++j)residue+=std::abs(haloRing[j].q)+std::abs(haloRing[j].p)+std::abs(haloPrompt[j].q)+std::abs(haloPrompt[j].p)
+                                  +std::abs(haloBeat[j].q)+std::abs(haloBeat[j].p);
     for(const auto& bank:open)for(int j=0;j<lanes;++j)residue+=std::abs(lane(bank.re,j))+std::abs(lane(bank.im,j));
     return residue;
   }
@@ -1579,7 +1667,8 @@ struct Engine::Impl {
   // At a chunk boundary: each band ramps from where the last chunk ended to
   // the bursts' sum at this chunk's end, a burst's stages adding in power;
   // below -180 dB a burst ends, and a knock before it, so that the bands the
-  // knock alone sounds fall silent.
+  // knock alone sounds fall silent. A click still rising lives by what it
+  // will sound, its rise counted with it.
   void advanceNoise() noexcept {
     double target[2][noiseBands]{};bool any=false;
     for(auto& burst:bursts)if(burst.active){double energy=0;
@@ -1587,11 +1676,14 @@ struct Engine::Impl {
         burst.left[b]*=burst.step[b];burst.right[b]*=burst.step[b];
         burst.slowLeft[b]*=burst.slowStep[b];burst.slowRight[b]*=burst.slowStep[b];
         burst.knockLeft[b]*=burst.knockStep[b];burst.knockRight[b]*=burst.knockStep[b];
-        if(burst.knockLeft[b]<1e-9&&burst.knockRight[b]<1e-9)burst.knockLeft[b]=burst.knockRight[b]=0;
-        const double l=burst.left[b]*burst.left[b]+burst.slowLeft[b]*burst.slowLeft[b]+burst.knockLeft[b]*burst.knockLeft[b];
-        const double r=burst.right[b]*burst.right[b]+burst.slowRight[b]*burst.slowRight[b]+burst.knockRight[b]*burst.knockRight[b];
+        burst.riseLeft[b]*=burst.riseStep[b];burst.riseRight[b]*=burst.riseStep[b];
+        if(burst.knockLeft[b]<1e-9&&burst.knockRight[b]<1e-9)
+          burst.knockLeft[b]=burst.knockRight[b]=burst.riseLeft[b]=burst.riseRight[b]=0;
+        const double kl=burst.knockLeft[b]-burst.riseLeft[b],kr=burst.knockRight[b]-burst.riseRight[b];
+        const double l=burst.left[b]*burst.left[b]+burst.slowLeft[b]*burst.slowLeft[b]+kl*kl;
+        const double r=burst.right[b]*burst.right[b]+burst.slowRight[b]*burst.slowRight[b]+kr*kr;
         target[0][b]+=std::sqrt(l);target[1][b]+=std::sqrt(r);
-        energy+=l+r;}
+        energy+=l+r+burst.riseLeft[b]*burst.riseLeft[b]+burst.riseRight[b]*burst.riseRight[b];}
       burst.active=energy>=1e-18;any=any||burst.active;}
     for(int b=0;b<noiseBands;++b){auto& band=noise[b];
       band.left=band.leftEnd;band.right=band.rightEnd;
@@ -1727,7 +1819,11 @@ struct Engine::Impl {
       contact=std::min(contact,std::max(voice.contact,channel.smoothedMute*channel.smoothedMute));
       const bool damping=voice.contact!=voice.appliedContact||channel.smoothedMute!=voice.appliedMute;
       voice.appliedContact=voice.contact;voice.appliedMute=channel.smoothedMute;
-      const double ratio=voice.retune?tuningRatio(voice.channel):0;
+      // The strings play sharp in proportion to their energy (Tools/fit_glide.py):
+      // a key's voices retune to its glide at the last boundary whenever it
+      // has moved by glideStep.
+      if(std::abs(glideCents[key]-voice.glide)>=glideStep){voice.glide=glideCents[key];voice.retune=true;}
+      const double ratio=voice.retune?tuningRatio(voice.channel)*std::exp2(voice.glide/1200):0;
       double energy=0;
       for(int k=0;k<voice.count;){auto& partial=voice.partials[k];
         if(voice.retune)tunePartial(partial,ratio);
@@ -1779,6 +1875,7 @@ struct Engine::Impl {
     // lines' power in both channels is at most (g e)^2 where no two of them
     // fall together, and lines that do beat about the sum of theirs.
     for(int k=0;k<keyCount;++k){const double ge=phantomGain[k]*keyEnergy[k];phantomOn[k]=ge*ge>=1e-12;}
+    for(int k=0;k<keyCount;++k)glideCents[k]=builtGlide[k]*keyEnergy[k];
   }
   // A body mode's level (dB) and phase on the built piano at a part's shares
   // w, each piano's from get(p, level, phase) for its first counts[p] modes:
@@ -1885,7 +1982,7 @@ struct Engine::Impl {
       }
     }
     auto& voice=voices[chosen];voice.active=true;voice.note=note;voice.channel=ch;
-    voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.retune=false;
+    voice.count=0;voice.serial=++serial;voice.damper=0;voice.contact=0;voice.glide=0;voice.retune=false;
     voice.appliedContact=0;voice.appliedMute=channel.smoothedMute;
     phantomGain[note-21]=builtPhantom[note-21];phantomOn[note-21]=phantomGain[note-21]>0;
     // The soft pedal works through the action. A grand's shifts the hammers
@@ -2016,7 +2113,10 @@ struct Engine::Impl {
     // hammers' build. They ring on in the shared bank whatever damps the
     // strings, each first with its own prompt part, which the bridge drains
     // within a few tenths of a second, then its aftersound. The recordings do
-    // not fix their phases, so each key gives each string a fixed one.
+    // not fix their phases, so each key gives each string a fixed one. Where
+    // a piano's takes decide it, the aftersound is two components a little
+    // apart, which beat: the strike sets the second ringing at its level and
+    // phase against the first.
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
       if(key==note||haloHz[j]*parameters.tuning/440>highest)continue;
       const double order=std::max(1.,haloHz[j]/f1);
@@ -2032,7 +2132,11 @@ struct Engine::Impl {
       const double promptAmp=std::pow(10.,fold(hammers,[&](int p){return promptLevel[p];},pick)/20)*haloTint;
       const double amplitude=baseAmp*(1+.12*pedalOpenness);
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.),cp=std::cos(phase),sp=std::sin(phase);
-      auto& string=haloRing[j];string.q+=amplitude*cp;string.p+=amplitude*sp;
+      auto& string=haloRing[j];const double aftersound=amplitude*haloFirst[j];string.q+=aftersound*cp;string.p+=aftersound*sp;
+      // In the bank's turning, the conjugate of its analytic amplitude.
+      const Complex& second=haloSecond[j];
+      if(second.re!=0||second.im!=0){auto& beat=haloBeat[j];
+        beat.q+=amplitude*(second.re*cp+second.im*sp);beat.p+=amplitude*(second.re*sp-second.im*cp);}
       const double prompt=haloPromptGain[j]*promptAmp+std::max(0.,promptAmp-amplitude);
       auto& first=haloPrompt[j];first.q+=prompt*cp;first.p+=prompt*sp;
     }
@@ -2077,6 +2181,7 @@ struct Engine::Impl {
       const double struck=std::pow(10.,built(knock)/20)*tint,knockTilt=built(knockBalance);
       burst.knockLeft[k]=heard(struck*std::pow(10.,-knockTilt/40));burst.knockRight[k]=heard(struck*std::pow(10.,knockTilt/40));
       burst.knockStep[k]=std::exp(-std::exp(built(knockRate))*chunk/sampleRate);
+      burst.riseLeft[k]=burst.riseRight[k]=0;
     }
     burst.active=true;burst.serial=serial;hissing=true;
     // The partials: each piano's in order, combined order by order by the
@@ -2090,7 +2195,7 @@ struct Engine::Impl {
     const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)];
     const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
-    const double spread=build.unisons<0?1+build.unisons:1+2*build.unisons;
+    const double spread=unisonSpread(build);
     while(voice.count<maxPartials){
       int lowest=1<<30;
       for(int p=0;p<pianoCount;++p)if(next[p]<count[p])lowest=std::min(lowest,seriesData[p][next[p]].order);
@@ -2313,6 +2418,45 @@ struct Engine::Impl {
       any=true;
     }
     if(any){wake();actionRinging=true;rising=rising||struck;}
+    actionClick(side);
+  }
+  // The click above the body modes, as a burst per noise band under the
+  // action's rise, mixed as the knock's modes are: on each piano between its
+  // two recorded pitches in dB (density, decay and balance), and between the
+  // pianos in power by the action's build, the decays (in the log domain)
+  // and the balances weighted by those powers. A band silent at one pitch
+  // has no level to mix in dB: the other's fades in power towards it,
+  // rather than towards -200 dB.
+  void actionClick(const ActionSide (&side)[pianoCount]) noexcept {
+    Burst* burst=nullptr;
+    for(int k=0;k<noiseBands;++k){
+      if(noise[k].scale==0)continue;
+      double power=0,logRate=0,balance=0;
+      for(int p=0;p<pianoCount;++p){const auto& x=side[p];
+        if(!(x.noiseX&&share.action[p]>0))continue;
+        const auto& a=x.noiseX[k];const auto& b=x.noiseY[k];
+        // The table marks a silent band -200 dB.
+        const bool hasA=a.densityDb>-180,hasB=b.densityDb>-180;
+        if(!hasA&&!hasB)continue;
+        double db,w;
+        if(hasA&&hasB){db=mix(a.densityDb,b.densityDb,x.t);w=1;}
+        else{db=hasA?a.densityDb:b.densityDb;w=hasA?1-x.t:x.t;}
+        const double rate=hasA&&hasB?std::exp(mix(std::log(a.rate),std::log(b.rate),x.t)):hasA?a.rate:b.rate;
+        const double tilt=hasA&&hasB?mix(a.balanceDb,b.balanceDb,x.t):hasA?a.balanceDb:b.balanceDb;
+        w*=share.action[p]*std::pow(10.,(db+x.gainDb)/10);
+        power+=w;logRate+=w*std::log(rate);balance+=w*tilt;
+      }
+      // Under -180 dB the band is silent, as a burst's stages end there.
+      if(!(power>=1e-18))continue;
+      if(!burst){burst=&claimBurst();*burst=Burst{};}
+      const double rate=std::exp(logRate/power),tilt=balance/power;
+      const double amplitude=parameters.mechanics*std::sqrt(power)*noise[k].scale;
+      burst->knockLeft[k]=burst->riseLeft[k]=amplitude*std::pow(10.,-tilt/40);
+      burst->knockRight[k]=burst->riseRight[k]=amplitude*std::pow(10.,tilt/40);
+      burst->knockStep[k]=std::exp(-rate*chunk/sampleRate);
+      burst->riseStep[k]=std::exp(-(rate+1/actionRise)*chunk/sampleRate);
+    }
+    if(burst){burst->active=true;burst->serial=serial;hissing=true;wake();}
   }
   // A key let go: its damper falls back onto the strings unless a pedal holds
   // it off them, and the key returns. From F6 up there is no damper to fall,
@@ -2329,19 +2473,22 @@ struct Engine::Impl {
       const auto* x=m.releaseKnocks+(upper-1)*m.bodyModeCount;
       const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
       const double muteScale=1.-std::max(parameters.mute,channel.mute);
+      const auto* click=m.releaseNoise?m.releaseNoise+(upper-1)*noiseBands:nullptr;
       sides[p]={x,x+m.bodyModeCount,t,
                 m.releaseDb+20*std::log10(trackingGain(m.releaseTracking,v)/trackingGain(m.noteTracking,v))
                 -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale)+channel.releaseCapDb[p][key]
-                +muteScale*mix(actionAnchorGainDb[p][upper-1],actionAnchorGainDb[p][upper],t),m.bodyModeCount};
+                +muteScale*mix(actionAnchorGainDb[p][upper-1],actionAnchorGainDb[p][upper],t),m.bodyModeCount,
+                click,click?click+noiseBands:nullptr};
     }
     actionKnock(sides);
   }
-  // Each action's recorded pedal knock. The grand's down take also measures
-  // the strings newly freed by its dampers.
+  // Each action's recorded pedal knock, and going up its click. The grand's
+  // down take also measures the strings newly freed by its dampers.
   void soundPedal(bool down,float level) noexcept {
     ActionSide sides[pianoCount];
     for(int p=0;p<pianoCount;++p){const Model& m=models[p];const auto* k=down?m.pedalDown:m.pedalUp;
-      if(k)sides[p]={k,k,0,(down?m.pedalDownDb:m.pedalUpDb)+20*std::log10(m.outputScale),m.bodyModeCount};}
+      const auto* click=down?nullptr:m.pedalUpNoise;
+      if(k)sides[p]={k,k,0,(down?m.pedalDownDb:m.pedalUpDb)+20*std::log10(m.outputScale),m.bodyModeCount,click,click};}
     actionKnock(sides);
     if(down)liftDampers(level);
   }
@@ -2704,6 +2851,12 @@ struct Engine::Impl {
     glidePickups(frames);
     const bool noisy=hissing;
     if(noisy)hiss(frames);
+    // The noise source runs on the engine's clock, sounding or not, so that a
+    // strike's noise does not depend on how long earlier noise sounded: a
+    // key let go clicks for a second or two, and without this every strike
+    // after it drew other noise (Felt Upright's typical playing then read
+    // 0.11 dB lower in KeyraLevels, all of it the strikes' draws).
+    else for(int i=0;i<2*frames;++i){seed^=seed<<13;seed^=seed>>17;seed^=seed<<5;}
     const double openBridgeScale=anyVoice?1+.65*pedalOpenness:1.;
     const double muteDamp=1./(1+180*mute*mute/sampleRate);
     for(int i=0;i<frames;++i){
@@ -2718,18 +2871,7 @@ struct Engine::Impl {
       // sustain pedal lifts the damper bank, from the bridge's motion across
       // the open harp, heard through their measured pickups like the partials.
       for(int j=0;j<halo;++j){auto& string=haloRing[j];auto& prompt=haloPrompt[j];
-        if(string.q!=0||string.p!=0){
-          const double d=string.decay*muteDamp,q=string.q,im=string.p;
-          string.q=d*(string.c*q+string.s*im);string.p=d*(string.c*im-string.s*q);
-          if(string.q<1e-30&&string.q>-1e-30)string.q=0;
-          if(string.p<1e-30&&string.p>-1e-30)string.p=0;
-        }
-        if(prompt.q!=0||prompt.p!=0){
-          const double d=prompt.decay*muteDamp,q=prompt.q,im=prompt.p;
-          prompt.q=d*(prompt.c*q+prompt.s*im);prompt.p=d*(prompt.c*im-prompt.s*q);
-          if(prompt.q<1e-30&&prompt.q>-1e-30)prompt.q=0;
-          if(prompt.p<1e-30&&prompt.p>-1e-30)prompt.p=0;
-        }
+        string.turn(muteDamp);prompt.turn(muteDamp);
         if(haloDrive!=0)string.p+=(1-string.decay)*haloDrive;
         const double q=string.q+prompt.q,im=string.p+prompt.p;
         if(q!=0||im!=0){
@@ -2737,6 +2879,10 @@ struct Engine::Impl {
           const auto& pickup=haloString[j];
           l+=pickup.left*q;r+=pickup.rightRe*q+pickup.rightIm*im;
         }
+      }
+      for(int k=0;k<beatingCount;++k){const int j=beating[k];auto& beat=haloBeat[j];
+        beat.turn(muteDamp);
+        if(beat.q!=0||beat.p!=0){const auto& pickup=haloString[j];l+=pickup.left*beat.q;r+=pickup.rightRe*beat.q+pickup.rightIm*beat.p;}
       }
       // The pickup's own image at the default width; narrower towards mono.
       const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;

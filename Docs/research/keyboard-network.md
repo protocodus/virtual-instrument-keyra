@@ -11,7 +11,8 @@ a whole and never to one note.
 
 This is an experiment. The engine still plays today's tables. Writing tables
 from the network, and the engine change to 88 recorded pitches that they need,
-come after the cross-validation below; nothing here changes the instrument.
+come next; nothing here changes the instrument. The first run's
+cross-validation, backtest and weights are kept (The first run, below).
 
 `Tools/keyboard_network.py` does the work. Its head states the protocol: the
 loss, what is left free to each recording, and how cross-validation chooses.
@@ -206,6 +207,40 @@ The grand's dev takes include 88 at its own recorded pitches; every other
 dev take lies between a piano's recorded pitches, where the engine blends
 its two neighbours.
 
+## The first run
+
+On 2026-11-04, `all --run alone --alone --workers 4` with the engine figures
+above. Its receipt, report, cross-validation results and weights are kept in
+[keyboard-network-2026-11-04/](keyboard-network-2026-11-04/), without the
+training logs.
+
+Cross-validation chose architecture medium. Held out, it scored 9.89 dB at
+knob 1000 against 10.18 dB for small and 10.26 dB for large (each at knob 0).
+Both settings chose knob 1000, so the `character-` and `smooth-` files hold
+the same arrays and differ only in their `meta`. Knob 1000 is the largest the
+settings try, and every medium knob from 0 to 1000 scores within 0.11 dB of
+it, under one standard error: the held-out pitches do not decide the knob at
+this size.
+
+Backtest, rms level error in dB; the network in closed form, fitted on every
+train pitch and fine-tuned to each piano at the depth in brackets:
+
+| Piano | Network, train | Network, dev | Engine, train | Engine, dev |
+| --- | --- | --- | --- | --- |
+| grand | 8.05 (none) | 9.06 | 5.59 | 7.68 |
+| upright | 8.04 (last) | 7.84 | 7.04 | 9.54 |
+| kawai | 8.36 (last) | 8.94 | 8.87 | 10.53 |
+| hamburg | 7.31 (last) | 9.54 | 7.56 | 10.90 |
+| newyork | 7.50 (last) | 7.64 | 9.37 | 11.42 |
+
+The two do not compare across (What today's engine scores, above), but each
+compares with itself. From the train takes to the dev takes the network
+moves by −0.2 to +2.2 dB and today's engine, blending its recorded pitches,
+by +1.7 to +3.3 dB. At the train pitches the network is far from today's
+tables, which hold each key's own fit (3.55 to 6.84 dB in closed form).
+Whether its tables play better than today's is for the table writer, the
+recording benchmarks and the keyed A/B to show.
+
 ## Checks
 
 `Tests/test_keyboard_network.py` checks the training model on synthetic
@@ -257,6 +292,14 @@ above) is the other half: the same closed form against the engine itself.
 
 ## Recipes
 
+**Use the kept fit instead of retraining.** Copy
+[keyboard-network-2026-11-04/](keyboard-network-2026-11-04/) to
+`out/network/alone/`. `report` then writes its report again, and the weights
+load with NumPy alone: each `.npz` holds the network's arrays and a `meta`
+naming its pianos, architecture and knob. `cv` and `fit` keep its entries
+while the settings, the script's bytes and the measurements' file names and
+sizes are those it was made with, and train again after any change to them.
+
 **Retrain after a change to the network, its settings or the measurements.**
 Run `all` under a new run name. Under an existing name, entries whose
 settings changed are redone and the others kept; the script's own bytes are
@@ -295,4 +338,7 @@ that pins its files, a corpus manifest, a locked split, and an entry in
 
 The measurements of all ten libraries take about 230 MB in `out/keyboard`.
 A training step takes about 0.2 s on four threads for the five Keyra pianos
-alone.
+alone. The first run's 35 cross-validation entries took 34 to 68 minutes
+each on one thread, and its two final fits about 27 minutes each: 7 h 35 min
+on four workers, its measurements and renders already cached. Its weights
+take 7.3 MB.
