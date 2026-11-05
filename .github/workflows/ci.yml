@@ -151,9 +151,13 @@ jobs:
         run: |
           cmake -S "." -B "build-win" -A x64 "-DKEYRA_BUILD_PLUGIN=OFF" -DBUILD_TESTING=ON "-DCMAKE_EXE_LINKER_FLAGS=/STACK:33554432"
 
+      # Each test that reads the engine's private state compiles
+      # KeyraEngine.cpp whole. From 0.4.18 on, four or five of those at once
+      # ran MSVC out of heap on this runner (C1060) and left their tests
+      # unbuilt, so the build runs two projects at a time.
       - name: Build and run the unit tier
         run: |
-          cmake --build "build-win" --config Release --parallel
+          cmake --build "build-win" --config Release --parallel 2
           ctest --test-dir "build-win" -C Release -L "^unit$" --no-tests=error --output-on-failure
 
       - name: Configure Windows plug-in build
