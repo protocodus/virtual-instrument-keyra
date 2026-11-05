@@ -1266,7 +1266,7 @@ struct Engine::Impl {
   // voice's next on its key (-1 for none).
   std::array<int,keyCount> keyVoice{};
   std::array<int,maxVoices> nextVoice{};
-  std::array<float,chunk> heardDrive{};
+  std::array<float,chunk> silentDrive{}; // what a string not struck drives itself with
   // Through a chunk: what drives the open strings, the image's width, the
   // output before them, and their sum and pan-weighted sum.
   std::array<float,chunk> openDrive{};
@@ -2932,6 +2932,23 @@ struct Engine::Impl {
     }
     for(int n=0;n<N;++n){partials[n]->re=re[n];partials[n]->im=im[n];}
   }
+  // Open-string banks driven by openDrive less each one's own drive, run
+  // together as stableRun runs partials: a bank's rotation is a dependent
+  // chain, and N in one loop overlap. Each is added to openSum and openPan
+  // in its bank's order, so the sums are the same bit for bit.
+  template<int N> void openRun(OpenBank* const* banks,const float* const* own,int frames) noexcept {
+    V4 re[N],im[N],c[N],s[N],drive[N],pan[N];
+    for(int n=0;n<N;++n){const auto& x=*banks[n];re[n]=x.re;im[n]=x.im;c[n]=x.c;s[n]=x.s;drive[n]=x.drive;pan[n]=x.pan;}
+    for(int i=0;i<frames;++i){
+      V4 sum=openSum[i],panned=openPan[i];
+      for(int n=0;n<N;++n){
+        const V4 next=c[n]*re[n]+s[n]*im[n];im[n]=c[n]*im[n]-s[n]*re[n]+drive[n]*splat(openDrive[i]-own[n][i]);re[n]=next;
+        sum+=re[n];panned+=re[n]*pan[n];
+      }
+      openSum[i]=sum;openPan[i]=panned;
+    }
+    for(int n=0;n<N;++n){banks[n]->re=re[n];banks[n]->im=im[n];}
+  }
   static bool steadyPartial(const Partial& x) noexcept {return x.tintState==x.targetTint&&!x.rising;}
   // A strike's partials through `frames` samples, added to toLeft and toRight.
   void play(Voice& voice,V4* toLeft,V4* toRight,int frames) noexcept {
@@ -3084,23 +3101,21 @@ struct Engine::Impl {
     // claim the reference solver's reciprocal 475-mode soundboard network.
     // No feedback reaches the driven voices, so this response cannot run away.
     for(int i=0;i<frames;++i){openSum[i]=V4{};openPan[i]=V4{};}
-    int lastOwnedString=-1;
+    // The active banks four at a time (openRun), each still added in order.
+    OpenBank* run[4];const float* own[4];int n=0;
+    const auto flush=[&]{
+      if(n==4)openRun<4>(run,own,frames);
+      else if(n>=2){openRun<2>(run,own,frames);if(n==3)openRun<1>(run+2,own+2,frames);}
+      else if(n==1)openRun<1>(run,own,frames);
+      n=0;
+    };
     for(int b=0;b<openBanks;++b){auto& bank=open[b];if(!bank.active)continue;
-      const int string=b*lanes/openPartials;const float* heard=openDrive.data();
-      if(owned[string]){
-        if(string!=lastOwnedString){
-          lastOwnedString=string;
-          for(int i=0;i<frames;++i)heardDrive[i]=openDrive[i]-ownDrive[string][i];
-        }
-        heard=heardDrive.data();
-      }
-      V4 re=bank.re,im=bank.im;const V4 c=bank.c,s=bank.s,drive=bank.drive,pan=bank.pan;
-      for(int i=0;i<frames;++i){
-        const V4 next=c*re+s*im;im=c*im-s*re+drive*splat(heard[i]);re=next;
-        openSum[i]+=re;openPan[i]+=re*pan;
-      }
-      bank.re=re;bank.im=im;
+      const int string=b*lanes/openPartials;
+      // An owned string hears the drive less its own strike's.
+      run[n]=&bank;own[n]=owned[string]?ownDrive[string].data():silentDrive.data();
+      if(++n==4)flush();
     }
+    flush();
     for(int i=0;i<frames;++i){
       gain+=smooth*(parameters.gain-gain);
       // Changing the receiver's monitoring level must not step an already
