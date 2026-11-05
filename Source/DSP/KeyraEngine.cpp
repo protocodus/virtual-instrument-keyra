@@ -1791,13 +1791,27 @@ struct Engine::Impl {
   // While the felt is on a partial that both its shares still hold, the
   // partial's power over the next chunk is the two shares' sum, each falling
   // at its own rate, and the loosely held share is then more of what is left.
+  // A felt power factor per sample, base^-1, over a chunk: base^(-2 chunk),
+  // squared up rather than through std::pow.
+  static double chunkPowerLoss(double base) noexcept {
+    double x=1/base;
+    for(int n=1;n<2*chunk;n*=2)x*=x;
+    return x;
+  }
   void feltChunk(const Voice& voice,Partial& partial) const noexcept {
     const double m=channels[voice.channel].smoothedMute,mute=180*m*m/sampleRate*(.5+partial.frequency*.00015);
     const double fastBase=1+voice.contact*partial.damperScale+mute,slowBase=1+voice.contact*partial.slowScale+mute;
-    if(fastBase!=partial.fastBase){partial.fastBase=fastBase;partial.fastLeap=std::pow(fastBase,-2.*chunk);}
-    if(slowBase!=partial.slowBase){partial.slowBase=slowBase;partial.slowLeap=std::pow(slowBase,-2.*chunk);}
+    if(fastBase!=partial.fastBase){partial.fastBase=fastBase;partial.fastLeap=chunkPowerLoss(fastBase);}
+    if(slowBase!=partial.slowBase){partial.slowBase=slowBase;partial.slowLeap=chunkPowerLoss(slowBase);}
     const double fast=partial.fastLeap,slow=partial.slowLeap,total=(1-partial.slowShare)*fast+partial.slowShare*slow;
-    setRotation(partial,std::pow(total,.5/chunk),std::sqrt(total));
+    // The chunk's amplitude damping, total^(1/2), and the sample's, its
+    // chunk-th root, by square roots: std::pow here was a twentieth of a
+    // demo's work, and the roots differ from it by a few units in the last
+    // place.
+    const double chunkDamping=std::sqrt(total);
+    double damping=chunkDamping;
+    for(int n=1;n<chunk;n*=2)damping=std::sqrt(damping);
+    setRotation(partial,damping,chunkDamping);
     // Once the firmly held share is 60 dB under the rest it no longer counts.
     partial.slowShare=std::min(1.,partial.slowShare*slow/total);
     if(partial.slowShare>.999999)partial.slowShare=1;
