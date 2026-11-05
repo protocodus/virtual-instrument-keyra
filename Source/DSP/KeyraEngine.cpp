@@ -302,14 +302,23 @@ constexpr Model models[]{
 static_assert(std::size(models)==pianoCount,"a model for every piano");
 // The keyboard network's partials at each piano's keys between two recorded
 // pitches (Tools/write_network_tables.py), which series() plays there in
-// place of blending the two pitches' fits.
-struct NetworkSeries {const measured::NetworkKey* keys;const measured::Partial* partials;};
+// place of blending the two pitches' fits, and at the keys it corrects, its
+// corrections to that blend, by order.
+struct NetworkSeries {
+  const measured::NetworkKey* keys;const measured::Partial* partials;
+  const measured::NetworkKey* corrected;const measured::Correction* corrections;
+};
 constexpr NetworkSeries networkSeries[]{
-  {measured::network::grand::keys.data(),measured::network::grand::partials.data()},
-  {measured::network::upright::keys.data(),measured::network::upright::partials.data()},
-  {measured::network::kawai::keys.data(),measured::network::kawai::partials.data()},
-  {measured::network::hamburg::keys.data(),measured::network::hamburg::partials.data()},
-  {measured::network::newyork::keys.data(),measured::network::newyork::partials.data()},
+  {measured::network::grand::keys.data(),measured::network::grand::partials.data(),
+   measured::network::grand::corrected.data(),measured::network::grand::corrections.data()},
+  {measured::network::upright::keys.data(),measured::network::upright::partials.data(),
+   measured::network::upright::corrected.data(),measured::network::upright::corrections.data()},
+  {measured::network::kawai::keys.data(),measured::network::kawai::partials.data(),
+   measured::network::kawai::corrected.data(),measured::network::kawai::corrections.data()},
+  {measured::network::hamburg::keys.data(),measured::network::hamburg::partials.data(),
+   measured::network::hamburg::corrected.data(),measured::network::hamburg::corrections.data()},
+  {measured::network::newyork::keys.data(),measured::network::newyork::partials.data(),
+   measured::network::newyork::corrected.data(),measured::network::newyork::corrections.data()},
 };
 static_assert(std::size(networkSeries)==pianoCount,"a network table for every piano");
 // A table written against other recorded pitches would play over a fit.
@@ -322,6 +331,20 @@ static_assert(betweenPitches(grand::anchors,measured::network::grand::keys)&&bet
               betweenPitches(kawai::anchors,measured::network::kawai::keys)&&betweenPitches(hamburg::anchors,measured::network::hamburg::keys)&&
               betweenPitches(newyork::anchors,measured::network::newyork::keys),
               "the network plays only keys between two recorded pitches");
+// A key the network plays does not blend, so a correction there would be lost.
+template<std::size_t K> constexpr bool correctsBlends(const std::array<measured::NetworkKey,K>& keys,const std::array<measured::NetworkKey,K>& corrected) noexcept {
+  for(std::size_t k=0;k<K;++k)if(keys[k].count&&corrected[k].count)return false;
+  return true;
+}
+static_assert(betweenPitches(grand::anchors,measured::network::grand::corrected)&&betweenPitches(upright::anchors,measured::network::upright::corrected)&&
+              betweenPitches(kawai::anchors,measured::network::kawai::corrected)&&betweenPitches(hamburg::anchors,measured::network::hamburg::corrected)&&
+              betweenPitches(newyork::anchors,measured::network::newyork::corrected)&&
+              correctsBlends(measured::network::grand::keys,measured::network::grand::corrected)&&
+              correctsBlends(measured::network::upright::keys,measured::network::upright::corrected)&&
+              correctsBlends(measured::network::kawai::keys,measured::network::kawai::corrected)&&
+              correctsBlends(measured::network::hamburg::keys,measured::network::hamburg::corrected)&&
+              correctsBlends(measured::network::newyork::keys,measured::network::newyork::corrected),
+              "the network corrects only the blends of keys between two recorded pitches");
 template<std::size_t A,std::size_t P> constexpr bool rowPerPitch(const std::array<measured::Anchor,A>& anchors,const std::array<measured::Phantom,P>& phantoms) noexcept {
   if(A!=P)return false;
   for(std::size_t i=0;i<A;++i)if(anchors[i].note!=phantoms[i].note)return false;
@@ -767,6 +790,14 @@ double layerAt(const Model& model,double db) noexcept {
   return std::max(1.,std::min(127.,v[i]+(v[i+1]-v[i])*(db-l[i])/(l[i+1]-l[i])));
 }
 double responseAt(const Model& model,double midi) noexcept {return layerAt(model,responseDb(midi));}
+// Linear between the recorded layers, held beyond them.
+double heldAt(const Model& model,const float* x,double velocity) noexcept {
+  const float* v=model.layerVelocity;const int last=model.layers-1;
+  if(velocity<=v[0])return x[0];
+  if(velocity>=v[last])return x[last];
+  int i=0;while(velocity>v[i+1])++i;
+  return mix(x[i],x[i+1],(velocity-v[i])/(v[i+1]-v[i]));
+}
 double onsetRiseAt(const Model& model,const measured::Anchor& anchor,double velocity) noexcept {
   // Log-linear between the recorded layers, held beyond them.
   const float* v=model.layerVelocity;const auto& r=anchor.onsetRise;
@@ -962,6 +993,17 @@ double pitchRate(const LaneData& x,const LaneData& y,double t) noexcept {
   }
   return std::log(mix(std::exp(x.rate),std::exp(y.rate),coordinate));
 }
+// Each lane's left channel scaled by kl in power and its right by kr: its
+// level is its mean channel power, `ratio` the right over the left.
+void scaleChannels(PartialData& d,double kl,double kr) noexcept {
+  for(auto& l:d.lane){
+    const double g=std::exp(l.ratio);
+    l.level+=10*std::log10((kl+kr*g*g)/(1+g*g));
+    l.ratio+=.5*std::log(kr/kl);
+    const double h=std::exp(l.ratio),pickup=std::sqrt(2/(1+h*h));
+    l.left={pickup,0};l.right={pickup*h*std::cos(l.angle),pickup*h*std::sin(l.angle)};
+  }
+}
 PartialData blend(const PartialData& a,const PartialData& b,double t,const std::array<int,lanes>& pair) noexcept {
   PartialData d;d.order=a.order;d.cents=mix(a.cents,b.cents,t);
   d.rise=mix(a.rise,b.rise,t);
@@ -998,16 +1040,7 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
       const double low=std::max(std::min(la,lb),total-std::max(ra,rb));
       const double high=std::min(std::max(la,lb),total-std::min(ra,rb));
       const double left=std::max(low,std::min(high,total/(1+std::exp(-balance))));
-      const double kl=left/ld,kr=(total-left)/rd;
-      // Each lane's left channel scaled by kl in power and its right by kr:
-      // its level is its mean channel power, `ratio` the right over the left.
-      for(auto& l:d.lane){
-        const double g=std::exp(l.ratio);
-        l.level+=10*std::log10((kl+kr*g*g)/(1+g*g));
-        l.ratio+=.5*std::log(kr/kl);
-        const double h=std::exp(l.ratio),pickup=std::sqrt(2/(1+h*h));
-        l.left={pickup,0};l.right={pickup*h*std::cos(l.angle),pickup*h*std::sin(l.angle)};
-      }
+      scaleChannels(d,left/ld,(total-left)/rd);
     }
     // The lanes' phases and channel angles come from the nearer anchor, so
     // the partial's whole stereo image switched at the pitches' midpoint:
@@ -1934,11 +1967,15 @@ struct Engine::Impl {
   }
   // One piano's partials for a strike, into seriesData[p] and
   // seriesWeight[p], their levels in the output's units: at a key the
-  // keyboard network's table holds, its partials; elsewhere blended().
-  // Returns how many.
+  // keyboard network's table holds, its partials; elsewhere blended(), with
+  // the network's corrections where it holds them. Returns how many.
   int series(const Side& x,int p,int note) noexcept {
     const auto& key=networkSeries[p].keys[note-21];
-    if(!key.count)return blended(x,p);
+    if(!key.count){
+      const int n=blended(x,p);
+      correct(x,p,note,n);
+      return n;
+    }
     // The network's partials play alone, at their own levels, each lane
     // between the layers as a fit's does. Their lanes' caches are made here
     // rather than kept as the fits' are, which for every key would take
@@ -1951,6 +1988,21 @@ struct Engine::Impl {
       for(auto& l:d.lane)l.level+=x.scaleDb+x.toneDb;
     }
     return n;
+  }
+  // The network's corrections at a key to the first `count` partials of its
+  // blend, by order: every lane's decay rate scaled by e^rateShift, and each
+  // channel's power moved by its dB at the strike's layer coordinate.
+  void correct(const Side& x,int p,int note,int count) noexcept {
+    const auto& key=networkSeries[p].corrected[note-21];
+    const auto* c=networkSeries[p].corrections+key.first;
+    const auto* const end=c+key.count;
+    for(int n=0;n<count&&c<end;++n){
+      auto& d=seriesData[p][n];
+      while(c<end&&c->order<d.order)++c;
+      if(c==end||c->order!=d.order)continue;
+      for(auto& l:d.lane)l.rate+=c->rateShift;
+      scaleChannels(d,std::pow(10.,.1*heldAt(*x.m,c->leftDb.data(),x.v)),std::pow(10.,.1*heldAt(*x.m,c->rightDb.data(),x.v)));
+    }
   }
   // The two recorded pitches' series merged by order, blended where both
   // have an order and alone at their pitch's share otherwise.

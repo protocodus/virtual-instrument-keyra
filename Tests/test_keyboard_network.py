@@ -334,6 +334,101 @@ class Training(unittest.TestCase):
         self.assertLess(after, .3 * before, f'loss {before:.3f} -> {after:.3f}')
 
 
+class BlendCorrection(unittest.TestCase):
+    """The correction's examples: today's engine's blend between two recorded
+    pitches (KeyraEngine.cpp blended()) as keyboard_network mirrors it, on a
+    piano's fitted table, and a correction that moves it only between them."""
+    table = kn.header_of('hamburg')
+    piano = kn.ENGINE_PIANOS.index('hamburg')
+
+    def test_blend_plays_each_fit_at_its_pitch(self):
+        """At either end the blend is the fit there: its lanes' rates and
+        each lane's power in each channel, at the softest and loudest layer."""
+        grid = self.table['grid']
+        for lower in (0, 4, 8):
+            for t, side in ((0.0, lower), (1.0, lower + 1)):
+                for v in (grid[0], grid[-1]):
+                    blends = kn.engine_blended(self.piano, self.table, lower, lower + 1, t, v, {})
+                    for p in self.table['anchors'][side]['partials']:
+                        S, C = kn.closed_form(*blends[p['order']], np.ones(2))
+                        S0, C0 = kn.closed_form(kn.engine_partial(p, grid, v), 1.0, np.ones(2))
+                        np.testing.assert_allclose(np.sort_complex(S), np.sort_complex(S0), rtol=1e-12)
+                        np.testing.assert_allclose(np.sort(np.abs(C), 1), np.sort(np.abs(C0), 1), rtol=1e-5)
+
+    def test_blend_power_lies_between_the_pitches(self):
+        """Between them each channel's power over the window lies between the
+        two pitches' and both channels' sum at its place between theirs in
+        dB, as Tests/pitch_blend_tests.cpp holds the engine's."""
+        grid = self.table['grid']
+        a, b = ({p['order']: p for p in self.table['anchors'][i]['partials']} for i in (2, 3))
+        for order in sorted(set(a) & set(b)):
+            x, y = (kn.engine_partial(p[order], grid, 80.0) for p in (a, b))
+            pair = kn.lane_pairing(a[order], b[order])
+            for t in (.25, .5, .75):
+                d = kn.engine_blend(x, y, t, pair)
+                for channel in ((1, 0), (0, 1)):
+                    low, high = sorted(kn.window_power(p, *channel) for p in (x, y))
+                    self.assertTrue(low * (1 - 1e-9) <= kn.window_power(d, *channel) <= high * (1 + 1e-9), order)
+                self.assertAlmostEqual(math.log(kn.window_power(d)),
+                                       (1 - t) * math.log(kn.window_power(x)) + t * math.log(kn.window_power(y)),
+                                       places=9)
+
+    def test_departure_vanishes_at_the_recorded_pitches(self):
+        net = kn.Correction(['p'], [[50]], {'code': 2, 'width': 16, 'depth': 1, 'fourier': 1})
+        with torch.no_grad():
+            for w in net.parameters():
+                w.add_(.3 * torch.randn(w.shape, generator=torch.Generator().manual_seed(2)))
+        rows = 6
+        args = (torch.zeros(rows, dtype=torch.long), None, torch.tensor([1., 2., 3., 5., 8., 13.]),
+                torch.linspace(-30, 0, rows), torch.full((rows,), 40.), torch.full((rows,), 47.))
+        with torch.no_grad():
+            for note, t in ((40., 0.), (47., 1.)):
+                d = kn.departure(net, args[0], torch.full((rows,), note), *args[2:], torch.full((rows,), t))
+                for k, v in d.items():
+                    self.assertTrue(torch.all(v == 0), k)
+            d = kn.departure(net, args[0], torch.full((rows,), 43.), *args[2:], torch.full((rows,), 3 / 7))
+        self.assertGreater(float(torch.abs(d['level_db']).max()), 1e-3)
+
+    def test_short_run_learns_a_synthetic_correction(self):
+        """Hidden pitches whose fits stand 2.5 to 4 dB over the blend around
+        them, the more the higher the partial, and decay faster: a short run
+        takes the loss well under where it starts."""
+        notes, orders, velocities = [33, 45, 57, 69, 81], [1, 2, 3, 4], [50, 110]
+        pitches, blends = [], {}
+        for note in notes:
+            fd = [float(pa.stiff(pa.midi_hz(note), 3e-4, n)) for n in orders]
+
+            def figures(i, j, note=note):
+                rate = .5 + .02 * (note - 21) + .3 * orders[j]
+                level = -10 * math.log10(orders[j]) + 12 * math.log10(velocities[i] / 127) - .1 * (note - 60)
+                s = -rate * np.array([8, 3, 1, 1 / 3]) + 2j * np.pi * np.array([.4, -.3, .2, -.1])
+                C = 10 ** (level / 20) * np.array([[.5, .3, .2, .1], [.4, .3, .25, .1]], complex)
+                return np.r_[s, s - 1 / .003], C
+
+            def envelope(i, j, figures=figures):
+                return measured(TIMES, *figures(i, j))
+            pitches.append(pitch(note, velocities, orders, envelope, fd))
+            for i in range(len(velocities)):
+                for j in range(len(orders)):
+                    S, C = figures(i, j)
+                    S = np.r_[S[:4].real * .8 + 1j * S[:4].imag, S[:4].real * .8 + 1j * S[:4].imag - 1 / .003]
+                    blends[note, i, j] = S, C * 10 ** (-(2 + orders[j] / 2) / 20)
+        units = load(pitches)
+        for u in units:
+            i, k = velocities.index(u['velocity']), u['group']['note']
+            u.update(blend_S=np.array([blends[k, i, orders.index(int(o))][0] for o in u['order']]),
+                     blend_C=np.array([blends[k, i, orders.index(int(o))][1] for o in u['order']]),
+                     lower=k - 6, upper=k + 6, mix=.5)
+        net = kn.Correction(['p'], [[50]], {'code': 2, 'width': 16, 'depth': 2, 'fourier': 1})
+        settings = dict(kn.load_config()['training'], units_per_library=4)
+        with torch.no_grad():
+            before = float(kn.loss_of(net, units, {0: 1.0}, settings['tune_weight'])[0])
+        kn.train(net, {'synthetic': units}, {0: 1.0}, settings, 0.0, 1, steps=300)
+        with torch.no_grad():
+            after = float(kn.loss_of(net, units, {0: 1.0}, settings['tune_weight'])[0])
+        self.assertLess(after, .3 * before, f'loss {before:.3f} -> {after:.3f}')
+
+
 class Settings(unittest.TestCase):
     config = kn.load_config()
 

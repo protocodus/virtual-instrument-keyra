@@ -22,6 +22,12 @@ struct Partial { int order; float cents, riseSeconds, riseSlope; std::array<Lane
 // (MeasuredNetworkKeys.h): `count` partials of its piano's network table from
 // `first`, none where the key plays the recorded pitches' blend.
 struct NetworkKey { int first, count; };
+// What the blend of the two recorded pitches around a key misses at one of
+// its partials, as the keyboard network's correction learned it where the
+// recordings tell (MeasuredNetworkKeys.h): every lane's decay rate scaled by
+// e^rateShift and, per layer, each channel's power moved by leftDb and
+// rightDb.
+struct Correction { int order; float rateShift; std::array<float,maxLayers> leftDb, rightDb; };
 // A component beside the series (below A3: the unison strings' own series
 // at high orders and phantom partials): one lane at its place by the
 // series (cents from an order), starting at contact.
