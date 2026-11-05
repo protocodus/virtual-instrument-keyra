@@ -50,7 +50,7 @@ int main(){
       for(int note=a.note+1;note<b.note;++note)for(const double velocity:velocities){
         keyra::Side x;x.m=&m;x.a=&a;x.b=&b;x.upper=upper;x.v=velocity;
         x.t=static_cast<double>(note-a.note)/(b.note-a.note);
-        const int count=impl.series(x,p);++keys;
+        const int count=impl.series(x,p,note);++keys;
         // The series merges the two pitches' partials by order, as here.
         int i=a.first,j=b.first;
         for(int n=0;n<count;++n){
