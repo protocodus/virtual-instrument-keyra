@@ -2993,17 +2993,24 @@ trained (21224de on the branch). It stood closer on 8 measures of the
 grand's 156 dev takes and further on 4, and on 7 of the upright's 21 and
 further on 5, none past a tolerance; but below the break, on the wound
 strings, it took the envelope and the sustain further from the recordings
-at every pitch scored there: the grand's D♯1 (envelope 4.38 → 4.54 dB,
+at every pitch then scored there: the grand's D♯1 (envelope 4.38 → 4.54 dB,
 sustain 4.38 → 4.67 dB), the upright's D♯2 (2.09 → 2.50 and 8.96 →
 9.15 dB, and further on 9 of the 12 measures) and the grand's sealed D♯2
 (1.86 → 2.38 and 5.58 → 5.67 dB, its envelope and its rise, 9.12 →
-16.28 ms, past a tolerance). At all nine pitches above the break, dev and
-sealed, the envelope came closer. So the writer corrects only between two
-plain-string pitches (`piano_corrections` in
+16.28 ms, past a tolerance). At all nine pitches then scored above the
+break, dev and sealed, the envelope came closer. So the writer corrects
+only between two plain-string pitches (`piano_corrections` in
 `Tools/write_network_tables.py`). This restriction was chosen after the
 grand's sealed takes had been opened for the first candidate, so the
 sealed D♯2 is no longer untouched evidence for it, and the restriction is
-a choice made on the dev and sealed takes together.
+a choice made on the dev and sealed takes together. The upright's sealed
+takes, opened only after it was chosen, bear it out at F♯1: the first
+candidate took its partial levels 9.73 → 10.94 dB, its decay 4.97 →
+6.33 dB/s and its sustain 7.04 → 7.95 dB, all three past a tolerance,
+though its envelope came closer (3.43 → 3.12 dB). So the sustain went
+further at all four pitches scored below the break and came closer at nine
+of the eleven above it, and the envelope went further at three of the four
+and came closer at nine of the eleven.
 
 With the correction at every key between, the Kawai's 23 dev takes stand
 closer on 7 measures and further on 5, sustain +0.29 dB the most, and six
@@ -3108,8 +3115,18 @@ takes it stands closer on 9 of the 12 measures, partial levels −0.98 dB,
 sustain −0.97 dB, decay −0.91 dB/s and envelope −0.87 dB the most, and
 further on 3, rise +0.06 ms, attack +0.03 dB and image +0.02 dB, none past
 a tolerance ([report](validation/grand-blend-correction-sealed-2026-11-05.md),
-which pairs all 48). The upright's sealed takes were not scored: its
-library is on the owner's computer, which was offline.
+which pairs all 48). The upright's sealed takes, F♯1, E4 and G♯5 at all
+five layers, were opened once each for 0.4.22, the first candidate and this
+version (`Tools/corpus/sealed-openings-helsinki.json`; decoded for the runs
+from the owner's copy of the library, each file checked against its pin).
+This version plays F♯1 as 0.4.22 does. On E4's and G♯5's 10 takes, which
+both candidates correct alike, it stands closer on 5 of the 12 measures,
+decay −0.65 dB/s (G♯5's 5.98 → 4.63) and partial levels −0.13 dB the most,
+and further on 7, envelope +0.18 dB (E4's 3.57 → 3.89) and tuning
++0.08 cents the most and the others 0.03 or less, none past a tolerance
+([report](validation/upright-blend-correction-sealed-2026-11-05.md), which
+pairs all 15). There the correction's gain is in the decay, not in the
+envelope the upright's dev takes showed.
 
 The owner is asked to choose between this version and the first candidate,
 to approve the chosen version's four preset readings, and to merge it.

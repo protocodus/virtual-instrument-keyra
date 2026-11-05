@@ -362,11 +362,12 @@ def piano_corrections(name, net, log):
     anchors = table['anchors']
     piano, keys = net.pianos.index(name), {}
     # Only between two plain-string pitches. Below the break, on the wound
-    # strings, the correction took the envelope and the sustain of
-    # Tools/benchmark_recordings.py further from the recordings at every pitch
-    # scored there, the grand's D#1 and sealed D#2 and the upright's D#2, the
-    # sealed D#2's rise and envelope past a tolerance, where at the nine above
-    # it the envelope came closer (Docs/decisions.md, 2026-11-05).
+    # strings, the correction took the sustain of Tools/benchmark_recordings.py
+    # further from the recordings at all four pitches scored there, the
+    # grand's D#1 and sealed D#2 and the upright's D#2 and sealed F#1, the
+    # sealed D#2's rise and envelope and F#1's partial levels, decay and
+    # sustain past a tolerance, where at nine of the eleven above it the
+    # sustain came closer (Docs/decisions.md, 2026-11-05).
     tenor = int(net.breaks[piano, 0])
     for a, b in zip(anchors, anchors[1:]):
         if a['note'] < tenor:

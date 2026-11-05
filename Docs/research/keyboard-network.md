@@ -448,15 +448,19 @@ measure to four decimals.
 Corrected at every key between, as trained, the grand's 156 stood closer on
 8 measures and further on 4, and the upright's 21 closer on 7 and further on
 5, again none past a tolerance. But below the break it took the envelope
-and the sustain further from the recordings at every pitch scored there:
-the grand's D♯1 (envelope 4.38 to 4.54 dB, sustain 4.38 to 4.67 dB), the
-upright's D♯2 (2.09 to 2.50 and 8.96 to 9.15 dB, and further on 9 of the 12
-measures) and the grand's sealed D♯2 (1.86 to 2.38 and 5.58 to 5.67 dB, its
-envelope and its rise, 9.12 to 16.28 ms, past a tolerance), where at all
-nine pitches above it the envelope came closer. So the writer corrects only
-between two plain-string pitches. That restriction was chosen after the
-grand's sealed takes had been opened for the correction at every key
-between, so D♯2 no longer stands as untouched evidence for it.
+and the sustain further from the recordings at every pitch then scored
+there: the grand's D♯1 (envelope 4.38 to 4.54 dB, sustain 4.38 to 4.67 dB),
+the upright's D♯2 (2.09 to 2.50 and 8.96 to 9.15 dB, and further on 9 of the
+12 measures) and the grand's sealed D♯2 (1.86 to 2.38 and 5.58 to 5.67 dB,
+its envelope and its rise, 9.12 to 16.28 ms, past a tolerance), where at all
+nine pitches then scored above it the envelope came closer. So the writer
+corrects only between two plain-string pitches. That restriction was chosen
+after the grand's sealed takes had been opened for the correction at every
+key between, so D♯2 no longer stands as untouched evidence for it. The
+upright's sealed F♯1, opened after it was chosen, bears it out: corrected,
+its partial levels went 9.73 to 10.94 dB, its decay 4.97 to 6.33 dB/s and
+its sustain 7.04 to 7.95 dB, all three past a tolerance, though its
+envelope came closer (3.43 to 3.12 dB).
 
 The Kawai's take six measures past a tolerance at five pitches, F♯7's
 sustain 7.18 to 8.20 dB the most, five of them above its bass break, and
@@ -475,8 +479,13 @@ of the 12 measures (partial levels 0.98 dB, sustain 0.97 dB, decay
 0.91 dB/s, envelope 0.87 dB) and further on 3 (rise 0.06 ms, attack
 0.03 dB, image 0.02 dB), and no pitch passes a tolerance
 ([report](../validation/grand-blend-correction-sealed-2026-11-05.md)). The
-upright's sealed takes were not scored: its library is on the owner's
-computer, which was offline.
+upright's, F♯1, E4 and G♯5 at every layer, were opened once for each
+candidate and for 0.4.22. This version plays F♯1 as 0.4.22 does. At E4 and
+G♯5, 10 takes, it stands closer on 5 of the 12 measures (decay 0.65 dB/s,
+partial levels 0.13 dB) and further on 7 (envelope 0.18 dB, tuning
+0.08 cents, the others 0.03 or less), and no pitch passes a tolerance
+([report](../validation/upright-blend-correction-sealed-2026-11-05.md)).
+There its gain is in the decay, not in the envelope its dev takes showed.
 
 The correction is figured once per strike, as the blend is, and costs no CPU
 the measurement can tell: struck chromatically at velocities 40 and 100 with

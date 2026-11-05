@@ -67,11 +67,16 @@ measure by more than its tolerance
 The grand's sealed takes at D♯4 and D♯6, opened for this version, stand
 closer on 9, the partial levels by 0.98 dB, that tone by 0.97 dB, the decay
 by 0.91 dB/s and the envelope by 0.87 dB
-([sealed](Docs/validation/grand-blend-correction-sealed-2026-11-05.md)).
-Below the break, on the wound strings, the correction took the envelope and
-that tone further from the recordings at all three pitches scored there (the
-grand's D♯1 and sealed D♯2, the upright's D♯2), and the sealed D♯2's rise
-and envelope past a tolerance, so the keys between there blend as before.
+([sealed](Docs/validation/grand-blend-correction-sealed-2026-11-05.md)); the
+upright's at E4 and G♯5 closer on 5, the decay by 0.65 dB/s and the partial
+levels by 0.13 dB, and further on 7, the envelope by 0.18 dB and the others
+by 0.08 or less, none past a tolerance
+([sealed](Docs/validation/upright-blend-correction-sealed-2026-11-05.md)).
+Below the break, on the wound strings, the correction took that tone further
+from the recordings at all four pitches scored there (the grand's D♯1 and
+sealed D♯2, the upright's D♯2 and sealed F♯1), the sealed D♯2's rise and
+envelope and F♯1's partial levels, decay and that tone past a tolerance, so
+the keys between there blend as before.
 The grand reads on Reason's meter as in 0.4.22, and the upright's tube,
 which the correction took 0.10 VU quieter, is re-pinned to what it read
 before. Three presets
