@@ -169,19 +169,14 @@ constexpr Model models[]{
    // The measured levels are the recordings' own. This scale brings typical
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
-   // the factory Output control at 0.70 (Tools/KeyraLevels.cpp). Re-pinned
-   // in 0.4.23 to the -9.07 VU it read before, from .7615: the correction to
-   // the blend between recorded pitches (MeasuredNetworkKeys.h) took it to
-   // -9.05.
-   .7603,
+   // the factory Output control at 0.70 (Tools/KeyraLevels.cpp).
+   .7615,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   // Re-pinned in 0.4.23 to the -9.07 VU it read before, from 1.5671: the
-   // correction took it to -8.97.
-   1.5524,
+   1.5671,
    true,
    grand::glide},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
@@ -213,11 +208,11 @@ constexpr Model models[]{
    // held, both channels' RMS from 50 to 750 ms after the strike, as the
    // benchmark sets a case's gain). Below it the shared velocity response
    // (responseAt) keeps the two medians within 1 dB of each other.
-   // Re-pinned in 0.4.23, with its tube, to the -9.12 and -8.99 VU they read
-   // before, from 2.2837 and 2.2864: the correction to the blend between
-   // recorded pitches (MeasuredNetworkKeys.h) took them to -9.14 and -9.11.
-   2.2878,
-   2.3123,
+   2.2837,
+   // Re-pinned in 0.4.23 to the -9.00 VU the tube read before, from 2.2864:
+   // the correction to the blend between recorded pitches
+   // (MeasuredNetworkKeys.h) took it to -9.11.
+   2.3142,
    false,
    upright::glide},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),kawai::phantoms.data(),

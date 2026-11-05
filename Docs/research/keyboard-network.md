@@ -360,10 +360,11 @@ development machine's figure, not Reason's).
 
 ## A correction to the blend
 
-Since 0.4.23 the grand's and the upright's keys between recorded pitches
-blend the two pitches' fits as before and then reshape how each partial
-decays, by a correction learned at recorded pitches it hid (step 9 above).
-Its weights and its scores at the three knobs it was trained at are kept in
+Since 0.4.23 the grand's and the upright's keys between two recorded pitches
+above the bass break, where both pitches' strings are plain, blend the two
+pitches' fits as before and then reshape how each partial decays, by a
+correction learned at recorded pitches it hid (step 9 above). Its weights
+and its scores at the three knobs it was trained at are kept in
 [keyboard-network-correction-2026-11-05](keyboard-network-correction-2026-11-05/);
 the head of the correction's section in `Tools/keyboard_network.py` gives
 the reasons for its form, and Docs/decisions.md (2026-11-05) the owner's
@@ -392,7 +393,8 @@ blend of the pitches around them with the hidden pitch's own fit, by each
 channel's energy over 0.05 to 0.75, 0.75 to 1.5 and 1.5 to 3.5 s. Trained
 at the knobs 10, 100 and 1000 (about 26 minutes each on one thread), the one
 at 1000 ships. Its rms error in those energies, in dB, against the hidden
-pitches' fits (train) and the dev takes' recordings:
+pitches' fits (train) and the dev takes' recordings, corrected at every key
+between as it was trained:
 
 | Piano | Train, blend | Train, corrected | Dev, blend | Dev, corrected |
 | --- | --- | --- | --- | --- |
@@ -402,65 +404,86 @@ pitches' fits (train) and the dev takes' recordings:
 | hamburg | 13.33 | 11.74 | 10.79 | 12.42 |
 | newyork | 12.20 | 11.42 | 9.67 | 10.07 |
 
-The blend leaves the grand's dev takes short: against their recordings,
-partials 1 to 15 stand 3.0 and 3.7 dB under over 0.75 to 1.5 and 1.5 to
-3.5 s, and partials 16 to 39 2.2 and 2.5 dB under. Corrected they stand 2.6
-and 3.3, and 1.3 and 1.5 dB under; partials from the 40th move from +1.7
-and −0.2 to +2.0 and +0.1 dB. On the upright's the strong partials' tails
-come 0.1 to 0.2 dB closer and the partials from the 40th, which the blend
-plays 4.7 dB over from 1.5 s, 3.2 dB over. So from the blend's start the
-corrected keys ring on longer than blended, and where their upper partials
-ring less, as the upright's from the 40th, the blend overshot the
-recordings.
+The blend leaves the keys between short. At the grand's dev takes the
+correction touches, D♯3, D♯5 and D♯7, partials 1 to 15 stand 3.1 and 3.5 dB
+under their recordings over 0.75 to 1.5 and 1.5 to 3.5 s blended and 2.2 and
+2.5 dB under corrected, partials 16 to 39 4.6 and 4.8 dB under and 3.2 and
+2.5 corrected, and partials from the 40th 1.3 and 7.5 dB under and 1.0 and
+6.1 corrected. At the upright's, G♯3, B3, C5 and E6, partials 1 to 15 stand
+1.2 and 2.9 dB under, corrected 1.0 and 2.5, and partials 16 to 39 5.9 and
+6.6, corrected 5.4 and 5.0. So the corrected keys ring on longer than
+blended, toward how the recordings ring.
 
 The window leaves each key's first 50 ms free. Struck alone at velocity 72,
 each key between against the line through its recorded neighbours' levels,
-the grand's keys between start over their first 50 ms on average 0.26 dB
-over that line below C3 and 0.69 dB under it from C6 up blended, and
-0.51 dB over and 1.25 dB under corrected; the upright's move by 0.22 dB or
-less in each register.
+the grand's keys between from C6 up start over their first 50 ms on average
+0.69 dB under that line blended and 1.26 dB under corrected, and those from
+C3 to B5 0.10 and 0.04 dB over it; below C3 they blend as before. The
+upright's move by 0.22 dB or less in each register.
 
 The recording benchmark (`Tools/benchmark_recordings.py`) decided for each
-piano, against 0.4.22 on the dev takes, which no fit holds:
+piano, against 0.4.22 on the dev takes, which no fit holds. The grand's and
+the upright's rows are the version that ships, corrected above the bass
+break; the other three pianos' are the correction at every key between:
 
 | Piano | Dev takes | Measures closer | Further | A pitch's measures past a tolerance |
 | --- | --- | --- | --- | --- |
-| grand | 156 | 8 of 12 | 4, by 0.011 or less | none |
-| upright | 21 | 7 of 12 | 5, by 0.046 or less | none |
+| grand | 156, 48 of them corrected | 7 of 12 | 5, by 0.019 or less | none |
+| upright | 21, 16 of them corrected | 9 of 12 | 3, by 0.046 or less | none |
 | kawai | 23 | 7 of 12 | 5, sustain 0.29 dB | 6, at 5 pitches |
 | hamburg | 8 | 4 of 12 | 8, envelope 2.11 dB | 9, at 2 pitches |
 | newyork | 17 | 6 of 12 | 6, decay 1.09 dB/s | 6, at 2 pitches |
 
-The grand's dev takes come closer in rise (0.22 ms), sustain (0.16 dB),
-envelope (0.12 dB), decay (0.09 dB/s) and partial levels (0.08 dB), and the
-upright's in envelope (0.19 dB), partial levels (0.13 dB) and sustain
-(0.12 dB) ([grand](../validation/grand-blend-correction-benchmark-2026-11-05.md),
+At the 48 takes it corrects, the grand's come closer in sustain (0.61 dB),
+envelope (0.45 dB), partial levels (0.28 dB), decay (0.23 dB/s) and rise
+(0.14 ms), and further in tuning (0.06 cents) and four measures by 0.03 or
+less; at the 16, the upright's come closer in envelope (0.37 dB), sustain
+(0.22 dB), partial levels (0.19 dB) and six measures more, and further in
+tuning (0.06 cents), noise (0.02 dB) and image (0.006 dB)
+([grand](../validation/grand-blend-correction-benchmark-2026-11-05.md),
 [upright](../validation/upright-blend-correction-benchmark-2026-11-05.md)).
-The Kawai's take six measures past a tolerance at five pitches, F♯7's
-sustain 7.18 to 8.20 dB the most, and New York's at E4 and C6, both in
-ten-key gaps, C6's decay 8.27 to 10.79 dB/s. The Hamburg's keys play the
-network's partials, which stand closer. So the grand and the upright take
-the correction (`CORRECTION` and `CORRECTED` in the writer); the train
-takes, at the recorded pitches, score as before to four decimals but for the
-level, which their output re-pinned for the meter (Docs/decisions.md,
-2026-11-05) moves by 0.002 dB or less. The engine stage's frame score (What
-today's engine scores), which counts each frame's level and so the beats the
-correction does not place, has the grand's dev takes 7.78 dB off against
-7.79 blended and the upright's 9.66 against 9.56.
+Their train takes, at the recorded pitches, score as in 0.4.22 on every
+measure to four decimals.
 
-The grand's sealed takes, D♯2, D♯4 and D♯6 at every layer, were opened for
-this candidate: it stands closer on 8 of the 12 measures (partial levels
-0.65 dB, sustain 0.62 dB, decay 0.61 dB/s, envelope 0.41 dB) and further on
-4 (rise 2.42 ms, noise 0.08 dB, attack 0.05 dB, image 0.03 dB), with D♯2's
-rise, 9.12 to 16.28 ms, and envelope, 1.86 to 2.38 dB, past a tolerance
-([report](../validation/grand-blend-correction-sealed-2026-11-05.md)).
+Corrected at every key between, as trained, the grand's 156 stood closer on
+8 measures and further on 4, and the upright's 21 closer on 7 and further on
+5, again none past a tolerance. But below the break it took the envelope
+and the sustain further from the recordings at every pitch scored there:
+the grand's D♯1 (envelope 4.38 to 4.54 dB, sustain 4.38 to 4.67 dB), the
+upright's D♯2 (2.09 to 2.50 and 8.96 to 9.15 dB, and further on 9 of the 12
+measures) and the grand's sealed D♯2 (1.86 to 2.38 and 5.58 to 5.67 dB, its
+envelope and its rise, 9.12 to 16.28 ms, past a tolerance), where at all
+nine pitches above it the envelope came closer. So the writer corrects only
+between two plain-string pitches. That restriction was chosen after the
+grand's sealed takes had been opened for the correction at every key
+between, so D♯2 no longer stands as untouched evidence for it.
+
+The Kawai's take six measures past a tolerance at five pitches, F♯7's
+sustain 7.18 to 8.20 dB the most, five of them above its bass break, and
+New York's at E4 and C6, both in ten-key gaps above its break, C6's decay
+8.27 to 10.79 dB/s. The Hamburg's keys play the network's partials, which
+stand closer. So the grand and the upright take the correction
+(`CORRECTION` and `CORRECTED` in the writer). The engine stage's frame score
+(What today's engine scores), which counts each frame's level and so the
+beats the correction does not place, has the grand's dev takes 7.78 dB off
+against 7.79 blended and the upright's 9.58 against 9.56.
+
+The grand's sealed takes, D♯2, D♯4 and D♯6 at every layer, were opened
+twice, for the correction at every key between and for this version, which
+plays D♯2 as 0.4.22 does. At D♯4 and D♯6, 32 takes, it stands closer on 9
+of the 12 measures (partial levels 0.98 dB, sustain 0.97 dB, decay
+0.91 dB/s, envelope 0.87 dB) and further on 3 (rise 0.06 ms, attack
+0.03 dB, image 0.02 dB), and no pitch passes a tolerance
+([report](../validation/grand-blend-correction-sealed-2026-11-05.md)). The
+upright's sealed takes were not scored: its library is on the owner's
+computer, which was offline.
 
 The correction is figured once per strike, as the blend is, and costs no CPU
 the measurement can tell: struck chromatically at velocities 40 and 100 with
-the pedal down, the grand renders in a median 6.70 s of CPU where 0.4.22
-took 6.68 s, and the upright in 4.91 s where it took 4.96 s (seven runs of
+the pedal down, the grand renders in a median 6.64 s of CPU where 0.4.22
+took 6.59 s, and the upright in 4.96 s where it took 5.11 s (seven runs of
 each in alternating order, 48 s of audio, on a 2.1 GHz Xeon; a development
-machine's figure, not Reason's).
+machine's figure, not Reason's), each within the runs' spread.
 
 ## Checks
 
@@ -575,5 +598,5 @@ for each of its five cross-validation entries on three workers, about five
 and a half hours with its two final fits. The correction trained for 26
 minutes at each knob on one thread, and its weights take 0.28 MB.
 Writing the table, the Hamburg's partials and the grand's and the upright's
-corrections, takes about eight seconds, and the table takes 2.0 MB of
+corrections, takes about eight seconds, and the table takes 1.9 MB of
 source.

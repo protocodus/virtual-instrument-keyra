@@ -45,32 +45,44 @@ the checkout from a fetched copy of the library.
 
 ### 0.4.23 — 2026-11-05 — the grand's and the upright's keys between recorded pitches ring on as recorded keys do
 
-The Kakegawa grand's and the upright's keys between their recorded pitches
-still blend the two pitches' fits, and now reshape how each partial decays
-by a correction the keyboard network learned from the five pianos' recorded
-pitches, hiding them one to three at a time and comparing the blend around
-them with their fits. It speeds or slows each partial's decay and moves its
-level between its quickly and slowly decaying parts, and keeps each
-channel's power from 50 to 750 ms where the blend put it; the recorded
-pitches play their fits as before. On the grand's never-fitted recordings, 156 takes, the keys
-between stand closer on 8 of the benchmark's 12 measures, the rise by
-0.22 ms, the tone from half a second to three seconds by 0.16 dB, the
-envelope by 0.12 dB, the decay by 0.09 dB/s and the partial levels by
-0.08 dB, and further on 4, by 0.011 or less; on the upright's 21, closer on
-7, the envelope by 0.19 dB, the partial levels by 0.13 dB and that tone by
-0.12 dB, and further on 5, by 0.046 or less. No pitch stands further on any
+The Kakegawa grand's and the upright's keys between two recorded pitches
+above the bass break, where both pitches' strings are plain, still blend the
+two pitches' fits, and now reshape how each partial decays by a correction
+the keyboard network learned from the five pianos' recorded pitches, hiding
+them one to three at a time and comparing the blend around them with their
+fits. It speeds or slows each partial's decay and moves its level between
+its quickly and slowly decaying parts, and keeps each channel's power from
+50 to 750 ms where the blend put it; the recorded pitches play their fits as
+before. On the never-fitted recordings of the keys it corrects, the grand's
+48 takes at D♯3, D♯5 and D♯7 stand closer on 7 of the benchmark's 12
+measures, the tone from half a second to three seconds by 0.61 dB, the
+envelope by 0.45 dB, the partial levels by 0.28 dB, the decay by 0.23 dB/s
+and the rise by 0.14 ms, and further on 5, the tuning by 0.06 cents and the
+others by 0.03 or less; the upright's 16 at G♯3, B3, C5 and E6 closer on 9,
+the envelope by 0.37 dB, that tone by 0.22 dB and the partial levels by
+0.19 dB, and further on 3, by 0.06 or less. No pitch stands further on any
 measure by more than its tolerance
 ([grand](Docs/validation/grand-blend-correction-benchmark-2026-11-05.md),
 [upright](Docs/validation/upright-blend-correction-benchmark-2026-11-05.md)).
-The reshaped decays moved the two pianos' meter readings by 0.02 to
-0.12 VU, so their output and tube are re-pinned to what they read before,
-which plays every key 0.01 to 0.11 dB quieter or louder than in 0.4.22.
-Four presets then read off their approved levels, Felt Nocturne's typical
-playing by +0.08 VU, Felt Upright's by −0.23 VU, Pop Upright's by
-+0.24 VU and Open Strings' loudest chords by +0.003 VU, and go to the owner
-for approval. Their typical playing is a median over ninety events, and
-moved because other events now sit either side of it: event by event the
-three moved by a median of 0.01 dB.
+The grand's sealed takes at D♯4 and D♯6, opened for this version, stand
+closer on 9, the partial levels by 0.98 dB, that tone by 0.97 dB, the decay
+by 0.91 dB/s and the envelope by 0.87 dB
+([sealed](Docs/validation/grand-blend-correction-sealed-2026-11-05.md)).
+Below the break, on the wound strings, the correction took the envelope and
+that tone further from the recordings at all three pitches scored there (the
+grand's D♯1 and sealed D♯2, the upright's D♯2), and the sealed D♯2's rise
+and envelope past a tolerance, so the keys between there blend as before.
+The grand reads on Reason's meter as in 0.4.22, and the upright's tube,
+which the correction took 0.10 VU quieter, is re-pinned to what it read
+before. Three presets
+then read past their approved levels, the Kakegawa Grand's and Open Strings'
+loudest chords by +0.005 and +0.012 VU and Felt Upright's typical playing by
+−0.24 VU, and Pop Upright's typical playing, −0.05 VU off, sits at the edge
+of its guard; the four go to the owner for approval. Typical playing is a
+median over ninety events: Felt Upright's moved because F6 struck at
+velocity 110 now reads 0.49 dB lower over its loudest 300 ms and sits at the
+median, where event by event the upright's presets moved by a median of
+0.02 to 0.03 dB.
 The Hamamatsu and New York grands, whose keys between it took past a
 tolerance at some pitches, blend as before, and the Hamburg keeps the
 network's partials ([keyboard network](Docs/research/keyboard-network.md#a-correction-to-the-blend)).
@@ -1100,18 +1112,19 @@ they were. Its phases come from the nearer pitch, its right channel's lag
 moves between the two pitches' as the blend's does, and a lane the network
 decays faster than both fits around the key is left out: it clicked.
 
-The Kakegawa grand's and the upright's keys between their recorded pitches
-blend them and then take a correction the same tool learns (`correct`): it
-hides the five pianos' recorded pitches one to three in a row and compares
-the blend of the pitches around them with their own fits, by each channel's
-energy over 0.05 to 0.75, 0.75 to 1.5 and 1.5 to 3.5 s. For each partial it
-gives a shift of its lanes' decay rates and a tilt of their levels between
-its fast lanes and its slow, both vanishing at the recorded pitches; the
-engine applies them to the blend and then puts each channel's power over 50
-to 750 ms back where the blend has it, so the per-key trims, the tuning and
-the channel balance stay the blend's. `Tools/write_network_tables.py` writes
-its figures into the same header. The Hamamatsu and New York grands
-blend between their recorded pitches at every key.
+The Kakegawa grand's and the upright's keys between two recorded pitches
+above the bass break blend them and then take a correction the same tool
+learns (`correct`): it hides the five pianos' recorded pitches one to three
+in a row and compares the blend of the pitches around them with their own
+fits, by each channel's energy over 0.05 to 0.75, 0.75 to 1.5 and 1.5 to
+3.5 s. For each partial it gives a shift of its lanes' decay rates and a
+tilt of their levels between its fast lanes and its slow, both vanishing at
+the recorded pitches; the engine applies them to the blend and then puts
+each channel's power over 50 to 750 ms back where the blend has it, so the
+per-key trims, the tuning and the channel balance stay the blend's.
+`Tools/write_network_tables.py` writes its figures into the same header.
+Their keys between in the wound bass, where a pitch around them is below the
+break, and the Hamamatsu's and New York's at every key, blend as before.
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of
@@ -1403,13 +1416,15 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   decays, so the blend's tuning and stereo balance stay, and the blend's
   beats, which fall elsewhere than a recorded key's, stay too. It holds each
   channel's power from 50 ms, not before: struck alone at velocity 72, the
-  grand's keys between from C6 up start 0.56 dB further under their
-  recorded neighbours over their first 50 ms than blended. On the
-  grand's never-fitted takes its partials from the 1st to the 15th still
-  ring 2.6 dB under their recordings from 0.75 to 1.5 s and 3.3 dB under
-  from 1.5 to 3.5 s (blended, 3.0 and 3.7). The Hamamatsu's and New York's
-  keys between, which it took past a tolerance at some pitches (New York's
-  C6 decay 8.27 to 10.79 dB/s from its recording), blend without it
+  grand's keys between from C6 up start 0.57 dB further under their
+  recorded neighbours over their first 50 ms than blended. At the grand's
+  never-fitted takes it corrects, its partials from the 1st to the 15th
+  still ring 2.2 dB under their recordings from 0.75 to 1.5 s and 2.5 dB
+  under from 1.5 to 3.5 s (blended, 3.1 and 3.5). It leaves the keys
+  between in the wound bass blended, which it took further from their
+  recordings, and the Hamamatsu's and New York's, which it took past a
+  tolerance at some pitches (New York's C6 decay 8.27 to 10.79 dB/s from
+  its recording)
   ([keyboard network](Docs/research/keyboard-network.md#a-correction-to-the-blend)).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s

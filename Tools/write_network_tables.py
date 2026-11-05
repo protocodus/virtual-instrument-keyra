@@ -63,12 +63,12 @@ takes from the network, at the key, the order and each layer's level:
   so that a strike arrives across the partials as the recorded pitch's does.
 
 With --corrections and --corrected it writes, for the pianos named there, a
-correction to the blend at each of those keys instead (keyboard_network.py
-`correct`): for every order the blend plays, a shift of its lanes' decay
-rates in log and a tilt of their levels between the fast lanes and the slow
-(dB), which the engine applies to the blend, keeping each channel's power
-over 50 to 750 ms where the blend puts it. A piano takes the network's
-partials or the correction, not both.
+correction to the blend instead at each of those keys between two recorded
+pitches above the bass break (keyboard_network.py `correct`): for every order
+the blend plays, a shift of its lanes' decay rates in log and a tilt of their
+levels between the fast lanes and the slow (dB), which the engine applies to
+the blend, keeping each channel's power over 50 to 750 ms where the blend
+puts it. A piano takes the network's partials or the correction, not both.
 
 Its defaults write the table that ships (WEIGHTS, SHIPPED, CORRECTION and
 CORRECTED below):
@@ -114,18 +114,20 @@ PIANOS = kn.ENGINE_PIANOS
 # run's tables leave the Hamburg's 10.12 off and the others' 7.80, 9.86, 12.44
 # and 12.13.
 SHIPPED = ['hamburg']
-# The pianos whose keys between recorded pitches blend them with the
-# correction's departure applied (keyboard_network.py correct), and the
-# correction they take it from: those whose dev takes it brought closer on
-# most measures of Tools/benchmark_recordings.py with no pitch further on a
-# measure by more than its tolerance (Docs/decisions.md, 2026-11-05). Trained
-# at the knob 1000, it brings the grand's 156 closer on 8 of the 12 measures
-# (rise 0.22 ms, sustain 0.16 dB, envelope 0.12 dB, decay 0.09 dB/s, partial
-# levels 0.08 dB) and the upright's 21 on 7 (envelope 0.19 dB, partial levels
-# 0.13 dB, sustain 0.12 dB), each other measure moving 0.05 or less. It takes
-# six measures past a tolerance at five of the Kawai's dev pitches and six at
-# two of New York's, New York's decay 1.09 dB/s further, and leaves the
-# Hamburg's further than its network keys (sustain 1.78 dB, envelope 2.11 dB).
+# The pianos whose keys between recorded pitches above the bass break blend
+# them with the correction's departure applied (keyboard_network.py correct),
+# and the correction they take it from: those whose dev takes it brought
+# closer on most measures of Tools/benchmark_recordings.py with no pitch
+# further on a measure by more than its tolerance (Docs/decisions.md,
+# 2026-11-05). Trained at the knob 1000, it brings the grand's 48 dev takes
+# at the keys it corrects closer on 7 of the 12 measures (sustain 0.61 dB,
+# envelope 0.45 dB, partial levels 0.28 dB, decay 0.23 dB/s, rise 0.14 ms)
+# and the upright's 16 on 9 (envelope 0.37 dB, sustain 0.22 dB, partial
+# levels 0.19 dB), each other measure moving 0.06 or less. At every key
+# between it takes six measures past a tolerance at five of the Kawai's dev
+# pitches, all but one above its break, and six at two of New York's, New
+# York's decay 1.09 dB/s further, and leaves the Hamburg's further than its
+# network keys (sustain 1.78 dB, envelope 2.11 dB).
 CORRECTION = ROOT / 'Docs/research/keyboard-network-correction-2026-11-05/correction-medium-1000.npz'
 CORRECTED = ['grand', 'upright']
 FROM, TO = .05, .75   # KeyraEngine.cpp windowPower: the window the layers' levels are measured over
@@ -354,12 +356,21 @@ def load_correction(path):
 @torch.no_grad()
 def piano_corrections(name, net, log):
     """The correction's departure at every key strictly between two recorded
-    pitches of the piano, at every order either holds (all of which the blend
-    plays): per key, (order, rate shift, tilt)."""
+    pitches of the piano at or above its bass break, at every order either
+    holds (all of which the blend plays): per key, (order, rate shift, tilt)."""
     table = kn.header_of(name)
     anchors = table['anchors']
     piano, keys = net.pianos.index(name), {}
+    # Only between two plain-string pitches. Below the break, on the wound
+    # strings, the correction took the envelope and the sustain of
+    # Tools/benchmark_recordings.py further from the recordings at every pitch
+    # scored there, the grand's D#1 and sealed D#2 and the upright's D#2, the
+    # sealed D#2's rise and envelope past a tolerance, where at the nine above
+    # it the envelope came closer (Docs/decisions.md, 2026-11-05).
+    tenor = int(net.breaks[piano, 0])
     for a, b in zip(anchors, anchors[1:]):
+        if a['note'] < tenor:
+            continue
         orders = sorted({q['order'] for q in a['partials']} | {q['order'] for q in b['partials']})
         order = torch.tensor(orders, dtype=torch.float64)
         for note in range(a['note'] + 1, b['note']):
@@ -388,8 +399,8 @@ def header(written, sources, corrected=None, correction=None):
             + '; anchored at the recorded pitches') if sources else \
         'with no piano\'s network: every key plays as the fits give it'
     if correction:
-        made += (f'; and the corrections to the blend at the keys of {", ".join(sorted(corrected))} from the '
-                 f'correction {correction[0]} (sha256 {correction[1][:16]})')
+        made += (f'; and the corrections to the blend at the keys of {", ".join(sorted(corrected))} above '
+                 f'the bass break from the correction {correction[0]} (sha256 {correction[1][:16]})')
     lines = fit.wrap(f'Generated by Tools/write_network_tables.py {made}; regenerate, never edit.')
     lines += fit.wrap('Each Keyra piano\'s keys between two recorded pitches, which KeyraEngine.cpp plays '
                       'from these partials in place of blending the two pitches\' fits, and the corrections '
