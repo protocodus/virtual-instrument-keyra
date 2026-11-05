@@ -2834,3 +2834,101 @@ the candidate because it is better". No letter was chosen by ear, and no
 listening preference is recorded. The choice licenses shipping the three as
 their fits give them. It does not settle the beat's fixed timing, which Known
 gaps keeps.
+
+## 2026-11-05 — the Hamburg's keys between recorded pitches play the keyboard network
+
+The owner asked for the keyboard network to be applied: tables at the keys
+between recorded pitches, played in the engine, the fits kept at the
+recorded pitches, the benchmark deciding for each piano. 0.4.22 plays the
+first run's network (2026-11-04, the five Keyra pianos' train pitches alone)
+at the Hamburg grand's keys between its recorded pitches, written by
+`Tools/write_network_tables.py` with each partial's power moved to the fits'
+at the recorded pitches around it; the other four pianos blend as before.
+It was chosen on measurements. No listening test was run and no listening
+preference is recorded.
+
+The engine's score (`keyboard_network.py engine`, the rms level error at the
+dev takes, dB) for the grand, the upright, the Kawai, the Hamburg and New
+York: blending (0.4.21) 7.79, 9.56, 10.56, 11.04 and 11.65; the first run's
+tables 7.73, 9.94, 11.13, 9.38 and 12.36; the second run's (2026-11-05, all
+ten libraries) 7.80, 9.86, 12.44, 10.12 and 12.13. Every train figure stays
+within 0.02 dB of blending. The first run's figures quoted earlier the same
+day for the grand, the upright, the Kawai and New York (7.83, 10.01, 11.03
+and 11.95) came from a writer that did not yet move the levels to the fits'
+and are superseded.
+
+The recording benchmark (`Tools/benchmark_recordings.py`, paired against
+0.4.21) decided between the two pianos the first run brought closer. On the
+Hamburg's eight dev takes, at E3 and C♯5, 0.4.22 stands closer on 7 of its
+12 measures: envelope −1.68 dB, sustain −1.36 dB, decay −0.59 dB/s, rise
+−0.33 ms, noise −0.19 dB, image −0.12 dB and early −0.07 dB; and further on
+5: tuning +0.38 cents, level +0.31 dB (each run against its own median
+gain), attack +0.13 dB, coherence +0.008 and partial levels +0.02 dB. Past a
+tolerance: E3's partial levels 8.89 → 10.22 dB, its noise 5.01 → 5.94 dB,
+its attack 6.68 → 7.32 dB and its coherence 0.19 → 0.21, and C♯5's tuning
+0.90 → 1.57 cents. The train takes stay within 0.02 dB, but for the level:
+the paired comparison holds 0.4.21's median gain, so the re-pin below shows
+in it as 0.70 → 1.93 dB on the train takes and 1.84 → 1.38 on the dev takes,
+where each run against its own median reads 0.70 → 0.69 and 1.84 → 2.15
+([report](validation/hamburg-network-keys-benchmark-2026-11-05.md)). On the
+grand's dev takes the first run's tables stand further on 6 measures and
+closer on 5, and 8 measures at four notes pass a tolerance: D♯3's envelope
+1.59 → 5.73 dB,
+D♯7's tuning 3.86 → 6.12 cents, partial levels 2.78 → 4.21 dB and decay
+2.81 → 4.11 dB/s, D♯1's partial levels 6.73 → 7.91 dB and sustain 4.38 →
+5.44 dB, D♯5's rise 3.31 → 5.21 ms and D♯7's coherence. So the grand keeps
+blending.
+
+Written other ways, the Hamburg's first-run tables measured worse:
+
+- at the network's own levels, 8.96 dB in the engine, but the per-key trims
+  (initCalibrations) then moved the recorded pitches: the benchmark's level
+  error went from 0.70 to 2.95 dB on the train takes and from 1.84 to 6.01
+  on the dev takes;
+- with the lanes faster than both fits kept at the fits' fastest decay
+  instead of left out, 12.74 dB;
+- with the decays moved towards the fits' as well, in three ways, 9.35 to
+  10.61 dB, each failing `Keyra.Engine`'s Ring check on the Hamburg's C4,
+  and the best of them on the benchmark the envelope 1.88 dB, sustain
+  1.18 dB and partial levels 0.84 dB further from the dev takes;
+- with the blend's lanes that decay faster than the network's in the places
+  of the lanes left out, the network's scaled to keep each partial's power
+  over 50 to 750 ms (the owner's question of a blend of both), 9.49 dB, and
+  on the benchmark further than the shipped tables on 6 of the 12 measures
+  (partial levels +0.26 dB against +0.02, sustain −0.93 dB against −1.36,
+  decay −0.50 dB/s against −0.63, early, image) and closer on two (tuning
+  +0.20 cents against +0.34, envelope −1.74 dB against −1.68). Its default
+  sound read −10.33 VU where the shipped tables' read −10.83.
+
+The second run's tables fail two of `Keyra.Engine`'s checks and
+`Keyra.Glide`. The Hamburg's eight dev takes compared these 18 candidates,
+and the Hamburg has no sealed takes, so its dev figures are no longer
+untouched held-out evidence.
+
+`Keyra.SoftLaneContinuity` checked that the legacy soft-pedal rank
+multiplier fails at a crossing of lane rates in four grands. The Hamburg's
+crossing, between D2 and A2 (the test strikes F2 at 123), lies at keys the
+network now plays, where no lane rate crosses, so the legacy multiplier no longer fails there; that
+case is removed with the reason beside it, and the test asks for the other
+three.
+
+The keys between strike weaker than the blend did, 2.3 dB over their first
+100 ms at velocity 80, and the Hamburg's default sound read −10.83 VU and
+its tube −10.49. Its `outputScale` and `tubeScale` are re-pinned, as on
+2026-11-04, to what they read before: 2.2622 → 2.8070 and 1.5176 → 1.4219,
+−8.95 and −9.18 VU. A recorded pitch's partials therefore play 1.87 dB
+louder, and through the tube alone 1.31 dB louder. The Hamburg Grand
+preset's typical playing reads −8.95 VU as approved, but its loudest chords
+read 2.40 VU against an approved 1.69, and through the tube 2.20 against
+1.41, with no sample past the −1.5 dBFS ceiling; `Keyra.Levels` fails on
+those two readings until the owner accepts them, and
+`Tests/Fixtures/dynamics/ApprovedLevels.h` is unchanged. `Keyra.FactoryDynamics`
+fails as it did on 0.4.21, with 1,090 of its pairs under their step floors
+(1,046 on 0.4.21: the Hamburg Grand's 102 new and 58 gone, no other
+preset's moving) and 30 chords past its maximum levels (6 on 0.4.21): the
+Hamburg Grand's chords struck at 110, 12 at each microphone, up to 2.40 VU
+against 1.64 and 2.20 against 1.41. Its floors and limits are unchanged.
+`Keyra.CpuBudget` passes, its demos playing no Hamburg; struck chromatically
+at velocities 40 and 100 with the pedal down, the Hamburg renders in a
+median 9.45 s of CPU where 0.4.21 took 14.34 s (seven alternating runs of
+each, on the development machine).

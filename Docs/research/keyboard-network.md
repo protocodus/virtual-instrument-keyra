@@ -9,10 +9,12 @@ and what makes each piano itself from a short code per piano. It runs offline
 only. The recordings are the benchmark: the network is fitted to all of them as
 a whole and never to one note.
 
-This is an experiment. The engine still plays today's tables. Writing tables
-from the network, and the engine change to 88 recorded pitches that they need,
-come next; nothing here changes the instrument. The first run's
-cross-validation, backtest and weights are kept (The first run, below).
+Since 0.4.22 the Hamburg grand plays the first run's partials at its keys
+between recorded pitches, written by `Tools/write_network_tables.py` (In the
+engine, below); the other four pianos blend theirs as before, and every
+recorded pitch plays its own fit. The first run's cross-validation, backtest
+and weights are kept (The first run, below), and the second run's
+cross-validation and backtest (The second run).
 
 `Tools/keyboard_network.py` does the work. Its head states the protocol: the
 loss, what is left free to each recording, and how cross-validation chooses.
@@ -129,10 +131,10 @@ The steps `all` runs, each of which can be run on its own:
 8. **Report:** `python3 Tools/keyboard_network.py report --run <run>` prints
    the cross-validation summary and writes `report.md` and `report.json` again.
 
-Steps still to come: the table writer, which turns a fit's weights into the
-engine's tables at all 88 keys; the engine change to 88 recorded pitches; the
-neighbour check, the recording benchmarks and the held-out cases; and the
-keyed A/B between today's tables and both settings.
+`Tools/write_network_tables.py` then writes a fit's partials at every key
+between two recorded pitches into the engine's tables (In the engine, below).
+Still to come: the keyed A/B between the blend and the network at the
+Hamburg's keys between recorded pitches.
 
 ## What the loss compares
 
@@ -183,9 +185,10 @@ colour, which gives the partials 10 to 12 dB more range across the layers
 than the recordings have; per-key loudness trims of up to several dB; and
 the strike's noise, the body's knocks and the undamped strings. A network's
 closed form holds none of these, so a network's figures and the engine's do
-not compare. Until the table writer turns a fit into tables the engine plays,
-compare a network's train figures with today's tables in closed form
-(`baseline`), and each with its own dev figures.
+not compare. Compare a network's train figures in closed form with today's
+tables in closed form (`baseline`), and each with its own dev figures; written
+into tables, a network plays in the engine and scores there as today's tables
+do (In the engine, below).
 
 Dividing the colour back out of a render is no shortcut: it divides it out of
 the noise too, which the colour never touched. Where the colour cuts deepest,
@@ -241,6 +244,109 @@ tables, which hold each key's own fit (3.55 to 6.84 dB in closed form).
 Whether its tables play better than today's is for the table writer, the
 recording benchmarks and the keyed A/B to show.
 
+## The second run
+
+On 2026-11-05, `cv --run full --arch medium --knob 1000 --workers 3`, then
+`fit` and `report`: every library in the settings, the five base libraries
+beside the five Keyra pianos' train pitches, at the architecture and knob the
+first run chose. Its report, receipt and cross-validation results are kept in
+[keyboard-network-2026-11-05/](keyboard-network-2026-11-05/); its weights
+are not, as no table written from them ships.
+
+Held out, it scored 10.24 dB, where the first run scored 9.89 at the same
+setting: the grand 10.12 (9.55), the upright 9.39 (9.35), the Kawai 10.94
+(9.20), the Hamburg 10.90 (11.34) and New York 9.73 (9.85).
+
+Backtest in closed form, rms level error in dB, the first run's in brackets:
+
+| Piano | Network, train | Network, dev |
+| --- | --- | --- |
+| grand | 8.24 (8.05) | 8.94 (9.06) |
+| upright | 8.20 (8.04) | 7.54 (7.84) |
+| kawai | 11.11 (8.36) | 11.25 (8.94) |
+| hamburg | 7.57 (7.31) | 7.69 (9.54) |
+| newyork | 7.94 (7.50) | 7.60 (7.64) |
+
+In closed form the base libraries bring four pianos' dev figures down, the
+Hamburg's by 1.85 dB, and the Kawai's up by 2.31 dB. Played in the engine,
+its tables score worse than the first run's (In the engine, below).
+
+## In the engine
+
+`Tools/write_network_tables.py` evaluates a fit at every key strictly between
+two recorded pitches and writes its partials in the engine's format into
+`Source/DSP/MeasuredNetworkKeys.h`; its head gives the reason for each step:
+
+- the orders either pitch holds, each lane's decay, offset, pickup and level
+  per layer from the network, in the fits' units;
+- no lane that decays faster than both fits beside the key: unlike the
+  fitter, the network pays nothing for a lane's amplitude, and played, those
+  lanes clicked;
+- each partial's power in each channel over 50 to 750 ms moved by what the
+  fit at each of the two pitches holds over the network there, blended
+  between the two in dB, so that the engine's per-key trims, which pull every
+  key towards its neighbours' level, leave the recorded pitches where they
+  were;
+- tuning and rise from the blend, and the right channel's lag and the phases
+  as the blend gives them.
+
+`KeyraEngine.cpp` plays a key the table holds from its partials (`series()`)
+and every other key as before. `python3 -I Tools/write_network_tables.py`
+writes the table that ships, and `Keyra.MeasuredNetworkKeys` checks that the
+header is what it writes.
+
+The `engine` stage scored each piano's dev takes with its keys between
+played from each run's tables (rms level error, dB; the train takes, at the
+recorded pitches, stay within 0.02 dB of blending):
+
+| Piano | Blending, 0.4.21 | First run | Second run |
+| --- | --- | --- | --- |
+| grand | 7.79 | 7.73 | 7.80 |
+| upright | 9.56 | 9.94 | 9.86 |
+| kawai | 10.56 | 11.13 | 12.44 |
+| hamburg | 11.04 | 9.38 | 10.12 |
+| newyork | 11.65 | 12.36 | 12.13 |
+
+The recording benchmark (`Tools/benchmark_recordings.py`) decided between
+the two pianos the first run brought closer. On the Hamburg's eight dev
+takes its keys stand closer to the recordings on 7 of the benchmark's 12
+measures (envelope 1.68 dB, sustain 1.36 dB, decay 0.59 dB/s, rise 0.33 ms,
+noise 0.19 dB, image 0.12 dB, early 0.07 dB) and further on 5 (tuning 0.38
+cents, level 0.31 dB, attack 0.13 dB, coherence 0.008, partial levels
+0.02 dB; [report](../validation/hamburg-network-keys-benchmark-2026-11-05.md)). On the grand's they stand further on 6 (envelope 0.31 dB, tuning
+0.24 cents, decay 0.17 dB/s, level and partial levels 0.04 dB, image
+0.03 dB) and closer on 5 (rise 0.56 ms, sustain 0.47 dB, early and noise
+0.05 dB, attack 0.01 dB), and 8 measures at four of its notes pass a
+tolerance, D♯3's envelope from 1.59 to 5.73 dB. So the Hamburg plays the first run's tables and the
+other four blend (`SHIPPED` in the writer; Docs/decisions.md, 2026-11-05).
+
+Written other ways, the Hamburg's first-run tables scored worse:
+
+- at the network's own levels, 8.96 dB on the dev takes, but the per-key
+  trims then moved the recorded pitches: the benchmark's level error went
+  from 0.70 to 2.95 dB on the train takes and from 1.84 to 6.01 on the dev
+  takes;
+- with the fastest lanes kept at the fits' fastest decay rather than left
+  out, 12.74 dB;
+- with each partial's decays moved towards the fits' as its levels are,
+  9.35 to 10.61 dB, failing `Keyra.Engine`'s Ring check on the Hamburg's
+  C4, and on the benchmark the envelope 1.88 dB further from the dev takes;
+- with the blend's lanes faster than the network's in the places of the
+  lanes left out, the network's lanes scaled to keep each partial's power
+  over 50 to 750 ms, 9.49 dB, and further than the shipped tables on 6 of the
+  benchmark's 12 measures, the partial levels 0.26 dB further and the
+  sustain 0.93 dB closer where the shipped tables' are 1.36 closer.
+
+The second run's tables fail two of `Keyra.Engine`'s checks and
+`Keyra.Glide`. The shipped tables strike weaker than the blend, 2.3 dB over
+the first 100 ms at velocity 80, and ring 1.0 to 1.7 dB louder from 100 ms
+on (README, Known gaps), so the Hamburg's output and tube are re-pinned to
+the readings they had (Docs/decisions.md, 2026-11-05). They cost less to
+play: struck chromatically at velocities 40 and 100 with the pedal down, the
+Hamburg renders in a median 9.45 s of CPU where 0.4.21 took 14.34 s (seven
+runs of each in alternating order, 48 s of audio, on a 2.1 GHz Xeon; a
+development machine's figure, not Reason's).
+
 ## Checks
 
 `Tests/test_keyboard_network.py` checks the training model on synthetic
@@ -263,7 +369,9 @@ pitches whose figures are known, without any recording:
 It takes about ten seconds. `all` runs it first. CTest runs it as
 `Keyra.KeyboardNetwork` (label `unit`) in a build configured with
 `-DKEYRA_ENABLE_NETWORK_TESTS=ON`, which needs NumPy, SciPy and PyTorch; CI
-does not install PyTorch, so the option is off by default. `check` (step 3
+does not install PyTorch, so the option is off by default. The same option
+registers `Keyra.MeasuredNetworkKeys`, which writes the table again from the
+kept weights (about six seconds) and checks that the header is the same. `check` (step 3
 above) is the other half: the same closed form against the engine itself.
 
 ## The settings
@@ -341,4 +449,7 @@ A training step takes about 0.2 s on four threads for the five Keyra pianos
 alone. The first run's 35 cross-validation entries took 34 to 68 minutes
 each on one thread, and its two final fits about 27 minutes each: 7 h 35 min
 on four workers, its measurements and renders already cached. Its weights
-take 7.3 MB.
+take 7.3 MB. The second run, on all ten libraries, took 93 to 123 minutes
+for each of its five cross-validation entries on three workers, about five
+and a half hours with its two final fits. Writing the Hamburg's table takes
+about six seconds, and the table takes 1.9 MB of source.

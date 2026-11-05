@@ -268,9 +268,13 @@ constexpr Model models[]{
    .305f,.282f,
    hamburg::noiseBands.data(),hamburg::noise.data(),
    // Each one's typical playing at the grand's level, -9 VU, and its tube at
-   // the pair's (Tools/KeyraLevels.cpp).
-   2.2622,
-   1.5176,
+   // the pair's (Tools/KeyraLevels.cpp). Re-pinned in 0.4.22 to the -8.95
+   // and -9.18 VU it read before, from 2.2622 and 1.5176: its keys between
+   // recorded pitches play the keyboard network's partials since, which
+   // strike weaker over their first 100 ms than the blend did, and it read
+   // -10.83 and -10.49 VU.
+   2.8070,
+   1.4219,
    true,
    hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),

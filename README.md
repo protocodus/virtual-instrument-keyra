@@ -43,6 +43,27 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.22 — 2026-11-05 — the Hamburg's keys between recorded pitches from the keyboard network
+
+The Hamburg grand's keys between its ten recorded pitches now play the
+partials the keyboard network gives them, in place of blending the two
+pitches' fits; the recorded pitches play their fits as before. The network
+is its first run's, fitted on the train recordings of the five pianos. Each
+partial keeps the blend's tuning and rise, its power is moved by what the
+fits hold over the network at the pitches around it, and the lanes the
+network decays faster than both fits are left out. On the Hamburg's
+never-fitted recordings, eight takes of E3 and C♯5, the envelope stands
+1.68 dB closer to them, the tone from half a second to three seconds
+1.36 dB closer and the decay 0.59 dB/s closer; the tuning stands 0.38 cents
+further, the tone of the first 100 ms 0.13 dB and the level 0.31 dB
+([benchmark](Docs/validation/hamburg-network-keys-benchmark-2026-11-05.md)).
+These keys strike weaker over their first 100 ms than the blend did, 2.3 dB
+at velocity 80, so the Hamburg's output is re-pinned 1.9 dB up to the
+−8.95 VU it read before, and its loudest chords read 0.9 dB higher. On the
+other four pianos the network did not bring the never-fitted recordings
+closer, and they play as before, sample for sample
+([keyboard network](Docs/research/keyboard-network.md#in-the-engine)).
+
 ### 0.4.21 — 2026-11-05 — beating in the undamped strings
 
 A unison's strings, a little mistuned and coupled through the bridge, ring as
@@ -1033,6 +1054,20 @@ partial series explains the recording, so the keys above A7 play A7's data on
 the stretch curve. Only fitted numbers enter the header; no recorded waveform
 or impulse response is loaded.
 
+The Hamburg grand's keys between its recorded pitches play the keyboard
+network's partials instead ([notes](Docs/research/keyboard-network.md)). The
+network (`Tools/keyboard_network.py`) fits a whole keyboard at once from the
+train recordings of the five pianos, and `Tools/write_network_tables.py`
+writes what it gives each such key into `Source/DSP/MeasuredNetworkKeys.h`:
+each partial's decays, unison offsets, pickups and levels per layer from the
+network, its tuning and rise from the blend, and its power in each channel
+over 50 to 750 ms moved by what the fits hold over the network at the two
+pitches around it, so that the per-key trims leave the recorded pitches where
+they were. Its phases come from the nearer pitch, its right channel's lag
+moves between the two pitches' as the blend's does, and a lane the network
+decays faster than both fits around the key is left out: it clicked. The
+other four pianos blend between their recorded pitches at every key.
+
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of
 `Tools/corpus/split-helsinki-2026-10-28.json`: 28 pitches from C1 to G7 at the
@@ -1097,7 +1132,9 @@ lists every note where a candidate is worse than the shipping engine. The [curre
 compares this engine with 0.3.0; the [upright's](Docs/validation/upright-recording-benchmark-2026-10-28.md)
 scores the upright on its own recordings against the grand's data played on
 them, and the [Hamamatsu grand's](Docs/validation/kawai-recording-benchmark-2026-10-31.md)
-likewise. `Tools/benchmark_releases.py` scores the upright's key releases against
+likewise; [another](Docs/validation/hamburg-network-keys-benchmark-2026-11-05.md)
+scores the Hamburg's keys between recorded pitches, the keyboard network's
+partials against the blend. `Tools/benchmark_releases.py` scores the upright's key releases against
 its train and dev key-release takes ([report](Docs/validation/upright-release-benchmark-2026-10-28.md)),
 and `Tools/benchmark_pedal.py` the grand's sustain pedal going down against
 its train and dev pedal-down takes, band by band, the strings' ring against
@@ -1301,6 +1338,19 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   up to 7 dB over both A7's and C8's in its left channel from 200 to 450 ms,
   and 6 dB over in its first 50 ms, where 0.4.14 played it 24 dB over from
   200 to 450 ms ([decisions](Docs/decisions.md), 2026-11-04).
+- The Hamburg grand's keys between recorded pitches, which play the keyboard
+  network's partials, strike weaker than the fits at its recorded pitches and
+  ring on louder: at velocity 80 they stand 2.3 dB under the blend over their
+  first 100 ms and 1.0 to 1.7 dB over it from 100 ms on. A recorded pitch
+  therefore stands apart from the mean of its two neighbours by 2.5 dB rms
+  over the first 100 ms (5.3 dB at most; blended, 0.7 and 1.8) and by 4.6 dB
+  rms from 0.8 to 1.6 s (blended, 1.0), G♯5 at velocity 32 12.5 dB under its
+  neighbours there. On the never-fitted E3 and C♯5 the tuning stands 0.38
+  cents further from the recordings than blended, and E3's partial levels
+  1.3 dB further. The Hamburg has no sealed recordings, and the takes of
+  those two pitches chose between the tables written for it, so they are no
+  longer untouched held-out evidence ([decisions](Docs/decisions.md),
+  2026-11-05).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
   further than 0.3.0's. All but four undamped keys ring as one string at one

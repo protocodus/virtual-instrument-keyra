@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """The keyboard network's partials at every key between two recorded pitches
-of each Keyra piano, written as Source/DSP/MeasuredNetworkKeys.h for
+of the Keyra pianos it plays, written as Source/DSP/MeasuredNetworkKeys.h for
 KeyraEngine.cpp to play there in place of blending the two pitches' fits.
 
-Today the engine plays a key between two recorded pitches by blending their
-fitted partials (KeyraEngine.cpp series() and blend()). This writes, for
-every such key, what the keyboard network (Tools/keyboard_network.py) gives
-it instead, in the engine's own partial format (MeasuredTypes.h), so that
-the engine plays the network there and the fits at the recorded pitches.
-A key's partials are the orders either recorded pitch around it holds, up
-to the engine's highest partial, and each takes from the network, at the
-key, the order and each layer's level:
+The engine plays a key between two recorded pitches by blending their fitted
+partials (KeyraEngine.cpp series() and blend()) unless this table holds the
+key. This writes, for every such key of the pianos named, what the keyboard
+network (Tools/keyboard_network.py) gives it instead, in the engine's own
+partial format (MeasuredTypes.h), so that the engine plays the network there
+and the fits at the recorded pitches. A key's partials are the orders either
+recorded pitch around it holds, up to the engine's highest partial, and each
+takes from the network, at the key, the order and each layer's level:
 
 - its lanes' decays, offsets, pickups and levels per layer. The network's
   level input is each layer's level under the loudest, layerLevelDb, the
@@ -35,6 +35,18 @@ key, the order and each layer's level:
 - its levels in the fits' units: the network's times its recording term for
   the piano's library, over the fits' channel gains against the same
   measurements (keyboard_network.py `baseline`);
+- and those levels moved by the network's error at the two recorded pitches
+  around the key: each partial's power in each channel over the window the
+  layers' levels are measured over moves by what the fit at each pitch holds
+  over the network's there, written as the keys between the two are (the
+  same lanes silent), blended between the two in dB. The first run's
+  network stands 13.0 dB rms off the Hamburg's fits at their own pitches,
+  per partial, layer and channel, and the engine trims every key towards
+  its neighbours' level (initCalibrations), so keys between at the
+  network's own level move the recorded pitches too: so written, the
+  Hamburg's train takes' level error (Tools/benchmark_recordings.py
+  level_db) went from 0.70 to 2.95 dB and its dev takes' from 1.84 to 6.01,
+  where moved they stand at 0.69 and 2.21;
 - not its tuning or its rise: a partial's cents and rise are the engine's
   between the two pitches (blend()), so that the keys play in tune and
   strike as they do today. The network rises the upper partials ever slower
@@ -50,14 +62,11 @@ key, the order and each layer's level:
   lanes together to the nearer pitch's partial at each layer (windowCross),
   so that a strike arrives across the partials as the recorded pitch's does.
 
-With --anchored the network's error at the two recorded pitches around a key
-is carried to the key as well: each partial's power in each channel over the
-window the layers' levels are measured over moves by what the fit at each
-pitch holds over the network's there, written as the keys between the two
-are (the same lanes silent), blended between the two in dB.
+Its defaults write the table that ships (WEIGHTS and SHIPPED below):
 
-    python3 -I Tools/write_network_tables.py --weights Docs/research/keyboard-network-2026-11-04
-    python3 -I Tools/write_network_tables.py --weights ... --check   # is the header what it writes?
+    python3 -I Tools/write_network_tables.py
+    python3 -I Tools/write_network_tables.py --check   # is the header what it writes?
+    python3 -I Tools/write_network_tables.py --weights out/network/full --pianos grand hamburg --output <file>
 """
 from __future__ import annotations
 
@@ -78,8 +87,22 @@ import piano_analysis as pa  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 HEADER = ROOT / 'Source/DSP/MeasuredNetworkKeys.h'
-BASELINE = ROOT / 'Docs/research/keyboard-network-2026-11-04/baseline.json'
+WEIGHTS = ROOT / 'Docs/research/keyboard-network-2026-11-04'   # the run whose tables ship
+BASELINE = WEIGHTS / 'baseline.json'
 PIANOS = ['grand', 'upright', 'kawai', 'hamburg', 'newyork']   # KeyraEngine.h Piano, in its order
+# The pianos that play the network between their recorded pitches: those whose
+# dev takes it brought closer to their recordings both in the engine
+# (keyboard_network.py engine, the level error) and on most measures of
+# Tools/benchmark_recordings.py (Docs/decisions.md, 2026-11-05). With the first
+# run's tables the Hamburg's dev takes stand 9.38 dB off in the engine where
+# blending leaves them 11.04, and the benchmark has them closer on 7 of its 12
+# measures. The grand's stand 7.73 against 7.79, but the benchmark has them
+# further off on 6 measures and closer on 5, 8 measures past a tolerance;
+# the upright's, the Kawai's and New York's stand further off than blending
+# (9.94 against 9.56, 11.13 against 10.56 and 12.36 against 11.65). The second
+# run's tables leave the Hamburg's 10.12 off and the others' 7.80, 9.86, 12.44
+# and 12.13.
+SHIPPED = ['hamburg']
 FROM, TO = .05, .75   # KeyraEngine.cpp windowPower: the window the layers' levels are measured over
 
 
@@ -230,7 +253,7 @@ def key_tuning(a, b, t):
     return f1, math.exp(math.log(a['B']) + t * (math.log(b['B']) - math.log(a['B'])))
 
 
-def piano_keys(name, net, piano, library, gain, anchored, log):
+def piano_keys(name, net, piano, library, gain, log):
     """Every key strictly between two of the piano's recorded pitches: its
     partials, as (order, cents, rise seconds, rise slope, partial dict),
     lowest order first."""
@@ -255,9 +278,8 @@ def piano_keys(name, net, piano, library, gain, anchored, log):
         # The fastest decay either fit holds at each order, which no lane of
         # the keys between them exceeds.
         limit = {o: max(fastest(held[o]) for held in pair if o in held) for o in set(pair[0]) | set(pair[1])}
-        if anchored:
-            residual = [held_over(x, held, limit) for x, held in zip((a, b), pair)]
-            moved += [np.ravel(list(r.values())) for r in residual]
+        residual = [held_over(x, held, limit) for x, held in zip((a, b), pair)]
+        moved += [np.ravel(list(r.values())) for r in residual]
         for note in range(a['note'] + 1, b['note']):
             t = (note - a['note']) / (b['note'] - a['note'])
             f1, B = key_tuning(a, b, t)
@@ -281,16 +303,14 @@ def piano_keys(name, net, piano, library, gain, anchored, log):
             for o, p in zip(orders, ours):
                 pa_, pb_ = by_order[lower].get(o), by_order[lower + 1].get(o)
                 silenced += bound(p, limit[o])
-                if anchored:
-                    ra, rb = residual[0].get(o), residual[1].get(o)
-                    move_power(p, ra + t * (rb - ra) if ra is not None and rb is not None
-                               else ra if ra is not None else rb)
+                ra, rb = residual[0].get(o), residual[1].get(o)
+                move_power(p, ra + t * (rb - ra) if ra is not None and rb is not None
+                           else ra if ra is not None else rb)
                 align(p, of_table(pa_) if pa_ else None, of_table(pb_) if pb_ else None, t)
             keys[note] = [(o, c, r[0], r[1], p) for o, c, r, p in zip(orders, cents, rises, ours)]
-    if anchored:
-        moved = np.concatenate(moved)
-        log(f'{name}: the fits over the network at their own pitches, per partial, layer and channel: '
-            f'{np.mean(moved):+.2f} dB mean, {np.sqrt(np.mean(moved ** 2)):.2f} dB rms')
+    moved = np.concatenate(moved)
+    log(f'{name}: the fits over the network at their own pitches, per partial, layer and channel: '
+        f'{np.mean(moved):+.2f} dB mean, {np.sqrt(np.mean(moved ** 2)):.2f} dB rms')
     log(f'{name}: {len(keys)} keys between its {len(anchors)} recorded pitches, '
         f'{sum(len(v) for v in keys.values())} partials, {silenced} lanes silent')
     return keys
@@ -303,10 +323,10 @@ def lane_text(p, j):
             + '}},{{' + ','.join(fit.number(x) for x in p['phase'][:, j]) + '}}}')
 
 
-def header(written, sources, anchored):
+def header(written, sources):
     made = ('from the keyboard network\'s weights '
             + ', '.join(f'{path} (sha256 {digest[:16]})' for path, digest in sources)
-            + ('; anchored at the recorded pitches' if anchored else '')) if sources else \
+            + '; anchored at the recorded pitches') if sources else \
         'with no piano\'s network: every key plays as the fits give it'
     lines = fit.wrap(f'Generated by Tools/write_network_tables.py {made}; regenerate, never edit.')
     lines += fit.wrap('Each Keyra piano\'s keys between two recorded pitches, which KeyraEngine.cpp plays '
@@ -339,11 +359,10 @@ def header(written, sources, anchored):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--weights', required=True, help='a keyboard network run folder holding <setting>-<piano>.npz')
+    parser.add_argument('--weights', default=str(WEIGHTS), help='a keyboard network run folder holding <setting>-<piano>.npz')
     parser.add_argument('--setting', default='character', choices=['character', 'smooth'])
-    parser.add_argument('--pianos', nargs='*', default=PIANOS, choices=PIANOS,
-                        help='pianos to write; the rest, or all with none named, play as today')
-    parser.add_argument('--anchored', action='store_true', help='carry the network\'s error at the recorded pitches')
+    parser.add_argument('--pianos', nargs='*', default=SHIPPED, choices=PIANOS,
+                        help='pianos to write; the rest, or all with none named, blend their recorded pitches')
     parser.add_argument('--baseline', default=str(BASELINE), help='the fits\' channel gains (keyboard_network.py baseline)')
     parser.add_argument('--output', default=str(HEADER))
     parser.add_argument('--check', action='store_true', help='fail unless the output is what this writes')
@@ -359,11 +378,10 @@ def main():
         path = weights / f'{args.setting}-{name}.npz'
         net, meta = load_net(path, names)
         gain = 10 ** (np.asarray(baseline[name]['gain_db']) / 20)
-        written[name] = piano_keys(name, net, meta['pianos'].index(name), names.index(name), gain,
-                                   args.anchored, print)
+        written[name] = piano_keys(name, net, meta['pianos'].index(name), names.index(name), gain, print)
         shown = path.resolve().relative_to(ROOT) if path.resolve().is_relative_to(ROOT) else path
         sources.append((str(shown), hashlib.sha256(path.read_bytes()).hexdigest()))
-    text = header(written, sources, args.anchored)
+    text = header(written, sources)
     output = Path(args.output)
     if args.check:
         if not output.exists() or output.read_text() != text:

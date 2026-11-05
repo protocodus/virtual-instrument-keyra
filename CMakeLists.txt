@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.21 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.22 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -486,12 +486,15 @@ if(BUILD_TESTING)
                         OUTPUT_QUIET)
         if(NOT KEYRA_NETWORK_PYTHON_RESULT EQUAL 0)
             message(FATAL_ERROR
-                "The keyboard network's self-test needs NumPy, SciPy and PyTorch in ${Python3_EXECUTABLE}. "
+                "The keyboard network's checks need NumPy, SciPy and PyTorch in ${Python3_EXECUTABLE}. "
                 "${KEYRA_NETWORK_PYTHON_ERROR}")
         endif()
         add_test(NAME Keyra.KeyboardNetwork
                  COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_keyboard_network.py")
-        set_tests_properties(Keyra.KeyboardNetwork PROPERTIES LABELS unit TIMEOUT 300
+        # Source/DSP/MeasuredNetworkKeys.h is what the writer's defaults write.
+        add_test(NAME Keyra.MeasuredNetworkKeys
+                 COMMAND "${Python3_EXECUTABLE}" -I -B "${CMAKE_CURRENT_SOURCE_DIR}/Tools/write_network_tables.py" --check)
+        set_tests_properties(Keyra.KeyboardNetwork Keyra.MeasuredNetworkKeys PROPERTIES LABELS unit TIMEOUT 300
                              ENVIRONMENT "OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
     endif()
 

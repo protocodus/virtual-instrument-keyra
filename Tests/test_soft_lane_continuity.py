@@ -16,8 +16,10 @@ shrinking coordinate separation1000-fold must reduce normalized waveform L2
 difference at least10-fold, plus a declared float allowance of4*chunk*epsilon.
 That allowance is not a proven error bound under arbitrary cancellation or
 render lengths. Every measured distance and the allowance are printed. The
-legacy mutation must fail this SAME assertion in all four selected grands;
-the upright's distinct action remains a passing negative control. No claim
+legacy mutation must fail this SAME assertion in the three selected grands;
+the upright's distinct action remains a passing negative control. The
+Hamburg grand has no crossing to select: its keys between recorded pitches
+play the keyboard network's partials (MeasuredNetworkKeys.h). No claim
 covers every interval or mixed-string builds, whose cross-piano pairing still
 uses sorted rank. No current PCM hashes are stored as fixtures.
 
@@ -113,12 +115,15 @@ struct Crossing{int model,left,right,order;double velocity,root;};
 // been mixed in 1/s rather than in their logarithm since 2026-11-04, which
 // moved every crossing (the grand's from .0738 to .0384); the roots were
 // recomputed then for the same selection and the same pairs of lanes, each
-// interval's first crossing as before.
+// interval's first crossing as before. The Hamburg's, {3,38,45,2,123,
+// .95958703206468776}, left in 0.4.22: its keys between recorded pitches
+// play the keyboard network's partials since, the same at every pitch
+// coordinate, so neither multiplier meets a crossing there and the legacy
+// one no longer fails.
 constexpr Crossing cases[]{
  {0,102,105,1,14,.038431191265448056},
  {1,68,70,1,15,.075080330333073431},
  {2,99,105,1,27,.001117318313440504},
- {3,38,45,2,123,.95958703206468776},
  {4,99,104,1,117,.0067451579922411208}
 };
 void continuity(){
@@ -147,7 +152,7 @@ void continuity(){
    else {require(!legacyPass,"legacy rank mutation escaped continuity assertion: "+context(c.model,note,c.velocity,soft));++rejectedLegacy;}
   }
  }
- require(rejectedLegacy==4&&negativeControls==1,"mutation/negative-control coverage missing");
+ require(rejectedLegacy==3&&negativeControls==1,"mutation/negative-control coverage missing");
  std::cout<<"legacy_grand_mutations_rejected="<<rejectedLegacy<<" upright_negative_controls="<<negativeControls<<" declared_numerical_allowance="<<allowance<<'\n';
 }
 int main(int argc,char**argv){try{std::cout<<std::setprecision(17);require(argc==2,"mode required");if(std::string(argv[1])=="identity")identity();else if(std::string(argv[1])=="continuity")continuity();else throw std::runtime_error("unknown mode");return 0;}catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}
