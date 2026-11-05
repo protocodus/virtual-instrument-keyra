@@ -62,11 +62,22 @@ takes from the network, at the key, the order and each layer's level:
   lanes together to the nearer pitch's partial at each layer (windowCross),
   so that a strike arrives across the partials as the recorded pitch's does.
 
-Its defaults write the table that ships (WEIGHTS and SHIPPED below):
+With --corrections and --corrected it writes, for the pianos named there, a
+correction to the blend instead at each of those keys between two recorded
+pitches above the bass break (keyboard_network.py `correct`): for every order
+the blend plays, a shift of its lanes' decay rates in log and a tilt of their
+levels between the fast lanes and the slow (dB), which the engine applies to
+the blend, keeping each channel's power over 50 to 750 ms where the blend
+puts it. A piano takes the network's partials or the correction, not both.
+
+Its defaults write the table that ships (WEIGHTS, SHIPPED, CORRECTION and
+CORRECTED below):
 
     python3 -I Tools/write_network_tables.py
     python3 -I Tools/write_network_tables.py --check   # is the header what it writes?
     python3 -I Tools/write_network_tables.py --weights out/network/full --pianos grand hamburg --output <file>
+    python3 -I Tools/write_network_tables.py --pianos --corrections out/network/correct/correction-medium-10.npz \
+        --corrected hamburg newyork --output <file>
 """
 from __future__ import annotations
 
@@ -89,7 +100,7 @@ ROOT = Path(__file__).resolve().parents[1]
 HEADER = ROOT / 'Source/DSP/MeasuredNetworkKeys.h'
 WEIGHTS = ROOT / 'Docs/research/keyboard-network-2026-11-04'   # the run whose tables ship
 BASELINE = WEIGHTS / 'baseline.json'
-PIANOS = ['grand', 'upright', 'kawai', 'hamburg', 'newyork']   # KeyraEngine.h Piano, in its order
+PIANOS = kn.ENGINE_PIANOS
 # The pianos that play the network between their recorded pitches: those whose
 # dev takes it brought closer to their recordings both in the engine
 # (keyboard_network.py engine, the level error) and on most measures of
@@ -103,6 +114,22 @@ PIANOS = ['grand', 'upright', 'kawai', 'hamburg', 'newyork']   # KeyraEngine.h P
 # run's tables leave the Hamburg's 10.12 off and the others' 7.80, 9.86, 12.44
 # and 12.13.
 SHIPPED = ['hamburg']
+# The pianos whose keys between recorded pitches above the bass break blend
+# them with the correction's departure applied (keyboard_network.py correct),
+# and the correction they take it from: those whose dev takes it brought
+# closer on most measures of Tools/benchmark_recordings.py with no pitch
+# further on a measure by more than its tolerance (Docs/decisions.md,
+# 2026-11-05). Trained at the knob 1000, it brings the grand's 48 dev takes
+# at the keys it corrects closer on 7 of the 12 measures (sustain 0.61 dB,
+# envelope 0.45 dB, partial levels 0.28 dB, decay 0.23 dB/s, rise 0.14 ms)
+# and the upright's 16 on 9 (envelope 0.37 dB, sustain 0.22 dB, partial
+# levels 0.19 dB), each other measure moving 0.06 or less. At every key
+# between it takes six measures past a tolerance at five of the Kawai's dev
+# pitches, all but one above its break, and six at two of New York's, New
+# York's decay 1.09 dB/s further, and leaves the Hamburg's further than its
+# network keys (sustain 1.78 dB, envelope 2.11 dB).
+CORRECTION = ROOT / 'Docs/research/keyboard-network-correction-2026-11-05/correction-medium-1000.npz'
+CORRECTED = ['grand', 'upright']
 FROM, TO = .05, .75   # KeyraEngine.cpp windowPower: the window the layers' levels are measured over
 
 
@@ -316,6 +343,49 @@ def piano_keys(name, net, piano, library, gain, log):
     return keys
 
 
+def load_correction(path):
+    """Exported weights of a correction (keyboard_network.correction_entry)."""
+    with np.load(path) as f:
+        meta = json.loads(str(f['meta']))
+        state = {k: torch.from_numpy(f[k]) for k in f.files if k != 'meta'}
+    net = kn.Correction(meta['pianos'], state['breaks'].tolist(), meta['arch'])
+    net.load_state_dict(state)
+    return net.eval()
+
+
+@torch.no_grad()
+def piano_corrections(name, net, log):
+    """The correction's departure at every key strictly between two recorded
+    pitches of the piano at or above its bass break, at every order either
+    holds (all of which the blend plays): per key, (order, rate shift, tilt)."""
+    table = kn.header_of(name)
+    anchors = table['anchors']
+    piano, keys = net.pianos.index(name), {}
+    # Only between two plain-string pitches. Below the break, on the wound
+    # strings, the correction took the sustain of Tools/benchmark_recordings.py
+    # further from the recordings at all four pitches scored there, the
+    # grand's D#1 and sealed D#2 and the upright's D#2 and sealed F#1, the
+    # sealed D#2's rise and envelope and F#1's partial levels, decay and
+    # sustain past a tolerance, where at nine of the eleven above it the
+    # sustain came closer (Docs/decisions.md, 2026-11-05).
+    tenor = int(net.breaks[piano, 0])
+    for a, b in zip(anchors, anchors[1:]):
+        if a['note'] < tenor:
+            continue
+        orders = sorted({q['order'] for q in a['partials']} | {q['order'] for q in b['partials']})
+        order = torch.tensor(orders, dtype=torch.float64)
+        for note in range(a['note'] + 1, b['note']):
+            def full(v):
+                return torch.full((len(orders),), float(v))
+            d = kn.departure(net, torch.full((len(orders),), piano, dtype=torch.long), full(note), order,
+                             full(a['note']), full(b['note']), full((note - a['note']) / (b['note'] - a['note'])))
+            keys[note] = list(zip(orders, d['rate_shift'].numpy(), d['tilt'].numpy()))
+    shift, tilt = (np.array([r[k] for rows in keys.values() for r in rows]) for k in (1, 2))
+    log(f'{name}: corrections at {len(keys)} keys, {len(shift)} partials: decay rates moved by '
+        f'{np.sqrt(np.mean(shift ** 2)):.3f} rms in log, lanes tilted by {np.sqrt(np.mean(tilt ** 2)):.2f} dB rms')
+    return keys
+
+
 def lane_text(p, j):
     return ('{' + ','.join(fit.number(x) for x in (p['rate'][j], p['offset'][j], p['left'][j].real,
                                                    p['right'][j].real, p['right'][j].imag))
@@ -323,15 +393,20 @@ def lane_text(p, j):
             + '}},{{' + ','.join(fit.number(x) for x in p['phase'][:, j]) + '}}}')
 
 
-def header(written, sources):
+def header(written, sources, corrected=None, correction=None):
+    corrected = corrected or {}
     made = ('from the keyboard network\'s weights '
             + ', '.join(f'{path} (sha256 {digest[:16]})' for path, digest in sources)
             + '; anchored at the recorded pitches') if sources else \
         'with no piano\'s network: every key plays as the fits give it'
+    if correction:
+        made += (f'; and the corrections to the blend at the keys of {", ".join(sorted(corrected))} above '
+                 f'the bass break from the correction {correction[0]} (sha256 {correction[1][:16]})')
     lines = fit.wrap(f'Generated by Tools/write_network_tables.py {made}; regenerate, never edit.')
     lines += fit.wrap('Each Keyra piano\'s keys between two recorded pitches, which KeyraEngine.cpp plays '
-                      'from these partials in place of blending the two pitches\' fits. Fitted numbers '
-                      'only: no recorded waveform or impulse response.')
+                      'from these partials in place of blending the two pitches\' fits, and the corrections '
+                      'it applies to the blend at keys it blends. Fitted numbers only: no recorded waveform '
+                      'or impulse response.')
     lines += ['#pragma once', '#include "MeasuredTypes.h"', '',
               'namespace keyra { namespace measured { namespace network {']
     for name in PIANOS:
@@ -344,15 +419,32 @@ def header(written, sources):
             first += count
         lines.append('constexpr std::array<NetworkKey,88> keys{{' + ','.join(rows) + '}};')
         if not first:
-            lines += ['constexpr std::array<Partial,0> partials{};', f'}} // namespace {name}']
-            continue
-        lines.append(f'constexpr std::array<Partial,{first}> partials{{{{')
-        for note in sorted(keys):
-            lines.append(f'  // MIDI {note}')
-            for order, cents, rise, slope, p in keys[note]:
-                lines.append(f'  {{{order},' + ','.join(fit.number(x) for x in (cents, rise, slope))
-                             + ',{{' + ','.join(lane_text(p, j) for j in range(4)) + '}}},')
-        lines += ['}};', f'}} // namespace {name}']
+            lines.append('constexpr std::array<Partial,0> partials{};')
+        else:
+            lines.append(f'constexpr std::array<Partial,{first}> partials{{{{')
+            for note in sorted(keys):
+                lines.append(f'  // MIDI {note}')
+                for order, cents, rise, slope, p in keys[note]:
+                    lines.append(f'  {{{order},' + ','.join(fit.number(x) for x in (cents, rise, slope))
+                                 + ',{{' + ','.join(lane_text(p, j) for j in range(4)) + '}}},')
+            lines.append('}};')
+        fixes = corrected.get(name, {})
+        first, rows = 0, []
+        for note in range(21, 109):
+            count = len(fixes.get(note, []))
+            rows.append(f'{{{first if count else 0},{count}}}')
+            first += count
+        lines.append('constexpr std::array<NetworkKey,88> corrected{{' + ','.join(rows) + '}};')
+        if not first:
+            lines.append('constexpr std::array<Correction,0> corrections{};')
+        else:
+            lines.append(f'constexpr std::array<Correction,{first}> corrections{{{{')
+            for note in sorted(fixes):
+                lines.append(f'  // MIDI {note}')
+                for order, shift, tilt in fixes[note]:
+                    lines.append(f'  {{{order},{fit.number(shift)},{fit.number(tilt)}}},')
+            lines.append('}};')
+        lines.append(f'}} // namespace {name}')
     lines += ['}}} // namespace keyra::measured::network', '']
     return '\n'.join(lines)
 
@@ -363,6 +455,10 @@ def main():
     parser.add_argument('--setting', default='character', choices=['character', 'smooth'])
     parser.add_argument('--pianos', nargs='*', default=SHIPPED, choices=PIANOS,
                         help='pianos to write; the rest, or all with none named, blend their recorded pitches')
+    parser.add_argument('--corrections', default=CORRECTION and str(CORRECTION),
+                        help='a correction\'s weights (keyboard_network.py correct)')
+    parser.add_argument('--corrected', nargs='*', default=CORRECTED, choices=PIANOS,
+                        help='pianos whose keys between recorded pitches blend with its corrections')
     parser.add_argument('--baseline', default=str(BASELINE), help='the fits\' channel gains (keyboard_network.py baseline)')
     parser.add_argument('--output', default=str(HEADER))
     parser.add_argument('--check', action='store_true', help='fail unless the output is what this writes')
@@ -381,7 +477,19 @@ def main():
         written[name] = piano_keys(name, net, meta['pianos'].index(name), names.index(name), gain, print)
         shown = path.resolve().relative_to(ROOT) if path.resolve().is_relative_to(ROOT) else path
         sources.append((str(shown), hashlib.sha256(path.read_bytes()).hexdigest()))
-    text = header(written, sources)
+    both = set(args.pianos) & set(args.corrected)
+    if both:
+        raise SystemExit(f'{", ".join(sorted(both))}: a key the network plays does not blend, so it takes no correction')
+    if args.corrected and not args.corrections:
+        raise SystemExit('--corrected needs --corrections')
+    corrected, correction = {}, None
+    if args.corrected:
+        path = Path(args.corrections)
+        net = load_correction(path)
+        corrected = {name: piano_corrections(name, net, print) for name in args.corrected}
+        shown = path.resolve().relative_to(ROOT) if path.resolve().is_relative_to(ROOT) else path
+        correction = (str(shown), hashlib.sha256(path.read_bytes()).hexdigest())
+    text = header(written, sources, corrected, correction)
     output = Path(args.output)
     if args.check:
         if not output.exists() or output.read_text() != text:

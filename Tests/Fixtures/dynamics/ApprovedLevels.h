@@ -24,7 +24,12 @@
 // keyboard network, its output and tube re-pinned to their earlier
 // readings, and the owner approved its loudest chords' new readings, the
 // Hamburg Grand preset's and its tube's, to six decimals (Docs/decisions.md,
-// 2026-11-05).
+// 2026-11-05). In 0.4.23 the Kakegawa grand's and the upright's keys between
+// recorded pitches above the bass break take the keyboard network's
+// correction to the blend, the upright's tube re-pinned to its earlier
+// reading, and the owner approved four presets' new readings, the Kakegawa
+// Grand's and Open Strings' loudest chords and Felt Upright's and Pop
+// Upright's typical playing, to six decimals (Docs/decisions.md, 2026-11-05).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -33,14 +38,14 @@ struct ApprovedLevel {
 };
 
 inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
-    {"Kakegawa Grand", -9.066835, 0.702634},
+    {"Kakegawa Grand", -9.066835, 0.707407},
     {"Studio Grand", -10.241775, -0.019715},
     {"Warm Walnut", -10.950910, -0.123667},
     {"Felt Nocturne", -18.132439, -5.597279},
-    {"Open Strings", -8.081521, 1.489288},
+    {"Open Strings", -8.081521, 1.501300},
     {"Helsinki Upright", -9.122448, 4.217296},
-    {"Felt Upright", -15.424076, -0.127207},
-    {"Pop Upright", -9.165020, 3.904373},
+    {"Felt Upright", -15.665733, -0.127207},
+    {"Pop Upright", -9.214799, 3.904373},
     {"Hamamatsu Grand", -9.012878, 4.003352},
     {"Three Cities", -10.192568, 2.871424},
     {"Hamburg Grand", -8.953395, 2.404007},
