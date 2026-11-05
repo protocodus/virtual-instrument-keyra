@@ -1930,27 +1930,28 @@ struct Engine::Impl {
   }
   // One piano's partials for a strike, into seriesData[p] and
   // seriesWeight[p], their levels in the output's units: at a key the
-  // keyboard network's table holds, its partials; elsewhere the two recorded
-  // pitches' series merged by order, blended where both have an order and
-  // alone at their pitch's share otherwise. Returns how many.
+  // keyboard network's table holds, its partials; elsewhere blended().
+  // Returns how many.
   int series(const Side& x,int p,int note) noexcept {
-    const Model& m=*x.m;
+    const auto& key=networkSeries[p].keys[note-21];
+    if(!key.count)return blended(x,p);
     // The network's partials play alone, at their own levels, each lane
     // between the layers as a fit's does. Their lanes' caches are made here
     // rather than kept as the fits' are, which for every key would take
     // about 10 MB.
-    const auto& key=networkSeries[p].keys[note-21];
-    if(key.count){
-      const int n=std::min(key.count,2*maxPartials);
-      for(int k=0;k<n;++k){
-        const auto& q=networkSeries[p].partials[key.first+k];
-        PartialCache c;for(int j=0;j<lanes;++j)c[j]=cacheLane(q.lanes[j],m.layers);
-        auto& d=seriesData[p][k];d=single(m,q,c,x.v);seriesWeight[p][k]=1;
-        for(auto& l:d.lane)l.level+=x.scaleDb+x.toneDb;
-      }
-      return n;
+    const Model& m=*x.m;const int n=std::min(key.count,2*maxPartials);
+    for(int k=0;k<n;++k){
+      const auto& q=networkSeries[p].partials[key.first+k];
+      PartialCache c;for(int j=0;j<lanes;++j)c[j]=cacheLane(q.lanes[j],m.layers);
+      auto& d=seriesData[p][k];d=single(m,q,c,x.v);seriesWeight[p][k]=1;
+      for(auto& l:d.lane)l.level+=x.scaleDb+x.toneDb;
     }
-    const auto* cache=&partialLanes[m.partialFirst];
+    return n;
+  }
+  // The two recorded pitches' series merged by order, blended where both
+  // have an order and alone at their pitch's share otherwise.
+  int blended(const Side& x,int p) noexcept {
+    const Model& m=*x.m;const auto* cache=&partialLanes[m.partialFirst];
     int i=x.a->first,j=x.b->first,n=0;const int ia=i+x.a->count,jb=j+x.b->count;
     const bool singleTop=p>=2&&(x.a->count==1||x.b->count==1)&&x.a->note>=96;
     while((i<ia||j<jb)&&n<2*maxPartials){
