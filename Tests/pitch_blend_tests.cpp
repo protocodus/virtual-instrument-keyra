@@ -60,8 +60,9 @@ int main(){
           const keyra::PartialData& played=impl.seriesData[p][n];
           const auto pa=keyra::single(m,m.partials[i],cache[i],velocity),pb=keyra::single(m,m.partials[j],cache[j],velocity);
           ++i;++j;++partials;
-          const double la=keyra::windowPower(pa,1,0),lb=keyra::windowPower(pb,1,0),ld=keyra::windowPower(played,1,0);
-          const double ra=keyra::windowPower(pa,0,1),rb=keyra::windowPower(pb,0,1),rd=keyra::windowPower(played,0,1);
+          const auto [la,ra]=keyra::windowPowers(pa);
+          const auto [lb,rb]=keyra::windowPowers(pb);
+          const auto [ld,rd]=keyra::windowPowers(played);
           check(la>0&&lb>0&&ld>0&&ra>0&&rb>0&&rd>0,"a recorded partial sounds in both channels");
           worstTotal=std::max(worstTotal,std::abs(db(ld+rd)-keyra::mix(db(la+ra),db(lb+rb),x.t)));
           worstChannel=std::max({worstChannel,outside(db(ld),db(la),db(lb)),outside(db(rd),db(ra),db(rb))});
@@ -71,7 +72,8 @@ int main(){
             const double edge=std::min({std::abs(db(ld)-db(la)),std::abs(db(ld)-db(lb)),std::abs(db(rd)-db(ra)),std::abs(db(rd)-db(rb))});
             worstHeld=std::max(worstHeld,edge);worstBalance=std::max(worstBalance,balance);++held;
           }
-          const keyra::Complex ca=keyra::windowChannels(pa),cb=keyra::windowChannels(pb),cd=keyra::windowChannels(played);
+          const keyra::Complex ca=keyra::windowChannels(pa,keyra::windowPairs(pa)),cb=keyra::windowChannels(pb,keyra::windowPairs(pb)),
+                               cd=keyra::windowChannels(played,keyra::windowPairs(played));
           if(std::hypot(ca.re,ca.im)>0&&std::hypot(cb.re,cb.im)>0&&std::hypot(cd.re,cd.im)>0){
             const double from=std::atan2(ca.im,ca.re),to=std::atan2(cb.im,cb.re);
             const double place=from+x.t*std::remainder(to-from,2*keyra::pi);

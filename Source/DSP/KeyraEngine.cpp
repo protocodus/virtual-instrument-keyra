@@ -866,9 +866,8 @@ LaneData blendLane(const LaneData& x,const LaneData& y,double t) noexcept {
 // measured over: every pair of its lanes, amplitudes and pickups, integrated
 // in closed form between the window's ends; the rise its lanes share is left
 // out. A lane that dies within the first 50 ms counts here for what the
-// window hears of it, not for its whole energy. The weights count each
-// channel's power: (1, 0) is the left channel's alone.
-double windowPower(const PartialData& d,double leftWeight=1,double rightWeight=1) noexcept {
+// window hears of it, not for its whole energy. Both channels' power counts.
+double windowPower(const PartialData& d) noexcept {
   constexpr double from=.05,to=.75;
   double amplitude[lanes],rate[lanes];
   for(int j=0;j<lanes;++j){amplitude[j]=std::pow(10.,d.lane[j].level/20);rate[j]=std::exp(d.lane[j].rate);}
@@ -877,7 +876,7 @@ double windowPower(const PartialData& d,double leftWeight=1,double rightWeight=1
     // Both lanes' phases and the pickups' inner product over the channels.
     const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
     const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
-    const Complex product=phase*Complex{leftWeight*left.re+rightWeight*right.re,leftWeight*left.im+rightWeight*right.im};
+    const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
     // The integral of e^(-ct) from `from` to `to`, c = re + i im.
     const double re=rate[j]+rate[k],im=2*pi*(y.offset-x.offset);
     const auto at=[&](double s){const double e=std::exp(-re*s);return j==k?Complex{e,0}:Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
@@ -888,21 +887,57 @@ double windowPower(const PartialData& d,double leftWeight=1,double rightWeight=1
   }
   return sum;
 }
+// Each pair of a partial's lanes over windowPower's 50-750 ms window: the
+// integral of e^(-ct), c = re + i im from both lanes' decays and offsets, as
+// the span of e^(-ct) between the window's ends and 1/c. They depend only on
+// the lanes' decays and offsets, so windowPowers and windowChannels share
+// them: a strike blending between recorded pitches spent most of its time
+// evaluating them. Filled for k >= j; a swapped pair's are the conjugates,
+// bit for bit (cosine even, sine odd).
+struct WindowPairs {Complex span[lanes][lanes],scale[lanes][lanes];};
+WindowPairs windowPairs(const PartialData& d) noexcept {
+  constexpr double from=.05,to=.75;
+  double rate[lanes];
+  for(int j=0;j<lanes;++j)rate[j]=std::exp(d.lane[j].rate);
+  WindowPairs w;
+  for(int j=0;j<lanes;++j)for(int k=j;k<lanes;++k){
+    const double re=rate[j]+rate[k],im=2*pi*(d.lane[k].offset-d.lane[j].offset);
+    const auto at=[&](double s){const double e=std::exp(-re*s);return j==k?Complex{e,0}:Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
+    const Complex a=at(from),b=at(to);
+    w.span[j][k]={a.re-b.re,a.im-b.im};w.scale[j][k]={re/(re*re+im*im),-im/(re*re+im*im)};
+  }
+  return w;
+}
+// windowPower's left channel alone and right channel alone.
+struct ChannelPowers {double left=0,right=0;};
+ChannelPowers windowPowers(const PartialData& d,const WindowPairs& w) noexcept {
+  double amplitude[lanes];
+  for(int j=0;j<lanes;++j)amplitude[j]=std::pow(10.,d.lane[j].level/20);
+  ChannelPowers sum;
+  for(int j=0;j<lanes;++j)for(int k=j;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
+    const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
+    const Complex left=phase*(x.left*Complex{y.left.re,-y.left.im}),right=phase*(x.right*Complex{y.right.re,-y.right.im});
+    const Complex integral=w.span[j][k]*w.scale[j][k];
+    const double l=amplitude[j]*amplitude[k]*(left*integral).re,r=amplitude[j]*amplitude[k]*(right*integral).re;
+    sum.left+=j==k?l:2*l;sum.right+=j==k?r:2*r;
+  }
+  return sum;
+}
+ChannelPowers windowPowers(const PartialData& d) noexcept {return windowPowers(d,windowPairs(d));}
 // The partial's left channel times the conjugate of its right, summed over
 // every pair of its lanes in the same 50-750 ms window as windowPower. Its
 // angle is how far the right channel lags the left as the lanes sum there.
-Complex windowChannels(const PartialData& d) noexcept {
-  constexpr double from=.05,to=.75;
+Complex windowChannels(const PartialData& d,const WindowPairs& w) noexcept {
+  double amplitude[lanes][lanes];
+  for(int j=0;j<lanes;++j)for(int k=j;k<lanes;++k)amplitude[j][k]=amplitude[k][j]=std::pow(10.,(d.lane[j].level+d.lane[k].level)/20);
   Complex sum{};
   for(int j=0;j<lanes;++j)for(int k=0;k<lanes;++k){const auto& x=d.lane[j];const auto& y=d.lane[k];
     const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
     const Complex channels=x.left*Complex{y.right.re,-y.right.im};
-    const double re=std::exp(x.rate)+std::exp(y.rate),im=2*pi*(y.offset-x.offset);
-    const auto at=[&](double s){const double e=std::exp(-re*s);return Complex{e*std::cos(im*s),-e*std::sin(im*s)};};
-    const Complex a=at(from),b=at(to),span{a.re-b.re,a.im-b.im};
-    const Complex z=phase*channels*span*Complex{re/(re*re+im*im),-im/(re*re+im*im)};
-    const double amplitude=std::pow(10.,(x.level+y.level)/20);
-    sum.re+=amplitude*z.re;sum.im+=amplitude*z.im;
+    const Complex span=k>=j?w.span[j][k]:Complex{w.span[k][j].re,-w.span[k][j].im};
+    const Complex scale=k>=j?w.scale[j][k]:Complex{w.scale[k][j].re,-w.scale[k][j].im};
+    const Complex z=phase*channels*span*scale;
+    sum.re+=amplitude[j][k]*z.re;sum.im+=amplitude[j][k]*z.im;
   }
   return sum;
 }
@@ -1028,8 +1063,9 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
   // the pitches plays under both in all: the Kawai's A4 played 2.4 dB under
   // both its neighbours.
   if(t>0&&t<1){
-    const double la=windowPower(a,1,0),lb=windowPower(b,1,0),ld=windowPower(d,1,0);
-    const double ra=windowPower(a,0,1),rb=windowPower(b,0,1),rd=windowPower(d,0,1);
+    const WindowPairs wa=windowPairs(a),wb=windowPairs(b),wd=windowPairs(d);
+    const ChannelPowers pa=windowPowers(a,wa),pb=windowPowers(b,wb),pd=windowPowers(d,wd);
+    const double la=pa.left,lb=pb.left,ld=pd.left,ra=pa.right,rb=pb.right,rd=pd.right;
     if(la>0&&lb>0&&ld>0&&ra>0&&rb>0&&rd>0){
       const double total=std::pow(la+ra,1-t)*std::pow(lb+rb,t);
       const double balance=mix(std::log(la/ra),std::log(lb/rb),t);
@@ -1050,7 +1086,8 @@ PartialData blend(const PartialData& a,const PartialData& b,double t,const std::
     // turned instead so the lag it has behind the left over the window moves
     // between the two pitches' along the shorter arc, as their power does.
     // Turning every lane's right channel alike leaves the power unchanged.
-    const Complex ca=windowChannels(a),cb=windowChannels(b),cd=windowChannels(d);
+    // scaleChannels leaves the lanes' decays and offsets, so d's pairs hold.
+    const Complex ca=windowChannels(a,wa),cb=windowChannels(b,wb),cd=windowChannels(d,wd);
     if(std::hypot(ca.re,ca.im)>0&&std::hypot(cb.re,cb.im)>0&&std::hypot(cd.re,cd.im)>0){
       const double from=std::atan2(ca.im,ca.re),to=std::atan2(cb.im,cb.re);
       const double turn=std::atan2(cd.im,cd.re)-(from+t*std::remainder(to-from,2*pi));
@@ -2028,12 +2065,12 @@ struct Engine::Impl {
       auto& d=seriesData[p][n];
       while(c<end&&c->order<d.order)++c;
       if(c==end||c->order!=d.order)continue;
-      const double left=windowPower(d,1,0),right=windowPower(d,0,1);
+      const auto [left,right]=windowPowers(d);
       for(auto& l:d.lane)l.rate+=c->rateShift;
       double weight=0,centre=0;
       for(const auto& l:d.lane){const double w=std::pow(10.,.1*l.level);weight+=w;centre+=w*l.rate;}
       if(weight>0)for(auto& l:d.lane)l.level+=c->tiltDb*std::tanh(l.rate-centre/weight);
-      const double movedLeft=windowPower(d,1,0),movedRight=windowPower(d,0,1);
+      const auto [movedLeft,movedRight]=windowPowers(d);
       if(left>0&&right>0&&movedLeft>0&&movedRight>0)scaleChannels(d,left/movedLeft,right/movedRight);
     }
   }
