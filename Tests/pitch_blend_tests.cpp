@@ -1,14 +1,15 @@
 // Every key between two recorded pitches, on every piano, at every recorded
-// layer, halfway between each two and at both ends of the velocity range:
-// each partial both pitches have plays, over the 50-750 ms window the
-// layers' levels are measured over, its power over both channels at its
-// place between theirs in dB, each channel's power between theirs, and its
-// balance, the left channel's power over the right's, at its place between
-// theirs in dB unless that would take a channel outside both pitches': then
-// that channel stops at the pitch's power it would pass. Its right channel
-// lags the left at its place between theirs along the shorter arc. Read from
-// the series a strike plays, against the two pitches' own partials at the
-// same velocity.
+// layer, halfway between each two and at both ends of the velocity range, as
+// the engine blends the two pitches' fits where the keyboard network's table
+// (MeasuredNetworkKeys.h) holds none of the key: each partial both pitches
+// have plays, over the 50-750 ms window the layers' levels are measured over,
+// its power over both channels at its place between theirs in dB, each
+// channel's power between theirs, and its balance, the left channel's power
+// over the right's, at its place between theirs in dB unless that would take
+// a channel outside both pitches': then that channel stops at the pitch's
+// power it would pass. Its right channel lags the left at its place between
+// theirs along the shorter arc. Read from the blend, against the two pitches'
+// own partials at the same velocity.
 // Held as one power over both channels alone, a key could play one channel
 // far outside both pitches' while the other made up for it: the Hamburg's E1
 // put its twelfth partial's right channel 11.4 dB under both C1's and G1's.
@@ -50,7 +51,7 @@ int main(){
       for(int note=a.note+1;note<b.note;++note)for(const double velocity:velocities){
         keyra::Side x;x.m=&m;x.a=&a;x.b=&b;x.upper=upper;x.v=velocity;
         x.t=static_cast<double>(note-a.note)/(b.note-a.note);
-        const int count=impl.series(x,p);++keys;
+        const int count=impl.blended(x,p);++keys;
         // The series merges the two pitches' partials by order, as here.
         int i=a.first,j=b.first;
         for(int n=0;n<count;++n){

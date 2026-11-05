@@ -20,7 +20,11 @@
 // (Docs/decisions.md, 2026-11-04). Then 0.4.16 to 0.4.18, with the phantom
 // partials, moved three presets' typical playing past the guard, and the
 // owner approved those three readings, to six decimals (Docs/decisions.md,
-// 2026-11-04).
+// 2026-11-04). In 0.4.22 the Hamburg's keys between recorded pitches play the
+// keyboard network, its output and tube re-pinned to their earlier
+// readings, and the owner approved its loudest chords' new readings, the
+// Hamburg Grand preset's and its tube's, to six decimals (Docs/decisions.md,
+// 2026-11-05).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -39,7 +43,7 @@ inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
     {"Pop Upright", -9.165020, 3.904373},
     {"Hamamatsu Grand", -9.012878, 4.003352},
     {"Three Cities", -10.192568, 2.871424},
-    {"Hamburg Grand", -8.953395, 1.688414},
+    {"Hamburg Grand", -8.953395, 2.404007},
     {"New York Grand", -9.092756, 3.213257},
 }};
 
@@ -47,7 +51,7 @@ inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
     {"grand", -9.068710, 1.222194},
     {"upright", -8.993037, 4.328115},
     {"kawai", -9.985854, 3.199726},
-    {"hamburg", -9.172983, 1.407187},
+    {"hamburg", -9.172983, 2.196889},
     {"newyork", -9.020263, 2.115038},
 }};
 } // namespace keyra_test

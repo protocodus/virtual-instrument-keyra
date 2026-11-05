@@ -7,6 +7,7 @@
 #endif
 #include "MeasuredMicData.h"
 #include "MeasuredModalData.h"
+#include "MeasuredNetworkKeys.h"
 #include "MeasuredPhantoms.h"
 #include "MeasuredGlide.h"
 #include "MeasuredActionNoise.h"
@@ -267,9 +268,13 @@ constexpr Model models[]{
    .305f,.282f,
    hamburg::noiseBands.data(),hamburg::noise.data(),
    // Each one's typical playing at the grand's level, -9 VU, and its tube at
-   // the pair's (Tools/KeyraLevels.cpp).
-   2.2622,
-   1.5176,
+   // the pair's (Tools/KeyraLevels.cpp). Re-pinned in 0.4.22 to the -8.95
+   // and -9.18 VU it read before, from 2.2622 and 1.5176: its keys between
+   // recorded pitches play the keyboard network's partials since, which
+   // strike weaker over their first 100 ms than the blend did, and it read
+   // -10.83 and -10.49 VU.
+   2.8070,
+   1.4219,
    true,
    hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),
@@ -295,6 +300,28 @@ constexpr Model models[]{
    newyork::glide},
 };
 static_assert(std::size(models)==pianoCount,"a model for every piano");
+// The keyboard network's partials at each piano's keys between two recorded
+// pitches (Tools/write_network_tables.py), which series() plays there in
+// place of blending the two pitches' fits.
+struct NetworkSeries {const measured::NetworkKey* keys;const measured::Partial* partials;};
+constexpr NetworkSeries networkSeries[]{
+  {measured::network::grand::keys.data(),measured::network::grand::partials.data()},
+  {measured::network::upright::keys.data(),measured::network::upright::partials.data()},
+  {measured::network::kawai::keys.data(),measured::network::kawai::partials.data()},
+  {measured::network::hamburg::keys.data(),measured::network::hamburg::partials.data()},
+  {measured::network::newyork::keys.data(),measured::network::newyork::partials.data()},
+};
+static_assert(std::size(networkSeries)==pianoCount,"a network table for every piano");
+// A table written against other recorded pitches would play over a fit.
+template<std::size_t A,std::size_t K> constexpr bool betweenPitches(const std::array<measured::Anchor,A>& anchors,const std::array<measured::NetworkKey,K>& keys) noexcept {
+  for(std::size_t i=0;i<A;++i)if(keys[anchors[i].note-21].count)return false;
+  for(std::size_t k=0;k<K;++k)if(keys[k].count&&(21+static_cast<int>(k)<anchors[0].note||21+static_cast<int>(k)>anchors[A-1].note))return false;
+  return true;
+}
+static_assert(betweenPitches(grand::anchors,measured::network::grand::keys)&&betweenPitches(upright::anchors,measured::network::upright::keys)&&
+              betweenPitches(kawai::anchors,measured::network::kawai::keys)&&betweenPitches(hamburg::anchors,measured::network::hamburg::keys)&&
+              betweenPitches(newyork::anchors,measured::network::newyork::keys),
+              "the network plays only keys between two recorded pitches");
 template<std::size_t A,std::size_t P> constexpr bool rowPerPitch(const std::array<measured::Anchor,A>& anchors,const std::array<measured::Phantom,P>& phantoms) noexcept {
   if(A!=P)return false;
   for(std::size_t i=0;i<A;++i)if(anchors[i].note!=phantoms[i].note)return false;
@@ -1840,7 +1867,14 @@ struct Engine::Impl {
           partial.riseExact*=partial.riseLeap;
         }
         double e=0;
-        for(int j=0;j<lanes;++j){const Complex z=partial.exact[j];
+        for(int j=0;j<lanes;++j){Complex& z=partial.exact[j];
+          // A lane 600 dB under its contact plays nothing. Flushed, its float
+          // state never turns subnormal, which x86 multiplies far slower
+          // where the host leaves subnormals on: the keyboard network gives
+          // every partial a lane decaying at about 35/s beside slow ones
+          // that keep the partial playing, and unflushed the grand's D#3
+          // took twice as long to render.
+          if(z.re*z.re+z.im*z.im<1e-60)z=Complex{};
           setLane(partial.re,j,static_cast<float>(z.re));setLane(partial.im,j,static_cast<float>(z.im));
           e+=(z.re*z.re+z.im*z.im)*partial.energyWeight[j];}
         // The floor judges the gain the chunk's first sample plays: a gliding
@@ -1899,10 +1933,28 @@ struct Engine::Impl {
     return true;
   }
   // One piano's partials for a strike, into seriesData[p] and
-  // seriesWeight[p]: the two recorded pitches' series merged by order,
-  // blended where both have an order and alone at their pitch's share
-  // otherwise, their levels in the output's units. Returns how many.
-  int series(const Side& x,int p) noexcept {
+  // seriesWeight[p], their levels in the output's units: at a key the
+  // keyboard network's table holds, its partials; elsewhere blended().
+  // Returns how many.
+  int series(const Side& x,int p,int note) noexcept {
+    const auto& key=networkSeries[p].keys[note-21];
+    if(!key.count)return blended(x,p);
+    // The network's partials play alone, at their own levels, each lane
+    // between the layers as a fit's does. Their lanes' caches are made here
+    // rather than kept as the fits' are, which for every key would take
+    // about 10 MB.
+    const Model& m=*x.m;const int n=std::min(key.count,2*maxPartials);
+    for(int k=0;k<n;++k){
+      const auto& q=networkSeries[p].partials[key.first+k];
+      PartialCache c;for(int j=0;j<lanes;++j)c[j]=cacheLane(q.lanes[j],m.layers);
+      auto& d=seriesData[p][k];d=single(m,q,c,x.v);seriesWeight[p][k]=1;
+      for(auto& l:d.lane)l.level+=x.scaleDb+x.toneDb;
+    }
+    return n;
+  }
+  // The two recorded pitches' series merged by order, blended where both
+  // have an order and alone at their pitch's share otherwise.
+  int blended(const Side& x,int p) noexcept {
     const Model& m=*x.m;const auto* cache=&partialLanes[m.partialFirst];
     int i=x.a->first,j=x.b->first,n=0;const int ia=i+x.a->count,jb=j+x.b->count;
     const bool singleTop=p>=2&&(x.a->count==1||x.b->count==1)&&x.a->note>=96;
@@ -2191,7 +2243,7 @@ struct Engine::Impl {
     // halfway build sounds about as loud as either piano. The modifiers then
     // stretch the unisons and the ring.
     int count[pianoCount]{},next[pianoCount]{};
-    for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p):0;
+    for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p,note):0;
     const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)];
     const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
@@ -2540,7 +2592,7 @@ struct Engine::Impl {
         const auto& ancA=m.anchors[upper-1];const auto& ancB=m.anchors[upper];
         const double t=std::max(0.,std::min(1.,static_cast<double>(note-ancA.note)/(ancB.note-ancA.note)));
         Side x{&m,&ancA,&ancB,upper,v,t,0.,0.,0.,0.,scaleDb,0.};
-        const int count=series(x,p);
+        const int count=series(x,p,note);
         double pwr=1e-18;
         for(int j=0;j<count;++j){
           const double w=seriesWeight[p][j];
