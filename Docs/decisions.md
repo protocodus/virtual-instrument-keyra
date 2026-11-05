@@ -3088,9 +3088,10 @@ upright's by −0.019 to −0.032 dB, and at the upright's two the median now
 falls on other events: Felt Upright's on F6 struck at velocity 110, now
 0.49 dB lower over its loudest 300 ms, and A4 at 70, 0.09 dB lower; Pop
 Upright's on C♯6 at 110, 0.25 dB lower. Every other preset, both pianos
-and their tubes pass. These four readings go to the owner with the version:
-`Tests/Fixtures/dynamics/ApprovedLevels.h` is unchanged until then, and
-`Keyra.Levels` fails on the three.
+and their tubes pass. These four readings went to the owner with the
+version, and the owner approved them:
+`Tests/Fixtures/dynamics/ApprovedLevels.h` now holds them to six decimals,
+and `Keyra.Levels` passes.
 
 `Keyra.FactoryDynamics` fails as it did on 0.4.22, with 1,098 of its pairs
 under their step floors (1,090 on 0.4.22: the Kakegawa Grand's 10 new and 5
@@ -3128,5 +3129,7 @@ and further on 7, envelope +0.18 dB (E4's 3.57 → 3.89) and tuning
 pairs all 15). There the correction's gain is in the decay, not in the
 envelope the upright's dev takes showed.
 
-The owner is asked to choose between this version and the first candidate,
-to approve the chosen version's four preset readings, and to merge it.
+Asked to choose between this version and the first candidate, or to keep
+both unmerged, the owner chose this version, with its four preset readings
+approved, and to merge it. The choice was made on these measurements; no
+listening test was run.

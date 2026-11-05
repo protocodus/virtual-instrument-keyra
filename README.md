@@ -79,15 +79,14 @@ envelope and F♯1's partial levels, decay and that tone past a tolerance, so
 the keys between there blend as before.
 The grand reads on Reason's meter as in 0.4.22, and the upright's tube,
 which the correction took 0.10 VU quieter, is re-pinned to what it read
-before. Three presets
-then read past their approved levels, the Kakegawa Grand's and Open Strings'
-loudest chords by +0.005 and +0.012 VU and Felt Upright's typical playing by
-−0.24 VU, and Pop Upright's typical playing, −0.05 VU off, sits at the edge
-of its guard; the four go to the owner for approval. Typical playing is a
-median over ninety events: Felt Upright's moved because F6 struck at
-velocity 110 now reads 0.49 dB lower over its loudest 300 ms and sits at the
-median, where event by event the upright's presets moved by a median of
-0.02 to 0.03 dB.
+before. Three presets then read past their approved levels, the Kakegawa
+Grand's and Open Strings' loudest chords by +0.005 and +0.012 VU and Felt
+Upright's typical playing by −0.24 VU, and Pop Upright's typical playing,
+−0.05 VU off, sits at the edge of its guard; the owner accepted the four as
+their approved levels. Typical playing is a median over ninety events: Felt
+Upright's moved because F6 struck at velocity 110 now reads 0.49 dB lower
+over its loudest 300 ms and sits at the median, where event by event the
+upright's presets moved by a median of 0.02 to 0.03 dB.
 The Hamamatsu and New York grands, whose keys between it took past a
 tolerance at some pitches, blend as before, and the Hamburg keeps the
 network's partials ([keyboard network](Docs/research/keyboard-network.md#a-correction-to-the-blend)).
