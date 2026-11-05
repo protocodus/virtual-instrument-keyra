@@ -43,6 +43,21 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.21 — 2026-11-05 — beating in the undamped strings
+
+A unison's strings, a little mistuned and coupled through the bridge, ring as
+two components that beat, and so do the undamped strings from F6 up that
+every strike sets ringing. Where the recordings decide it, on the Kakegawa
+grand's F♯6, A♯6 and C♯7 and the upright's C7, a string's aftersound now
+plays as two components 0.83 to 1.62 Hz apart, at the level and phase the
+recordings show the second against the first. Under the beat the grand's
+three fall 12 to 18 % slower, so that, read as the fit reads a string, they
+keep the decay and level it measured. In a phrase let go and left to ring,
+the beat changes the sound 7 to 36 dB under what still sounds on the grand
+and 37 to 58 dB under on the upright. Every other string, and every string of
+the other three pianos, rings as one tone as before
+([string beat](Docs/research/halo-beats-2026-11-05.md)).
+
 ### 0.4.20 — 2026-11-05 — the action's click
 
 A key let go and the grand's pedal coming up now also click above the body's
@@ -742,19 +757,27 @@ pitches around the key set it, and each at its own measured pitch, decay and
 stereo pickup whichever key struck it. Each starts with its own prompt part,
 as a struck unison does, that is gone within a few tenths of a second: at
 contact from too little to hear up to 25 dB over the string's own on the
-grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. They ring
-on after the key is let go; the felt mute damps them. The damped strings, A0
-to E6, ring in sympathy as far as their dampers are off, under the sustain
-pedal or a held key, at the level the Resonance control sets: each key's
-first eight partials under 5 kHz, at the frequencies a strike of that key
-plays them, driven by the piano's output at unity gain at resonance and heard
-at the key's place in the image. A key's own strikes do not drive its
-string: they are its sound. They decay at the rate the grand's pedal-down
-recording measures for their frequency, 0.32/s at middle C (2.8 dB/s) and a
-third faster per octave up, and the pedal going down sets the strings it frees
-ringing, at the level per third-octave band that recording rings them with;
-under full pedal's grazing felt (**Pedals and keyswitches**) they fall faster
-than its strings do.
+grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. Where a
+piano's recordings decide it, a string's aftersound is two components a
+little apart, which beat, as a coupled unison's strings do: on the Kakegawa
+grand's F♯6, A♯6 and C♯7, 0.89, 1.62 and 0.83 Hz apart, the second 5.2,
+10.9 and 1.1 dB under the first, and on the upright's C7, 0.99 Hz apart and
+5.2 dB under, each at the phase the recordings show at contact. Both fall at
+one rate, at which, read through the fit's windows from 1 to 2 s, they fall
+as the fit measured the string: on the grand 12 to 18 % slower than the rate
+it gave the string as one tone. The unisons modifier spreads a string's beat
+as it spreads a strike's. They ring on after the key is let go; the felt mute
+damps them. The damped strings, A0 to E6, ring in sympathy as far as their
+dampers are off, under the sustain pedal or a held key, at the level the
+Resonance control sets: each key's first eight partials under 5 kHz, at the
+frequencies a strike of that key plays them, driven by the piano's output at
+unity gain at resonance and heard at the key's place in the image. A key's own
+strikes do not drive its string: they are its sound. They decay at the rate
+the grand's pedal-down recording measures for their frequency, 0.32/s at
+middle C (2.8 dB/s) and a third faster per octave up, and the pedal going down
+sets the strings it frees ringing, at the level per third-octave band that
+recording rings them with; under full pedal's grazing felt
+(**Pedals and keyswitches**) they fall faster than its strings do.
 
 A strike's tone moves with velocity beyond its layer: each partial gains
 0.4 dB per octave of its order (up to four) for every decibel its layer plays
@@ -935,15 +958,20 @@ rings clear 10 dB over the median 16–60 Hz either side: each window's excess
 over the string's own line. One decay serves every string, fitted where they
 ring clear; each string's level counts the windows where the noise hides it as
 upper bounds and is drawn towards the strings' median by ten layers' worth of
-windows. The body modes are found below the treble's fundamentals, where no
-string sounds. Each mode's second stage is a line through its ±3 Hz envelope
-every 10 ms from 0.4 to 1.5 s after contact, in the frames that stand 6 dB
-over the take's quietest second; a layer counts where that line falls 6 dB or
-more, is the slower and starts 3 dB or more under the first, which is then
-refitted on what the second leaves of the frames from 35 to 400 ms, and a mode
-takes the energy-weighted median of six or more layers' rates; a line whose
-first stage falls less than 6 dB over those frames stands as a string does and
-is no mode. A pitch's knock
+windows. A string's beat is read on each train take where its tone stands 20
+dB clear at 1 s (`Tools/fit_halo_beats.py`): its envelope from 0.3 to 3 s,
+demodulated at its pitch, gives two components, and the string beats where the
+median beat its other recorded pitches give explains a pitch's envelopes
+better than one component on so many pitches that tossed coins would do as
+well in 5 % of draws or fewer. The body modes are found below the treble's
+fundamentals, where no string sounds. Each mode's second stage is a line
+through its ±3 Hz envelope every 10 ms from 0.4 to 1.5 s after contact, in the
+frames that stand 6 dB over the take's quietest second; a layer counts where
+that line falls 6 dB or more, is the slower and starts 3 dB or more under the
+first, which is then refitted on what the second leaves of the frames from 35
+to 400 ms, and a mode takes the energy-weighted median of six or more layers'
+rates; a line whose first stage falls less than 6 dB over those frames stands
+as a string does and is no mode. A pitch's knock
 on each stage is a line in the level of the layer that struck it, weighted by
 the knock's amplitude: the second stage's is fitted after 0.4 s first, the
 first's on what it leaves from 20 ms on, and again from 45 ms for the modes
@@ -1275,13 +1303,22 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   200 to 450 ms ([decisions](Docs/decisions.md), 2026-11-04).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
-  further than 0.3.0's. Each undamped key rings as one string at one pitch,
-  without its unison's beating, which dips the recordings' strings 3 to 10 dB
-  from half a second on, and past its prompt part falls at its rate from 1 to
-  2 s, where the real strings fall more slowly later: the strings that ring
-  clear sit a median 1.2 dB over the grand's never-fitted recordings at 1 s
-  and 1.0 dB under at 3 s, when 10 % of them are 10 dB or more under, and 0.7
-  and 9 dB under the upright's train recordings. The prompt parts share one
+  further than 0.3.0's. All but four undamped keys ring as one string at one
+  pitch, without their unison's beating, which dips the recordings' strings 3
+  to 10 dB from half a second on. The four that beat, the Kakegawa grand's
+  F♯6, A♯6 and C♯7 and the upright's C7, play one median beat whichever key
+  strikes them, where each recording's beat peaks and dips at its own times:
+  measured at 1 and 2 s, the grand's F♯6 and C♯7 sit 0.8 to 1.7 dB further
+  from the recordings than one tone did, and C♯7 reads a median 6 to 9 dB
+  under them at 0.375 and 0.5 s
+  ([string beat](Docs/research/halo-beats-2026-11-05.md)). Past
+  its prompt part a string falls at its rate from 1 to 2 s, where the real
+  strings fall more slowly later: the strings that ring clear sit a median
+  0.9 dB over the grand's never-fitted recordings at 1 s and 1.1 dB under at
+  3 s, when 11 % of them are 10 dB or more under, and 4.3 and 15.2 dB under
+  the upright's train recordings (0.4.20 measures all of these within 0.5 dB;
+  the 0.7 and 9 dB this item gave for the upright were measured on 0.4.11 or
+  earlier). The prompt parts share one
   decay, and a string that few strikes measure takes much of the strings'
   median level: at 0.125 s 4 % of the strings ring 10 dB or more over the
   grand's never-fitted recordings and 6 % over the upright's. The upright's G7

@@ -132,6 +132,9 @@ private:
   // The native action click test reads the bursts a knock of the action
   // plays.
   friend struct ActionClickTestObserver;
+  // The native halo beat test reads the parts of the undamped strings a
+  // strike sets ringing.
+  friend struct HaloBeatTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
