@@ -1270,7 +1270,7 @@ struct Engine::Impl {
   // Through a chunk: what drives the open strings, the image's width, the
   // output before them, and their sum and pan-weighted sum.
   std::array<float,chunk> openDrive{};
-  std::array<double,chunk> openWidth{},dryLeft{},dryRight{};
+  std::array<double,chunk> openWidth{},dryLeft{},dryRight{},haloDrive{};
   std::array<V4,chunk> openSum{},openPan{};
   std::array<double,sineSize+1> sine{};
   std::array<V4,chunk> mixLeft{},mixRight{};
@@ -3073,31 +3073,48 @@ struct Engine::Impl {
     else for(int i=0;i<2*frames;++i){seed^=seed<<13;seed^=seed>>17;seed^=seed<<5;}
     const double openBridgeScale=anyVoice?1+.65*pedalOpenness:1.;
     const double muteDamp=1./(1+180*mute*mute/sampleRate);
+    // The strings' and the noise's sum per sample, in dryLeft and dryRight
+    // until the image's width is applied below.
+    const bool haloDriven=anyVoice&&pedalOpenness>0;
     for(int i=0;i<frames;++i){
-      width+=smooth*(parameters.width-width);
       const V4 l4=mixLeft[i],r4=mixRight[i];
       double l=static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3);
       double r=static_cast<double>(lane(r4,0))+lane(r4,1)+lane(r4,2)+lane(r4,3);
       if(noisy){l+=noiseLeft[i];r+=noiseRight[i];}
-      const double voiceDrive=static_cast<double>(openDrive[i]);
-      const double haloDrive=anyVoice&&pedalOpenness>0?voiceDrive*.0025*pedalOpenness:0.;
-      // The undamped strings ring from their strikes (strike()) and, when the
-      // sustain pedal lifts the damper bank, from the bridge's motion across
-      // the open harp, heard through their measured pickups like the partials.
-      for(int j=0;j<halo;++j){auto& string=haloRing[j];auto& prompt=haloPrompt[j];
+      dryLeft[i]=l;dryRight[i]=r;
+      haloDrive[i]=haloDriven?static_cast<double>(openDrive[i])*.0025*pedalOpenness:0.;
+    }
+    // The undamped strings ring from their strikes (strike()) and, when the
+    // sustain pedal lifts the damper bank, from the bridge's motion across
+    // the open harp, heard through their measured pickups like the partials.
+    // String by string through the chunk, each string's state held in
+    // registers; every sample still adds the strings in their order, so the
+    // sums are the same bit for bit as sample by sample. A string at rest
+    // and undriven stays at rest and adds nothing.
+    for(int j=0;j<halo;++j){
+      Resonator string=haloRing[j],prompt=haloPrompt[j];
+      if(!haloDriven&&string.q==0&&string.p==0&&prompt.q==0&&prompt.p==0)continue;
+      // The bank turns the other way to the partials' lanes.
+      const auto& pickup=haloString[j];
+      for(int i=0;i<frames;++i){
         string.turn(muteDamp);prompt.turn(muteDamp);
-        if(haloDrive!=0)string.p+=(1-string.decay)*haloDrive;
+        if(haloDrive[i]!=0)string.p+=(1-string.decay)*haloDrive[i];
         const double q=string.q+prompt.q,im=string.p+prompt.p;
-        if(q!=0||im!=0){
-          // The bank turns the other way to the partials' lanes.
-          const auto& pickup=haloString[j];
-          l+=pickup.left*q;r+=pickup.rightRe*q+pickup.rightIm*im;
-        }
+        if(q!=0||im!=0){dryLeft[i]+=pickup.left*q;dryRight[i]+=pickup.rightRe*q+pickup.rightIm*im;}
       }
-      for(int k=0;k<beatingCount;++k){const int j=beating[k];auto& beat=haloBeat[j];
+      haloRing[j]=string;haloPrompt[j]=prompt;
+    }
+    for(int k=0;k<beatingCount;++k){const int j=beating[k];Resonator beat=haloBeat[j];const auto& pickup=haloString[j];
+      for(int i=0;i<frames;++i){
         beat.turn(muteDamp);
-        if(beat.q!=0||beat.p!=0){const auto& pickup=haloString[j];l+=pickup.left*beat.q;r+=pickup.rightRe*beat.q+pickup.rightIm*beat.p;}
+        if(beat.q!=0||beat.p!=0){dryLeft[i]+=pickup.left*beat.q;dryRight[i]+=pickup.rightRe*beat.q+pickup.rightIm*beat.p;}
       }
+      haloBeat[j]=beat;
+    }
+    for(int i=0;i<frames;++i){
+      width+=smooth*(parameters.width-width);
+      const double l=dryLeft[i],r=dryRight[i];
+      const double voiceDrive=static_cast<double>(openDrive[i]);
       // The pickup's own image at the default width; narrower towards mono.
       const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
       dryLeft[i]=mid+side;dryRight[i]=mid-side;
