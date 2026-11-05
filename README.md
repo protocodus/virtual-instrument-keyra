@@ -43,6 +43,21 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.20 — 2026-11-05 — the action's click
+
+A key let go and the grand's pedal coming up now also click above the body's
+modes, as each piano's release recordings show: in each noise band from 1.26
+to 16 kHz a burst that builds up with the knock and dies away, at the level,
+balance and decay the recordings show at the pitch. On the Kakegawa and
+Hamburg grands a key's click stands 4 to 19 dB under its knock, A-weighted,
+on the New York grand from 22 dB under to 1 dB over, and the Kakegawa
+grand's pedal clicks 1 dB under its knock coming up. The Helsinki upright
+clicks in at most three bands, a median 31 dB under its knock; the Hamamatsu
+grand, whose release takes hold sounding strings, plays none.
+Mechanics scales it with the knocks: at its default the click sits 46 to
+72 dB under what still sounds after a key-up, A-weighted
+([action click](Docs/research/action-click-2026-11-05.md)).
+
 ### 0.4.19 — 2026-11-04 — the upright's pitch glide
 
 A struck string's tension rises with its energy, so it starts sharp and
@@ -757,13 +772,18 @@ board's own ring of it whatever the dampers do, as the release recordings'
 knocks fall. A key going down knocks them with its strike, about 28 dB under a
 velocity-80 note at C2, C4 and C6 (30 dB on the upright), growing with the
 strike's layer. A key let go knocks them as its damper lands, building up over
-the 152 ms the release recordings show (108 ms on the upright) rather than
-clicking, and quieter the longer the key was held; under the sustain pedal or
+the 152 ms the release recordings show (91 ms on the upright) rather than
+at once, and quieter the longer the key was held; under the sustain pedal or
 sostenuto no damper falls and the key-up is silent, while from F6 up, where
 there is no damper, the key's own return knocks them whatever the pedals do.
-The sustain pedal knocks them going down and coming up. The Mechanics control
-scales every knock of the action, and the ring the pedal sets going down, from
-silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
+The sustain pedal knocks them going down and coming up. Above the modes, from
+1.26 to 16 kHz, a key let go and the Kakegawa grand's pedal coming up also
+click: in each noise band, the burst the piano's release takes hold at the
+pitch, building up under the knock's rise and mixed between the recorded
+pitches as the knock's modes are. The Hamamatsu grand plays none, as its
+release takes hold sounding strings. The Mechanics control
+scales every knock and click of the action, and the ring the pedal sets going
+down, from silent at 0% to raw gain 2 at 100%. The quieter default, raw gain 0.175, sits at
 40% on a continuous tapered knob. The action levels above describe raw gain 1;
 the separate hammer/body attack is not scaled by Mechanics.
 
@@ -1207,9 +1227,15 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   library's mix and the key knocks at a level the owner chose by ear, not a
   measured level, and only as far as the
   body's modes hold them: 24 to 70 % of each of the grand's recorded knocks
-  below 1 kHz (the upright's 38 to 86 %), and all of it above, is left out,
-  so a released C4 knocks 4 to 5 dB under the library's balance
+  below 1 kHz (the upright's 38 to 86 %) is left out, so a released C4
+  knocks 4 to 5 dB under the library's balance, measured before 0.4.20
+  played the click above 1 kHz
   ([release recordings](Docs/research/release-recordings-2026-10-27.md)).
+  The click is fitted on one take per recorded pitch, let go at velocity 85
+  after 1.5 s held, and follows the knock's tracking elsewhere, unmeasured;
+  the upright's mostly sounds one band near its takes' floor, and the
+  Hamamatsu grand's, which its takes do not hold apart from their strings,
+  is not played ([action click](Docs/research/action-click-2026-11-05.md)).
   The room is not calibrated, and the key noise the recordings carry 1 to
   28 ms before string contact is not played: a note sounds from contact.
   Under the lowest body mode (29 Hz) the middle register's recordings hold a

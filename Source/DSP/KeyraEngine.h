@@ -129,6 +129,9 @@ private:
   // The native glide test reads each key's pitch glide and its voices'
   // tuning.
   friend struct GlideTestObserver;
+  // The native action click test reads the bursts a knock of the action
+  // plays.
+  friend struct ActionClickTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
