@@ -43,6 +43,15 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.25 — 2026-11-05 — a fifth less CPU, and lighter chords
+
+The demos take 14 to 33 % less CPU, and the block a chord is struck in up to
+a third less: Three Cities' seven-note chord fell from 9.6 to 6.3 ms on the
+development machine. Four of the five changes leave every sample as it was;
+the felt's damping, now taken by square roots, moves a few thousand samples
+of the demos by one 24-bit step (−138.5 dBFS)
+([benchmark](Docs/benchmarks/cpu-five-steps-2026-11-05.md)).
+
 ### 0.4.24 — 2026-11-05 — the struck key's own undamped string
 
 The strings from F6 up have no dampers, and every strike sets them ringing,
