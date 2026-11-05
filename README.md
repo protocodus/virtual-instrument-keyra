@@ -43,6 +43,38 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.24 — 2026-11-05 — the struck key's own undamped string
+
+The strings from F6 up have no dampers, and every strike sets them ringing,
+each but the struck key's own, which was left to the key's partials. Where
+none of the key's partials lies within 4 Hz of that string's pitch, the
+recordings hold a tone there that the engine left out: from F7 up the string
+an octave below, undamped too, ringing at its second partial, and below F7 a
+string of the key's own unison tuned further off than its partials reach. A
+key's strike now rings its own string there, at the level the key's recorded
+strikes set and growing with the strike as the other undamped strings do: on
+the Kakegawa grand at D♯7, F7 and from F♯7 up, the Hamamatsu at ten keys from
+F6 to B7, the Hamburg at thirteen from F♯6 to A♯7 and New York at F6, G♯6 and
+from E7 up. The grand's F♯7 and A7 held it 30 to 64 dB under their
+recordings and now hold it within −1 to +10 dB of them, their never-fitted
+takes within −0.6 to +4.3 dB, and the never-fitted D♯7 3 to 9 dB under, where
+0.4.23 left it 27 to 33 dB under. On the grand's never-fitted takes the
+benchmark stands closer on all 12 measures, the tuning by 0.08 cents and the
+decay by 0.06 dB/s the most; the other pianos move by 0.025 or less, and the
+upright, whose partials play all its strings, renders as before, sample for
+sample ([grand](Docs/validation/grand-halo-own-benchmark-2026-11-05.md),
+[Hamamatsu](Docs/validation/kawai-halo-own-benchmark-2026-11-05.md),
+[Hamburg](Docs/validation/hamburg-halo-own-benchmark-2026-11-05.md),
+[New York](Docs/validation/newyork-halo-own-benchmark-2026-11-05.md)). The
+grand's C8 stands 0.50 cents further in tuning on its train takes, just past
+the tolerance: the measure now finds the new string 6 Hz over C8's first
+partial, which peaks under the string through the measure's window where
+the recordings' peaks over it, as C8 is not calibrated. The Hamamatsu
+reads 0.02 VU louder on Reason's meter and every other piano and preset as
+before, and the CPU is unchanged within the runs' spread, as the string
+rings in the resonator it already had
+([own string](Docs/research/halo-own-2026-11-05.md)).
+
 ### 0.4.23 — 2026-11-05 — the grand's and the upright's keys between recorded pitches ring on as recorded keys do
 
 The Kakegawa grand's and the upright's keys between two recorded pitches
@@ -824,7 +856,14 @@ faster than the ring, mostly within a few tens of milliseconds.
 The undamped strings from F6 up ring with every strike, whatever the
 Resonance control: each but the struck key's own, at the level the recorded
 pitches around the key set it, and each at its own measured pitch, decay and
-stereo pickup whichever key struck it. Each starts with its own prompt part,
+stereo pickup whichever key struck it. The struck key's own string rings too
+where none of the key's partials lies within 4 Hz of its pitch: from F7 up,
+where the string an octave below is undamped too, that string's second
+partial, which the strike sets ringing through the bridge, and below F7 a
+string of the key's own unison tuned further off than its lanes reach. It
+rings at the level the key's own recorded strikes set, with no prompt part,
+and between pianos at the share of the hammers of those whose takes ring it.
+Each of the others starts with its own prompt part,
 as a struck unison does, that is gone within a few tenths of a second: at
 contact from too little to hear up to 25 dB over the string's own on the
 grand and up to 17 dB on the upright, falling at 103 and 75 dB/s. Where a
@@ -1021,7 +1060,19 @@ dB under the median bound but never over the tightest. One slope serves every
 string and pitch, in dB per dB of the level the strike's layer plays at, as the
 knock's does, and rises with the octaves the string lies over the struck
 fundamental, as a harder strike is brighter: 1.48 dB per dB and 0.38 more per
-octave on the grand, 1.39 and 0.47 on the upright. Their prompt parts are
+octave on the grand, 1.39 and 0.47 on the upright. A key's own string is
+read the same way on its own key's train takes (`Tools/fit_halo_own.py`),
+where no lane of the key's partials lies within 4 Hz of it, the half-second
+window's main lobe: a window hears it where it stands 10 dB over the median
+4–20 Hz either side, leaving out what lies within 4 Hz of the key's own
+components, and 10 dB over what those components alone read there through
+the same window, each lane within 40 Hz at the take's layer and falling at
+its own rate. Its level at a pitch is fitted at the strings' slope as above,
+a layer that rings clear capping it where fewer than two do, and a pitch the
+series fit leaves uncalibrated, the grand's C8, only bounds it. Between the
+recorded pitches each key interpolates their levels by key and holds the
+nearest beyond them, and has none between two pitches whose partials play
+their strings. The strings' prompt parts are
 measured the same way through quarter-second windows at 0.125, 0.25, 0.375 and
 0.5 s, where a string stands 60 Hz from every partial of the struck key and
 rings clear 10 dB over the median 16–60 Hz either side: each window's excess
@@ -1469,6 +1520,17 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   From F♯3 to F♯5 the first seconds of the sustain sit up to 1 dB further from
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.
+- A key's own undamped string grows with the strike at the one slope every
+  undamped string takes, where the grand's F♯7 and A7 recordings grow it 1.15
+  and 1.85 dB per dB: the softest layers ring it up to 10 dB over their
+  recordings (A7 at velocity 14, the Hamburg's A♯6 at 31) and F♯7's loudest 3
+  to 4 dB over. It plays at the pitch the other keys' strikes measure for the
+  string, which at F♯7 lies 2.4 Hz over the octave-below string's second
+  partial that F♯7's strikes ring. Keys between recorded pitches take the
+  levels around them: the New York grand's A♯6 to D♯7 have none, and its
+  never-fitted E7 and A7 sit 32 and 20 dB under their recordings there, the
+  Hamamatsu's F♯7 17 to 24 dB under, and the grand's C8, which only bounds it,
+  5 to 14 dB under ([own string](Docs/research/halo-own-2026-11-05.md)).
 - Under the notes from C4 up the body's modes still ring short of the
   recordings late: from 0.7 to 1.5 s the grand's 200 to 400 Hz modes sit 7 to
   11 dB under its train takes, and its other regions from 25 Hz to 1 kHz 4 to

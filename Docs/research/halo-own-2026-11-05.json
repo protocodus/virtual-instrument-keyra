@@ -1,0 +1,1069 @@
+{
+ "tool": "Tools/fit_halo_own.py",
+ "tool_sha256": "936092d61d643229346fb98492ef70e93508f51817d5aefe6ee334d618d8b04f",
+ "protocol": {
+  "resolved_hz": 4.0,
+  "near_hz": 40.0,
+  "halo_times": [
+   1.0,
+   1.25,
+   1.5,
+   1.75,
+   2.0
+  ],
+  "halo_clear_db": 10.0,
+  "halo_hidden_db": 10.0
+ },
+ "pianos": {
+  "grand": {
+   "header": "Source/DSP/MeasuredModalData.h",
+   "header_sha256": "fe30baf87b2bfd2f1c8c5fce031856f94c8f826988c6e9d3e277666d354e8408",
+   "split": "Tools/corpus/split-2026-10-27.json",
+   "split_sha256": "8f992855c06b829146070e1ae545854ec64210e4e81bb230b6472570583602a4",
+   "corpus": "Tools/corpus/salamander-v3.json",
+   "corpus_sha256": "1496e60d81bbaf3aecdde3e2a87f0ca7dae1459e27c9ee5fc4aa2432b36e91a9",
+   "pitches": {
+    "90": {
+     "hz": 1492.3747974429646,
+     "nearest_lane_hz": 0.11929073530427559,
+     "slope": 1.4753985646836327,
+     "kind": "played",
+     "level": null
+    },
+    "93": {
+     "hz": 1774.125314579413,
+     "nearest_lane_hz": 0.461494937131647,
+     "slope": 1.4757431387226132,
+     "kind": "played",
+     "level": null
+    },
+    "96": {
+     "hz": 2117.875314727908,
+     "nearest_lane_hz": 0.114038670149057,
+     "slope": 1.475013,
+     "kind": "played",
+     "level": null
+    },
+    "102": {
+     "hz": 3003.5004490839224,
+     "nearest_lane_hz": 5.013722996122851,
+     "slope": 1.475013,
+     "kind": "clear",
+     "level": -43.86650472478807,
+     "layers": [
+      {
+       "case": "F#7v1",
+       "role": "train",
+       "velocity": 14,
+       "x": -21.1674,
+       "level": -70.17055121899224,
+       "clear_windows": 5,
+       "predicted": -75.08869490098807
+      },
+      {
+       "case": "F#7v2",
+       "role": "train",
+       "velocity": 31,
+       "x": -16.69434,
+       "level": -64.5336751443205,
+       "clear_windows": 5,
+       "predicted": -68.49087325120807
+      },
+      {
+       "case": "F#7v4",
+       "role": "train",
+       "velocity": 40,
+       "x": -12.57055,
+       "level": -60.73023572359902,
+       "clear_windows": 5,
+       "predicted": -62.40822939193807
+      },
+      {
+       "case": "F#7v5",
+       "role": "train",
+       "velocity": 45,
+       "x": -10.79616,
+       "level": -59.727898604724295,
+       "clear_windows": 5,
+       "predicted": -59.79098107486807
+      },
+      {
+       "case": "F#7v6",
+       "role": "train",
+       "velocity": 49,
+       "x": -9.851363,
+       "level": -58.481129895586136,
+       "clear_windows": 5,
+       "predicted": -58.39739321750707
+      },
+      {
+       "case": "F#7v8",
+       "role": "train",
+       "velocity": 61,
+       "x": -8.35563,
+       "level": -57.120514213850925,
+       "clear_windows": 5,
+       "predicted": -56.19116759797807
+      },
+      {
+       "case": "F#7v9",
+       "role": "train",
+       "velocity": 69,
+       "x": -7.532016,
+       "level": -55.62789732254352,
+       "clear_windows": 5,
+       "predicted": -54.97632624099607
+      },
+      {
+       "case": "F#7v10",
+       "role": "train",
+       "velocity": 77,
+       "x": -6.920315,
+       "level": -54.73501400106147,
+       "clear_windows": 5,
+       "predicted": -54.07405931388307
+      },
+      {
+       "case": "F#7v12",
+       "role": "train",
+       "velocity": 93,
+       "x": -4.820412,
+       "level": -52.12076636720597,
+       "clear_windows": 5,
+       "predicted": -50.97667509014407
+      },
+      {
+       "case": "F#7v13",
+       "role": "train",
+       "velocity": 101,
+       "x": -3.70505,
+       "level": -51.417432832946076,
+       "clear_windows": 5,
+       "predicted": -49.33150164043807
+      },
+      {
+       "case": "F#7v14",
+       "role": "train",
+       "velocity": 109,
+       "x": -2.573798,
+       "level": -50.992284553769174,
+       "clear_windows": 5,
+       "predicted": -47.66289023416207
+      },
+      {
+       "case": "F#7v16",
+       "role": "train",
+       "velocity": 124,
+       "x": 0.0,
+       "level": -45.597896128523686,
+       "clear_windows": 4,
+       "predicted": -43.86650472478807
+      },
+      {
+       "case": "F#7v3",
+       "role": "dev",
+       "velocity": 36,
+       "x": -14.403345555555557,
+       "level": -61.63270498259262,
+       "clear_windows": 5,
+       "predicted": -65.11162666272475
+      },
+      {
+       "case": "F#7v7",
+       "role": "dev",
+       "velocity": 54,
+       "x": -9.228140916666666,
+       "level": -57.44987983537705,
+       "clear_windows": 5,
+       "predicted": -57.47813254270332
+      },
+      {
+       "case": "F#7v11",
+       "role": "dev",
+       "velocity": 85,
+       "x": -5.8703635,
+       "level": -53.798602642487005,
+       "clear_windows": 5,
+       "predicted": -52.52536720201357
+      },
+      {
+       "case": "F#7v15",
+       "role": "dev",
+       "velocity": 117,
+       "x": -1.2011057333333333,
+       "level": -47.25106775783591,
+       "clear_windows": 4,
+       "predicted": -45.638151295829275
+      }
+     ]
+    },
+    "105": {
+     "hz": 3571.749991577726,
+     "nearest_lane_hz": 27.144039622626224,
+     "slope": 1.475013,
+     "kind": "clear",
+     "level": -60.89334397966242,
+     "layers": [
+      {
+       "case": "A7v1",
+       "role": "train",
+       "velocity": 14,
+       "x": -21.1674,
+       "level": -100.41255110843977,
+       "clear_windows": 2,
+       "predicted": -92.11553415586242
+      },
+      {
+       "case": "A7v2",
+       "role": "train",
+       "velocity": 31,
+       "x": -16.69434,
+       "level": -87.51920575207265,
+       "clear_windows": 5,
+       "predicted": -85.51771250608242
+      },
+      {
+       "case": "A7v4",
+       "role": "train",
+       "velocity": 40,
+       "x": -12.57055,
+       "level": -78.69765048401803,
+       "clear_windows": 5,
+       "predicted": -79.43506864681243
+      },
+      {
+       "case": "A7v5",
+       "role": "train",
+       "velocity": 45,
+       "x": -10.79616,
+       "level": -75.92902749730202,
+       "clear_windows": 5,
+       "predicted": -76.81782032974242
+      },
+      {
+       "case": "A7v6",
+       "role": "train",
+       "velocity": 49,
+       "x": -9.851363,
+       "level": -75.1735446312091,
+       "clear_windows": 5,
+       "predicted": -75.42423247238142
+      },
+      {
+       "case": "A7v8",
+       "role": "train",
+       "velocity": 61,
+       "x": -8.35563,
+       "level": -72.465311185558,
+       "clear_windows": 5,
+       "predicted": -73.21800685285241
+      },
+      {
+       "case": "A7v9",
+       "role": "train",
+       "velocity": 69,
+       "x": -7.532016,
+       "level": -70.5467470805372,
+       "clear_windows": 5,
+       "predicted": -72.00316549587042
+      },
+      {
+       "case": "A7v10",
+       "role": "train",
+       "velocity": 77,
+       "x": -6.920315,
+       "level": -69.33247762059761,
+       "clear_windows": 5,
+       "predicted": -71.10089856875742
+      },
+      {
+       "case": "A7v12",
+       "role": "train",
+       "velocity": 93,
+       "x": -4.820412,
+       "level": -66.9876654229334,
+       "clear_windows": 5,
+       "predicted": -68.00351434501842
+      },
+      {
+       "case": "A7v13",
+       "role": "train",
+       "velocity": 101,
+       "x": -3.70505,
+       "level": -65.259946480558,
+       "clear_windows": 5,
+       "predicted": -66.35834089531242
+      },
+      {
+       "case": "A7v14",
+       "role": "train",
+       "velocity": 109,
+       "x": -2.573798,
+       "level": -64.1200339181897,
+       "clear_windows": 5,
+       "predicted": -64.68972948903642
+      },
+      {
+       "case": "A7v16",
+       "role": "train",
+       "velocity": 124,
+       "x": 0.0,
+       "level": -59.13320720666043,
+       "clear_windows": 5,
+       "predicted": -60.89334397966242
+      },
+      {
+       "case": "A7v3",
+       "role": "dev",
+       "velocity": 36,
+       "x": -14.403345555555557,
+       "level": -84.5657552813846,
+       "clear_windows": 5,
+       "predicted": -82.13846591759909
+      },
+      {
+       "case": "A7v7",
+       "role": "dev",
+       "velocity": 54,
+       "x": -9.228140916666666,
+       "level": -73.91673090947798,
+       "clear_windows": 5,
+       "predicted": -74.50497179757767
+      },
+      {
+       "case": "A7v11",
+       "role": "dev",
+       "velocity": 85,
+       "x": -5.8703635,
+       "level": -67.94857679909407,
+       "clear_windows": 5,
+       "predicted": -69.55220645688792
+      },
+      {
+       "case": "A7v15",
+       "role": "dev",
+       "velocity": 117,
+       "x": -1.2011057333333333,
+       "level": -62.42135931933459,
+       "clear_windows": 5,
+       "predicted": -62.66499055070362
+      }
+     ]
+    },
+    "108": {
+     "hz": 4282.624326925296,
+     "nearest_lane_hz": null,
+     "slope": 1.475013,
+     "kind": "under",
+     "level": -85.4195795604129,
+     "layers": [
+      {
+       "case": "C8v1",
+       "role": "train",
+       "velocity": 14,
+       "x": -21.1674,
+       "bound": -106.34290056093685,
+       "clear_windows": 0,
+       "predicted": -116.6417697366129
+      },
+      {
+       "case": "C8v2",
+       "role": "train",
+       "velocity": 31,
+       "x": -16.69434,
+       "bound": -98.57860167918953,
+       "clear_windows": 1,
+       "predicted": -110.0439480868329
+      },
+      {
+       "case": "C8v4",
+       "role": "train",
+       "velocity": 40,
+       "x": -12.57055,
+       "bound": -94.23020673785818,
+       "clear_windows": 2,
+       "predicted": -103.96130422756289
+      },
+      {
+       "case": "C8v5",
+       "role": "train",
+       "velocity": 45,
+       "x": -10.79616,
+       "bound": -92.69059926489935,
+       "clear_windows": 3,
+       "predicted": -101.3440559104929
+      },
+      {
+       "case": "C8v6",
+       "role": "train",
+       "velocity": 49,
+       "x": -9.851363,
+       "bound": -90.36594933855912,
+       "clear_windows": 4,
+       "predicted": -99.9504680531319
+      },
+      {
+       "case": "C8v8",
+       "role": "train",
+       "velocity": 61,
+       "x": -8.35563,
+       "bound": -88.80075351595151,
+       "clear_windows": 4,
+       "predicted": -97.74424243360289
+      },
+      {
+       "case": "C8v9",
+       "role": "train",
+       "velocity": 69,
+       "x": -7.532016,
+       "bound": -87.07783105709801,
+       "clear_windows": 4,
+       "predicted": -96.5294010766209
+      },
+      {
+       "case": "C8v10",
+       "role": "train",
+       "velocity": 77,
+       "x": -6.920315,
+       "bound": -85.4055756417424,
+       "clear_windows": 5,
+       "predicted": -95.6271341495079
+      },
+      {
+       "case": "C8v12",
+       "role": "train",
+       "velocity": 93,
+       "x": -4.820412,
+       "bound": -82.75130843353439,
+       "clear_windows": 5,
+       "predicted": -92.5297499257689
+      },
+      {
+       "case": "C8v13",
+       "role": "train",
+       "velocity": 101,
+       "x": -3.70505,
+       "bound": -79.97945146304882,
+       "clear_windows": 5,
+       "predicted": -90.8845764760629
+      },
+      {
+       "case": "C8v14",
+       "role": "train",
+       "velocity": 109,
+       "x": -2.573798,
+       "bound": -78.32309845929029,
+       "clear_windows": 5,
+       "predicted": -89.2159650697869
+      },
+      {
+       "case": "C8v16",
+       "role": "train",
+       "velocity": 124,
+       "x": 0.0,
+       "bound": -73.86564132615914,
+       "clear_windows": 5,
+       "predicted": -85.4195795604129
+      },
+      {
+       "case": "C8v3",
+       "role": "dev",
+       "velocity": 36,
+       "x": -14.403345555555557,
+       "bound": -95.71061583406522,
+       "clear_windows": 2,
+       "predicted": -106.66470149834956
+      },
+      {
+       "case": "C8v7",
+       "role": "dev",
+       "velocity": 54,
+       "x": -9.228140916666666,
+       "bound": -89.25096941725069,
+       "clear_windows": 4,
+       "predicted": -99.03120737832815
+      },
+      {
+       "case": "C8v11",
+       "role": "dev",
+       "velocity": 85,
+       "x": -5.8703635,
+       "bound": -83.82621265801716,
+       "clear_windows": 4,
+       "predicted": -94.0784420376384
+      },
+      {
+       "case": "C8v15",
+       "role": "dev",
+       "velocity": 117,
+       "x": -1.2011057333333333,
+       "bound": -75.70817422123827,
+       "clear_windows": 5,
+       "predicted": -87.1912261314541
+      }
+     ]
+    }
+   },
+   "levels": [
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -43.86650472478807,
+    -43.86650472478807,
+    -43.86650472478807,
+    -43.86650472478807,
+    -43.86650472478807,
+    -43.86650472478807,
+    -49.54211780974619,
+    -55.2177308947043,
+    -60.89334397966242,
+    -69.06875583991258,
+    -77.24416770016273,
+    -85.4195795604129
+   ]
+  },
+  "upright": {
+   "header": "Source/DSP/MeasuredUprightData.h",
+   "header_sha256": "932b6223946460d9c0dc1904fecdfb535763086a25ecab40c228f41dfd5faf6b",
+   "split": "Tools/corpus/split-helsinki-2026-10-28.json",
+   "split_sha256": "9bda3a9141f949d8737ae4f67ad156ba78d057601c673126d54f2748115d1fd9",
+   "corpus": "Tools/corpus/helsinki-1967.json",
+   "corpus_sha256": "e7bf0035e2de39b205f75427cb2cdfafb5d23b074b7abf05f7801e19c524f328",
+   "pitches": {
+    "90": {
+     "hz": 1480.6874795058243,
+     "nearest_lane_hz": 0.10144739212182685,
+     "slope": 1.388298,
+     "kind": "played",
+     "level": null
+    },
+    "92": {
+     "hz": 1666.1248901258093,
+     "nearest_lane_hz": 0.04368798994460121,
+     "slope": 1.3887583020532461,
+     "kind": "played",
+     "level": null
+    },
+    "94": {
+     "hz": 1879.7498242848562,
+     "nearest_lane_hz": 0.043702372791813104,
+     "slope": 1.388298,
+     "kind": "played",
+     "level": null
+    },
+    "96": {
+     "hz": 2112.999914039803,
+     "nearest_lane_hz": 0.11839556478525992,
+     "slope": 1.3887055514357356,
+     "kind": "played",
+     "level": null
+    },
+    "100": {
+     "hz": 2664.9379815970187,
+     "nearest_lane_hz": 0.23511659701853205,
+     "slope": 1.3903447702592084,
+     "kind": "played",
+     "level": null
+    },
+    "103": {
+     "hz": 3176.5003525760653,
+     "nearest_lane_hz": 0.7695125760642441,
+     "slope": 1.388298,
+     "kind": "played",
+     "level": null
+    }
+   },
+   "levels": [
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0
+   ]
+  },
+  "kawai": {
+   "header": "Source/DSP/MeasuredKawaiData.h",
+   "header_sha256": "8b9c22d666d45004e2f26bb380a9130cd3b9b43ba479c2a243689c9395b795ba",
+   "split": "Tools/corpus/split-vcsl-kawai-2026-10-31.json",
+   "split_sha256": "79fc59f8221ca85feccc5ea0fe1ee245202b021cfdad6f69987b0f27ceeca165",
+   "corpus": "Tools/corpus/vcsl-kawai.json",
+   "corpus_sha256": "36fadc7bca1609381d2c7aaa6b943fdf8a054bbf88304546392425bfb6d61046",
+   "pitches": {
+    "93": {
+     "hz": 1753.5000852141545,
+     "nearest_lane_hz": 6.279932291090063,
+     "slope": 1.19054,
+     "kind": "clear",
+     "level": -54.33386821608368,
+     "layers": [
+      {
+       "case": "n93v1",
+       "role": "train",
+       "velocity": 42,
+       "x": -27.74679642857143,
+       "bound": -65.4610968068261,
+       "clear_windows": 1,
+       "predicted": -87.3675392361551
+      },
+      {
+       "case": "n93v2",
+       "role": "train",
+       "velocity": 95,
+       "x": -4.126583,
+       "level": -60.04956112073113,
+       "clear_windows": 5,
+       "predicted": -59.24673034090368
+      },
+      {
+       "case": "n93v3",
+       "role": "train",
+       "velocity": 117,
+       "x": 0.0,
+       "level": -53.531037430699485,
+       "clear_windows": 5,
+       "predicted": -54.33386821608368
+      }
+     ]
+    },
+    "96": {
+     "hz": 2088.7499411938934,
+     "nearest_lane_hz": 4.198970532052954,
+     "slope": 1.19054,
+     "kind": "played",
+     "level": null,
+     "layers": [
+      {
+       "case": "n96v1",
+       "role": "train",
+       "velocity": 27,
+       "x": -32.8461,
+       "bound": null,
+       "clear_windows": 0
+      },
+      {
+       "case": "n96v2",
+       "role": "train",
+       "velocity": 69,
+       "x": -18.56805,
+       "bound": null,
+       "clear_windows": 0
+      },
+      {
+       "case": "n96v3",
+       "role": "train",
+       "velocity": 95,
+       "x": -4.126583,
+       "bound": null,
+       "clear_windows": 0
+      },
+      {
+       "case": "n96v4",
+       "role": "train",
+       "velocity": 117,
+       "x": 0.0,
+       "bound": null,
+       "clear_windows": 0
+      }
+     ]
+    },
+    "99": {
+     "hz": 2469.5623973336396,
+     "nearest_lane_hz": 19.697612666360328,
+     "slope": 1.19054,
+     "kind": "under",
+     "level": -107.16096258433481,
+     "layers": [
+      {
+       "case": "n99v1",
+       "role": "train",
+       "velocity": 42,
+       "x": -27.74679642857143,
+       "bound": null,
+       "clear_windows": 0,
+       "predicted": -140.19463360440625
+      },
+      {
+       "case": "n99v2",
+       "role": "train",
+       "velocity": 95,
+       "x": -4.126583,
+       "bound": -96.686154836832,
+       "clear_windows": 0,
+       "predicted": -112.0738247091548
+      },
+      {
+       "case": "n99v3",
+       "role": "train",
+       "velocity": 117,
+       "x": 0.0,
+       "bound": -102.54863245665763,
+       "clear_windows": 0,
+       "predicted": -107.16096258433481
+      }
+     ]
+    },
+    "105": {
+     "hz": 3526.3754814760173,
+     "nearest_lane_hz": 6.730426436567086,
+     "slope": 1.191659901923893,
+     "kind": "clear",
+     "level": -78.57964027100238,
+     "layers": [
+      {
+       "case": "n105v1",
+       "role": "train",
+       "velocity": 27,
+       "x": -32.8461,
+       "bound": -112.3417166896565,
+       "clear_windows": 0,
+       "predicted": -117.72102057558476
+      },
+      {
+       "case": "n105v2",
+       "role": "train",
+       "velocity": 69,
+       "x": -18.56805,
+       "bound": null,
+       "clear_windows": 0,
+       "predicted": -100.70644091292031
+      },
+      {
+       "case": "n105v3",
+       "role": "train",
+       "velocity": 95,
+       "x": -4.126583,
+       "level": -77.38955162161497,
+       "clear_windows": 5,
+       "predicted": -83.49712376406318
+      },
+      {
+       "case": "n105v4",
+       "role": "train",
+       "velocity": 117,
+       "x": 0.0,
+       "level": -83.31256411385552,
+       "clear_windows": 2,
+       "predicted": -78.57964027100238
+      }
+     ]
+    },
+    "108": {
+     "hz": 4148.7504737259715,
+     "nearest_lane_hz": 1.490233725971848,
+     "slope": 1.19054,
+     "kind": "played",
+     "level": null
+    }
+   },
+   "levels": [
+    -54.33386821608368,
+    -54.33386821608368,
+    -54.33386821608368,
+    -54.33386821608368,
+    -54.33386821608368,
+    -54.33386821608368,
+    -54.33386821608368,
+    -200.0,
+    -107.16096258433481,
+    -107.16096258433481,
+    -107.16096258433481,
+    -102.39740886544607,
+    -97.63385514655734,
+    -92.8703014276686,
+    -88.10674770877985,
+    -83.34319398989112,
+    -78.57964027100238,
+    -78.57964027100238,
+    -78.57964027100238,
+    -200.0
+   ]
+  },
+  "hamburg": {
+   "header": "Source/DSP/MeasuredHamburgData.h",
+   "header_sha256": "3a97e4d1cf69b777916cde6295a3250ca175d137936e11af9a5eb1a75d3c711f",
+   "split": "Tools/corpus/split-hamburg-2026-10-31.json",
+   "split_sha256": "d723a68a27718d571e3b1f45c9ea98d38747e71c60bba9900b184243258e75db",
+   "corpus": "Tools/corpus/hamburg-grand.json",
+   "corpus_sha256": "d28aae9e980302d8b9d83fa3792fac5ae7baddd280ced6d6dc18653fdbd35ef5",
+   "pitches": {
+    "94": {
+     "hz": 1865.1249746002327,
+     "nearest_lane_hz": 11.490533298281662,
+     "slope": 1.282055,
+     "kind": "clear",
+     "level": -73.82876828149591,
+     "layers": [
+      {
+       "case": "n94v1r1",
+       "role": "train",
+       "velocity": 31,
+       "x": -17.52619,
+       "bound": -104.35083323071612,
+       "clear_windows": 1,
+       "predicted": -96.29830780194591
+      },
+      {
+       "case": "n94v2r1",
+       "role": "train",
+       "velocity": 80,
+       "x": -11.49799,
+       "level": -87.96455048210883,
+       "clear_windows": 5,
+       "predicted": -88.56982385094591
+      },
+      {
+       "case": "n94v3r1",
+       "role": "train",
+       "velocity": 108,
+       "x": -5.049942,
+       "level": -74.7417708496236,
+       "clear_windows": 5,
+       "predicted": -80.3030716723059
+      },
+      {
+       "case": "n94v4r1",
+       "role": "train",
+       "velocity": 123,
+       "x": 0.0,
+       "level": -68.32522040909961,
+       "clear_windows": 4,
+       "predicted": -73.82876828149591
+      }
+     ]
+    },
+    "101": {
+     "hz": 2819.875299389144,
+     "nearest_lane_hz": 9.716022873093607,
+     "slope": 1.282055,
+     "kind": "under",
+     "level": -98.97032436726646,
+     "layers": [
+      {
+       "case": "n101v1r1",
+       "role": "train",
+       "velocity": 31,
+       "x": -17.52619,
+       "level": -121.43986388771646,
+       "clear_windows": 2,
+       "predicted": -121.43986388771646
+      },
+      {
+       "case": "n101v2r1",
+       "role": "train",
+       "velocity": 80,
+       "x": -11.49799,
+       "bound": -84.75571375331064,
+       "clear_windows": 0,
+       "predicted": -113.71137993671645
+      },
+      {
+       "case": "n101v3r1",
+       "role": "train",
+       "velocity": 108,
+       "x": -5.049942,
+       "bound": -77.18136838317028,
+       "clear_windows": 0,
+       "predicted": -105.44462775807645
+      },
+      {
+       "case": "n101v4r1",
+       "role": "train",
+       "velocity": 123,
+       "x": 0.0,
+       "bound": -74.19732994721811,
+       "clear_windows": 0,
+       "predicted": -98.97032436726646
+      }
+     ]
+    }
+   },
+   "levels": [
+    -73.82876828149591,
+    -73.82876828149591,
+    -73.82876828149591,
+    -73.82876828149591,
+    -73.82876828149591,
+    -73.82876828149591,
+    -77.4204191508917,
+    -81.0120700202875,
+    -84.60372088968329,
+    -88.19537175907908,
+    -91.78702262847487,
+    -95.37867349787066,
+    -98.97032436726646,
+    -98.97032436726646,
+    -98.97032436726646,
+    -98.97032436726646,
+    -98.97032436726646,
+    -98.97032436726646,
+    -98.97032436726646,
+    -98.97032436726646
+   ]
+  },
+  "newyork": {
+   "header": "Source/DSP/MeasuredNewYorkData.h",
+   "header_sha256": "ad6bbe849064c19f1e08b9959bb910c0b663aabe998a3f5f303f48c519d18c4e",
+   "split": "Tools/corpus/split-newyork-2026-10-31.json",
+   "split_sha256": "534da876cf25ac4a724aba60286bd05796975bfb5002c2fb27e220d771980072",
+   "corpus": "Tools/corpus/newyork-grand.json",
+   "corpus_sha256": "064726e5ebcc98902002633fc5d39c4c9a5e9ba5337b2a802a8c2c3db4b82020",
+   "pitches": {
+    "89": {
+     "hz": 1417.2504232032009,
+     "nearest_lane_hz": 9.98566840729086,
+     "slope": 1.9425160262367998,
+     "kind": "clear",
+     "level": -45.77064518377551,
+     "layers": [
+      {
+       "case": "n89v1",
+       "role": "train",
+       "velocity": 13,
+       "x": -30.28948,
+       "bound": -80.42797410791577,
+       "clear_windows": 0,
+       "predicted": -104.60844551015452
+      },
+      {
+       "case": "n89v2",
+       "role": "train",
+       "velocity": 36,
+       "x": -20.18004,
+       "bound": -78.34616758173979,
+       "clear_windows": 1,
+       "predicted": -84.97069629387518
+      },
+      {
+       "case": "n89v3",
+       "role": "train",
+       "velocity": 61,
+       "x": -14.04601,
+       "level": -67.63712240903202,
+       "clear_windows": 3,
+       "predicted": -73.05524471345785
+      },
+      {
+       "case": "n89v4",
+       "role": "train",
+       "velocity": 91,
+       "x": -5.957622,
+       "level": -59.576616024739195,
+       "clear_windows": 2,
+       "predicted": -57.343421397036444
+      },
+      {
+       "case": "n89v5",
+       "role": "train",
+       "velocity": 117,
+       "x": 0.0,
+       "level": -48.65381626670923,
+       "clear_windows": 2,
+       "predicted": -45.77064518377551
+      }
+     ]
+    },
+    "94": {
+     "hz": 1878.5001197886263,
+     "nearest_lane_hz": 0.09114786245845607,
+     "slope": 1.9501,
+     "kind": "played",
+     "level": null
+    },
+    "99": {
+     "hz": 2542.7500068956388,
+     "nearest_lane_hz": 1.8285278979647046,
+     "slope": 1.9490614915514664,
+     "kind": "played",
+     "level": null
+    },
+    "104": {
+     "hz": 3405.0570000000002,
+     "nearest_lane_hz": 8.05057198099803,
+     "slope": 1.9500999999999997,
+     "kind": "under",
+     "level": -79.71425141871188,
+     "layers": [
+      {
+       "case": "n104v1",
+       "role": "train",
+       "velocity": 13,
+       "x": -30.28948,
+       "bound": -108.94581087589518,
+       "clear_windows": 0,
+       "predicted": -138.78176636671188
+      },
+      {
+       "case": "n104v2",
+       "role": "train",
+       "velocity": 36,
+       "x": -20.18004,
+       "bound": -104.32098405894583,
+       "clear_windows": 0,
+       "predicted": -119.06734742271189
+      },
+      {
+       "case": "n104v3",
+       "role": "train",
+       "velocity": 61,
+       "x": -14.04601,
+       "bound": -107.10537551971188,
+       "clear_windows": 0,
+       "predicted": -107.10537551971188
+      },
+      {
+       "case": "n104v4",
+       "role": "train",
+       "velocity": 91,
+       "x": -5.957622,
+       "bound": null,
+       "clear_windows": 0,
+       "predicted": -91.33221008091188
+      }
+     ]
+    }
+   },
+   "levels": [
+    -45.77064518377551,
+    -45.77064518377551,
+    -45.77064518377551,
+    -45.77064518377551,
+    -45.77064518377551,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188,
+    -79.71425141871188
+   ]
+  }
+ }
+}
