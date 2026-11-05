@@ -2811,3 +2811,26 @@ readings to six decimals. `Keyra.FactoryDynamics` still fails as on 0.4.17:
 1,049 of its 2,120 pairs sit under their step floors (1,048 on 0.4.17), and
 the same six chords pass its maximum levels. Its floors and limits are
 unchanged.
+
+## 2026-11-05 — the pitch glide, the action's click and the string beat ship unheard
+
+Three A/B sets waited for the owner's ear, each A the shipping 0.4.18 and B a
+candidate fitted from the train recordings and benchmarked on the five
+pianos:
+
+- the upright's pitch glide (`ab-2026-11-04-pitch-glide`, both upright
+  presets): B is 0.4.19, a key's strings sharp in proportion to their
+  partials' power, settling as they decay;
+- the action's click (`ab-2026-11-05-action-click`, the Kakegawa, Hamburg and
+  New York grands at Mechanics 77 % and the Kakegawa grand at its default): B
+  is 0.4.20, a click above the body's modes as a key or the grand's pedal
+  comes up;
+- the undamped strings' beat (`ab-2026-11-05-string-beat`, the Kakegawa grand
+  at Mechanics 0): B is 0.4.21, its F♯6, A♯6 and C♯7 ringing as two
+  components that beat.
+
+The owner chose B for all three without listening to the sets: "simply take
+the candidate because it is better". No letter was chosen by ear, and no
+listening preference is recorded. The choice licenses shipping the three as
+their fits give them. It does not settle the beat's fixed timing, which Known
+gaps keeps.
