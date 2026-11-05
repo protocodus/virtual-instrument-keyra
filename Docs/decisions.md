@@ -3133,3 +3133,123 @@ Asked to choose between this version and the first candidate, or to keep
 both unmerged, the owner chose this version, with its four preset readings
 approved, and to merge it. The choice was made on these measurements; no
 listening test was run.
+
+## 2026-11-05 — the struck key's own undamped string rings
+
+0.4.24 sets the struck key's own undamped string ringing where the
+recordings hold it and the key's partials leave its pitch apart, as
+`Tools/fit_halo_own.py` measures it on each piano's train takes
+(`Source/DSP/MeasuredHaloOwn.h`,
+[research](research/halo-own-2026-11-05.md)). It was chosen on
+measurements, under the owner's standing direction for these rounds,
+"simply take the candidate because it is better": no listening test was
+run and no listening preference is recorded. That direction licenses
+shipping the own string as its fit gives it. It does not settle what Known
+gaps keeps: one slope for every string, F♯7's string at the pitch the other
+keys' strikes give rather than the octave-below string's second partial,
+and the keys between recorded pitches that hold or lack a level.
+
+The fit's choices, made on the train takes before any dev take was scored:
+
+- A pitch's own string is read only where no lane of its fitted series lies
+  within 4 Hz of the string's pitch, the main lobe of the halo fit's
+  half-second Hann window, inside which that window resolves no second
+  component. The engine asks the same of the series it builds for each key
+  (`ownStringApart()`, `haloOwnResolvedHz`).
+- A window hears the string clear where it stands 10 dB over the median 4
+  to 20 Hz either side, leaving out the bins within 4 Hz of the key's own
+  components, and 10 dB over what the key's lanes within 40 Hz read there
+  through the same window. The second test came from the Hamamatsu's C7,
+  whose string lies 4.2 Hz from its fundamental: the reading there was the
+  fundamental's first sidelobe, as loud in the render, which plays no own
+  string, as in the recording, and without the test C7 would have been
+  given one.
+- The level grows at the halo fit's one slope, fitted over the layers with
+  the hidden ones as bounds. With fewer than two layers clear it sits 10 dB
+  under their median bound, never over the tightest, and a layer that rings
+  clear caps it.
+
+Two readings were corrected before the candidate was frozen. The grand's C8,
+which the series fit leaves uncalibrated, first held A7's level and played
+11 to 20 dB over its takes; with no fitted series to tell its own components
+from the string, its layers now only bound it, and it plays 5 to 14 dB under
+them. The Hamburg's F7 rings clear only at its softest layer, and its loud
+layers' bounds alone put it 18 dB over that layer; the clear layer now caps
+it (−99.0 dB at the loudest layer against −80.7).
+
+Read as the halo fit reads a string, from 1 to 2 s, brought back to contact
+and against the take's level from 50 to 750 ms, the grand's F♯7 and A7 train
+takes, which 0.4.23 left 30 to 43 and 59 to 64 dB under the recordings, stand
+−1.4 to +4.4 and −1.0 to +9.9 dB from them, and their dev takes −0.6 to +4.3
+and −0.1 to +2.1 dB. Of the keys no fit holds, the grand's D♯7 comes from 27
+to 33 dB under to 3 to 9, the Hamamatsu's F♯7 from 42 to 43 to 17 to 24 and
+the New York's A7 from 38 to 20, and the New York's E7 stays about 33 dB under, as
+its keys from E7 up hold G♯7's bound.
+
+Paired against 0.4.23 by `Tools/benchmark_recordings.py`, the grand's 156
+dev takes stand closer on all 12 measures, tuning −0.083 cents, decay
+−0.056 dB/s, sustain −0.041 dB, image −0.035 dB, envelope −0.024 dB and
+partial levels −0.023 dB the most, and its 276 train takes closer on 7 and
+further on 5, tuning +0.015 cents, decay +0.004 dB/s, level +0.004 dB,
+partial levels +0.002 dB and image +0.001 dB. The Hamamatsu's 23 dev takes
+stand closer on 7 and further on 4, by 0.01 or less; the Hamburg's 8, at E3
+and C♯5, score as before; the New York's 17 stand closer on 8 and further on
+3, decay +0.025 dB/s the most. Their train takes move by 0.021 or less. The
+upright renders as before, sample for sample
+([grand](validation/grand-halo-own-benchmark-2026-11-05.md),
+[Hamamatsu](validation/kawai-halo-own-benchmark-2026-11-05.md),
+[Hamburg](validation/hamburg-halo-own-benchmark-2026-11-05.md),
+[New York](validation/newyork-halo-own-benchmark-2026-11-05.md)).
+
+One pitch passes a tolerance: the tuning of the grand's C8 train takes, 1.01
+→ 1.51 cents against the 0.5-cent tolerance (its dev takes 1.55 → 1.90,
+inside it). The benchmark takes a render's first partial as the clear peak
+nearest the recording's, at C8 4276.6 Hz, and in 14 of the 16 takes' renders
+it now finds the own string 6 Hz over it, where 0.4.23's found one of the
+render's own peaks between 4269 and 4285 Hz. Through that window, in the
+five takes probed, the recordings' first partial peaks 8 to 13 dB over what
+stands at the string's pitch, and the renders' own peaks stand 7 to 21 dB
+under the string's. So the regression shows that C8, which is not
+calibrated and plays A7's data on the stretch curve, peaks under a string
+that the recordings hold, and hold louder from 1 to 2 s, where their first
+partial peaks over it. The note's partials are as in 0.4.23, and the string
+stays.
+
+`Tools/evaluate_recordings.py`'s 24 cases, the twelve in-range held-out and
+both edge cases among them, all lie at C7 and below, and every one scores
+exactly as in 0.4.23 in its three variants. The `unit` tier (39 tests,
+`Keyra.HaloOwn` and `Keyra.MeasuredHaloOwn` among them), `Keyra.Levels`,
+`Keyra.AudioDemos` and `Keyra.CpuBudget` pass, and `KeyraDSPCxx17` builds.
+On Reason's meter (`Tools/KeyraLevels.cpp --report`) the Hamamatsu's default
+sound, tube and preset read −8.97, −9.95 and −8.97 VU against −8.99, −9.97 and
+−8.99, its own strings from F6 to B7 adding to its typical playing, inside
+their guards, so its scales stay; every other piano and preset reads as in
+0.4.23 to the hundredth of a VU. `Keyra.FactoryDynamics` fails as it did on
+0.4.23, on the same 1,128 rows under the same floors and limits; 24 of their
+values, at the Hamamatsu's and the Hamburg's, move by 0.0021 dB or less.
+Struck chromatically at velocities 40 and 100 with the pedal down, as 0.4.22
+and 0.4.23 were measured, the grand renders in a median 6.26 s of CPU where
+0.4.23 took 6.25 s, the Hamamatsu in 5.01 s against 4.93, the Hamburg in
+8.59 s against 8.90 and New York in 5.04 s against 4.95 (seven alternating
+runs of each, 48 s of audio, on the development machine), differences within
+the runs' spread: the own string rings in the string's one resonator, and a
+strike only checks the key's lanes against its pitch.
+
+Also examined this round, none shipping:
+
+- The undamped strings after a key is let go. In the upright's key-release
+  takes where they ring clear, they ring 30 to 50 dB over the engine's after
+  the key comes up, but a coupling from the released string fitted to those
+  takes alone is +3 dB, and with the takes where the strings are hidden
+  counted as bounds −24 dB, with a spread of 18 dB. The takes do not decide
+  one coupling, and most of what rings near a covered string after a release
+  is the key's own leftover, which the owner chose to keep quiet (2026-10-29,
+  option C).
+- The treble's low bands. Under the top notes the bands below their
+  fundamentals stand further from the recordings from 0.3 to 1 s, where the
+  recordings' body and room ring decays more slowly. It is not a string, and
+  no candidate was formed.
+- The treble's stereo coherence. Over 50 ms to 1.5 s the recordings' F♯7 and
+  A7 keep 0.47 to 0.81 of their coherence between channels and the renders
+  0.91 to 0.99, which the own string leaves unchanged; the rest lies in the
+  unison strings tuned further off than the lanes reach.
