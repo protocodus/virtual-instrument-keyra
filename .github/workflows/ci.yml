@@ -154,10 +154,12 @@ jobs:
       # Each test that reads the engine's private state compiles
       # KeyraEngine.cpp whole. From 0.4.18 on, four or five of those at once
       # ran MSVC out of heap on this runner (C1060) and left their tests
-      # unbuilt, so the build runs two projects at a time.
+      # unbuilt; two at once still did, a different set on each run. The
+      # main build's Windows job compiles the engine once and fits, so this
+      # build runs one project at a time.
       - name: Build and run the unit tier
         run: |
-          cmake --build "build-win" --config Release --parallel 2
+          cmake --build "build-win" --config Release --parallel 1
           ctest --test-dir "build-win" -C Release -L "^unit$" --no-tests=error --output-on-failure
 
       - name: Configure Windows plug-in build
