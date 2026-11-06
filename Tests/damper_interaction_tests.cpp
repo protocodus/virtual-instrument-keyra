@@ -277,7 +277,14 @@ void silentPanelHandoff(keyra::Piano piano) {
     render(e, 64, 13);
     require(felt(e) == 0, "a captured key must stay clear of the felt");
     e.reset();
-    require(felt(e) == target(.75f), "reset must clear the capture and restore the panel position");
+    // Exact against an engine settled at the same panel, not against
+    // target(): whether 1 - lift * sustain is fused into one FMA differs
+    // between compilers and between the engine's and this file's
+    // expressions, and clang 18 on x86-64 lands one ulp apart.
+    keyra::Engine settled(48000);
+    settled.setParameters(p);
+    require(felt(e) == felt(settled) && std::abs(felt(e) - target(.75f)) < 1e-12,
+            "reset must clear the capture and restore the panel position");
 }
 
 // Independently integrate the actual contact loss while the felt travels.
