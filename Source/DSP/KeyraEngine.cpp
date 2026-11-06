@@ -314,17 +314,22 @@ struct NetworkSeries {
   const measured::NetworkKey* keys;const measured::Partial* partials;
   const measured::NetworkKey* corrected;const measured::Correction* corrections;
 };
+// A piano with no network keys has a zero-length table, whose data() is not
+// constexpr in the Rack SDK's libc++ (C++17); such a table points nowhere.
+template<class T,std::size_t N> constexpr const T* tableData(const std::array<T,N>& table) noexcept {
+  if constexpr(N==0){(void)table;return nullptr;}else return &table[0];
+}
 constexpr NetworkSeries networkSeries[]{
-  {measured::network::grand::keys.data(),measured::network::grand::partials.data(),
-   measured::network::grand::corrected.data(),measured::network::grand::corrections.data()},
-  {measured::network::upright::keys.data(),measured::network::upright::partials.data(),
-   measured::network::upright::corrected.data(),measured::network::upright::corrections.data()},
-  {measured::network::kawai::keys.data(),measured::network::kawai::partials.data(),
-   measured::network::kawai::corrected.data(),measured::network::kawai::corrections.data()},
-  {measured::network::hamburg::keys.data(),measured::network::hamburg::partials.data(),
-   measured::network::hamburg::corrected.data(),measured::network::hamburg::corrections.data()},
-  {measured::network::newyork::keys.data(),measured::network::newyork::partials.data(),
-   measured::network::newyork::corrected.data(),measured::network::newyork::corrections.data()},
+  {tableData(measured::network::grand::keys),tableData(measured::network::grand::partials),
+   tableData(measured::network::grand::corrected),tableData(measured::network::grand::corrections)},
+  {tableData(measured::network::upright::keys),tableData(measured::network::upright::partials),
+   tableData(measured::network::upright::corrected),tableData(measured::network::upright::corrections)},
+  {tableData(measured::network::kawai::keys),tableData(measured::network::kawai::partials),
+   tableData(measured::network::kawai::corrected),tableData(measured::network::kawai::corrections)},
+  {tableData(measured::network::hamburg::keys),tableData(measured::network::hamburg::partials),
+   tableData(measured::network::hamburg::corrected),tableData(measured::network::hamburg::corrections)},
+  {tableData(measured::network::newyork::keys),tableData(measured::network::newyork::partials),
+   tableData(measured::network::newyork::corrected),tableData(measured::network::newyork::corrections)},
 };
 static_assert(std::size(networkSeries)==pianoCount,"a network table for every piano");
 // A table written against other recorded pitches would play over a fit.
