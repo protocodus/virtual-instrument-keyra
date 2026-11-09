@@ -30,6 +30,12 @@
 // reading, and the owner approved four presets' new readings, the Kakegawa
 // Grand's and Open Strings' loudest chords and Felt Upright's and Pop
 // Upright's typical playing, to six decimals (Docs/decisions.md, 2026-11-05).
+// In 0.4.26 the Hamamatsu's, the Hamburg's and New York's keys between
+// recorded pitches play the retrained keyboard network, their output and
+// tube levels re-pinned to their earlier readings, and the treble's unison
+// strings ring on three pianos; the owner approved two new readings, Three
+// Cities' typical playing and the Hamamatsu tube's loudest chords, to six
+// decimals (Docs/decisions.md, 2026-11-06).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -47,7 +53,7 @@ inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
     {"Felt Upright", -15.665733, -0.127207},
     {"Pop Upright", -9.214799, 3.904373},
     {"Hamamatsu Grand", -9.012878, 4.003352},
-    {"Three Cities", -10.192568, 2.871424},
+    {"Three Cities", -10.426881, 2.871424},
     {"Hamburg Grand", -8.953395, 2.404007},
     {"New York Grand", -9.092756, 3.213257},
 }};
@@ -55,7 +61,7 @@ inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
 inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
     {"grand", -9.068710, 1.222194},
     {"upright", -8.993037, 4.328115},
-    {"kawai", -9.985854, 3.199726},
+    {"kawai", -9.985854, 3.292226},
     {"hamburg", -9.172983, 2.196889},
     {"newyork", -9.020263, 2.115038},
 }};

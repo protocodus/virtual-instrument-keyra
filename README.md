@@ -96,9 +96,9 @@ velocity 8 from 2.78 to 2.58 dB.
 The 88 keys struck in turn with the pedal down render in 1.7 % more CPU on the
 grand, 0.8 % less on the upright, 1.6 % more on the Hamamatsu, 45 % less on
 the Hamburg and 9.5 % more on New York, on the development machine. Two
-readings pass their approved levels and wait for the owner: the Hamamatsu's
-loudest chords through the tube, 3.29 VU against 3.20, and Three Cities'
-typical playing, −10.43 VU against −10.19.
+readings passed their approved levels, and the owner accepted them: the
+Hamamatsu's loudest chords through the tube, 3.29 VU against 3.20, and Three
+Cities' typical playing, −10.43 VU against −10.19.
 
 ### 0.4.25 — 2026-11-05 — a fifth less CPU, and lighter chords
 

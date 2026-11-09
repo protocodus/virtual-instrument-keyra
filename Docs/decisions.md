@@ -3351,7 +3351,10 @@ every piano's default sound and tube read as in 0.4.25 to the hundredth of a
 VU, and two readings pass their guards: the Hamamatsu's loudest chords
 through the tube, 3.292226 VU against an approved 3.199726 (0.4.25: 2.59),
 and Three Cities' typical playing, −10.426881 VU against −10.192568 (0.4.25:
-−10.24). They wait for the owner. Felt Upright's typical playing, which the
+−10.24). Asked whether to accept them and merge, to score the sealed takes
+first, or to keep 0.4.26 on its branch, the owner chose to accept them and
+merge: `Tests/Fixtures/dynamics/ApprovedLevels.h` now holds both to six
+decimals, and `Keyra.Levels` passes. Felt Upright's typical playing, which the
 upright's unison strings move (next entry), reads −15.617991 VU, 0.048 over
 its approved level and inside the 0.05 guard. `Keyra.FactoryDynamics` fails as it did
 on 0.4.25, on 993 rows, 968 pairs under their step floors and 25 chords past
@@ -3361,9 +3364,9 @@ and limits are unchanged.
 The `unit` tier (40 tests), `Keyra.AudioDemos` and `Keyra.CpuBudget` pass,
 `KeyraDSPCxx17` builds, and `Tests/test_keyboard_network.py` checks three
 things more: that no lane decays past its cap, that the caps are the fits'
-fastest lanes, and that the strike term is the log energy ratio. `Keyra.Levels` fails
-on the two readings above. The 88 keys struck in turn at velocity 90, 120 ms
-apart with the pedal down, render 14 s of audio in a median 3.10 s of CPU on
+fastest lanes, and that the strike term is the log energy ratio. The 88
+keys struck in turn at velocity 90, 120 ms apart with the pedal down, render
+14 s of audio in a median 3.10 s of CPU on
 the Hamburg where 0.4.25 took 5.63, 2.76 on the Hamamatsu against 2.72 and
 3.05 on New York against 2.79 (seven alternating runs of each on the
 development machine). The Hamburg plays as many partials as before (2,889),
