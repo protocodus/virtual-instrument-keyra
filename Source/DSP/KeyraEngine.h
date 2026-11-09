@@ -81,6 +81,11 @@ struct Parameters {
   // New instruments use the owner's quieter choice; saved gains keep their
   // physical meaning. The knob's display taper lives in MechanicsControl.h.
   float mechanics=defaultMechanicsGain;
+  // How loud the room the piano was recorded in plays (MeasuredRoom.h), as
+  // an amplitude: 0 none, 1 as measured, 2 twice as loud. The soundboard's
+  // build chooses whose room; the strings' partials hold it already, so it
+  // hears the strike's noise and the board's ring.
+  float room=1.f;
   Build build{};
   Quality quality=Quality::full;
 };
@@ -117,6 +122,11 @@ public:
   // velocity it is given, where strikes otherwise go through the shared
   // velocity response and vary as a player's do. Also absent from product UIs.
   void setSteadyStrikesForMeasurement(bool enabled) noexcept;
+  // Offline measurement (Tools/fit_room.py): the room plays as given, its
+  // decay rates below and above the crossover (dB/s, Hz) and the gain its
+  // input enters with, in place of the build's, until it is given a gain of
+  // 0. Absent from product UIs.
+  void setRoomForMeasurement(float lowRate,float highRate,float crossover,float gain) noexcept;
 private:
   struct Impl;
   std::unique_ptr<Impl> impl;
@@ -138,6 +148,8 @@ private:
   // The native halo own-string test reads the undamped strings a key's own
   // strike sets ringing.
   friend struct HaloOwnTestObserver;
+  // The native room test plays the room's network on its own.
+  friend struct RoomTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for

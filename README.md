@@ -43,6 +43,50 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.27 — 2026-11-09 — the recording room
+
+Each piano plays the room it was recorded in (How it works, The room).
+Between a strike's partials its recordings hold that room's reverberation,
+which 0.4.26 left out: 0.45 s after the strike its floor at 1 to 4 kHz stood
+20.6 dB under the Hamburg's train takes and 20.4 dB under New York's, and now
+stands 0.5 and 4.8 dB under. Against 0.4.26 on every train and dev take, the
+paired means summed over the eleven measures other than level, in tolerance
+units, stand closer on all five pianos, train and dev: the Kakegawa grand by
+1.05 and 0.88, the upright by 0.29 and 0.19, the Hamamatsu by 0.31 and 0.90,
+the Hamburg by 6.73 and 0.29 and New York by 1.65 and 3.10. New York's 17 dev
+takes stand 0.47 dB closer early, 0.46 dB in the sustain and 0.42 dB in the
+noise; the Hamburg's 40 train takes 1.11 dB/s closer in decay, 0.72 dB in the
+sustain and 0.70 dB early. Seventeen scores stand further by more than a
+tolerance: the grand's dev D♯7 early (3.87 to 4.49 dB) and train C2 rise
+(7.26 to 8.49 ms), eight of the Hamamatsu's, its dev G7 early the most (18.58
+to 19.89 dB, one take), five of the Hamburg's coherence and noise scores, and
+New York's train F6 early (4.32 to 5.13 dB) and dev E7 tuning (2.15 to
+2.92 cents). Four scores 0.4.26 could not measure are measured: three
+sustains and the Hamburg's dev E3 noise
+([Kakegawa grand](Docs/validation/grand-room-benchmark-2026-11-09.md),
+[upright](Docs/validation/upright-room-benchmark-2026-11-09.md),
+[Hamamatsu](Docs/validation/kawai-room-benchmark-2026-11-09.md),
+[Hamburg](Docs/validation/hamburg-room-benchmark-2026-11-09.md),
+[New York](Docs/validation/newyork-room-benchmark-2026-11-09.md)). On the
+grand's held-out evaluation the twelve in-range cases' bands stand 4.988 dB
+from their recordings (5.117), closer at ten of them, and the harmonic
+levels, envelope, decay, pitch and rise move by 0.006 or less in their own
+units.
+
+The benchmark now scores only the third-octave bands both spectra have bins
+in. Its 40 ms window has none in the 25 Hz band at 44.1 kHz and none in the
+20 and 31.5 Hz bands at 48 kHz, which then read −300 dB whatever plays, so
+the Hamamatsu's and New York's 44.1 kHz recordings, scored against 48 kHz
+renders, took the 30 dB cap there in every take: on 0.4.26 their attack,
+early and sustain errors read 0.8 to 1.6 dB and 0.3 to 1.2 dB lower, and the
+other pianos' scores do not change. Every comparison above is scored the new
+way.
+
+The 88 keys struck in turn with the pedal down render in 5.2 % more CPU on
+the grand, 5.0 % more on the upright, 2.8 % more on the Hamamatsu, 1.2 % less
+on the Hamburg and 0.5 % more on New York, on the development machine. Five
+loudest-chord readings stand 0.002 to 0.006 VU over their approved levels.
+
 ### 0.4.26 — 2026-11-09 — the keyboard network retrained, and the treble's unison strings
 
 The keyboard network is trained again with no lane decaying faster than the
@@ -1090,6 +1134,34 @@ partials' levels. Neither grand was recorded through the tube: each plays
 the upright's measured response, a vintage colour on a grand rather than a
 measurement of it.
 
+### The room
+
+Every recording was taken in a room, and between a strike's partials each
+holds its reverberation: from 0.1 s after the strike the floor between the
+partials falls at one rate per third octave whatever the note, and above
+250 Hz the two microphones hear it uncorrelated. The fitted partials hold the
+room at their own frequencies already, so the room hears only what they
+leave out, the strike's noise bands and the board's ring. It plays as a
+feedback delay network (J.-M. Jot and A. Chaigne, AES 90th Convention, 1991):
+sixteen lines of 11.3 to 67.5 ms, each a prime number of samples long, mixed
+by a 16-point Hadamard matrix, each losing the room's decay through a
+first-order shelf, and two of the matrix's rows as the left and right
+channels, whose correlation is 0.013. `Tools/fit_room.py` measures each
+piano's room from its train takes: per band the rate the recordings' floor
+falls at, the shelf fitted to those rates, and one gain that brings the
+engine's floor to the recordings' (`Source/DSP/MeasuredRoom.h`, checked by
+`Keyra.MeasuredRoom`). The Kakegawa grand's room rings for 0.85 to 1.07 s
+(T60, from its highest bands to its lowest), the upright's 0.72 to 1.83 s,
+the Hamamatsu's 1.20 to 1.61 s, New York's 1.56 to 2.17 s and the Hamburg's
+2.29 to 3.66 s. At 1 to 4 kHz, 0.45 s after the strike, the engine's floor
+stood 5.4 dB under the grand's train takes, 3.3 dB under the upright's,
+13.7 dB under the Hamamatsu's, 20.6 dB under the Hamburg's and 20.4 dB
+under New York's without it, and stands 2.0 dB under, 1.5 dB over, 0.7,
+0.5 and 4.8 dB under with it. A build between pianos plays a room between
+theirs by the soundboard's shares. `keyra::Parameters::room` scales what
+enters it from 0 to 2; no control exposes it, and the plug-in plays it as
+measured ([room](Docs/research/room-2026-11-09.md)).
+
 ### Calibration from recordings
 
 The calibration tool requires an explicit operation. `--analyse` measures the
@@ -1505,8 +1577,8 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   the upright's mostly sounds one band near its takes' floor, and the
   Hamamatsu grand's, which its takes do not hold apart from their strings,
   is not played ([action click](Docs/research/action-click-2026-11-05.md)).
-  The room is not calibrated, and the key noise the recordings carry 1 to
-  28 ms before string contact is not played: a note sounds from contact.
+  The key noise the recordings carry 1 to 28 ms before string contact is not
+  played: a note sounds from contact.
   Under the lowest body mode (29 Hz) the middle register's recordings hold a
   low thud in their first 0.3 s, 6 to 22 dB over the room's floor and growing
   more slowly than the strings, which the engine does not play: the grand's
@@ -1518,6 +1590,19 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   ribbons', so mixing the two sounds no comb between them, as two real
   microphones apart would. No recording takes either piano from further
   off, so there is no distant perspective.
+- The room has one gain per piano. The board's modes and the noise bands
+  were measured from recordings whose floor holds the room's first part, so
+  between 250 Hz and 1 kHz the room takes the engine's floor over the
+  recordings' by 0.45 s after the strike: the Hamamatsu's by 5.6 dB and New
+  York's by 7.2 dB on their train takes, the grand's by 1.0 dB. Under 250 Hz
+  the grands' recordings hear their floor correlated between the
+  microphones (+0.77 to +0.93), and the room's channels are uncorrelated at
+  every frequency, which takes the grand's low correlation to 0.71 against
+  its recordings' 0.89 and the Hamburg's to 0.37 against 0.77. The network
+  starts diffuse, with no early reflection, its rates are measured from 0.1
+  to 0.6 s after the strike only, and its shelf follows the upright's rates
+  (29 to 86 dB/s) within 8.7 dB/s rms
+  ([room](Docs/research/room-2026-11-09.md#what-the-room-does-not-do)).
 - Between the recorded pitches, partials, phases and stereo pickups are
   interpolated by partial order. The microphones' left/right balance changes
   sharply with frequency, so at D♯3 the image is still further from the
