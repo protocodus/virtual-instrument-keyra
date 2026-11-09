@@ -3253,3 +3253,209 @@ Also examined this round, none shipping:
   A7 keep 0.47 to 0.81 of their coherence between channels and the renders
   0.91 to 0.99, which the own string leaves unchanged; the rest lies in the
   unison strings tuned further off than the lanes reach.
+
+## 2026-11-06 — the Hamamatsu's, the Hamburg's and New York's keys between recorded pitches play the retrained network
+
+The owner asked for the keyboard network to be trained again with a cap on
+how fast a lane may decay and a loss over the attack, its settings picked by
+the engine's score, and for the candidate to be taken because it measures
+better ("simply take the candidate because it is better"). 0.4.26 does so.
+No listening test was run and no listening preference is recorded.
+
+The third run (`Tools/keyboard_network.py grid --run capped --alone --arch
+large medium small --knob 10 1000`, the five Keyra pianos alone) keeps every
+lane at or under the fits' fastest decay at its key (`lane_caps`), the bound
+the table writer puts on a key's lanes, and weighs each partial's energy in
+each channel over its first 100 ms against the measured (`attack_weight`).
+Each of its six settings' tables, written for every piano, was scored by
+`Tools/benchmark_recordings.py` on every train and dev take, paired against
+0.4.25, and each measure's mean change on the dev takes, in units of
+`Tools/compare_benchmarks.py`'s tolerance, summed over the 12 measures
+([grid](research/keyboard-network.md#the-third-run)). A piano plays the third
+run's tables where they bring its dev takes closer on most of the measures
+with the sum below zero, at the setting with the lowest such sum whose tables
+pass the engine's tests: the Hamamatsu the medium network at knob 1000
+(−3.23, 9 measures closer), the Hamburg the medium at knob 10 (−0.55, 8
+closer) and New York the medium at knob 1000 (−0.57, 7 closer). The Hamburg's
+lowest, the large network at knob 10 (−2.68), leaves its sustain pedal no
+bloom on a held C4 (−0.02 dB, where `Keyra.Engine` asks 0.6 to 5). The
+grand's and the upright's dev takes stand further at every setting (their
+lowest +1.92 and +0.78), so they keep their corrections to the blend. Six
+settings were tried on the same dev takes and the best kept, so their
+figures flatter the choice; the sealed takes were not opened this round, and
+the Hamburg has none.
+
+The network's keys strike weaker than the blend: each key between struck
+alone and held for 2 s stands a median 2.7, 2.6 and 2.4 dB under the blend
+over its first 100 ms at velocity 80 on the Hamamatsu, the Hamburg and New
+York, and 0.4, 0.4 and 1.4 dB over it from 100 ms on (velocity 32: 2.2, 2.4
+and 2.2 under, 1.4, 0.5 and 1.1 over). Their readings on Reason's meter moved:
+the Hamamatsu's default sound to −10.21 VU from −8.97 and its tube to −11.27
+from −9.95, New York's to −10.94 and −9.86 from −9.09 and −9.03, and the
+Hamburg's, against the first run's tables, to about −8.4 and −8.9 from −8.95
+and −9.18. Each is re-pinned to the reading it had (`KeyraEngine.cpp`): the
+Hamamatsu's `outputScale` 3.0341 → 3.5030 and `tubeScale` 1.2250 → 1.2364,
+the Hamburg's 2.8070 → 2.6414 and 1.4219 → 1.4655, New York's .6543 → .8093
+and 1.8141 → 1.6122. The recorded pitches move with them, and a recorded
+pitch stands apart from the mean of its two neighbours by 4.0, 2.4 and 2.6 dB
+rms over the first 100 ms (blended, 1.9, 0.9 and 0.9) and by 7.7, 4.5 and
+4.5 dB rms from 0.8 to 1.6 s (blended, 4.2, 1.3 and 2.3), over velocities 80
+and 32; the most, the Hamamatsu's F♯2 at velocity 32, 9.3 dB over its
+neighbours and then 21.2 dB under them (blended, 1.8 and 6.1).
+
+Paired against 0.4.25, the 12 measures' changes on the dev takes, which no fit
+holds (the benchmark's level holds 0.4.25's median gain, so it carries the
+re-pin):
+
+- The Hamamatsu's 23: closer on 10, tuning −0.61 cents, rise −0.48 ms, decay
+  −0.42 dB/s, level −0.41 dB, envelope −0.27 dB, partial levels −0.23 dB,
+  sustain −0.19 dB, attack −0.08 dB, noise −0.01 dB and coherence −0.005, and
+  further on 2, stereo balance +0.33 dB and early +0.003 dB. Its 104 train
+  takes move by 0.05 or less but for the level, +0.33 dB.
+- The Hamburg's 8, at E3 and C♯5: closer on 8, noise −1.35 dB, partial levels
+  −0.76 dB, decay −0.72 dB/s, rise −0.68 ms, envelope −0.25 dB, early
+  −0.17 dB, stereo balance −0.04 dB and coherence −0.006, and further on 4,
+  tuning +1.62 cents, level +1.41 dB, attack +0.32 dB and sustain +0.21 dB.
+  Its train takes move by 0.09 or less.
+- New York's 17: closer on 6, tuning −0.81 cents, sustain −0.32 dB, rise
+  −0.30 ms, partial levels −0.28 dB, noise −0.26 dB and decay −0.19 dB/s, and
+  further on 6, level +1.63 dB, envelope +0.28 dB, early +0.28 dB, attack
+  +0.23 dB, stereo balance +0.13 dB and coherence +0.031. Its train takes move
+  by 0.10 or less but for the level, +1.19 dB. New York carries the treble's
+  unison strings too (next entry).
+
+Taken at each version's own gain, as the benchmark's first tables are, the
+level error stands the Hamamatsu's dev and train takes 4.36 → 4.21 and 1.89 →
+1.94 dB, the Hamburg's 2.15 → 3.13 and 0.69 → 0.61 and New York's 5.61 → 5.45
+and 0.88 → 0.90. Past a tolerance, besides the level at 16 of the Hamamatsu's
+notes and roles, 2 of the Hamburg's and 16 of New York's: the Hamamatsu's dev
+B5 (envelope 3.62 → 7.38 dB, sustain 12.70 → 14.34 dB), A♯5 (stereo balance
+4.41 → 7.21 dB, early 8.67 → 10.64 dB, decay 3.55 → 5.23 dB/s, partial
+levels 5.72 → 6.94 dB, sustain 10.25 → 11.29 dB, noise 7.07 → 8.09 dB,
+envelope 6.28 → 7.25 dB), F♯7 (envelope 6.27 → 8.01 dB, tuning 3.14 → 4.82
+cents, sustain 7.18 → 8.40 dB, partial levels 11.19 → 11.87 dB), D♯2
+(envelope 2.66 → 4.41 dB, sustain 9.67 → 10.57 dB) and D♯1 (rise 6.33 →
+9.44 ms, sustain 8.97 → 9.50 dB), and its train C6 (early 6.41 → 7.37 dB,
+noise 5.43 → 6.01 dB); the Hamburg's dev E3 (tuning 0.48 → 3.69 cents,
+sustain 6.64 → 7.47 dB, attack 7.32 → 8.03 dB); New York's dev E7
+(coherence 0.06 → 0.17, decay 8.18 → 10.46 dB/s), C6 (coherence 0.22 →
+0.27), D♯2 (early 8.04 → 9.11 dB, envelope 3.41 → 4.20 dB), E4 (envelope
+3.82 → 4.72 dB, attack 7.86 → 8.65 dB, coherence 0.19 → 0.22) and A7
+(partial levels 12.04 → 12.64 dB)
+([Hamamatsu](validation/kawai-network-unisons-benchmark-2026-11-06.md),
+[Hamburg](validation/hamburg-network-unisons-benchmark-2026-11-06.md),
+[New York](validation/newyork-network-unisons-benchmark-2026-11-06.md)).
+
+On Reason's meter (`Tools/KeyraLevels.cpp --report`, read to six decimals)
+every piano's default sound and tube read as in 0.4.25 to the hundredth of a
+VU, and two readings pass their guards: the Hamamatsu's loudest chords
+through the tube, 3.292226 VU against an approved 3.199726 (0.4.25: 2.59),
+and Three Cities' typical playing, −10.426881 VU against −10.192568 (0.4.25:
+−10.24). They wait for the owner. Felt Upright's typical playing, which the
+upright's unison strings move (next entry), reads −15.617991 VU, 0.048 over
+its approved level and inside the 0.05 guard. `Keyra.FactoryDynamics` fails as it did
+on 0.4.25, on 993 rows, 968 pairs under their step floors and 25 chords past
+its maximum levels, where 0.4.25 failed on 1,128 (1,098 and 30); its floors
+and limits are unchanged.
+
+The `unit` tier (40 tests), `Keyra.AudioDemos` and `Keyra.CpuBudget` pass,
+`KeyraDSPCxx17` builds, and `Tests/test_keyboard_network.py` checks three
+things more: that no lane decays past its cap, that the caps are the fits'
+fastest lanes, and that the strike term is the log energy ratio. `Keyra.Levels` fails
+on the two readings above. The 88 keys struck in turn at velocity 90, 120 ms
+apart with the pedal down, render 14 s of audio in a median 3.10 s of CPU on
+the Hamburg where 0.4.25 took 5.63, 2.76 on the Hamamatsu against 2.72 and
+3.05 on New York against 2.79 (seven alternating runs of each on the
+development machine). The Hamburg plays as many partials as before (2,889),
+and what makes it lighter was not traced.
+
+## 2026-11-06 — the treble's unison strings ring on three pianos, and four own strings grow at their own slopes
+
+The owner asked, beside the retrained network, for the treble's unison
+strings with their own stereo spread, and then for the own undamped string's
+pitch and its per-pitch slope to be finished, each decided on the recordings,
+and for the better candidate to be taken. 0.4.26 plays the unison strings on
+the Kakegawa grand, the upright and New York, grows four own strings at
+their own slopes, and keeps the own string beside the unison strings. No
+listening test was run and no listening preference is recorded.
+
+From C6 up, `Tools/fit_treble_unisons.py` reads each recorded pitch's train
+takes for the components within the unison reach of its first two partials
+and keeps those nothing in 0.4.25 played: the key's own unison strings tuned
+past its lanes and, from F7 up, the second partial of the undamped string an
+octave down (the grand's 11, the upright's 10, the Hamamatsu's 1, the
+Hamburg's 1 and New York's 4). It measures each through its own window, as
+the analysis measures a component beside the series, with two lanes, a quick
+early fall and a slow ring, and writes `Source/DSP/MeasuredTrebleUnisons.h`
+([research](research/treble-unisons-2026-11-06.md)). The engine starts each
+string in phase with its partial's lanes as they sum at contact and takes the
+strings' power from those lanes, so that the lanes and the strings together,
+every pair's beating counted, hold the power the fit gave the lanes alone
+over 50 to 750 ms; where the lanes would keep less than a quarter of it the
+strings give way.
+
+Seven candidates were scored from C6 up on all five pianos, each measure's
+mean change against 0.4.25 in tolerance units, summed over the eleven
+measures other than level: the train and dev sums went from +2.87 and +2.05
+(U2, power taken from the lanes in order of their rate) through U3 to U6 to
+−0.57 and −0.98 for U7, the strings starting in phase with the partial, which
+ships. Piano by piano U7 brought the grand's, the upright's and New York's
+takes closer (train −1.01, −0.37 and −1.15, dev −1.04, −2.25 and −0.06) and
+stood the Hamamatsu's and the Hamburg's train takes, on which their one
+string each was measured, further (+0.43 and +1.74), none of their dev takes
+changing. So those two are measured and not played (`PLAYED`). Over the three
+that play, the dev takes from C6 up stand closer in stereo balance
+(0.57 dB), tuning (0.31 cents), rise (0.17 ms), coherence (0.021) and decay
+(0.06 dB/s), and further in sustain (0.41 dB), partial levels (0.29 dB),
+envelope (0.27 dB), early (0.04 dB) and attack (0.02 dB). Struck at velocity
+90, the grand's F♯7 keeps 0.76 of its coherence between channels where
+0.4.25 kept 0.89 (its train takes 0.37 to 0.51), and its A7 0.67 where 0.4.25
+kept 0.91 (0.68 to 0.77); `Keyra.Engine` checks that both stay under 0.85.
+
+Past a tolerance, on the grand ten scores at four notes: C8's sustain (dev
+16.28 → 17.61 dB, train 17.07 → 18.28), partial levels (dev 10.19 → 11.39,
+train 9.69 → 10.80) and envelope (dev 2.54 → 3.63), D♯7's dev sustain (4.14 →
+5.30) and envelope (3.26 → 3.79), A6's partial levels (dev 2.45 → 3.61, train
+2.51 → 3.64) and F♯7's dev sustain (5.00 → 5.58); on the upright G7's train
+sustain (11.71 → 12.63 dB) and coherence (0.31 → 0.34). C8 is not calibrated
+and plays A7's data, its strings with it; D♯7 has no recording in the fit
+and takes F♯7's ([grand](validation/grand-network-unisons-benchmark-2026-11-06.md),
+[upright](validation/upright-network-unisons-benchmark-2026-11-06.md)). On
+the grand's held-out evaluation (`Tools/evaluate_recordings.py`) the twelve
+in-range cases move only at C6, whose string it plays: at velocity 8 the
+harmonic levels 2.78 → 2.58 dB, the broad bands 7.18 → 7.13 dB, the partial
+decay 14.72 → 14.62 dB/s and the rise 1.17 → 1.27 ms. Over the twelve the
+means stand at 5.117 dB in bands (5.121), 3.988 dB in harmonics (4.005),
+2.272 dB/s in decay (2.280) and 4.089 ms in rise (4.080), and the edge cases
+C1 and C7 at velocity 8 score as before.
+
+The own string's pitch. The grand's F♯7 now plays F♯6's second partial at
+the pitch its own takes measure, as one of its strings, 2.4 Hz under its own
+undamped string, which plays at the pitch the other keys' strikes measure
+and at the level F♯7's strikes set where the halo fit's window hears the two
+as one. Letting the own string give way wherever a string beside the series
+lies within 4 Hz of it, as it gives way to a lane, silenced it at D♯7 and
+F♯7 and stood the grand's treble further from its recordings: its 44 dev
+takes from C6 up by +2.02 summed as above and its 84 train takes by +0.32,
+D♯7's dev sustain 1.03 dB further. So both play.
+
+The own string's slope. Where three or more of a pitch's train layers ring
+its own string clear (`SLOPED`), `Tools/fit_halo_own.py` fits the pitch's
+own slope with its level, between 0 and 3 dB per dB (`SLOPES`): the grand's
+F♯7 1.09 and A7 1.85, the Hamburg's A♯6 2.16 and New York's F6 1.47, where
+the halo fit's are 1.48, 1.48, 1.28 and 1.94. The layers' residuals fall from
+2.31 to 0.71, 2.67 to 1.60, 4.53 to 2.44 and 3.77 to 1.59 dB on the train
+takes, and the grand's dev layers from 2.02 to 0.92 and 1.49 to 1.37. On the
+benchmark from C6 up, against the unison candidate without it (U6), the train
+takes stay where they were and the dev takes stand 0.13 further, almost all
+at the grand's D♯7, whose 16 dev takes hold F♯7's string and slope (+0.47:
+decay 0.10 dB/s, envelope 0.09 dB and sustain 0.05 dB further); the four
+measured pitches move by 0.10 or less. The slopes ship for the pitches they
+were measured at, whose held-out layers they bring closer
+([own slope](research/halo-own-2026-11-05.md#each-pitchs-own-slope-0426)).
+
+The 88 keys struck in turn at velocity 90, 120 ms apart with the pedal down,
+render in a median 3.57 s of CPU on the grand where 0.4.25 took 3.51
+(+1.7 %), 2.50 on the upright against 2.53 (−0.8 %) and 3.05 on New York
+against 2.79 (+9.5 %, with its retrained network), seven alternating runs of
+each on the development machine.

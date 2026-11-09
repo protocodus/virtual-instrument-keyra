@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.25 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.26 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -431,6 +431,12 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.MeasuredHaloOwn
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_halo_own.py" --check)
+        # The treble's strings beside the series are the ones their receipt
+        # gives, and the receipt is the current measurement's on the current
+        # modal data, split, corpus and undamped strings' own levels.
+        add_test(NAME Keyra.MeasuredTrebleUnisons
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_treble_unisons.py" --check)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
@@ -478,7 +484,7 @@ if(BUILD_TESTING)
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms Keyra.MeasuredGlide
-                             Keyra.MeasuredActionNoise Keyra.MeasuredHaloBeats Keyra.MeasuredHaloOwn
+                             Keyra.MeasuredActionNoise Keyra.MeasuredHaloBeats Keyra.MeasuredHaloOwn Keyra.MeasuredTrebleUnisons
                              Keyra.RateInterpolation Keyra.ComponentWarmStart
                              Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
                              Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety

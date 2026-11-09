@@ -13,6 +13,7 @@
 #include "MeasuredActionNoise.h"
 #include "MeasuredHaloBeats.h"
 #include "MeasuredHaloOwn.h"
+#include "MeasuredTrebleUnisons.h"
 #include "MeasuredUprightData.h"
 #include "ForteOutput.h"
 #include <algorithm>
@@ -129,7 +130,7 @@ struct Model {
   const measured::Anchor* anchors;int anchorCount;const measured::Phantom* phantoms;
   const measured::Partial* partials;const measured::Extra* extras;int partialFirst,extraFirst;
   const measured::HaloString* haloStrings;const float* haloLevels;float haloSlopeDb,haloSlopeRiseDb,haloPromptRate;
-  const measured::HaloBeat* haloBeats;const float* haloOwnDb;
+  const measured::HaloBeat* haloBeats;const float *haloOwnDb,*haloOwnSlopeDb;
   const measured::BodyMode* bodyModes;int bodyModeCount;float bodyRise;const measured::Knock* knocks;
   const measured::ActionKnock *releaseKnocks,*pedalDown,*pedalUp;float actionRise,actionDecay;
   const measured::ActionNoise *releaseNoise,*pedalUpNoise;
@@ -144,7 +145,7 @@ struct Model {
 constexpr Model models[]{
   {grand::layers,grand::layerVelocity.data(),grand::layerLevelDb.data(),grand::anchors.data(),static_cast<int>(grand::anchors.size()),grand::phantoms.data(),
    grand::partials.data(),grand::extras.data(),0,0,
-   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,grand::haloBeats.data(),grand::haloOwnDb.data(),
+   grand::haloStrings.data(),grand::haloLevels.data(),grand::haloSlopeDb,grand::haloSlopeRiseDb,grand::haloPromptRate,grand::haloBeats.data(),grand::haloOwnDb.data(),grand::haloOwnSlopeDb.data(),
    grand::bodyModes.data(),static_cast<int>(grand::bodyModes.size()),grand::bodyRise,grand::knocks.data(),
    grand::releaseKnocks.data(),grand::pedalDown.data(),grand::pedalUp.data(),grand::actionRise,grand::actionDecay,
    grand::releaseNoise.data(),grand::pedalUpNoise.data(),
@@ -185,7 +186,7 @@ constexpr Model models[]{
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
    upright::partials.data(),upright::extras.data(),
    static_cast<int>(grand::partials.size()),static_cast<int>(grand::extras.size()),
-   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloSlopeRiseDb,upright::haloPromptRate,upright::haloBeats.data(),upright::haloOwnDb.data(),
+   upright::haloStrings.data(),upright::haloLevels.data(),upright::haloSlopeDb,upright::haloSlopeRiseDb,upright::haloPromptRate,upright::haloBeats.data(),upright::haloOwnDb.data(),upright::haloOwnSlopeDb.data(),
    upright::bodyModes.data(),static_cast<int>(upright::bodyModes.size()),upright::bodyRise,upright::knocks.data(),
    upright::releaseKnocks.data(),nullptr,nullptr,upright::actionRise,upright::actionDecay,upright::releaseNoise.data(),nullptr,
    // The library's Stereo Ribbon preset plays every recording at its own
@@ -221,7 +222,7 @@ constexpr Model models[]{
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),kawai::phantoms.data(),
    kawai::partials.data(),nullptr, // kawai::extras is empty, and the SDK libc++ has no constexpr data() on a zero-length array
    static_cast<int>(grand::partials.size()+upright::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()),
-   kawai::haloStrings.data(),kawai::haloLevels.data(),kawai::haloSlopeDb,kawai::haloSlopeRiseDb,kawai::haloPromptRate,kawai::haloBeats.data(),kawai::haloOwnDb.data(),
+   kawai::haloStrings.data(),kawai::haloLevels.data(),kawai::haloSlopeDb,kawai::haloSlopeRiseDb,kawai::haloPromptRate,kawai::haloBeats.data(),kawai::haloOwnDb.data(),kawai::haloOwnSlopeDb.data(),
    kawai::bodyModes.data(),static_cast<int>(kawai::bodyModes.size()),kawai::bodyRise,kawai::knocks.data(),
    kawai::releaseKnocks.data(),nullptr,nullptr,kawai::actionRise,kawai::actionDecay,nullptr,nullptr,
    // The library's SFZ (VCSL Keys, Grand Piano, K.sfz) tracks velocity at
@@ -243,9 +244,12 @@ constexpr Model models[]{
    .345f,.298f,
    kawai::noiseBands.data(),kawai::noise.data(),
    // Its typical playing at the grand's level, -9 VU (Tools/KeyraLevels.cpp),
-   // which puts its median note 0.6 dB over the grand's at velocity 127 and
-   // 1.4 dB over at velocity 30, measured as the upright's.
-   3.0341,
+   // which puts its median note 1.9 dB over the grand's at velocity 127 and
+   // 2.3 dB over at velocity 30, measured as the upright's (1.6 and 1.8 dB
+   // before 0.4.26). Re-pinned in 0.4.26 to the -8.97 VU it read before,
+   // from 3.0341: its keys between recorded pitches play the keyboard
+   // network's partials since, which took it to -10.21 VU.
+   3.5030,
    // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
    // pair's: within 0.5 dB, its loudest chords through the tube reach the
    // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
@@ -253,14 +257,16 @@ constexpr Model models[]{
    // toward it, and the tube's response favours the bass. The owner chose
    // the quieter tube over evening out the A2 (Docs/decisions.md, 2026-10-31).
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
-   // it to -10.10; its loudest chords through the tube read -0.14 VU.
-   1.2250,
+   // it to -10.10, and in 0.4.26 to the -9.95 VU it read before, from 1.2250,
+   // when the network's keys took it to -11.27; its loudest chords through
+   // the tube read 3.29 VU.
+   1.2364,
    true,
    kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
    hamburg::partials.data(),hamburg::extras.data(),
    static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()),
-   hamburg::haloStrings.data(),hamburg::haloLevels.data(),hamburg::haloSlopeDb,hamburg::haloSlopeRiseDb,hamburg::haloPromptRate,hamburg::haloBeats.data(),hamburg::haloOwnDb.data(),
+   hamburg::haloStrings.data(),hamburg::haloLevels.data(),hamburg::haloSlopeDb,hamburg::haloSlopeRiseDb,hamburg::haloPromptRate,hamburg::haloBeats.data(),hamburg::haloOwnDb.data(),hamburg::haloOwnSlopeDb.data(),
    hamburg::bodyModes.data(),static_cast<int>(hamburg::bodyModes.size()),hamburg::bodyRise,hamburg::knocks.data(),
    hamburg::releaseKnocks.data(),nullptr,nullptr,hamburg::actionRise,hamburg::actionDecay,hamburg::releaseNoise.data(),nullptr,
    // The library's preset plays its release takes at its "rt volume" default,
@@ -278,15 +284,17 @@ constexpr Model models[]{
    // and -9.18 VU it read before, from 2.2622 and 1.5176: its keys between
    // recorded pitches play the keyboard network's partials since, which
    // strike weaker over their first 100 ms than the blend did, and it read
-   // -10.83 and -10.49 VU.
-   2.8070,
-   1.4219,
+   // -10.83 and -10.49 VU. Re-pinned again in 0.4.26, from 2.8070 and
+   // 1.4219: the retrained network (keyboard-network-2026-11-06) took them to
+   // about -8.4 and -8.9 VU.
+   2.6414,
+   1.4655,
    true,
    hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),
    newyork::partials.data(),newyork::extras.data(),
    static_cast<int>(grand::partials.size()+upright::partials.size()+kawai::partials.size()+hamburg::partials.size()),static_cast<int>(grand::extras.size()+upright::extras.size()+kawai::extras.size()+hamburg::extras.size()),
-   newyork::haloStrings.data(),newyork::haloLevels.data(),newyork::haloSlopeDb,newyork::haloSlopeRiseDb,newyork::haloPromptRate,newyork::haloBeats.data(),newyork::haloOwnDb.data(),
+   newyork::haloStrings.data(),newyork::haloLevels.data(),newyork::haloSlopeDb,newyork::haloSlopeRiseDb,newyork::haloPromptRate,newyork::haloBeats.data(),newyork::haloOwnDb.data(),newyork::haloOwnSlopeDb.data(),
    newyork::bodyModes.data(),static_cast<int>(newyork::bodyModes.size()),newyork::bodyRise,newyork::knocks.data(),
    newyork::releaseKnocks.data(),nullptr,nullptr,newyork::actionRise,newyork::actionDecay,newyork::releaseNoise.data(),nullptr,
    // The library's preset plays its seven key noises at group volume 0.75
@@ -300,8 +308,11 @@ constexpr Model models[]{
    .415f,.318f,
    newyork::noiseBands.data(),newyork::noise.data(),
    // Typical playing at -9 VU and the tube at the pair's, as above.
-   .6543,
-   1.8141,
+   // Re-pinned in 0.4.26 to the -9.09 and -9.03 VU they read before, from
+   // .6543 and 1.8141: its keys between recorded pitches play the keyboard
+   // network's partials since, which took them to -10.94 and -9.86 VU.
+   .8093,
+   1.6122,
    true,
    newyork::glide},
 };
@@ -380,6 +391,46 @@ constexpr int maxExtras=[]{
   for(const int m:most){if(m>first){second=first;first=m;}else if(m>second)second=m;}
   return first+second;
 }();
+// Each piano's treble strings beside its series that its fit plays nowhere
+// (MeasuredTrebleUnisons.h), by recorded pitch: the key's own unison strings
+// tuned past its series' lanes and, from F7 up, the undamped string an
+// octave down at its second partial. A strike plays them as it plays the
+// components beside the series.
+struct UnisonTable {const measured::UnisonAnchor* anchors;int anchorCount;const measured::Extra* unisons;int first;};
+constexpr UnisonTable unisonTables[]{
+  {tableData(grand::unisonAnchors),static_cast<int>(grand::unisonAnchors.size()),tableData(grand::unisons),0},
+  {tableData(upright::unisonAnchors),static_cast<int>(upright::unisonAnchors.size()),tableData(upright::unisons),
+   static_cast<int>(grand::unisons.size())},
+  {tableData(kawai::unisonAnchors),static_cast<int>(kawai::unisonAnchors.size()),tableData(kawai::unisons),
+   static_cast<int>(grand::unisons.size()+upright::unisons.size())},
+  {tableData(hamburg::unisonAnchors),static_cast<int>(hamburg::unisonAnchors.size()),tableData(hamburg::unisons),
+   static_cast<int>(grand::unisons.size()+upright::unisons.size()+kawai::unisons.size())},
+  {tableData(newyork::unisonAnchors),static_cast<int>(newyork::unisonAnchors.size()),tableData(newyork::unisons),
+   static_cast<int>(grand::unisons.size()+upright::unisons.size()+kawai::unisons.size()+hamburg::unisons.size())},
+};
+static_assert(std::size(unisonTables)==pianoCount,"a unison table for every piano");
+constexpr int unisonCaches=static_cast<int>(grand::unisons.size()+upright::unisons.size()+kawai::unisons.size()+hamburg::unisons.size()+newyork::unisons.size());
+// The most a strike plays: each piano's from the two recorded pitches
+// around the key, which are neighbours in its list when both have some, for
+// a build of any number of pianos.
+template<std::size_t N> constexpr int mostUnisons(const std::array<measured::UnisonAnchor,N>& a) noexcept {
+  int most=0;
+  for(std::size_t i=0;i<N;++i)most=std::max(most,a[i].count+(i+1<N?a[i+1].count:0));
+  return most;
+}
+constexpr int maxUnisons=mostUnisons(grand::unisonAnchors)+mostUnisons(upright::unisonAnchors)+mostUnisons(kawai::unisonAnchors)
+                         +mostUnisons(hamburg::unisonAnchors)+mostUnisons(newyork::unisonAnchors);
+// The highest partial they sit at.
+template<std::size_t N> constexpr int highestOrder(const std::array<measured::Extra,N>& u) noexcept {
+  int most=1;
+  for(std::size_t i=0;i<N;++i)most=std::max(most,u[i].order);
+  return most;
+}
+constexpr int unisonOrders=std::max({highestOrder(grand::unisons),highestOrder(upright::unisons),highestOrder(kawai::unisons),
+                                     highestOrder(hamburg::unisons),highestOrder(newyork::unisons)});
+// The least of a partial's power its lanes keep when the strings beside it
+// take theirs: the fit's energy gains moved a partial's lanes by at most 6 dB.
+constexpr double unisonFloor=.25;
 // The SFZ sounds the pedal at CC64 127 and 0. Here it sounds within .08 of
 // either end of its travel, the margin within which the dampers already
 // clear the strings (the contact in boundary()), so that a pedal which
@@ -892,6 +943,20 @@ double windowPower(const PartialData& d) noexcept {
   }
   return sum;
 }
+// Two lanes' term in windowPower's sum, the first at fx and the second at
+// fy, each plus its own offset: a lane with itself gives its power, two
+// lanes their cross term, which the sum counts twice.
+double pairPower(const LaneData& x,double fx,const LaneData& y,double fy) noexcept {
+  constexpr double from=.05,to=.75;
+  const Complex phase=x.phase*Complex{y.phase.re,-y.phase.im};
+  const Complex left=x.left*Complex{y.left.re,-y.left.im},right=x.right*Complex{y.right.re,-y.right.im};
+  const Complex product=phase*Complex{left.re+right.re,left.im+right.im};
+  const double re=std::exp(x.rate)+std::exp(y.rate),im=2*pi*(fy+y.offset-fx-x.offset);
+  const auto at=[&](double t){const double e=std::exp(-re*t);return Complex{e*std::cos(im*t),-e*std::sin(im*t)};};
+  const Complex a=at(from),b=at(to),span{a.re-b.re,a.im-b.im};
+  const Complex integral=span*Complex{re/(re*re+im*im),-im/(re*re+im*im)};
+  return std::pow(10.,(x.level+y.level)/20)*(product*integral).re;
+}
 // Each pair of a partial's lanes over windowPower's 50-750 ms window: the
 // integral of e^(-ct), c = re + i im from both lanes' decays and offsets, as
 // the span of e^(-ct) between the window's ends and 1/c. They depend only on
@@ -1224,13 +1289,15 @@ struct Engine::Impl {
   std::array<std::array<PartialData,2*maxPartials>,pianoCount> seriesData{};
   std::array<std::array<double,2*maxPartials>,pianoCount> seriesWeight{};
   struct Component {double frequency=0,order=0;LaneData lane{};};
-  std::array<Component,maxExtras> components{};
+  std::array<Component,maxExtras+maxUnisons> components{};
+  std::array<Component,maxUnisons> unisonParts{};
   // Every piano's measured lanes' caches (see LaneCache), filled at construction.
   std::array<PartialCache,partialCaches> partialLanes{};
 #ifndef KEYRA_GENERATING_VELOCITY_GUARD
   std::array<VelocityInterpolation,measured::velocity::intervalCount> velocityIntervals{};
 #endif
   std::array<LaneCache,extraCaches> extraLanes{};
+  std::array<LaneCache,unisonCaches> unisonLanes{};
   // Each undamped string's frequency (Hz at A4 = 440 Hz).
   std::array<double,halo> haloHz{};
   std::array<Channel,16> channels{};
@@ -2299,12 +2366,13 @@ struct Engine::Impl {
     // Its own key's string it sets ringing only where the key's own series
     // leaves the string's pitch apart (ownStringApart), at the level the
     // key's own strikes ring it (MeasuredHaloOwn.h), growing as every string
-    // does: in the top octave the string an octave below's second partial,
-    // elsewhere a string of the unison tuned further off than its partials'
-    // lanes reach. It has no prompt part, as its takes measure it only from
-    // a second in, beside the key's partials. A piano whose own series plays
-    // the string has none of it, and the others' plays at their share of the
-    // hammers' in power, as a partial only some pianos have does.
+    // does or as fast as its pitch's takes time it: in the top octave the
+    // string an octave below's second partial, elsewhere a string of the
+    // unison tuned further off than its partials' lanes reach. It has no
+    // prompt part, as its takes measure it only from a second in, beside the
+    // key's partials. A piano whose own series plays the string has none of
+    // it, and the others' plays at their share of the hammers' in power, as a
+    // partial only some pianos have does.
     int count[pianoCount]{},next[pianoCount]{};
     for(int p=0;p<pianoCount;++p)count[p]=strings[p]>0||hammers[p]>0?series(sides[p],p,note):0;
     for(int j=0;j<halo;++j){const int key=firstHalo+j;
@@ -2317,7 +2385,7 @@ struct Engine::Impl {
         const auto& x=sides[p];const Model& m=*x.m;
         if(own&&!(m.haloOwnDb[j]>-200&&ownStringApart(p,count[p],f1,B,haloHz[j]))){share[p]=0;continue;}
         heard+=hammers[p];
-        const double slope=(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*x.layerDb+x.scaleDb;
+        const double slope=(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order)+(own?m.haloOwnSlopeDb[j]:0.))*x.layerDb+x.scaleDb;
         level[p]=(own?m.haloOwnDb[j]:mix(haloLevelDb[p][(x.upper-1)*halo+j],haloLevelDb[p][x.upper*halo+j],x.t))+slope;
         promptLevel[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)+slope;}
       if(!(heard>0))continue;
@@ -2391,6 +2459,24 @@ struct Engine::Impl {
     const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
     const double spread=unisonSpread(build);
+    // The strings beside the series that the fit plays nowhere
+    // (MeasuredTrebleUnisons.h): each recorded pitch's, cross-faded in power
+    // as its components beside the series are, placed and spread from their
+    // partial below.
+    int unisonCount=0;
+    for(int p=0;p<pianoCount;++p){const double piano=hammers[p];if(piano<=0)continue;
+      const auto& x=sides[p];const Model& m=*x.m;const auto& table=unisonTables[p];
+      const double pitchShare[2]={std::sqrt((1-x.t)*piano),std::sqrt(x.t*piano)};
+      for(int q=0;q<2;++q){if(pitchShare[q]<=0)continue;const int at=(q?x.b:x.a)->note;
+        for(int i=0;i<table.anchorCount;++i){const auto& anchor=table.anchors[i];if(anchor.note!=at)continue;
+          for(int e=anchor.first;e<anchor.first+anchor.count;++e){const auto& u=table.unisons[e];const double n=u.order;
+            LaneData l=laneAt(m,u.lane,unisonLanes[table.first+e],x.v);l.level+=20*std::log10(pitchShare[q])+x.scaleDb+x.toneDb;
+            unisonParts[unisonCount++]={n*f1*std::sqrt((1+B*n*n)/(1+B))*std::pow(2.,u.cents/1200),n,l};
+          }
+        }
+      }
+    }
+    double seriesHz[unisonOrders+1]{};
     while(voice.count<maxPartials){
       int lowest=1<<30;
       for(int p=0;p<pianoCount;++p)if(next[p]<count[p])lowest=std::min(lowest,seriesData[p][next[p]].order);
@@ -2409,6 +2495,44 @@ struct Engine::Impl {
       const int order=d.order;
       const double frequency=order*f1*std::sqrt((1+B*order*order)/(1+B))*std::pow(2.,d.cents/1200);
       if(frequency>highest)break;
+      // The strings beside it hold power the partial's lanes already play
+      // over 50 to 750 ms, where the fit's energy gain matched them to the
+      // whole partial, and they take it as that gain gave it, from all the
+      // lanes alike: lanes and strings together, every pair of them summed as
+      // windowPower sums a partial's lanes, play what the lanes played alone.
+      // The pairs count: the lanes beat, and the grand's F#7 struck hard plays
+      // two fifths of the power its lanes have one by one. Where the lanes
+      // would keep less than unisonFloor of it, the strings give way.
+      if(order<=unisonOrders){
+        seriesHz[order]=frequency;
+        int at[maxUnisons],n=0;
+        for(int k=0;k<unisonCount;++k)if(unisonParts[k].order==order)at[n++]=k;
+        if(n>0){
+          // The hammer sets every string of the unison off together: the
+          // strings beside start in phase with the partial as its lanes sum
+          // at contact in the left channel, whose pickups are real.
+          Complex start{};
+          for(const auto& l:d.lane){const double a=std::pow(10.,l.level/20)*l.left.re;start.re+=a*l.phase.re;start.im+=a*l.phase.im;}
+          const double magnitude=std::hypot(start.re,start.im);
+          if(magnitude>0)for(int a=0;a<n;++a)unisonParts[at[a]].lane.phase={start.re/magnitude,start.im/magnitude};
+          const double own=windowPower(d)*weight*weight;
+          double cross=0,beside=0;
+          for(int a=0;a<n;++a){const auto& u=unisonParts[at[a]];
+            for(const auto& l:d.lane)cross+=weight*pairPower(l,frequency,u.lane,u.frequency);
+            for(int b=a;b<n;++b){const auto& v=unisonParts[at[b]];
+              const double term=pairPower(u.lane,u.frequency,v.lane,v.frequency);beside+=a==b?term:2*term;}}
+          // The lanes' amplitude s and the strings' g: s^2 own + 2 s g cross + g^2 beside = own.
+          double s=1,g=1;
+          if(own>0&&beside>0){
+            const double least=std::sqrt(unisonFloor),disc=cross*cross+own*(own-beside);
+            s=disc>=0?(-cross+std::sqrt(disc))/own:0;
+            if(!(s>=least)){s=least;g=(std::sqrt(unisonFloor*cross*cross+(1-unisonFloor)*own*beside)-least*cross)/beside;}
+            s=std::min(s,1/least);
+          }
+          for(auto& l:d.lane)l.level+=20*std::log10(s);
+          for(int a=0;a<n;++a)unisonParts[at[a]].lane.level+=20*std::log10(g);
+        }
+      }
       // Una corda reduces high-frequency excitation progressively and moves
       // energy from the prompt lane to the slowest one, as the unstruck
       // string is driven only through the bridge.
@@ -2493,6 +2617,14 @@ struct Engine::Impl {
           components[at]={frequency,static_cast<double>(extra.order),l};
         }
       }
+    }
+    for(int k=0;k<unisonCount;++k){auto u=unisonParts[k];const int n=static_cast<int>(u.order);
+      if(seriesHz[n]>0)u.frequency=seriesHz[n]+(u.frequency-seriesHz[n])*spread;
+      u.lane.offset*=spread;
+      if(u.frequency>highest)continue;
+      int at=found++;
+      while(at>0&&components[at-1].frequency>u.frequency){components[at]=components[at-1];--at;}
+      components[at]=u;
     }
     for(int k=0;k<found&&voice.count<maxPartials;++k){
       add(components[k].frequency,components[k].order,components[k].lane);
@@ -3201,6 +3333,10 @@ Engine::Engine(double sampleRate):impl(new Impl){
     cacheSoftRanks(m,p.partialLanes.data()+m.partialFirst);
     for(int i=0;i<m.anchors[m.anchorCount-1].extraFirst+m.anchors[m.anchorCount-1].extraCount;++i)
       p.extraLanes[m.extraFirst+i]=cacheLane(m.extras[i].lane,m.layers);
+  }
+  for(int k=0;k<pianoCount;++k){const auto& u=unisonTables[k];
+    const int count=u.anchorCount?u.anchors[u.anchorCount-1].first+u.anchors[u.anchorCount-1].count:0;
+    for(int i=0;i<count;++i)p.unisonLanes[u.first+i]=cacheLane(u.unisons[i].lane,models[k].layers);
   }
   p.initCalibrations();
   p.assemble();

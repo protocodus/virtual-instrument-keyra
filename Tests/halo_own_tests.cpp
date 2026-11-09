@@ -3,7 +3,8 @@
 // Where a piano's own strikes ring a key's undamped string apart from the
 // key's series, the key's strike sets that string's aftersound ringing at the
 // level its table gives, growing with the strike's layer at the undamped
-// strings' slope, with no prompt part. Where the table gives none, or where
+// strings' slope moved by its pitch's own (haloOwnSlopeDb), with no prompt
+// part. Where the table gives none, or where
 // the key's own series plays the string, the strike leaves it silent. Between
 // two pianos of which one rings it, it plays at that piano's share of the
 // hammers in power. The host's blocks do not change it.
@@ -40,7 +41,8 @@ template<class State> double expected(State& impl,const keyra::Model& m,int key,
   const int j=key-keyra::firstHalo;
   const double order=std::max(1.,impl.haloHz[j]/impl.builtPitch(key));
   const double layerDb=keyra::levelAt(m,m.layerLevelDb,v);
-  const double db=m.haloOwnDb[j]+(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order))*layerDb+20*std::log10(m.outputScale);
+  const double db=m.haloOwnDb[j]+(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order)+m.haloOwnSlopeDb[j])*layerDb
+                  +20*std::log10(m.outputScale);
   return std::pow(10.,db/20)*impl.haloFirst[j];
 }
 // A fresh engine's own string of `key` after one steady strike at `velocity`.

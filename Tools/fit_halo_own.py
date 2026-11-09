@@ -42,16 +42,18 @@ its layers only bounds it, at the 1 s window's tone. The grand's C8 is one:
 its strikes hold a tone at the string's pitch 140 Hz and more from their
 strongest components, 39 to 46 dB under the take, and holding A7's level
 there instead played it 11 to 20 dB over them. The string grows with the
-strike at the halo fit's slope, which the grand's F#7 and A7 bracket (1.15
-and 1.85 dB per dB, against 1.48); its level at the pitch's loudest layer is
-fitted over the layers, the hidden ones as bounds (a censored fit with one
-spread), and where fewer than two layers ring clear it is HALO_HIDDEN under
-their median bound, never over the tightest, a layer that rings clear
-bounding it at its level: the Hamburg grand's F7 rings clear only at its
-softest layer, 18 dB under where the loud layers' bounds alone put it. A
-pitch whose takes neither ring the string clear nor bound it has its own
-components playing what is there, and so has every pitch that leaves the
-string no room.
+strike at the halo fit's slope, or at its pitch's own where SLOPED layers or
+more ring it clear: the grand's F#7 at 1.09 dB per dB and its A7 at 1.85,
+where the halo fit's 1.48 held their softest layers' strings 4.9 dB too
+quiet at F#7 and 8.3 dB too loud at A7. Its level at the pitch's loudest
+layer, and its own slope, are fitted over the layers, the hidden ones as
+bounds (a censored fit with one spread), and where fewer than two layers
+ring clear it is HALO_HIDDEN under their median bound, never over the
+tightest, a layer that rings clear bounding it at its level: the Hamburg
+grand's F7 rings clear only at its softest layer, 18 dB under where the
+loud layers' bounds alone put it. A pitch whose takes neither ring the
+string clear nor bound it has its own components playing what is there,
+and so has every pitch that leaves the string no room.
 
 Between the recorded pitches each key takes the levels of the pitches
 around it, interpolated by key where both have one and held from the one
@@ -93,6 +95,8 @@ PIANOS = beats.PIANOS
 RESOLVED = 4.0    # Hz: the 0.5 s Hann window's main lobe, where halo_tone's floor begins
 NEAR = 40.0       # Hz: the key's own components whose leakage is read at the string
 SILENT = -200.0   # dB: no own string
+SLOPED = 3        # layers ringing the string clear, the fewest that time its own slope
+SLOPES = (0.0, 3.0)  # dB per dB: that slope's bounds, the halo fits' 1.2 to 2.0 well inside
 DB = 20 / math.log(10)
 TAU = np.linspace(-.25, .25, 4001)   # s: the halo fit's 0.5 s window
 WINDOW = np.hanning(len(TAU))
@@ -175,25 +179,28 @@ def layer(rows, fitted=True):
 
 
 def loudest(xs, layers, slope):
-    """The string's level at the pitch's loudest layer at `slope` (dB per dB
-    of the layers' level `xs`) and its kind: fitted to the layers that ring
-    clear with the others as bounds, HALO_HIDDEN under the bounds where
-    fewer than two ring (one that rings bounding it at its level), or none
-    where nothing bounds it."""
-    y = np.array([L.get('level', np.nan) for L in layers]) - slope * xs
-    b = np.array([np.nan if L.get('bound') is None else L['bound'] for L in layers]) - slope * xs
-    rang, bounded = np.isfinite(y), np.isfinite(b)
+    """The string's level at the pitch's loudest layer, the slope (dB per dB
+    of the layers' level `xs`) it grows at and its kind: fitted to the layers
+    that ring clear with the others as bounds, the slope with it where SLOPED
+    or more ring and the halo fit's `slope` otherwise; HALO_HIDDEN under the
+    bounds where fewer than two ring (one that rings bounding it at its
+    level), or none where nothing bounds it."""
+    levels = np.array([L.get('level', np.nan) for L in layers])
+    bounds = np.array([np.nan if L.get('bound') is None else L['bound'] for L in layers])
+    rang, bounded = np.isfinite(levels), np.isfinite(bounds)
     if rang.sum() >= 2:
+        own = bool(rang.sum() >= SLOPED)
         def loss(p):
-            spread = math.exp(p[1])
-            return -(np.sum(stats.norm.logpdf(y[rang], p[0], spread)) + np.sum(stats.norm.logcdf((b[bounded] - p[0]) / spread)))
-        fitted = optimize.minimize(loss, [float(np.mean(y[rang])), math.log(3)], method='L-BFGS-B',
-                                   bounds=[(-200, 40), (math.log(.5), math.log(20))])
-        return float(fitted.x[0]), 'clear'
-    caps = np.concatenate([b[bounded], y[rang]])
+            s, spread = p[2] if own else slope, math.exp(p[1])
+            return -(np.sum(stats.norm.logpdf(levels[rang] - s * xs[rang], p[0], spread))
+                     + np.sum(stats.norm.logcdf((bounds[bounded] - s * xs[bounded] - p[0]) / spread)))
+        fitted = optimize.minimize(loss, [float(np.mean(levels[rang] - slope * xs[rang])), math.log(3)] + [slope] * own,
+                                   method='L-BFGS-B', bounds=[(-200, 40), (math.log(.5), math.log(20))] + [SLOPES] * own)
+        return float(fitted.x[0]), float(fitted.x[2]) if own else slope, 'clear'
+    caps = np.concatenate([bounds[bounded] - slope * xs[bounded], levels[rang] - slope * xs[rang]])
     if len(caps):
-        return float(min(np.median(caps) - fit.HALO_HIDDEN, np.min(caps))), 'under'
-    return None, 'played'
+        return float(min(np.median(caps) - fit.HALO_HIDDEN, np.min(caps))), slope, 'under'
+    return None, slope, 'played'
 
 
 def by_key(pitches):
@@ -246,25 +253,29 @@ def measure_piano(name, pool):
         layers = [{'case': case, 'role': role, 'velocity': v, 'x': float(np.interp(v, grid, layer_level))} | layer(rows, bool(anchor))
                   for (case, v, role), rows in zip(cases, reads)]
         fitted = [L for L in layers if L['role'] == 'train']
-        level, kind = loudest(np.array([L['x'] for L in fitted]), fitted, slope)
+        level, grows, kind = loudest(np.array([L['x'] for L in fitted]), fitted, slope)
         if level is not None:
             for L in layers:
-                L['predicted'] = level + slope * L['x']
-        measured[note] = record | {'kind': kind, 'level': level, 'layers': layers}
+                L['predicted'] = level + grows * L['x']
+        measured[note] = record | {'kind': kind, 'level': level, 'own_slope': grows, 'layers': layers}
     levels = by_key({note: m['level'] for note, m in measured.items()})
+    # How much faster than the halo fit's each key's own string grows, taken
+    # between the pitches as the levels are; none where nothing plays it.
+    shifts = [0.0 if v == SILENT else v for v in
+              by_key({note: m['own_slope'] - m['slope'] if m['level'] is not None else None for note, m in measured.items()})]
     print(f'{name}:', flush=True)
     for note, m in measured.items():
         lane = 'no fitted series' if m['nearest_lane_hz'] is None else f'nearest lane {m["nearest_lane_hz"]:.2f} Hz'
         line = f'  {note}: {m["hz"]:.2f} Hz, {lane}, {m["kind"]}'
         if m['level'] is not None:
-            line += f', {m["level"]:+.1f} dB at the loudest layer'
+            line += f', {m["level"]:+.1f} dB at the loudest layer, {m["own_slope"]:.2f} dB per dB'
         for L in m.get('layers', []):
             if L['role'] == 'dev' and 'predicted' in L and ('level' in L or L.get('bound') is not None):
                 read = f'{L["level"]:+.1f}' if 'level' in L else f'under {L["bound"]:+.1f}'
                 line += f'; dev {L["case"]} {read} against {L["predicted"]:+.1f}'
         print(line, flush=True)
     print('  by key: ' + ' '.join(f'{k}:{v:.1f}' for k, v in zip(fit.UNDAMPED, levels) if v > SILENT), flush=True)
-    return inputs | dict(pitches={str(k): v for k, v in measured.items()}, levels=levels)
+    return inputs | dict(pitches={str(k): v for k, v in measured.items()}, levels=levels, slope_shifts=shifts)
 
 
 def header_text(receipt):
@@ -284,12 +295,17 @@ def header_text(receipt):
         '// level (dB) its strike sets that string ringing at, at its loudest layer',
         '// and at contact, as the halo fit reads a string (haloLevels); -200 where',
         '// its own components play the string. One per key from F6 up.',
+        '// haloOwnSlopeDb: how much faster than every undamped string (dB per dB',
+        '// of the strike\'s layer level) the key\'s own string grows with the',
+        f'// strike, where its recorded pitch rings it clear in {SLOPED} layers or more.',
     ]
     for name in PIANOS:
         levels = receipt['pianos'][name]['levels']
         lines.append(f'namespace {name} {{')
         lines.append(f'constexpr std::array<float,{len(fit.UNDAMPED)}> haloOwnDb{{{{'
                      + ','.join(fit.number(v) for v in levels) + '}};')
+        lines.append(f'constexpr std::array<float,{len(fit.UNDAMPED)}> haloOwnSlopeDb{{{{'
+                     + ','.join(fit.number(v) for v in receipt['pianos'][name]['slope_shifts']) + '}};')
         lines.append('}')
     lines += ['}}', '']
     return '\n'.join(lines)
@@ -315,7 +331,8 @@ def main():
         pianos = {name: measure_piano(name, pool) for name in PIANOS}
     receipt = dict(tool=rel(Path(__file__)), tool_sha256=fit.sha256(Path(__file__)),
                    protocol=dict(resolved_hz=RESOLVED, near_hz=NEAR, halo_times=list(fit.HALO_TIMES),
-                                 halo_clear_db=fit.HALO_CLEAR, halo_hidden_db=fit.HALO_HIDDEN),
+                                 halo_clear_db=fit.HALO_CLEAR, halo_hidden_db=fit.HALO_HIDDEN,
+                                 sloped_layers=SLOPED, slope_bounds=list(SLOPES)),
                    pianos=pianos)
     RECEIPT.write_text(json.dumps(receipt, indent=1) + '\n')
     HEADER.write_text(header_text(receipt))
