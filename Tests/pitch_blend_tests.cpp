@@ -36,7 +36,7 @@ double outside(double x,double a,double b){return std::max({0.,std::min(a,b)-x,x
 int main(){
   keyra::Engine engine(48000);
   auto& impl=keyra::PitchBlendTestObserver::state(engine);
-  int keys=0,partials=0,held=0,lags=0;
+  int keys=0,partials=0,held=0,lags=0,filled=0;
   double worstTotal=0,worstChannel=0,worstBalance=0,worstHeld=0,worstRadians=0;
   for(int p=0;p<keyra::pianoCount;++p){
     const keyra::Model& m=keyra::models[p];
@@ -52,13 +52,25 @@ int main(){
         keyra::Side x;x.m=&m;x.a=&a;x.b=&b;x.upper=upper;x.v=velocity;
         x.t=static_cast<double>(note-a.note)/(b.note-a.note);
         const int count=impl.blended(x,p);++keys;
-        // The series merges the two pitches' partials by order, as here.
-        int i=a.first,j=b.first;
+        // The series merges the two pitches' series by order, as here. Each
+        // pitch's series holds its fitted partials and the orders it lacked
+        // between two of them, filled (0.4.30); the blend's output takes one
+        // entry for every order either holds. Until 0.4.30 this walked the
+        // fitted partials alone, which the fills now put out of step with
+        // the output.
+        const auto &sa=impl.anchorData[0],&sb=impl.anchorData[1];
+        const auto &ia=impl.anchorIndex[0],&ib=impl.anchorIndex[1];
+        const int na=impl.anchorSeries(x,a,0),nb=impl.anchorSeries(x,b,1);
+        int i=0,j=0;
         for(int n=0;n<count;++n){
-          const int oa=i<a.first+a.count?m.partials[i].order:1<<30,ob=j<b.first+b.count?m.partials[j].order:1<<30;
+          const int oa=i<na?sa[i].order:1<<30,ob=j<nb?sb[j].order:1<<30;
           if(oa!=ob){if(oa<ob)++i;else ++j;continue;}
           const keyra::PartialData& played=impl.seriesData[p][n];
-          const auto pa=keyra::single(m,m.partials[i],cache[i],velocity),pb=keyra::single(m,m.partials[j],cache[j],velocity);
+          // A fitted partial plays as single() sets it; a filled one as
+          // anchorSeries() does.
+          const auto pa=ia[i]>=0?keyra::single(m,m.partials[ia[i]],cache[ia[i]],velocity):sa[i];
+          const auto pb=ib[j]>=0?keyra::single(m,m.partials[ib[j]],cache[ib[j]],velocity):sb[j];
+          filled+=ia[i]<0||ib[j]<0;
           ++i;++j;++partials;
           const auto [la,ra]=keyra::windowPowers(pa);
           const auto [lb,rb]=keyra::windowPowers(pb);
@@ -84,7 +96,7 @@ int main(){
       }
     }
   }
-  std::cout<<"keys_by_velocity="<<keys<<" shared_partials="<<partials<<" lags="<<lags
+  std::cout<<"keys_by_velocity="<<keys<<" shared_partials="<<partials<<" filled="<<filled<<" lags="<<lags
            <<" worst_total_power_off_db="<<worstTotal<<" worst_channel_outside_db="<<worstChannel
            <<" balances_held="<<held<<" worst_balance_held_db="<<worstBalance<<" worst_held_channel_off_edge_db="<<worstHeld
            <<" worst_lag_off_rad="<<worstRadians<<'\n';

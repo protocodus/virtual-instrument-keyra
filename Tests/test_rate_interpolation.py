@@ -61,8 +61,23 @@ int main(int argc,char** argv){try{
   if(audio){
     // Low, middle and high recorded pitches, three ordinary MIDI velocities,
     // held and released through the complete native engine and output stage.
+    // Since 0.4.30 a pitch's series plays the orders its fit lacks between
+    // two it holds, each between those two as blend() sets it, where the
+    // support prior acts as it does between pitches: a pitch holding such a
+    // fill plays the prior by design. Each pitch here is the nearest to the
+    // lowest, middle and highest whose series holds none, so the renders
+    // still show the prior leaves every fitted partial of a recorded pitch
+    // as it was.
+    const auto unfilled=[](const keyra::Model& m,int index){
+      const auto& a=m.anchors[index];
+      for(int k=1;k<a.count;++k)if(keyra::Engine::Impl::denseGap(&m.partials[a.first],a.count,k))return false;
+      return true;};
+    const auto nearest=[&](const keyra::Model& m,int index){
+      for(int d=0;d<m.anchorCount;++d)for(int i:{index+d,index-d})
+        if(i>=0&&i<m.anchorCount&&unfilled(m,i))return i;
+      throw std::runtime_error("no recorded pitch without a filled order");};
     for(int p=0;p<keyra::pianoCount;++p){const auto& m=keyra::models[p];
-      for(int index:{0,m.anchorCount/2,m.anchorCount-1})for(int velocity:{32,80,120}){
+      for(int index:{nearest(m,0),nearest(m,m.anchorCount/2),nearest(m,m.anchorCount-1)})for(int velocity:{32,80,120}){
         keyra::Parameters parameters;parameters.build=keyra::measuredBuild(static_cast<keyra::Piano>(p));parameters.gain=.07f;
         engine.setParameters(parameters);engine.reset();
         const int note=m.anchors[index].note;std::uint64_t hash=14695981039346656037ull;

@@ -43,6 +43,43 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.30 — 2026-11-09 — the orders a fit left out of a string's series
+
+A struck string sounds every order of its series, and a fit leaves an order
+out where it cannot tell the partial from what sounds beside it; 0.4.29
+played nothing there. Each order a series lacks between two it holds now
+plays between those two, where the series holds at least as many orders
+around the gap as it lacks (How it works). On the Hamamatsu grand, whose fit
+lacks the most, the orders a render lacked carried 15 % of its train takes'
+error in partial levels and 24 % of its dev takes'; its G♯3 lacked its 12th
+to 20th partial ([series orders](Docs/research/series-orders-2026-11-09.md)).
+Against 0.4.29 on every train and dev take, the paired means summed over the
+eleven measures other than level, in tolerance units, stand closer on every
+piano's train takes: the Hamamatsu by 1.34, the upright by 0.15, the Hamburg
+by 0.13, New York by 0.11 and the Kakegawa grand by 0.08. On the dev takes
+the Hamamatsu stands 0.30 closer and the grand 0.04, the upright and New York
+0.05 further and the Hamburg 0.94, all of it one note's noise between
+partials. The Hamamatsu's train takes stand 0.46 dB closer in partial levels,
+and its G♯3 at velocity 95 4.70 dB from its recording where it stood 14.04.
+Four scores stand further by more than a tolerance: the upright's B3 and the
+Hamamatsu's E5 in decay, the Hamburg's E3 in noise, and the Hamamatsu's G♯3
+at velocity 69 loses its noise score
+([Kakegawa grand](Docs/validation/grand-series-orders-benchmark-2026-11-09.md),
+[upright](Docs/validation/upright-series-orders-benchmark-2026-11-09.md),
+[Hamamatsu](Docs/validation/kawai-series-orders-benchmark-2026-11-09.md),
+[Hamburg](Docs/validation/hamburg-series-orders-benchmark-2026-11-09.md),
+[New York](Docs/validation/newyork-series-orders-benchmark-2026-11-09.md)).
+The grand's held-out evaluation stands where it stood. Filling every gap
+instead stood further on three pianos' dev takes, in the sparse upper tails
+of their series.
+
+Single notes and chords keep their level, within 0.001 dB in the median of
+the factory audit. The 88 keys struck in turn with the pedal down render in
+0.5 % more CPU on the grand, 0.3 % more on the upright, 3.3 % more on the
+Hamamatsu, 1.6 % more on the Hamburg and 2.5 % more on New York, on the
+development machine. One reading then stands past its approved level: the
+Hamburg's loudest chords through the tube, by 0.03 VU.
+
 ### 0.4.29 — 2026-11-09 — the strike's wave reaches the bridge
 
 A key's partials and its knock on the body start when the strike's wave
@@ -1009,6 +1046,17 @@ colour from strike to strike, and keeps its tuning. A spread in velocity
 units instead would follow each layer's level slope, which at the upright's
 loudest layers is twice the measured layers', and so double it there. The
 draws restart with the engine, so a render replays exactly.
+
+A struck string sounds every order of its series, and a fit leaves an order
+out where it cannot tell the partial from what sounds beside it. Each order a
+recorded pitch's or the keyboard network's series lacks between two it holds
+plays between those two as a partial between two recorded pitches does: its
+power, balance and stereo image between theirs, their lanes paired fastest
+with fastest, and its una-corda bias by its lanes' own rank. A gap g orders
+long is filled only where, from g orders under it to g over it, the series
+holds at least as many orders as it lacks, so a sparse upper tail stays as
+fitted, and nothing is added under a series' first order or over its last
+([series orders](Docs/research/series-orders-2026-11-09.md)).
 
 Beside its series, a strike plays the components the recordings hold between
 the partials, each one lane placed by the series and damped with it; in the
