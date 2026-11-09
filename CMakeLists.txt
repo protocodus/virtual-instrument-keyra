@@ -601,6 +601,10 @@ if(BUILD_TESTING)
                  COMMAND KeyraParameterMatrixTests --rotation --jobs 4)
         set_tests_properties(Keyra.ParameterMatrix PROPERTIES TIMEOUT 1800 LABELS fuzz)
 
+        # U11: every parameter reaches held and new notes after long play.
+        add_test(NAME Keyra.ParameterReach COMMAND KeyraParameterMatrixTests --reach --jobs 4)
+        set_tests_properties(Keyra.ParameterReach PROPERTIES TIMEOUT 1800 LABELS unit)
+
         if(Python3_Interpreter_FOUND)
             add_test(NAME Keyra.EditorRender
                      COMMAND "${Python3_EXECUTABLE}" -B

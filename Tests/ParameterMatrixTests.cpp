@@ -4,6 +4,7 @@
 //
 //   KeyraParameterMatrixTests [--jobs N] [--rotation] [--shard K/N]
 //                             [--case LABEL] [--count] [--list]
+//   KeyraParameterMatrixTests --reach [--jobs N] [--case PARAMETER]
 //
 // The shared command line (U9): --rotation runs each case at one rate and
 // block size instead of all nine, --shard K/N runs the cases whose index
@@ -19,8 +20,11 @@
 #include "DSP/OutputStage.h"
 
 #include <algorithm>
+#include <cstdio>
+#include <cstdlib>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace
 {
@@ -78,6 +82,51 @@ public:
                  && keyra::factoryPresets[static_cast<std::size_t> (c.preset)].build.strings[static_cast<std::size_t> (keyra::Piano::upright)] > 0)
             limits.releaseSeconds = 3.0;
         return limits;
+    }
+
+    // U11. keyra::Build is read at each strike (a change applies from the
+    // next one), except the soundboard's modes and the undamped strings,
+    // which move at once.
+    protocodus::matrix::ReachRule ReachFor (std::size_t index, float to) const override
+    {
+        using protocodus::matrix::Reach;
+        std::vector<protocodus::matrix::Parameter> all = Parameters();
+        for (const auto& p : EditorOnlyParameters())
+            all.push_back (p);
+        const auto at = [&] (const char* name)
+        {
+            for (std::size_t i = 0; i < all.size(); ++i)
+                if (all[i].name == name)
+                    return i;
+            std::fprintf (stderr, "no parameter %s\n", name);
+            std::abort();
+        };
+        const std::string& name = all[index].name;
+        const auto part = [&] (const char* prefix) { return name.rfind (prefix, 0) == 0; };
+        // A part with no weight plays the grand's (keyra::Mix).
+        if (name.find ("Kakegawa") != std::string::npos && to == 0.0f)
+            return { Reach::Exempt, "with no other piano in the part, 0 plays the Kakegawa grand as 1 does" };
+        if (part ("Strings: ") || part ("Hammers: ") || name == "Stiffness" || name == "Unisons" || name == "Ring")
+            return { Reach::NewNotes, "the build each new strike plays" };
+        // With the Kakegawa action's weight at 0 the other action plays alone,
+        // rather than shared with the grand's.
+        if (part ("Action: "))
+            return { Reach::NewNotes, "the knocks of each new key, damper and pedal",
+                     { { at ("Mechanics"), 1.0f }, { at ("Action: Kakegawa"), 0.0f } } };
+        if (name == "Soft pedal")
+            return { Reach::NewNotes, "shifts the hammers, which meet only new strikes" };
+        // Held from the start it catches no key; Keyra.Engine's pedal tests
+        // cover the capture at its rising edge.
+        if (name == "Sostenuto pedal")
+            return { Reach::Exempt, "catches the keys held at its rising edge, so a run held from the start has none" };
+        if (name == "Quality")
+            return { Reach::Exempt, "drops partials 50-60 dB under the strongest, for CPU" };
+        // With the dampers down only the undamped top strings resonate. With
+        // them up, the struck strings' wash builds through the phrase and
+        // hides the resonance's share by the last probe unless they ring short.
+        if (name == "Sympathetic resonance")
+            return { Reach::Held, "", { { at ("Sustain pedal"), 1.0f }, { at ("Ring"), 0.0f } } };
+        return {};
     }
 
 private:
