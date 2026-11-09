@@ -3462,3 +3462,127 @@ render in a median 3.57 s of CPU on the grand where 0.4.25 took 3.51
 (+1.7 %), 2.50 on the upright against 2.53 (−0.8 %) and 3.05 on New York
 against 2.79 (+9.5 %, with its retrained network), seven alternating runs of
 each on the development machine.
+
+## 2026-11-09 — each piano plays the room it was recorded in
+
+The owner asked for five rounds of audible improvements from the physics and
+the acoustics, each decided on the recordings with the better candidate
+taken and no listening test, then for the whole keyboard to be calibrated.
+This is the first round. No listening test was run and no listening
+preference is recorded.
+
+The finding. From 0.1 s after a strike the recordings' floor between the
+partials falls at one rate per third octave whatever the note, and above
+250 Hz the two microphones hear it uncorrelated: the recording room. 0.4.26
+had only the board's modes and the noise bands there, which fall with the
+strike, and by 0.45 s its floor at 1 to 4 kHz stood 5.4 dB under the
+Kakegawa grand's train takes, 3.3 dB under the upright's, 13.7 dB under the
+Hamamatsu's, 20.6 dB under the Hamburg's and 20.4 dB under New York's
+([room](research/room-2026-11-09.md)).
+
+What the room hears. The fitted partials are measured from the same
+recordings and hold the room at their own frequencies, so a room fed the
+whole output counts it twice. Scored against 0.4.26 before this round's fix
+to the benchmark's bands, summed over the eleven measures other than level
+in tolerance units, train and dev: a statistical room fed the whole output
+stood the grand further (+3.75, +3.19) and the Hamburg (+5.12, +4.03); fed
+only the strike's noise and the board's ring, with each band's level fitted
+to what that band lacked, it brought all five pianos closer (the grand −2.28,
+−1.75; the upright −2.71, −2.71; the Hamamatsu −0.66, −0.49; the Hamburg
+−8.13, −0.25; New York −2.14, −3.65); a first build of the network fed the
+same, with one gain per piano, brought all five closer by less (−0.91, −0.88;
+−0.14, −0.01; −0.23, −0.82; −6.70, −0.60; −1.08, −3.32). The network ships
+with one gain. A level per band would close more of each floor on the
+benchmark, but outside the bands where the floor decays as a room it would
+stand in for whatever else the engine leaves out there, such as the strike's
+low thud, and it would no longer be a room's level.
+
+The measurement. `Tools/fit_room.py` reads each piano's train takes only and
+writes `Source/DSP/MeasuredRoom.h` and its receipt, which `Keyra.MeasuredRoom`
+checks against the current modal data, split and corpus. Per band the rate is
+the median over five or more takes of a line through the floor's frames 15 dB
+over the take's own floor; the network's shelf is fitted to the measured
+bands; the gain is the square root of the median, over those bands, of the
+power that brings the engine's floor to the recordings'. The rooms' T60s run
+from 0.85 to 1.07 s on the grand, 0.72 to 1.83 s on the upright, 1.20 to
+1.61 s on the Hamamatsu, 2.29 to 3.66 s on the Hamburg and 1.56 to 2.17 s on
+New York, the shelf within 1.8 to 5.1 dB/s rms of the measured rates and
+8.7 dB/s on the upright. Three runs of the fit, on renderers built with and
+without these numbers in the header, wrote the same header.
+
+On the benchmark, against 0.4.26 on every train and dev take, the paired sums
+in the same units are: the grand −1.05 and −0.88, the upright −0.29 and
+−0.19, the Hamamatsu −0.31 and −0.90, the Hamburg −6.73 and −0.29 and New
+York −1.65 and −3.10. Past a tolerance: the grand's dev D♯7 early (3.87 →
+4.49 dB) and train C2 rise (7.26 → 8.49 ms); the Hamamatsu's dev G7 early
+(18.58 → 19.89 dB, one take) and its train D♯7 tuning (0.26 → 1.43 cents),
+D♯6 early (5.32 → 6.29 dB) and noise (4.86 → 5.44 dB), C6 early (6.16 →
+7.08 dB) and noise (6.01 → 6.90 dB), A♯4 decay (3.10 → 4.51 dB/s) and A6
+early (6.19 → 6.71 dB); the Hamburg's dev E3 coherence (0.21 → 0.25) and
+noise (2.88 → 3.52 dB), its train F♯4 (0.10 → 0.14) and B3 coherence (0.09
+→ 0.12) and its dev C♯5 coherence (0.18 → 0.21); New York's train F6 early
+(4.32 → 5.13 dB) and dev E7 tuning (2.15 → 2.92 cents); none on the
+upright. Four scores 0.4.26 could not measure are measured: the upright's
+train E7 sustain (14.31 dB), the Hamamatsu's train G♯5 sustain (27.14 dB),
+New York's train G♯7 sustain (12.76 dB) and the Hamburg's dev E3 noise on a
+second take (7.63 dB). The Hamamatsu's treble early and noise scores are
+probably its floor between 250 Hz and 1 kHz, which the room now takes over
+its recordings' (5.6 dB by 0.45 s), and the Hamburg's coherence scores the
+room's channels, uncorrelated under 250 Hz where its recordings' are not
+(Known gaps). On the grand's held-out evaluation the twelve in-range cases'
+bands stand 4.988 dB from their recordings (5.117), closer at ten, further
+at C2 (3.35 → 3.37) and F♯5 (4.89 → 5.05) at velocity 8; the harmonic levels
+3.990 dB (3.989), the envelope 1.707 dB (1.705), the partial decay
+2.270 dB/s (2.272), the pitch 0.190 cents (0.190) and the rise 4.095 ms
+(4.089), F♯4's at velocity 8 the most (3.21 → 3.37 ms). The edge cases C1 and
+C7 at velocity 8 stand 4.657 dB in bands (4.660), 2.263 dB in harmonics
+(2.286) and 8.032 dB in envelope (8.045).
+
+The benchmark itself changed first (`fix(bench)`): it scores only the
+third-octave bands both spectra have bins in. Its 40 ms window has none in
+the 25 Hz band at 44.1 kHz and none in the 20 and 31.5 Hz bands at 48 kHz,
+which read −300 dB whatever plays, so the Hamamatsu's and New York's
+44.1 kHz recordings against 48 kHz renders took the 30 dB cap there in every
+take. Rescored, 0.4.26's attack, early and sustain errors fall 0.82 to
+1.61 dB on the Hamamatsu and 0.26 to 1.25 dB on New York, train and dev, and
+the other three pianos' do not move. The five baselines above are 0.4.26
+rescored; `Keyra.BenchmarkBands` checks which bands count.
+
+Levels and tests. The room raises five loudest-chord readings over their
+approved levels: the Hamamatsu's through the tube 3.297875 VU against
+3.292226, Kakegawa Grand 0.709162 against 0.707407, Warm Walnut −0.120532
+against −0.123667, Felt Nocturne −5.595710 against −5.597279 and Open
+Strings 1.505028 against 1.501300, so `Keyra.Levels` fails on them until
+the owner accepts them or not. Typical playing moves −0.006 to +0.025 VU,
+inside the test's 0.05 guard, so no output or tube scale is re-pinned.
+`Keyra.FactoryDynamics` fails as it did on 0.4.26, on 992 rows (966 pairs
+under their step floors and 26 chords past its maximum levels) where 0.4.26
+failed on 993 (968 and 25); the one new row is the original Hamburg Grand's
+microphone 1, round 3, shape 7 at velocity 110, +1.428 against +1.408. Its
+floors and limits are unchanged. The `unit` tier (43 tests, `Keyra.Room`,
+`Keyra.MeasuredRoom` and `Keyra.BenchmarkBands` among them), the `audio`
+tier's demos and the `perf` tier pass, and `KeyraDSPCxx17` builds. One
+`Keyra.Engine` check, that a top note's body rings on until CC1 mutes it,
+measured the grand's free ring 16.09 dB over the muted one with the room
+against its 20 dB threshold: the room rings on with what it heard of the
+strike after CC1 mutes the strings and the body, as a room does, and the
+check measures the body alone, so it now runs with the room off.
+`Keyra.VelocityInterpolationFreshness` follows the engine source's hash, and
+its receipt was regenerated by its generator; the masks did not change.
+
+The plug-in's `Keyra.ParameterMatrix` needs a JUCE build, which was not made
+for this round. A stand-in that plays the plug-in's eleven automatable
+parameters, its twelve programs and its block loop over the engine, through
+the shared `Tests/ParameterMatrix.h` with `Tests/ParameterMatrixTests.cpp`'s
+limits, passed all 2,889 runs, its 321 cases at all nine rates and block
+sizes. The room rings on after the release: of one run per case where
+silence is due, the loudest tail is the Hamburg Grand's at full Output,
+−71.6 dBFS 2 s after the release (−84.1 with the room off), 11.6 dB under
+the matrix's −60 dBFS floor.
+
+The 88 keys struck in turn at velocity 90, 120 ms apart with the pedal down,
+render in a median 4.00 s of CPU on the grand where 0.4.26 took 3.80
+(+5.2 %), 2.72 on the upright against 2.59 (+5.0 %), 2.91 on the Hamamatsu
+against 2.83 (+2.8 %), 3.40 on the Hamburg against 3.44 (−1.2 %) and 3.16 on
+New York against 3.14 (+0.5 %), seven alternating runs of each on the
+development machine.

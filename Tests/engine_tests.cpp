@@ -466,13 +466,16 @@ int main(int argc,char** argv){
     // go, within 6 dB of the muted one.) The action is silent: the key's
     // landing rings at its own decay whatever the felt does, as the release
     // recordings' knocks do, and its tail stood 17 dB under the upright's
-    // free ring here.
+    // free ring here. The room is off: it rings on with what it heard of the
+    // strike after CC1 mutes the strings and the body, as a room does (the
+    // grand's free ring stood 16 dB over the muted one with it), and this
+    // measures the body alone.
     const auto body=[](const keyra::Parameters& p,bool muted){
       keyra::Engine e;e.setParameters(p);e.noteOn(105,.7f);render(e,12000);
       if(muted)e.controlChange(1,127);
       render(e,12000);const auto bands=thirdOctaves(render(e,24000));
       double sum=0;for(int k=0;k<14;++k)sum+=bands[static_cast<std::size_t>(k)];return sum;};
-    for(auto p:{dry(),dryUpright()}){p.mechanics=0;const double free=10*std::log10(body(p,false)/body(p,true));
+    for(auto p:{dry(),dryUpright()}){p.mechanics=0;p.room=0;const double free=10*std::log10(body(p,false)/body(p,true));
       check(free>20,"a top note's body rings on until CC1 mutes it");std::cout<<"top_note_body_db="<<free<<'\n';}
   }
   {

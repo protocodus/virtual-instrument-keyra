@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 0.4.26 LANGUAGES C CXX)
+project(Keyra VERSION 0.4.27 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -326,6 +326,14 @@ if(BUILD_TESTING)
     target_compile_options(KeyraHaloOwnTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
     add_test(NAME Keyra.HaloOwn COMMAND KeyraHaloOwnTests)
 
+    # The recording room's network in the engine, in one test translation
+    # unit.
+    add_executable(KeyraRoomTests Tests/room_tests.cpp)
+    target_include_directories(KeyraRoomTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraRoomTests PRIVATE cxx_std_17)
+    target_compile_options(KeyraRoomTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
+    add_test(NAME Keyra.Room COMMAND KeyraRoomTests)
+
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
     add_test(NAME Keyra.ParameterExtremes COMMAND KeyraParameterExtremesTests)
@@ -437,6 +445,11 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.MeasuredTrebleUnisons
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_treble_unisons.py" --check)
+        # The rooms are the ones their receipt gives, and the receipt is the
+        # current measurement's on the current modal data, split and corpus.
+        add_test(NAME Keyra.MeasuredRoom
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_room.py" --check)
         add_test(NAME Keyra.RateInterpolation
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
@@ -488,6 +501,7 @@ if(BUILD_TESTING)
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
         set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms Keyra.MeasuredGlide
                              Keyra.MeasuredActionNoise Keyra.MeasuredHaloBeats Keyra.MeasuredHaloOwn Keyra.MeasuredTrebleUnisons
+                             Keyra.MeasuredRoom
                              Keyra.RateInterpolation Keyra.ComponentWarmStart
                              Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
                              Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety

@@ -14,6 +14,7 @@
 #include "MeasuredHaloBeats.h"
 #include "MeasuredHaloOwn.h"
 #include "MeasuredTrebleUnisons.h"
+#include "MeasuredRoom.h"
 #include "MeasuredUprightData.h"
 #include "ForteOutput.h"
 #include <algorithm>
@@ -670,6 +671,39 @@ struct NoiseBand {
   double left=0,right=0,leftStep=0,rightStep=0,leftEnd=0,rightEnd=0;
   bool live=false;
 };
+// The room each piano was recorded in (MeasuredRoom.h), by Piano. Between the
+// strikes' partials every recording holds a floor that decays at one rate per
+// band whatever the note, uncorrelated between the microphones: the room.
+// The fitted partials hold it at their own frequencies already, so the room
+// hears only the strike's noise and the board's ring, the rest of what the
+// recordings' rooms heard (Docs/research/room-2026-11-09.md).
+constexpr measured::Room rooms[]{grand::room,upright::room,kawai::room,hamburg::room,newyork::room};
+static_assert(sizeof(rooms)/sizeof(rooms[0])==pianoCount,"a room for every piano");
+// It plays as a feedback delay network (J.-M. Jot and A. Chaigne, "Digital
+// delay networks for designing artificial reverberators", AES 90th
+// Convention, 1991): 16 lines of these lengths, each the first prime at or
+// above it in samples at the engine's rate, so that no two lines' echoes
+// coincide; the 16-point Hadamard matrix mixes their outputs back into them;
+// each line's loss is a first-order shelf that takes the room's decay over
+// one pass; the input enters the lines with these signs and the left and
+// right channels are two of the matrix's orthogonal outputs.
+constexpr int roomLines=16;
+constexpr double roomDelaySeconds[roomLines]{.0113,.0137,.0161,.0187,.0214,.0244,.0276,.0310,
+                                             .0346,.0385,.0426,.0470,.0517,.0566,.0619,.0675};
+constexpr double roomSign[roomLines]{1,-1,1,1,-1,1,-1,-1,1,1,-1,1,-1,1,1,-1};
+// The lines' samples at the highest rate the engine runs at (prepare()),
+// each with room for the primes above its length: no gap between primes
+// under 20000 reaches 64.
+constexpr int roomCapacity=[]{int n=0;for(double seconds:roomDelaySeconds)n+=static_cast<int>(seconds*192000)+64;return n;}();
+// A line's loss: y = b0 x + b1 x[-1] - a1 y[-1].
+struct RoomLoss {double b0=1,b1=0,a1=0;};
+// The orthonormal 16-point Hadamard transform in place (Sylvester's order).
+void hadamard(double* y) noexcept {
+  for(int h=1;h<roomLines;h*=2)
+    for(int i=0;i<roomLines;i+=2*h)
+      for(int j=i;j<i+h;++j){const double a=y[j],b=y[j+h];y[j]=a+b;y[j+h]=a-b;}
+  for(int j=0;j<roomLines;++j)y[j]*=.25;
+}
 struct Voice {
   std::array<Partial,maxPartials> partials{};
   int count=0,note=60,channel=0;
@@ -1369,6 +1403,23 @@ struct Engine::Impl {
   std::array<double,chunk> noiseLeft{},noiseRight{};
   std::uint32_t seed=1;
   bool hissing=false;
+  // The room as built (assemble()), or as a measurement sets it in its place
+  // (setRoomForMeasurement(), while its gain is over 0), and its network at
+  // the engine's rate: each line's length, start in `roomLine` and position,
+  // its loss as heard and the target and step a build changed while the
+  // room sounds glides it by, and its loss's last input and output. Through
+  // a chunk, the mid of what the strings' partials play, what the room hears
+  // and its two outputs. A room whose lines and input have stayed under
+  // 1e-12 for as long as its longest line falls silent and sleeps.
+  measured::Room builtRoom{},measuredRoom{};
+  double roomGain=0;
+  std::array<int,roomLines> roomLength{},roomStart{},roomAt{};
+  std::array<RoomLoss,roomLines> roomLoss{},roomLossTarget{},roomLossStep{};
+  std::array<double,roomLines> roomTap{},roomOut{};
+  std::array<float,roomCapacity> roomLine{};
+  std::array<double,chunk> partialMid{},roomInput{},roomLeft{},roomRight{};
+  int roomGlide=0,roomQuiet=0,roomLongest=0;
+  bool roomSounding=false;
   Parameters parameters{};
   double sampleRate=48000,gain=.7,width=.75,mute=0,mic=0,resonance=.25;
   // The tube's response (MeasuredMicData.h) designed at the engine's rate,
@@ -1474,8 +1525,9 @@ struct Engine::Impl {
   // the build: the undamped strings and the keys' phantom gains by the
   // strings', the body's modes (the pianos' lowest with lowest, those only
   // some have from those alone, fading with their share at a knock) and the
-  // board's noise by the soundboard's, the action's rise by the action's;
-  // and the tube's level by the hammers', which mix the partials' levels.
+  // board's noise and the room by the soundboard's, the action's rise by the
+  // action's; and the tube's level by the hammers', which mix the partials'
+  // levels.
   // Then their sample-rate coefficients follow (prepare()).
   void assemble() noexcept {
     const Build& build=parameters.build;const double ring=std::pow(2.,-static_cast<double>(build.ring));
@@ -1525,6 +1577,10 @@ struct Engine::Impl {
     actionRise=fold(share.action,[&](int p){return static_cast<double>(models[p].actionRise);},pickLog);
     actionDecay=fold(share.action,[&](int p){return static_cast<double>(models[p].actionDecay);},pickLog);
     tubeScaleTarget=fold(share.hammers,[&](int p){return models[p].tubeScale;},pickLog);
+    // The room heard with the soundboard's noise and ring: the soundboard's.
+    const auto room=[&](float measured::Room::* x){
+      return static_cast<float>(fold(share.soundboard,[&](int p){return static_cast<double>(rooms[p].*x);},pickLog));};
+    builtRoom={room(&measured::Room::lowRate),room(&measured::Room::highRate),room(&measured::Room::crossover),room(&measured::Room::gain)};
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)
       coherence[k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].noiseBands[k].coherence);},pick);
@@ -1884,6 +1940,71 @@ struct Engine::Impl {
         band.left+=band.leftStep;band.right+=band.rightStep;
       }
       noiseLeft[i]=l;noiseRight[i]=r;
+    }
+  }
+  // The room's lines at the engine's rate, end to end in `roomLine`.
+  void prepareRoomLines() noexcept {
+    const auto prime=[](int n){for(int k=2;k*k<=n;++k)if(n%k==0)return false;return n>1;};
+    int start=0;roomLongest=0;
+    for(int j=0;j<roomLines;++j){
+      int n=static_cast<int>(std::lround(roomDelaySeconds[j]*sampleRate));
+      while(!prime(n)||std::find(roomLength.begin(),roomLength.begin()+j,n)!=roomLength.begin()+j)++n;
+      roomLength[j]=n;roomStart[j]=start;start+=n;roomLongest=std::max(roomLongest,n);
+    }
+  }
+  // Each line's loss for the room: its gain over one pass of its length
+  // takes the room's low rate at DC and its high rate at Nyquist, through a
+  // bilinear one-pole shelf at the crossover. A room changed while it
+  // sounds glides its losses there over 10 ms, as the board's pickups glide.
+  void prepareRoom(bool glide=false) noexcept {
+    const auto& room=measuredRoom.gain>0?measuredRoom:builtRoom;
+    const double w=std::tan(pi*std::min(static_cast<double>(room.crossover),.45*sampleRate)/sampleRate),a1=(w-1)/(w+1);
+    for(int j=0;j<roomLines;++j){
+      const double pass=roomLength[j]/sampleRate;
+      const double low=std::pow(10.,-room.lowRate*pass/20),high=std::pow(10.,-room.highRate*pass/20);
+      roomLossTarget[j]={.5*(low*(1+a1)+high*(1-a1)),.5*(low*(1+a1)-high*(1-a1)),a1};
+    }
+    roomGain=room.gain;
+    roomGlide=glide&&roomSounding?static_cast<int>(std::lround(.01*sampleRate)):0;
+    if(roomGlide==0){roomLoss=roomLossTarget;return;}
+    for(int j=0;j<roomLines;++j){const auto &from=roomLoss[j],&to=roomLossTarget[j];
+      roomLossStep[j]={(to.b0-from.b0)/roomGlide,(to.b1-from.b1)/roomGlide,(to.a1-from.a1)/roomGlide};}
+  }
+  void silenceRoom() noexcept {
+    std::fill_n(roomLine.begin(),roomStart[roomLines-1]+roomLength[roomLines-1],0.f);
+    roomTap.fill(0);roomOut.fill(0);roomAt.fill(0);
+    roomQuiet=0;roomSounding=false;
+    if(roomGlide>0){roomLoss=roomLossTarget;roomGlide=0;}
+  }
+  // The room through a chunk, from roomInput into roomLeft and roomRight.
+  void playRoom(int frames) noexcept {
+    const double in=roomGain*parameters.room*.25;
+    for(int i=0;i<frames;++i){
+      double y[roomLines],energy=0;
+      for(int j=0;j<roomLines;++j){
+        const double tap=roomLine[roomStart[j]+roomAt[j]];energy+=tap*tap;
+        const auto& loss=roomLoss[j];
+        y[j]=loss.b0*tap+loss.b1*roomTap[j]-loss.a1*roomOut[j];
+        roomTap[j]=tap;roomOut[j]=y[j];
+      }
+      hadamard(y);
+      roomLeft[i]=y[1];roomRight[i]=y[2];
+      const double x=in*roomInput[i];
+      for(int j=0;j<roomLines;++j){
+        roomLine[roomStart[j]+roomAt[j]]=static_cast<float>(y[j]+roomSign[j]*x);
+        if(++roomAt[j]==roomLength[j])roomAt[j]=0;
+      }
+      if(roomGlide>0){
+        if(--roomGlide==0)roomLoss=roomLossTarget;
+        else for(int j=0;j<roomLines;++j){auto& loss=roomLoss[j];const auto& step=roomLossStep[j];
+          loss.b0+=step.b0;loss.b1+=step.b1;loss.a1+=step.a1;}
+      }
+      if(energy>=1e-24||x*x>=1e-24)roomQuiet=0;
+      else if(++roomQuiet>roomLongest){
+        silenceRoom();
+        std::fill(roomLeft.begin()+i+1,roomLeft.begin()+frames,0.);std::fill(roomRight.begin()+i+1,roomRight.begin()+frames,0.);
+        return;
+      }
     }
   }
   void silenceBody() noexcept {
@@ -3190,12 +3311,17 @@ struct Engine::Impl {
           drive[i]=.5f*openBridgeGain*(lane(l4,0)+lane(l4,1)+lane(l4,2)+lane(l4,3)+lane(r4,0)+lane(r4,1)+lane(r4,2)+lane(r4,3));}
       }else for(int i=0;i<frames;++i){mixLeft[i]+=voiceLeft[i];mixRight[i]+=voiceRight[i];}
     }
+    // The room hears the board's ring and the noise: what the mix holds
+    // beyond the partials' mid here, before the rings join it.
+    const bool roomHears=(ringing||rising||actionRinging||hissing)&&roomGain*parameters.room>0;
     if(anyVoice)
       for(int i=0;i<frames;++i){
         const V4 l4=mixLeft[i],r4=mixRight[i];
         openDrive[i]=.5f*openBridgeGain*(lane(l4,0)+lane(l4,1)+lane(l4,2)+lane(l4,3)+lane(r4,0)+lane(r4,1)+lane(r4,2)+lane(r4,3));
+        if(roomHears)partialMid[i]=.5*(static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3)
+                                       +(static_cast<double>(lane(r4,0))+lane(r4,1)+lane(r4,2)+lane(r4,3)));
       }
-    else std::fill_n(openDrive.begin(),frames,0.f);
+    else{std::fill_n(openDrive.begin(),frames,0.f);if(roomHears)std::fill_n(partialMid.begin(),frames,0.);}
     if(ringing){ringBody(ring,frames);ringBody(lateRing,frames);}
     if(rising){ringBody(onset,frames);ringBody(contactOnset,frames);}
     if(actionRinging){ringBody(actionRing,frames);ringBody(actionOnset,frames);}
@@ -3220,6 +3346,12 @@ struct Engine::Impl {
       if(noisy){l+=noiseLeft[i];r+=noiseRight[i];}
       dryLeft[i]=l;dryRight[i]=r;
       haloDrive[i]=haloDriven?static_cast<double>(openDrive[i])*.0025*pedalOpenness:0.;
+      if(roomHears)roomInput[i]=.5*(l+r)-partialMid[i];
+    }
+    const bool roomPlays=roomHears||roomSounding;
+    if(roomPlays){
+      if(!roomHears)std::fill_n(roomInput.begin(),frames,0.);
+      roomSounding=true;playRoom(frames);
     }
     // The undamped strings ring from their strikes (strike()) and, when the
     // sustain pedal lifts the damper bank, from the bridge's motion across
@@ -3253,9 +3385,11 @@ struct Engine::Impl {
       const double l=dryLeft[i],r=dryRight[i];
       const double voiceDrive=static_cast<double>(openDrive[i]);
       // The pickup's own image at the default width; narrower towards mono.
-      const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
-      dryLeft[i]=mid+side;dryRight[i]=mid-side;
+      double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
       openDrive[i]=static_cast<float>(voiceDrive*pedalOpenness+mid*openBridgeScale*(1-pedalOpenness));
+      // The room through the same image; the open strings do not hear it.
+      if(roomPlays){mid+=.5*(roomLeft[i]+roomRight[i]);side+=.5*(roomLeft[i]-roomRight[i])*width/.75;}
+      dryLeft[i]=mid+side;dryRight[i]=mid-side;
       openWidth[i]=width;
     }
     // Feed-forward bridge-to-open-string radiation. The reduced core does not
@@ -3353,13 +3487,14 @@ void Engine::prepare(double sampleRate){
   p.prepareNoise();
   p.output.Prepare(p.sampleRate);
   p.prepareTube();
+  p.prepareRoomLines();p.prepareRoom();
   reset();
 }
 void Engine::reset() noexcept {
   auto& p=*impl;for(auto& voice:p.voices){voice.active=false;voice.count=0;}
   for(auto& channel:p.channels)channel=Channel{};
   p.silenceStrings();
-  p.silenceBody();p.silenceNoise();
+  p.silenceBody();p.silenceNoise();p.silenceRoom();
   // A hard reset starts the current build afresh, even if a live model
   // change had not finished gliding its pickups. Live changes still glide.
   p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
@@ -3379,7 +3514,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   p.prepareSleepingPedals(sustain,sostenuto);
   p.parameters.gain=bounded(input.gain,0,2);p.parameters.brightness=bounded(input.brightness);
   p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);p.parameters.mic=bounded(input.mic);
-  p.parameters.mechanics=bounded(input.mechanics,0,2);
+  p.parameters.mechanics=bounded(input.mechanics,0,2);p.parameters.room=bounded(input.room,0,2);
   // Wrappers combine their 400..480 Hz user range with host master tuning.
   p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
   p.parameters.sustain=sustain;p.parameters.sostenuto=sostenuto;
@@ -3394,7 +3529,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
   if(old.strings!=build.strings||old.hammers!=build.hammers||old.soundboard!=build.soundboard||old.action!=build.action
      ||old.stiffness!=build.stiffness||old.unisons!=build.unisons||old.ring!=build.ring){
     p.share={sharesOf(build.strings),sharesOf(build.hammers),sharesOf(build.soundboard),sharesOf(build.action)};
-    p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();}
+    p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();p.prepareRoom(true);}
   for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
   if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
   // A setting selected before any sound starts is the new initial state,
@@ -3446,7 +3581,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
     bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
     if(!any){
-      p.silenceStrings();p.updateReceiverDampers(1);p.silenceBody();p.silenceNoise();
+      p.silenceStrings();p.updateReceiverDampers(1);p.silenceBody();p.silenceNoise();p.silenceRoom();
       p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();
     }
   }else if(cc==121){
@@ -3475,6 +3610,12 @@ PedalState Engine::pedalState(int channel) const noexcept {
 int Engine::outputLatencySamples() const noexcept {return impl->output.DelaySamples();}
 void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
+void Engine::setRoomForMeasurement(float lowRate,float highRate,float crossover,float gain) noexcept {
+  auto& p=*impl;
+  p.measuredRoom=gain>0?measured::Room{bounded(lowRate,0,1000),bounded(highRate,0,1000),bounded(crossover,20,20000),bounded(gain,0,16)}
+                       :measured::Room{};
+  p.prepareRoom(true);
+}
 float responseVelocity(Piano piano,float velocity) noexcept {
   return static_cast<float>(responseAt(models[static_cast<int>(piano)],127*bounded(velocity)));
 }
@@ -3496,7 +3637,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     p.render(left+done,right+done,n);
     done+=n;p.frame+=static_cast<std::uint64_t>(n);
   }
-  bool any=p.ringing||p.rising||p.actionRinging||p.hissing;
+  bool any=p.ringing||p.rising||p.actionRinging||p.hissing||p.roomSounding;
   for(const auto& voice:p.voices)any=any||voice.active;
   if(!any){
     double residue=std::abs(p.highpassL)+std::abs(p.highpassR);
