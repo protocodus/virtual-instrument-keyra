@@ -42,6 +42,14 @@
 // the Hamamatsu's tube, the Kakegawa Grand, Warm Walnut, Felt Nocturne and
 // Open Strings and Felt Upright's typical playing, to six decimals
 // (Docs/decisions.md, 2026-11-09).
+// In 0.4.29 a key's partials and the board's knock wait for the strike's
+// wave to reach the bridge, so a chord's notes line up differently, the
+// Hamamatsu's output and tube and New York's tube re-pinned to their
+// earlier readings; the owner approved eleven new readings, the loudest
+// chords of the grand's and the Hamburg's tubes and of the Kakegawa Grand,
+// Studio Grand, Warm Walnut, Open Strings, Hamburg Grand and New York Grand,
+// and the typical playing of Studio Grand, Open Strings and Pop Upright, to
+// six decimals (Docs/decisions.md, 2026-11-09).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -50,25 +58,25 @@ struct ApprovedLevel {
 };
 
 inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
-    {"Kakegawa Grand", -9.066835, 0.719836},
-    {"Studio Grand", -10.241775, -0.019715},
-    {"Warm Walnut", -10.950910, -0.104002},
+    {"Kakegawa Grand", -9.066835, 1.408187},
+    {"Studio Grand", -10.171010, 1.234696},
+    {"Warm Walnut", -10.950910, 0.620191},
     {"Felt Nocturne", -18.132439, -5.592784},
-    {"Open Strings", -8.081521, 1.514169},
+    {"Open Strings", -7.970366, 1.934134},
     {"Helsinki Upright", -9.122448, 4.217296},
     {"Felt Upright", -15.589097, -0.127207},
-    {"Pop Upright", -9.214799, 3.904373},
+    {"Pop Upright", -9.306939, 3.904373},
     {"Hamamatsu Grand", -9.012878, 4.003352},
     {"Three Cities", -10.426881, 2.871424},
-    {"Hamburg Grand", -8.953395, 2.404007},
-    {"New York Grand", -9.092756, 3.213257},
+    {"Hamburg Grand", -8.953395, 2.474622},
+    {"New York Grand", -9.092756, 3.322501},
 }};
 
 inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
-    {"grand", -9.068710, 1.222194},
+    {"grand", -9.068710, 1.717973},
     {"upright", -8.993037, 4.328115},
     {"kawai", -9.985854, 3.301832},
-    {"hamburg", -9.172983, 2.196889},
+    {"hamburg", -9.172983, 2.560835},
     {"newyork", -9.020263, 2.115038},
 }};
 } // namespace keyra_test

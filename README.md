@@ -85,8 +85,9 @@ pedal down render in 0.7 % less CPU on the grand, the same on the upright,
 2.1 % more on the Hamamatsu, 1.0 % less on the Hamburg and 0.3 % less on New
 York, on the development machine. The Hamamatsu's output and tube and New
 York's tube are re-pinned to what they read on Reason's meter before. Eleven
-readings then stand past their approved levels: eight loudest chords by 0.07
-to 1.25 VU, and three presets' typical playing by 0.07 to 0.11 VU.
+readings then passed their approved levels, and the owner accepted them: eight
+loudest chords by 0.07 to 1.25 VU, and three presets' typical playing by 0.07
+to 0.11 VU.
 
 ### 0.4.28 — 2026-11-09 — the strike's knock under 400 Hz
 

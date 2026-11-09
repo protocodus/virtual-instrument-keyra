@@ -200,8 +200,8 @@ from −1.06 to +1.34 dB: Studio Grand's 1.34 dB louder, Warm Walnut's, the
 grand's tube's and Kakegawa Grand's 0.7 dB, Helsinki Upright's and Pop
 Upright's 1.06 and 0.77 dB quieter. The Hamamatsu's output and tube scales and
 New York's tube scale are re-pinned to their earlier readings, as in earlier
-rounds. Eleven readings then stand past their approved levels, so
-`Keyra.Levels` fails on them until the owner accepts them or not.
+rounds. Eleven readings then passed their approved levels, and the owner
+accepted them (`Docs/decisions.md`, 2026-11-09).
 
 The 0.4.11 factory audit (`Keyra.FactoryDynamics`), whose floors and limits
 are unchanged, fails as it did on 0.4.28, on 1,134 rows where 0.4.28 failed

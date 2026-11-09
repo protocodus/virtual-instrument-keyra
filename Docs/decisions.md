@@ -3793,8 +3793,7 @@ pianos' own are re-pinned to the readings they held before, as in earlier
 rounds: New York's tube (−8.90 VU) from 1.6122 to 1.5890, the Hamamatsu's
 default sound (−8.92) by its output scale, from 3.5030 to 3.4816, and with
 it the Hamamatsu's tube, which that took from −9.99 to −10.05 VU, from
-1.2253 to 1.2391. Eleven readings then stand past their approved levels, so
-`Keyra.Levels` fails on them until the owner accepts them or not: the
+1.2253 to 1.2391. Eleven readings then stood past their approved levels, the
 loudest chords of the grand's tube 1.717973 VU against its approved
 1.222194, the Hamburg's tube 2.560835 against 2.196889, Kakegawa Grand
 1.408187 against 0.719836, Studio Grand 1.234696 against −0.019715, Warm
@@ -3802,16 +3801,19 @@ Walnut 0.620191 against −0.104002, Open Strings 1.934134 against 1.514169,
 Hamburg Grand 2.474622 against 2.404007 and New York Grand 3.322501 against
 3.213257, and the typical playing of Studio Grand −10.171010 against
 −10.241775, Open Strings −7.970366 against −8.081521 and Pop Upright
-−9.306939 against −9.214799. `Keyra.FactoryDynamics` fails as it did on
-0.4.28, on 1,134 rows (1,038 pairs under their step floors and 96 chords
-past its maximum levels) where 0.4.28 failed on 1,019 (992 and 27). Of the
-372 new rows, 289 pairs stand a median 0.095 dB under their floors, 4.875 dB
-at most, the expanded panel's Hamamatsu Grand through the tube, A1, E2, A2,
-C3, E3, A3 from velocity 64 to 80, whose chord at 64 plays 5.6 dB louder
-than on 0.4.28; 83 chords pass their maximum levels by a median 0.43 dB
-(2.52 at most), 60 of them the Kakegawa Grand's; 257 of 0.4.28's rows are
-gone. Over the audit's 2,120 pairs the median step moves −0.005 dB and the
-median chord +0.006 dB. Its floors and limits are unchanged.
+−9.306939 against −9.214799. Asked whether to accept them and merge 0.4.29,
+the owner chose to: `Tests/Fixtures/dynamics/ApprovedLevels.h` now holds all
+eleven to six decimals, and `Keyra.Levels` passes. `Keyra.FactoryDynamics`
+fails as it did on 0.4.28, on 1,134 rows (1,038 pairs under their step
+floors and 96 chords past its maximum levels) where 0.4.28 failed on 1,019
+(992 and 27). Of the 372 new rows, 289 pairs stand a median 0.095 dB under
+their floors, 4.875 dB at most, the expanded panel's Hamamatsu Grand through
+the tube, A1, E2, A2, C3, E3, A3 from velocity 64 to 80, whose chord at 64
+plays 5.6 dB louder than on 0.4.28; 83 chords pass their maximum levels by a
+median 0.43 dB (2.52 at most), 60 of them the Kakegawa Grand's; 257 of
+0.4.28's rows are gone. Over the audit's 2,120 pairs the median step moves
+−0.005 dB and the median chord +0.006 dB. Its floors and limits are
+unchanged.
 
 Two `Keyra.Engine` checks read chords where the change exposed their
 fixtures, both corrected beside them. The check that a chord is its notes'
