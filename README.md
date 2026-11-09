@@ -27,7 +27,7 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -1.5 dBFS |
 | 6 | Helsinki Upright | [06-helsinki-upright.wav](Docs/audio/06-helsinki-upright.wav) | 11.6 s | -1.5 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
-| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -4.9 dBFS |
+| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -3.8 dBFS |
 | 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -1.5 dBFS |
 
 <!-- audio-demos-end -->
@@ -820,7 +820,7 @@ transition; the measured sound and interpolation are unchanged
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 86](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42603006645/artifacts/13671689801)**, built from [`b81b1d71d973`](https://github.com/protocodus/virtual-instrument-keyra/commit/b81b1d71d9734de29672acd41dd19c91efa91bc3). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 87](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42624775200/artifacts/13678433728)**, built from [`8f008da3f9f7`](https://github.com/protocodus/virtual-instrument-keyra/commit/8f008da3f9f7884997aa37c18f224487bca96344). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
