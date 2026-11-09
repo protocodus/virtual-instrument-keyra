@@ -40,6 +40,16 @@ library normalised its takes, and each library's recording term, a level
 and a tone curve over octaves per microphone, which the network's answer
 passes through before it is compared.
 
+Two settings, both on since the third run, keep what is heard at the strike.
+With `cap` no lane decays faster than the fits' fastest at the key
+(lane_caps), the bound the table writer puts on a key's lanes: the first run
+decayed 31 to 54% of its lanes faster than that, which the writer then had
+to silence. With `attack_weight` each partial's energy in each channel over
+its first 100 ms (ATTACK) is compared with the measured as well, in log: the
+frames' loss weighs every frame against its own local level, and the first
+run struck 1.4 to 2.8 dB quiet over those 100 ms at the train takes even
+before any lane was silenced.
+
 One knob sets how sharply the answer may change from one key to the next: a
 penalty on its second difference over the 88 keys, never across a piano's
 bass break (its first plain-string key, "tenor" in the settings). Cross-
@@ -82,6 +92,8 @@ kept. The table writer writes it for the engine to apply to its blend
   python3 Tools/keyboard_network.py engine             # today's engine at the train and dev takes
   python3 Tools/keyboard_network.py cv --run alone --alone   # cross-validate the five alone
   python3 Tools/keyboard_network.py fit --run alone --alone --arch small   # final fits, dev backtest
+  python3 Tools/keyboard_network.py grid --run capped --alone --arch large medium small --knob 10 1000
+                                                       # final fits at each, for the engine's score to choose
   python3 Tools/keyboard_network.py report --run alone       # out/network/alone/report.md
   python3 Tools/keyboard_network.py correct --run correct --arch medium   # corrections to the blend, every knob
 
@@ -130,6 +142,25 @@ KNOTS = 2.0 ** np.arange(5, 15)   # Hz: the recording terms' tone curves, one po
 LOG_RATE = (math.log(pa.SLOWEST_RATE), math.log(500.0))   # fit_partial_layers' bounds
 LOG_RISE = (math.log(2e-4), math.log(.5))
 NULL = .01             # the floor under a frame's power, of its local level: a beat's nulls count to -20 dB
+# The strike's term (`attack_weight` in the settings): each partial's energy
+# in each channel over these seconds after contact, against the measured, in
+# log. The frames' loss weighs every frame against its own local level, so
+# the strike's loud frames count no more than the quiet ones after them: a
+# partial 2 dB short over its first 100 ms, 52 of the Hamburg's 300 frames
+# per series, adds 0.04 to a series misfit of about 5.
+ATTACK = (0.0, .1)
+# The lane cap (`cap` in the settings): no lane decays faster than the fits'
+# fastest at the key (lane_caps). Through the fitter's six periods a lane
+# that falls within milliseconds costs the frames' loss little, and the
+# first run's network decayed the Hamburg's upper partials' fastest lanes at
+# 150 to 410/s where the fits' fastest median 9 to 25/s; played, those lanes
+# clicked, so the table writer silences them, and the keys between struck
+# 2.3 dB weaker than the blend over their first 100 ms at velocity 80
+# (Docs/decisions.md, 2026-11-05). A soft minimum, so a lane under the cap
+# keeps its gradient: at the cap it decays at e^(-ln 2 / CAP_SHARPNESS), 0.84,
+# of the cap's rate.
+CAP_ORDERS = 160       # the partials the caps hold: every order measured, the highest last
+CAP_SHARPNESS = 4.0
 # How large a step from one key to the next counts as one unit of the knob's
 # penalty, per figure: the second difference over three keys, in these units.
 # The lanes' offsets count in cents of their partial: in hertz the upper
@@ -359,6 +390,41 @@ def mlp(n_in, width, depth, n_out=None):
     return torch.nn.Sequential(*layers)
 
 
+def lane_caps(pianos):
+    """The fastest decay, in log 1/s, any lane of each piano may take at each
+    key (21 to 108) and order (1 to CAP_ORDERS): the fastest lane the fit at
+    a recorded pitch holds at the order, and at a key between two recorded
+    pitches the faster of theirs, as write_network_tables.py bounds a key's
+    lanes. An order a fit does not hold takes the fit's caps at the orders
+    either side of it in log; a key outside the recorded pitches, the nearest
+    pitch's; a piano with no fits, the fitter's bound."""
+    caps = np.full((len(pianos), len(KEYS), CAP_ORDERS), LOG_RATE[1])
+    every = np.arange(1, CAP_ORDERS + 1)
+    for i, name in enumerate(pianos):
+        if name not in ENGINE_PIANOS:
+            continue
+        fits = []
+        for a in header_of(name)['anchors']:
+            held = {q['order']: math.log(max(L['rate'] for L in q['lanes'])) for q in a['partials']}
+            orders = sorted(held)
+            fits.append((a['note'], held, np.interp(every, orders, [held[o] for o in orders])))
+        notes = [f[0] for f in fits]
+        for k, note in enumerate(KEYS):
+            j = int(np.searchsorted(notes, note))
+            if j < len(notes) and notes[j] == note:
+                row = fits[j][2]
+            elif j == 0 or j == len(notes):
+                row = fits[min(j, len(notes) - 1)][2]
+            else:
+                (_, ha, ra), (_, hb, rb) = fits[j - 1], fits[j]
+                row = np.maximum(ra, rb)
+                for o in set(ha) ^ set(hb):   # held by one alone: the writer bounds it by that one's
+                    if o <= CAP_ORDERS:
+                        row[o - 1] = ha.get(o, hb.get(o))
+            caps[i, k] = np.minimum(row, LOG_RATE[1])
+    return torch.from_numpy(caps)
+
+
 def unit_vectors(v):
     """Complex unit vectors from pairs of real outputs (..., 2k) -> (..., k)."""
     re, im = v[..., 0::2], v[..., 1::2]
@@ -370,12 +436,17 @@ class Net(torch.nn.Module):
     """The keyboard network: a key trunk (f1 and B), a string trunk (the partial's lanes, from key and partial) and a strike
     trunk (the lanes' levels and phases and the partial's rise, from the
     string trunk and the layer level), each piano's code, and each library's
-    recording term."""
+    recording term. With `caps` (lane_caps) no lane decays faster than its
+    key's cap."""
 
-    def __init__(self, pianos, breaks, libraries, level_slots, arch):
+    def __init__(self, pianos, breaks, libraries, level_slots, arch, caps=None):
         super().__init__()
         self.pianos, self.arch = list(pianos), dict(arch)
         self.register_buffer('breaks', torch.tensor(breaks, dtype=torch.float64).reshape(len(pianos), -1))
+        if caps is None:
+            self.caps = None
+        else:
+            self.register_buffer('caps', caps.to(torch.float64))
         n_key = 1 + 2 * arch['fourier'] + self.breaks.shape[1] + arch['code']
         # The same start whatever ran before in the process: a worker trains
         # several entries in turn, and each must start as it would alone.
@@ -428,7 +499,12 @@ class Net(torch.nn.Module):
         rates = [slow]
         for j in (2, 1, 0):
             rates.insert(0, rates[0] + torch.nn.functional.softplus(st[:, j]))
-        log_rate = hi - torch.nn.functional.softplus(hi - torch.stack(rates, 1))
+        rates = torch.stack(rates, 1)
+        if self.caps is None:
+            log_rate = hi - torch.nn.functional.softplus(hi - rates)
+        else:
+            cap = self.lane_cap(piano, note, order)[:, None]
+            log_rate = cap - torch.nn.functional.softplus(CAP_SHARPNESS * (cap - rates)) / CAP_SHARPNESS
         et = 440 * 2 ** ((note - 69) / 12)
         span = torch.maximum(torch.clamp(.2 * order, min=2.5), pa.UNISON_REACH * order * et)
         # Every output moves about one unit of its own scale for a unit of
@@ -438,6 +514,12 @@ class Net(torch.nn.Module):
                 'theta': (math.pi / 2) * torch.sigmoid(st[:, 8:12]), 'lag': unit_vectors(st[:, 12:20]),
                 'cents': 10 * st[:, 20], 'level_db': 20 * sk[:, :4], 'phase': unit_vectors(sk[:, 4:12]),
                 'log_rise': LOG_RISE[0] + (LOG_RISE[1] - LOG_RISE[0]) * torch.sigmoid(sk[:, 12])}
+
+    def lane_cap(self, piano, note, order):
+        """The cap (log 1/s) at each row's key and order."""
+        key = torch.clamp(torch.round(note).long() - int(KEYS[0]), 0, len(KEYS) - 1)
+        index = torch.clamp(torch.round(order).long() - 1, 0, self.caps.shape[2] - 1)
+        return self.caps[piano, key, index]
 
     def recording(self, library, hz):
         """Each library's recording term at `hz`, per channel (rows x 2)."""
@@ -586,6 +668,32 @@ def series_misfit(b, r):
     return torch.zeros(len(b['fd'])).index_add(0, b['sid'], torch.mean(r ** 2, 1)) / b['count']
 
 
+def attack_ratio(b, pw):
+    """Each series' energy in each channel over ATTACK, the predicted frames
+    pw (through the frames' weights, as predicted_frames gives them) over the
+    measured, in natural log, each floored at NULL of the measured mean over
+    the two channels; and which series ATTACK holds a frame of. A take whose
+    library normalised its takes holds none: its level is the recording's."""
+    t, sid, n = b['t'], b['sid'], len(b['fd'])
+    inside = (t >= ATTACK[0]) & (t < ATTACK[1])
+    weight = torch.where(inside, frame_spans(b) / b['w'] ** 2, torch.zeros_like(t))[:, None]
+
+    def energy(z):
+        return torch.zeros((n, 2)).index_add(0, sid, (z.real ** 2 + z.imag ** 2) * weight)
+    P, M = energy(pw), energy(b['zw'])
+    held = (torch.zeros(n).index_add(0, sid, inside.to(t.dtype)) > 0) & ~b['normalised']
+    floor = NULL * M.mean(1, keepdim=True)
+    floor = torch.where(floor > 0, floor, torch.ones_like(floor))
+    return torch.log(P + floor) - torch.log(M + floor), held
+
+
+def attack_misfit(b, pw):
+    """The strike's term: each series' mean squared log energy ratio over
+    ATTACK over its channels, none where ATTACK holds no frame of it."""
+    r, held = attack_ratio(b, pw)
+    return torch.mean(r ** 2, 1) * held.to(r.dtype)
+
+
 def misfit(b, S, C):
     """Each series' misfit as fit_partial_layers weighs it, with its phase
     in each channel free and, where its library normalised its takes, its
@@ -706,7 +814,8 @@ def roughness(net, gen, pianos, orders=4):
 
 def make_net(config, pianos, names, data, arch):
     breaks = [[config['pianos'][p]['tenor']] for p in pianos]
-    return Net(pianos, breaks, names, level_slots(names, data), config['architectures'][arch])
+    caps = lane_caps(pianos) if config['training'].get('cap') else None
+    return Net(pianos, breaks, names, level_slots(names, data), config['architectures'][arch], caps)
 
 
 def units_of(data, names, held=None, fold_only=False):
@@ -725,18 +834,26 @@ def units_of(data, names, held=None, fold_only=False):
     return out
 
 
-def loss_of(net, units, weights, tune_weight):
+def loss_of(net, units, weights, tune_weight, attack_weight=0.0):
     """The training loss on a batch of units: each library's mean envelope
-    misfit (a correction's power misfit) over its series, averaged with the
+    misfit (a correction's power misfit) over its series and, at
+    `attack_weight`, its mean strike's term (a network's), averaged with the
     libraries' weights, and the tuning term."""
     b = batch_of(units)
     S, C, cents = network_prediction(net, b)
-    per = (power_misfit if isinstance(net, Correction) else envelope_misfit)(b, S, C)
+    strike = torch.zeros(len(b['fd']))
+    if isinstance(net, Correction):
+        per = power_misfit(b, S, C)
+    else:
+        pw = predicted_frames(b, S, C)
+        per = series_misfit(b, power_ratio(b, pw))
+        if attack_weight:
+            strike = attack_misfit(b, pw)
     libs = b['library']
     total, weight = 0.0, 0.0
     for li in torch.unique(libs).tolist():
         rows = libs == li
-        total = total + weights[li] * per[rows].mean()
+        total = total + weights[li] * (per[rows].mean() + attack_weight * strike[rows].mean())
         weight += weights[li]
     tune = torch.mean(torch.nn.functional.huber_loss(cents, torch.zeros_like(cents), delta=1.0, reduction='none'))
     return total / weight + tune_weight * tune, per, cents
@@ -762,7 +879,7 @@ def train(net, units, weights, settings, knob, seed, params=None, steps=None, lr
             pick = gen.choice(len(units[name]), size=min(settings['units_per_library'], len(units[name])),
                               replace=False)
             batch.extend(units[name][k] for k in pick)
-        loss, per, cents = loss_of(net, batch, weights, settings['tune_weight'])
+        loss, per, cents = loss_of(net, batch, weights, settings['tune_weight'], settings.get('attack_weight', 0.0))
         rough = roughness(net, gen, pianos) if knob > 0 else torch.zeros(())
         objective = loss + knob * rough
         if isinstance(net, Net):
@@ -800,17 +917,26 @@ def batches(units, chunk):
 
 
 def scores_of(predictions):
-    """The scores of `score` from (S, C, batch) triples."""
-    env, rel, m, zz = [], [], 0.0, 0.0
+    """The scores of `score` from (S, C, batch) triples, and the strike's
+    energy over ATTACK: its rms error and its mean (dB; below zero the
+    prediction strikes quieter than measured)."""
+    env, rel, m, zz, strike = [], [], 0.0, 0.0, []
     for S, C, b in predictions:
-        env.append(envelope_misfit(b, S, C))
+        pw = predicted_frames(b, S, C)
+        env.append(series_misfit(b, power_ratio(b, pw)))
         _, r = misfit(b, S, C)
         rel.append(r)
         m += float(torch.sum(r * b['zz']))
         zz += float(torch.sum(b['zz']))
-    env, rel = torch.cat(env), torch.cat(rel)
-    return {'envelope': float(env.mean()), 'level_db': decibels(float(env.mean())), 'pooled': m / zz,
-            'median': float(torch.median(rel)), 'series': len(env)}
+        a, held = attack_ratio(b, pw)
+        strike.append(a[held])
+    env, rel, strike = torch.cat(env), torch.cat(rel), torch.cat(strike)
+    out = {'envelope': float(env.mean()), 'level_db': decibels(float(env.mean())), 'pooled': m / zz,
+           'median': float(torch.median(rel)), 'series': len(env)}
+    if len(strike):
+        out.update(attack_db=decibels(float(torch.mean(strike ** 2))),
+                   attack_bias_db=10 / math.log(10) * float(strike.mean()))
+    return out
 
 
 def fine_tune(net, data, names, piano, units, weights, settings, knob, seed, depth):
@@ -1070,6 +1196,37 @@ def final_fit(config, run, alone, arch, workers=1, threads=1, log=print):
     run_jobs(config, alone, workers, threads, fit_setting, jobs, done)
     path.write_text(json.dumps(receipt, indent=1, sort_keys=True))
     return receipt
+
+
+def fit_grid(config, run, alone, archs, knobs, depth, workers=1, threads=1, log=print):
+    """Final fits at every architecture and knob given, without
+    cross-validation, each Keyra piano fine-tuned at `depth`, for the
+    engine's score to choose between: the weights <arch>-<knob>-<piano>.npz
+    (Tools/write_network_tables.py --setting <arch>-<knob>) and in grid.json
+    each fit's train and dev scores in closed form. Fits finished with the
+    same settings are kept."""
+    folder = run_folder(run, alone)
+    path = folder / 'grid.json'
+    results = json.loads(path.read_text()) if path.exists() else {}
+    jobs, tags = [], {}
+    for arch in archs:
+        for knob in knobs:
+            setting = f'{arch}-{knob:g}'
+            tags[setting] = settings_hash(config, {'alone': alone, 'arch': arch, 'knob': knob, 'depth': depth})
+            if results.get(setting, {}).get('settings') != tags[setting]:
+                jobs.append((arch, setting, knob, {n: depth for n in config['libraries']}, str(folder),
+                             str(folder / f'logs/fit-{setting}.log')))
+    log(f'{run}: {len(jobs)} final fits to train, {workers} at a time')
+
+    def done(job, fits):
+        setting = job[1]
+        fits['settings'] = tags[setting]
+        results[setting] = fits
+        path.write_text(json.dumps(results, indent=1, sort_keys=True))
+        log(f'{run}: {setting} fitted in {fits["seconds"]} s; dev takes, level error ' + ', '.join(
+            f'{p} {f["dev"]["level_db"]:.2f} dB' for p, f in fits['pianos'].items() if f['dev']))
+    run_jobs(config, alone, workers, threads, fit_setting, jobs, done)
+    return results
 
 
 # --- today's tables, and the engine ----------------------------------------
@@ -2011,8 +2168,8 @@ def write_report(config, run):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('stage', choices=['all', 'measure', 'check', 'baseline', 'engine', 'cv', 'fit', 'report',
-                                          'correct'])
+    parser.add_argument('stage', choices=['all', 'measure', 'check', 'baseline', 'engine', 'cv', 'fit', 'grid',
+                                          'report', 'correct'])
     parser.add_argument('--config', default=str(CONFIG))
     parser.add_argument('--run', help='the run folder under out/network')
     parser.add_argument('--alone', action='store_true', help='the five pianos alone, no base library')
@@ -2020,6 +2177,8 @@ def main():
                                                   'the one cross-validation found best)')
     parser.add_argument('--knob', nargs='+', type=float, help='knob values (default: the settings\')')
     parser.add_argument('--folds', nargs='+', type=int, help='folds to run (default: all)')
+    parser.add_argument('--depth', default='last', choices=['none', 'code', 'last'],
+                        help='for grid: how deep each Keyra piano is fine-tuned')
     parser.add_argument('--workers', type=int, default=4, help='processes measuring, rendering or training at once')
     parser.add_argument('--threads', type=int, default=1, help='PyTorch threads per training process')
     parser.add_argument('--renderer', default=str(ROOT / 'build-dsp/keyra_render'))
@@ -2052,6 +2211,8 @@ def main():
             results = json.loads((RUNS / args.run / 'cv.json').read_text())
             for arch in args.arch or [best_arch(config, results, min(config['knobs']))]:
                 final_fit(config, args.run, args.alone, arch, args.workers, args.threads)
+        elif args.stage == 'grid':
+            fit_grid(config, args.run, args.alone, archs, knobs, args.depth, args.workers, args.threads)
         elif args.stage == 'report':
             results = json.loads((RUNS / args.run / 'cv.json').read_text())
             print_summary(*summarise(config, results, archs, sorted(knobs)))

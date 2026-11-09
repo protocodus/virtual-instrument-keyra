@@ -70,12 +70,14 @@ levels between the fast lanes and the slow (dB), which the engine applies to
 the blend, keeping each channel's power over 50 to 750 ms where the blend
 puts it. A piano takes the network's partials or the correction, not both.
 
-Its defaults write the table that ships (WEIGHTS, SHIPPED, CORRECTION and
+Its defaults write the table that ships (WEIGHTS, SHIPPED, SETTING, CORRECTION and
 CORRECTED below):
 
     python3 -I Tools/write_network_tables.py
     python3 -I Tools/write_network_tables.py --check   # is the header what it writes?
     python3 -I Tools/write_network_tables.py --weights out/network/full --pianos grand hamburg --output <file>
+    python3 -I Tools/write_network_tables.py --weights out/network/capped --setting medium-10 kawai=large-1000 \
+        --pianos kawai hamburg --output <file>
     python3 -I Tools/write_network_tables.py --pianos --corrections out/network/correct/correction-medium-10.npz \
         --corrected hamburg newyork --output <file>
 """
@@ -98,22 +100,30 @@ import piano_analysis as pa  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 HEADER = ROOT / 'Source/DSP/MeasuredNetworkKeys.h'
-WEIGHTS = ROOT / 'Docs/research/keyboard-network-2026-11-04'   # the run whose tables ship
-BASELINE = WEIGHTS / 'baseline.json'
+WEIGHTS = ROOT / 'Docs/research/keyboard-network-2026-11-06'   # the run whose tables ship
+BASELINE = ROOT / 'Docs/research/keyboard-network-2026-11-04/baseline.json'   # the fits' channel gains
 PIANOS = kn.ENGINE_PIANOS
-# The pianos that play the network between their recorded pitches: those whose
-# dev takes it brought closer to their recordings both in the engine
-# (keyboard_network.py engine, the level error) and on most measures of
-# Tools/benchmark_recordings.py (Docs/decisions.md, 2026-11-05). With the first
-# run's tables the Hamburg's dev takes stand 9.38 dB off in the engine where
-# blending leaves them 11.04, and the benchmark has them closer on 7 of its 12
-# measures. The grand's stand 7.73 against 7.79, but the benchmark has them
-# further off on 6 measures and closer on 5, 8 measures past a tolerance;
-# the upright's, the Kawai's and New York's stand further off than blending
-# (9.94 against 9.56, 11.13 against 10.56 and 12.36 against 11.65). The second
-# run's tables leave the Hamburg's 10.12 off and the others' 7.80, 9.86, 12.44
-# and 12.13.
-SHIPPED = ['hamburg']
+# The pianos that play the network between their recorded pitches, each at
+# its own setting of the capped run (keyboard_network.py grid: each lane's
+# decay capped, the attack weighed): those whose dev takes it brings closer
+# to their recordings than 0.4.25 did (the first run's network on the
+# Hamburg, blending on the Kawai and New York) on most of the 12 measures of
+# Tools/benchmark_recordings.py, with the changes, each in units of
+# Tools/compare_benchmarks.py's tolerance, summing below zero; at the setting
+# whose sum is lowest of those the engine's tests pass (Docs/decisions.md,
+# 2026-11-06). The Kawai's 23 dev takes come closer on 10 measures at the
+# medium network and knob 1000 (tuning 0.61 cents, rise 0.48 ms, decay
+# 0.41 dB/s, envelope 0.27 dB, partial levels 0.22 dB), further on stereo
+# balance (0.33 dB); the Hamburg's 8 on 8 at the medium and knob 10 (noise
+# 1.35 dB, partial levels 0.76 dB, decay 0.72 dB/s, rise 0.69 ms), further on
+# tuning (1.62 cents) and level (0.99 dB), where the large network at knob 10
+# sums lower but leaves its sustain pedal no bloom on a held C4 (-0.02 dB,
+# Tests/engine_tests.cpp asks 0.6 to 5); New York's 17 on 7 at the medium and
+# 1000 (tuning 0.82 cents), further on coherence (0.033) and envelope
+# (0.28 dB), about even. No setting brings the grand's or the upright's
+# closer on more than 5 measures than their corrections.
+SHIPPED = ['hamburg', 'kawai', 'newyork']
+SETTING = ['hamburg=medium-10', 'kawai=medium-1000', 'newyork=medium-1000']
 # The pianos whose keys between recorded pitches above the bass break blend
 # them with the correction's departure applied (keyboard_network.py correct),
 # and the correction they take it from: those whose dev takes it brought
@@ -140,7 +150,7 @@ def load_net(path, names):
         state = {k: torch.from_numpy(f[k]) for k in f.files if k != 'meta'}
     if state['gain'].shape[0] != len(names):
         raise SystemExit(f'{path}: {state["gain"].shape[0]} libraries, the settings give {len(names)}')
-    net = kn.Net(meta['pianos'], state['breaks'].tolist(), names, meta['level_slots'], meta['arch'])
+    net = kn.Net(meta['pianos'], state['breaks'].tolist(), names, meta['level_slots'], meta['arch'], state.get('caps'))
     net.load_state_dict(state)
     return net.eval(), meta
 
@@ -452,7 +462,9 @@ def header(written, sources, corrected=None, correction=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--weights', default=str(WEIGHTS), help='a keyboard network run folder holding <setting>-<piano>.npz')
-    parser.add_argument('--setting', default='character', choices=['character', 'smooth'])
+    parser.add_argument('--setting', nargs='+', default=SETTING,
+                        help='the weights\' setting: character or smooth (cross-validation\'s), or <arch>-<knob> (a grid\'s), '
+                             'for every piano written; <piano>=<setting> gives one piano its own')
     parser.add_argument('--pianos', nargs='*', default=SHIPPED, choices=PIANOS,
                         help='pianos to write; the rest, or all with none named, blend their recorded pitches')
     parser.add_argument('--corrections', default=CORRECTION and str(CORRECTION),
@@ -469,9 +481,16 @@ def main():
     alone = json.loads((weights / 'run.json').read_text()).get('alone', False)
     names = [n for n, i in config['libraries'].items() if i.get('keyra') or not alone]
     baseline = json.loads(Path(args.baseline).read_text())
+    every = [s for s in args.setting if '=' not in s]
+    own = dict(s.split('=', 1) for s in args.setting if '=' in s)
+    if len(every) > 1 or not set(own) <= set(args.pianos):
+        raise SystemExit('--setting: at most one for every piano, and <piano>=<setting> only for pianos written')
     written, sources = {}, []
     for name in args.pianos:
-        path = weights / f'{args.setting}-{name}.npz'
+        setting = own.get(name) or (every and every[0])
+        if not setting:
+            raise SystemExit(f'{name}: no --setting')
+        path = weights / f'{setting}-{name}.npz'
         net, meta = load_net(path, names)
         gain = 10 ** (np.asarray(baseline[name]['gain_db']) / 20)
         written[name] = piano_keys(name, net, meta['pianos'].index(name), names.index(name), gain, print)

@@ -7,21 +7,22 @@ and renderer are exercised. No legacy mode is added to production.
 
 Exact controls compare launched states at every stored anchor/edge and native
 layer for soft0/.5/1, and every keyboard key/native layer at soft0. Short full
-renders check selected anchor and neutral-pedal controls. Five previously
-frozen rank crossings use a fixed carrier and exact layer, avoiding ordinary
-pitch change and the unrelated nearest-anchor phase switch at t=.5.
+renders check selected anchor and neutral-pedal controls. The frozen rank
+crossings of the two pianos that still blend between recorded pitches use a
+fixed carrier and exact layer, avoiding ordinary pitch change and the
+unrelated nearest-anchor phase switch at t=.5.
 
 Continuity is a numerical contraction test, not an audibility threshold:
 shrinking coordinate separation1000-fold must reduce normalized waveform L2
 difference at least10-fold, plus a declared float allowance of4*chunk*epsilon.
 That allowance is not a proven error bound under arbitrary cancellation or
 render lengths. Every measured distance and the allowance are printed. The
-legacy mutation must fail this SAME assertion in the three selected grands;
-the upright's distinct action remains a passing negative control. The
-Hamburg grand has no crossing to select: its keys between recorded pitches
-play the keyboard network's partials (MeasuredNetworkKeys.h). No claim
-covers every interval or mixed-string builds, whose cross-piano pairing still
-uses sorted rank. No current PCM hashes are stored as fixtures.
+legacy mutation must fail this SAME assertion in the selected grand; the
+upright's distinct action remains a passing negative control. The Kawai,
+Hamburg and New York grands have no crossing to select: their keys between
+recorded pitches play the keyboard network's partials (MeasuredNetworkKeys.h).
+No claim covers every interval or mixed-string builds, whose cross-piano
+pairing still uses sorted rank. No current PCM hashes are stored as fixtures.
 
 For the staged candidate:
 KEYRA_SOFT_TEST_DSP=/path/to/candidate/Source/DSP python3 this_file.py -v
@@ -119,12 +120,12 @@ struct Crossing{int model,left,right,order;double velocity,root;};
 // .95958703206468776}, left in 0.4.22: its keys between recorded pitches
 // play the keyboard network's partials since, the same at every pitch
 // coordinate, so neither multiplier meets a crossing there and the legacy
-// one no longer fails.
+// one no longer fails. The Kawai's, {2,99,105,1,27,.001117318313440504}, and
+// New York's, {4,99,104,1,117,.0067451579922411208}, left in 0.4.26 for the
+// same reason: their keys between recorded pitches play the network since.
 constexpr Crossing cases[]{
  {0,102,105,1,14,.038431191265448056},
- {1,68,70,1,15,.075080330333073431},
- {2,99,105,1,27,.001117318313440504},
- {4,99,104,1,117,.0067451579922411208}
+ {1,68,70,1,15,.075080330333073431}
 };
 void continuity(){
  keyra::Engine engine(sr);std::size_t rejectedLegacy=0,negativeControls=0;
@@ -152,7 +153,7 @@ void continuity(){
    else {require(!legacyPass,"legacy rank mutation escaped continuity assertion: "+context(c.model,note,c.velocity,soft));++rejectedLegacy;}
   }
  }
- require(rejectedLegacy==3&&negativeControls==1,"mutation/negative-control coverage missing");
+ require(rejectedLegacy==1&&negativeControls==1,"mutation/negative-control coverage missing");
  std::cout<<"legacy_grand_mutations_rejected="<<rejectedLegacy<<" upright_negative_controls="<<negativeControls<<" declared_numerical_allowance="<<allowance<<'\n';
 }
 int main(int argc,char**argv){try{std::cout<<std::setprecision(17);require(argc==2,"mode required");if(std::string(argv[1])=="identity")identity();else if(std::string(argv[1])=="continuity")continuity();else throw std::runtime_error("unknown mode");return 0;}catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

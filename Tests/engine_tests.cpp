@@ -143,6 +143,20 @@ std::vector<double> partialTrack(const Audio& audio,double hz){
     track.push_back(10*std::log10(re*re+im*im+1e-300));}
   return track;
 }
+// The coherence between the channels of the partial at `hz` over 50 ms to
+// 1.5 s after contact: each channel demodulated at `hz` through 10 ms Hann
+// frames, the frames' cross power summed against their powers. A turn common
+// to both channels, as a slightly wrong `hz` gives, leaves it unchanged.
+double fundamentalCoherence(const Audio& audio,double hz){
+  constexpr double pi=3.14159265358979323846;constexpr std::size_t length=480;
+  std::complex<double> cross{};double left=0,right=0;
+  for(std::size_t start=2400;start+length<72000&&2*(start+length)<=audio.size();start+=length){std::complex<double> l{},r{};
+    for(std::size_t i=0;i<length;++i){
+      const auto turn=std::polar(.5-.5*std::cos(2*pi*static_cast<double>(i)/(length-1)),-2*pi*hz*static_cast<double>(start+i)/48000);
+      l+=static_cast<double>(audio[2*(start+i)])*turn;r+=static_cast<double>(audio[2*(start+i)+1])*turn;}
+    cross+=l*std::conj(r);left+=std::norm(l);right+=std::norm(r);}
+  return std::abs(cross)/std::sqrt(left*right);
+}
 // Each third-octave band's power over the whole render, both channels: band
 // k is centred on 20 * 2^(k/3) Hz.
 std::array<double,31> thirdOctaves(const Audio& audio){
@@ -890,13 +904,14 @@ int main(int argc,char** argv){
     // so that no beat moves it, C4's fundamental falls 20 dB from its peak in
     // half the time at -1 and twice the time at 1, within 10 % (the onset and
     // the body are not scaled).
-    // It renders 5 s: the Hamburg grand's C4 at Ring 1 falls 20 dB after 3 s,
-    // so a 3 s window was too short. The 10 % bound is unchanged.
+    // It renders 7 s: New York's C4, which the keyboard network plays since
+    // 0.4.26, falls 20 dB after 3 s and at Ring 1 after 6 s, so the 5 s
+    // window was too short. The 10 % bound is unchanged.
     for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork}){
       const auto fall=[&](float ring){
         auto p=dry();p.build=keyra::measuredBuild(piano);p.build.unisons=-1;p.build.ring=ring;
         keyra::Engine e;e.setParameters(p);e.setSteadyStrikesForMeasurement(true);e.noteOn(60,.7f);
-        const auto track=partialTrack(render(e,240000),keyPitch(60));
+        const auto track=partialTrack(render(e,336000),keyPitch(60));
         const auto peak=std::max_element(track.begin(),track.end());
         const auto fallen=std::find_if(peak,track.end(),[&](double x){return x<=*peak-20;});
         return fallen==track.end()?0.:.01*static_cast<double>(fallen-track.begin());};
@@ -920,6 +935,21 @@ int main(int argc,char** argv){
     const double built=rebound(0),pure=rebound(-1);
     check(built>5&&pure<.5,"pure unisons take out the beats the unison strings make");
     std::cout<<"c4_fundamental_rebound_db built="<<built<<" pure="<<pure<<'\n';
+  }
+  {
+    // The strings beside the treble's series (MeasuredTrebleUnisons.h) ring
+    // from their own places between the microphones: struck alone at
+    // velocity 90, the grand's F#7 and A7 fundamentals keep under 0.85 of
+    // their coherence between channels (fundamentalCoherence). Played by
+    // their series alone, as 0.4.25 did, they kept 0.89 and 0.91; the train
+    // takes of the recordings keep 0.37 to 0.51 and 0.68 to 0.77.
+    for(const int key:{102,105}){
+      double hz=0;for(const auto& x:keyra::measured::grand::anchors)if(x.note==key)hz=x.f1;
+      keyra::Engine e;e.setParameters(dry());e.setSteadyStrikesForMeasurement(true);e.noteOn(key,90.f/127);
+      const double coherence=fundamentalCoherence(render(e,72000),hz);
+      check(hz>0&&coherence<.85,"the treble's unison strings spread its fundamentals between the channels");
+      std::cout<<"key="<<key<<" fundamental_coherence="<<coherence<<'\n';
+    }
   }
   {
     // The upright sounds its own measured pitch, not the grand's: taken at

@@ -13,19 +13,27 @@ constexpr float haloOwnResolvedHz=4.f;
 // level (dB) its strike sets that string ringing at, at its loudest layer
 // and at contact, as the halo fit reads a string (haloLevels); -200 where
 // its own components play the string. One per key from F6 up.
+// haloOwnSlopeDb: how much faster than every undamped string (dB per dB
+// of the strike's layer level) the key's own string grows with the
+// strike, where its recorded pitch rings it clear in 3 layers or more.
 namespace grand {
-constexpr std::array<float,20> haloOwnDb{{-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-43.8665f,-43.8665f,-43.8665f,-43.8665f,-43.8665f,-43.8665f,-49.54212f,-55.21773f,-60.89334f,-69.06876f,-77.24417f,-85.41958f}};
+constexpr std::array<float,20> haloOwnDb{{-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-47.20999f,-47.20999f,-47.20999f,-47.20999f,-47.20999f,-47.20999f,-50.68799f,-54.166f,-57.64401f,-66.90253f,-76.16106f,-85.41958f}};
+constexpr std::array<float,20> haloOwnSlopeDb{{0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,-0.3821595f,-0.3821595f,-0.3821595f,-0.3821595f,-0.3821595f,-0.3821595f,-0.1309735f,0.1202125f,0.3713985f,0.247599f,0.1237995f,0.f}};
 }
 namespace upright {
 constexpr std::array<float,20> haloOwnDb{{-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f}};
+constexpr std::array<float,20> haloOwnSlopeDb{{0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}};
 }
 namespace kawai {
 constexpr std::array<float,20> haloOwnDb{{-54.33387f,-54.33387f,-54.33387f,-54.33387f,-54.33387f,-54.33387f,-54.33387f,-200.f,-107.161f,-107.161f,-107.161f,-102.3974f,-97.63386f,-92.8703f,-88.10675f,-83.34319f,-78.57964f,-78.57964f,-78.57964f,-200.f}};
+constexpr std::array<float,20> haloOwnSlopeDb{{0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}};
 }
 namespace hamburg {
-constexpr std::array<float,20> haloOwnDb{{-73.82877f,-73.82877f,-73.82877f,-73.82877f,-73.82877f,-73.82877f,-77.42042f,-81.01207f,-84.60372f,-88.19537f,-91.78702f,-95.37867f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f}};
+constexpr std::array<float,20> haloOwnDb{{-65.90049f,-65.90049f,-65.90049f,-65.90049f,-65.90049f,-65.90049f,-70.62476f,-75.34902f,-80.07328f,-84.79754f,-89.5218f,-94.24606f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f,-98.97032f}};
+constexpr std::array<float,20> haloOwnSlopeDb{{0.8779835f,0.8779835f,0.8779835f,0.8779835f,0.8779835f,0.8779835f,0.7525573f,0.6271311f,0.5017049f,0.3762787f,0.2508524f,0.1254262f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}};
 }
 namespace newyork {
-constexpr std::array<float,20> haloOwnDb{{-45.77065f,-45.77065f,-45.77065f,-45.77065f,-45.77065f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f}};
+constexpr std::array<float,20> haloOwnDb{{-49.18146f,-49.18146f,-49.18146f,-49.18146f,-49.18146f,-200.f,-200.f,-200.f,-200.f,-200.f,-200.f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f,-79.71425f}};
+constexpr std::array<float,20> haloOwnSlopeDb{{-0.4772262f,-0.4772262f,-0.4772262f,-0.4772262f,-0.4772262f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}};
 }
 }}
