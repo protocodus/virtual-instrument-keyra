@@ -3586,3 +3586,134 @@ render in a median 4.00 s of CPU on the grand where 0.4.26 took 3.80
 against 2.83 (+2.8 %), 3.40 on the Hamburg against 3.44 (−1.2 %) and 3.16 on
 New York against 3.14 (+0.5 %), seven alternating runs of each on the
 development machine.
+
+## 2026-11-09 — the strike knocks the board under 400 Hz
+
+The second of the owner's five rounds of audible improvements, decided on the
+recordings with the better candidate taken. No listening test was run and no
+listening preference is recorded.
+
+The finding. `fit_realtime_modal.py` measures the strike's knock from 400 Hz
+up, and under 400 Hz it fits the body's modes from 20 ms after contact, so
+there nothing played the blow: aligned at the strike, the train notes from
+C6 up stood a median 1 to 12 dB under their recordings from 160 to 315 Hz
+over their first 30 ms on every piano, at 0.4.27
+([low knock](research/low-knock-2026-11-09.md)).
+
+The first candidate let the partials of the Hamamatsu, the Hamburg and New
+York rise as fitted, as the grand's do, where their rises are capped at the
+hammer's contact. Against 0.4.27, summed over the eleven measures other than
+level in tolerance units, it brought their train takes closer (the Hamburg
+−6.10, New York −3.82, the Hamamatsu −1.55) and their dev takes further
+(+6.13, +0.86, +0.11): the Hamburg's dev C♯5 rose in 15.0 ms where it took
+1.0, and twelve of the Hamamatsu's rises stood further past a tolerance, its
+train A♯4's 1.8 to 12.9 ms. It fitted the train takes and not the pianos, so
+it was reverted.
+
+The second candidate is the knock under 400 Hz. `Tools/fit_low_knock.py`
+reads each piano's train takes only and writes `Source/DSP/MeasuredLowKnock.h`
+and its receipt, which `Keyra.MeasuredLowKnock` checks against the tool, the
+room, the modal data, the split and the corpus. In five third-octave bands
+from 125 to 315 Hz, each take's power is compared with the engine's played
+without the knock, through the engine's band filter, with a knock under one
+decay and rise per piano and band and a level per recorded pitch. Its first
+fit read the first 0.1 s only and left out the room, which hears the knock:
+it brought four pianos closer and the Hamburg further (−0.14 and −0.17 on
+the grand, train and dev, −1.33 and −1.06 on the upright, −0.37 and −0.32 on
+the Hamamatsu, +0.82 and +1.78 on the Hamburg, −0.13 and −0.90 on New York),
+because over 0.1 s a knock decaying at 37 to 50 dB/s fitted the Hamburg's
+takes and on to 3 s it and the Hamburg's slow room stood over them. The refit
+that ships reads 0.5 s, the benchmark's attack and early windows weighed
+alike, and counts what the room returns of the knock, its model checked
+against the engine's room on its own. The bands under 400 Hz also start in
+their filters' stationary state, drawn from a fixed seed and the same after
+every silence, where at rest the knock's first milliseconds would play the
+filters' own build-up.
+
+On the benchmark, against 0.4.27 on every train and dev take, the paired
+sums in the same units are: the grand −0.11 and −0.14, the upright −3.04
+and −2.39, the Hamamatsu −0.32 and −0.37, the Hamburg −0.17 and +1.56 and
+New York −0.13 and −0.63. The Hamburg's dev takes stand further at C♯5
+(+2.77, four takes), between its train F♯4 and G♯5, where 0.4.27 already
+stood over the recordings from 100 to 315 Hz through the attack at the three
+softest layers, by 7 to 12 dB at the softest. Past a tolerance: the
+upright's dev B3 coherence (0.142 → 0.170, one take); the Hamamatsu's train
+C6 attack (4.08 → 4.62 dB), E4 noise (9.47 → 10.01 dB), C4 rise (9.93 →
+10.98 ms) and D♯6 early (6.29 → 6.80 dB); New York's dev E4 noise (6.26 →
+6.93 dB, five takes); none on the grand or the Hamburg. One score 0.4.27
+measured is not measured: New York's train G♯7 sustain at its third layer
+(12.76 dB), which 0.4.27 first measured. On the grand's held-out evaluation
+the twelve in-range cases' bands stand 4.968 dB from their recordings
+(4.988), closer at C5 at velocities 6 and 8 (5.321 → 5.121, 4.661 → 4.475),
+C6 (6.688 → 6.526) and F♯5 (5.050 → 5.046) at velocity 8, further at C4 at
+velocities 6 and 8 (5.837 → 5.906, 4.460 → 4.512), F♯3 (5.409 → 5.420) and
+F♯4 (4.465 → 4.651) at velocity 8, and unchanged at the other four; the
+harmonic levels 3.991 dB (3.990), the envelope 1.708 dB (1.707), the partial
+decay 2.270 dB/s and the pitch 0.190 cents (unchanged), and the rise
+4.038 ms (4.095). The edge cases C1 and C7 at velocity 8 stand 4.589 dB in
+bands (4.657), 2.259 dB in harmonics (2.263) and 8.036 dB in envelope
+(8.032).
+
+Levels and tests. On the meter, typical playing moves −0.012 to +0.030 VU
+from 0.4.27's readings, and the Hamamatsu's through the tube +0.078 VU, past
+the test's 0.05 guard: the knock lies under 400 Hz, which the tube's
+response favours. Its tube scale is re-pinned to the −9.95 VU it read before
+(1.2364 to 1.2253), as in earlier rounds. Six readings then stand past their
+approved levels, so `Keyra.Levels` fails on them until the owner accepts them
+or not: the five loudest chords 0.4.27 already raised, now the Hamamatsu's
+through the tube 3.301832 VU against its approved 3.292226, Kakegawa Grand
+0.719836 against 0.707407, Warm Walnut −0.104002 against −0.123667, Felt
+Nocturne −5.592784 against −5.597279 and Open Strings 1.514169 against
+1.501300, and Felt Upright's typical playing, −15.589097 against −15.665733,
+0.077 VU louder where 0.4.27's reading stood 0.046 VU louder.
+`Keyra.FactoryDynamics` fails as it did on 0.4.27, on 1,019 rows (992 pairs
+under their step floors and 27 chords past its maximum levels) where 0.4.27
+failed on 992 (966 and 26). Of the 68 new rows, 67 pairs stand a median
+0.020 dB under their floors (0.176 dB at most) and one chord passes its
+maximum, the original Hamburg Grand's microphone 0, round 3, shape 7 at
+velocity 110, +1.643 against +1.639; 41 of 0.4.27's rows are gone. Its
+floors and limits are unchanged. The `unit` tier (45 tests,
+`Keyra.LowKnock` and `Keyra.MeasuredLowKnock` among them), the `audio`
+tier's demos and the `perf` tier pass, and `KeyraDSPCxx17` builds.
+`Keyra.LowKnock` checks that a low key plays none of the knock, that a high
+key's lies 99 % and more under 500 Hz, falls 10 dB and more by 0.3 s and
+grows with the blow, that the bands' factor holds their filters' stationary
+covariance at 44.1, 48 and 96 kHz, and that every silence and `reset()`
+leave the bands in one state.
+One `Keyra.Engine` check, that a top note's body rings on until CC1 mutes
+it, measured the upright's free ring 3.5 dB over the muted one and the
+grand's 16.9 dB against its 20 dB threshold with the knock: no string keeps
+the knock up, so it rings at its own decay whatever CC1 does, as the knock
+above 400 Hz and the action's do, and the check measures the body alone, so
+it now runs without the knock as it already ran without the room and the
+action; it then reads 44.8 and 58.2 dB, as on 0.4.27. Whether a real board's
+knock stops sooner under the dampers or a mute is not measured.
+`Keyra.VelocityInterpolationFreshness` follows the engine source's hash, and
+its receipt was regenerated by its generator; the masks did not change.
+
+As for 0.4.27, the plug-in's `Keyra.ParameterMatrix` needs a JUCE build,
+which was not made; the stand-in described there passed all 2,889 runs, its
+321 cases at all nine rates and block sizes. Of one run per case where
+silence is due, the loudest tail 2 s after the release is again the Hamburg
+Grand's, through the tube −68.7 dBFS where 0.4.27 read −73.3 and at full
+Output −69.2 (−71.6), 8.7 dB under the matrix's −60 dBFS floor: its room
+rings on with what it heard of the knock. With the room off the loudest
+tails read as on 0.4.27 (−81.95 dBFS), and the knock's own decay leaves 22
+more cases' tails over −180 dBFS, the loudest at −106.8.
+
+The 88 keys struck in turn at velocity 90, 120 ms apart with the pedal down,
+render in a median 3.77 s of CPU on the grand where 0.4.27 took 3.74
+(+0.9 %), 2.70 on the upright against 2.63 (+2.9 %), 2.85 on the Hamamatsu
+against 2.81 (+1.4 %), 3.27 on the Hamburg against 3.28 (−0.3 %) and 3.03 on
+New York against 3.05 (−0.5 %), seven alternating runs of each on the
+development machine.
+
+A finding from before this round. Struck alone at velocity 127 and let go
+after 0.5 s, 54 of the five pianos' keys from F6 up still sound a minute
+later at the default Output, on 0.4.27 as on 0.4.28, so the engine never
+comes to rest after them. On the two looked at, the Hamamatsu's and the
+upright's C7, partials whose fit stopped at the fitter's slowest decay,
+0.003/s, where it identified none, keep ringing: the upright's C7 plays its
+6.5 kHz partial at −60 dBFS a minute on, its other keys from A♯6 to D♯7
+−66 to −77 dBFS, and every other key −83 dBFS or quieter. It is left to the keyboard's
+calibration, which follows the five rounds.

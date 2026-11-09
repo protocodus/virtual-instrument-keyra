@@ -25,7 +25,7 @@ void u16(std::ofstream& f,std::uint16_t v){char b[2]={static_cast<char>(v),stati
 void u32(std::ofstream& f,std::uint32_t v){char b[4]={static_cast<char>(v),static_cast<char>(v>>8),static_cast<char>(v>>16),static_cast<char>(v>>24)};f.write(b,4);}
 }
 int main(int argc,char** argv){try {
-  std::string eventsPath,outputPath,metricsPath;int rate=48000;double duration=5;bool legacy=false,vary=false;
+  std::string eventsPath,outputPath,metricsPath;int rate=48000;double duration=5;bool legacy=false,vary=false,lowKnock=true;
   keyra::Parameters parameters;
   keyra::Piano piano=keyra::Piano::grand;bool towardGiven=false;keyra::Piano toward=piano;
   std::array<float,7> build{};
@@ -35,15 +35,16 @@ int main(int argc,char** argv){try {
   for(int i=1;i<argc;++i){const std::string option=argv[i];
     auto value=[&](){if(++i>=argc)throw std::runtime_error("missing argument after "+option);return std::string(argv[i]);};
     if(option=="--help"){
-      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--width .75] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mic 0] [--mechanics .175] [--room 1] [--room-shelf low,high,crossover,gain] [--model grand|upright|kawai|hamburg|newyork] [--toward grand|upright|kawai|hamburg|newyork] [--build strings,hammers,soundboard,action[,stiffness,unisons,ring]] [--strings|--hammers|--soundboard|--action piano=weight[,piano=weight...]] [--quality full|balanced|light] [--legacy-attack] [--vary]\n"
+      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--width .75] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mic 0] [--mechanics .175] [--room 1] [--room-shelf low,high,crossover,gain] [--model grand|upright|kawai|hamburg|newyork] [--toward grand|upright|kawai|hamburg|newyork] [--build strings,hammers,soundboard,action[,stiffness,unisons,ring]] [--strings|--hammers|--soundboard|--action piano=weight[,piano=weight...]] [--quality full|balanced|light] [--legacy-attack] [--vary] [--no-low-knock]\n"
       <<"The build's parts move from the model toward the --toward piano (by default the upright from the grand, the grand from any other): 0 the model's own, 1 the other's.\n"
       <<"A part given as piano=weight pairs mixes those pianos at their shares of the weights instead, as the plug-in's controls do.\n"
       <<"--room-shelf plays the room as given (decay dB/s below and above the crossover in Hz, input gain) in place of the build's, for Tools/fit_room.py.\n"
+      <<"--no-low-knock plays no knock under the noise bands, for Tools/fit_low_knock.py.\n"
       <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain. Use cc for channel-specific pedal events.\n";return 0;
     }else if(option=="--events")eventsPath=value();else if(option=="--output")outputPath=value();
     else if(option=="--metrics")metricsPath=value();else if(option=="--sample-rate")rate=std::stoi(value());
     else if(option=="--duration")duration=std::stod(value());else if(option=="--legacy-attack")legacy=true;
-    else if(option=="--vary")vary=true;
+    else if(option=="--vary")vary=true;else if(option=="--no-low-knock")lowKnock=false;
     else if(option=="--gain")parameters.gain=std::stof(value());else if(option=="--brightness")parameters.brightness=std::stof(value());
     else if(option=="--resonance")parameters.resonance=std::stof(value());else if(option=="--width")parameters.width=std::stof(value());
     else if(option=="--mute")parameters.mute=std::stof(value());
@@ -124,6 +125,7 @@ int main(int argc,char** argv){try {
   // response and each a little harder or softer.
   engine.setSteadyStrikesForMeasurement(!vary);
   engine.setRoomForMeasurement(roomShelf[0],roomShelf[1],roomShelf[2],roomShelf[3]);
+  engine.setLowKnockForMeasurement(lowKnock);
   const auto frames=static_cast<std::uint64_t>(std::llround(duration*rate));
   if(frames*8>0xffffffffu-36u)throw std::runtime_error("WAV too large");
   std::ofstream out(outputPath,std::ios::binary);if(!out)throw std::runtime_error("cannot write "+outputPath);

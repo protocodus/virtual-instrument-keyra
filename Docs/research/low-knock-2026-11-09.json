@@ -1,0 +1,3599 @@
+{
+ "tool": "Tools/fit_low_knock.py",
+ "tool_sha256": "7ed83d9f9d61e66bc9d71f5621739d53ea2d7700706f8125112776b232eea751",
+ "engine": "Source/DSP/KeyraEngine.cpp",
+ "engine_sha256": "49d87bea41b56379ed46d937a79fef12d1ee0c45cfff5704e2af00139d56ee63",
+ "room": "Source/DSP/MeasuredRoom.h",
+ "room_sha256": "af41fb7143a6cfbe770e5283686bc1b0a26698da8b4c50417d627660334e203b",
+ "bands": [
+  125.0,
+  157.49013123685916,
+  198.42513149602493,
+  250.0,
+  314.9802624737183
+ ],
+ "pianos": {
+  "grand": {
+   "header": "Source/DSP/MeasuredModalData.h",
+   "header_sha256": "fe30baf87b2bfd2f1c8c5fce031856f94c8f826988c6e9d3e277666d354e8408",
+   "split": "Tools/corpus/split-2026-10-27.json",
+   "split_sha256": "8f992855c06b829146070e1ae545854ec64210e4e81bb230b6472570583602a4",
+   "corpus": "Tools/corpus/salamander-v3.json",
+   "corpus_sha256": "1496e60d81bbaf3aecdde3e2a87f0ca7dae1459e27c9ee5fc4aa2432b36e91a9",
+   "takes": 168,
+   "bands": [
+    {
+     "hz": 125.0,
+     "takes": 168,
+     "balance_db": 0.35191871082997517,
+     "coherence": 0.8821146001876828,
+     "pitches": [
+      54,
+      57,
+      60,
+      66,
+      69,
+      72,
+      78,
+      81,
+      84,
+      90,
+      93,
+      96,
+      102,
+      105
+     ],
+     "rate_db_s": 50.2377286301916,
+     "rise_s": 0.003,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.9406955370758912
+    },
+    {
+     "hz": 157.49013123685916,
+     "takes": 144,
+     "balance_db": 0.9101222260977364,
+     "coherence": 0.08112299621683132,
+     "pitches": [
+      60,
+      66,
+      69,
+      72,
+      78,
+      81,
+      84,
+      90,
+      93,
+      96,
+      102,
+      105
+     ],
+     "rate_db_s": 79.62143411069948,
+     "rise_s": 0.003,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.5403398457387807
+    },
+    {
+     "hz": 198.42513149602493,
+     "takes": 132,
+     "balance_db": -4.161257942050307,
+     "coherence": 0.5625755000594334,
+     "pitches": [
+      66,
+      69,
+      72,
+      78,
+      81,
+      84,
+      90,
+      93,
+      96,
+      102,
+      105
+     ],
+     "rate_db_s": 369.5699594844582,
+     "rise_s": 0.007,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.7518306476038814
+    },
+    {
+     "hz": 250.0,
+     "takes": 132,
+     "balance_db": -0.44957830341669364,
+     "coherence": 0.04512766768337103,
+     "pitches": [
+      66,
+      69,
+      72,
+      78,
+      81,
+      84,
+      90,
+      93,
+      96,
+      102,
+      105
+     ],
+     "rate_db_s": 200.00000000000003,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.5225336426373663
+    },
+    {
+     "hz": 314.9802624737183,
+     "takes": 108,
+     "balance_db": 1.7150568796883068,
+     "coherence": 0.2155655588649002,
+     "pitches": [
+      72,
+      78,
+      81,
+      84,
+      90,
+      93,
+      96,
+      102,
+      105
+     ],
+     "rate_db_s": 147.12845089192828,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.6057152736116697
+    }
+   ],
+   "anchors": [
+    {
+     "note": 21,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 24,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 30,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 33,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 36,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 42,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 45,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 48,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 54,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -63.602977000588396,
+       "slope_db": 1.3,
+       "rms_db_without": 2.316698907579747,
+       "rms_db": 2.2854818743130414,
+       "at_edge": false
+      },
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 57,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -59.37754924701472,
+       "slope_db": 1.4500000000000002,
+       "rms_db_without": 4.66673937582129,
+       "rms_db": 4.321952113210292,
+       "at_edge": false
+      },
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 60,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -73.38648755375519,
+       "slope_db": 0.4,
+       "rms_db_without": 4.9599317806998675,
+       "rms_db": 4.891940351323019,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -59.437956917776205,
+       "slope_db": 1.1,
+       "rms_db_without": 2.937839270998923,
+       "rms_db": 2.758948592864453,
+       "at_edge": false
+      },
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 66,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -69.14486793828276,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 6.408905851116264,
+       "rms_db": 5.556125999603859,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -65.03798321862564,
+       "slope_db": 0.8,
+       "rms_db_without": 4.936403563400588,
+       "rms_db": 3.8190684217804525,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -48.09549076063459,
+       "slope_db": 1.0,
+       "rms_db_without": 2.58675250902512,
+       "rms_db": 1.8561887446469716,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -55.272351025343795,
+       "slope_db": 1.05,
+       "rms_db_without": 1.5525557944294328,
+       "rms_db": 1.155648965711473,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 69,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -68.71413395147397,
+       "slope_db": 0.9,
+       "rms_db_without": 6.44623216807506,
+       "rms_db": 6.130076284808064,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -66.36873054656348,
+       "slope_db": 0.65,
+       "rms_db_without": 4.428025840599358,
+       "rms_db": 3.661639333136195,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -47.40112847148299,
+       "slope_db": 0.65,
+       "rms_db_without": 4.269312404978096,
+       "rms_db": 2.5892127914872556,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -54.434768212801785,
+       "slope_db": 0.75,
+       "rms_db_without": 3.4118113846236566,
+       "rms_db": 2.341701550711188,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 72,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -71.18164934464033,
+       "slope_db": 0.55,
+       "rms_db_without": 7.021989567143391,
+       "rms_db": 6.590525178267872,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -66.55614520609704,
+       "slope_db": 0.75,
+       "rms_db_without": 6.773924352994996,
+       "rms_db": 4.062609152297629,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -51.35612942961134,
+       "slope_db": 0.65,
+       "rms_db_without": 4.6365548487748764,
+       "rms_db": 2.482012858425778,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -61.1822656085808,
+       "slope_db": 0.65,
+       "rms_db_without": 2.954538926146635,
+       "rms_db": 2.5746823086369885,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -62.53375322315856,
+       "slope_db": 0.8,
+       "rms_db_without": 1.709940317404761,
+       "rms_db": 1.6196822320986553,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 78,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -88.7602810322967,
+       "slope_db": 1.85,
+       "rms_db_without": 6.086678375291215,
+       "rms_db": 6.087044686337338,
+       "at_edge": true
+      },
+      {
+       "takes": 12,
+       "level_db": -68.83745801133811,
+       "slope_db": 0.55,
+       "rms_db_without": 5.413287232392439,
+       "rms_db": 3.9006520690076143,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -49.44782233252402,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.017037377840191,
+       "rms_db": 2.540054243315754,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -98.7725515525544,
+       "slope_db": 1.35,
+       "rms_db_without": 3.1347126467331203,
+       "rms_db": 3.1347189696378877,
+       "at_edge": true
+      },
+      {
+       "takes": 12,
+       "level_db": -63.9008236335815,
+       "slope_db": 0.55,
+       "rms_db_without": 2.950091958677609,
+       "rms_db": 2.2512576219871536,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 81,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -65.67994751486262,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 6.363084845006485,
+       "rms_db": 6.136106797464162,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -61.89222253793345,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.266855226092323,
+       "rms_db": 4.703497204682667,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -44.00402835245346,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.952523355224008,
+       "rms_db": 3.667172729279932,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -64.49973116158769,
+       "slope_db": 0.9,
+       "rms_db_without": 3.8552320317612936,
+       "rms_db": 3.8435911698020346,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -57.8172290902117,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 3.328699753865331,
+       "rms_db": 2.832425104135089,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 84,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -61.68049591382348,
+       "slope_db": 0.65,
+       "rms_db_without": 5.2643473176247175,
+       "rms_db": 5.155213724619632,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -57.48246893322102,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 5.920030835335699,
+       "rms_db": 3.9753160220769943,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -44.11024924522935,
+       "slope_db": 0.75,
+       "rms_db_without": 4.655280431902513,
+       "rms_db": 3.2780404769911504,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -66.74715200912303,
+       "slope_db": 0.0,
+       "rms_db_without": 3.8448225033460486,
+       "rms_db": 3.756712014609253,
+       "at_edge": true
+      },
+      {
+       "takes": 12,
+       "level_db": -53.6312372916569,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 3.3757774271809193,
+       "rms_db": 2.835864738362369,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 90,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -63.32486611393624,
+       "slope_db": 0.9,
+       "rms_db_without": 6.535520384554699,
+       "rms_db": 5.758888772887935,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -55.72707647036747,
+       "slope_db": 0.8,
+       "rms_db_without": 6.594308895630742,
+       "rms_db": 3.8497810209824954,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -42.022623872108774,
+       "slope_db": 1.3,
+       "rms_db_without": 4.407671891903703,
+       "rms_db": 3.5934125330369304,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -57.54489155395798,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 3.1392657304296754,
+       "rms_db": 3.0732386896512387,
+       "at_edge": true
+      },
+      {
+       "takes": 12,
+       "level_db": -56.98876416894513,
+       "slope_db": 0.55,
+       "rms_db_without": 3.78398033938726,
+       "rms_db": 2.5123136961427135,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 93,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -80.93036827261861,
+       "slope_db": 0.4,
+       "rms_db_without": 5.785244758042025,
+       "rms_db": 5.767740801290056,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -64.76070505197622,
+       "slope_db": 0.45,
+       "rms_db_without": 5.702312166455879,
+       "rms_db": 3.634942333316559,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -52.84551585897671,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 5.535834718012705,
+       "rms_db": 3.4168660483488216,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -65.95680050884987,
+       "slope_db": 0.30000000000000004,
+       "rms_db_without": 3.5867741682677936,
+       "rms_db": 3.0709829013617878,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -64.88890432402184,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 4.145547623348997,
+       "rms_db": 3.1480105175194146,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 96,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -71.42890644337126,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.799709334674265,
+       "rms_db": 5.705902138013615,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -61.57877330467944,
+       "slope_db": 1.05,
+       "rms_db_without": 6.254162084569134,
+       "rms_db": 4.379110729711239,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -53.9345663017397,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 4.261144194771893,
+       "rms_db": 3.688882923281816,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -65.23143094653918,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 3.9903123590281835,
+       "rms_db": 3.506719905321158,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -62.52749774784885,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 4.204044054863201,
+       "rms_db": 3.2805698198705273,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 102,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -63.230512787749475,
+       "slope_db": 0.8,
+       "rms_db_without": 6.502769857008108,
+       "rms_db": 6.364639843304676,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -55.228746336050115,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 7.855484020086266,
+       "rms_db": 4.163227566664696,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -47.13259630613221,
+       "slope_db": 1.05,
+       "rms_db_without": 5.28618089260772,
+       "rms_db": 3.6091032745048177,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -59.054454381224815,
+       "slope_db": 1.05,
+       "rms_db_without": 4.164969263239392,
+       "rms_db": 3.918450984648315,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -62.48278069741056,
+       "slope_db": 0.45,
+       "rms_db_without": 3.5089727195841123,
+       "rms_db": 3.2925592858388923,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 105,
+     "bands": [
+      {
+       "takes": 12,
+       "level_db": -64.80942546327077,
+       "slope_db": 1.0,
+       "rms_db_without": 8.289172521236875,
+       "rms_db": 8.082509727876824,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -63.69744692611599,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.013722372550538,
+       "rms_db": 4.6812368543996445,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -55.681983860452,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 4.593972246531783,
+       "rms_db": 4.190451683307803,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -63.713581064681456,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 4.821555172479698,
+       "rms_db": 4.2226370034391705,
+       "at_edge": false
+      },
+      {
+       "takes": 12,
+       "level_db": -72.36733286507159,
+       "slope_db": 0.25,
+       "rms_db_without": 3.823152948733338,
+       "rms_db": 3.460917561029923,
+       "at_edge": false
+      }
+     ]
+    }
+   ]
+  },
+  "upright": {
+   "header": "Source/DSP/MeasuredUprightData.h",
+   "header_sha256": "932b6223946460d9c0dc1904fecdfb535763086a25ecab40c228f41dfd5faf6b",
+   "split": "Tools/corpus/split-helsinki-2026-10-28.json",
+   "split_sha256": "9bda3a9141f949d8737ae4f67ad156ba78d057601c673126d54f2748115d1fd9",
+   "corpus": "Tools/corpus/helsinki-1967.json",
+   "corpus_sha256": "e7bf0035e2de39b205f75427cb2cdfafb5d23b074b7abf05f7801e19c524f328",
+   "takes": 92,
+   "bands": [
+    {
+     "hz": 125.0,
+     "takes": 92,
+     "balance_db": -1.4183081047968928,
+     "coherence": 0.11180777612784014,
+     "pitches": [
+      54,
+      58,
+      60,
+      62,
+      66,
+      68,
+      70,
+      74,
+      76,
+      78,
+      82,
+      84,
+      86,
+      90,
+      92,
+      94,
+      96,
+      100,
+      103
+     ],
+     "rate_db_s": 43.08869380063767,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.5551667903965477
+    },
+    {
+     "hz": 157.49013123685916,
+     "takes": 87,
+     "balance_db": 3.4277844926451766,
+     "coherence": 0.3978773882696356,
+     "pitches": [
+      58,
+      60,
+      62,
+      66,
+      68,
+      70,
+      74,
+      76,
+      78,
+      82,
+      84,
+      86,
+      90,
+      92,
+      94,
+      96,
+      100,
+      103
+     ],
+     "rate_db_s": 31.69786384922227,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.6843927675566305
+    },
+    {
+     "hz": 198.42513149602493,
+     "takes": 78,
+     "balance_db": 1.5090855778596386,
+     "coherence": 0.21926770028370174,
+     "pitches": [
+      62,
+      66,
+      68,
+      70,
+      74,
+      76,
+      78,
+      82,
+      84,
+      86,
+      90,
+      92,
+      94,
+      96,
+      100,
+      103
+     ],
+     "rate_db_s": 43.08869380063767,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.6079997300324538
+    },
+    {
+     "hz": 250.0,
+     "takes": 73,
+     "balance_db": 3.188467277418625,
+     "coherence": 0.3276570535581894,
+     "pitches": [
+      66,
+      68,
+      70,
+      74,
+      76,
+      78,
+      82,
+      84,
+      86,
+      90,
+      92,
+      94,
+      96,
+      100,
+      103
+     ],
+     "rate_db_s": 233.18288023596625,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.6533779643875177
+    },
+    {
+     "hz": 314.9802624737183,
+     "takes": 63,
+     "balance_db": 6.634617959804876,
+     "coherence": 0.3422161130453825,
+     "pitches": [
+      70,
+      74,
+      76,
+      78,
+      82,
+      84,
+      86,
+      90,
+      92,
+      94,
+      96,
+      100,
+      103
+     ],
+     "rate_db_s": 271.87127817570513,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.6309980965134543
+    }
+   ],
+   "anchors": [
+    {
+     "note": 24,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 27,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 33,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 36,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 42,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 45,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 48,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 50,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 52,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 54,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -88.91678180819406,
+       "slope_db": 0.30000000000000004,
+       "rms_db_without": 4.170555654901778,
+       "rms_db": 4.100019229466973,
+       "at_edge": true
+      },
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 58,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -103.00722052150007,
+       "slope_db": 0.0,
+       "rms_db_without": 5.453579038089,
+       "rms_db": 5.4447157257472965,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -65.17554351051386,
+       "slope_db": 1.1,
+       "rms_db_without": 3.8271961371503855,
+       "rms_db": 3.399254838820092,
+       "at_edge": false
+      },
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 60,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -93.11480307433106,
+       "slope_db": 0.0,
+       "rms_db_without": 5.562197043325882,
+       "rms_db": 5.53117474306036,
+       "at_edge": true
+      },
+      {
+       "takes": 5,
+       "level_db": -72.98523776106445,
+       "slope_db": 0.45,
+       "rms_db_without": 4.024263865639742,
+       "rms_db": 3.418348465984747,
+       "at_edge": false
+      },
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 62,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -93.51128427895043,
+       "slope_db": 0.0,
+       "rms_db_without": 5.173608537390333,
+       "rms_db": 4.5030610621126925,
+       "at_edge": true
+      },
+      {
+       "takes": 5,
+       "level_db": -69.0850817951151,
+       "slope_db": 0.8,
+       "rms_db_without": 5.685156426355063,
+       "rms_db": 4.2373223917990055,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -68.95557654106968,
+       "slope_db": 1.55,
+       "rms_db_without": 3.543858191261564,
+       "rms_db": 3.478080586255789,
+       "at_edge": false
+      },
+      null,
+      null
+     ]
+    },
+    {
+     "note": 66,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -72.13619259807781,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.609296853987146,
+       "rms_db": 5.49965488897245,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -73.982427931345,
+       "slope_db": 0.65,
+       "rms_db_without": 5.46962366352036,
+       "rms_db": 4.627619822517113,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -73.53537453740753,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 6.496510949695316,
+       "rms_db": 4.884797725534182,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -61.821863467061085,
+       "slope_db": 0.8,
+       "rms_db_without": 4.779035875316588,
+       "rms_db": 4.340310242919128,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 68,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -72.73537608178536,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 4.949058811375198,
+       "rms_db": 4.826772413548544,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -68.96165327809594,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.498651822216869,
+       "rms_db": 4.181003386263803,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -78.9160642881081,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 4.604138579051259,
+       "rms_db": 4.001187413804773,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -59.55780928716099,
+       "slope_db": 1.1,
+       "rms_db_without": 3.8998697590697144,
+       "rms_db": 3.2031094444864903,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 70,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -70.90705749386795,
+       "slope_db": 0.9,
+       "rms_db_without": 5.865960764920198,
+       "rms_db": 5.086145177372795,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -70.08149684535428,
+       "slope_db": 0.65,
+       "rms_db_without": 5.894062815054088,
+       "rms_db": 4.492409399647533,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -74.77738864140777,
+       "slope_db": 0.5,
+       "rms_db_without": 6.386918143912374,
+       "rms_db": 5.30186813641572,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -57.52416584763544,
+       "slope_db": 1.0,
+       "rms_db_without": 5.945691661813365,
+       "rms_db": 4.195039864937446,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -53.35398696120208,
+       "slope_db": 1.0,
+       "rms_db_without": 3.4691467294058977,
+       "rms_db": 2.129261226310752,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 74,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -72.05522434846958,
+       "slope_db": 1.3,
+       "rms_db_without": 4.729416303629177,
+       "rms_db": 4.580568362114874,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -71.77313493612633,
+       "slope_db": 0.8,
+       "rms_db_without": 5.538256417025466,
+       "rms_db": 4.894062060605071,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -93.58599197826604,
+       "slope_db": 0.0,
+       "rms_db_without": 5.06844323888444,
+       "rms_db": 5.028758460371676,
+       "at_edge": true
+      },
+      {
+       "takes": 5,
+       "level_db": -56.847172091788764,
+       "slope_db": 1.05,
+       "rms_db_without": 5.660601135622899,
+       "rms_db": 4.025916296358778,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -58.163810394369726,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 2.9055614334014757,
+       "rms_db": 2.6274199507763596,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 76,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -69.49501608806239,
+       "slope_db": 1.5,
+       "rms_db_without": 5.093900563683777,
+       "rms_db": 4.9005490584807685,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -67.69221969930426,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 6.380998353188833,
+       "rms_db": 5.371007856359952,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -73.15197921817379,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 6.149444450608921,
+       "rms_db": 4.668116962328577,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -55.42452735083086,
+       "slope_db": 1.1,
+       "rms_db_without": 5.906913532364576,
+       "rms_db": 4.560910912949935,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -55.87142565116145,
+       "slope_db": 1.0,
+       "rms_db_without": 5.229396307542305,
+       "rms_db": 3.428382765403915,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 78,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -68.3034906628301,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 8.015222368098186,
+       "rms_db": 4.840630191253209,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -68.81373714525358,
+       "slope_db": 0.65,
+       "rms_db_without": 9.33463133911567,
+       "rms_db": 4.878656800835202,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -72.38859109140387,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 7.411649315780686,
+       "rms_db": 4.867122652484458,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -54.22236996156431,
+       "slope_db": 1.05,
+       "rms_db_without": 9.15989330344014,
+       "rms_db": 4.312762780794242,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -55.5846176163644,
+       "slope_db": 0.9,
+       "rms_db_without": 7.401095533060721,
+       "rms_db": 2.453434087031058,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 82,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -69.65738243335899,
+       "slope_db": 1.35,
+       "rms_db_without": 6.49364033924958,
+       "rms_db": 5.434768957588004,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -69.95940768589192,
+       "slope_db": 0.9,
+       "rms_db_without": 8.348809459298005,
+       "rms_db": 4.219311136755128,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -72.49338265202134,
+       "slope_db": 0.65,
+       "rms_db_without": 6.07370383330468,
+       "rms_db": 4.139167659346953,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -57.4992410452397,
+       "slope_db": 1.0,
+       "rms_db_without": 5.59412177133824,
+       "rms_db": 3.651899128057061,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -57.3188504560236,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.461546599237492,
+       "rms_db": 3.5985051021337537,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 84,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -67.69813393482421,
+       "slope_db": 1.6500000000000001,
+       "rms_db_without": 6.877607334062718,
+       "rms_db": 5.606844354566483,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -68.66696500229041,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 8.304668071784263,
+       "rms_db": 4.689929807368704,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -74.37856054822292,
+       "slope_db": 0.35000000000000003,
+       "rms_db_without": 7.5055246623318945,
+       "rms_db": 4.566551394247044,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -57.91942524504985,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 7.707398788522986,
+       "rms_db": 4.637442759657478,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -58.20271965155734,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 5.641893736710728,
+       "rms_db": 3.4594170847773107,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 86,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -68.77436894643812,
+       "slope_db": 1.55,
+       "rms_db_without": 6.785490772262347,
+       "rms_db": 6.12503920828492,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -68.9903765269682,
+       "slope_db": 1.25,
+       "rms_db_without": 7.372403321136842,
+       "rms_db": 4.820081315352917,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -73.17893377478993,
+       "slope_db": 0.65,
+       "rms_db_without": 6.0065435799962135,
+       "rms_db": 4.913883530360041,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -58.31284008875809,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 6.435478540848922,
+       "rms_db": 3.8113613520901253,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -59.66077365754038,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 4.617743019070935,
+       "rms_db": 3.1685321571414393,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 90,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -69.65747827075869,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 7.452689490359453,
+       "rms_db": 6.565718121081854,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -65.35342399502017,
+       "slope_db": 1.35,
+       "rms_db_without": 9.323113198559122,
+       "rms_db": 5.957931439828497,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -70.88427319526643,
+       "slope_db": 0.65,
+       "rms_db_without": 7.56312144400183,
+       "rms_db": 4.753934125661911,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -59.113089677855065,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 7.382262390101682,
+       "rms_db": 4.566742054392005,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -58.27753468146956,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.395578665815216,
+       "rms_db": 3.57306844257457,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 92,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -69.4089324851398,
+       "slope_db": 1.25,
+       "rms_db_without": 7.298430558396141,
+       "rms_db": 5.5987968682965,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -63.70238027003588,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 8.844501465808433,
+       "rms_db": 4.7938993309222155,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -69.16753159753486,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 6.032073777971252,
+       "rms_db": 4.695606523077809,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -58.046303144851116,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.900224553325959,
+       "rms_db": 3.950862122929951,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -56.96579304283668,
+       "slope_db": 1.0,
+       "rms_db_without": 5.3569674400570575,
+       "rms_db": 4.007220676280824,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 94,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -70.44381819584066,
+       "slope_db": 1.1,
+       "rms_db_without": 6.416772575900802,
+       "rms_db": 5.01252130301314,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -68.01697797862758,
+       "slope_db": 1.05,
+       "rms_db_without": 7.907478173982431,
+       "rms_db": 5.322744020668106,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -71.63527151730878,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 5.385249313786872,
+       "rms_db": 4.4662984615066215,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -59.29714011765853,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 5.879402004044741,
+       "rms_db": 4.469349028886492,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -60.378574485996104,
+       "slope_db": 0.65,
+       "rms_db_without": 5.342902727154792,
+       "rms_db": 3.5350389917782286,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 96,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -65.49719114466183,
+       "slope_db": 1.1,
+       "rms_db_without": 8.66642381155882,
+       "rms_db": 6.317294273373358,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -59.963873867225395,
+       "slope_db": 1.25,
+       "rms_db_without": 11.635871010677807,
+       "rms_db": 7.119638527560467,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -64.2133699736101,
+       "slope_db": 1.1,
+       "rms_db_without": 7.113875387162422,
+       "rms_db": 5.362782999898588,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -54.18599496094539,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 6.111284255996957,
+       "rms_db": 4.651986584877155,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -58.033641692842984,
+       "slope_db": 0.9,
+       "rms_db_without": 5.3402505380885,
+       "rms_db": 3.59386920020348,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 100,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -66.44945384671192,
+       "slope_db": 1.5,
+       "rms_db_without": 7.112323676067142,
+       "rms_db": 6.420328686450197,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -62.16741350764786,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 9.145185672976636,
+       "rms_db": 5.403981006052585,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -62.380939997244575,
+       "slope_db": 1.6,
+       "rms_db_without": 6.114514978664162,
+       "rms_db": 5.25900402952767,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -53.837749319847816,
+       "slope_db": 1.4500000000000002,
+       "rms_db_without": 6.277392475696633,
+       "rms_db": 5.286733479452187,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -55.75926244061798,
+       "slope_db": 1.6,
+       "rms_db_without": 5.022377890885529,
+       "rms_db": 4.619873389945013,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 103,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -67.93804345460234,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 8.567259486768021,
+       "rms_db": 3.58053667457431,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -63.227634068735966,
+       "slope_db": 1.3,
+       "rms_db_without": 11.84388544292911,
+       "rms_db": 3.7919772721656684,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -64.58101993461567,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 7.580889559541824,
+       "rms_db": 4.758503979810953,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -58.3397314474438,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 7.285587610321964,
+       "rms_db": 4.718363616515224,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -58.047969565422086,
+       "slope_db": 1.0,
+       "rms_db_without": 5.235626210562399,
+       "rms_db": 3.5503642940825704,
+       "at_edge": false
+      }
+     ]
+    }
+   ]
+  },
+  "kawai": {
+   "header": "Source/DSP/MeasuredKawaiData.h",
+   "header_sha256": "8b9c22d666d45004e2f26bb380a9130cd3b9b43ba479c2a243689c9395b795ba",
+   "split": "Tools/corpus/split-vcsl-kawai-2026-10-31.json",
+   "split_sha256": "79fc59f8221ca85feccc5ea0fe1ee245202b021cfdad6f69987b0f27ceeca165",
+   "corpus": "Tools/corpus/vcsl-kawai.json",
+   "corpus_sha256": "36fadc7bca1609381d2c7aaa6b943fdf8a054bbf88304546392425bfb6d61046",
+   "takes": 69,
+   "bands": [
+    {
+     "hz": 125.0,
+     "takes": 69,
+     "balance_db": -2.8338741149056466,
+     "coherence": 0.9721896165225206,
+     "pitches": [
+      54,
+      56,
+      60,
+      62,
+      64,
+      68,
+      70,
+      72,
+      76,
+      78,
+      80,
+      84,
+      87,
+      93,
+      96,
+      99,
+      105,
+      108
+     ],
+     "rate_db_s": 126.19146889603861,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.9613230583356994
+    },
+    {
+     "hz": 157.49013123685916,
+     "takes": 61,
+     "balance_db": 0.42738978162076036,
+     "coherence": 0.7856955413327888,
+     "pitches": [
+      60,
+      62,
+      64,
+      68,
+      70,
+      72,
+      76,
+      78,
+      80,
+      84,
+      87,
+      93,
+      96,
+      99,
+      105,
+      108
+     ],
+     "rate_db_s": 147.12845089192828,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.8923726804982175
+    },
+    {
+     "hz": 198.42513149602493,
+     "takes": 57,
+     "balance_db": -5.7208541201418495,
+     "coherence": 0.7204766971247968,
+     "pitches": [
+      62,
+      64,
+      68,
+      70,
+      72,
+      76,
+      78,
+      80,
+      84,
+      87,
+      93,
+      96,
+      99,
+      105,
+      108
+     ],
+     "rate_db_s": 316.97863849222284,
+     "rise_s": 0.001,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.7941064247758953
+    },
+    {
+     "hz": 250.0,
+     "takes": 49,
+     "balance_db": -6.344318827372741,
+     "coherence": 0.5794319600971599,
+     "pitches": [
+      68,
+      70,
+      72,
+      76,
+      78,
+      80,
+      84,
+      87,
+      93,
+      96,
+      99,
+      105,
+      108
+     ],
+     "rate_db_s": 316.97863849222284,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.7265482469897893
+    },
+    {
+     "hz": 314.9802624737183,
+     "takes": 45,
+     "balance_db": -1.8323293164435999,
+     "coherence": 0.6790943554456962,
+     "pitches": [
+      70,
+      72,
+      76,
+      78,
+      80,
+      84,
+      87,
+      93,
+      96,
+      99,
+      105,
+      108
+     ],
+     "rate_db_s": 271.87127817570513,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.83212953471455
+    }
+   ],
+   "anchors": [
+    {
+     "note": 21,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 24,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 30,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 33,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 36,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 42,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 45,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 48,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 52,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 54,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -58.44867231239043,
+       "slope_db": 1.1,
+       "rms_db_without": 4.904308738325251,
+       "rms_db": 4.346917180414299,
+       "at_edge": false
+      },
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 56,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -54.738848704536885,
+       "slope_db": 1.4500000000000002,
+       "rms_db_without": 7.865563283532304,
+       "rms_db": 6.047086817339125,
+       "at_edge": false
+      },
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 60,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -65.22494063303564,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 7.219840486837159,
+       "rms_db": 6.373051034393362,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -57.24202870304095,
+       "slope_db": 1.3,
+       "rms_db_without": 6.762851075252548,
+       "rms_db": 3.3585282341168248,
+       "at_edge": false
+      },
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 62,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -56.762761703486795,
+       "slope_db": 1.55,
+       "rms_db_without": 12.304401624460976,
+       "rms_db": 11.594630245579102,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.846426269260554,
+       "slope_db": 1.35,
+       "rms_db_without": 9.675467874708586,
+       "rms_db": 4.795606095839043,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -55.89549766893313,
+       "slope_db": 1.1,
+       "rms_db_without": 4.906427546571196,
+       "rms_db": 3.1219951210793053,
+       "at_edge": false
+      },
+      null,
+      null
+     ]
+    },
+    {
+     "note": 64,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -61.22537773113902,
+       "slope_db": 1.6500000000000001,
+       "rms_db_without": 8.25138659082137,
+       "rms_db": 7.969656485125765,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.90203848497769,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 7.422954433127574,
+       "rms_db": 5.509636237501259,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -61.68667964924387,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 3.9986557631981943,
+       "rms_db": 3.9660569258968565,
+       "at_edge": false
+      },
+      null,
+      null
+     ]
+    },
+    {
+     "note": 68,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -59.52525275725423,
+       "slope_db": 2.0,
+       "rms_db_without": 7.933119711968458,
+       "rms_db": 6.580515175014855,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -59.09505404797996,
+       "slope_db": 1.25,
+       "rms_db_without": 7.447917874681263,
+       "rms_db": 4.799030266608122,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -53.22291221621317,
+       "slope_db": 1.7000000000000002,
+       "rms_db_without": 4.740027056461975,
+       "rms_db": 4.496377324710027,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -57.62053077488771,
+       "slope_db": 1.05,
+       "rms_db_without": 3.3404557321612307,
+       "rms_db": 3.037858507800971,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 70,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -60.54637525386195,
+       "slope_db": 2.0,
+       "rms_db_without": 10.196712025914698,
+       "rms_db": 9.647383828185342,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -58.85541417920164,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 11.031514724210497,
+       "rms_db": 5.584120275919085,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -53.900105291788385,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 5.403331474095888,
+       "rms_db": 4.014792650059419,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -57.72557371134441,
+       "slope_db": 0.9,
+       "rms_db_without": 5.104599754002884,
+       "rms_db": 3.5997862539546053,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -56.89849005048751,
+       "slope_db": 0.9,
+       "rms_db_without": 3.3874922617889167,
+       "rms_db": 2.382181477282442,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 72,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -77.26349091631978,
+       "slope_db": 1.6500000000000001,
+       "rms_db_without": 10.797916193570472,
+       "rms_db": 10.797324469965766,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -64.04450768320464,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 7.36165295308209,
+       "rms_db": 4.440250493176001,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -71.33719294355359,
+       "slope_db": 0.65,
+       "rms_db_without": 5.100493420346748,
+       "rms_db": 4.996630880043475,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -66.26454060061707,
+       "slope_db": 0.65,
+       "rms_db_without": 4.88162285971302,
+       "rms_db": 4.726044027654214,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.19510837278195,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 3.145325992901198,
+       "rms_db": 2.672748854164138,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 76,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -67.0589280175272,
+       "slope_db": 2.0,
+       "rms_db_without": 15.095866427836132,
+       "rms_db": 14.948527222516866,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -60.4915972659783,
+       "slope_db": 2.0,
+       "rms_db_without": 8.7738093633737,
+       "rms_db": 5.713100532088206,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -59.91864828907058,
+       "slope_db": 1.6500000000000001,
+       "rms_db_without": 6.0555733366505935,
+       "rms_db": 5.912264377853218,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -61.87167587424168,
+       "slope_db": 1.05,
+       "rms_db_without": 4.493912949737956,
+       "rms_db": 3.7657785049257138,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -82.21136805350514,
+       "slope_db": 0.2,
+       "rms_db_without": 3.8022740799244383,
+       "rms_db": 3.613479218458202,
+       "at_edge": true
+      }
+     ]
+    },
+    {
+     "note": 78,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -64.72777657067829,
+       "slope_db": 2.0,
+       "rms_db_without": 11.36739002358361,
+       "rms_db": 10.36873997694882,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -62.13675900459201,
+       "slope_db": 2.0,
+       "rms_db_without": 10.75420451556008,
+       "rms_db": 8.379977723599978,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -51.92461694757043,
+       "slope_db": 2.0,
+       "rms_db_without": 9.87198948726107,
+       "rms_db": 9.439739084233283,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -52.260704703345,
+       "slope_db": 2.0,
+       "rms_db_without": 6.751415131450707,
+       "rms_db": 5.446767964598336,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -59.54912985435849,
+       "slope_db": 1.05,
+       "rms_db_without": 5.188162712102549,
+       "rms_db": 3.699879798162677,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 80,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -68.6880334099635,
+       "slope_db": 2.0,
+       "rms_db_without": 8.537130967838234,
+       "rms_db": 8.42579621212394,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -58.716165756376405,
+       "slope_db": 2.0,
+       "rms_db_without": 9.7565567420812,
+       "rms_db": 6.976233934037886,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -52.74971804349251,
+       "slope_db": 2.0,
+       "rms_db_without": 15.545512461271048,
+       "rms_db": 15.445617606368408,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -53.442511999339395,
+       "slope_db": 1.8,
+       "rms_db_without": 7.131255453153109,
+       "rms_db": 6.538383182101136,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -60.10815531546376,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.165735657457937,
+       "rms_db": 3.2972013309878094,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 84,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -72.35382587668006,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.9701249421297335,
+       "rms_db": 5.748432248652405,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -61.46470908806534,
+       "slope_db": 1.1,
+       "rms_db_without": 9.875702851608207,
+       "rms_db": 5.963490535467149,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -60.4211691415494,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.16651597810108,
+       "rms_db": 5.020865555394166,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -61.853307868594285,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 5.0326939616634645,
+       "rms_db": 4.86674292525154,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -66.7225399196814,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 5.227346260111498,
+       "rms_db": 5.121477722611649,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 87,
+     "bands": [
+      {
+       "takes": 3,
+       "level_db": -63.367397348854546,
+       "slope_db": 1.05,
+       "rms_db_without": 5.298448670876359,
+       "rms_db": 3.579492914878814,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -58.335925578465236,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 11.165122810525512,
+       "rms_db": 3.088435042669517,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -51.458553758448375,
+       "slope_db": 1.0,
+       "rms_db_without": 5.053570945390944,
+       "rms_db": 2.5004601012144785,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -55.285299786909945,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 6.947157000545557,
+       "rms_db": 2.7748268876955375,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -63.88331031142056,
+       "slope_db": 0.5,
+       "rms_db_without": 4.749333195537569,
+       "rms_db": 3.037772947057426,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 93,
+     "bands": [
+      {
+       "takes": 3,
+       "level_db": -70.08566222553858,
+       "slope_db": 1.0,
+       "rms_db_without": 10.103162596050579,
+       "rms_db": 9.556750251852877,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -64.81015384465742,
+       "slope_db": 1.0,
+       "rms_db_without": 6.9033181948425035,
+       "rms_db": 3.7228607446031217,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -63.235764490037596,
+       "slope_db": 0.9,
+       "rms_db_without": 5.3869436919505285,
+       "rms_db": 4.653446720326658,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -63.853969939350236,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 5.49373270102006,
+       "rms_db": 3.599633343997099,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -66.75722810411767,
+       "slope_db": 0.5,
+       "rms_db_without": 4.175475610904284,
+       "rms_db": 3.159066014690806,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 96,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -70.5337915129436,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 4.983629775746517,
+       "rms_db": 4.602697341089825,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -65.80490474358314,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 9.880475238711114,
+       "rms_db": 4.804684582093725,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.999156771046295,
+       "slope_db": 1.25,
+       "rms_db_without": 6.282304937482847,
+       "rms_db": 5.072941583405835,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.97137013422075,
+       "slope_db": 1.0,
+       "rms_db_without": 7.324805458007486,
+       "rms_db": 4.131599016078368,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -65.45922360207024,
+       "slope_db": 0.65,
+       "rms_db_without": 4.867021084191767,
+       "rms_db": 3.327023955165703,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 99,
+     "bands": [
+      {
+       "takes": 3,
+       "level_db": -67.58309861056864,
+       "slope_db": 0.9,
+       "rms_db_without": 6.871246493677138,
+       "rms_db": 3.5559911987424644,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -65.0203775300034,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 10.732514845849709,
+       "rms_db": 3.5746018639289585,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -57.64682889724206,
+       "slope_db": 0.75,
+       "rms_db_without": 5.906478033754111,
+       "rms_db": 3.2142635630645953,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -58.35910512302411,
+       "slope_db": 0.65,
+       "rms_db_without": 6.672760175220234,
+       "rms_db": 3.117143257300205,
+       "at_edge": false
+      },
+      {
+       "takes": 3,
+       "level_db": -65.03282890508773,
+       "slope_db": 0.30000000000000004,
+       "rms_db_without": 5.551063724933419,
+       "rms_db": 2.740881066655807,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 105,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -61.46732566335933,
+       "slope_db": 1.0,
+       "rms_db_without": 9.891042254275746,
+       "rms_db": 4.12517790156284,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.67103472622631,
+       "slope_db": 1.0,
+       "rms_db_without": 14.229254736612992,
+       "rms_db": 3.9942810332284666,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -55.19101347794747,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 8.763687171787057,
+       "rms_db": 4.5707676749928385,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.26631900735582,
+       "slope_db": 1.0,
+       "rms_db_without": 8.604679951235235,
+       "rms_db": 3.226849351645389,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -60.51490977350185,
+       "slope_db": 0.65,
+       "rms_db_without": 8.075874916137177,
+       "rms_db": 3.1241923801440885,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 108,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -62.99629187268647,
+       "slope_db": 1.0,
+       "rms_db_without": 12.875121510651464,
+       "rms_db": 5.6917490555316,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -62.36572246977947,
+       "slope_db": 1.0,
+       "rms_db_without": 16.298341940228916,
+       "rms_db": 4.10241310068089,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -57.90295358117666,
+       "slope_db": 1.0,
+       "rms_db_without": 11.94783687721019,
+       "rms_db": 4.154751045267662,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -60.85687226690446,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 12.469327147612768,
+       "rms_db": 4.078959614845659,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -62.3351414783385,
+       "slope_db": 0.65,
+       "rms_db_without": 10.57131776136855,
+       "rms_db": 3.954082116404913,
+       "at_edge": false
+      }
+     ]
+    }
+   ]
+  },
+  "hamburg": {
+   "header": "Source/DSP/MeasuredHamburgData.h",
+   "header_sha256": "3a97e4d1cf69b777916cde6295a3250ca175d137936e11af9a5eb1a75d3c711f",
+   "split": "Tools/corpus/split-hamburg-2026-10-31.json",
+   "split_sha256": "d723a68a27718d571e3b1f45c9ea98d38747e71c60bba9900b184243258e75db",
+   "corpus": "Tools/corpus/hamburg-grand.json",
+   "corpus_sha256": "d28aae9e980302d8b9d83fa3792fac5ae7baddd280ced6d6dc18653fdbd35ef5",
+   "takes": 24,
+   "bands": [
+    {
+     "hz": 125.0,
+     "takes": 24,
+     "balance_db": -4.072799976668432,
+     "coherence": 0.731191203111336,
+     "pitches": [
+      59,
+      66,
+      80,
+      87,
+      94,
+      101
+     ],
+     "rate_db_s": 92.83177667225556,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.8287842901758596
+    },
+    {
+     "hz": 157.49013123685916,
+     "takes": 24,
+     "balance_db": 1.1286560386764564,
+     "coherence": 0.7150261815248133,
+     "pitches": [
+      59,
+      66,
+      80,
+      87,
+      94,
+      101
+     ],
+     "rate_db_s": 200.00000000000003,
+     "rise_s": 0.003,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.854515920971056
+    },
+    {
+     "hz": 198.42513149602493,
+     "takes": 20,
+     "balance_db": -0.30260441800971855,
+     "coherence": 0.1946637014898667,
+     "pitches": [
+      66,
+      80,
+      87,
+      94,
+      101
+     ],
+     "rate_db_s": 126.19146889603861,
+     "rise_s": 0.0005,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.5972728133314867
+    },
+    {
+     "hz": 250.0,
+     "takes": 20,
+     "balance_db": 0.4851969141896266,
+     "coherence": 0.3437667294256654,
+     "pitches": [
+      66,
+      80,
+      87,
+      94,
+      101
+     ],
+     "rate_db_s": 147.12845089192828,
+     "rise_s": 0.003,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.6716155422527516
+    },
+    {
+     "hz": 314.9802624737183,
+     "takes": 16,
+     "balance_db": -2.3512085004716377,
+     "coherence": 0.4659814202596896,
+     "pitches": [
+      80,
+      87,
+      94,
+      101
+     ],
+     "rate_db_s": 200.00000000000003,
+     "rise_s": 0.04,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.7247076315923262
+    }
+   ],
+   "anchors": [
+    {
+     "note": 24,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 31,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 38,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 45,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 59,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -61.731694191797665,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 4.279949618592141,
+       "rms_db": 4.110883201185031,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -54.22396630698272,
+       "slope_db": 1.0,
+       "rms_db_without": 4.5891021594563455,
+       "rms_db": 3.6534650501611696,
+       "at_edge": false
+      },
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 66,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -59.51381114599122,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 6.19109120099801,
+       "rms_db": 5.2313703633546815,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -50.35768483845197,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.609287833534579,
+       "rms_db": 4.633912867303131,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -61.66214043035993,
+       "slope_db": 0.8,
+       "rms_db_without": 4.368452110936493,
+       "rms_db": 4.211830050360325,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -57.421068011651755,
+       "slope_db": 0.9,
+       "rms_db_without": 4.039867562225654,
+       "rms_db": 3.337813289102239,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 80,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -72.24338920058514,
+       "slope_db": 0.8,
+       "rms_db_without": 6.379083900058948,
+       "rms_db": 5.694726042048194,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -58.278409487157084,
+       "slope_db": 1.4000000000000001,
+       "rms_db_without": 5.200002815008834,
+       "rms_db": 4.862714127567861,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -60.85618740222344,
+       "slope_db": 1.05,
+       "rms_db_without": 4.895234488006335,
+       "rms_db": 3.963284220489999,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.69468809811887,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 4.92855221603337,
+       "rms_db": 4.073883544618744,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -58.75763331602379,
+       "slope_db": 1.05,
+       "rms_db_without": 5.634113191334951,
+       "rms_db": 4.681959002386077,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 87,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -75.77148306981677,
+       "slope_db": 0.35000000000000003,
+       "rms_db_without": 5.499117648884065,
+       "rms_db": 5.110923045053164,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -58.35238319728536,
+       "slope_db": 2.0,
+       "rms_db_without": 4.81954590307496,
+       "rms_db": 4.718175052491575,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -69.54490275078693,
+       "slope_db": 0.35000000000000003,
+       "rms_db_without": 4.739683433275976,
+       "rms_db": 4.547650338029021,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -64.989648185664,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 4.78802606948273,
+       "rms_db": 4.000977764728303,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.923844996204004,
+       "slope_db": 0.4,
+       "rms_db_without": 6.801409633449542,
+       "rms_db": 5.072532607516597,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 94,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -67.31360823875217,
+       "slope_db": 1.25,
+       "rms_db_without": 6.0103452670909165,
+       "rms_db": 5.770711881673303,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -55.57508093179951,
+       "slope_db": 1.35,
+       "rms_db_without": 5.455976321731827,
+       "rms_db": 4.317869612737514,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -62.717464350408946,
+       "slope_db": 0.9,
+       "rms_db_without": 5.430068845045185,
+       "rms_db": 4.103127815880294,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -63.87613916322451,
+       "slope_db": 1.0,
+       "rms_db_without": 5.431097357786618,
+       "rms_db": 3.5203896826694567,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -63.34378953364302,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 6.309464017766145,
+       "rms_db": 4.103675826699021,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 101,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -62.671442755033105,
+       "slope_db": 1.35,
+       "rms_db_without": 6.032851952736453,
+       "rms_db": 4.055320929264928,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -55.707632944612264,
+       "slope_db": 1.1,
+       "rms_db_without": 8.873737521509602,
+       "rms_db": 3.9414928737877597,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -61.940505767261186,
+       "slope_db": 0.8,
+       "rms_db_without": 6.089579384109538,
+       "rms_db": 3.363182857552096,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -64.28599131445213,
+       "slope_db": 0.8,
+       "rms_db_without": 5.632484344223633,
+       "rms_db": 3.6023139251269067,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.434109445833535,
+       "slope_db": 0.7000000000000001,
+       "rms_db_without": 6.247350716821609,
+       "rms_db": 4.2089494518365935,
+       "at_edge": false
+      }
+     ]
+    }
+   ]
+  },
+  "newyork": {
+   "header": "Source/DSP/MeasuredNewYorkData.h",
+   "header_sha256": "ad6bbe849064c19f1e08b9959bb910c0b663aabe998a3f5f303f48c519d18c4e",
+   "split": "Tools/corpus/split-newyork-2026-10-31.json",
+   "split_sha256": "534da876cf25ac4a724aba60286bd05796975bfb5002c2fb27e220d771980072",
+   "corpus": "Tools/corpus/newyork-grand.json",
+   "corpus_sha256": "064726e5ebcc98902002633fc5d39c4c9a5e9ba5337b2a802a8c2c3db4b82020",
+   "takes": 36,
+   "bands": [
+    {
+     "hz": 125.0,
+     "takes": 36,
+     "balance_db": 1.3635289021919685,
+     "coherence": 0.9661390197573243,
+     "pitches": [
+      59,
+      69,
+      74,
+      79,
+      89,
+      94,
+      99,
+      104
+     ],
+     "rate_db_s": 233.18288023596625,
+     "rise_s": 0.04,
+     "rate_at_edge": false,
+     "rise_at_edge": true,
+     "room_heard": 0.9771777912359724
+    },
+    {
+     "hz": 157.49013123685916,
+     "takes": 36,
+     "balance_db": 2.1174017077256417,
+     "coherence": 0.6868663922023,
+     "pitches": [
+      59,
+      69,
+      74,
+      79,
+      89,
+      94,
+      99,
+      104
+     ],
+     "rate_db_s": 126.19146889603861,
+     "rise_s": 0.002,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.8334754417925013
+    },
+    {
+     "hz": 198.42513149602493,
+     "takes": 31,
+     "balance_db": 0.46744287141480406,
+     "coherence": 0.7545828409415861,
+     "pitches": [
+      69,
+      74,
+      79,
+      89,
+      94,
+      99,
+      104
+     ],
+     "rate_db_s": 171.53917971817893,
+     "rise_s": 0.005,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.876745723405502
+    },
+    {
+     "hz": 250.0,
+     "takes": 31,
+     "balance_db": -1.0498206505420484,
+     "coherence": 0.5194590748100482,
+     "pitches": [
+      69,
+      74,
+      79,
+      89,
+      94,
+      99,
+      104
+     ],
+     "rate_db_s": 200.00000000000003,
+     "rise_s": 0.02,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.757843904655601
+    },
+    {
+     "hz": 314.9802624737183,
+     "takes": 26,
+     "balance_db": 3.7860386872798686,
+     "coherence": 0.5820771700207273,
+     "pitches": [
+      74,
+      79,
+      89,
+      94,
+      99,
+      104
+     ],
+     "rate_db_s": 233.18288023596625,
+     "rise_s": 0.014,
+     "rate_at_edge": false,
+     "rise_at_edge": false,
+     "room_heard": 0.7654224059656499
+    }
+   ],
+   "anchors": [
+    {
+     "note": 24,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 29,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 34,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 44,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 49,
+     "bands": [
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 59,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -49.94033575661343,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 7.137298142625253,
+       "rms_db": 6.970111000399958,
+       "at_edge": true
+      },
+      {
+       "takes": 5,
+       "level_db": -59.65592133561155,
+       "slope_db": 1.0,
+       "rms_db_without": 5.894802009928247,
+       "rms_db": 5.680921355496743,
+       "at_edge": false
+      },
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "note": 69,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -44.944393112573934,
+       "slope_db": 1.1,
+       "rms_db_without": 5.1205503872029565,
+       "rms_db": 5.007331614862978,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -66.05718260720015,
+       "slope_db": 0.4,
+       "rms_db_without": 7.934627312438949,
+       "rms_db": 5.083704404317838,
+       "at_edge": true
+      },
+      {
+       "takes": 5,
+       "level_db": -49.67926064561569,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 6.189236235544481,
+       "rms_db": 3.9217082669691896,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -54.03983911963825,
+       "slope_db": 0.75,
+       "rms_db_without": 4.130673330238108,
+       "rms_db": 3.7431270374105305,
+       "at_edge": false
+      },
+      null
+     ]
+    },
+    {
+     "note": 74,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -49.10742823858992,
+       "slope_db": 1.05,
+       "rms_db_without": 7.23061660256358,
+       "rms_db": 6.938176415864661,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -59.425446615743596,
+       "slope_db": 1.1,
+       "rms_db_without": 6.47319802682647,
+       "rms_db": 5.957933579943981,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -49.16475789812951,
+       "slope_db": 1.05,
+       "rms_db_without": 5.919750669092852,
+       "rms_db": 4.3391843515368125,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -50.352067936879834,
+       "slope_db": 1.1500000000000001,
+       "rms_db_without": 5.184380168262229,
+       "rms_db": 4.842680135145415,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -47.76274590473725,
+       "slope_db": 1.35,
+       "rms_db_without": 4.776242601930926,
+       "rms_db": 4.701393553523127,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 79,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -61.538874272842016,
+       "slope_db": 0.2,
+       "rms_db_without": 5.877196242485934,
+       "rms_db": 5.4169835036673675,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.326016078272204,
+       "slope_db": 0.8,
+       "rms_db_without": 6.012664398010992,
+       "rms_db": 4.567246806320767,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -56.836588403458705,
+       "slope_db": 0.5,
+       "rms_db_without": 6.654727826542267,
+       "rms_db": 5.014987977896152,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -67.77949015417025,
+       "slope_db": 0.0,
+       "rms_db_without": 5.644187768858871,
+       "rms_db": 5.11927214498788,
+       "at_edge": true
+      },
+      {
+       "takes": 4,
+       "level_db": -61.09997254394399,
+       "slope_db": 0.35000000000000003,
+       "rms_db_without": 3.8300109338096444,
+       "rms_db": 3.521535370339181,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 89,
+     "bands": [
+      {
+       "takes": 5,
+       "level_db": -48.15382012818195,
+       "slope_db": 1.2000000000000002,
+       "rms_db_without": 6.70936289578632,
+       "rms_db": 6.241650839673199,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -54.47240502103996,
+       "slope_db": 1.4500000000000002,
+       "rms_db_without": 7.057436295617677,
+       "rms_db": 5.159142287508575,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -50.93075604878846,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 6.917697875652005,
+       "rms_db": 3.6895753241032416,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -54.69720965428847,
+       "slope_db": 0.8,
+       "rms_db_without": 4.206468761931847,
+       "rms_db": 3.5159594988941234,
+       "at_edge": false
+      },
+      {
+       "takes": 5,
+       "level_db": -51.92371271212167,
+       "slope_db": 0.75,
+       "rms_db_without": 5.2511872650196905,
+       "rms_db": 4.095080833175616,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 94,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -69.3796801856673,
+       "slope_db": 0.55,
+       "rms_db_without": 7.108059552175141,
+       "rms_db": 7.0323636138383,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -66.82568297071042,
+       "slope_db": 0.8,
+       "rms_db_without": 5.803195794200726,
+       "rms_db": 4.038996254768349,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -54.092491375754975,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 6.689630810849557,
+       "rms_db": 3.8524052201245165,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -54.3391778428287,
+       "slope_db": 0.8500000000000001,
+       "rms_db_without": 4.992878447584318,
+       "rms_db": 3.2847892104172707,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -50.41828628642258,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 5.765214797081829,
+       "rms_db": 3.54249359121364,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 99,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -64.96995637534951,
+       "slope_db": 0.6000000000000001,
+       "rms_db_without": 7.318169685113543,
+       "rms_db": 6.744237493859564,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -59.29472746026353,
+       "slope_db": 1.1,
+       "rms_db_without": 8.548541038792708,
+       "rms_db": 3.8677371830075917,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -55.355814998389796,
+       "slope_db": 1.0,
+       "rms_db_without": 7.014366768989782,
+       "rms_db": 4.072399034927963,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -51.6573967346481,
+       "slope_db": 1.0,
+       "rms_db_without": 6.254970868802809,
+       "rms_db": 3.382773424014691,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -44.37392312984403,
+       "slope_db": 1.25,
+       "rms_db_without": 4.920401644046547,
+       "rms_db": 2.883561113231148,
+       "at_edge": false
+      }
+     ]
+    },
+    {
+     "note": 104,
+     "bands": [
+      {
+       "takes": 4,
+       "level_db": -37.650299622448664,
+       "slope_db": 1.6500000000000001,
+       "rms_db_without": 7.123339446503196,
+       "rms_db": 5.63991863002887,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -53.23093234791697,
+       "slope_db": 1.35,
+       "rms_db_without": 10.843042149900189,
+       "rms_db": 4.155228543087173,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -56.33763553613753,
+       "slope_db": 0.9500000000000001,
+       "rms_db_without": 7.052105320960969,
+       "rms_db": 3.6949632592410833,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -51.168054378094254,
+       "slope_db": 1.25,
+       "rms_db_without": 6.258511761203896,
+       "rms_db": 3.521303752360589,
+       "at_edge": false
+      },
+      {
+       "takes": 4,
+       "level_db": -45.4558178661609,
+       "slope_db": 1.05,
+       "rms_db_without": 6.800413790600354,
+       "rms_db": 3.2985256369834883,
+       "at_edge": false
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
