@@ -3552,9 +3552,10 @@ Levels and tests. The room raises five loudest-chord readings over their
 approved levels: the Hamamatsu's through the tube 3.297875 VU against
 3.292226, Kakegawa Grand 0.709162 against 0.707407, Warm Walnut −0.120532
 against −0.123667, Felt Nocturne −5.595710 against −5.597279 and Open
-Strings 1.505028 against 1.501300, so `Keyra.Levels` fails on them until
-the owner accepts them or not. Typical playing moves −0.006 to +0.025 VU,
-inside the test's 0.05 guard, so no output or tube scale is re-pinned.
+Strings 1.505028 against 1.501300, so `Keyra.Levels` failed on them; the
+owner accepted them with 0.4.28's readings (next entry). Typical playing
+moves −0.006 to +0.025 VU, inside the test's 0.05 guard, so no output or
+tube scale is re-pinned.
 `Keyra.FactoryDynamics` fails as it did on 0.4.26, on 992 rows (966 pairs
 under their step floors and 26 chords past its maximum levels) where 0.4.26
 failed on 993 (968 and 25); the one new row is the original Hamburg Grand's
@@ -3658,14 +3659,16 @@ Levels and tests. On the meter, typical playing moves −0.012 to +0.030 VU
 from 0.4.27's readings, and the Hamamatsu's through the tube +0.078 VU, past
 the test's 0.05 guard: the knock lies under 400 Hz, which the tube's
 response favours. Its tube scale is re-pinned to the −9.95 VU it read before
-(1.2364 to 1.2253), as in earlier rounds. Six readings then stand past their
-approved levels, so `Keyra.Levels` fails on them until the owner accepts them
-or not: the five loudest chords 0.4.27 already raised, now the Hamamatsu's
-through the tube 3.301832 VU against its approved 3.292226, Kakegawa Grand
-0.719836 against 0.707407, Warm Walnut −0.104002 against −0.123667, Felt
-Nocturne −5.592784 against −5.597279 and Open Strings 1.514169 against
-1.501300, and Felt Upright's typical playing, −15.589097 against −15.665733,
-0.077 VU louder where 0.4.27's reading stood 0.046 VU louder.
+(1.2364 to 1.2253), as in earlier rounds. Six readings then stood past their
+approved levels: the five loudest chords 0.4.27 already raised, now the
+Hamamatsu's through the tube 3.301832 VU against its approved 3.292226,
+Kakegawa Grand 0.719836 against 0.707407, Warm Walnut −0.104002 against
+−0.123667, Felt Nocturne −5.592784 against −5.597279 and Open Strings
+1.514169 against 1.501300, and Felt Upright's typical playing, −15.589097
+against −15.665733, 0.077 VU louder where 0.4.27's reading stood 0.046 VU
+louder. Asked whether to accept them and merge 0.4.27 and 0.4.28, the
+owner chose to: `Tests/Fixtures/dynamics/ApprovedLevels.h` now holds all
+six to six decimals, and `Keyra.Levels` passes.
 `Keyra.FactoryDynamics` fails as it did on 0.4.27, on 1,019 rows (992 pairs
 under their step floors and 27 chords past its maximum levels) where 0.4.27
 failed on 992 (966 and 26). Of the 68 new rows, 67 pairs stand a median

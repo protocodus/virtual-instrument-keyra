@@ -81,9 +81,9 @@ The 88 keys struck in turn with the pedal down render in 0.9 % more CPU on
 the grand, 2.9 % more on the upright, 1.4 % more on the Hamamatsu, 0.3 % less
 on the Hamburg and 0.5 % less on New York, on the development machine. The
 Hamamatsu's tube, which the knock took 0.08 VU louder, is re-pinned to what
-it read on Reason's meter before. Five loudest-chord readings then stand
-0.004 to 0.020 VU over their approved levels, and Felt Upright's typical
-playing 0.077 VU over its.
+it read on Reason's meter before. Six readings then passed their approved
+levels, and the owner accepted them: five loudest chords by 0.004 to
+0.020 VU, and Felt Upright's typical playing by 0.077 VU.
 
 ### 0.4.27 — 2026-11-09 — the recording room
 
@@ -127,7 +127,8 @@ way.
 The 88 keys struck in turn with the pedal down render in 5.2 % more CPU on
 the grand, 5.0 % more on the upright, 2.8 % more on the Hamamatsu, 1.2 % less
 on the Hamburg and 0.5 % more on New York, on the development machine. Five
-loudest-chord readings stand 0.002 to 0.006 VU over their approved levels.
+loudest-chord readings passed their approved levels by 0.002 to 0.006 VU, and
+the owner accepted them with 0.4.28's.
 
 ### 0.4.26 — 2026-11-09 — the keyboard network retrained, and the treble's unison strings
 

@@ -36,6 +36,12 @@
 // strings ring on three pianos; the owner approved two new readings, Three
 // Cities' typical playing and the Hamamatsu tube's loudest chords, to six
 // decimals (Docs/decisions.md, 2026-11-06).
+// In 0.4.27 each piano plays the room it was recorded in, and in 0.4.28 the
+// strike knocks the board under 400 Hz, the Hamamatsu's tube re-pinned to its
+// earlier reading; the owner approved six new readings, the loudest chords of
+// the Hamamatsu's tube, the Kakegawa Grand, Warm Walnut, Felt Nocturne and
+// Open Strings and Felt Upright's typical playing, to six decimals
+// (Docs/decisions.md, 2026-11-09).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -44,13 +50,13 @@ struct ApprovedLevel {
 };
 
 inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
-    {"Kakegawa Grand", -9.066835, 0.707407},
+    {"Kakegawa Grand", -9.066835, 0.719836},
     {"Studio Grand", -10.241775, -0.019715},
-    {"Warm Walnut", -10.950910, -0.123667},
-    {"Felt Nocturne", -18.132439, -5.597279},
-    {"Open Strings", -8.081521, 1.501300},
+    {"Warm Walnut", -10.950910, -0.104002},
+    {"Felt Nocturne", -18.132439, -5.592784},
+    {"Open Strings", -8.081521, 1.514169},
     {"Helsinki Upright", -9.122448, 4.217296},
-    {"Felt Upright", -15.665733, -0.127207},
+    {"Felt Upright", -15.589097, -0.127207},
     {"Pop Upright", -9.214799, 3.904373},
     {"Hamamatsu Grand", -9.012878, 4.003352},
     {"Three Cities", -10.426881, 2.871424},
@@ -61,7 +67,7 @@ inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
 inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
     {"grand", -9.068710, 1.222194},
     {"upright", -8.993037, 4.328115},
-    {"kawai", -9.985854, 3.292226},
+    {"kawai", -9.985854, 3.301832},
     {"hamburg", -9.172983, 2.196889},
     {"newyork", -9.020263, 2.115038},
 }};
