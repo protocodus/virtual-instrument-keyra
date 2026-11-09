@@ -15,6 +15,7 @@
 #include "MeasuredHaloOwn.h"
 #include "MeasuredTrebleUnisons.h"
 #include "MeasuredRoom.h"
+#include "MeasuredLowKnock.h"
 #include "MeasuredUprightData.h"
 #include "ForteOutput.h"
 #include <algorithm>
@@ -139,6 +140,7 @@ struct Model {
   double contactTime;
   float openStringRate,openStringRateSlope;
   const measured::NoiseBand* noiseBands;const measured::Noise* noise;
+  const measured::LowKnockBand* lowKnockBands;const measured::LowKnock* lowKnock;
   double outputScale,tubeScale;
   bool unaCorda;
   measured::Glide glide;
@@ -170,7 +172,7 @@ constexpr Model models[]{
    // The grand's partials rise as fitted.
    0,
    grand::openStringRate,grand::openStringRateSlope,
-   grand::noiseBands.data(),grand::noise.data(),
+   grand::noiseBands.data(),grand::noise.data(),grand::lowKnockBands.data(),grand::lowKnock.data(),
    // The measured levels are the recordings' own. This scale brings typical
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
@@ -206,7 +208,7 @@ constexpr Model models[]{
    // by ear (Docs/decisions.md, 2026-10-29).
    .002,
    .465f,.335f,
-   upright::noiseBands.data(),upright::noise.data(),
+   upright::noiseBands.data(),upright::noise.data(),upright::lowKnockBands.data(),upright::lowKnock.data(),
    // The recordings' levels are their own. This scale brings its typical
    // playing to the grand's, -9 VU (Tools/KeyraLevels.cpp), which puts its
    // median note at velocity 127 0.4 dB over the grand's (each key A0-C8
@@ -243,7 +245,7 @@ constexpr Model models[]{
    // 30 ms).
    .002,
    .345f,.298f,
-   kawai::noiseBands.data(),kawai::noise.data(),
+   kawai::noiseBands.data(),kawai::noise.data(),kawai::lowKnockBands.data(),kawai::lowKnock.data(),
    // Its typical playing at the grand's level, -9 VU (Tools/KeyraLevels.cpp),
    // which puts its median note 1.9 dB over the grand's at velocity 127 and
    // 2.3 dB over at velocity 30, measured as the upright's (1.6 and 1.8 dB
@@ -260,8 +262,10 @@ constexpr Model models[]{
    // Re-pinned to -10.03 VU after the 2026-11-01 soundboard refit, which took
    // it to -10.10, and in 0.4.26 to the -9.95 VU it read before, from 1.2250,
    // when the network's keys took it to -11.27; its loudest chords through
-   // the tube read 3.29 VU.
-   1.2364,
+   // the tube read 3.29 VU. Re-pinned again in 0.4.28 to the -9.95 VU it
+   // read before, from 1.2364: the knock under 400 Hz, which the tube's
+   // response favours, took it to -9.87.
+   1.2253,
    true,
    kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
@@ -279,7 +283,7 @@ constexpr Model models[]{
    // Its rises are capped at the hammer's contact, as the upright's.
    .002,
    .305f,.282f,
-   hamburg::noiseBands.data(),hamburg::noise.data(),
+   hamburg::noiseBands.data(),hamburg::noise.data(),hamburg::lowKnockBands.data(),hamburg::lowKnock.data(),
    // Each one's typical playing at the grand's level, -9 VU, and its tube at
    // the pair's (Tools/KeyraLevels.cpp). Re-pinned in 0.4.22 to the -8.95
    // and -9.18 VU it read before, from 2.2622 and 1.5176: its keys between
@@ -307,7 +311,7 @@ constexpr Model models[]{
    // Its rises are capped at the hammer's contact, as the upright's.
    .002,
    .415f,.318f,
-   newyork::noiseBands.data(),newyork::noise.data(),
+   newyork::noiseBands.data(),newyork::noise.data(),newyork::lowKnockBands.data(),newyork::lowKnock.data(),
    // Typical playing at -9 VU and the tube at the pair's, as above.
    // Re-pinned in 0.4.26 to the -9.09 and -9.03 VU they read before, from
    // .6543 and 1.8141: its keys between recorded pitches play the keyboard
@@ -643,13 +647,25 @@ constexpr bool sameCentres(std::size_t b=0) noexcept {
                                        &&grand::noiseBands[b].hz==kawai::noiseBands[b].hz&&grand::noiseBands[b].hz==hamburg::noiseBands[b].hz&&grand::noiseBands[b].hz==newyork::noiseBands[b].hz&&sameCentres(b+1));
 }
 static_assert(sameCentres(),"every piano's noise bands share the grand's centres");
+// Under the lowest of them the strike's knock alone (MeasuredLowKnock.h),
+// which the bank plays after the measured bands, so that those keep their
+// tables' indices.
+constexpr int lowBands=measured::lowKnockBandCount,bankBands=noiseBands+lowBands;
+constexpr bool sameLowCentres(std::size_t b=0) noexcept {
+  return b==grand::lowKnockBands.size()||(grand::lowKnockBands[b].hz==upright::lowKnockBands[b].hz
+                                          &&grand::lowKnockBands[b].hz==kawai::lowKnockBands[b].hz&&grand::lowKnockBands[b].hz==hamburg::lowKnockBands[b].hz&&grand::lowKnockBands[b].hz==newyork::lowKnockBands[b].hz&&sameLowCentres(b+1));
+}
+static_assert(sameLowCentres()&&grand::lowKnockBands.back().hz<grand::noiseBands.front().hz,
+              "every piano's low knock shares the grand's centres, under its noise bands");
+constexpr double bandHz(int b) noexcept {return b<noiseBands?grand::noiseBands[b].hz:grand::lowKnockBands[b-noiseBands].hz;}
 struct Burst {
-  double left[noiseBands]{},right[noiseBands]{},step[noiseBands]{};
-  double slowLeft[noiseBands]{},slowRight[noiseBands]{},slowStep[noiseBands]{};
-  double knockLeft[noiseBands]{},knockRight[noiseBands]{},knockStep[noiseBands]{};
+  double left[bankBands]{},right[bankBands]{},step[bankBands]{};
+  double slowLeft[bankBands]{},slowRight[bankBands]{},slowStep[bankBands]{};
+  double knockLeft[bankBands]{},knockRight[bankBands]{},knockStep[bankBands]{};
   // An action's click builds up under the action's rise: its knock stage
-  // less this, which falls the faster by the rise's rate. None for a strike.
-  double riseLeft[noiseBands]{},riseRight[noiseBands]{},riseStep[noiseBands]{};
+  // less this, which falls the faster by the rise's rate. A strike's knock
+  // has one only under the noise bands (MeasuredLowKnock.h).
+  double riseLeft[bankBands]{},riseRight[bankBands]{},riseStep[bankBands]{};
   std::uint64_t serial=0;
   bool active=false;
 };
@@ -659,9 +675,13 @@ struct Burst {
 // its end. A band whose gains stay under -180 dB through a chunk is left
 // unfiltered for it: most of the time the knock's bands under the modes'
 // top are silent.
-constexpr int noiseSections=3;
+constexpr int noiseSections=3,noiseStates=2+2*noiseSections;
 struct NoiseBand {
   double b0[noiseSections]{},a1[noiseSections]{},a2[noiseSections]{},scale=0,c=1,s=0;
+  // The covariance the source leaves in the filters' state, as a lower
+  // Cholesky factor over (x1[0], x2[0], y1[0], y2[0], y1[1], ...): what
+  // silenceNoise() draws each band's state from (prepareNoiseStates()).
+  double stationary[noiseStates][noiseStates]{};
   // A live soundboard change rotates this unit mixing direction over 12 ms.
   // The filters and random sources keep their state. Rotating, rather than
   // independently fading c and s, preserves each band's marginal power.
@@ -1315,7 +1335,7 @@ struct Engine::Impl {
   // of it, for the sum to build up as 1 - (rise e^(-t/rise) - s e^(-t/s)) /
   // (rise - s), rise the body's, s = contactSmoothing.
   double struckOnset=0,struckContact=0;
-  std::array<double,noiseBands> coherence{};
+  std::array<double,bankBands> coherence{};
   // Each part's shares of the pianos (setParameters), all the grand's until set.
   struct {Shares strings=sharesOf({}),hammers=sharesOf({}),soundboard=sharesOf({}),action=sharesOf({});} share;
   // A strike's partials on each piano before the build combines them, the
@@ -1399,7 +1419,7 @@ struct Engine::Impl {
   std::array<BodyPickup,bodyBanks> pickup{},pickupTarget{},pickupStep{};
   int pickupGlide=0;
   std::array<Burst,maxBursts> bursts{};
-  std::array<NoiseBand,noiseBands> noise{};
+  std::array<NoiseBand,bankBands> noise{};
   std::array<double,chunk> noiseLeft{},noiseRight{};
   std::uint32_t seed=1;
   bool hissing=false;
@@ -1438,6 +1458,8 @@ struct Engine::Impl {
   std::uint64_t lastStrikeClock=0;
   bool crowded=false;
   bool legacyAttack=false,steady=false;
+  // Off only to measure what the engine plays without it (setLowKnockForMeasurement()).
+  bool lowKnockOn=true;
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset
   bool sleeping=true;
   bool pedalHeld=false;  // the sustain pedal's dampers off the strings
@@ -1584,6 +1606,8 @@ struct Engine::Impl {
     struckOnset=-bodyRise/(bodyRise-contactSmoothing);struckContact=contactSmoothing/(bodyRise-contactSmoothing);
     for(int k=0;k<noiseBands;++k)
       coherence[k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].noiseBands[k].coherence);},pick);
+    for(int k=0;k<lowBands;++k)
+      coherence[noiseBands+k]=fold(share.soundboard,[&](int p){return static_cast<double>(models[p].lowKnockBands[k].coherence);},pick);
     for(int j=0;j<halo;++j)haloHz[j]=builtPitch(firstHalo+j)*std::pow(2.,haloString[j].cents/1200);
     // A key's phantom gain multiplies two partials' amplitudes, so in the
     // output's units it is the recordings' over the scale that brings them
@@ -1798,7 +1822,7 @@ struct Engine::Impl {
     // shared with the neighbouring bands' skirts.
     for(auto& band:noise)band.scale=0;
     auto warp=[this](double f){const double x=pi*f/sampleRate;return 2*sampleRate*std::sin(x)/std::cos(x);};
-    for(int b=0;b<noiseBands;++b){
+    for(int b=0;b<bankBands;++b){
       auto& band=noise[b];
       const double theta=std::acos(bounded(static_cast<float>(coherence[b])))/2;
       const double targetC=std::cos(theta),targetS=std::sin(theta);
@@ -1815,7 +1839,7 @@ struct Engine::Impl {
         const double step=(theta-std::atan2(band.s,band.c))/band.mixFrames;
         band.mixStepC=std::cos(step);band.mixStepS=std::sin(step);
       }
-      const double hz=grand::noiseBands[b].hz;
+      const double hz=bandHz(b);
       if(hz*std::pow(2.,1/6.)>.45*sampleRate)continue;
       // Each pole of the low-pass prototype maps to one pole pair of the band,
       // whose edges, a sixth of an octave either side, are prewarped for the
@@ -1837,9 +1861,12 @@ struct Engine::Impl {
       }
       band.scale=1;
     }
-    for(int b=0;b<noiseBands;++b){auto& band=noise[b];if(band.scale==0)continue;
-      const double w=2*pi*grand::noiseBands[b].hz/sampleRate;double overlap=0;
-      for(const auto& other:noise)if(other.scale!=0){double power=1;
+    // The measured bands share their scales among themselves, as they were
+    // fitted; a low knock band shares its with every band's skirt.
+    for(int b=0;b<bankBands;++b){auto& band=noise[b];if(band.scale==0)continue;
+      const double w=2*pi*bandHz(b)/sampleRate;double overlap=0;
+      for(int o=0;o<(b<noiseBands?noiseBands:bankBands);++o){const auto& other=noise[o];if(other.scale==0)continue;
+        double power=1;
         for(int j=0;j<noiseSections;++j)power*=sectionPower(other.b0[j],other.a1[j],other.a2[j],w);
         overlap+=power;}
       band.scale=std::sqrt(3*sampleRate/2/overlap);
@@ -1873,10 +1900,77 @@ struct Engine::Impl {
     return x;
   }
   void silenceTube() noexcept {for(auto& section:tube)section.z1=section.z2=0;}
+  // A low knock band's filters as they stand after running on their source
+  // for ever: the state's covariance, the discrete Lyapunov equation's
+  // solution summed by doubling, as a Cholesky factor. The coefficients
+  // depend on the rate alone, so prepare() computes it once for them.
+  void prepareNoiseStates() noexcept {
+    for(int n=noiseBands;n<bankBands;++n){auto& band=noise[n];
+      double a[noiseStates][noiseStates]{},b[noiseStates]{},c[noiseStates]{},d=1;
+      // A section's output from the state and the source (c, d), from its
+      // input's: x1[0], x2[0] are the source's last two samples, and a later
+      // section's input history is the one before's output history.
+      for(int j=0;j<noiseSections;++j){
+        for(double& x:c)x*=band.b0[j];
+        d*=band.b0[j];c[2*j+1]-=band.b0[j];c[2*j+2]-=band.a1[j];c[2*j+3]-=band.a2[j];
+        for(int i=0;i<noiseStates;++i)a[2*j+2][i]=c[i];
+        b[2*j+2]=d;a[2*j+3][2*j+2]=1;
+      }
+      b[0]=1;a[1][0]=1;
+      double sigma[noiseStates][noiseStates],next[noiseStates][noiseStates],product[noiseStates][noiseStates];
+      const auto multiply=[](const double (&x)[noiseStates][noiseStates],const double (&y)[noiseStates][noiseStates],
+                             double (&z)[noiseStates][noiseStates],bool transposed){
+        for(int i=0;i<noiseStates;++i)for(int j=0;j<noiseStates;++j){
+          double s=0;
+          for(int k=0;k<noiseStates;++k)s+=x[i][k]*(transposed?y[j][k]:y[k][j]);
+          z[i][j]=s;
+        }};
+      // The source's variance is 1/3. After 2^24 samples the slowest band's
+      // response at 192 kHz has fallen by e^-400.
+      for(int i=0;i<noiseStates;++i)for(int j=0;j<noiseStates;++j)sigma[i][j]=b[i]*b[j]/3;
+      for(int n=0;n<24;++n){
+        multiply(a,sigma,product,false);multiply(product,a,next,true);
+        for(int i=0;i<noiseStates;++i)for(int j=0;j<noiseStates;++j)sigma[i][j]+=next[i][j];
+        multiply(a,a,product,false);
+        for(int i=0;i<noiseStates;++i)for(int j=0;j<noiseStates;++j)a[i][j]=product[i][j];
+      }
+      auto& l=band.stationary;
+      for(int i=0;i<noiseStates;++i)for(int j=0;j<noiseStates;++j){
+        if(j>i||band.scale==0){l[i][j]=0;continue;}
+        double s=sigma[i][j];
+        for(int k=0;k<j;++k)s-=l[i][k]*l[j][k];
+        l[i][j]=i==j?(s>0?std::sqrt(s):0):(l[j][j]>0?s/l[j][j]:0);
+      }
+    }
+  }
+  // A band's filters start from rest after a silence, so a band takes its
+  // filters' response time to reach its density: 5 to 18 dB under it
+  // through a strike's first 20 to 40 ms from 125 to 400 Hz, at 3 to 10 dB
+  // around 1 kHz in the first 5 to 10 ms. Every strike but the first after a
+  // silence plays it from a running state. The measured bands keep the rest:
+  // their knocks' densities are fitted from 10 ms after contact on, and from
+  // a running state their first 10 ms stood 2 to 9 dB over the recordings',
+  // whose knocks rise there (Docs/research/low-knock-2026-11-09.md). The low
+  // knock is fitted as it plays from a running state, its rise and all, so
+  // its bands start from one drawn as their filters hold it: the same draws
+  // after every silence, from a generator of their own, so that the source
+  // restarts as before.
   void silenceNoise() noexcept {
     for(auto& burst:bursts)burst.active=false;
-    for(auto& band:noise){
-      for(int j=0;j<noiseSections;++j)for(int k=0;k<2;++k)band.x1[j][k]=band.x2[j][k]=band.y1[j][k]=band.y2[j][k]=0;
+    std::uint32_t draw=0x9e3779b9u;
+    for(int n=0;n<bankBands;++n){auto& band=noise[n];
+      if(n<noiseBands)for(int j=0;j<noiseSections;++j)for(int k=0;k<2;++k)band.x1[j][k]=band.x2[j][k]=band.y1[j][k]=band.y2[j][k]=0;
+      else for(int k=0;k<2;++k){
+        double z[noiseStates],x[noiseStates]{};
+        for(double& v:z){draw^=draw<<13;draw^=draw>>17;draw^=draw<<5;
+          v=std::sqrt(3.)*(static_cast<double>(draw)-2147483648.)*(1./2147483648.);}
+        for(int i=0;i<noiseStates;++i)for(int j=0;j<=i;++j)x[i]+=band.stationary[i][j]*z[j];
+        band.x1[0][k]=x[0];band.x2[0][k]=x[1];
+        for(int j=0;j<noiseSections;++j){
+          band.y1[j][k]=x[2*j+2];band.y2[j][k]=x[2*j+3];
+          if(j+1<noiseSections){band.x1[j+1][k]=x[2*j+2];band.x2[j+1][k]=x[2*j+3];}
+        }
+      }
       band.left=band.right=band.leftStep=band.rightStep=band.leftEnd=band.rightEnd=0;band.live=false;
       snapNoiseMix(band);
     }
@@ -1893,9 +1987,9 @@ struct Engine::Impl {
   // knock alone sounds fall silent. A click still rising lives by what it
   // will sound, its rise counted with it.
   void advanceNoise() noexcept {
-    double target[2][noiseBands]{};bool any=false;
+    double target[2][bankBands]{};bool any=false;
     for(auto& burst:bursts)if(burst.active){double energy=0;
-      for(int b=0;b<noiseBands;++b){
+      for(int b=0;b<bankBands;++b){
         burst.left[b]*=burst.step[b];burst.right[b]*=burst.step[b];
         burst.slowLeft[b]*=burst.slowStep[b];burst.slowRight[b]*=burst.slowStep[b];
         burst.knockLeft[b]*=burst.knockStep[b];burst.knockRight[b]*=burst.knockStep[b];
@@ -1908,7 +2002,7 @@ struct Engine::Impl {
         target[0][b]+=std::sqrt(l);target[1][b]+=std::sqrt(r);
         energy+=l+r+burst.riseLeft[b]*burst.riseLeft[b]+burst.riseRight[b]*burst.riseRight[b];}
       burst.active=energy>=1e-18;any=any||burst.active;}
-    for(int b=0;b<noiseBands;++b){auto& band=noise[b];
+    for(int b=0;b<bankBands;++b){auto& band=noise[b];
       band.left=band.leftEnd;band.right=band.rightEnd;
       band.leftEnd=target[0][b];band.rightEnd=target[1][b];
       band.leftStep=(band.leftEnd-band.left)/chunk;band.rightStep=(band.rightEnd-band.right)/chunk;
@@ -2568,6 +2662,43 @@ struct Engine::Impl {
       burst.knockStep[k]=std::exp(-std::exp(built(knockRate))*chunk/sampleRate);
       burst.riseLeft[k]=burst.riseRight[k]=0;
     }
+    // The knock under the noise bands (MeasuredLowKnock.h): on each piano a
+    // line in the strike's layer level, between its two pitches in dB where
+    // both measure the band, and where one does not, the other's in
+    // amplitude as far as the key lies towards it, as the ring's second
+    // stage blends; between the pianos in power by the soundboard's build,
+    // their bands' decays and rises in the log domain and balances weighted
+    // by those powers, as an action's click mixes, since a piano may measure
+    // none. It builds up under its rise as an action's click does: its knock
+    // stage less one that falls the faster by the rise's rate. Every one of
+    // these bands lies under a top note's fundamental, so it takes the
+    // noise's trim there.
+    for(int j=0;j<lowBands;++j){
+      const int k=noiseBands+j;
+      double power=0,logRate=0,logRise=0,balance=0;
+      for(int p=0;p<pianoCount&&lowKnockOn;++p){if(!(board[p]>0))continue;
+        const auto& x=sides[p];const Model& m=*x.m;
+        const auto& a=m.lowKnock[(x.upper-1)*lowBands+j];const auto& b=m.lowKnock[x.upper*lowBands+j];
+        const bool hasA=a.levelDb>-180,hasB=b.levelDb>-180;
+        const double toward=hasA&&hasB?1:hasA?1-x.t:hasB?x.t:0;
+        if(!(toward>0))continue;
+        const double da=a.levelDb+a.slopeDb*x.layerDb,db=b.levelDb+b.slopeDb*x.layerDb;
+        const double level=hasA&&hasB?mix(da,db,x.t):(hasA?da:db)+20*std::log10(toward);
+        const double nTrim=note>=96&&p>0?(note-88)*topNoiseSlope[p]+4.:0.;
+        const double w=board[p]*std::pow(10.,(level+x.scaleDb-nTrim)/10);
+        const auto& band=m.lowKnockBands[j];
+        power+=w;logRate+=w*std::log(band.rate);logRise+=w*std::log(band.rise);balance+=w*band.balanceDb;
+      }
+      burst.left[k]=burst.right[k]=burst.slowLeft[k]=burst.slowRight[k]=0;burst.step[k]=burst.slowStep[k]=1;
+      // Under -180 dB the band is silent, as a burst's stages end there.
+      if(!(power>=1e-18)){burst.knockLeft[k]=burst.knockRight[k]=burst.riseLeft[k]=burst.riseRight[k]=0;
+        burst.knockStep[k]=burst.riseStep[k]=1;continue;}
+      const double amplitude=std::sqrt(power)*noise[k].scale*softGain*restrikeBodyGain,tilt=balance/power;
+      const double rate=std::exp(logRate/power),rise=std::exp(logRise/power);
+      burst.knockLeft[k]=burst.riseLeft[k]=amplitude*std::pow(10.,-tilt/40);
+      burst.knockRight[k]=burst.riseRight[k]=amplitude*std::pow(10.,tilt/40);
+      burst.knockStep[k]=std::exp(-rate*chunk/sampleRate);burst.riseStep[k]=std::exp(-(rate+1/rise)*chunk/sampleRate);
+    }
     burst.active=true;burst.serial=serial;hissing=true;
     // The partials: each piano's in order, combined order by order by the
     // strings' and the hammers' builds, two at a time in the pianos' order as
@@ -2775,7 +2906,7 @@ struct Engine::Impl {
         updateWeights(x);}
     }
     if(noiseScale!=1.){
-      for(int k=0;k<noiseBands;++k){
+      for(int k=0;k<bankBands;++k){
         burst.left[k]*=noiseScale;burst.right[k]*=noiseScale;burst.slowLeft[k]*=noiseScale;burst.slowRight[k]*=noiseScale;
         burst.knockLeft[k]*=noiseScale;burst.knockRight[k]*=noiseScale;}
     }
@@ -3484,7 +3615,7 @@ void Engine::prepare(double sampleRate){
   p.highpassCoefficient=std::exp(-2*pi*10/p.sampleRate);
   p.retuneSympathetic();
   p.prepareBody();
-  p.prepareNoise();
+  p.prepareNoise();p.prepareNoiseStates();
   p.output.Prepare(p.sampleRate);
   p.prepareTube();
   p.prepareRoomLines();p.prepareRoom();
@@ -3610,6 +3741,7 @@ PedalState Engine::pedalState(int channel) const noexcept {
 int Engine::outputLatencySamples() const noexcept {return impl->output.DelaySamples();}
 void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
+void Engine::setLowKnockForMeasurement(bool enabled) noexcept {impl->lowKnockOn=enabled;}
 void Engine::setRoomForMeasurement(float lowRate,float highRate,float crossover,float gain) noexcept {
   auto& p=*impl;
   p.measuredRoom=gain>0?measured::Room{bounded(lowRate,0,1000),bounded(highRate,0,1000),bounded(crossover,20,20000),bounded(gain,0,16)}

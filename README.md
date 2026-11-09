@@ -43,6 +43,48 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.28 — 2026-11-09 — the strike's knock under 400 Hz
+
+The hammer's blow knocks the board and case under 400 Hz as each piano's
+recordings do (How it works). The knock was measured from 400 Hz up, so
+under it nothing played the blow: aligned at the strike, the train notes from
+C6 up stood a median 1 to 12 dB under their recordings from 160 to 315 Hz
+over their first 30 ms on every piano, and now stand from 6.0 dB under to
+2.5 dB over ([low knock](Docs/research/low-knock-2026-11-09.md)). Against
+0.4.27 on every train and dev take, the paired means summed over the eleven
+measures other than level, in tolerance units, stand closer on every
+piano's train takes and on four pianos' dev takes: the upright by 3.04 and
+2.39, New York by 0.13 and 0.63, the Hamamatsu by 0.32 and 0.37, the
+Kakegawa grand by 0.11 and 0.14 and the Hamburg's train takes by 0.17. The
+upright's 137 train takes stand 0.32 dB closer early, 0.28 dB in stereo
+balance and 0.25 dB in the noise. The Hamburg's 8 dev takes stand 1.56
+further, 0.21 dB in the attack the most, above all at C♯5, where 0.4.27
+already stood over its recordings from 100 to 315 Hz at the softest layers.
+Six scores stand further by more than a tolerance: the upright's dev B3
+coherence (0.142 to 0.170, one take), four of the Hamamatsu's train scores,
+C6's attack the most (4.08 to 4.62 dB), and New York's dev E4 noise (6.26 to
+6.93 dB, five takes); New York's train G♯7 sustain at its third layer, which
+0.4.27 first measured, is not measured
+([Kakegawa grand](Docs/validation/grand-low-knock-benchmark-2026-11-09.md),
+[upright](Docs/validation/upright-low-knock-benchmark-2026-11-09.md),
+[Hamamatsu](Docs/validation/kawai-low-knock-benchmark-2026-11-09.md),
+[Hamburg](Docs/validation/hamburg-low-knock-benchmark-2026-11-09.md),
+[New York](Docs/validation/newyork-low-knock-benchmark-2026-11-09.md)). On
+the grand's held-out evaluation the twelve in-range cases' bands stand
+4.968 dB from their recordings (4.988), closer at four and further at four,
+and the other measures move by 0.06 or less in their own units. The bands
+under 400 Hz start in their filters' stationary state, so the knock comes up
+at its measured rise and not at the filters' build-up, and a mute or a key
+let go leaves it ringing at its own decay.
+
+The 88 keys struck in turn with the pedal down render in 0.9 % more CPU on
+the grand, 2.9 % more on the upright, 1.4 % more on the Hamamatsu, 0.3 % less
+on the Hamburg and 0.5 % less on New York, on the development machine. The
+Hamamatsu's tube, which the knock took 0.08 VU louder, is re-pinned to what
+it read on Reason's meter before. Five loudest-chord readings then stand
+0.004 to 0.020 VU over their approved levels, and Felt Upright's typical
+playing 0.077 VU over its.
+
 ### 0.4.27 — 2026-11-09 — the recording room
 
 Each piano plays the room it was recorded in (How it works, The room).
@@ -977,7 +1019,18 @@ fundamental the burst falls in two stages that add in power, the second
 slower and quieter. From F♯4 up (G♯4 on the upright) the same burst carries
 the strike's knock, in up to 17 bands from 400 Hz to 16 kHz: from contact, at
 the density, decay and balance measured for its pitch and layer, falling
-faster than the ring, mostly within a few tens of milliseconds.
+faster than the ring, mostly within a few tens of milliseconds. Under 400 Hz
+the burst carries the knock in five more bands, 125 to 315 Hz, on the keys
+whose recorded pitches lie a third of an octave and more over a band, where
+none of their partials sounds: the board's and case's answer to the blow,
+which the body's modes, fitted after it, leave out. Each band rises and
+decays as measured for its piano, at a level measured for each recorded
+pitch and layer, and starts in its filters' stationary state, as a band-pass
+long fed by its noise stands, so that the knock comes up at its own rise and
+not at the filters'. No string keeps it up, so a mute or a key let go leaves
+it ringing at its own decay, as the knock above 400 Hz does: from 0.2 to
+0.7 s after a staccato C5 is let go, it and the room's echo of it stand 44 to
+68 dB under the note.
 
 The undamped strings from F6 up ring with every strike, whatever the
 Resonance control: each but the struck key's own, at the level the recorded
@@ -1279,7 +1332,16 @@ frames centred 10 to 35 ms after contact, between the partials, what the
 residual holds beyond the body's modes and the ring, where it stands over the
 ring in four frames or more and falls faster; per pitch and band one decay,
 the median of its layers' slopes, and per layer its density at contact under
-it. The
+it. Under 400 Hz the knock is fitted in five third-octave bands from 125 to
+315 Hz, on the train takes whose fundamental lies a third of an octave and
+more over a band, against the engine played without it at each take's layer
+and scaled to the take as the benchmark scales it: through the engine's band
+filter, in 5 ms frames from the strike to 0.5 s, the benchmark's attack and
+early windows weighed alike, the recording's power against the render's plus
+a knock's expected power, worked out exactly through the filters, and what
+the room returns of it; per piano and band one decay, rise and balance, and
+per recorded pitch a level at the loudest layer and its slope with the
+layer's ([low knock](Docs/research/low-knock-2026-11-09.md)). The
 action's knocks are measured from each recorded pitch's key-release take and
 the sustain pedal's two: a level and phase per mode at the knock's onset,
 fitted on the same modes under one rise and one decay they share; the
@@ -1741,9 +1803,28 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   rise from 10 to 90 % of it in 4 to 5 ms at every layer, where the grand's
   recordings take 6.6 to 10.8 ms (A7's softest 15 ms)
   ([benchmark](Docs/validation/grand-knock-from-contact-benchmark-2026-10-30.md)).
+- The knock from 400 Hz up has no rise and starts from rest after a silence,
+  so through the first 30 ms the treble still stands under its recordings
+  there: at 400 Hz by 3.8 dB on the Kakegawa grand, 6.6 on the Hamamatsu,
+  5.1 on the Hamburg and 9.1 on New York. Under 125 Hz no knock plays: 30 to
+  60 ms in, the Hamburg's treble stands 8 to 10 dB under its recordings from
+  50 to 80 Hz. Between sparse recorded pitches the knock under 400 Hz is a mix
+  of theirs (the Hamburg's split measures four to six pitches per band), and
+  where the engine already stood over a recording there it adds to the
+  excess, as at the Hamburg's never-fitted C♯5 from 100 to 315 Hz through the
+  attack. Whether a real board's knock stops sooner under the dampers or a
+  mute is not measured ([low knock](Docs/research/low-knock-2026-11-09.md)).
 - C8 is not calibrated (above). Below A3 the partials leave too few gaps to
   measure the board noise in six to ten of the thirteen bands; those bands are
   interpolated between the nearest pitches that measured them.
+- Struck alone at velocity 127 and let go after 0.5 s, 54 of the five pianos'
+  keys from F6 up still sound a minute later at the default Output, so the
+  engine does not come to rest after them. Partials whose fit stopped at the
+  fitter's slowest decay, 0.003/s, where it identified none, ring on: the
+  upright's C7 plays its 6.5 kHz partial at −60 dBFS a minute on, its other
+  keys from A♯6 to D♯7 play at −66 to −77 dBFS, and every other key reads
+  −83 dBFS or quieter. Their decays are left to the calibration across the
+  keyboard.
 - Every recording of each piano is from one instrument and one session, so
   the holdout does not establish how the fit generalises to another
   instrument.

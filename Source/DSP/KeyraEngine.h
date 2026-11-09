@@ -127,6 +127,9 @@ public:
   // input enters with, in place of the build's, until it is given a gain of
   // 0. Absent from product UIs.
   void setRoomForMeasurement(float lowRate,float highRate,float crossover,float gain) noexcept;
+  // Offline measurement (Tools/fit_low_knock.py): strikes from now on play no
+  // knock under the noise bands while disabled. Absent from product UIs.
+  void setLowKnockForMeasurement(bool enabled) noexcept;
 private:
   struct Impl;
   std::unique_ptr<Impl> impl;
@@ -150,6 +153,8 @@ private:
   friend struct HaloOwnTestObserver;
   // The native room test plays the room's network on its own.
   friend struct RoomTestObserver;
+  // The native low knock test reads the low knock bands' filter states.
+  friend struct LowKnockTestObserver;
 };
 // The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
 // plays on a measured piano before its player's spread: one response for
