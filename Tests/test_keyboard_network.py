@@ -254,6 +254,69 @@ class FreeAndFixed(unittest.TestCase):
         np.testing.assert_allclose(gain.numpy(), [10.0, 1 / 3], rtol=1e-4)
 
 
+class StrikeAndCaps(unittest.TestCase):
+    def test_strike_term_is_the_log_energy_ratio(self):
+        """The strike's term scores nothing at the figures that made the
+        envelopes and (ln 2)^2 with every frame's power doubled, near exact
+        with the floor under each channel's energy made negligible (at zero
+        it stands in for a series with no energy); a library that normalised
+        its takes holds no strike's level, so it scores nothing."""
+        with mock.patch.object(kn, 'NULL', 1e-12):
+            fx = Fixture()
+            pw = kn.predicted_frames(fx.b, fx.S, fx.C)
+            self.assertLess(float(kn.attack_misfit(fx.b, pw).max()), 1e-9)
+            np.testing.assert_allclose(kn.attack_misfit(fx.b, pw * math.sqrt(2)).numpy(), math.log(2) ** 2, rtol=1e-6)
+            fx = Fixture(normalised=True)
+            pw = kn.predicted_frames(fx.b, fx.S, fx.C)
+            self.assertEqual(float(kn.attack_misfit(fx.b, pw * math.sqrt(2)).abs().max()), 0.0)
+
+    def test_no_lane_decays_past_its_cap(self):
+        """With caps every lane decays slower than its key's and order's cap,
+        and a lane well under the cap keeps the rate the uncapped network
+        gives it, which bounds its lanes softly at the fitter's fastest
+        rate: a lane 6 nats under that loses up to 0.0025 to it."""
+        caps = torch.full((1, len(kn.KEYS), kn.CAP_ORDERS), math.log(400.0), dtype=torch.float64)
+        caps[0, :, 9:] = math.log(2.0)   # orders 10 and up: most lanes over it
+        capped = kn.Net(['p'], [[50]], ['synthetic'], [], {'code': 2, 'width': 16, 'depth': 2, 'fourier': 1}, caps)
+        free = tiny_net()
+        free.load_state_dict({k: v for k, v in capped.state_dict().items() if k != 'caps'})
+        gen = torch.Generator().manual_seed(5)
+        n = 400
+        piano = torch.zeros(n, dtype=torch.long)
+        note = torch.randint(21, 109, (n,), generator=gen).to(torch.float64)
+        order = torch.randint(1, 30, (n,), generator=gen).to(torch.float64)
+        level = -40 + 40 * torch.rand(n, generator=gen, dtype=torch.float64)
+        with torch.no_grad():
+            got = capped(piano, note, order, level)['log_rate']
+            want = free(piano, note, order, level)['log_rate']
+            cap = capped.lane_cap(piano, note, order)[:, None].expand_as(got)
+        self.assertTrue(bool(torch.all(got < cap)))
+        self.assertGreater(int(torch.sum(want > cap)), 100)
+        far = (want < cap - 2) & (want < kn.LOG_RATE[1] - 6)
+        self.assertGreater(int(far.sum()), 100)
+        np.testing.assert_allclose(got[far].numpy(), want[far].numpy(), atol=3e-3)
+
+    def test_caps_are_the_fits_fastest_lanes(self):
+        """At a recorded pitch a cap is the fit's fastest lane at the order,
+        and between two the faster of theirs: the bound
+        write_network_tables.py puts on a key's lanes."""
+        caps = kn.lane_caps(['hamburg']).numpy()[0]
+        anchors = kn.header_of('hamburg')['anchors']
+        fastest = [{q['order']: math.log(max(L['rate'] for L in q['lanes'])) for q in a['partials']} for a in anchors]
+        for a, held in zip(anchors, fastest):
+            for order, rate in held.items():
+                if order <= kn.CAP_ORDERS:
+                    self.assertAlmostEqual(caps[a['note'] - 21, order - 1], min(rate, kn.LOG_RATE[1]), places=9)
+        i = next(i for i in range(len(anchors) - 1) if anchors[i + 1]['note'] - anchors[i]['note'] >= 2)
+        key = anchors[i]['note'] + 1
+        both = set(fastest[i]) & set(fastest[i + 1])
+        self.assertTrue(both)
+        for order in both:
+            if order <= kn.CAP_ORDERS:
+                self.assertAlmostEqual(caps[key - 21, order - 1],
+                                       min(max(fastest[i][order], fastest[i + 1][order]), kn.LOG_RATE[1]), places=9)
+
+
 class FakeGenerator:
     """roughness()'s draws, fixed: every partial of `order`, at -10 dB."""
 

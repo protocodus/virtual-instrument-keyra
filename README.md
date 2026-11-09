@@ -43,6 +43,63 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.26 — 2026-11-09 — the keyboard network retrained, and the treble's unison strings
+
+The keyboard network is trained again with no lane decaying faster than the
+fits' fastest at its key and each partial's first 100 ms weighed against the
+recordings, and the Hamamatsu's, the Hamburg's and New York's keys between
+recorded pitches play it, each piano at the network size and smoothness
+whose tables scored best on its never-fitted takes and passed the engine's
+tests; the Kakegawa grand and the upright keep their corrections to the
+blend, which no setting bettered. Against 0.4.25 on the benchmark's 12
+measures, the Hamamatsu's 23 never-fitted takes stand closer on 10, the tuning by 0.61 cents, the rise by 0.48 ms, the decay by
+0.42 dB/s, the level by 0.41 dB and the envelope by 0.27 dB, and further on
+stereo balance by 0.33 dB and early by 0.003 dB; the Hamburg's 8 closer on 8,
+the noise by 1.35 dB, the partial levels by 0.76 dB, the decay by 0.72 dB/s
+and the rise by 0.68 ms, and further on 4, the tuning by 1.62 cents (E3's
+0.48 to 3.69), the level by 1.41 dB, the attack by 0.32 dB and the sustain by
+0.21 dB; New York's 17 closer on 6, the tuning by 0.81 cents, the sustain by
+0.32 dB and the partial levels by 0.28 dB, and further on 6, the level by
+1.63 dB, the early and the envelope by 0.28 dB and the attack by 0.23 dB
+([Hamamatsu](Docs/validation/kawai-network-unisons-benchmark-2026-11-06.md),
+[Hamburg](Docs/validation/hamburg-network-unisons-benchmark-2026-11-06.md),
+[New York](Docs/validation/newyork-network-unisons-benchmark-2026-11-06.md)).
+The network's keys strike about 2.5 dB weaker than the blend over their first
+100 ms and ring up to 1.4 dB louder after, and the three pianos' output and
+tube levels are re-pinned to what they read on Reason's meter before; that
+moves their recorded pitches too, which shows in the level measure, and the
+recorded pitches stand further apart from their neighbours (Known gaps). Six
+settings were tried on those never-fitted takes, so the figures flatter the
+choice; the sealed takes were not opened
+([keyboard network](Docs/research/keyboard-network.md#the-third-run)).
+
+From C6 up, the Kakegawa grand, the upright and New York play the unison
+strings their partials' lanes leave out, measured on their recordings: each
+starts in phase with its partial, sounds through its own two pickups and
+takes its power from the partial's lanes. Struck at velocity 90, the grand's
+F♯7 keeps 0.76 of its coherence between channels where 0.4.25 kept 0.89 (its
+recordings 0.37 to 0.51), and its A7 0.67 where 0.4.25 kept 0.91 (0.68 to
+0.77). On the three pianos' never-fitted takes from C6 up the stereo balance
+stands 0.57 dB closer, the tuning 0.31 cents and the coherence 0.021, and the
+sustain 0.41 dB, the partial levels 0.29 dB and the envelope 0.27 dB further;
+ten of the grand's scores at C8, D♯7, A6 and F♯7 stand further by more than a
+tolerance, C8's never-fitted sustain the most (16.28 to 17.61 dB)
+([unison strings](Docs/research/treble-unisons-2026-11-06.md)). The
+Hamamatsu's and the Hamburg's strings, which took their recorded pitches
+further from their recordings, are measured and not played. Four undamped
+own strings grow with the strike at the slope their own recordings measure:
+the grand's F♯7 and A7, the Hamburg's A♯6 and New York's F6
+([own string](Docs/research/halo-own-2026-11-05.md#each-pitchs-own-slope-0426)).
+On the grand's held-out evaluation only C6 moves, its harmonic levels at
+velocity 8 from 2.78 to 2.58 dB.
+
+The 88 keys struck in turn with the pedal down render in 1.7 % more CPU on the
+grand, 0.8 % less on the upright, 1.6 % more on the Hamamatsu, 45 % less on
+the Hamburg and 9.5 % more on New York, on the development machine. Two
+readings pass their approved levels and wait for the owner: the Hamamatsu's
+loudest chords through the tube, 3.29 VU against 3.20, and Three Cities'
+typical playing, −10.43 VU against −10.19.
+
 ### 0.4.25 — 2026-11-05 — a fifth less CPU, and lighter chords
 
 The demos take 14 to 33 % less CPU, and the block a chord is struck in up to
@@ -763,7 +820,7 @@ transition; the measured sound and interpolation are unchanged
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 84](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42359898283/artifacts/13571956647)**, built from [`32761e9f79ef`](https://github.com/protocodus/virtual-instrument-keyra/commit/32761e9f79ef2df027244f9446d23e9309f6e018). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 86](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42603006645/artifacts/13671689801)**, built from [`b81b1d71d973`](https://github.com/protocodus/virtual-instrument-keyra/commit/b81b1d71d9734de29672acd41dd19c91efa91bc3). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -820,6 +877,22 @@ than its lanes reach. They
 start at contact under the pitch's onset rise and share vectors four lanes to
 a slot, so a component costs a quarter of a partial.
 
+From C6 up, the Kakegawa grand, the upright and New York also play the
+unison strings that their recorded pitches' lanes leave out and that no
+component beside the series holds, measured on their train takes by
+`Tools/fit_treble_unisons.py` into `Source/DSP/MeasuredTrebleUnisons.h`
+([notes](Docs/research/treble-unisons-2026-11-06.md)): each string two lanes
+at its own distance from its partial, a quick early fall and a slow ring,
+heard through its own two pickups and spread by the unisons modifier. The
+hammer sets a unison's strings off together, so each starts in phase with
+its partial's lanes as they sum at contact, and the strings take their power
+from those lanes: over 50 to 750 ms the lanes and the strings together, the
+beating between every two of them counted, hold the power the fit gave the
+lanes alone. A key between two recorded pitches plays both pitches' strings
+at their shares. The Hamamatsu's and the Hamburg's strings are measured and
+not played, as their recorded pitches stood further from their recordings
+with them.
+
 A string's tension grows with the square of its displacement, so its
 partials also sound lines at the sums and the differences of every two of
 their frequencies and at the double of each (phantom partials). The engine
@@ -872,6 +945,11 @@ partial, which the strike sets ringing through the bridge, and below F7 a
 string of the key's own unison tuned further off than its lanes reach. It
 rings at the level the key's own recorded strikes set, with no prompt part,
 and between pianos at the share of the hammers of those whose takes ring it.
+It grows with the strike as the other undamped strings do, but where three
+or more of a pitch's recorded layers ring it clear of its partials it grows
+at the slope those layers measure: on the Kakegawa grand's F♯7 and A7, the
+Hamburg's A♯6 and New York's F6
+([own string](Docs/research/halo-own-2026-11-05.md#each-pitchs-own-slope-0426)).
 Each of the others starts with its own prompt part,
 as a struck unison does, that is gone within a few tenths of a second: at
 contact from too little to hear up to 25 dB over the string's own on the
@@ -1163,11 +1241,15 @@ partial series explains the recording, so the keys above A7 play A7's data on
 the stretch curve. Only fitted numbers enter the header; no recorded waveform
 or impulse response is loaded.
 
-The Hamburg grand's keys between its recorded pitches play the keyboard
-network's partials instead ([notes](Docs/research/keyboard-network.md)). The
-network (`Tools/keyboard_network.py`) fits a whole keyboard at once from the
-train recordings of the five pianos, and `Tools/write_network_tables.py`
-writes what it gives each such key into `Source/DSP/MeasuredNetworkKeys.h`:
+The Hamamatsu's, the Hamburg's and New York's keys between their recorded
+pitches play the keyboard network's partials instead
+([notes](Docs/research/keyboard-network.md)). The network
+(`Tools/keyboard_network.py`) fits a whole keyboard at once from the train
+recordings of the five pianos, no lane decaying faster than the fits' fastest
+at its key and each partial's first 100 ms weighed, and
+`Tools/write_network_tables.py` writes what it gives each such key, at each
+piano's own setting of its size and smoothness, into
+`Source/DSP/MeasuredNetworkKeys.h`:
 each partial's decays, unison offsets, pickups and levels per layer from the
 network, its tuning and rise from the blend, and its power in each channel
 over 50 to 750 ms moved by what the fits hold over the network at the two
@@ -1188,7 +1270,7 @@ each channel's power over 50 to 750 ms back where the blend has it, so the
 per-key trims, the tuning and the channel balance stay the blend's.
 `Tools/write_network_tables.py` writes its figures into the same header.
 Their keys between in the wound bass, where a pitch around them is below the
-break, and the Hamamatsu's and New York's at every key, blend as before.
+break, blend as before.
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of
@@ -1460,19 +1542,25 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   up to 7 dB over both A7's and C8's in its left channel from 200 to 450 ms,
   and 6 dB over in its first 50 ms, where 0.4.14 played it 24 dB over from
   200 to 450 ms ([decisions](Docs/decisions.md), 2026-11-04).
-- The Hamburg grand's keys between recorded pitches, which play the keyboard
-  network's partials, strike weaker than the fits at its recorded pitches and
-  ring on louder: at velocity 80 they stand 2.3 dB under the blend over their
-  first 100 ms and 1.0 to 1.7 dB over it from 100 ms on. A recorded pitch
-  therefore stands apart from the mean of its two neighbours by 2.5 dB rms
-  over the first 100 ms (5.3 dB at most; blended, 0.7 and 1.8) and by 4.6 dB
-  rms from 0.8 to 1.6 s (blended, 1.0), G♯5 at velocity 32 12.5 dB under its
-  neighbours there. On the never-fitted E3 and C♯5 the tuning stands 0.38
-  cents further from the recordings than blended, and E3's partial levels
-  1.3 dB further. The Hamburg has no sealed recordings, and the takes of
-  those two pitches chose between the tables written for it, so they are no
-  longer untouched held-out evidence ([decisions](Docs/decisions.md),
-  2026-11-05).
+- The Hamamatsu's, the Hamburg's and New York's keys between recorded
+  pitches, which play the keyboard network's partials, strike weaker than the
+  fits at their recorded pitches and ring on louder: struck alone and held,
+  at velocity 80 they stand a median 2.7, 2.6 and 2.4 dB under the blend over
+  their first 100 ms and 0.4, 0.4 and 1.4 dB over it from 100 ms on (at
+  velocity 32, 2.2, 2.4 and 2.2 dB under and 1.4, 0.5 and 1.1 dB over). A
+  recorded pitch therefore stands apart from the mean of its two neighbours
+  by 4.0, 2.4 and 2.6 dB rms over the first 100 ms (blended, 1.9, 0.9 and
+  0.9) and by 7.7, 4.5 and 4.5 dB rms from 0.8 to 1.6 s (blended, 4.2, 1.3 and
+  2.3): at velocity 32 the Hamamatsu's F♯2 stands 9.3 dB over its neighbours
+  over its first 100 ms and 21.2 dB under them from 0.8 s (blended, 1.8 and
+  6.1), and the Hamburg's G♯5 11.1 dB under them there. Against 0.4.25 some
+  never-fitted takes stand further from their recordings by more than a
+  tolerance: the Hamamatsu's B5 envelope (3.62 to 7.38 dB) and A♯5's stereo
+  balance (4.41 to 7.21 dB), the Hamburg's E3 tuning (0.48 to 3.69 cents) and
+  New York's E7 decay (8.18 to 10.46 dB/s) and coherence. Those takes chose
+  among six settings, and the Hamburg has no sealed recordings, so they are
+  no longer untouched held-out evidence
+  ([keyboard network](Docs/research/keyboard-network.md#the-third-run)).
 - The correction at the Kakegawa grand's and the upright's keys between
   recorded pitches is how five pianos' recorded pitches depart from the
   blend of their neighbours, learned from their fits: a realistic character
@@ -1486,9 +1574,9 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   still ring 2.2 dB under their recordings from 0.75 to 1.5 s and 2.5 dB
   under from 1.5 to 3.5 s (blended, 3.1 and 3.5). It leaves the keys
   between in the wound bass blended, which it took further from their
-  recordings, and the Hamamatsu's and New York's, which it took past a
-  tolerance at some pitches (New York's C6 decay 8.27 to 10.79 dB/s from
-  its recording)
+  recordings, and it is not applied to the Hamamatsu's and New York's, which
+  it took past a tolerance at some pitches (New York's C6 decay 8.27 to
+  10.79 dB/s from its recording) and which play the network since 0.4.26
   ([keyboard network](Docs/research/keyboard-network.md#a-correction-to-the-blend)).
 - From C6 up, the partials' decay after half a second is 3.3 dB/s from the
   recordings' on the dev cases (0.3.0: 6.5 dB/s), but at A7 it is 1 to 2 dB/s
@@ -1530,12 +1618,20 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   the recordings (4 dB at D♯5) than under a fit weighted towards them, as a
   long note's tail now counts as much.
 - A key's own undamped string grows with the strike at the one slope every
-  undamped string takes, where the grand's F♯7 and A7 recordings grow it 1.15
-  and 1.85 dB per dB: the softest layers ring it up to 10 dB over their
-  recordings (A7 at velocity 14, the Hamburg's A♯6 at 31) and F♯7's loudest 3
-  to 4 dB over. It plays at the pitch the other keys' strikes measure for the
-  string, which at F♯7 lies 2.4 Hz over the octave-below string's second
-  partial that F♯7's strikes ring. Keys between recorded pitches take the
+  undamped string takes unless three or more of its pitch's layers ring it
+  clear: the Hamamatsu's two pitches that ring it ring it clear in two layers
+  each, and a key between takes the slopes of the pitches around it, so the
+  grand's never-fitted D♯7, which holds F♯7's string and slope, decays
+  0.10 dB/s further from its recordings than at the shared slope
+  ([own slope](Docs/research/halo-own-2026-11-05.md#each-pitchs-own-slope-0426)).
+  It plays at the pitch the other keys' strikes measure for the string,
+  which at F♯7 lies 2.4 Hz over the octave-below string's second partial that
+  F♯7's strikes ring. Since 0.4.26 F♯7 also plays that partial at its own
+  pitch, as one of its unison strings, beside the own string: letting the
+  own string give way there stood the grand's treble further from its
+  recordings
+  ([unison strings](Docs/research/treble-unisons-2026-11-06.md#the-candidates)).
+  Keys between recorded pitches take the
   levels around them: the New York grand's A♯6 to D♯7 have none, and its
   never-fitted E7 and A7 sit 32 and 20 dB under their recordings there, the
   Hamamatsu's F♯7 17 to 24 dB under, and the grand's C8, which only bounds it,

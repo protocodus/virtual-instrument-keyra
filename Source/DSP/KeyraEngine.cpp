@@ -397,19 +397,15 @@ constexpr int maxExtras=[]{
 // octave down at its second partial. A strike plays them as it plays the
 // components beside the series.
 struct UnisonTable {const measured::UnisonAnchor* anchors;int anchorCount;const measured::Extra* unisons;int first;};
-// The SDK libc++ has no constexpr data() on a zero-length array.
-template<class T,std::size_t N> constexpr const T* firstOf(const std::array<T,N>& a) noexcept {
-  if constexpr(N==0)return nullptr;else return &a[0];
-}
 constexpr UnisonTable unisonTables[]{
-  {firstOf(grand::unisonAnchors),static_cast<int>(grand::unisonAnchors.size()),firstOf(grand::unisons),0},
-  {firstOf(upright::unisonAnchors),static_cast<int>(upright::unisonAnchors.size()),firstOf(upright::unisons),
+  {tableData(grand::unisonAnchors),static_cast<int>(grand::unisonAnchors.size()),tableData(grand::unisons),0},
+  {tableData(upright::unisonAnchors),static_cast<int>(upright::unisonAnchors.size()),tableData(upright::unisons),
    static_cast<int>(grand::unisons.size())},
-  {firstOf(kawai::unisonAnchors),static_cast<int>(kawai::unisonAnchors.size()),firstOf(kawai::unisons),
+  {tableData(kawai::unisonAnchors),static_cast<int>(kawai::unisonAnchors.size()),tableData(kawai::unisons),
    static_cast<int>(grand::unisons.size()+upright::unisons.size())},
-  {firstOf(hamburg::unisonAnchors),static_cast<int>(hamburg::unisonAnchors.size()),firstOf(hamburg::unisons),
+  {tableData(hamburg::unisonAnchors),static_cast<int>(hamburg::unisonAnchors.size()),tableData(hamburg::unisons),
    static_cast<int>(grand::unisons.size()+upright::unisons.size()+kawai::unisons.size())},
-  {firstOf(newyork::unisonAnchors),static_cast<int>(newyork::unisonAnchors.size()),firstOf(newyork::unisons),
+  {tableData(newyork::unisonAnchors),static_cast<int>(newyork::unisonAnchors.size()),tableData(newyork::unisons),
    static_cast<int>(grand::unisons.size()+upright::unisons.size()+kawai::unisons.size()+hamburg::unisons.size())},
 };
 static_assert(std::size(unisonTables)==pianoCount,"a unison table for every piano");

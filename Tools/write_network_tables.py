@@ -111,12 +111,13 @@ PIANOS = kn.ENGINE_PIANOS
 # Tools/benchmark_recordings.py, with the changes, each in units of
 # Tools/compare_benchmarks.py's tolerance, summing below zero; at the setting
 # whose sum is lowest of those the engine's tests pass (Docs/decisions.md,
-# 2026-11-06). The Kawai's 23 dev takes come closer on 10 measures at the
+# 2026-11-06). The Kawai's 23 dev takes come closer on 9 measures at the
 # medium network and knob 1000 (tuning 0.61 cents, rise 0.48 ms, decay
 # 0.41 dB/s, envelope 0.27 dB, partial levels 0.22 dB), further on stereo
-# balance (0.33 dB); the Hamburg's 8 on 8 at the medium and knob 10 (noise
-# 1.35 dB, partial levels 0.76 dB, decay 0.72 dB/s, rise 0.69 ms), further on
-# tuning (1.62 cents) and level (0.99 dB), where the large network at knob 10
+# balance (0.33 dB), level and early (0.05 dB or less); the Hamburg's 8 on 8
+# at the medium and knob 10 (noise 1.35 dB, partial levels 0.76 dB, decay
+# 0.72 dB/s, rise 0.69 ms), further on tuning (1.62 cents), level (0.98 dB),
+# attack (0.32 dB) and sustain (0.21 dB), where the large network at knob 10
 # sums lower but leaves its sustain pedal no bloom on a held C4 (-0.02 dB,
 # Tests/engine_tests.cpp asks 0.6 to 5); New York's 17 on 7 at the medium and
 # 1000 (tuning 0.82 cents), further on coherence (0.033) and envelope

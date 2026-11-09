@@ -9,14 +9,16 @@ and what makes each piano itself from a short code per piano. It runs offline
 only. The recordings are the benchmark: the network is fitted to all of them as
 a whole and never to one note.
 
-Since 0.4.22 the Hamburg grand plays the first run's partials at its keys
-between recorded pitches, written by `Tools/write_network_tables.py` (In the
-engine, below). Since 0.4.23 the grand and the upright blend theirs and then
-reshape how each partial decays by a correction learned at recorded pitches
-it hid (A correction to the blend, below); the Kawai and New York blend
-theirs as before, and every recorded pitch plays its own fit. The first run's cross-validation, backtest
-and weights are kept (The first run, below), and the second run's
-cross-validation and backtest (The second run).
+Since 0.4.26 the Kawai, the Hamburg and New York play the third run's
+partials at their keys between recorded pitches, each at its own setting,
+written by `Tools/write_network_tables.py` (The third run and In the engine,
+below); from 0.4.22 the Hamburg played the first run's. Since 0.4.23 the
+grand and the upright blend theirs and then reshape how each partial decays
+by a correction learned at recorded pitches it hid (A correction to the
+blend, below), and every recorded pitch plays its own fit. The first run's
+cross-validation, backtest and weights are kept (The first run, below), the
+second run's cross-validation and backtest (The second run), and the third
+run's grid and the weights that ship (The third run).
 
 `Tools/keyboard_network.py` does the work. Its head states the protocol: the
 loss, what is left free to each recording, and how cross-validation chooses.
@@ -282,6 +284,101 @@ In closed form the base libraries bring four pianos' dev figures down, the
 Hamburg's by 1.85 dB, and the Kawai's up by 2.31 dB. Played in the engine,
 its tables score worse than the first run's (In the engine, below).
 
+## The third run
+
+On 2026-11-06, `grid --run capped --alone --arch large medium small --knob
+10 1000`, the five Keyra pianos alone with the settings' `cap` and
+`attack_weight` on (the tool's head gives both): no lane decays faster than
+the fits' fastest at its key, the bound the table writer puts on a key's
+lanes, and each partial's energy in each channel over its first 100 ms is
+weighed against the measured. The first run decayed 31 to 54 % of its lanes
+faster than that bound, which the writer then left out, and struck 1.4 to
+2.8 dB quiet over the first 100 ms at the train takes before any lane was
+left out. `grid` makes the final fits, fine-tuned to each piano, at each
+architecture and knob, without cross-validation: the first run's held-out
+pitches did not decide the knob, so each piano's setting is the one its
+tables played in the engine score best at. Its grid report, receipt and the
+weights of the three settings that ship are kept in
+[keyboard-network-2026-11-06/](keyboard-network-2026-11-06/).
+
+In closed form, its train takes' strike over the first 100 ms stands 0.44 to
+2.77 dB under the measured, from 0.44 to 0.68 at the large network and knob
+10 to 1.59 to 2.77 at the small and knob 1000; their level errors are 7.29 to
+11.24 dB, where the first run's were 7.31 to 8.36.
+
+Each setting's tables, written for every piano and played by
+`keyra_render`, were scored by `Tools/benchmark_recordings.py` on every train
+and dev take against 0.4.25 (the first run's tables on the Hamburg, the
+corrections on the grand and the upright, blending on the Kawai and New
+York). Each measure's mean change on the dev takes, in units of
+`Tools/compare_benchmarks.py`'s tolerance, summed over the 12 measures, and
+how many of them stand closer and how many further:
+
+| Setting | grand | upright | kawai | hamburg | newyork |
+| --- | --- | --- | --- | --- | --- |
+| large, knob 10 | +4.89 (2, 10) | +0.78 (4, 8) | +2.05 (4, 8) | −2.68 (7, 5) | +6.32 (3, 9) |
+| large, knob 1000 | +2.78 (3, 9) | +2.23 (4, 8) | −3.18 (8, 4) | +10.00 (2, 10) | +3.67 (4, 8) |
+| medium, knob 10 | +1.92 (4, 8) | +2.02 (4, 8) | −0.50 (8, 4) | **−0.55 (8, 4)** | +3.32 (7, 5) |
+| medium, knob 1000 | +4.51 (2, 10) | +5.83 (5, 7) | **−3.23 (9, 3)** | +18.30 (1, 11) | **−0.57 (7, 5)** |
+| small, knob 10 | +8.24 (0, 12) | +8.18 (2, 10) | +3.07 (4, 8) | +5.23 (5, 7) | +7.24 (4, 8) |
+| small, knob 1000 | +5.91 (3, 9) | +3.44 (3, 9) | −2.47 (8, 4) | +5.01 (7, 5) | +7.93 (1, 11) |
+
+A piano plays the third run's tables where they bring its dev takes closer on
+most of the 12 measures with the sum below zero, at the setting with the
+lowest such sum whose tables pass the engine's tests; the train takes move by
+0.38 or less at every setting. The Hamburg's lowest, the large network at
+knob 10, leaves its sustain pedal no bloom on a held C4 (−0.02 dB, where
+`Keyra.Engine` asks 0.6 to 5), so it takes the medium at knob 10. The
+grand's and the upright's stand further at every setting, and they keep their
+corrections (A correction to the blend, below). In bold, what ships
+(`SETTING` in the writer):
+
+- **The Kawai**, medium at knob 1000: its 23 dev takes stand closer in
+  tuning (0.61 cents), rise (0.48 ms), decay (0.41 dB/s), envelope (0.27 dB),
+  partial levels (0.22 dB), sustain (0.18 dB), attack, noise and coherence,
+  and further in stereo balance (0.33 dB), level (0.05 dB) and early
+  (0.003 dB).
+- **The Hamburg**, medium at knob 10: its 8 closer in noise (1.35 dB),
+  partial levels (0.76 dB), decay (0.72 dB/s), rise (0.69 ms), envelope,
+  early, stereo balance and coherence, and further in tuning (1.62 cents),
+  level (0.98 dB), attack (0.32 dB) and sustain (0.21 dB).
+- **New York**, medium at knob 1000: its 17 closer in tuning (0.82 cents),
+  rise (0.37 ms), sustain (0.30 dB), noise (0.26 dB), level (0.22 dB),
+  partial levels (0.18 dB) and decay (0.16 dB/s), and further in early
+  (0.29 dB), envelope (0.28 dB), attack (0.23 dB), stereo balance (0.14 dB)
+  and coherence (0.033).
+
+Six settings were tried on the dev takes and the best of them kept, so those
+figures flatter the choice; the sealed takes were not opened this round.
+
+With these tables the Kawai's and New York's keys between recorded pitches
+play quieter than they blended, and their readings on Reason's meter fell:
+the Kawai's to −10.21 VU from −8.97 and New York's to −10.94 from −9.09. The
+Hamburg's play louder than the first run's tables did, and its reading rose
+to about −8.4 from −8.95 (through the tube to about −8.9 from −9.18). Each
+output and tube level is re-pinned to the reading it had
+(`KeyraEngine.cpp`), which moves every take of the piano, recorded pitches
+too. The benchmark's level error, which holds 0.4.25's gain, then stands
+the Kawai's dev takes 0.41 dB closer and its train takes 0.33 further, the
+Hamburg's 1.41 and 0.04 further and New York's 1.63 and 1.19 further; taken
+at each version's own gain, as its first tables are, the Kawai's stand 4.36
+→ 4.21 and 1.89 → 1.94 dB, the Hamburg's 2.15 → 3.13 and 0.69 → 0.61 and New
+York's 5.61 → 5.45 and 0.88 → 0.90. The whole benchmark of 0.4.26, which
+carries the treble's unison strings on the grand, the upright and New York
+too, is in each piano's report
+([grand](../validation/grand-network-unisons-benchmark-2026-11-06.md),
+[upright](../validation/upright-network-unisons-benchmark-2026-11-06.md),
+[Kawai](../validation/kawai-network-unisons-benchmark-2026-11-06.md),
+[Hamburg](../validation/hamburg-network-unisons-benchmark-2026-11-06.md),
+[New York](../validation/newyork-network-unisons-benchmark-2026-11-06.md)).
+
+The 88 keys struck in turn at velocity 90, 120 ms apart with the pedal down,
+render 14 s of audio in a median 3.10 s of CPU on the Hamburg where 0.4.25
+took 5.63 (−45 %), 2.76 on the Kawai against 2.72 (+1.6 %) and 3.05 on New
+York against 2.79 (+9.5 %, which carries its unison strings too), seven runs
+of each in alternating order on a 2.1 GHz Xeon: a development machine's
+figure, not Reason's.
+
 ## In the engine
 
 `Tools/write_network_tables.py` evaluates a fit at every key strictly between
@@ -328,8 +425,9 @@ cents, level 0.31 dB, attack 0.13 dB, coherence 0.008, partial levels
 0.24 cents, decay 0.17 dB/s, level and partial levels 0.04 dB, image
 0.03 dB) and closer on 5 (rise 0.56 ms, sustain 0.47 dB, early and noise
 0.05 dB, attack 0.01 dB), and 8 measures at four of its notes pass a
-tolerance, D♯3's envelope from 1.59 to 5.73 dB. So the Hamburg plays the first run's tables and the
-other four blend (`SHIPPED` in the writer; Docs/decisions.md, 2026-11-05).
+tolerance, D♯3's envelope from 1.59 to 5.73 dB. So the Hamburg played the first run's tables and the
+other four blended (Docs/decisions.md, 2026-11-05), until 0.4.26 gave the
+Hamburg, the Kawai and New York the third run's (The third run, above).
 
 Written other ways, the Hamburg's first-run tables scored worse:
 
@@ -349,10 +447,14 @@ Written other ways, the Hamburg's first-run tables scored worse:
   sustain 0.93 dB closer where the shipped tables' are 1.36 closer.
 
 The second run's tables fail two of `Keyra.Engine`'s checks and
-`Keyra.Glide`. The shipped tables strike weaker than the blend, 2.3 dB over
+`Keyra.Glide`. The first run's tables strike weaker than the blend, 2.3 dB over
 the first 100 ms at velocity 80, and ring 1.0 to 1.7 dB louder from 100 ms
-on (README, Known gaps), so the Hamburg's output and tube are re-pinned to
-the readings they had (Docs/decisions.md, 2026-11-05). They cost less to
+on, so the Hamburg's output and tube are re-pinned to the readings they had
+(Docs/decisions.md, 2026-11-05). The third run's strike weaker too: each key
+between struck alone and held for 2 s stands a median 2.7, 2.6 and 2.4 dB
+under the blend over its first 100 ms at velocity 80 on the Kawai, the
+Hamburg and New York, and 0.4, 0.4 and 1.4 dB over it from 100 ms on
+(README, Known gaps). They cost less to
 play: struck chromatically at velocities 40 and 100 with the pedal down, the
 Hamburg renders in a median 9.45 s of CPU where 0.4.21 took 14.34 s (seven
 runs of each in alternating order, 48 s of audio, on a 2.1 GHz Xeon; a
@@ -508,6 +610,11 @@ pitches whose figures are known, without any recording:
   library's take levels, each channel's level;
 - the knob's penalty ignores the bass break and partials above the engine's
   highest;
+- the strike's term scores nothing at the figures that made the envelopes
+  and the squared log of the energy ratio away from them, and nothing for a
+  library that normalised its takes; with the caps no lane decays past its
+  key's, a lane well under its cap keeps its rate, and the caps are the fits'
+  fastest lanes, between two pitches the faster of theirs;
 - the blend plays each recorded pitch's fit at its pitch and a power between
   the two pitches' between them, and a correction vanishes at the recorded
   pitches; it speeds every lane's decay by its shift and tilts the lanes'
@@ -524,7 +631,7 @@ It takes about ten seconds. `all` runs it first. CTest runs it as
 `-DKEYRA_ENABLE_NETWORK_TESTS=ON`, which needs NumPy, SciPy and PyTorch; CI
 does not install PyTorch, so the option is off by default. The same option
 registers `Keyra.MeasuredNetworkKeys`, which writes the table again from the
-kept weights (about six seconds) and checks that the header is the same. `check` (step 3
+kept weights (about sixteen seconds) and checks that the header is the same. `check` (step 3
 above) is the other half: the same closed form against the engine itself.
 
 ## The settings
@@ -605,7 +712,9 @@ on four workers, its measurements and renders already cached. Its weights
 take 7.3 MB. The second run, on all ten libraries, took 93 to 123 minutes
 for each of its five cross-validation entries on three workers, about five
 and a half hours with its two final fits. The correction trained for 26
-minutes at each knob on one thread, and its weights take 0.28 MB.
-Writing the table, the Hamburg's partials and the grand's and the upright's
-corrections, takes about eight seconds, and the table takes 1.9 MB of
-source.
+minutes at each knob on one thread, and its weights take 0.28 MB. The
+third run's six final fits took 36 to 44 minutes each, three at a time:
+about an hour and a half. The three of its weights that ship take 1.9 MB.
+Writing the table, the Kawai's, the Hamburg's and New York's partials and
+the grand's and the upright's corrections, takes about sixteen seconds, and
+the table takes 4.7 MB of source.
