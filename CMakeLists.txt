@@ -480,6 +480,9 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.BenchmarkComparison
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_benchmark_comparison.py")
+        add_test(NAME Keyra.BenchmarkBands
+                 COMMAND "${Python3_EXECUTABLE}" -B
+                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_benchmark_bands.py")
         add_test(NAME Keyra.KeyboardMetricContract
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
@@ -491,7 +494,7 @@ if(BUILD_TESTING)
                              Keyra.SoftLaneContinuity
                              Keyra.LiveControlSmoothing Keyra.BuildControlSmoothing
                              Keyra.QualityAuditContract Keyra.QualityRetention Keyra.ReleaseBalance
-                             Keyra.RecordingReferenceCache Keyra.BenchmarkComparison
+                             Keyra.RecordingReferenceCache Keyra.BenchmarkComparison Keyra.BenchmarkBands
                              Keyra.KeyboardMetricContract
                              PROPERTIES TIMEOUT 600
                              ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};KEYRA_MODEL_FFMPEG=${KEYRA_MODEL_FFMPEG};KEYRA_MODEL_FFPROBE=${KEYRA_MODEL_FFPROBE};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")

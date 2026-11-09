@@ -97,15 +97,22 @@ LEAD = .05
 MEASURE = ['--gain', '.07']
 
 
+def band_members(sr, win=.04):
+    """Which of a band_spectrogram's FFT bins at this rate fall in each third-octave band."""
+    n = int(win * sr)
+    nfft = 1 << int(math.ceil(math.log2(2 * n)))
+    hz = np.fft.rfftfreq(nfft, 1 / sr)
+    edges = np.c_[pa.THIRD_OCTAVE * 2 ** (-1 / 6), pa.THIRD_OCTAVE * 2 ** (1 / 6)]
+    return np.stack([(hz >= lo) & (hz < hi) for lo, hi in edges], axis=1)
+
+
 def band_spectrogram(x, sr, start, seconds, hop=.01, win=.04):
     """Third-octave band power (dB, stereo mean) over time, with the per-band
     left and right powers and cross-spectrum the stereo scores need."""
     n = int(win * sr)
     w = signal.windows.hann(n, sym=False)
     nfft = 1 << int(math.ceil(math.log2(2 * n)))
-    hz = np.fft.rfftfreq(nfft, 1 / sr)
-    edges = np.c_[pa.THIRD_OCTAVE * 2 ** (-1 / 6), pa.THIRD_OCTAVE * 2 ** (1 / 6)]
-    member = np.stack([(hz >= lo) & (hz < hi) for lo, hi in edges], axis=1).astype(float)
+    member = band_members(sr, win).astype(float)
     y = np.concatenate([np.zeros((n, 2)), x, np.zeros((n, 2))])
     centres = start + n + np.round(np.arange(int(seconds / hop)) * hop * sr).astype(int)
     centres = centres[centres + n - n // 2 <= len(y)]
@@ -290,9 +297,15 @@ def compare(ref, mod):
     rb, mb = rb[:frames], mb[:frames]
     peak = np.max(rb)
     # A band counts where either sound stands out, so energy the render adds
-    # (an onset click, say) is scored as well as energy it lacks.
+    # (an onset click, say) is scored as well as energy it lacks. Only bands
+    # both spectra have bins in: the 40 ms window's bins miss the 25 Hz band
+    # at 44.1 kHz and the 20 and 31.5 Hz bands at 48 kHz, which then read
+    # -300 dB whatever plays. A soft Pianobook G#7 (n104v1) whose render
+    # gained a little energy at 25 Hz scored the 30 dB cap in four of the six
+    # cells its early window scored, its error 7 dB to 22 dB.
+    measured = band_members(ref['sr']).any(axis=0) & band_members(mod['sr']).any(axis=0)
     loud = np.maximum(rb, mb)
-    live = (loud > peak - 50) & (loud > ref['band_floor'][None, :] + 10)
+    live = (loud > peak - 50) & (loud > ref['band_floor'][None, :] + 10) & measured[None, :]
     t = np.arange(frames) * .01
     for name, lo, hi in (('attack_db', 0, .1), ('early_db', .1, .5), ('sustain_db', .5, 3.0)):
         m = live & ((t >= lo) & (t < hi))[:, None]
