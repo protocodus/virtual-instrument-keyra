@@ -71,6 +71,30 @@ constexpr double openTop=5000;
 // from 0.31 to 0.24 ms, and the benchmark scores no closer, so the rises
 // stay as fitted.
 constexpr double contactSmoothing=1e-4;
+// The hammer strikes a string about an eighth of its speaking length from
+// its near end (a seventh to a ninth: Fletcher and Rossing, The Physics of
+// Musical Instruments, 2nd ed., 1998, section 12.2), and the board hears the
+// string only once the strike's wave has run the other seven eighths to the
+// bridge: strikeTravel (1 + B) / ((1 + 2B) 2 f1) after the strike, f1 the
+// fundamental, at its group velocity, c (1 + 2B) / sqrt(1 + B) (Podlesak and
+// Lee, JASA 83(1), 1988), 13.4 ms at C1 and 2.0 ms at A3. In the recordings of
+// every piano but New York's, whose bass takes start late, a bass note's
+// sound under 400 Hz comes in about that long after its sound over 2 kHz,
+// where 0.4.28 played both within 1 to 4 ms
+// (Docs/research/string-travel-2026-11-09.md). So a key's partials and the
+// board's knock start that long after the strike, from the chunk boundary
+// nearest it, as one time shift of the sound as fitted: the fits measured
+// them from the recordings' contact, where the sound comes up, so they keep
+// the phases and rises fitted between them. A stiff string's higher
+// partials travel faster; started at their own arrivals, each from its
+// fitted phase, they stood further on the Kakegawa grand's takes and on the
+// upright's and New York's dev takes. The hammer's noise and the key
+// landing do not travel the string and stay at the strike.
+constexpr double strikeTravel=7./8;
+// A rise's d in float. Waiting, d can pass float's range; held at 1e30 it
+// still stays over 1 for a chunk unless the rise were shorter than
+// chunk / (69 sample rate), 10 us at 48 kHz, where the shortest is 0.16 ms.
+inline float floatRise(double d) noexcept {return static_cast<float>(std::min(d,1e30));}
 static_assert(grand::bodyRise>2*contactSmoothing&&upright::bodyRise>2*contactSmoothing&&kawai::bodyRise>2*contactSmoothing&&hamburg::bodyRise>2*contactSmoothing&&newyork::bodyRise>2*contactSmoothing,
               "the body's rise is slower than the contact's smoothing");
 // What the felt leaves ringing once it lands, the same on every piano: the
@@ -251,8 +275,11 @@ constexpr Model models[]{
    // 2.3 dB over at velocity 30, measured as the upright's (1.6 and 1.8 dB
    // before 0.4.26). Re-pinned in 0.4.26 to the -8.97 VU it read before,
    // from 3.0341: its keys between recorded pitches play the keyboard
-   // network's partials since, which took it to -10.21 VU.
-   3.5030,
+   // network's partials since, which took it to -10.21 VU. Re-pinned again
+   // in 0.4.29, from 3.5030: a key's partials wait for the strike's wave
+   // since, which lines a chord's notes up differently, and took it to
+   // -8.92.
+   3.4816,
    // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
    // pair's: within 0.5 dB, its loudest chords through the tube reach the
    // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
@@ -264,8 +291,9 @@ constexpr Model models[]{
    // when the network's keys took it to -11.27; its loudest chords through
    // the tube read 3.29 VU. Re-pinned again in 0.4.28 to the -9.95 VU it
    // read before, from 1.2364: the knock under 400 Hz, which the tube's
-   // response favours, took it to -9.87.
-   1.2253,
+   // response favours, took it to -9.87. And in 0.4.29, from 1.2253: the
+   // strike's wave took it to -9.99, and its pair's re-pin to -10.05.
+   1.2391,
    true,
    kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
@@ -315,9 +343,12 @@ constexpr Model models[]{
    // Typical playing at -9 VU and the tube at the pair's, as above.
    // Re-pinned in 0.4.26 to the -9.09 and -9.03 VU they read before, from
    // .6543 and 1.8141: its keys between recorded pitches play the keyboard
-   // network's partials since, which took them to -10.94 and -9.86 VU.
+   // network's partials since, which took them to -10.94 and -9.86 VU. The
+   // tube re-pinned again in 0.4.29 to the -9.02 VU it read before, from
+   // 1.6122: a key's partials wait for the strike's wave since, which lines
+   // a chord's notes up differently, and took it to -8.90.
    .8093,
-   1.6122,
+   1.5890,
    true,
    newyork::glide},
 };
@@ -575,6 +606,15 @@ Complex power(Complex base,int exponent) noexcept {
   Complex result{1,0};
   while(exponent>0){if(exponent&1)result=result*base;base=base*base;exponent>>=1;}
   return result;
+}
+// A damped rotation `samples` back: its inverse run on. An empty lane (a
+// zero step) stays at 1, and a lane that would grow past 1e30 run back, one
+// falling 600 dB over the wait, is silent.
+Complex behind(Complex step,int samples) noexcept {
+  const double n=step.re*step.re+step.im*step.im;
+  if(!(n>0))return {1,0};
+  const Complex back=power(Complex{step.re/n,-step.im/n},samples);
+  return std::abs(back.re)<1e30&&std::abs(back.im)<1e30?back:Complex{};
 }
 // One partial: four complex lanes, each a damped rotation at its own rate and
 // frequency, under one rise 1 - d, d = e^(-t/rise), that starts them from
@@ -1412,6 +1452,13 @@ struct Engine::Impl {
   // builds up as the strike's knock does, from `onset` and `contactOnset`.
   Body ring{},lateRing{},onset{},contactOnset{},actionRing{},actionOnset{};
   bool ringing=false,rising=false,actionRinging=false;
+  // A strike's knock on the body modes, waiting for the strike's wave to
+  // reach the bridge (strikeTravel): `due` is the frame of the chunk
+  // boundary it starts from, `g` and `slow` each mode's knock on the ring's
+  // two stages.
+  struct WaitingKnock {std::uint64_t due=0;Complex g[bodyModes],slow[bodyModes];};
+  std::array<WaitingKnock,maxVoices> waitingKnocks{};
+  int waitingCount=0;
   // The body modes' pickups as built (pickupTarget) and as heard (pickup).
   // A build changed while the body sounds glides them to the new board's
   // over pickupGlide more samples, by pickupStep each sample: set at once,
@@ -2104,7 +2151,7 @@ struct Engine::Impl {
   void silenceBody() noexcept {
     Body* bodies[6]={&ring,&lateRing,&onset,&contactOnset,&actionRing,&actionOnset};
     for(auto* body:bodies)for(auto& bank:*body){bank.re=bank.im=V4{};for(auto& z:bank.exact)z={};}
-    ringing=rising=actionRinging=false;
+    ringing=rising=actionRinging=false;waitingCount=0;
     // As a fresh engine's: a key held through a reset leaves no felt behind.
     bodyContact=1;
   }
@@ -2185,6 +2232,7 @@ struct Engine::Impl {
     for(auto& channel:channels)
       channel.smoothedMute+=controlSmooth*(std::max(parameters.mute,channel.mute)-channel.smoothedMute);
     if(bodyContact!=appliedBodyContact)dampBody();
+    if(waitingCount>0)knockWaiting();
     if(ringing){const bool early=advance(ring),late=advance(lateRing);ringing=early||late;}
     if(rising){const bool body=advance(onset),contact=advance(contactOnset);rising=body||contact;}
     if(actionRinging){const bool action=advance(actionRing),onset=advance(actionOnset);actionRinging=action||onset;}
@@ -2231,7 +2279,7 @@ struct Engine::Impl {
         if(weights)updateWeights(partial);
         if(partial.rising){
           // Below -140 dB the rise is complete and the partial runs unscaled.
-          partial.riseRemaining=static_cast<float>(partial.riseExact);
+          partial.riseRemaining=floatRise(partial.riseExact);
           partial.rising=partial.riseExact>1e-7;
           partial.riseExact*=partial.riseLeap;
         }
@@ -2513,6 +2561,8 @@ struct Engine::Impl {
     }
     channel.struck[note-21]=clock;
     const double f1=builtPitch(note),B=builtStiffness(note);
+    // Samples from the strike until its wave reaches the bridge (strikeTravel).
+    const double travel=legacyAttack?0.:strikeTravel*(1+B)/((1+2*B)*2*f1)*sampleRate;
     const double highest=std::min(17000.,sampleRate*.43);
     const double strikeRefAmp=.015*std::pow(10.,requestedDb/20);
     const double restrikeRatio=restrikeEnergy>1e-5?std::sqrt(restrikeEnergy)/(std::sqrt(restrikeEnergy)+strikeRefAmp):0.;
@@ -2522,6 +2572,8 @@ struct Engine::Impl {
     const double restrikeBodyGain=1-.28*restrikeRatio;
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
+    // The strike's partials and its knock on the body start here, after it.
+    const int start=waveStart(travel,ahead);
     const double colourDb=fold(hammers,[&](int p){return sides[p].colourDb;},pick)+1.08*restrikeRatio;
     const auto colour=[colourDb](double order){return std::pow(10.,colourDb*std::min(4.,std::log2(order))/20);};
     double plain=0,coloured=0; // the strike's energy without and with its colour
@@ -2536,6 +2588,9 @@ struct Engine::Impl {
     }
     const double lateCrowdGain=!steady&&crowded?.78:1.;
     constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28};
+    // The knock waits in a free slot; with none free it starts at the strike.
+    WaitingKnock* waiting=start>0&&waitingCount<maxVoices?&waitingKnocks[waitingCount++]:nullptr;
+    if(waiting)waiting->due=frame+static_cast<std::uint64_t>(start);
     int modes[pianoCount];
     for(int p=0;p<pianoCount;++p)modes[p]=models[p].bodyModeCount;
     for(int k=0;k<bodyModeCount;++k){
@@ -2552,12 +2607,9 @@ struct Engine::Impl {
         const double amplitude=std::pow(10.,level/20)*softGain*restrikeBodyGain*(late?lateCrowdGain:1.);
         stage[late]={amplitude*std::cos(phase),amplitude*std::sin(phase)};
       }
-      const Complex g=stage[0],slow=stage[1];
-      knock(ring[k/lanes],k%lanes,g,ahead);knock(lateRing[k/lanes],k%lanes,slow,ahead);
-      knock(onset[k/lanes],k%lanes,{struckOnset*(g.re+slow.re),struckOnset*(g.im+slow.im)},ahead);
-      knock(contactOnset[k/lanes],k%lanes,{struckContact*(g.re+slow.re),struckContact*(g.im+slow.im)},ahead);
+      if(waiting){waiting->g[k]=stage[0];waiting->slow[k]=stage[1];}
+      else knockBody(k,stage[0],stage[1],ahead);
     }
-    ringing=rising=true;
     // The key landing on the keybed knocks the body's modes as its return
     // does, growing with the strike's layer, but as an impact, with the
     // strike: under the body's rise rather than the release's slower build.
@@ -2815,7 +2867,7 @@ struct Engine::Impl {
       // time (Model::contactTime), no partial of its rises slower.
       const double rise=std::exp(d.rise);
       const double capped=fold(hammers,[&](int p){return sides[p].contact>0?std::min(rise,sides[p].contact):rise;},pickLog);
-      launch(voice,partial,legacyAttack?.002:std::max(capped,shortestRise),ahead,ratio);
+      launch(voice,partial,legacyAttack?.002:std::max(capped,shortestRise),ahead,ratio,start);
       const double c=colour(order);
       for(int k=0;k<lanes;++k){const double e=partial.energyWeight[k]/(1-partial.decay[k]*partial.decay[k]);coloured+=e;plain+=e/(c*c);}
       ++voice.count;
@@ -2845,7 +2897,7 @@ struct Engine::Impl {
       slot.tintScale=std::min(4.,std::log2(orderSum/filled));
       slot.tint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*slot.tintScale));
       if(peak>=1e-7){
-        launch(voice,slot,legacyAttack?.002:shortestRise,ahead,ratio);
+        launch(voice,slot,legacyAttack?.002:shortestRise,ahead,ratio,start);
         for(int k=0;k<filled;++k){const double e=slot.energyWeight[k]/(1-slot.decay[k]*slot.decay[k]);coloured+=e;plain+=e/(laneColour[k]*laneColour[k]);}
         ++voice.count;}
       filled=0;hzSum=orderSum=peak=0;
@@ -2953,14 +3005,39 @@ struct Engine::Impl {
       }
     voice.count=kept;
   }
+  // Where a strike `ahead` samples before the next chunk boundary starts
+  // what reaches the bridge `a` samples after it: at the strike or at the
+  // boundary nearest `a` after it, as samples from the strike.
+  static int waveStart(double a,int ahead) noexcept {
+    if(a<.5*ahead)return 0;
+    return ahead+chunk*static_cast<int>(std::floor(std::max(0.,a-ahead)/chunk+.5));
+  }
+  // A strike's knock on body mode k: on the ring's two stages, and on the
+  // onsets that bring it up under the body's rise.
+  void knockBody(int k,Complex g,Complex slow,int ahead) noexcept {
+    knock(ring[k/lanes],k%lanes,g,ahead);knock(lateRing[k/lanes],k%lanes,slow,ahead);
+    knock(onset[k/lanes],k%lanes,{struckOnset*(g.re+slow.re),struckOnset*(g.im+slow.im)},ahead);
+    knock(contactOnset[k/lanes],k%lanes,{struckContact*(g.re+slow.re),struckContact*(g.im+slow.im)},ahead);
+    ringing=rising=true;
+  }
+  // At a chunk boundary: the waiting knocks due there.
+  void knockWaiting() noexcept {
+    for(int i=0;i<waitingCount;){auto& w=waitingKnocks[i];
+      if(w.due>frame){++i;continue;}
+      for(int k=0;k<bodyModeCount;++k)knockBody(k,w.g[k],w.slow[k],0);
+      if(i!=--waitingCount)w=waitingKnocks[waitingCount];
+    }
+  }
   // A partial's rise, tuning, weights and state from its strike, `ahead`
-  // samples before the next chunk boundary.
-  void launch(const Voice& voice,Partial& partial,double rise,int ahead,double ratio) noexcept {
+  // samples before the next chunk boundary, played `wait` samples late:
+  // its lanes start that far back (behind), and its rise's d at
+  // riseStep^-wait, so 1 - d plays as 0 until d comes down to 1.
+  void launch(const Voice& voice,Partial& partial,double rise,int ahead,double ratio,int wait) noexcept {
     partial.tintState=partial.targetTint=partial.tint;
     partial.riseStep=std::exp(-1/(rise*sampleRate));
     partial.riseLeap=std::pow(partial.riseStep,chunk);
-    partial.riseExact=std::pow(partial.riseStep,ahead);
-    partial.riseRemaining=1;partial.riseSmoothed=0;partial.riseDecay=static_cast<float>(partial.riseStep);
+    partial.riseExact=std::pow(partial.riseStep,ahead-wait);
+    partial.riseRemaining=floatRise(std::pow(partial.riseStep,-wait));partial.riseSmoothed=0;partial.riseDecay=static_cast<float>(partial.riseStep);
     partial.rising=true;
     for(int k=0;k<lanes;++k)
       partial.energyWeight[k]=static_cast<double>(partial.baseLeftRe[k])*partial.baseLeftRe[k]+static_cast<double>(partial.baseLeftIm[k])*partial.baseLeftIm[k]
@@ -2970,8 +3047,9 @@ struct Engine::Impl {
     updateWeights(partial);
     setRotation(partial,dampingFactor(voice,partial));
     for(int k=0;k<lanes;++k){
-      setLane(partial.re,k,1.f);setLane(partial.im,k,0.f);
-      partial.exact[k]=power(partial.step[k],ahead);
+      const Complex back=behind(partial.step[k],wait);
+      setLane(partial.re,k,static_cast<float>(back.re));setLane(partial.im,k,static_cast<float>(back.im));
+      partial.exact[k]=back*power(partial.step[k],ahead);
     }
   }
   // A knock of the action on the body: on each piano between its two
@@ -3383,7 +3461,7 @@ struct Engine::Impl {
           for(int i=0;i<frames;++i){
             const V4 tint=nextTint();
             const V4 tlr=baseLR*tint,tli=baseLI*tint,trr=baseRR*tint,tri=baseRI*tint;
-            rise+=contactShare*(1-d-rise);d*=decay;
+            rise+=contactShare*(std::max(0.f,1-d)-rise);d*=decay;
             const V4 g=splat(rise);
             toLeft[i]+=(tlr*re-tli*im)*g;toRight[i]+=(trr*re-tri*im)*g;
             const V4 next=re*c-im*s;im=re*s+im*c;re=next;
@@ -3402,7 +3480,7 @@ struct Engine::Impl {
       }else if(partial.rising){
         float d=partial.riseRemaining,smoothed=partial.riseSmoothed;const float decay=partial.riseDecay;
         for(int i=0;i<frames;++i){
-          smoothed+=contactShare*(1-d-smoothed);
+          smoothed+=contactShare*(std::max(0.f,1-d)-smoothed);
           const V4 g=splat(smoothed);d*=decay;
           toLeft[i]+=(lr*re-li*im)*g;toRight[i]+=(rr*re-ri*im)*g;
           const V4 next=re*c-im*s;im=re*s+im*c;re=next;
@@ -3769,7 +3847,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     p.render(left+done,right+done,n);
     done+=n;p.frame+=static_cast<std::uint64_t>(n);
   }
-  bool any=p.ringing||p.rising||p.actionRinging||p.hissing||p.roomSounding;
+  bool any=p.ringing||p.rising||p.actionRinging||p.hissing||p.roomSounding||p.waitingCount>0;
   for(const auto& voice:p.voices)any=any||voice.active;
   if(!any){
     double residue=std::abs(p.highpassL)+std::abs(p.highpassR);
