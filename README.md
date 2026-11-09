@@ -23,11 +23,11 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | --- | --- | --- | --- | --- |
 | 1 | Kakegawa Grand | [01-kakegawa-grand.wav](Docs/audio/01-kakegawa-grand.wav) | 11.2 s | -1.5 dBFS |
 | 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -12.1 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -15.5 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -15.3 dBFS |
 | 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -1.5 dBFS |
 | 6 | Helsinki Upright | [06-helsinki-upright.wav](Docs/audio/06-helsinki-upright.wav) | 11.6 s | -1.5 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
-| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -3.8 dBFS |
+| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -3.9 dBFS |
 | 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -1.5 dBFS |
 
 <!-- audio-demos-end -->
@@ -42,6 +42,52 @@ comparisons that set Salamander notes beside the fits were removed on
 the checkout from a fetched copy of the library.
 
 ## Version history
+
+### 0.4.29 — 2026-11-09 — the strike's wave reaches the bridge
+
+A key's partials and its knock on the body start when the strike's wave
+reaches the bridge, as each piano's recordings show (How it works). The
+hammer strikes about an eighth of the string from its near end, and the board
+hears the string once the wave has run the other seven eighths: 13.4 ms after
+the strike at C1, 2.0 ms at A3. 0.4.28 played the tone at the strike, so from
+A0 to C♯1 its band under 400 Hz came in 1 to 3 ms after its band over 2 kHz,
+where four pianos' recordings bring it in 11 to 17 ms after; 0.4.29 brings it
+in 13 to 15 ms after
+([string travel](Docs/research/string-travel-2026-11-09.md)). Against 0.4.28
+on every train and dev take, the paired means summed over the eleven measures
+other than level, in tolerance units, stand closer on every piano's dev
+takes: the Hamamatsu by 0.55, New York by 0.29, the upright by 0.19, the
+Hamburg by 0.18 and the Kakegawa grand by 0.02. On the train takes the
+Hamburg stands 1.05 closer and the grand 0.04, the upright 0.11 further, New
+York 0.33 and the Hamamatsu 0.38. The grand's train bass, A0 to B2, stands
+0.32 dB closer in the envelope and 0.25 dB in the attack. Twenty-five scores
+stand further by more than a tolerance: fourteen rises, eleven of them from
+C4 up, where the wave takes under 2 ms and the envelope stands near the
+rise's 90 % line, the grand's F♯5 the most (0.86 to 7.34 ms); eight scores of
+the deepest keys, which wait 13 to 16 ms, New York's train C1 attack the most
+(7.45 to 9.81 dB); two noises and one coherence
+([Kakegawa grand](Docs/validation/grand-string-travel-benchmark-2026-11-09.md),
+[upright](Docs/validation/upright-string-travel-benchmark-2026-11-09.md),
+[Hamamatsu](Docs/validation/kawai-string-travel-benchmark-2026-11-09.md),
+[Hamburg](Docs/validation/hamburg-string-travel-benchmark-2026-11-09.md),
+[New York](Docs/validation/newyork-string-travel-benchmark-2026-11-09.md)).
+On the grand's held-out evaluation the twelve in-range cases stand 4.950 dB
+from their recordings in bands (4.968), 1.676 dB in envelope (1.708) and
+4.090 ms in rise (4.038). The hammer's noise and the key landing stay at the
+strike.
+
+Chords line up as struck strings do: a chord's notes start at their own waits,
+so their coincident partials meet at other phases than before. Single notes
+keep their level, and a chord's level moves with its voicing, by up to 8 dB
+through the tube for the open fifths E1, B1, E2, B2, E3, and 0.006 dB in the
+median of the factory audit's chords. The 88 keys struck in turn with the
+pedal down render in 0.7 % less CPU on the grand, the same on the upright,
+2.1 % more on the Hamamatsu, 1.0 % less on the Hamburg and 0.3 % less on New
+York, on the development machine. The Hamamatsu's output and tube and New
+York's tube are re-pinned to what they read on Reason's meter before. Eleven
+readings then passed their approved levels, and the owner accepted them: eight
+loudest chords by 0.07 to 1.25 VU, and three presets' typical playing by 0.07
+to 0.11 VU.
 
 ### 0.4.28 — 2026-11-09 — the strike's knock under 400 Hz
 
@@ -907,7 +953,7 @@ transition; the measured sound and interpolation are unchanged
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 87](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42624775200/artifacts/13678433728)**, built from [`8f008da3f9f7`](https://github.com/protocodus/virtual-instrument-keyra/commit/8f008da3f9f7884997aa37c18f224487bca96344). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 88](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42677144084/artifacts/13701253778)**, built from [`028bacdc7023`](https://github.com/protocodus/virtual-instrument-keyra/commit/028bacdc70231549e10028df394f2b1416713920). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -927,7 +973,14 @@ the way its balance moves between the microphones. A partial starts from the
 phase the recordings show at string contact and rises from zero, never faster
 than its pitch's recorded onset builds up and, on the upright, never slower
 than the hammer stays on the string (2 ms at middle C, halving every two
-octaves up), and like the body's knock without a corner: every rise is smoothed over 0.1 ms, as a felt hammer presses in. The lanes run four to a 128-bit
+octaves up), and like the body's knock without a corner: every rise is smoothed over 0.1 ms, as a felt hammer presses in. A key's
+partials and its knock on the body start when the strike's wave reaches the
+bridge: the hammer strikes about an eighth of the string from its near end,
+and the wave runs the other seven eighths at the fundamental's group velocity
+for the string's stiffness, 13.4 ms at C1 and 2.0 ms at A3, from the 32-sample
+boundary nearest it. Each partial then comes in at the phase and rise fitted
+from the recordings' contact; the hammer's noise and the key landing sound at
+the strike. The lanes run four to a 128-bit
 vector in single precision, restarted every 32 samples from a double-precision
 state, so long notes keep their exact decay.
 

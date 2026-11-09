@@ -3720,3 +3720,132 @@ upright's C7, partials whose fit stopped at the fitter's slowest decay,
 6.5 kHz partial at −60 dBFS a minute on, its other keys from A♯6 to D♯7
 −66 to −77 dBFS, and every other key −83 dBFS or quieter. It is left to the keyboard's
 calibration, which follows the five rounds.
+
+## 2026-11-09 — the strike's wave reaches the bridge
+
+The third of the owner's five rounds of audible improvements, decided on the
+recordings with the better candidate taken. No listening test was run and no
+listening preference is recorded.
+
+The finding. A hammer strikes its string about an eighth of the speaking
+length from the near end, and the board hears the string only once the
+strike's wave has run the other seven eighths to the bridge. In the
+recordings of four pianos a bass key's band under 400 Hz comes in after its
+band over 2 kHz by about that time, from A0 to C♯1 12.5 ms on the Kakegawa
+grand, 14.0 on the upright, 11.2 on the Hamamatsu and 16.7 on the Hamburg,
+where 0.4.28 brought both in 1.1 to 3.4 ms apart ([string
+travel](research/string-travel-2026-11-09.md)). New York's bass takes start
+too close to their sound to show it.
+
+The candidates. Every one starts a key's partials and its knock on the
+body's modes when the wave reaches the bridge, at the fundamental's group
+velocity for the key's stiffness: 13.4 ms after the strike at C1, 2.0 ms at
+A3, with no fitted number. The first three let each partial's oscillator run
+from the strike and held its rise until the wave arrived; they differed in
+what else waited (the first left the knock at the strike, the second also
+held the strike's noise, whose click came 10 ms late). Their partials came
+in at the phase their oscillators had run to rather than the one fitted at
+contact, and the third, benchmarked, stood further on every piano's train
+takes (+5.08 on the grand, in tolerance units summed over the eleven
+measures other than level). The fourth plays each key as one time shift of
+its fitted sound, every lane run back by the wait so it arrives at its
+fitted phase; the fifth starts each partial at its own group velocity, a
+stiff string's higher partials sooner. Against 0.4.28 the fifth stood
+further on three pianos' dev takes (the grand +0.78, the upright +1.20, New
+York +0.37) and the fourth closer on all five. 0.4.29 ships the fourth. The
+hammer's noise and the key landing do not travel the string and stay at the
+strike.
+
+On the benchmark, against 0.4.28 on every train and dev take, the paired
+sums are: the grand −0.04 and −0.02, the upright +0.11 and −0.19, the
+Hamamatsu +0.38 and −0.55, the Hamburg −1.05 and −0.18 and New York +0.33
+and −0.29. The grand's train bass, A0 to B2, stands 0.32 dB closer in the
+envelope and 0.25 dB in the attack. Past a tolerance, 25 scores stand
+further: 14 rises, eleven of them from C4 up, where the wave takes 1.7 ms or
+less and the rise moves where the envelope stands near its 90 % line, the
+grand's F♯5 the most (train 0.86 → 7.34 ms, dev 1.21 → 7.07); 8 scores of
+the deepest keys, which wait 13 to 16 ms, the grand's dev A0 attack (4.27 →
+5.87 dB), early and sustain, the Hamamatsu's train A0 attack (7.81 → 9.77)
+and early and C1 attack, and New York's train C1 attack (7.45 → 9.81) and
+envelope; the upright's train E3 and the Hamamatsu's train C2 noise (17.77 →
+18.38, 4.34 → 4.85 dB); and the Hamburg's train G♯5 coherence (0.15 → 0.19).
+The Hamamatsu's recordings come in 11.2 ms apart from A0 to C♯1, where the
+wave takes 13.4 and 0.4.29 15.3. On the grand's held-out evaluation the
+twelve in-range cases stand 4.950 dB from their recordings in bands (4.968),
+3.990 dB in harmonics (3.991), 1.676 dB in envelope (1.708), 2.270 dB/s in
+decay and 0.190 cents in pitch (both unchanged) and 4.090 ms in rise
+(4.038): C2 at velocity 8 rises 1.19 ms from its recording's where it stood
+10.83 ms off, and F♯5 8.10 where it stood 0.98, as on the benchmark. The
+edge cases C1 and C7 at velocity 8 stand 4.603 dB in bands (4.589), 2.284 dB
+in harmonics (2.259) and 8.275 dB in envelope (8.036), C1's envelope 2.38 →
+2.86 dB.
+
+Levels and tests. The engine stays linear, but a chord's notes now start at
+their own waits, so the coincident partials of notes struck together meet at
+other phases: single notes keep their level, and a chord's level moves with
+its voicing. The open-fifth chord E1, B1, E2, B2, E3 through the Kakegawa
+grand's tube played 5.1 dB under its notes' powers summed and plays 2.1 dB
+over them, from 60 to 140 Hz 8 to 9 dB louder; through New York's tube the
+same chord played 3.0 dB over them and plays 3.4 dB under. On the meter, the
+presets' typical playing moves 0.09 dB at most from 0.4.28's readings and
+New York's tube 0.12 dB. Of the readings past the test's 0.05 guard, the
+pianos' own are re-pinned to the readings they held before, as in earlier
+rounds: New York's tube (−8.90 VU) from 1.6122 to 1.5890, the Hamamatsu's
+default sound (−8.92) by its output scale, from 3.5030 to 3.4816, and with
+it the Hamamatsu's tube, which that took from −9.99 to −10.05 VU, from
+1.2253 to 1.2391. Eleven readings then stood past their approved levels, the
+loudest chords of the grand's tube 1.717973 VU against its approved
+1.222194, the Hamburg's tube 2.560835 against 2.196889, Kakegawa Grand
+1.408187 against 0.719836, Studio Grand 1.234696 against −0.019715, Warm
+Walnut 0.620191 against −0.104002, Open Strings 1.934134 against 1.514169,
+Hamburg Grand 2.474622 against 2.404007 and New York Grand 3.322501 against
+3.213257, and the typical playing of Studio Grand −10.171010 against
+−10.241775, Open Strings −7.970366 against −8.081521 and Pop Upright
+−9.306939 against −9.214799. Asked whether to accept them and merge 0.4.29,
+the owner chose to: `Tests/Fixtures/dynamics/ApprovedLevels.h` now holds all
+eleven to six decimals, and `Keyra.Levels` passes. `Keyra.FactoryDynamics`
+fails as it did on 0.4.28, on 1,134 rows (1,038 pairs under their step
+floors and 96 chords past its maximum levels) where 0.4.28 failed on 1,019
+(992 and 27). Of the 372 new rows, 289 pairs stand a median 0.095 dB under
+their floors, 4.875 dB at most, the expanded panel's Hamamatsu Grand through
+the tube, A1, E2, A2, C3, E3, A3 from velocity 64 to 80, whose chord at 64
+plays 5.6 dB louder than on 0.4.28; 83 chords pass their maximum levels by a
+median 0.43 dB (2.52 at most), 60 of them the Kakegawa Grand's; 257 of
+0.4.28's rows are gone. Over the audit's 2,120 pairs the median step moves
+−0.005 dB and the median chord +0.006 dB. Its floors and limits are
+unchanged.
+
+Two `Keyra.Engine` checks read chords where the change exposed their
+fixtures, both corrected beside them. The check that a chord is its notes'
+sum read the chord at the default Output, where the output stage now acts on
+its attack (−28.6 dB against the −35 dB limit); it reads it 24 dB down, as
+the headroom check reads its chords, and the chord is its notes' sum to
+−129 dB. The headroom check took the emergency bound ahead of the stage as 4
+(+12 dBFS) in its own units, where `ForteOutput` feeds the guard half of
+what it reads and clamps it at 4, so the bound is 8 (+18 dBFS); the
+upright's ten-note chord peaks at +9.3 dBFS, 8.7 dB under it.
+`Keyra.VelocityInterpolationFreshness` follows the engine source's hash, and
+its receipt was regenerated by its generator; the masks did not change. A
+third check is new: on every piano, C1 struck alone with the action, the
+room and the knock under the noise bands off plays under 400 Hz over its
+first 12 ms only the hammer's noise, 51 to 70 dB under the 10 ms from
+14.4 ms on, where its partials play; through `keyra_render`, 0.4.28 read 3
+to 12 dB. The `unit` tier (45 tests), the `audio` tier's demos and the
+`perf` tier pass, and `KeyraDSPCxx17` builds.
+
+As for 0.4.27 and 0.4.28, the plug-in's `Keyra.ParameterMatrix` needs a JUCE
+build, which was not made; the stand-in described there passed all 2,889
+runs, its 321 cases at all nine rates and block sizes. Of one run per case
+where silence is due, the loudest tail 2 s after the release is again the
+Hamburg Grand's, through the tube −69.0 dBFS where 0.4.28 read −68.7 and at
+full Output −70.9 (−69.2), 9.0 dB under the matrix's −60 dBFS floor. With
+the room off the loudest tail reads as on 0.4.28, the Hamamatsu Grand's at
+full Hammer brightness −81.9 dBFS (−81.95), and as many runs as on 0.4.28
+leave a tail over −180 dBFS, 295 of 353.
+
+The 88 keys struck in turn at velocity 90, 120 ms apart with the pedal down,
+render in a median 3.81 s of CPU on the grand where 0.4.28 took 3.84
+(−0.7 %), 2.67 on the upright against 2.67 (0.0 %), 2.90 on the Hamamatsu
+against 2.84 (+2.1 %), 3.28 on the Hamburg against 3.31 (−1.0 %) and 3.19 on
+New York against 3.20 (−0.3 %), seven alternating runs of each on the
+development machine.

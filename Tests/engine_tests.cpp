@@ -114,22 +114,29 @@ double spectralPeak(const Audio& audio,double low,double high){
   }
   return peak;
 }
-// From 8 kHz up (a fourth-order Butterworth high-pass), the power of the
-// 5 ms from `at` against that of 20 to 40 ms later, in dB.
-double click(const Audio& audio,std::size_t at){
+// Both channels' power at each frame through a fourth-order Butterworth
+// filter, a high-pass from `hz` up or a low-pass under it.
+std::vector<double> filteredPower(const Audio& audio,double hz,bool high){
   constexpr double pi=3.14159265358979323846;
   std::array<std::array<double,5>,2> sections{};
-  for(int k=0;k<2;++k){const double q=k?1.3065629648763766:.5411961001461970,w=2*pi*8000/48000;
-    const double alpha=std::sin(w)/(2*q),c=std::cos(w),a0=1+alpha;
-    sections[static_cast<std::size_t>(k)]={(1+c)/2/a0,-(1+c)/a0,(1+c)/2/a0,-2*c/a0,(1-alpha)/a0};}
+  for(int k=0;k<2;++k){const double q=k?1.3065629648763766:.5411961001461970,w=2*pi*hz/48000;
+    const double alpha=std::sin(w)/(2*q),c=std::cos(w),a0=1+alpha,b=high?(1+c)/2:(1-c)/2;
+    sections[static_cast<std::size_t>(k)]={b/a0,(high?-2:2)*b/a0,b/a0,-2*c/a0,(1-alpha)/a0};}
   std::vector<double> power(audio.size()/2);
   for(std::size_t channel=0;channel<2;++channel){std::array<double,4> z{};
     for(std::size_t i=0;i<power.size();++i){double x=audio[2*i+channel];
       for(std::size_t k=0;k<2;++k){const auto& s=sections[k];
         const double y=s[0]*x+z[2*k];z[2*k]=s[1]*x-s[3]*y+z[2*k+1];z[2*k+1]=s[2]*x-s[4]*y;x=y;}
       power[i]+=x*x;}}
-  auto mean=[&](std::size_t from,std::size_t to){double sum=0;for(std::size_t i=from;i<to;++i)sum+=power[i];return sum/static_cast<double>(to-from);};
-  return 10*std::log10(mean(at,at+240)/mean(at+960,at+1920));
+  return power;
+}
+double meanOf(const std::vector<double>& power,std::size_t from,std::size_t to){
+  double sum=0;for(std::size_t i=from;i<to;++i)sum+=power[i];return sum/static_cast<double>(to-from);}
+// From 8 kHz up, the power of the 5 ms from `at` against that of 20 to 40 ms
+// later, in dB.
+double click(const Audio& audio,std::size_t at){
+  const auto power=filteredPower(audio,8000,true);
+  return 10*std::log10(meanOf(power,at,at+240)/meanOf(power,at+960,at+1920));
 }
 // A partial's level in dB every 10 ms, at `hz`, in 40 ms Hann frames of
 // both channels' mean.
@@ -297,10 +304,15 @@ int main(int argc,char** argv){
   {
     // A chord is the sum of its notes: every note of one struck together plays
     // its per-key level trim and its crowding verdict exactly as it does alone.
-    // What remains is the shared body and output stage, well under the
-    // 1-2 dB trims a dropped trim leaves (-28 dB).
+    // It is read 24 dB down, where the output stage passes it untouched, as
+    // the headroom check below reads its chords: at the default Output the
+    // stage acts on this chord's attack since a key's partials wait for the
+    // strike's wave (0.4.29), and what it takes off (-28.6 dB) is about what
+    // a dropped 1-2 dB trim leaves (-28 dB). Under the stage the chord is its
+    // notes' sum to rounding (-129 dB).
     constexpr std::array<int,15> notes{38,42,45,50,53,57,61,66,70,75,79,83,87,91,94};
-    auto played=[](const int* first,int count){keyra::Engine e;e.setParameters(dry());e.setSteadyStrikesForMeasurement(true);
+    auto played=[](const int* first,int count){keyra::Engine e;auto p=dry();p.gain/=16;e.setParameters(p);e.reset();
+      e.setSteadyStrikesForMeasurement(true);
       for(int i=0;i<count;++i)e.noteOn(first[i],80/127.f);return render(e,96000);};
     const Audio chord=played(notes.data(),static_cast<int>(notes.size()));
     Audio sum(chord.size());
@@ -480,6 +492,22 @@ int main(int argc,char** argv){
       double sum=0;for(int k=0;k<14;++k)sum+=bands[static_cast<std::size_t>(k)];return sum;};
     for(auto p:{dry(),dryUpright()}){p.mechanics=0;p.room=0;const double free=10*std::log10(body(p,false)/body(p,true));
       check(free>20,"a top note's body rings on until CC1 mutes it");std::cout<<"top_note_body_db="<<free<<'\n';}
+  }
+  {
+    // A key's partials and the board's knock wait for the strike's wave to
+    // reach the bridge (strikeTravel), 13.4 ms at C1. With the action, the
+    // room and the knock under the noise bands off, C1 plays under 400 Hz
+    // over its first 12 ms only the hammer's noise, 51 to 70 dB under the
+    // 10 ms from 14.4 ms on, where its partials play. On 0.4.28, which
+    // started them at the strike, keyra_render's C1 read 3 to 12 dB so.
+    for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork}){
+      keyra::Engine e;auto p=dry();p.build=keyra::measuredBuild(piano);p.mechanics=0;p.room=0;e.setParameters(p);
+      e.setLowKnockForMeasurement(false);e.setSteadyStrikesForMeasurement(true);e.noteOn(24,80/127.f);
+      const auto power=filteredPower(render(e,1200),400,false);
+      const double db=10*std::log10(meanOf(power,691,1171)/std::max(meanOf(power,0,576),1e-300));
+      check(db>30,"a key's partials wait for the strike's wave to reach the bridge");
+      std::cout<<"wave_wait_piano="<<pianoName(piano)<<" db="<<db<<'\n';
+    }
   }
   {
     keyra::Engine a,b;a.setParameters(dry());auto p=dry();p.soft=1;b.setParameters(p);a.noteOn(72,.7f);b.noteOn(72,.7f);
@@ -1175,14 +1203,19 @@ int main(int argc,char** argv){
     check(allocations==0,"all live event/render/reset APIs allocate zero bytes");
   }
   // A fortissimo chord meets the output stage's limiter, never the emergency
-  // bound ahead of it (4, +12 dBFS): read 24 dB down, where the stage passes
-  // it untouched, its peak at the default Output stays 3 dB under the bound.
+  // bound ahead of it: read 24 dB down, where the stage passes it untouched,
+  // its peak at the default Output stays 3 dB under the bound. ForteOutput
+  // clamps the guard's input at 4 and feeds the guard half of what it reads
+  // here, so here the bound is 8, +18 dBFS. Until 0.4.29 this check read it
+  // as 4, +12 dBFS; the upright's ten-note chord, whose attacks line up
+  // differently since a key's partials wait for the strike's wave, now peaks
+  // at +9.3 dBFS, 8.7 dB under the bound.
   for(const auto piano:{keyra::Piano::grand,keyra::Piano::upright,keyra::Piano::kawai,keyra::Piano::hamburg,keyra::Piano::newyork})for(int count:{3,6,10}){
     keyra::Engine e;keyra::Parameters p;p.build=keyra::measuredBuild(piano);p.gain/=16;e.setParameters(p);e.reset();
     for(int i=0;i<count;++i)e.noteOn(36+i*7,1);
     const auto audio=render(e,48000);float peak=0;for(float x:audio)peak=std::max(peak,std::abs(x));
     peak*=16;
-    check(peak<4*std::pow(10.f,-3/20.f),"fortissimo chord has headroom before the emergency bound");
+    check(peak<8*std::pow(10.f,-3/20.f),"fortissimo chord has headroom before the emergency bound");
     std::cout<<"headroom_piano="<<pianoName(piano)<<" notes="<<count<<" peak_dbfs_before_stage="<<20*std::log10(peak)<<'\n';
   }
   {
