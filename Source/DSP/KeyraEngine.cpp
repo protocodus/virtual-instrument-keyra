@@ -1382,6 +1382,11 @@ struct Engine::Impl {
   // weights they play at, and its components beside the series (strike()).
   std::array<std::array<PartialData,2*maxPartials>,pianoCount> seriesData{};
   std::array<std::array<double,2*maxPartials>,pianoCount> seriesWeight{};
+  // Each of the two recorded pitches' series for a strike, its missing
+  // orders filled, and each entry's partial in the model, -1 where filled
+  // (anchorSeries()).
+  std::array<std::array<PartialData,2*maxPartials>,2> anchorData{};
+  std::array<std::array<int,2*maxPartials>,2> anchorIndex{};
   struct Component {double frequency=0,order=0;LaneData lane{};};
   std::array<Component,maxExtras+maxUnisons> components{};
   std::array<Component,maxUnisons> unisonParts{};
@@ -2376,12 +2381,87 @@ struct Engine::Impl {
     // between the layers as a fit's does. Their lanes' caches are made here
     // rather than kept as the fits' are, which for every key would take
     // about 10 MB.
-    const Model& m=*x.m;const int n=std::min(key.count,2*maxPartials);
-    for(int k=0;k<n;++k){
+    const Model& m=*x.m;int n=0;
+    for(int k=0;k<key.count&&n<2*maxPartials;++k){
       const auto& q=networkSeries[p].partials[key.first+k];
       PartialCache c;for(int j=0;j<lanes;++j)c[j]=cacheLane(q.lanes[j],m.layers);
-      auto& d=seriesData[p][k];d=single(m,q,c,x.v);seriesWeight[p][k]=1;
+      PartialData d=single(m,q,c,x.v);
       for(auto& l:d.lane)l.level+=x.scaleDb+x.toneDb;
+      if(n>0&&denseGap(&networkSeries[p].partials[key.first],key.count,k))
+        n=fillGap(seriesData[p].data(),nullptr,n,d);
+      if(n==2*maxPartials)break;
+      seriesData[p][n++]=d;
+    }
+    for(int k=0;k<n;++k)seriesWeight[p][k]=1;
+    return n;
+  }
+  // A struck string sounds every order of its series, and from one order to
+  // the next the hammer's spectrum and the string's losses change smoothly.
+  // A fit leaves an order out where it cannot tell the partial from what
+  // sounds beside it, and the engine played nothing there: the Hamamatsu
+  // grand's G#3 holds no 12th to 20th partial, nor 22nd to 25th, and on that
+  // piano's train takes the orders a key's render lacked carried 15 % of the
+  // benchmark's error in partial levels (24 % on its dev takes). Each order
+  // a series lacks between two it holds now plays between those two as
+  // blend() sets a partial between two recorded pitches: its power, balance
+  // and stereo image between theirs, their lanes paired fastest with
+  // fastest. Below a series' first order and over its last, nothing is
+  // added, nor in a stretch where the fit holds fewer orders than it lacks
+  // (denseGap()). The fills are appended after out[n-1]; index, where
+  // given, marks them -1.
+  //
+  // Where a series thins out, mostly its upper tail with neighbours 60 to
+  // 100 dB under its strongest partial, the fit held only the orders that
+  // stood out of what sounds between them. Filling every gap there took
+  // three pianos' dev takes further from their recordings, mostly in the
+  // noise between partials: the upright's D#2 at velocity 122 from 8.13 dB
+  // to 10.31. Filling only the dense stretches leaves it at 8.13 and keeps
+  // the Hamamatsu's G#3 at velocity 95 at 4.7 dB from its recording in
+  // partial levels, where it stood 14.0.
+  //
+  // The gap before parts[k], g orders long, is filled when from g orders
+  // under it to g over it the series holds at least as many orders as it
+  // lacks.
+  template<class P> static bool denseGap(const P* parts,int count,int k) noexcept {
+    const int lo=parts[k-1].order,hi=parts[k].order,g=hi-lo-1;
+    if(g<1)return false;
+    const int first=std::max(1,lo-g),last=hi+g;int held=0;
+    for(int j=0;j<count;++j)held+=parts[j].order>=first&&parts[j].order<=last;
+    return 2*held>=last-first+1;
+  }
+  // A partial's lanes fastest first, equal rates kept in their order.
+  static PartialData fastestFirst(PartialData d) noexcept {
+    for(int k=1;k<lanes;++k)for(int j=k;j>0&&d.lane[j].rate>d.lane[j-1].rate;--j)std::swap(d.lane[j],d.lane[j-1]);
+    return d;
+  }
+  int fillGap(PartialData* out,int* index,int n,const PartialData& next) noexcept {
+    if(next.order<=out[n-1].order+1)return n;
+    static constexpr std::array<int,lanes> paired{0,1,2,3};
+    const PartialData lo=fastestFirst(out[n-1]),hi=fastestFirst(next);
+    for(int o=lo.order+1;o<hi.order&&n<2*maxPartials;++o){
+      out[n]=blend(lo,hi,static_cast<double>(o-lo.order)/(hi.order-lo.order),paired);
+      // No fit chose this partial's una-corda bias: its lanes take it by
+      // their own rank, fastest first, as a measured key's do, equal rates
+      // in lane order.
+      int rank[lanes]{0,1,2,3};
+      const auto& l=out[n].lane;
+      std::sort(rank,rank+lanes,[&](int a,int b){return l[a].rate>l[b].rate||(l[a].rate==l[b].rate&&a<b);});
+      for(int k=0;k<lanes;++k)out[n].lane[rank[k]].softBias=softBiasAtRank(k);
+      out[n].order=o;if(index)index[n]=-1;++n;
+    }
+    return n;
+  }
+  // One recorded pitch's series for a strike as single() plays it, its
+  // missing orders filled, into anchorData[side]. Returns how many.
+  int anchorSeries(const Side& x,const measured::Anchor& a,int side) noexcept {
+    const Model& m=*x.m;const auto* cache=&partialLanes[m.partialFirst];
+    auto* out=anchorData[side].data();auto* index=anchorIndex[side].data();
+    int n=0;
+    for(int i=a.first;i<a.first+a.count&&n<2*maxPartials;++i){
+      const PartialData d=single(m,m.partials[i],cache[i],x.v);
+      if(n>0&&denseGap(&m.partials[a.first],a.count,i-a.first))n=fillGap(out,index,n,d);
+      if(n==2*maxPartials)break;
+      out[n]=d;index[n]=i;++n;
     }
     return n;
   }
@@ -2412,22 +2492,35 @@ struct Engine::Impl {
   // The two recorded pitches' series merged by order, blended where both
   // have an order and alone at their pitch's share otherwise.
   int blended(const Side& x,int p) noexcept {
-    const Model& m=*x.m;const auto* cache=&partialLanes[m.partialFirst];
-    int i=x.a->first,j=x.b->first,n=0;const int ia=i+x.a->count,jb=j+x.b->count;
+    const auto* cache=&partialLanes[x.m->partialFirst];
+    const auto &a=anchorData[0],&b=anchorData[1];const auto &ai=anchorIndex[0],&bi=anchorIndex[1];
+    const int ia=anchorSeries(x,*x.a,0),jb=anchorSeries(x,*x.b,1);
+    int i=0,j=0,n=0;
     const bool singleTop=p>=2&&(x.a->count==1||x.b->count==1)&&x.a->note>=96;
     while((i<ia||j<jb)&&n<2*maxPartials){
-      const int oa=i<ia?m.partials[i].order:1<<30,ob=j<jb?m.partials[j].order:1<<30;
+      const int oa=i<ia?a[i].order:1<<30,ob=j<jb?b[j].order:1<<30;
       auto& d=seriesData[p][n];auto& weight=seriesWeight[p][n];
       if(oa==ob){
-        const std::array<int,lanes> pair{cache[i].pair[0],cache[i].pair[1],cache[i].pair[2],cache[i].pair[3]};
-        d=blend(single(m,m.partials[i],cache[i],x.v),single(m,m.partials[j],cache[j],x.v),x.t,pair);weight=1;++i;++j;
+        // Two measured partials pair their lanes as their caches do; with a
+        // filled one they pair as fillGap() pairs, fastest with fastest. At a
+        // recorded pitch the partial plays as that pitch's series holds it,
+        // its lanes in their order there, which is the order its una-corda
+        // ranks were set in (cacheSoftRanks(), fillGap()): blend() at t=1
+        // would round its rates and could put two equal ones out of it.
+        if(ai[i]>=0&&bi[j]>=0){
+          const auto& c=cache[ai[i]];
+          d=blend(a[i],b[j],x.t,{c.pair[0],c.pair[1],c.pair[2],c.pair[3]});
+        }else if(x.t<=0)d=a[i];
+        else if(x.t>=1)d=b[j];
+        else d=blend(fastestFirst(a[i]),fastestFirst(b[j]),x.t,{0,1,2,3});
+        weight=1;++i;++j;
       }else if(oa<ob){
-        d=single(m,m.partials[i],cache[i],x.v);
+        d=a[i];
         weight=singleTop?std::max(.55,1-.45*x.t):1-x.t;
         if(singleTop)for(int k=0;k<lanes;++k)d.lane[k].softBias=softBiasAtRank(k);
         ++i;
       }else{
-        d=single(m,m.partials[j],cache[j],x.v);
+        d=b[j];
         weight=singleTop?std::max(.55,.55+.45*x.t):x.t;
         if(singleTop)for(int k=0;k<lanes;++k)d.lane[k].softBias=softBiasAtRank(k);
         ++j;

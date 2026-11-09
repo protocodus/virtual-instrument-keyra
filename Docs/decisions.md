@@ -3849,3 +3849,88 @@ render in a median 3.81 s of CPU on the grand where 0.4.28 took 3.84
 against 2.84 (+2.1 %), 3.28 on the Hamburg against 3.31 (−1.0 %) and 3.19 on
 New York against 3.20 (−0.3 %), seven alternating runs of each on the
 development machine.
+
+## 2026-11-09 — the orders a fit left out of a string's series
+
+The fourth of the owner's five rounds of audible improvements, decided on
+the recordings with the better candidate taken. No listening test was run
+and no listening preference is recorded.
+
+The finding. A struck string sounds every order of its series, and a fit
+leaves an order out where it cannot tell the partial from what sounds beside
+it; 0.4.29 played nothing there. Scored as the benchmark scores partial
+levels, the orders a render lacked carried 15 % of the Hamamatsu's partial
+error on its train takes and 24 % on its dev takes, 4 % or less on the other
+pianos ([series orders](research/series-orders-2026-11-09.md),
+`Tools/measure_absent_orders.py`). Its G♯3 holds no 12th to 20th partial
+between neighbours 21 and 30 dB under its strongest. Most of the orders the
+fits lack sit in a series' sparse upper tail, 60 to 100 dB under its
+strongest partial.
+
+The candidates. Both play each order a series lacks between two it holds as
+a partial between two recorded pitches plays, between its neighbours in
+power, balance and image, with no fitted number. The first fills every gap;
+the second only where, from g orders under a gap g orders long to g over
+it, the series holds at least as many orders as it lacks. Against 0.4.29,
+in tolerance units summed over the eleven measures other than level, the
+first stood closer on every piano's train takes and further on three
+pianos' dev takes (the upright +0.38, the Hamburg +0.99, New York +0.13),
+mostly in the noise between partials, the upright's D♯2 at velocity 122 from
+8.13 to 10.31 dB. The second stood closer on every train take, closer on the
+grand's and the Hamamatsu's dev takes, 0.05 further on the upright's and New
+York's and 0.94 further on the Hamburg's, all of it one note. 0.4.30 ships
+the second, as the dev takes are never fitted.
+
+On the benchmark, against 0.4.29 on every train and dev take, the paired
+sums are: the grand −0.08 and −0.04, the upright −0.15 and +0.05, the
+Hamamatsu −1.34 and −0.30, the Hamburg −0.13 and +0.94 and New York −0.11
+and +0.05. The Hamamatsu's train takes stand 0.46 dB closer in partial
+levels (8.32 → 7.86) and its dev takes 0.14 dB (9.63 → 9.50); its G♯3 at
+velocity 95 stands 4.70 dB from its recording in partials where it stood
+14.04. Past a tolerance, four scores stand further: the upright's dev B3 at
+velocity 122 in decay (3.32 → 6.36 dB/s), the Hamburg's dev E3 in noise
+(5.51 → 6.80 dB, at velocity 80 9.1 dB over its recording at 6.35 kHz where
+it stood 7.4), the Hamamatsu's train E5 in decay (5.19 → 6.42 dB/s), and the
+Hamamatsu's train G♯3 at velocity 69 loses its noise score (5.47 dB). The
+Hamburg's eight dev takes carry their whole move in noise on that E3. On the
+grand's held-out evaluation the twelve in-range cases stand where they stood
+(4.950 dB in bands, 3.990 dB in harmonics, 1.676 dB in envelope, 2.270 dB/s
+in decay, 0.190 cents in pitch, 4.090 ms in rise), and the edge cases C1 and
+C7 at velocity 8 stand 4.602 dB in bands (4.603), 2.284 dB in harmonics and
+8.275 dB in envelope.
+
+Levels and tests. On the meter the presets' typical playing and the pianos'
+default sounds stand within the test's 0.05 guard of their approved
+readings, and one reading stands past its approved level: the Hamburg's
+loudest chords through the tube, 2.587909 VU against 2.560835.
+`Keyra.FactoryDynamics` fails as it did on 0.4.29, on 1,136
+rows (1,040 pairs under their step floors and 96 chords past its maximum
+levels) where 0.4.29 failed on 1,134 (1,038 and 96): six pairs are new, a
+median 0.02 dB under their floors and 0.11 dB at most, and four of 0.4.29's
+are gone. Over the audit's 2,120 pairs the median step and the median chord
+move under 0.001 dB. Its floors and limits are unchanged.
+
+Two checks walked a blend's output beside the two recorded pitches' fitted
+partials, one entry for each order either fit holds, and the fills put them
+out of step; both are corrected beside them. `Keyra.PitchBlend` walks the
+pitches' series as they are blended, fills included, and holds every shared
+order between them. `Keyra.RateInterpolation` renders that the support
+prior for an unidentified decay leaves a recorded pitch as it was; a filled
+order is blended with that prior by design, so it takes the nearest pitches
+whose series hold no fill. `Keyra.SoftLaneContinuity` found the Hamamatsu's
+F♯2 playing a filled partial's two equal-rate lanes with each other's
+una-corda bias: a filled partial's lanes take their bias by their own rank,
+equal rates in lane order, and at a recorded pitch a partial paired with a
+filled one plays as that pitch's series holds it.
+`Keyra.VelocityInterpolationFreshness` follows the engine source's hash, and
+its receipt was regenerated by its generator; the masks did not change. The
+`unit` tier (45 tests), the `audio` tier's demos and the `perf` tier pass,
+and `KeyraDSPCxx17` builds.
+
+The 88 keys struck in turn at velocity 90, 120 ms apart with the pedal down,
+render in a median 3.75 s of CPU on the grand where 0.4.29 took 3.73
+(+0.5 %), 2.61 on the upright against 2.60 (+0.3 %), 2.89 on the Hamamatsu
+against 2.80 (+3.3 %), 3.34 on the Hamburg against 3.29 (+1.6 %) and 3.19 on
+New York against 3.11 (+2.5 %), seven alternating runs of each on the
+development machine: a filled order is one more partial, and the Hamamatsu
+fills the most.
