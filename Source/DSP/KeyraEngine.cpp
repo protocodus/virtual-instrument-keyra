@@ -2678,7 +2678,17 @@ struct Engine::Impl {
     const double highest=std::min(17000.,sampleRate*.43);
     const double shortestRise=fold(hammers,[&](int p){return sides[p].shortestRise;},pickLog);
     const double ratio=tuningRatio(ch);
-    const double softGain=1-.28*soft;
+    // Una corda's sizes stand on thirty concert performances (MAESTRO's
+    // Disklavier grands; Tools/benchmark_phrases.py,
+    // Docs/validation/una-corda-maestro-2026-11-10.md): in the 0.2 s after a
+    // key the pianists' pedal takes 1 to 2.5 dB from 125 Hz to 2 kHz and 2 to
+    // 7 dB above. The prompt lane's share going to the slowest
+    // (softBiasAtRank) is the first. The softer felt is the second: 1 dB a
+    // partial, as before, but no further than the fifth above the first,
+    // where without a bound three grands lost 3 to 7 dB too much from 4 kHz.
+    // Until 0.4.36 everything also played at 0.72 under the pedal, which put
+    // the grands 1 to 4 dB under the recordings from 125 Hz to 2 kHz.
+    const auto softFelt=[soft](double order){return std::exp(-soft*.115*std::min(order-1,5.));};
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     // The strike's partials and its knock on the body start here, after it.
@@ -2715,7 +2725,7 @@ struct Engine::Impl {
                  :mix(a.levelDb,b.levelDb,x.t)+mix(a.slopeDb,b.slopeDb,x.t)*x.layerDb)+x.scaleDb-topTrim;
           ph=late?(x.t<.5?a.slowPhase:b.slowPhase):(x.t<.5?a.phase:b.phase);},level,phase);
         if(!knocked)continue;
-        const double amplitude=std::pow(10.,level/20)*softGain*(late?lateCrowdGain:1.);
+        const double amplitude=std::pow(10.,level/20)*(late?lateCrowdGain:1.);
         stage[late]={amplitude*std::cos(phase),amplitude*std::sin(phase)};
       }
       if(waiting){waiting->g[k]=stage[0];waiting->slow[k]=stage[1];}
@@ -2778,7 +2788,7 @@ struct Engine::Impl {
         level[p]=(own?m.haloOwnDb[j]:mix(haloLevelDb[p][(x.upper-1)*halo+j],haloLevelDb[p][x.upper*halo+j],x.t))+slope;
         promptLevel[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)+slope;}
       if(!(heard>0))continue;
-      const double haloTint=softGain*std::exp(-soft*.115*(order-1))
+      const double haloTint=softFelt(order)
                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double baseAmp=std::pow(10.,fold(share,[&](int p){return level[p];},pick)/20)*haloTint*(own?std::sqrt(heard):1.);
       const double promptAmp=own?0.:std::pow(10.,fold(share,[&](int p){return promptLevel[p];},pick)/20)*haloTint;
@@ -2820,7 +2830,7 @@ struct Engine::Impl {
         knockBalance[p]=mix(a.knockBalanceDb,b.knockBalanceDb,x.t);knockRate[p]=mix(std::log(a.knockRate),std::log(b.knockRate),x.t);
       }
       const double order=std::max(1.,grand::noiseBands[k].hz/f1);
-      const double tint=noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
+      const double tint=noise[k].scale*softFelt(order)
                         *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const auto built=[&](const double (&x)[pianoCount]){return fold(board,[&](int p){return x[p];},pick);};
       const double amplitude=std::pow(10.,built(density)/20)*tint,late=built(slow)*tint;
@@ -2868,7 +2878,7 @@ struct Engine::Impl {
       // Under -180 dB the band is silent, as a burst's stages end there.
       if(!(power>=1e-18)){burst.knockLeft[k]=burst.knockRight[k]=burst.riseLeft[k]=burst.riseRight[k]=0;
         burst.knockStep[k]=burst.riseStep[k]=1;continue;}
-      const double amplitude=std::sqrt(power)*noise[k].scale*softGain,tilt=balance/power;
+      const double amplitude=std::sqrt(power)*noise[k].scale,tilt=balance/power;
       const double rate=std::exp(logRate/power),rise=std::exp(logRise/power);
       burst.knockLeft[k]=burst.riseLeft[k]=amplitude*std::pow(10.,-tilt/40);
       burst.knockRight[k]=burst.riseRight[k]=amplitude*std::pow(10.,tilt/40);
@@ -2974,7 +2984,7 @@ struct Engine::Impl {
       // Una corda reduces high-frequency excitation progressively and moves
       // energy from the prompt lane to the slowest one, as the unstruck
       // string is driven only through the bridge.
-      const double felt=std::exp(-soft*.115*(order-1))*softGain*weight*colour(order);
+      const double felt=softFelt(order)*weight*colour(order);
       auto& partial=voice.partials[voice.count];
       partial.frequency=frequency;
       setDamper(partial);
@@ -3009,7 +3019,7 @@ struct Engine::Impl {
     const auto add=[&](double frequency,double order,const LaneData& l){
       auto& slot=voice.partials[voice.count];const int k=filled++;
       laneColour[k]=colour(order);
-      const double amplitude=std::pow(10.,l.level/20)*softGain*std::exp(-soft*.115*(order-1))*laneColour[k];
+      const double amplitude=std::pow(10.,l.level/20)*softFelt(order)*laneColour[k];
       const Complex g{l.phase.re*amplitude,l.phase.im*amplitude},wl=g*l.left,wr=g*l.right;
       slot.decay[k]=std::exp(-std::exp(l.rate+ring)/sampleRate);slot.hz[k]=frequency+l.offset;
       slot.baseLeftRe[k]=static_cast<float>(wl.re);slot.baseLeftIm[k]=static_cast<float>(wl.im);

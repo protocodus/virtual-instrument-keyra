@@ -43,6 +43,24 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.37 — 2026-11-10 — the grands' soft pedal as concert pianists' sounds
+
+The grands' una corda took too much. Played from the MIDI of thirty concert
+performances on Disklavier grands (MAESTRO), the four grands stood 1 to 4 dB
+under the recordings from 125 Hz to 2 kHz wherever the pianist's soft pedal
+was down, and three of them 5 to 9 dB under from 4 kHz. Its sizes had no
+source; they now stand on that measurement. The pedal no longer turns
+everything down to 0.72: it softens the felt, 1 dB a partial up to the fifth
+above the first and no further, and moves a share of the prompt sound to the
+slowest lane, as before. Over the four grands' bands from 62 Hz to 8 kHz the
+distance from the recordings goes from 2.8 to 0.8 dB on the train
+performances and from 3.4 to 0.9 dB on the dev performances
+([report](Docs/validation/una-corda-maestro-2026-11-10.md),
+[decision](Docs/decisions.md)). A session that plays the soft pedal on a
+grand sounds 2 to 3 dB louder under it and less dull; the upright's
+half-blow and everything without the soft pedal render byte for byte as
+before.
+
 ### 0.4.36 — 2026-11-10 — a strike rings the open strings
 
 Under the pedal a note sounded too clean. The open strings took up only what
@@ -1744,8 +1762,11 @@ rang on past 30 s. Going down the pedal sets the strings it frees ringing
 (**The modal engine**).
 Sostenuto captures the keys held as it crosses halfway down and holds only
 those. Soft acts on later strikes as each piano's action does: a grand's
-shifts the hammers to fewer strings (una corda), lowering the level and the
-high partials and moving energy to the slowest lane, and the upright's brings
+shifts the hammers to fewer strings (una corda): the softer felt takes 1 dB
+a partial up to the fifth above the first, and a share of the prompt sound
+moves to the slowest lane, the unstruck string's. Those sizes stand on thirty
+concert performances' soft pedal
+([report](Docs/validation/una-corda-maestro-2026-11-10.md)). The upright's brings
 them halfway to the strings (half-blow), so that a strike plays as one √½ as
 fast, as a hammer thrown as hard over half the distance arrives. A build's
 soft pedal does each as far as its action is a grand's or the upright's.
@@ -2119,9 +2140,11 @@ particularly when bass partials cancel in the tube mic. See the
   recorded ones: they grow 0.7 to 1.2 dB more per 10 steps of velocity. The
   response spans the 21 dB between the Kakegawa grand's softest and loudest
   recorded layers, in a shape the owner chose by ear. The grands' una corda
-  takes 1 to 4 dB more from 125 Hz to 2 kHz than the recorded pianists' does
-  (mostly 1 to 2.5 dB there, 2 to 7 dB above); its sizes have no source
-  ([report](Docs/validation/played-phrases-maestro-2026-11-10.md)).
+  is sized on the same performances' first 0.2 s of a note; how much of the
+  prompt sound it moves to the slowest lane is 0.4.12's size, which they
+  hold too little to check
+  ([played phrases](Docs/validation/played-phrases-maestro-2026-11-10.md),
+  [una corda](Docs/validation/una-corda-maestro-2026-11-10.md)).
 - No recording plays the upright's soft pedal: its half-blow assumes the rail
   brings the hammers halfway to the strings and that the key accelerates
   them evenly. It has no pedal recordings at all, so its pedals make no sound

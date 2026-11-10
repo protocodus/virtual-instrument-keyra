@@ -47,11 +47,11 @@ Factorized Piano Music Modeling and Generation with the MAESTRO Dataset",
 ICLR 2019), licensed under
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 Nothing from the dataset is copied: no recording, MIDI file or excerpt of it
-is in this repository, a Keyra build or any audio Keyra publishes, and no
-value of the instrument is fitted from it. `Tools/fetch_maestro.py` fetches
-the openings for measurement and `Tools/corpus/maestro-v3.json` pins them by
-SHA256; the differences `Tools/benchmark_phrases.py` reads are reported as
-numbers. This credit does not imply endorsement by the dataset's authors,
+is in this repository, a Keyra build or any audio Keyra publishes.
+`Tools/fetch_maestro.py` fetches the openings for measurement and
+`Tools/corpus/maestro-v3.json` pins them by SHA256; the differences
+`Tools/benchmark_phrases.py` reads are reported as numbers, and the grands'
+soft pedal takes its two sizes from them. This credit does not imply endorsement by the dataset's authors,
 the performers or the instrument's maker.
 
 ## JUCE 8.0.14

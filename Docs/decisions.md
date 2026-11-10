@@ -4229,3 +4229,30 @@ engine at about the hammer's moment, so playing it means delaying every note
 by about 60 ms, and MIDI does not say whether a key was struck or pressed.
 The owner was offered it as an option that is off by default and adds that
 delay, and chose to leave it out.
+
+
+## 2026-11-10 — una corda resized from concert performances
+
+Played from the MIDI of thirty MAESTRO performances, the grands' soft pedal
+took 1 to 4 dB more than the recorded pianists' from 125 Hz to 2 kHz
+(`Docs/validation/played-phrases-maestro-2026-11-10.md`). Its sizes were
+0.4.12's, without a source. MAESTRO is licensed CC BY-NC-SA 4.0 and Keyra is
+sold, so the owner was asked whether the pedal may take its sizes from
+numbers measured on those recordings, nothing of them copied, and chose to
+resize it from the measurement.
+
+What was decided by the measurement, on the train performances: the level at
+0.72 under the pedal goes, the partials' fall of 1 dB each stays but stops at
+the fifth above the first, the prompt lane's move to the slowest stays as it
+was (`Docs/validation/una-corda-maestro-2026-11-10.md`). A second candidate
+without the lane move, at 0.90 of the level, fitted the first 0.2 s of a note
+as well; the performances hold too little after 0.5 s to tell the two apart,
+and the first was taken because it keeps the engine's account of the pedal
+and drops only the size the recordings contradict. That choice is a
+judgement, not a measurement.
+
+A lettered set went to the owner with 0.4.37: an original phrase played first
+without the soft pedal and then with it, on the Kakegawa and Hamburg grands,
+A 0.4.36 and B 0.4.37, not level-matched because the pedal's level is what is
+judged. By the project's standing rule B stands unless the owner says
+otherwise.
