@@ -4155,3 +4155,48 @@ owner's copy of the library by the tool's own procedure.
 The owner's renders of Arturia's Piano V3 prompted the measurement: its
 pedalled notes build a wash Keyra's did not. It is a model and no audio of
 it is kept here; the level comes from the Yamaha C3's takes alone.
+
+## 2026-11-10 — the pedal's sizes from 0.4.12, measured and left
+
+No listening test and no change to the engine. 0.4.12 gave a note struck
+under the pedal a longer ring (its decay rates lower by 0.20 on the grand's
+and the Hamamatsu's strings, 0.30 on the others', less up the series), a
+drive of the open strings 1.65 times as hard, 12 % more of the undamped
+strings' aftersound, and 0.78 of the late body ring for a note struck within
+1.2 s of another. Its commit carried no write-up and none has a source.
+
+What was measured. `Tools/benchmark_pedal_wash.py` now reports, beside the
+sound between the partials, how the whole note holds up under the pedal
+against the same note without it, on the Yamaha C3's pedal pairs and on the
+render ([report](validation/pedalled-note-ring-2026-11-10.md)). Every
+piano's train median stands within 1.6 dB of the takes from 0.5 to 6 s, and
+each pair lies 2 to 3 dB from its take either way. By register the Kakegawa
+grand holds up as the takes do from C1 to A2 and 3 dB short of them from C3
+up at 1.5 to 3 s. The entry above read the partials' decay under the pedal
+as 0.96 of that without it in the middle register on both; that was a median
+over eight partials, and the first three, which carry the note, stood at 0.8
+to 0.9 on the takes.
+
+What was tried, on the grand in a scratch build. Twice the ring's share
+halves the shortfall from C3 to A4 and takes the pairs' mean miss down in two
+of the six train and dev windows by 0.7 and 1.1 dB, and it plays the first
+half second 1.3 dB louder against the note without the pedal, where the
+takes' median is 0.6 dB quieter. Four times overshoots every window. The
+drive of the open strings moves the medians 1.3 dB at most from 1 to 9
+times; at 21 times the median stands 2 dB over the takes to 3 s and the
+pairs' mean miss before 1.5 s goes from 2.6 to 4.6 dB. The takes' rise comes
+late, as a slower sound beside the note would make it, and a lower decay
+rate lifts every window from the start; neither size brings the pairs
+closer than the takes lie from one another.
+
+What each is worth in a phrase. The pedal-wash listening phrase, rendered
+with one size taken out at a time: without the longer ring it differs 20 dB
+under the phrase's level on the grand and 17 dB on the upright, 9 dB under
+in the second after the first five notes; without the harder drive 44 dB
+under, 29 and 34 dB under in its worst second; without the crowding factor
+56 and 47 dB under, 40 and 33 dB in its worst second; without the undamped
+strings' 12 %, 90 and 75 dB under, on a phrase that plays none of their keys.
+
+What stands. All four sizes, each now with what is known beside it in
+`Source/DSP/KeyraEngine.cpp`. The crowding factor needs notes played one
+after another against their MIDI, which no corpus here holds.

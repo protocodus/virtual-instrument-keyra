@@ -1717,7 +1717,9 @@ its train and dev pedal-down takes, band by band, the strings' ring against
 the knock and its fall ([report](Docs/validation/grand-open-strings-benchmark-2026-10-30.md)).
 `Tools/benchmark_pedal_wash.py` scores the sound a pedalled note leaves
 between its partials against the Yamaha C3's pedal-down takes, whose band
-energies are tracked as numbers ([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md)).
+energies are tracked as numbers ([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md)),
+and reports how the note itself holds up under the pedal against without it
+([report](Docs/validation/pedalled-note-ring-2026-11-10.md)).
 `Tools/tone_survey.py` measures the benchmark's cases signed, per
 third-octave band: where each register's tone and stereo image stand over or
 under the recordings, in the attack, early and sustain windows.
@@ -1874,7 +1876,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   their floor ([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md)).
   How loud the strings that share a note's partials ring with it stays the
   Resonance control's, not a measurement: on a recording they cannot be told
-  from the note. How the open strings ring on from 1 to 4 s is fitted
+  from the note. Taken with it, a pedalled note against the same note
+  without the pedal holds up within 1.6 dB of the Yamaha C3's pairs on every
+  piano's train median, each pair 2 to 3 dB off either way; from C3 up the
+  Kakegawa grand's stands 3 dB short of them at 1.5 to 3 s. How much longer
+  a note rings under the pedal, how much harder it drives the open strings
+  there and how much less a note struck within 1.2 s of another rings late
+  on the body are 0.4.12's sizes, without a source
+  ([report](Docs/validation/pedalled-note-ring-2026-11-10.md)). How the open strings ring on from 1 to 4 s is fitted
   on one decay law, which full pedal's grazing felt steepens at the owner's
   request: over those seconds they fall 1.5 to 11 dB further than the
   pedal-down takes from 63 Hz to 2.5 kHz and within 2 dB of them from 3 to

@@ -22,9 +22,13 @@ wherever the pedal-down take stands 6 dB over the pedal-up take in that band
 and window (under that the take's floor is what is measured). Takes of one
 pitch, layer and pedal state share a median.
 
+How the note itself holds up under the pedal is reported beside it, unscored:
+the whole note's energy pedal down less pedal up in each later window, less
+the same in the first, so that neither take's strike nor its scale counts.
+
 The renderer plays each pitch alone on the given piano at its default
-controls, the pedal down from the start and the key struck at 0.5 s, at
-velocities 60, 100 and 120 for the preset's layers 1 to 3. Those are the
+controls, with the pedal down from the start and without it, the key struck
+at 0.5 s, at velocities 60, 100 and 120 for the preset's layers 1 to 3. Those are the
 preset's playback bins; the capture's strike force is unknown. The pitches are
 the corpus's damped keys from C1 to D#6 (under C1 a key's partials leave no
 bins between them from 150 Hz), train and dev as the corpus's split has them.
@@ -115,32 +119,38 @@ def measure_library(library):
 
 
 def render(renderer, model):
-    """The renderer's pedalled notes, measured as the takes are."""
+    """The renderer's notes with and without the pedal, measured as the takes are."""
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import piano_analysis as pa  # SciPy; --library needs NumPy alone
     rendered = {}
     with tempfile.TemporaryDirectory() as tmp:
         for midi in PITCHES:
             for layer, velocity in VELOCITY.items():
-                events, wav = Path(tmp) / 'note.events', Path(tmp) / 'note.wav'
-                events.write_text(f'0 pedal 1\n0.5 on {midi} {velocity}\n')
-                subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--duration', '7',
-                                '--model', model], check=True, stdout=subprocess.DEVNULL)
-                rendered[midi, layer] = measure(pa.load(wav)[1], midi)
+                for pedal in ('down', 'up'):
+                    events, wav = Path(tmp) / 'note.events', Path(tmp) / 'note.wav'
+                    events.write_text(('0 pedal 1\n' if pedal == 'down' else '') + f'0.5 on {midi} {velocity}\n')
+                    subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--duration', '7',
+                                    '--model', model], check=True, stdout=subprocess.DEVNULL)
+                    rendered[midi, layer, pedal] = measure(pa.load(wav)[1], midi)
     return rendered
+
+
+def takes():
+    by = {}
+    for take in json.loads(TAKES.read_text())['takes'].values():
+        by.setdefault((take['midi'], take['layer'], take['pedal']), []).append(take)
+    return by
 
 
 def score(rendered):
     """Per pitch, layer, window and band the render's ratio minus the takes'."""
-    by = {}
-    for take in json.loads(TAKES.read_text())['takes'].values():
-        by.setdefault((take['midi'], take['layer'], take['pedal']), []).append(take)
+    by = takes()
     median = lambda takes, value: float(np.median([value(t) for t in takes]))
     roles = {pitch: role for role, pitches in json.loads(SPLIT.read_text())['pitches'].items() for pitch in pitches}
     rows = []
-    for (midi, layer), ours in rendered.items():
+    for (midi, layer, pedal), ours in rendered.items():
         down, up = by.get((midi, layer, 'down')), by.get((midi, layer, 'up'))
-        if not down or not up:
+        if pedal != 'down' or not down or not up:
             continue
         for b, (_, top) in enumerate(BANDS):
             holds = top > 1.05 * 440 * 2 ** ((midi - 69) / 12)
@@ -156,6 +166,23 @@ def score(rendered):
     return rows
 
 
+def sustained(rendered):
+    """Per pitch and layer the whole note under the pedal less without, in each
+    later window against the first: the takes' and the render's."""
+    by = takes()
+    roles = {pitch: role for role, pitches in json.loads(SPLIT.read_text())['pitches'].items() for pitch in pitches}
+    rows = []
+    for midi, layer in sorted({key[:2] for key in rendered}):
+        down, up = by.get((midi, layer, 'down')), by.get((midi, layer, 'up'))
+        if not down or not up:
+            continue
+        note = lambda takes: np.median([t['note'] for t in takes], axis=0)
+        gain = lambda down, up: (down - up)[1:] - (down - up)[0]
+        rows.append({'role': roles[midi], 'midi': midi, 'layer': layer, 'takes': gain(note(down), note(up)).tolist(),
+                     'render': gain(note([rendered[midi, layer, 'down']]), note([rendered[midi, layer, 'up']])).tolist()})
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -166,9 +193,10 @@ def main():
     args = parser.parse_args()
     if args.library:
         return measure_library(args.library)
-    rows = score(render(args.renderer, args.model))
+    rendered = render(args.renderer, args.model)
+    rows, notes = score(rendered), sustained(rendered)
     if args.out:
-        args.out.write_text(json.dumps(rows, indent=1) + '\n')
+        args.out.write_text(json.dumps({'between': rows, 'held': notes}, indent=1) + '\n')
     line = lambda v: f'{np.median(v):+6.1f} (mean |dB| {np.mean(np.abs(v)):4.1f}, n={len(v):3d})' if v else '  none'
     print(f'{args.model}: render minus the Yamaha C3\'s takes, dB, median')
     for role in ('train', 'dev'):
@@ -181,6 +209,16 @@ def main():
         for layer in VELOCITY:
             print(f'  layer {layer} {line([r["db"] for r in held if r["layer"] == layer])}')
         print(f'  bands under the first partial {line([r["db"] for r in rows if r["role"] == role and not r["holds"]])}')
+    print('the whole note under the pedal less without, dB, median: ' + ', '.join(f'{a:g}-{b:g}' for a, b in WINDOWS[1:])
+          + f' s against {WINDOWS[0][0]:g}-{WINDOWS[0][1]:g} s')
+    for name, low, high in (('C1-A2', 24, 45), ('C3-A4', 48, 69), ('C5-D#6', 72, 87)):
+        part = [r for r in notes if low <= r['midi'] <= high]
+        both = (' '.join(f'{v:+5.1f}' for v in np.median([r[who] for r in part], axis=0)) for who in ('takes', 'render'))
+        print(f'  {name}: the takes {next(both)}, {args.model} {next(both)} (n={len(part)})')
+    for role in ('train', 'dev'):
+        miss = np.array([np.subtract(r['render'], r['takes']) for r in notes if r['role'] == role])
+        print(f'  {role}: render minus the takes ' + ' '.join(f'{v:+5.1f}' for v in np.median(miss, axis=0))
+              + ', mean |dB| ' + ' '.join(f'{v:4.1f}' for v in np.mean(np.abs(miss), axis=0)) + f' (n={len(miss)})')
 
 
 if __name__ == '__main__':

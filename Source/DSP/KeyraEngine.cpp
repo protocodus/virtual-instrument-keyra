@@ -2695,6 +2695,8 @@ struct Engine::Impl {
       crowded=serial>1&&ringing&&clock<lastStrikeClock+static_cast<std::uint64_t>(1.2*sampleRate);
       lastStrikeClock=clock;
     }
+    // 0.4.12's, without a source: no corpus here holds one note after another.
+    // Without it the grand's pedalled phrase differs 56 dB under its level.
     const double lateCrowdGain=!steady&&crowded?.78:1.;
     constexpr double topBodySlope[pianoCount]{0.,0.,.38,.18,.28};
     // The knock waits in a free slot; with none free it starts at the strike.
@@ -2780,6 +2782,7 @@ struct Engine::Impl {
                             *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double baseAmp=std::pow(10.,fold(share,[&](int p){return level[p];},pick)/20)*haloTint*(own?std::sqrt(heard):1.);
       const double promptAmp=own?0.:std::pow(10.,fold(share,[&](int p){return promptLevel[p];},pick)/20)*haloTint;
+      // The 12 % is 0.4.12's, without a source.
       const double amplitude=baseAmp*(1+.12*pedalOpenness);
       const double phase=2*pi*std::fmod(.6180339887498949*(note*halo+key),1.),cp=std::cos(phase),sp=std::sin(phase);
       auto& string=haloRing[j];const double aftersound=amplitude*haloFirst[j];string.q+=aftersound*cp;string.p+=aftersound*sp;
@@ -2880,6 +2883,17 @@ struct Engine::Impl {
     // stretch the unisons and the ring. Their series were built before the
     // undamped strings, above.
     const double pedaledShare=strings[static_cast<int>(Piano::grand)]+strings[static_cast<int>(Piano::kawai)];
+    // A note struck under the pedal rings longer: its decay rates fall by
+    // this, less up the series. The sizes are 0.4.12's, without a source. On
+    // the Yamaha C3's pedal pairs (Tools/benchmark_pedal_wash.py, the whole
+    // note under the pedal less without) the five pianos' train medians
+    // stand within 1.6 dB of the takes from 0.5 to 6 s, each pair 2 to 3 dB
+    // off either way; from C3 to A4 the grand holds up 3 dB short at 1.5 to
+    // 3 s. Twice the share halves that and takes the pairs' mean miss at 3
+    // to 6 s from 3.5 to 2.8 dB, no other window's, and it plays the first
+    // half second 1.3 dB louder against the note without the pedal, where
+    // the takes' median is 0.6 dB quieter
+    // (Docs/validation/pedalled-note-ring-2026-11-10.md).
     const double pedalUnload=(.30-.10*pedaledShare)*pedalOpenness;
     const double ring=-static_cast<double>(build.ring)*std::log(2.)-pedalUnload;
     const double spread=unisonSpread(build);
@@ -3727,6 +3741,12 @@ struct Engine::Impl {
     for(int i=0;i<frames;++i){mixLeft[i]=zero;mixRight[i]=zero;}
     owned.fill(false);
     bool anyVoice=false;
+    // Under the pedal the notes drive the open strings 1.65 times as hard
+    // (0.4.12's, without a source). On the Yamaha C3's pedal pairs a note
+    // holds up the same within 1.5 dB from 1 to 9 times; 21 times puts the
+    // train median 2 dB over the takes to 3 s and the pairs' mean miss
+    // before 1.5 s from 2.6 to 4.6 dB
+    // (Docs/validation/pedalled-note-ring-2026-11-10.md).
     const float openBridgeGain=static_cast<float>(1+.65*pedalOpenness);
     // Key by key, each key's strikes in the pool's order.
     keyVoice.fill(-1);
