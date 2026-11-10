@@ -4200,3 +4200,32 @@ strings' 12 %, 90 and 75 dB under, on a phrase that plays none of their keys.
 What stands. All four sizes, each now with what is known beside it in
 `Source/DSP/KeyraEngine.cpp`. The crowding factor needs notes played one
 after another against their MIDI, which no corpus here holds.
+
+## 2026-11-10 — the finger's knock on the key is left out
+
+The owner asked whether the sound of fingers or nails hitting the keys would
+be audible to model, and chose to leave it out. No listening test.
+
+What is known. Goebl, Bresin and Fujinaga (JASA 136(5), 2014, 2839–2850)
+recorded middle C on a 173 cm Yamaha grand 10 cm from the strings, played by
+two pianists pressed from the key's surface and struck from above, 25 hammer
+velocities each from 0.37 to 4.1 m/s, and publish the 100 tones with 250 ms
+kept before the hammer (16 kHz, 16 bit). Half of their 22 musicians told
+struck from pressed better than chance, up to 86 % correct, and none did once
+the sound before the tone was cut. They put the knock 20 ms before the tone
+at very loud and 200 ms or more at pianissimo.
+
+What was measured here, on those tones over 100 Hz. A pressed key shows
+nothing over the recording's floor. A struck key's knock clears the floor
+from a hammer velocity of about 0.8 m/s up: it leads the hammer by 55 ms
+there and 11 to 17 ms at 4 m/s, about 45 to 65 ms·m/s over the hammer's
+velocity, and its peak stands 16 to 34 dB under the tone's peak with one
+pianist and 26 to 43 dB with the other. The Salamander takes start 11 to
+15 ms before the tone and hold nothing earlier. The tones were fetched for
+this and are not kept.
+
+Why it is left out. The knock comes before the hammer, and a note reaches the
+engine at about the hammer's moment, so playing it means delaying every note
+by about 60 ms, and MIDI does not say whether a key was struck or pressed.
+The owner was offered it as an option that is off by default and adds that
+delay, and chose to leave it out.

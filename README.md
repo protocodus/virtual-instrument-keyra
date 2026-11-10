@@ -1855,6 +1855,13 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   string lengthens or shortens the felt's contact and takes more or less of
   the blow with its phase. No recording here strikes a sounding string, so
   the size of that is unmeasured ([decision](Docs/decisions.md)).
+- The finger's knock on a key struck from above is not played. It sounds 11
+  to 55 ms before the hammer, 16 to 43 dB under the note's peak at middle C
+  10 cm from the strings (the published tones of Goebl, Bresin and Fujinaga,
+  JASA 136(5), 2014, measured here), and a key pressed from its surface makes
+  none; a note reaches Keyra at about the hammer's moment, so playing it
+  would delay every note by about 60 ms. The owner left it out
+  ([decision](Docs/decisions.md)).
 - The unison's coupled modes, and with them a restrike's or una corda's new
   balance between its strings, the duplex segments and the damper's contact
   position are not modelled: the takes' lanes read as coupled strings little
