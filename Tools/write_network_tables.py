@@ -78,10 +78,25 @@ takes from the network, at the key, the order and each layer's level:
   took 2.3 times as long to render;
 - not its phases as they stand: the network learns each channel's power,
   which no common turn of a partial's lanes, nor of its right channel,
-  changes. Its right channel is turned to the lag the engine moves between
-  the two pitches' along the shorter arc (blend(), windowChannels), and its
-  lanes together to the nearer pitch's partial at each layer (windowCross),
-  so that a strike arrives across the partials as the recorded pitch's does.
+  changes. Its right channel is turned to the lag of the nearer pitch's
+  partial (windowChannels), and its lanes together to that partial at each
+  layer (windowCross), so that a strike arrives across the partials as the
+  recorded pitch's does. Not to the lag between the two pitches' along the
+  shorter arc, as blend() moves it: neither rule tells a key's lag from its
+  neighbours'. At the keys between with recordings (their dev takes,
+  0.05 to 0.75 s, every partial both pitches hold up to 6 kHz) the cosine of
+  the miss came to 0.11, 0.08 and -0.02 between the two (New York, Hamburg,
+  Hamamatsu) and 0.10, 0.07 and 0.02 at the nearer one, 0.44, 0.33 and
+  -0.21 against 0.29, -0.03 and -0.26 weighed by power; a delay wound
+  through each pitch's own partials did no better. But between two lags
+  the arc narrows their spread, and the keys between stood more alike in
+  their two channels than the recorded pitches around them, the median
+  |correlation| of their partials over the window at every layer 0.59, 0.55
+  and 0.51 in New York's bass, middle and treble (below C3, to C5, above)
+  where its recorded pitches hold 0.61, 0.37 and 0.28, the Hamburg's 0.49,
+  0.48 and 0.66 for 0.37, 0.41 and 0.50, the Hamamatsu's 0.74, 0.59 and 0.76
+  for 0.73, 0.49 and 0.67. At the nearer pitch's lag they stand at 0.55,
+  0.34 and 0.35, 0.37, 0.39 and 0.53, and 0.72, 0.52 and 0.61.
 
 With --corrections and --corrected it writes, for the pianos named there, a
 correction to the blend instead at each of those keys between two recorded
@@ -268,20 +283,15 @@ def bound(p, rate):
 
 
 def align(p, a, b, t):
-    """Turn p's right channel to the lag between a's and b's (either may be
-    None), one turn for every layer as its pickups are one, then its lanes
-    at each layer to the nearer one's partial."""
+    """Turn p's right channel to the lag of the nearer of a's and b's
+    partials (either may be None), one turn for every layer as its pickups
+    are one, then its lanes at each layer to that partial."""
     layers = p['level'].shape[0]
+    near = a if (t < .5 and a is not None) or b is None else b   # blendLane's nearer anchor, t < .5
     turns = 0j
     for i in range(layers):
-        if a is not None and b is not None:
-            start, end = np.angle(channels(at(a, i))), np.angle(channels(at(b, i)))
-            target = start + t * math.remainder(end - start, 2 * math.pi)
-        else:
-            target = np.angle(channels(at(a if a is not None else b, i)))
-        turns += np.exp(1j * (np.angle(channels(at(p, i))) - target))
+        turns += np.exp(1j * (np.angle(channels(at(p, i))) - np.angle(channels(at(near, i)))))
     p['right'] = p['right'] * np.exp(1j * np.angle(turns))
-    near = a if (t < .5 and a is not None) or b is None else b   # blendLane's nearer anchor, t < .5
     for i in range(layers):
         p['phase'][i] = np.angle(np.exp(1j * (p['phase'][i] + np.angle(cross(at(near, i), at(p, i))))))
 
