@@ -61,6 +61,14 @@
 // Upright, Hamamatsu Grand and Three Cities and the loudest chords of the
 // Kakegawa Grand, Warm Walnut, Felt Nocturne, Open Strings and the grand's
 // tube, to six decimals (Docs/decisions.md, 2026-11-10).
+// In 0.4.38 the smoothing counts the strike's velocity colour and the
+// keyboard's ends, the grand's, the Hamamatsu's and the Hamburg's output and
+// tube re-pinned to their earlier readings; the presets that play the grand
+// at another width, brightness or mute moved against it, and ten readings
+// are re-baselined, the typical playing of Studio Grand, Warm Walnut, Felt
+// Nocturne, Open Strings and Pop Upright and the loudest chords of the
+// Kakegawa Grand, Studio Grand, Warm Walnut, Felt Nocturne and Open Strings,
+// to six decimals (put to the owner for approval on 2026-11-10).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -69,14 +77,14 @@ struct ApprovedLevel {
 };
 
 inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
-    {"Kakegawa Grand", -9.066835, 1.566076},
-    {"Studio Grand", -9.880768, 1.234696},
-    {"Warm Walnut", -10.661761, 1.008017},
-    {"Felt Nocturne", -17.540447, -5.317260},
-    {"Open Strings", -8.166912, 2.052288},
+    {"Kakegawa Grand", -9.066835, 1.696845},
+    {"Studio Grand", -9.658560, 1.289072},
+    {"Warm Walnut", -10.412737, 1.162070},
+    {"Felt Nocturne", -17.279765, -5.109596},
+    {"Open Strings", -7.976101, 2.163136},
     {"Helsinki Upright", -9.122448, 4.217296},
     {"Felt Upright", -16.318789, -0.127207},
-    {"Pop Upright", -9.707089, 3.904373},
+    {"Pop Upright", -9.847497, 3.904373},
     {"Hamamatsu Grand", -8.921034, 4.003352},
     {"Three Cities", -10.117968, 2.871424},
     {"Hamburg Grand", -8.953395, 2.474622},
