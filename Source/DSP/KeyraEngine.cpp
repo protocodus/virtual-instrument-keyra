@@ -2745,7 +2745,18 @@ struct Engine::Impl {
         const auto& x=sides[p];const Model& m=*x.m;
         if(own&&!(m.haloOwnDb[j]>-200&&ownStringApart(p,count[p],f1,B,haloHz[j]))){share[p]=0;continue;}
         heard+=hammers[p];
-        const double slope=(m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order)+(own?m.haloOwnSlopeDb[j]:0.))*x.layerDb+x.scaleDb;
+        // A softer blow moves the bridge less at every frequency, so it never
+        // rings a string louder: the slope is never under 0. The fitted law
+        // rises or falls per octave within the octaves its treble takes span;
+        // far over a bass key New York's falls under 0, and held as fitted
+        // there it put the undamped strings 30 to 46 dB over its C1, F1 and
+        // A#1 at velocity 13. Held at 1 dB per dB instead, as a hammer that
+        // never grows duller would bound it, its dev takes stood further,
+        // their soft bass notes left under their recordings from 2 kHz up;
+        // held at 0 both roles stood closer (Docs/research/halo-slope-2026-11-10.md).
+        // No other piano's law falls under 0 at any key.
+        const double law=std::max(0.,m.haloSlopeDb+m.haloSlopeRiseDb*std::log2(order));
+        const double slope=(law+(own?m.haloOwnSlopeDb[j]:0.))*x.layerDb+x.scaleDb;
         level[p]=(own?m.haloOwnDb[j]:mix(haloLevelDb[p][(x.upper-1)*halo+j],haloLevelDb[p][x.upper*halo+j],x.t))+slope;
         promptLevel[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)+slope;}
       if(!(heard>0))continue;

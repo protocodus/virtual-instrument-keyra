@@ -3936,3 +3936,43 @@ against 2.80 (+3.3 %), 3.34 on the Hamburg against 3.29 (+1.6 %) and 3.19 on
 New York against 3.11 (+2.5 %), seven alternating runs of each on the
 development machine: a filled order is one more partial, and the Hamamatsu
 fills the most.
+
+## 2026-11-10 — the undamped strings under a soft bass note
+
+The last of the owner's five rounds of audible improvements, decided on the
+recordings with the better candidate taken. No listening test was run and no
+listening preference is recorded.
+
+The finding. Every strike sets the undamped strings from F6 up ringing, louder
+as the strike plays louder, by one law `fit_realtime_modal.py` fits on the
+recorded pitches from F♯3 up: a slope in dB per dB of the strike's layer that
+rises or falls per octave the string lies over the key. New York's falls by
+0.51 per octave from 1.95 and passes under 0 at 3.8 octaves, which bass keys
+reach and the fitted takes do not, so 0.4.30 rang the strings louder the
+softer a bass key was struck: the C1, F1 and A♯1 at velocity 13 stood 30 to
+49 dB over their recordings from 1.6 to 4 kHz
+([undamped strings](research/halo-slope-2026-11-10.md)). The other four
+pianos' laws never fall under 0.
+
+The candidates. Both hold the law where it falls under a bound, with no
+fitted number: the first at 1 dB per dB, as a hammer that never grows duller
+would bound it, the second at 0, as a softer blow never rings a string louder.
+Against 0.4.30 on New York's takes, in tolerance units summed over the eleven
+measures other than level, the first stood 3.41 closer on the train takes and
+1.37 further on the dev takes, its soft D♯2 and G♯2 left under their
+recordings from 2 kHz up; the second stood 4.56 closer on the train takes and
+1.90 closer on the dev takes. 0.4.31 ships the second.
+
+On the benchmark New York's train takes stand 1.52 dB closer in the noise
+between partials (7.98 → 6.46) and its dev takes 0.85 dB (8.87 → 8.02). Past a
+tolerance two scores stand further, both train takes in rise: F1 (24.56 →
+26.46 ms) and A♯1 (5.20 → 6.33 ms). The Kakegawa grand, the upright, the
+Hamamatsu and the Hamburg render byte for byte as on 0.4.30, so their
+benchmarks and the grand's held-out evaluation stand where they stood.
+
+Levels and tests. Every meter reading stands within its approved level.
+`Keyra.FactoryDynamics` fails as on 0.4.30, on the same 1,136 rows; New
+York's pairs move by under 0.001 dB. The `unit` tier (45 tests), the `audio`
+tier's demos and the `perf` tier pass, and `KeyraDSPCxx17` builds. On the
+development machine New York's 88 keys in turn with the pedal down render in
+a median 2.90 s of CPU against 2.98, within the runs' spread.
