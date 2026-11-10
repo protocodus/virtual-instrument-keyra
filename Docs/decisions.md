@@ -4274,3 +4274,16 @@ and Pop Upright (−9.71 to −9.85), and the loudest chords of the Kakegawa
 Grand (1.57 to 1.70 VU), Studio Grand (1.23 to 1.29), Warm Walnut (1.01 to
 1.16), Felt Nocturne (−5.32 to −5.11) and Open Strings (2.05 to 2.16)
 ([key smoothing](research/key-balance-smoothing-2026-11-10.md)).
+
+## 2026-11-10 — version 1.0.0
+
+The owner asked for Keyra to be ready for a production release and, with
+0.4.38 on main, set the version to 1.0.0. It is 0.4.38's engine, unchanged.
+The number is the owner's product decision, not a fidelity or acceptance
+measurement: the gates the README's Known gaps and
+`Docs/plans/production-readiness.md` list as unverified (the Audio Unit's
+auval, Windows, manual DAW workflows, interactive Rack controls and song
+recall, retail Reason, target-chip CPU) are as they were, and
+`Keyra.FactoryDynamics` fails as it did on 0.4.37. Tagging and publishing
+the release remain the owner's steps.
+

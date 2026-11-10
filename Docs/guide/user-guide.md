@@ -1,11 +1,11 @@
-# Keyra development candidate
+# Keyra
 
 Keyra generates an 88-key piano from five measured pianos, the Kakegawa, Hamamatsu,
 Hamburg and New York grands and the Helsinki upright, mixed part by part, using a
 real-time reduced modal engine and numerical measurements of acoustic
 recordings. The preserved nonlinear
-research renderer remains available separately. This candidate is for
-development and evaluation; host acceptance and commercial release are pending.
+research renderer remains available separately. The host acceptance not yet
+verified for version 1.0.0 is listed in the README's Known gaps.
 
 ## Playing and controls
 

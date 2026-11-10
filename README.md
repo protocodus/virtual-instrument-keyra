@@ -7,8 +7,9 @@ keyswitches and felt muting from the modulation wheel. Five pianos are
 measured, four grands and an upright, and their strings, hammers, soundboard
 and action mix part by part into pianos none of them is. It builds as VST3
 and CLAP plug-ins, an Audio Unit on macOS and a standalone application, and
-the Reason Rack Extension adapter plays the same engine. It is a development
-candidate: host acceptance and a commercial release are still to come.
+the Reason Rack Extension adapter plays the same engine. Version 1.0.0 is its
+first release; the host acceptance not yet verified for it is listed under
+Known gaps.
 
 ![Keyra](Docs/screenshots/keyra.png)
 
@@ -42,6 +43,14 @@ comparisons that set Salamander notes beside the fits were removed on
 the checkout from a fetched copy of the library.
 
 ## Version history
+
+### 1.0.0 — 2026-11-10 — the first release
+
+The owner numbered Keyra's first release. The engine is 0.4.38's and plays
+as it did: nothing in the sound, the controls or the saved state changes,
+and sessions and presets from 0.4 load as before. The host acceptance that
+is not yet verified for it is listed under Known gaps
+([decision](Docs/decisions.md)).
 
 ### 0.4.38 — 2026-11-10 — no key stands off its neighbours
 
@@ -2236,7 +2245,7 @@ particularly when bass partials cancel in the tube mic. See the
   ([validation](Docs/validation/calibration-followups-2026-11-01.md)). The Audio
   Unit is built but has not passed auval in this iteration. Windows, manual
   DAW workflows, interactive Rack controls/song recall, retail Reason and
-  target-chip CPU acceptance remain unverified for this candidate.
+  target-chip CPU acceptance remain unverified for 1.0.0.
 - The [production target](Docs/plans/production-readiness.md) lists the
   evidence a commercial release still needs.
 
