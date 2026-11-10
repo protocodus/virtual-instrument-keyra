@@ -201,13 +201,16 @@ constexpr Model models[]{
    // playing on the default controls to -9 VU on Reason's channel meter at
    // the default Output, where the portfolio's newer instruments play, with
    // the factory Output control at 0.70 (Tools/KeyraLevels.cpp).
-   .7615,
+   // Re-pinned in 0.4.32 with its tube to the -9.06 and -9.10 VU they read
+   // before, from .7615 and 1.5671: each key's level and stereo balance at
+   // its neighbours' since took them to -9.29 and -9.10.
+   .7819,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5671,
+   1.5261,
    true,
    grand::glide},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
@@ -239,11 +242,14 @@ constexpr Model models[]{
    // held, both channels' RMS from 50 to 750 ms after the strike, as the
    // benchmark sets a case's gain). Below it the shared velocity response
    // (responseAt) keeps the two medians within 1 dB of each other.
-   2.2837,
+   // Re-pinned in 0.4.32 with its tube to the -9.13 and -8.95 VU they read
+   // before, from 2.2837 and 2.3142: each key's level and stereo balance at
+   // its neighbours' since took them to -8.87 and -9.12.
+   2.2164,
    // Re-pinned in 0.4.23 to the -9.00 VU the tube read before, from 2.2864:
    // the correction to the blend between recorded pitches
    // (MeasuredNetworkKeys.h) took it to -9.11.
-   2.3142,
+   2.4316,
    false,
    upright::glide},
   {kawai::layers,kawai::layerVelocity.data(),kawai::layerLevelDb.data(),kawai::anchors.data(),static_cast<int>(kawai::anchors.size()),kawai::phantoms.data(),
@@ -279,7 +285,10 @@ constexpr Model models[]{
    // in 0.4.29, from 3.5030: a key's partials wait for the strike's wave
    // since, which lines a chord's notes up differently, and took it to
    // -8.92.
-   3.4816,
+   // Re-pinned in 0.4.32 with its tube to the -8.97 and -9.95 VU they read
+   // before, from 3.4816 and 1.2391: each key's level and stereo balance at
+   // its neighbours' since took them to -8.71 and -9.32.
+   3.3518,
    // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
    // pair's: within 0.5 dB, its loudest chords through the tube reach the
    // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
@@ -293,7 +302,7 @@ constexpr Model models[]{
    // read before, from 1.2364: the knock under 400 Hz, which the tube's
    // response favours, took it to -9.87. And in 0.4.29, from 1.2253: the
    // strike's wave took it to -9.99, and its pair's re-pin to -10.05.
-   1.2391,
+   1.1901,
    true,
    kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
@@ -320,8 +329,11 @@ constexpr Model models[]{
    // -10.83 and -10.49 VU. Re-pinned again in 0.4.26, from 2.8070 and
    // 1.4219: the retrained network (keyboard-network-2026-11-06) took them to
    // about -8.4 and -8.9 VU.
-   2.6414,
-   1.4655,
+   // Re-pinned in 0.4.32 with its tube to the -8.94 and -9.16 VU they read
+   // before, from 2.6414 and 1.4655: each key's level and stereo balance at
+   // its neighbours' since took them to -9.09 and -8.77.
+   2.6874,
+   1.3772,
    true,
    hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),
@@ -347,8 +359,11 @@ constexpr Model models[]{
    // tube re-pinned again in 0.4.29 to the -9.02 VU it read before, from
    // 1.6122: a key's partials wait for the strike's wave since, which lines
    // a chord's notes up differently, and took it to -8.90.
-   .8093,
-   1.5890,
+   // Re-pinned in 0.4.32 with its tube to the -9.10 and -9.02 VU they read
+   // before, from .8093 and 1.5890: each key's level and stereo balance at
+   // its neighbours' since took them to -8.43 and -8.97.
+   .7492,
+   1.7066,
    true,
    newyork::glide},
 };
@@ -1350,6 +1365,10 @@ struct ActionSide {const measured::ActionKnock *x=nullptr,*y=nullptr;double t=0,
 struct Engine::Impl {
   std::array<Voice,maxVoices> voices{};
   std::array<std::array<double,keyCount>,pianoCount> keyToneDb{};
+  // Each key's gain on its left and right pickups (dB) at each of its
+  // piano's layers, which put its level and balance at its neighbours'
+  // median (initCalibrations()).
+  std::array<std::array<std::array<float,measured::maxLayers>,keyCount>,pianoCount> keyLeftDb{},keyRightDb{};
   std::array<std::array<double,maxAnchors>,pianoCount> actionAnchorGainDb{};
   std::array<std::array<float,maxAnchors*halo>,pianoCount> haloLevelDb{};
   // The built piano's parts that ring between strikes (assemble()): each
@@ -2641,6 +2660,17 @@ struct Engine::Impl {
     // Above C7 the trim goes in with the partials' levels (`Side::toneDb`);
     // below it scales the finished voice and its noise burst.
     double toneScale=1.,noiseScale=1.;
+    // initCalibrations()'s level and balance, between the layers the strike
+    // plays between.
+    const auto keyFixDb=[&](const auto& table,int p){
+      const Model& m=models[p];const double v=sides[p].v;const auto& row=table[p][note-21];
+      if(v<=m.layerVelocity[0])return static_cast<double>(row[0]);
+      if(v>=m.layerVelocity[m.layers-1])return static_cast<double>(row[m.layers-1]);
+      int i=0;while(v>m.layerVelocity[i+1])++i;
+      return mix(row[i],row[i+1],(v-m.layerVelocity[i])/(m.layerVelocity[i+1]-m.layerVelocity[i]));
+    };
+    const double leftFixDb=fold(hammers,[&](int p){return keyFixDb(keyLeftDb,p);},pick);
+    const double rightFixDb=fold(hammers,[&](int p){return keyFixDb(keyRightDb,p);},pick);
     if(note<96){
       const double curMute=std::max(parameters.mute,channel.mute);
       double tDb=fold(hammers,[&](int p){return keyToneDb[p][note-21];},pick);
@@ -3052,19 +3082,23 @@ struct Engine::Impl {
         updateWeights(x);}}
     if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
     if(voice.count==0)voice.active=false;
-    if(toneScale!=1.){
-      const float sf=static_cast<float>(toneScale);const double s2=toneScale*toneScale;
+    const float sl=static_cast<float>(toneScale*std::pow(10.,leftFixDb/20));
+    const float sr=static_cast<float>(toneScale*std::pow(10.,rightFixDb/20));
+    if(sl!=1.f||sr!=1.f){
       for(int k=0;k<voice.count;++k){auto& x=voice.partials[k];
         for(int j=0;j<lanes;++j){
-          x.baseLeftRe[j]*=sf;x.baseLeftIm[j]*=sf;
-          x.baseRightRe[j]*=sf;x.baseRightIm[j]*=sf;
-          x.energyWeight[j]*=s2;}
+          x.baseLeftRe[j]*=sl;x.baseLeftIm[j]*=sl;
+          x.baseRightRe[j]*=sr;x.baseRightIm[j]*=sr;
+          x.energyWeight[j]=static_cast<double>(x.baseLeftRe[j])*x.baseLeftRe[j]+static_cast<double>(x.baseLeftIm[j])*x.baseLeftIm[j]
+                           +static_cast<double>(x.baseRightRe[j])*x.baseRightRe[j]+static_cast<double>(x.baseRightIm[j])*x.baseRightIm[j];}
         updateWeights(x);}
     }
-    if(noiseScale!=1.){
+    // The key's noise burst is the key's too: it goes where its partials go.
+    const double noiseLeft=noiseScale*std::pow(10.,leftFixDb/20),noiseRight=noiseScale*std::pow(10.,rightFixDb/20);
+    if(noiseLeft!=1.||noiseRight!=1.){
       for(int k=0;k<bankBands;++k){
-        burst.left[k]*=noiseScale;burst.right[k]*=noiseScale;burst.slowLeft[k]*=noiseScale;burst.slowRight[k]*=noiseScale;
-        burst.knockLeft[k]*=noiseScale;burst.knockRight[k]*=noiseScale;}
+        burst.left[k]*=noiseLeft;burst.right[k]*=noiseRight;burst.slowLeft[k]*=noiseLeft;burst.slowRight[k]*=noiseRight;
+        burst.knockLeft[k]*=noiseLeft;burst.knockRight[k]*=noiseRight;}
     }
   }
   // Below Full, retain a slot if its peak or diagonal held-energy proxy can
@@ -3364,6 +3398,76 @@ struct Engine::Impl {
           const int note=21+k;
           const double targetDb=refDb-.45*(note-90);
           keyToneDb[p][k]=std::max(p==1?0.:-2.5,std::min(p==1?3.2:6.5,.65*(targetDb-rawKeyDb[p][k])));
+        }
+      }
+      // The recordings' own key-to-key jumps: a library's pitches were taken
+      // one by one, each with the microphones' image of where its strings
+      // lay and with its own gain, and the Hamamatsu grand's balance swings
+      // by 10 to 13 dB from one key to the next between E4 and C6, the
+      // upright's by up to 10 dB between A#3 and C6. No piano's strings lie so; the engine
+      // played them as recorded. At each layer each key's level (with the
+      // trims above) and its balance go to its neighbours' median, keeping
+      // its tone and decay as recorded
+      // (Docs/research/key-balance-smoothing-2026-11-10.md).
+      for(int i=0;i<m.layers;++i){
+        const double lv=m.layerVelocity[i];
+        std::array<double,keyCount> levelDb{},balanceDb{};
+        for(int k=0;k<keyCount;++k){
+          const int note=21+k;
+          const int upper=upperAnchor(m,note);
+          const auto& ancA=m.anchors[upper-1];const auto& ancB=m.anchors[upper];
+          const double t=std::max(0.,std::min(1.,static_cast<double>(note-ancA.note)/(ancB.note-ancA.note)));
+          Side x{&m,&ancA,&ancB,upper,lv,t,0.,0.,0.,0.,scaleDb,0.};
+          const int count=series(x,p,note);
+          double left=1e-18,right=1e-18;
+          for(int j=0;j<count;++j){
+            const double w=seriesWeight[p][j];
+            const auto [l,r]=windowPowers(seriesData[p][j]);
+            left+=l*w*w;right+=r*w*w;
+          }
+          for(int q=0;q<2;++q){
+            const double sharePwr=q?t:1.-t;
+            if(sharePwr<=0)continue;
+            const auto& anchor=q?ancB:ancA;
+            for(int e=anchor.extraFirst;e<anchor.extraFirst+anchor.extraCount;++e){
+              PartialData ed{};ed.lane[0]=laneAt(m,m.extras[e].lane,extraLanes[m.extraFirst+e],lv);
+              ed.lane[0].level+=scaleDb;
+              for(int j=1;j<lanes;++j)ed.lane[j].level=-300.;
+              const auto [l,r]=windowPowers(ed);
+              left+=l*sharePwr;right+=r*sharePwr;
+            }
+          }
+          levelDb[k]=10*std::log10(left+right)+keyToneDb[p][k];
+          balanceDb[k]=10*std::log10(right/left);
+        }
+        // A median alone keeps the steps of a swing longer than its window,
+        // so the medians are averaged over the seven keys around; both
+        // windows narrow at the keyboard's ends, which keep their own slope.
+        const auto smooth=[](const std::array<double,keyCount>& a){
+          std::array<double,keyCount> med{},out{};
+          for(int k=0;k<keyCount;++k){
+            const int h=std::min(6,std::min(k,keyCount-1-k));
+            double v[13];int n=0;
+            for(int j=k-h;j<=k+h;++j)v[n++]=a[j];
+            for(int j=1;j<n;++j)
+              for(int g=j;g>0&&v[g-1]>v[g];--g)std::swap(v[g-1],v[g]);
+            med[k]=v[n/2];
+          }
+          for(int k=0;k<keyCount;++k){
+            const int h=std::min(3,std::min(k,keyCount-1-k));
+            double sum=0;
+            for(int j=k-h;j<=k+h;++j)sum+=med[j];
+            out[k]=sum/(2*h+1);
+          }
+          return out;
+        };
+        const auto levelTo=smooth(levelDb),balanceTo=smooth(balanceDb);
+        for(int k=0;k<keyCount;++k){
+          const double toLevel=levelTo[k]-levelDb[k];
+          const double share=1/(1+std::pow(10.,.1*balanceTo[k]));
+          const double ownShare=1/(1+std::pow(10.,.1*balanceDb[k]));
+          keyLeftDb[p][k][i]=static_cast<float>(toLevel+10*std::log10(share/ownShare));
+          keyRightDb[p][k][i]=static_cast<float>(toLevel+10*std::log10((1-share)/(1-ownShare)));
         }
       }
       for(int i=0;i<m.anchorCount*halo;++i)haloLevelDb[p][i]=m.haloLevels[i];

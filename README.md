@@ -43,6 +43,27 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.32 — 2026-11-10 — each key's level and balance at its neighbours'
+
+The libraries record a piano one pitch at a time, each with its own
+microphone image and gain, and the engine played each pitch so: struck in
+turn, the Hamamatsu grand's stereo balance swung by 10 to 13 dB from one key
+to the next between E4 and C6, the upright's by up to 10 dB. At every
+velocity each key's level and balance now go to its neighbours' median, its
+tone and decay as recorded, which the owner chose even where it departs from
+the recordings ([key smoothing](Docs/research/key-balance-smoothing-2026-11-10.md)).
+The balance's key-to-key jumps fall by a third to three quarters in rms on
+every piano and velocity (the Hamamatsu's from 3.2 to 0.8 dB at velocity 80)
+and the level's by up to two thirds. The recorded pitches' train takes stand
+further from their recordings in balance and level, as chosen; partial
+levels stand closer on every piano and role but the Hamburg's dev takes, and
+the Hamamatsu's dev takes stand 1.36 tolerance units closer over the eleven
+measures other than level
+([Hamamatsu](Docs/validation/kawai-key-smoothing-benchmark-2026-11-10.md)).
+Each piano's default sound and tube keep their level; thirteen preset
+readings moved, which the owner approved. The engine takes 0.28 s to build
+where it took 0.05.
+
 ### 0.4.31 — 2026-11-10 — the undamped strings under a soft bass note
 
 Every strike sets the undamped strings from F6 up ringing, louder as the
@@ -1010,7 +1031,7 @@ transition; the measured sound and interpolation are unchanged
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 90](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42724993281/artifacts/13723842486)**, built from [`16207222e441`](https://github.com/protocodus/virtual-instrument-keyra/commit/16207222e441685427d4ba61d690430e9b006aef). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 91](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42731413855/artifacts/13726900473)**, built from [`565e7eea84ee`](https://github.com/protocodus/virtual-instrument-keyra/commit/565e7eea84ee062b2a4615f539b06a025def96db). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -1530,6 +1551,17 @@ per-key trims, the tuning and the channel balance stay the blend's.
 `Tools/write_network_tables.py` writes its figures into the same header.
 Their keys between in the wound bass, where a pitch around them is below the
 break, blend as before.
+
+The recordings' own jumps from key to key, in level and in stereo balance,
+are smoothed: each pitch was recorded alone, with its own microphone image
+and gain. When the engine is built it sums every key's partials and the
+components beside them over 50 to 750 ms in each channel at each of its
+piano's layers, with the per-key trims, and takes each key's level and its
+balance to the median of the thirteen keys around it, averaged over the
+seven around, both windows narrowing at the keyboard's ends. A strike plays
+the gains on each channel between the layers around its own, on the key's
+partials and its noise burst; its tone and decay stay as recorded
+([key smoothing](Docs/research/key-balance-smoothing-2026-11-10.md)).
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
 (`--model upright`) and the train role of

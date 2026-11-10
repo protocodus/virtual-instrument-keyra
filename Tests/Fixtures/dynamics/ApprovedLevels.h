@@ -53,6 +53,14 @@
 // In 0.4.30 each series plays the orders its fit left out between two it
 // holds; the owner approved the Hamburg tube's loudest chords, to six
 // decimals (Docs/decisions.md, 2026-11-09).
+// In 0.4.32 each key's level and stereo balance go to its neighbours', each
+// piano's output and tube re-pinned to their earlier readings; the presets
+// that play a piano at another width, brightness or mute moved against it,
+// and the owner approved thirteen new readings, the typical playing of
+// Studio Grand, Warm Walnut, Felt Nocturne, Open Strings, Felt Upright, Pop
+// Upright, Hamamatsu Grand and Three Cities and the loudest chords of the
+// Kakegawa Grand, Warm Walnut, Felt Nocturne, Open Strings and the grand's
+// tube, to six decimals (Docs/decisions.md, 2026-11-10).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -61,22 +69,22 @@ struct ApprovedLevel {
 };
 
 inline constexpr std::array<ApprovedLevel, 12> approvedPreset {{
-    {"Kakegawa Grand", -9.066835, 1.408187},
-    {"Studio Grand", -10.171010, 1.234696},
-    {"Warm Walnut", -10.950910, 0.620191},
-    {"Felt Nocturne", -18.132439, -5.592784},
-    {"Open Strings", -7.970366, 1.934134},
+    {"Kakegawa Grand", -9.066835, 1.566076},
+    {"Studio Grand", -9.880768, 1.234696},
+    {"Warm Walnut", -10.661761, 1.008017},
+    {"Felt Nocturne", -17.540447, -5.317260},
+    {"Open Strings", -8.166912, 2.052288},
     {"Helsinki Upright", -9.122448, 4.217296},
-    {"Felt Upright", -15.589097, -0.127207},
-    {"Pop Upright", -9.306939, 3.904373},
-    {"Hamamatsu Grand", -9.012878, 4.003352},
-    {"Three Cities", -10.426881, 2.871424},
+    {"Felt Upright", -16.318789, -0.127207},
+    {"Pop Upright", -9.707089, 3.904373},
+    {"Hamamatsu Grand", -8.921034, 4.003352},
+    {"Three Cities", -10.117968, 2.871424},
     {"Hamburg Grand", -8.953395, 2.474622},
     {"New York Grand", -9.092756, 3.322501},
 }};
 
 inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
-    {"grand", -9.068710, 1.717973},
+    {"grand", -9.068710, 1.773474},
     {"upright", -8.993037, 4.328115},
     {"kawai", -9.985854, 3.301832},
     {"hamburg", -9.172983, 2.587909},
