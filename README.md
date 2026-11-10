@@ -22,13 +22,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Kakegawa Grand | [01-kakegawa-grand.wav](Docs/audio/01-kakegawa-grand.wav) | 11.2 s | -1.5 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -12.8 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -14.2 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -4.8 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -13.3 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -13.4 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -4.5 dBFS |
 | 6 | Helsinki Upright | [06-helsinki-upright.wav](Docs/audio/06-helsinki-upright.wav) | 11.6 s | -1.5 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
-| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -3.5 dBFS |
-| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -2.2 dBFS |
+| 9 | Hamamatsu Grand | [09-hamamatsu-grand.wav](Docs/audio/09-hamamatsu-grand.wav) | 9.7 s | -6.0 dBFS |
+| 10 | Three Cities | [10-three-cities.wav](Docs/audio/10-three-cities.wav) | 10.8 s | -2.1 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -42,6 +42,22 @@ comparisons that set Salamander notes beside the fits were removed on
 the checkout from a fetched copy of the library.
 
 ## Version history
+
+### 0.4.33 — 2026-11-10 — the keys between recorded pitches no brighter than their neighbours
+
+On the Hamburg, New York and Hamamatsu grands a key between two recorded
+pitches took a partial only one of them holds at that pitch's level by
+number, though at the key it sounds higher: struck hard, the Hamburg's E3 to
+A♯3 stood 34 to 42 dB over their recorded neighbours somewhere from 2 to
+16 kHz, New York's G3 to G♯4 13 to 21 dB. Each such partial now sounds no
+louder than the louder neighbour at its frequency, and they stand 16 to 22
+and 6 to 10 dB over
+([upper partials](Docs/research/network-key-upper-partials-2026-11-10.md)).
+The recorded pitches play as before; the Hamburg's dev takes, keys the fit
+never saw, stand 3.02 tolerance units closer to their recordings over the
+eleven measures other than level, New York's 0.28 and the Hamamatsu's 0.04
+([Hamburg](Docs/validation/hamburg-network-high-partials-benchmark-2026-11-10.md)).
+The grand and the upright are unchanged.
 
 ### 0.4.32 — 2026-11-10 — each key's level and balance at its neighbours'
 
@@ -1031,7 +1047,7 @@ transition; the measured sound and interpolation are unchanged
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 91](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42731413855/artifacts/13726900473)**, built from [`565e7eea84ee`](https://github.com/protocodus/virtual-instrument-keyra/commit/565e7eea84ee062b2a4615f539b06a025def96db). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 92](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42772282857/artifacts/13743577908)**, built from [`136caa0a1ce7`](https://github.com/protocodus/virtual-instrument-keyra/commit/136caa0a1ce74fcbcade5385821c2d82f9e0d87d). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -1536,7 +1552,12 @@ over 50 to 750 ms moved by what the fits hold over the network at the two
 pitches around it, so that the per-key trims leave the recorded pitches where
 they were. Its phases come from the nearer pitch, its right channel's lag
 moves between the two pitches' as the blend's does, and a lane the network
-decays faster than both fits around the key is left out: it clicked.
+decays faster than both fits around the key is left out: it clicked. A
+partial only one of the two pitches holds sounds no louder than the louder
+of them at its frequency, the line through each one's partials in log Hz:
+that pitch gives it its level by number, and at the key it sounds higher,
+which put the Hamburg's E3 to A♯3 up to 42 dB over their neighbours from 2
+to 16 kHz ([upper partials](Docs/research/network-key-upper-partials-2026-11-10.md)).
 
 The Kakegawa grand's and the upright's keys between two recorded pitches
 above the bass break blend them and then take a correction the same tool

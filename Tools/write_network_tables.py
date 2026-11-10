@@ -47,6 +47,27 @@ takes from the network, at the key, the order and each layer's level:
   Hamburg's train takes' level error (Tools/benchmark_recordings.py
   level_db) went from 0.70 to 2.95 dB and its dev takes' from 1.84 to 6.01,
   where moved they stand at 0.69 and 2.21;
+- and an order only one of the two recorded pitches holds no louder, at
+  any layer, than the louder of the two at its frequency (the line through
+  each one's partials in log Hz, held flat past its first and last). Such
+  an order keeps by number the
+  level the one pitch gives it, though at the key between it sounds at a
+  higher frequency: the Hamburg's A2 holds its 35th partial at 3.9 kHz,
+  and at E3, where B3 holds none, that partial sounds at 6.3 kHz, where A2
+  and B3 stand 41 and 32 dB under it. So written, at the loudest layer the
+  Hamburg's E3 to A#3 stood 34 to 42 dB over the line between their
+  recorded neighbours in some third octave from 2 to 16 kHz (each key
+  struck alone, both channels' mean, 0.15 to 0.6 s after onset), New
+  York's G3 to G#4 15 to 21 dB, where bounded they stand 16 to 22 and 6
+  to 10; the Hamburg's E3 at velocity 123 sustained 6.3 and 8 kHz 35 and
+  40 dB over its recording, where it stands 17 and 19. Silent instead past
+  both pitches' last partials, where neither fit holds any, the Hamburg's
+  E3 to A#3 stood 4 to 15 dB over, but New York's C6 at velocity 117 lost
+  the partials its recording holds from 8 kHz up, which neither F6's fit
+  nor G5's reaches (partial levels 6.11 to 8.50 dB off it, against 6.11
+  held flat), and the three pianos' dev takes stood 3.37 closer to their
+  recordings in sum, against 3.35 held flat with no regression past a
+  tolerance;
 - not its tuning or its rise: a partial's cents and rise are the engine's
   between the two pitches (blend()), so that the keys play in tune and
   strike as they do today. The network rises the upper partials ever slower
@@ -281,6 +302,17 @@ def move_power(p, shift):
     p['level'] = p['level'] + 10 * np.log10(target.sum(1) / channel_powers(p).sum(1))[:, None]
 
 
+def under_neighbours(p, log_hz, sides):
+    """Lower p's power at each layer to the louder of the two recorded
+    pitches' at its frequency (`sides`, spectrum() in piano_keys), the line
+    through each one's partials in log Hz, held flat past its first and last;
+    by how much at each layer (dB, 0 where it stood under)."""
+    loudest = np.max([[np.interp(log_hz, f, db[:, i]) for i in range(db.shape[1])] for f, db in sides], axis=0)
+    over = np.maximum(10 * np.log10(np.maximum(channel_powers(p).sum(1), 1e-30)) - loudest, 0)
+    p['level'] = p['level'] - over[:, None]
+    return over
+
+
 def key_tuning(a, b, t):
     """The engine's f1 and B between two recorded pitches (keyPitch and
     keyStiffness below C7, which is all the recording term needs)."""
@@ -309,10 +341,19 @@ def piano_keys(name, net, piano, library, gain, log):
             bound(q, limit[o])
         return {o: 10 * np.log10(channel_powers(of_table(held[o])) / channel_powers(q)) for o, q in zip(orders, ours)}
 
-    keys, silenced, moved = {}, 0, []
+    def spectrum(x, held):
+        """A recorded pitch's partials by frequency: their log Hz, and their
+        power in both channels at each layer (dB, orders x layers)."""
+        orders = sorted(held)
+        hz = [pa.stiff(x['f1'], x['B'], o) * 2 ** (held[o]['cents'] / 1200) for o in orders]
+        db = [10 * np.log10(np.maximum(channel_powers(of_table(held[o])).sum(1), 1e-30)) for o in orders]
+        return np.log(hz), np.array(db)
+
+    keys, silenced, moved, lowered = {}, 0, [], []
     for lower in range(len(anchors) - 1):
         a, b = anchors[lower], anchors[lower + 1]
         pair = by_order[lower], by_order[lower + 1]
+        sides = [spectrum(x, held) for x, held in zip((a, b), pair)]
         # The fastest decay either fit holds at each order, which no lane of
         # the keys between them exceeds.
         limit = {o: max(fastest(held[o]) for held in pair if o in held) for o in set(pair[0]) | set(pair[1])}
@@ -321,7 +362,7 @@ def piano_keys(name, net, piano, library, gain, log):
         for note in range(a['note'] + 1, b['note']):
             t = (note - a['note']) / (b['note'] - a['note'])
             f1, B = key_tuning(a, b, t)
-            orders, cents, rises = [], [], []
+            orders, cents, rises, hzs = [], [], [], []
             for o in sorted(set(by_order[lower]) | set(by_order[lower + 1])):
                 pa_, pb_ = by_order[lower].get(o), by_order[lower + 1].get(o)
                 if pa_ and pb_:   # blend(): cents and the log rise mixed, the rise's slope with it
@@ -337,18 +378,24 @@ def piano_keys(name, net, piano, library, gain, log):
                 orders.append(o)
                 cents.append(c)
                 rises.append(rise)
+                hzs.append(pa.stiff(f1, B, o) * 2 ** (c / 1200))
             ours = network(net, piano, library, note, orders, table, gain, f1, B, cents)
-            for o, p in zip(orders, ours):
+            for o, p, hz in zip(orders, ours, hzs):
                 pa_, pb_ = by_order[lower].get(o), by_order[lower + 1].get(o)
                 silenced += bound(p, limit[o])
                 ra, rb = residual[0].get(o), residual[1].get(o)
                 move_power(p, ra + t * (rb - ra) if ra is not None and rb is not None
                            else ra if ra is not None else rb)
+                if not (pa_ and pb_):
+                    lowered.append(under_neighbours(p, math.log(hz), sides))
                 align(p, of_table(pa_) if pa_ else None, of_table(pb_) if pb_ else None, t)
             keys[note] = [(o, c, r[0], r[1], p) for o, c, r, p in zip(orders, cents, rises, ours)]
     moved = np.concatenate(moved)
     log(f'{name}: the fits over the network at their own pitches, per partial, layer and channel: '
         f'{np.mean(moved):+.2f} dB mean, {np.sqrt(np.mean(moved ** 2)):.2f} dB rms')
+    lowered = np.ravel(lowered)
+    log(f'{name}: of {lowered.size} layers of partials one recorded pitch holds, {np.sum(lowered > 0)} stood over '
+        f'both at their frequency, by up to {np.max(lowered, initial=0):.1f} dB')
     log(f'{name}: {len(keys)} keys between its {len(anchors)} recorded pitches, '
         f'{sum(len(v) for v in keys.values())} partials, {silenced} lanes silent')
     return keys
