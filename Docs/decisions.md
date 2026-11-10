@@ -3976,3 +3976,50 @@ York's pairs move by under 0.001 dB. The `unit` tier (45 tests), the `audio`
 tier's demos and the `perf` tier pass, and `KeyraDSPCxx17` builds. On the
 development machine New York's 88 keys in turn with the pedal down render in
 a median 2.90 s of CPU against 2.98, within the runs' spread.
+
+## 2026-11-10 — each key's level and balance at its neighbours'
+
+The first step of the owner's calibration of every piano across the
+keyboard, decided on the measurements with the better candidate taken. No
+listening test was run and no listening preference is recorded.
+
+The finding. Struck in turn, the Hamamatsu grand's stereo balance swung by
+10 to 13 dB from one key to the next between E4 and C6 and the upright's by
+up to 10 dB between A♯3 and C6, and at velocity 40 the Hamamatsu's level
+stood up to 8 dB off its neighbours'. The recordings swing so themselves:
+each pitch was taken alone, with its own microphone image and gain
+([key smoothing](research/key-balance-smoothing-2026-11-10.md)).
+
+The owner's choice (2026-11-10, on a decision card): smooth the recordings'
+own key-to-key jumps even where that departs from them, each key's balance
+and loudness pulled toward its neighbours' median at every velocity, its
+tone and decay kept as recorded. This licenses the train takes standing
+further from their recordings in stereo balance and level; it does not
+license any fitted number, and none is fitted.
+
+The candidates. At each recorded layer each key's level and balance go to
+the median of the keys around it. The median of seven alone kept the steps
+of the Hamamatsu's swing (5.9 dB to one side at E5, 3.7 to the other at F5),
+so the median of thirteen averaged over seven ships; both windows narrow at
+the keyboard's ends, as at full width they flattened the top-note trims.
+The gain on the partials alone, against the partials and the key's noise
+burst together: the second stood closer on nine of the ten pianos' train and
+dev sums and ships.
+
+On the benchmark, against 0.4.31, in tolerance units over the eleven
+measures other than level: New York +0.53 train and −0.32 dev, the Hamamatsu
++4.79 and −1.36, the upright +2.43 and −0.09, the Kakegawa grand +1.36 and
++0.44, the Hamburg +0.40 and −0.29. The stereo balance carries the train
+takes' moves (the Hamamatsu's 1.77 to 4.49 dB); its dev takes stand 0.73 dB
+closer in it, and partial levels stand closer on every piano and role but
+the Hamburg's dev takes. The grand's held-out cases stand closer in bands,
+harmonics and decay and further in envelope and rise (4.090 to 4.514 ms).
+
+Levels. Each piano's output and tube scale is re-pinned to the reading it
+had before. The owner approved thirteen new readings of the presets that
+play a piano at another width, brightness or mute (2026-11-10: "approving
+new levels - app is not released yet"), recorded to six decimals in
+`Tests/Fixtures/dynamics/ApprovedLevels.h`. `Keyra.FactoryDynamics` fails
+on 995 rows where 0.4.31 failed on 1,136. The `unit` tier (45 tests), the
+`audio` tier and the `perf` tier pass, and `KeyraDSPCxx17` builds. The
+engine's construction takes 0.28 s of CPU where it took 0.05.
