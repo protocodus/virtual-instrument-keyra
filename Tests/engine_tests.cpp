@@ -1054,12 +1054,16 @@ int main(int argc,char** argv){
   }
   for(const float concert:{300.f,600.f})for(const bool prepared:{false,true}){
     const auto tail=sympatheticTail(concert,prepared);
-    const double peak=spectralPeak(tail,concert*.94,concert*1.06);
     // The open strings ring at the piano's own pitches: A4's strike leaves
     // the strings under it ringing whose partials lie beside its fundamental
     // (D3's third, D2's sixth, A3's second, A2's fourth ...), from 599.4 to
     // 600.7 Hz at 600 Hz; its own string is its voice's. Equal temperament put
-    // the former bank's peak at the concert pitch.
+    // the former bank's peak at the concert pitch. The search stays within
+    // 2.5 % of it, short of the keys a semitone either side: since 0.4.36 the
+    // strike's blow rings their strings too, and those that share their
+    // partials stand as high half a second on (0.94 to 1.06 found A#4's). A
+    // bank left at 440 Hz would still peak inside it, at D4 or D5.
+    const double peak=spectralPeak(tail,concert*.975,concert*1.025);
     double nearest=1e9;
     for(int key=21;key<89;++key)for(int n=1;n<=8;++n){if(key==69)continue;
       const double B=keyStiffness(key),f=n*keyPitch(key)*std::sqrt((1+B*n*n)/(1+B));
@@ -1110,6 +1114,35 @@ int main(int argc,char** argv){
       check(std::abs(measured-expected)<1,"an open string's partials fall at the rate the pedal-down take measures");
       std::cout<<"open_string_c3_partial="<<n<<" decay_db_s="<<measured<<" pedal_down_take_db_s="<<expected<<'\n';
     }
+  }
+  {
+    // A strike's blow rings every open string at once, at pitches none of
+    // its partials has: with E4 and G3 held, a struck C4 leaves E4's string
+    // 39 dB under its own first partial, the nearest, from 0.1 to 0.6 s (it
+    // starts 49 dB under the power that partial's components start with, as
+    // the Yamaha C3's pedal-down takes size it, Tools/benchmark_pedal_wash.py),
+    // and G3's, under that partial, 5 dB lower by the square of the
+    // frequency ratio.
+    constexpr double pi=3.14159265358979323846;
+    keyra::Engine wet,direct;keyra::Parameters wp,dp;dp.resonance=0;
+    wet.setParameters(wp);direct.setParameters(dp);
+    for(const int held:{64,55}){wet.noteOn(held,.00001f,2);direct.noteOn(held,.00001f,2);}
+    render(wet,2400);render(direct,2400);
+    wet.noteOn(60,.7f,1);direct.noteOn(60,.7f,1);
+    auto strings=render(wet,28800);const auto struck=render(direct,28800);
+    for(std::size_t i=0;i<strings.size();++i)strings[i]-=struck[i];
+    // The power (dB) within 2 Hz of `frequency` from 0.1 to 0.6 s.
+    const auto power=[&](const Audio& audio,double frequency){double sum=0;
+      for(double f=frequency-2;f<=frequency+2.001;f+=.25){
+        const double c=std::cos(2*pi*f/48000),s=std::sin(2*pi*f/48000);double phaseC=1,phaseS=0,re=0,im=0;
+        for(std::size_t i=0;i<24000;++i){const double x=.5*(audio[2*(4800+i)]+audio[2*(4800+i)+1])*(.5-.5*std::cos(2*pi*i/23999));
+          re+=x*phaseC;im+=x*phaseS;const double nextC=phaseC*c-phaseS*s;phaseS=phaseS*c+phaseC*s;phaseC=nextC;}
+        sum+=re*re+im*im;}
+      return 10*std::log10(sum+1e-300);};
+    const double c4=power(struck,keyPitch(60)),e4=power(strings,keyPitch(64)),g3=power(strings,keyPitch(55));
+    check(std::abs(e4-c4+39)<2,"a strike rings an open string between its partials 39 dB under the nearest");
+    check(std::abs(e4-g3-5)<1.5,"an open string under a strike's first partial rings less by the square of the frequency ratio");
+    std::cout<<"strike_open_string_e4_db="<<e4-c4<<" g3_under_e4_db="<<e4-g3<<'\n';
   }
   {
     // The sustain pedal going down knocks, and the strings its dampers free

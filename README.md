@@ -43,6 +43,23 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.36 — 2026-11-10 — a strike rings the open strings
+
+Under the pedal a note sounded too clean. The open strings took up only what
+the notes' partials drove, the strings that share them, and between a note's
+partials the grand stood a median 26 dB under the Yamaha C3's pedal-down
+takes, 42 dB by 3 to 6 s. A strike's blow now sets every string whose damper
+is off ringing at once, under the pedal or under held keys, at a level and a
+fall toward the treble fitted on those takes' train pitches (How it works).
+Scored by `Tools/benchmark_pedal_wash.py`, the grand stands a median 1.1 dB
+under the train pitches and 4.7 dB over the five dev pitches, 5.7 and 6.4 dB
+from them in mean |dB| where it stood 26.7 and 22.6, and the other four
+pianos move from 13.6 to 24.2 dB off to 5.9 to 8.9 dB
+([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md),
+[decision](Docs/decisions.md)). Resonance scales it with the rest of the open
+strings' sound. A note alone without the pedal renders byte for byte as
+before.
+
 ### 0.4.35 — 2026-11-10 — a key struck again is not turned down
 
 Since 0.4.12 a key struck while it still sounded played up to 2.6 dB quieter
@@ -1263,7 +1280,17 @@ the grand's pedal-down recording measures for their frequency, 0.32/s at
 middle C (2.8 dB/s) and a third faster per octave up, and the pedal going down
 sets the strings it frees ringing, at the level per third-octave band that
 recording rings them with; under full pedal's grazing felt
-(**Pedals and keyswitches**) they fall faster than its strings do.
+(**Pedals and keyswitches**) they fall faster than its strings do. A strike's
+blow sets every open string but its own ringing at once, also where none of
+its partials lies: each open partial starts 49 dB under the power the
+components of the strike's partial nearest it in pitch start with at middle
+C (about 39 dB under that partial as it sounds over the next half second),
+2.7 dB lower per octave the struck key lies higher, and lower again by the
+square of the frequency ratio under the strike's first partial. Those two
+numbers are fitted on the grand so that the sound between a pedalled note's
+partials stands against the note as the train pitches of the Yamaha C3's
+pedal-down takes have it, per octave band from 150 Hz to 2.4 kHz and from
+0.15 to 3 s; all five pianos play them, each against its own partials.
 
 A strike's tone moves with velocity beyond its layer: each partial gains
 0.4 dB per octave of its order (up to four) for every decibel its layer plays
@@ -1688,6 +1715,9 @@ its train and dev key-release takes ([report](Docs/validation/upright-release-be
 and `Tools/benchmark_pedal.py` the grand's sustain pedal going down against
 its train and dev pedal-down takes, band by band, the strings' ring against
 the knock and its fall ([report](Docs/validation/grand-open-strings-benchmark-2026-10-30.md)).
+`Tools/benchmark_pedal_wash.py` scores the sound a pedalled note leaves
+between its partials against the Yamaha C3's pedal-down takes, whose band
+energies are tracked as numbers ([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md)).
 `Tools/tone_survey.py` measures the benchmark's cases signed, per
 third-octave band: where each register's tone and stereo image stand over or
 under the recordings, in the attack, early and sustain windows.
@@ -1835,9 +1865,16 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   against recordings, its strings' ring and fall (above). The recordings do
   not document pedal positions or timings, so half pedalling, repedalling and
   the pedal coming up are not validated, and the strings sound alike however
-  fast the pedal goes down. No recording plays notes under the pedal, so how
-  loud the open strings ring in sympathy with what is played is the Resonance
-  control's, not a measurement, and how they ring on from 1 to 4 s is fitted
+  fast the pedal goes down. Notes under the pedal are scored on one measure,
+  the sound between a single note's partials against the Yamaha C3's
+  pedal-down takes, a piano that is none of Keyra's five: there the pianos
+  stand 5.7 to 8.9 dB from its train pitches in mean |dB|, most of it the
+  spread from key to key, 3 to 17 dB under them from 3 to 6 s as the grazing
+  felt has it, and unscored over 2.4 kHz, where those takes do not clear
+  their floor ([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md)).
+  How loud the strings that share a note's partials ring with it stays the
+  Resonance control's, not a measurement: on a recording they cannot be told
+  from the note. How the open strings ring on from 1 to 4 s is fitted
   on one decay law, which full pedal's grazing felt steepens at the owner's
   request: over those seconds they fall 1.5 to 11 dB further than the
   pedal-down takes from 63 Hz to 2.5 kHz and within 2 dB of them from 3 to

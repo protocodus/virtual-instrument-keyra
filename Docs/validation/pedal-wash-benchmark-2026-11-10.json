@@ -1,0 +1,500 @@
+{
+ "tool": "Tools/benchmark_pedal_wash.py",
+ "takes": "Tools/corpus/yamaha-c3-pedal-wash.json",
+ "unit": "dB, render minus takes",
+ "windows_s": [
+  [
+   0.15,
+   0.5
+  ],
+  [
+   0.5,
+   1.5
+  ],
+  [
+   1.5,
+   3
+  ],
+  [
+   3,
+   6
+  ]
+ ],
+ "registers": [
+  "C1-A2",
+  "C3-A4",
+  "C5-D#6"
+ ],
+ "runs": {
+  "grand": {
+   "0.4.35 at 8d3652c": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -26.35,
+      "mean_abs": 26.67,
+      "n": 484,
+      "windows": [
+       -12.49,
+       -23.04,
+       -31.64,
+       -42.04
+      ],
+      "registers": [
+       -24.81,
+       -26.72,
+       -28.12
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -19.92,
+      "mean_abs": 21.17
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": -22.24,
+      "mean_abs": 22.59,
+      "n": 129,
+      "windows": [
+       -9.53,
+       -18.69,
+       -28.37,
+       -38.08
+      ],
+      "registers": [
+       -21.09,
+       -28.05,
+       -15.35
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -10.46,
+      "mean_abs": 15.08
+     }
+    }
+   },
+   "candidate 0.4.36": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -1.13,
+      "mean_abs": 5.72,
+      "n": 484,
+      "windows": [
+       -0.26,
+       1.64,
+       -1.06,
+       -8.0
+      ],
+      "registers": [
+       -1.66,
+       -1.08,
+       -0.96
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -2.68,
+      "mean_abs": 7.44
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": 4.67,
+      "mean_abs": 6.42,
+      "n": 129,
+      "windows": [
+       5.84,
+       6.22,
+       4.68,
+       -4.66
+      ],
+      "registers": [
+       4.34,
+       -1.84,
+       9.68
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -1.23,
+      "mean_abs": 8.26
+     }
+    }
+   }
+  },
+  "upright": {
+   "0.4.35 at 8d3652c": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -20.36,
+      "mean_abs": 22.7,
+      "n": 484,
+      "windows": [
+       -6.88,
+       -16.09,
+       -28.35,
+       -39.66
+      ],
+      "registers": [
+       -12.0,
+       -23.68,
+       -28.54
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -7.77,
+      "mean_abs": 15.59
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": -18.23,
+      "mean_abs": 20.12,
+      "n": 129,
+      "windows": [
+       -5.43,
+       -12.06,
+       -22.12,
+       -33.68
+      ],
+      "registers": [
+       -10.35,
+       -22.79,
+       -21.85
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -9.27,
+      "mean_abs": 17.28
+     }
+    }
+   },
+   "candidate 0.4.36": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -0.19,
+      "mean_abs": 8.04,
+      "n": 484,
+      "windows": [
+       3.84,
+       2.96,
+       -2.02,
+       -11.55
+      ],
+      "registers": [
+       -1.12,
+       0.44,
+       -1.18
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": 4.94,
+      "mean_abs": 9.63
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": 1.29,
+      "mean_abs": 7.53,
+      "n": 129,
+      "windows": [
+       3.17,
+       5.92,
+       0.12,
+       -8.98
+      ],
+      "registers": [
+       2.19,
+       -6.26,
+       8.73
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": 0.67,
+      "mean_abs": 10.55
+     }
+    }
+   }
+  },
+  "kawai": {
+   "0.4.35 at 8d3652c": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -21.71,
+      "mean_abs": 24.22,
+      "n": 484,
+      "windows": [
+       -12.42,
+       -19.0,
+       -28.58,
+       -37.2
+      ],
+      "registers": [
+       -18.08,
+       -24.23,
+       -29.95
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -20.36,
+      "mean_abs": 21.3
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": -22.9,
+      "mean_abs": 24.01,
+      "n": 129,
+      "windows": [
+       -14.77,
+       -21.77,
+       -25.48,
+       -36.88
+      ],
+      "registers": [
+       -19.05,
+       -29.24,
+       -23.16
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -23.84,
+      "mean_abs": 27.16
+     }
+    }
+   },
+   "candidate 0.4.36": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -0.43,
+      "mean_abs": 6.6,
+      "n": 484,
+      "windows": [
+       1.76,
+       3.3,
+       -0.89,
+       -9.65
+      ],
+      "registers": [
+       -0.72,
+       -1.44,
+       4.55
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": 3.52,
+      "mean_abs": 6.79
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": 1.44,
+      "mean_abs": 7.57,
+      "n": 129,
+      "windows": [
+       2.52,
+       4.12,
+       1.51,
+       -6.15
+      ],
+      "registers": [
+       2.69,
+       -7.52,
+       7.56
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": 0.9,
+      "mean_abs": 9.58
+     }
+    }
+   }
+  },
+  "hamburg": {
+   "0.4.35 at 8d3652c": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -13.25,
+      "mean_abs": 15.55,
+      "n": 484,
+      "windows": [
+       -4.05,
+       -9.71,
+       -20.4,
+       -30.37
+      ],
+      "registers": [
+       -10.74,
+       -14.77,
+       -14.38
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -3.32,
+      "mean_abs": 12.19
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": -11.23,
+      "mean_abs": 13.59,
+      "n": 129,
+      "windows": [
+       0.9,
+       -5.97,
+       -15.55,
+       -25.05
+      ],
+      "registers": [
+       -3.79,
+       -17.77,
+       -8.95
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -2.1,
+      "mean_abs": 11.4
+     }
+    }
+   },
+   "candidate 0.4.36": {
+    "train": {
+     "bands_holding_partials": {
+      "median": 1.73,
+      "mean_abs": 5.89,
+      "n": 484,
+      "windows": [
+       2.31,
+       4.99,
+       2.28,
+       -4.99
+      ],
+      "registers": [
+       2.38,
+       1.39,
+       1.96
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": 5.17,
+      "mean_abs": 9.01
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": 4.46,
+      "mean_abs": 7.39,
+      "n": 129,
+      "windows": [
+       5.4,
+       7.32,
+       4.16,
+       -3.3
+      ],
+      "registers": [
+       6.29,
+       -1.67,
+       8.45
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": 5.86,
+      "mean_abs": 8.65
+     }
+    }
+   }
+  },
+  "newyork": {
+   "0.4.35 at 8d3652c": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -17.77,
+      "mean_abs": 19.75,
+      "n": 484,
+      "windows": [
+       -6.5,
+       -12.59,
+       -24.22,
+       -35.75
+      ],
+      "registers": [
+       -10.4,
+       -19.97,
+       -28.15
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -14.4,
+      "mean_abs": 17.62
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": -13.47,
+      "mean_abs": 15.83,
+      "n": 129,
+      "windows": [
+       -2.46,
+       -6.35,
+       -16.27,
+       -27.39
+      ],
+      "registers": [
+       -4.54,
+       -22.47,
+       -16.27
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -18.45,
+      "mean_abs": 22.75
+     }
+    }
+   },
+   "candidate 0.4.36": {
+    "train": {
+     "bands_holding_partials": {
+      "median": -5.26,
+      "mean_abs": 8.86,
+      "n": 484,
+      "windows": [
+       -1.06,
+       -1.09,
+       -6.8,
+       -17.06
+      ],
+      "registers": [
+       -3.82,
+       -5.72,
+       -7.87
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -5.02,
+      "mean_abs": 9.33
+     }
+    },
+    "dev": {
+     "bands_holding_partials": {
+      "median": -3.05,
+      "mean_abs": 7.61,
+      "n": 129,
+      "windows": [
+       1.07,
+       2.27,
+       -4.48,
+       -14.1
+      ],
+      "registers": [
+       -0.4,
+       -7.96,
+       1.15
+      ]
+     },
+     "bands_under_first_partial": {
+      "median": -10.79,
+      "mean_abs": 12.73
+     }
+    }
+   }
+  }
+ }
+}

@@ -1430,7 +1430,7 @@ struct Engine::Impl {
   // each key's damper is off its strings.
   std::array<OpenBank,openBanks> open{};
   std::array<double,damped*openPartials> openHz{},openRate{},openPedalRate{};
-  std::array<float,damped*openPartials> openLiftRe{},openLiftIm{};
+  std::array<float,damped*openPartials> openLiftRe{},openLiftIm{},openPhaseRe{},openPhaseIm{};
   std::array<double,damped> receiverDamper{},openness{};
   // Through a chunk, per damped key whose string is open, what its own
   // strikes play into the open strings' drive, and whether any do: its
@@ -1706,8 +1706,9 @@ struct Engine::Impl {
         openPedalRate[k]=(builtOpenRate*std::exp(builtOpenSlope*x)-grand::openStringRate*std::exp(grand::openStringRateSlope*x))*ring;
         const int band=std::max(0,std::min(liftBands-1,static_cast<int>(std::lround(3*std::log2(openHz[k]/1000)))+12));
         const double liftAmp=std::pow(10.,grand::openStringLiftDb[band]/20),phase=2*pi*std::fmod(.6180339887498949*k,1.);
-        openLiftRe[k]=static_cast<float>(liftAmp*std::cos(phase));
-        openLiftIm[k]=static_cast<float>(liftAmp*std::sin(phase));
+        openPhaseRe[k]=static_cast<float>(std::cos(phase));openPhaseIm[k]=static_cast<float>(std::sin(phase));
+        openLiftRe[k]=static_cast<float>(liftAmp*openPhaseRe[k]);
+        openLiftIm[k]=static_cast<float>(liftAmp*openPhaseIm[k]);
       }
     }
   }
@@ -2986,6 +2987,7 @@ struct Engine::Impl {
       for(int k=0;k<lanes;++k){const double e=partial.energyWeight[k]/(1-partial.decay[k]*partial.decay[k]);coloured+=e;plain+=e/(c*c);}
       ++voice.count;
     }
+    const int series=voice.count;
     // Single components (one measured lane each) share a slot four at a time,
     // one to a lane, in order of frequency; the slot's damping and tint follow
     // its members. Each starts at contact, under the pitch's onset rise.
@@ -3060,10 +3062,11 @@ struct Engine::Impl {
           x.baseRightRe[j]*=static_cast<float>(scale);x.baseRightIm[j]*=static_cast<float>(scale);
           x.energyWeight[j]*=scale*scale;}
         updateWeights(x);}}
-    if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
-    if(voice.count==0)voice.active=false;
     const float sl=static_cast<float>(toneScale*std::pow(10.,leftFixDb/20));
     const float sr=static_cast<float>(toneScale*std::pow(10.,rightFixDb/20));
+    strikeOpenStrings(voice,series,note,std::sqrt(.5*(static_cast<double>(sl)*sl+static_cast<double>(sr)*sr)));
+    if(parameters.quality!=Quality::full)keepAudible(voice,parameters.quality==Quality::balanced?60.:50.);
+    if(voice.count==0)voice.active=false;
     if(sl!=1.f||sr!=1.f){
       for(int k=0;k<voice.count;++k){auto& x=voice.partials[k];
         for(int j=0;j<lanes;++j){
@@ -3299,6 +3302,43 @@ struct Engine::Impl {
         if(!bank.heard[j])continue;
         setLane(bank.re,j,lane(bank.re,j)+openLiftRe[k]*liftingScale);
         setLane(bank.im,j,lane(bank.im,j)+openLiftIm[k]*liftingScale);
+        if(!bank.active){bank.active=true;steerOpen(bank,k/lanes,openness[i]);}
+      }
+    }
+  }
+  // A strike's blow sets every open string ringing at once; the notes' drive
+  // builds only the strings that share their partials. The Yamaha C3's
+  // pedal-down takes size it (Tools/benchmark_pedal_wash.py, train pitches):
+  // the sound between a note's partials stands where each open partial puts
+  // it starting 49 dB under the power the components of the strike's partial
+  // nearest it in pitch start with at middle C, 2.7 dB lower per octave the
+  // struck key lies higher, in every octave band that holds its partials,
+  // from 0.15 to 3 s and at every layer. Under the strike's first partial the
+  // takes fall 10 to 12 dB per octave besides, here the square of the
+  // frequency ratio. Each partial starts at a phase fixed by its string, its
+  // order and the key struck.
+  void strikeOpenStrings(const Voice& voice,int series,int note,double toneGain) noexcept {
+    if(series<=0)return;
+    double hz[maxPartials],amplitude[maxPartials];
+    for(int n=0;n<series;++n){const auto& x=voice.partials[n];
+      double energy=0;for(int j=0;j<lanes;++j)energy+=x.energyWeight[j];
+      hz[n]=x.frequency;amplitude[n]=std::sqrt(.5*energy)*x.tint;}
+    // The Resonance control scales the open strings' sound; at its default
+    // they ring as measured.
+    const double strikeDb=-49.0-2.7*std::log2(hz[0]/261.63);
+    const double gain=std::pow(10.,strikeDb/20)*toneGain/(Parameters{}.resonance*.35);
+    const int own=note-21;
+    for(int i=0;i<damped;++i){
+      if(i==own||!(openness[i]>0))continue;
+      int at=0;
+      for(int n=0;n<openPartials;++n){const int k=i*openPartials+n,j=k%lanes;auto& bank=open[k/lanes];
+        if(!bank.heard[j])continue;
+        const double f=openHz[k],under=std::min(1.,f/hz[0]);
+        while(at+1<series&&hz[at]*hz[at+1]<f*f)++at;
+        const float a=static_cast<float>(gain*amplitude[at]*openness[i]*under*under);
+        const int phase=(k+37*note)%(damped*openPartials);
+        setLane(bank.re,j,lane(bank.re,j)+openPhaseRe[phase]*a);
+        setLane(bank.im,j,lane(bank.im,j)+openPhaseIm[phase]*a);
         if(!bank.active){bank.active=true;steerOpen(bank,k/lanes,openness[i]);}
       }
     }

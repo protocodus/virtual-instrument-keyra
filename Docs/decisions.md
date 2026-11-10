@@ -4027,8 +4027,9 @@ engine's construction takes 0.28 s of CPU where it took 0.05.
 ## 2026-11-10 — a key struck again is not turned down
 
 Decided on what the model can defend, with the candidate taken as the
-project's rule has it. A listening set was rendered and handed over; no
-listening verdict is recorded.
+project's rule has it, and then chosen by ear: the owner heard the listening
+set (the grand and the upright, A and B matched on whole-file RMS, B trimmed
+2.10 and 1.59 dB down) and chose B (2026-11-10).
 
 The finding. Since 0.4.12 a strike on a key that still sounded was turned
 down by how much of the key's earlier sound was left: its partials by up to
@@ -4082,3 +4083,75 @@ audit, byte for byte. `Keyra.Engine` holds a restrike under the pedal to the
 same strike on another channel's strings, sample for sample. The `unit`
 tier, the `audio` tier's demos and the `perf` tier pass, and `KeyraDSPCxx17`
 builds.
+
+## 2026-11-10 — a strike rings the open strings
+
+Decided on a measurement, with the candidate taken as the project's rule has
+it. A listening set was rendered and handed over; no listening verdict is
+recorded.
+
+The finding. Under the pedal the open strings rang only with what the notes'
+partials drove at resonance, so only the strings that share a note's partials
+built up, and a pedalled note stayed clean between them. The Yamaha C3's
+pedal-down takes show otherwise: from 0.15 s on, the sound between a note's
+partials holds 24 to 26 dB under the whole note in the middle register, 10
+to 20 dB over the same key's pedal-up take, which lies on the recording's
+floor there. By one protocol (`Tools/benchmark_pedal_wash.py`) the grand
+stood a median 26 dB under those takes between the partials, 12.5 dB from
+0.15 to 0.5 s and 42 dB from 3 to 6 s.
+
+The candidates. A is 0.4.35. B starts every open string but the struck key's
+own at the strike, each open partial at a level set by the strike's partial
+nearest it in pitch. Two numbers are fitted on the grand against the takes'
+17 train pitches: the level, 49 dB under the power that partial's components
+start with at middle C, and its fall, 2.7 dB per octave the struck key lies
+higher (Theil–Sen over the train pitches; least squares gives 3.1). Under the
+strike's first partial the takes ask for 10 to 12 dB per octave more, played
+as the square of the frequency ratio. Nothing else was needed: fitted so,
+the octave bands from 150 Hz to 2.4 kHz, the windows from 0.15 to 3 s and
+the three layers each stand within 2 dB of the train takes in their medians,
+with the open strings' decay as it was. A first pass sized the level through a render that played
+the ring at the notes' own level; the output stage turned that render down
+and the level came out 4.5 dB high, so the figures here are from renders at
+the level that ships.
+
+What was left alone. From 3 to 6 s Keyra stands 3 to 17 dB under the takes
+because full pedal leaves the felt grazing the strings, which the owner chose
+on 2026-10-30; that choice stands. How a note's own partials decay under the
+pedal against without it was measured on the same takes in the session: a
+ratio of 0.96 in the middle register on the Yamaha and on the grand, 0.75
+against 0.87 in the bass and 0.93 against 0.95 in the treble. So the pedal's
+unloading of the bridge was left as it is; those figures are not tracked.
+
+What it measures. Render minus takes, bands holding partials, median and
+mean |dB|: the grand's train pitches −26.3 and 26.7 before, −1.1 and 5.7
+after; its five dev pitches −22.2 and 22.6 before, +4.7 and 6.4 after. The
+other four pianos, which play the same two numbers against their own
+partials, move from 13.6 to 24.2 dB off to 5.9 to 8.9 dB
+([report](validation/pedal-wash-benchmark-2026-11-10.md)). The Yamaha C3 is
+none of Keyra's pianos, its strike force and microphone blend are unknown,
+and the spread from key to key is the larger part of what is left.
+
+What it licenses. One level and one slope, fitted on train pitches and
+scored on dev pitches, for every piano. It does not license a wash per piano,
+a wash over 2.4 kHz other than what the fitted law gives there, or a level
+for the strings that share a note's partials, which a recording cannot tell
+from the note: that stays the Resonance control's.
+
+Levels and tests. A note alone without the pedal renders byte for byte as on
+0.4.35 (ninety on the grand, thirty over the five pianos), so the benchmarks'
+single notes stand where they stood. `Keyra.Engine` holds E4's string, under
+a struck C4, 39 dB under C4's first partial and G3's 5 dB lower. Two of its
+checks searched 6 % either side of the concert pitch for the sympathetic
+bank's peak and now find the strings of the key a semitone up, which the
+blow rings; they search 2.5 % either side, where a bank left at 440 Hz would
+still peak. `KeyraLevels` reads every level within its approval
+(`Keyra.Levels`), and `Keyra.FactoryDynamics` fails as on 0.4.35 with the
+same audit, byte for byte. The `unit` tier's other 43 suites, the `audio`
+tier's demos and the `perf` tier pass, and `KeyraDSPCxx17` builds. The takes'
+energies in `Tools/corpus/yamaha-c3-pedal-wash.json` were measured on the
+owner's copy of the library by the tool's own procedure.
+
+The owner's renders of Arturia's Piano V3 prompted the measurement: its
+pedalled notes build a wash Keyra's did not. It is a model and no audio of
+it is kept here; the level comes from the Yamaha C3's takes alone.
