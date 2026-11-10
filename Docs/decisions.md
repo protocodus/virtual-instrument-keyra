@@ -4256,3 +4256,21 @@ without the soft pedal and then with it, on the Kakegawa and Hamburg grands,
 A 0.4.36 and B 0.4.37, not level-matched because the pedal's level is what is
 judged. By the project's standing rule B stands unless the owner says
 otherwise.
+
+## 2026-11-10 — the candidates stand, and 0.4.38's level readings
+
+With 0.4.38 three things waited on the owner: the lettered set for the open
+strings under a strike (A 0.4.35, B 0.4.36), the lettered set for una corda
+(A 0.4.36, B 0.4.37), and ten level readings that moved when the key
+smoothing took in the strike's velocity colour and the keyboard's ends and
+the Kakegawa grand's, the Hamamatsu's and the Hamburg's output and tube
+scales were re-pinned to their earlier readings. The owner answered all
+three with "use candidate": B stands in both sets, chosen by the owner
+without a letter-by-letter account of what was heard, and the ten readings
+are approved, to six decimals (`Tests/Fixtures/dynamics/ApprovedLevels.h`):
+the typical playing of Studio Grand (−9.88 to −9.66 VU), Warm Walnut (−10.66
+to −10.41), Felt Nocturne (−17.54 to −17.28), Open Strings (−8.17 to −7.98)
+and Pop Upright (−9.71 to −9.85), and the loudest chords of the Kakegawa
+Grand (1.57 to 1.70 VU), Studio Grand (1.23 to 1.29), Warm Walnut (1.01 to
+1.16), Felt Nocturne (−5.32 to −5.11) and Open Strings (2.05 to 2.16)
+([key smoothing](research/key-balance-smoothing-2026-11-10.md)).

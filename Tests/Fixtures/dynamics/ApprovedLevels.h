@@ -64,11 +64,11 @@
 // In 0.4.38 the smoothing counts the strike's velocity colour and the
 // keyboard's ends, the grand's, the Hamamatsu's and the Hamburg's output and
 // tube re-pinned to their earlier readings; the presets that play the grand
-// at another width, brightness or mute moved against it, and ten readings
-// are re-baselined, the typical playing of Studio Grand, Warm Walnut, Felt
-// Nocturne, Open Strings and Pop Upright and the loudest chords of the
-// Kakegawa Grand, Studio Grand, Warm Walnut, Felt Nocturne and Open Strings,
-// to six decimals (put to the owner for approval on 2026-11-10).
+// at another width, brightness or mute moved against it, and the owner
+// approved ten new readings, the typical playing of Studio Grand, Warm
+// Walnut, Felt Nocturne, Open Strings and Pop Upright and the loudest chords
+// of the Kakegawa Grand, Studio Grand, Warm Walnut, Felt Nocturne and Open
+// Strings, to six decimals (Docs/decisions.md, 2026-11-10).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
