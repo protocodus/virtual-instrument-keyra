@@ -3902,8 +3902,10 @@ C7 at velocity 8 stand 4.602 dB in bands (4.603), 2.284 dB in harmonics and
 Levels and tests. On the meter the presets' typical playing and the pianos'
 default sounds stand within the test's 0.05 guard of their approved
 readings, and one reading stands past its approved level: the Hamburg's
-loudest chords through the tube, 2.587909 VU against 2.560835.
-`Keyra.FactoryDynamics` fails as it did on 0.4.29, on 1,136
+loudest chords through the tube, 2.587909 VU against 2.560835. Asked
+whether to accept it and merge 0.4.30, the owner chose to:
+`Tests/Fixtures/dynamics/ApprovedLevels.h` now holds it, and `Keyra.Levels`
+passes. `Keyra.FactoryDynamics` fails as it did on 0.4.29, on 1,136
 rows (1,040 pairs under their step floors and 96 chords past its maximum
 levels) where 0.4.29 failed on 1,134 (1,038 and 96): six pairs are new, a
 median 0.02 dB under their floors and 0.11 dB at most, and four of 0.4.29's

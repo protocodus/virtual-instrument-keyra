@@ -50,6 +50,9 @@
 // Studio Grand, Warm Walnut, Open Strings, Hamburg Grand and New York Grand,
 // and the typical playing of Studio Grand, Open Strings and Pop Upright, to
 // six decimals (Docs/decisions.md, 2026-11-09).
+// In 0.4.30 each series plays the orders its fit left out between two it
+// holds; the owner approved the Hamburg tube's loudest chords, to six
+// decimals (Docs/decisions.md, 2026-11-09).
 namespace keyra_test {
 struct ApprovedLevel {
     const char* name;
@@ -76,7 +79,7 @@ inline constexpr std::array<ApprovedLevel, 5> approvedTube {{
     {"grand", -9.068710, 1.717973},
     {"upright", -8.993037, 4.328115},
     {"kawai", -9.985854, 3.301832},
-    {"hamburg", -9.172983, 2.560835},
+    {"hamburg", -9.172983, 2.587909},
     {"newyork", -9.020263, 2.115038},
 }};
 } // namespace keyra_test
