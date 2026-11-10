@@ -41,6 +41,19 @@ The Hamburg grand is measured the same way from "Steinway Grand" for Decent Samp
 
 The New York grand, a 1933 Model L, is measured the same way from "Grandpa's Piano" by **David Hawkins** (Pianobook). Nothing from the library is copied: no recording, excerpt or impulse response of it is in this repository, a Keyra build or any audio Keyra publishes. Keyra measures its recordings, derives the piano's numerical parameters from them and benchmarks the result against them; `Tools/corpus/newyork-grand.json` pins the measured set by SHA256 and `Tools/decode_newyork.py` reads it from a copy of the library. This credit does not imply endorsement by the library's author or the instrument's maker.
 
+Keyra's playing of whole phrases is set beside the openings of thirty
+performances of **MAESTRO v3.0.0** (Curtis Hawthorne and others, "Enabling
+Factorized Piano Music Modeling and Generation with the MAESTRO Dataset",
+ICLR 2019), licensed under
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+Nothing from the dataset is copied: no recording, MIDI file or excerpt of it
+is in this repository, a Keyra build or any audio Keyra publishes, and no
+value of the instrument is fitted from it. `Tools/fetch_maestro.py` fetches
+the openings for measurement and `Tools/corpus/maestro-v3.json` pins them by
+SHA256; the differences `Tools/benchmark_phrases.py` reads are reported as
+numbers. This credit does not imply endorsement by the dataset's authors,
+the performers or the instrument's maker.
+
 ## JUCE 8.0.14
 
 The DAW plug-in and standalone application use JUCE, Copyright (c) Raw

@@ -1720,6 +1720,11 @@ between its partials against the Yamaha C3's pedal-down takes, whose band
 energies are tracked as numbers ([report](Docs/validation/pedal-wash-benchmark-2026-11-10.md)),
 and reports how the note itself holds up under the pedal against without it
 ([report](Docs/validation/pedalled-note-ring-2026-11-10.md)).
+`Tools/benchmark_phrases.py` sets a piano's playing of thirty concert
+performances' openings beside their recordings (MAESTRO's Disklavier grands,
+fetched by `Tools/fetch_maestro.py` and never committed): how the recording
+moves against the render by velocity, under each pedal and as notes run
+together ([report](Docs/validation/played-phrases-maestro-2026-11-10.md)).
 `Tools/tone_survey.py` measures the benchmark's cases signed, per
 third-octave band: where each register's tone and stereo image stand over or
 under the recordings, in the attack, early and sustain windows.
@@ -2109,6 +2114,14 @@ product's sound is meant to move towards, and none of it is in the plug-in.
 contrast. Smaller velocity increments on some voicings can still fall,
 particularly when bass partials cancel in the tube mic. See the
 [paired measurements](Docs/validation/forte-response-2026-11-02.md).
+- Beside thirty concert performances on Disklavier grands (MAESTRO), played
+  from their own MIDI, every piano answers velocity more evenly than the
+  recorded ones: they grow 0.7 to 1.2 dB more per 10 steps of velocity. The
+  response spans the 21 dB between the Kakegawa grand's softest and loudest
+  recorded layers, in a shape the owner chose by ear. The grands' una corda
+  takes 1 to 4 dB more from 125 Hz to 2 kHz than the recorded pianists' does
+  (mostly 1 to 2.5 dB there, 2 to 7 dB above); its sizes have no source
+  ([report](Docs/validation/played-phrases-maestro-2026-11-10.md)).
 - No recording plays the upright's soft pedal: its half-blow assumes the rail
   brings the hammers halfway to the strings and that the key accelerates
   them evenly. It has no pedal recordings at all, so its pedals make no sound
