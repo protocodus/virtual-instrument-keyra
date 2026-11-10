@@ -43,6 +43,20 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.35 — 2026-11-10 — a key struck again is not turned down
+
+Since 0.4.12 a key struck while it still sounded played up to 2.6 dB quieter
+in its partials, with up to 28 % less knock and noise, up to 35 % less ring
+on the undamped strings, a shorter rise, a brighter colour and a small pull
+on its partials' pitch and phase, none of it measured: no recording here
+strikes a sounding string. Under the pedal the grand's C4 struck six times at
+0.25 s stood 4.6 dB under its first strike by the sixth and the upright's up
+to 7.8 dB. The strike now plays as it does on strings at rest and adds to
+what sounds; the grand's sixth stands 1.9 dB under and the upright's lowest
+5.9 dB, where the two waves' phases still part
+([decision](Docs/decisions.md)). Without the pedal, and on the benchmark's
+single notes, every piano renders byte for byte as before.
+
 ### 0.4.34 — 2026-11-10 — the keys between recorded pitches as wide as their neighbours
 
 On the Hamburg, New York and Hamamatsu grands a key between two recorded
@@ -1804,6 +1818,11 @@ product's sound is meant to move towards, and none of it is in the plug-in.
   also scales it. The other pianos' takes do not decide one, the New York
   grand's falling just short
   ([pitch glide](Docs/research/pitch-glide-2026-11-04.md)).
+- A hammer's meeting with a string that still sounds is not modelled: the
+  strike adds the wave it would give the string at rest, where a moving
+  string lengthens or shortens the felt's contact and takes more or less of
+  the blow with its phase. No recording here strikes a sounding string, so
+  the size of that is unmeasured ([decision](Docs/decisions.md)).
 - The unison's coupled modes, and with them a restrike's or una corda's new
   balance between its strings, the duplex segments and the damper's contact
   position are not modelled: the takes' lanes read as coupled strings little

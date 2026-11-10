@@ -1244,9 +1244,14 @@ int main(int argc,char** argv){
     }
   }
   {
-    // Phase-aware hammer-string restrike interaction: restriking an actively
-    // vibrating string (damper lifted) brightens upper partials via felt
-    // pre-compression while remaining strictly invariant to block partitioning.
+    // A strike on a string that still sounds adds its own wave to it and is
+    // not turned down for it: it plays as the same strike does on another
+    // channel, whose strings nothing had struck (0.4.35; until then its
+    // partials played up to 2.6 dB quieter).
+    auto second=[](int channel){keyra::Engine e;e.setParameters(dry());
+      e.controlChange(64,127,1);e.controlChange(64,127,2);
+      e.noteOn(60,.7f,1);render(e,9600);e.noteOn(60,.7f,channel);return render(e,24000);};
+    check(second(1)==second(2),"a restrike plays as the same strike on strings at rest");
     keyra::Engine a,b;
     a.controlChange(64,127);b.controlChange(64,127);
     a.noteOn(60,.7f);b.noteOn(60,.7f);
@@ -1255,7 +1260,7 @@ int main(int argc,char** argv){
     auto midA=render(a,2400,19),midB=render(b,2400,128);
     a.noteOn(60,.7f);b.noteOn(60,.7f);
     auto tailA=render(a,12000,23),tailB=render(b,12000,256);
-    check(outA==outB&&midA==midB&&tailA==tailB,"phase-aware restrike is invariant to audio block partitioning");
+    check(outA==outB&&midA==midB&&tailA==tailB,"a restrike is invariant to audio block partitioning");
   }
   std::cout<<"engine_failures="<<failures<<" live_allocations="<<allocations<<'\n';return failures?1:0;
 }

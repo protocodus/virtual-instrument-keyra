@@ -2560,9 +2560,6 @@ struct Engine::Impl {
     static_assert(maxVoices>0,"the fixed voice pool must have a first slot");
     std::size_t chosen=0;
     bool hasFree=false;
-    double restrikeEnergy=0;
-    Complex restrikePhase[8]{};
-    const double f1Pre=builtPitch(note);
     for(std::size_t i=0;i<voices.size();++i){
       auto& voice=voices[i];
       if(!voice.active){
@@ -2572,25 +2569,13 @@ struct Engine::Impl {
       // The key has already lifted its damper by hammer contact (Askenfelt &
       // Jansson, From touch to string vibrations). A previous strike still
       // ringing on this key clears the same felt and keeps its modal state.
-      if(voice.channel==ch&&voice.note==note){
-        const double priorContact=voice.contact;
-        voice.damper=0;
-        if(!steady&&priorContact<.5){
-          for(int k=0;k<voice.count;++k){
-            const auto& part=voice.partials[k];
-            const int ord=static_cast<int>(std::lround(part.frequency/std::max(1.,f1Pre)));
-            for(int j=0;j<lanes;++j){
-              const Complex z=part.exact[j];
-              const double e=(z.re*z.re+z.im*z.im)*part.energyWeight[j]*part.audibility*part.audibility*part.tint*part.tint;
-              restrikeEnergy+=e;
-              if(j==0&&ord>=1&&ord<=8){
-                const double w=std::sqrt(part.energyWeight[0]);
-                restrikePhase[ord-1].re+=z.re*w;restrikePhase[ord-1].im+=z.im*w;
-              }
-            }
-          }
-        }
-      }
+      // The new strike adds its own wave to it and is not turned down for
+      // it: a hammer thrown at a moving string excites it, to first order,
+      // as it does one at rest, and the two waves' phases at each partial
+      // make the strike louder or softer there. No recording here strikes a
+      // sounding string, so nothing more is played (Docs/decisions.md,
+      // 2026-11-10, restrikes).
+      if(voice.channel==ch&&voice.note==note)voice.damper=0;
     }
     if(!hasFree){
       // Prefer released tails, then the oldest strike in the same class.
@@ -2690,17 +2675,14 @@ struct Engine::Impl {
     // Samples from the strike until its wave reaches the bridge (strikeTravel).
     const double travel=legacyAttack?0.:strikeTravel*(1+B)/((1+2*B)*2*f1)*sampleRate;
     const double highest=std::min(17000.,sampleRate*.43);
-    const double strikeRefAmp=.015*std::pow(10.,requestedDb/20);
-    const double restrikeRatio=restrikeEnergy>1e-5?std::sqrt(restrikeEnergy)/(std::sqrt(restrikeEnergy)+strikeRefAmp):0.;
-    const double shortestRise=fold(hammers,[&](int p){return sides[p].shortestRise;},pickLog)*(1-.2*restrikeRatio);
+    const double shortestRise=fold(hammers,[&](int p){return sides[p].shortestRise;},pickLog);
     const double ratio=tuningRatio(ch);
     const double softGain=1-.28*soft;
-    const double restrikeBodyGain=1-.28*restrikeRatio;
     // Samples until the next chunk boundary: the exact state is kept there.
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     // The strike's partials and its knock on the body start here, after it.
     const int start=waveStart(travel,ahead);
-    const double colourDb=fold(hammers,[&](int p){return sides[p].colourDb;},pick)+1.08*restrikeRatio;
+    const double colourDb=fold(hammers,[&](int p){return sides[p].colourDb;},pick);
     const auto colour=[colourDb](double order){return std::pow(10.,colourDb*std::min(4.,std::log2(order))/20);};
     double plain=0,coloured=0; // the strike's energy without and with its colour
     // The body's knock: on each piano, levels between the two pitches like the
@@ -2730,7 +2712,7 @@ struct Engine::Impl {
                  :mix(a.levelDb,b.levelDb,x.t)+mix(a.slopeDb,b.slopeDb,x.t)*x.layerDb)+x.scaleDb-topTrim;
           ph=late?(x.t<.5?a.slowPhase:b.slowPhase):(x.t<.5?a.phase:b.phase);},level,phase);
         if(!knocked)continue;
-        const double amplitude=std::pow(10.,level/20)*softGain*restrikeBodyGain*(late?lateCrowdGain:1.);
+        const double amplitude=std::pow(10.,level/20)*softGain*(late?lateCrowdGain:1.);
         stage[late]={amplitude*std::cos(phase),amplitude*std::sin(phase)};
       }
       if(waiting){waiting->g[k]=stage[0];waiting->slow[k]=stage[1];}
@@ -2794,7 +2776,7 @@ struct Engine::Impl {
         promptLevel[p]=mix(m.haloLevels[(x.upper-1)*halo+j],m.haloLevels[x.upper*halo+j],x.t)+slope;}
       if(!(heard>0))continue;
       const double haloTint=softGain*std::exp(-soft*.115*(order-1))
-                            *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)))*(1-.35*restrikeRatio);
+                            *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const double baseAmp=std::pow(10.,fold(share,[&](int p){return level[p];},pick)/20)*haloTint*(own?std::sqrt(heard):1.);
       const double promptAmp=own?0.:std::pow(10.,fold(share,[&](int p){return promptLevel[p];},pick)/20)*haloTint;
       const double amplitude=baseAmp*(1+.12*pedalOpenness);
@@ -2834,7 +2816,7 @@ struct Engine::Impl {
         knockBalance[p]=mix(a.knockBalanceDb,b.knockBalanceDb,x.t);knockRate[p]=mix(std::log(a.knockRate),std::log(b.knockRate),x.t);
       }
       const double order=std::max(1.,grand::noiseBands[k].hz/f1);
-      const double tint=noise[k].scale*softGain*restrikeBodyGain*std::exp(-soft*.115*(order-1))
+      const double tint=noise[k].scale*softGain*std::exp(-soft*.115*(order-1))
                         *std::pow(2.,(parameters.brightness-.5)*std::min(4.,std::log2(order)));
       const auto built=[&](const double (&x)[pianoCount]){return fold(board,[&](int p){return x[p];},pick);};
       const double amplitude=std::pow(10.,built(density)/20)*tint,late=built(slow)*tint;
@@ -2882,7 +2864,7 @@ struct Engine::Impl {
       // Under -180 dB the band is silent, as a burst's stages end there.
       if(!(power>=1e-18)){burst.knockLeft[k]=burst.knockRight[k]=burst.riseLeft[k]=burst.riseRight[k]=0;
         burst.knockStep[k]=burst.riseStep[k]=1;continue;}
-      const double amplitude=std::sqrt(power)*noise[k].scale*softGain*restrikeBodyGain,tilt=balance/power;
+      const double amplitude=std::sqrt(power)*noise[k].scale*softGain,tilt=balance/power;
       const double rate=std::exp(logRate/power),rise=std::exp(logRise/power);
       burst.knockLeft[k]=burst.riseLeft[k]=amplitude*std::pow(10.,-tilt/40);
       burst.knockRight[k]=burst.riseRight[k]=amplitude*std::pow(10.,tilt/40);
@@ -2989,13 +2971,8 @@ struct Engine::Impl {
         const double amplitude=std::pow(10.,l.level/20)*felt*(1+soft*l.softBias);
         peak+=amplitude;
         partial.decay[k]=std::exp(-std::exp(l.rate+orderRing)/sampleRate);
-        partial.hz[k]=frequency+(l.offset+(!steady?.03*restrikeRatio*draw:0.))*spread;
-        Complex ph=l.phase;
-        if(restrikeRatio>0&&order>=1&&order<=8){
-          const Complex rp=unit(restrikePhase[order-1],{0,0});
-          ph=unit({ph.re+.22*restrikeRatio*(-rp.im),ph.im+.22*restrikeRatio*rp.re},ph);
-        }
-        const Complex g{ph.re*amplitude,ph.im*amplitude},wl=g*l.left,wr=g*l.right;
+        partial.hz[k]=frequency+l.offset*spread;
+        const Complex g{l.phase.re*amplitude,l.phase.im*amplitude},wl=g*l.left,wr=g*l.right;
         partial.baseLeftRe[k]=static_cast<float>(wl.re);partial.baseLeftIm[k]=static_cast<float>(wl.im);
         partial.baseRightRe[k]=static_cast<float>(wr.re);partial.baseRightIm[k]=static_cast<float>(wr.im);
       }
@@ -3076,7 +3053,7 @@ struct Engine::Impl {
     // its sum, each lane's to silence, where the recordings put it, so
     // velocity sets the level as it did and the loudest chords keep their
     // headroom.
-    if(coloured>0){const double scale=std::sqrt(plain/coloured)*(1-.26*restrikeRatio);
+    if(coloured>0){const double scale=std::sqrt(plain/coloured);
       for(int k=0;k<voice.count;++k){auto& x=voice.partials[k];
         for(int j=0;j<lanes;++j){
           x.baseLeftRe[j]*=static_cast<float>(scale);x.baseLeftIm[j]*=static_cast<float>(scale);

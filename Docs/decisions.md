@@ -4023,3 +4023,62 @@ new levels - app is not released yet"), recorded to six decimals in
 on 995 rows where 0.4.31 failed on 1,136. The `unit` tier (45 tests), the
 `audio` tier and the `perf` tier pass, and `KeyraDSPCxx17` builds. The
 engine's construction takes 0.28 s of CPU where it took 0.05.
+
+## 2026-11-10 — a key struck again is not turned down
+
+Decided on what the model can defend, with the candidate taken as the
+project's rule has it. A listening set was rendered and handed over; no
+listening verdict is recorded.
+
+The finding. Since 0.4.12 a strike on a key that still sounded was turned
+down by how much of the key's earlier sound was left: its partials by up to
+26 % in amplitude, its knock and noise by up to 28 %, its ring on the
+undamped strings by up to 35 %, with a rise up to 20 % shorter, a colour up
+to 1.08 dB an octave brighter and a pull on its partials' pitch and phase.
+0.4.12's commit carried no write-up, and no recording in any of the corpora
+strikes a sounding string, so every one of those numbers was drawn.
+
+The candidates. A is 0.4.34. B plays the strike as it plays on strings at
+rest and adds it to what sounds, which is what a linear string does with a
+second blow: where the two waves meet in phase at a partial the strike is
+louder, and where they oppose it is softer. A real hammer on a moving string
+also changes its contact with the string's phase; a third candidate that
+played that would need a contact law and a number no recording here gives,
+so under the listening tests' limit none was built.
+
+What it measures. Played as the plug-in plays, pedal down, the level of each
+strike's first 100 ms against the first strike's, C4 six times at 0.25 s,
+velocity 80:
+
+| | 2nd | 3rd | 4th | 5th | 6th |
+| --- | --- | --- | --- | --- | --- |
+| grand, A | +0.4 | −2.4 | −3.8 | −3.9 | −4.6 |
+| grand, B | +1.5 | −0.4 | −1.2 | −0.6 | −1.9 |
+| upright, A | −3.1 | −7.8 | −5.0 | −2.2 | −6.5 |
+| upright, B | −1.0 | −5.9 | −2.5 | −0.8 | −4.6 |
+
+A C4 at velocity 110 after one at 50 stood 2.1 dB (grand) and 2.8 dB
+(upright) under the same strike alone in A, and 0.3 and 1.0 dB under in B.
+What is left in B is the two waves' phases at a strike interval that is a
+whole number of periods apart each time, which A has as well. The same
+phrases through Arturia's Piano V3, the owner's renders of three of its
+pianos, stand −1.9 to +2.0 dB at C4, +0.8 to +5.6 dB at C2 and +1.1 to
++8.2 dB at C6 against their first strike, never turned down as A's are.
+Piano V3 is itself a model, so it is a second opinion on the direction and
+not a measurement of a piano; no audio of it is kept here.
+
+What it licenses. Removing numbers nothing measured, not a new law: the
+hammer's meeting with a moving string stays a Known gap. A phrase with the
+pedal held now plays louder where keys repeat, 2.1 dB over 0.4.34 on the
+grand and 1.6 dB on the upright in whole-file RMS over the listening set's
+phrase (C4 six times, a chord four times, G5 ten times, C2 three times).
+
+Levels and tests. A strike on strings at rest is unchanged: the benchmark's
+single notes render byte for byte as on 0.4.34 (thirty checked, five pianos,
+three keys, two velocities), so the benchmarks and the grand's held-out
+evaluation stand where they stood. `KeyraLevels` reads every level within
+its approval, and `Keyra.FactoryDynamics` fails as on 0.4.34 with the same
+audit, byte for byte. `Keyra.Engine` holds a restrike under the pedal to the
+same strike on another channel's strings, sample for sample. The `unit`
+tier, the `audio` tier's demos and the `perf` tier pass, and `KeyraDSPCxx17`
+builds.
