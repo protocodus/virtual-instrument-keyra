@@ -43,6 +43,26 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.31 — 2026-11-10 — the undamped strings under a soft bass note
+
+Every strike sets the undamped strings from F6 up ringing, louder as the
+strike plays louder, by a law fitted on the recorded pitches from F♯3 up that
+rises or falls with how many octaves a string lies over the key. Far over a
+bass key New York's law fell under 0, so 0.4.30 rang those strings louder the
+softer the key was struck: its C1, F1 and A♯1 at velocity 13 stood 30 to
+49 dB over their recordings from 1.6 to 4 kHz, a bright cluster where the
+recordings hold only their floor. A softer blow never rings a string louder,
+and 0.4.31 holds the law at 0 where it falls under it
+([undamped strings](Docs/research/halo-slope-2026-11-10.md)). On New York's
+train takes the paired means summed over the eleven measures other than
+level, in tolerance units, stand 4.56 closer and on its dev takes 1.90
+closer, 1.52 dB closer in the noise between partials on the train takes and
+0.85 dB on the dev takes; F1 and A♯1 stand further in rise by more than a
+tolerance ([New York](Docs/validation/newyork-halo-slope-benchmark-2026-11-10.md)).
+Holding the law at 1 dB per dB instead stood 1.37 further on the dev takes.
+The other four pianos' laws never fall under 0, and they play as before.
+Every level stays within its approved reading.
+
 ### 0.4.30 — 2026-11-09 — the orders a fit left out of a string's series
 
 A struck string sounds every order of its series, and a fit leaves an order
@@ -1137,7 +1157,10 @@ it ringing at its own decay, as the knock above 400 Hz does: from 0.2 to
 The undamped strings from F6 up ring with every strike, whatever the
 Resonance control: each but the struck key's own, at the level the recorded
 pitches around the key set it, and each at its own measured pitch, decay and
-stereo pickup whichever key struck it. The struck key's own string rings too
+stereo pickup whichever key struck it, and louder the louder the strike, by
+dB per dB of the strike's layer at a slope that rises or falls with how many
+octaves a string lies over the key, never under 0, as a softer blow never
+rings a string louder. The struck key's own string rings too
 where none of the key's partials lies within 4 Hz of its pitch: from F7 up,
 where the string an octave below is undamped too, that string's second
 partial, which the strike sets ringing through the bridge, and below F7 a
