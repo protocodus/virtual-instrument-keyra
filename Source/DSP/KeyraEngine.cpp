@@ -361,9 +361,12 @@ constexpr Model models[]{
    // a chord's notes up differently, and took it to -8.90.
    // Re-pinned in 0.4.32 with its tube to the -9.10 and -9.02 VU they read
    // before, from .8093 and 1.5890: each key's level and stereo balance at
-   // its neighbours' since took them to -8.43 and -8.97.
+   // its neighbours' since took them to -8.43 and -8.97. The tube re-pinned
+   // again in 0.4.34 to the -9.02 VU it read before, from 1.7066: its keys
+   // between recorded pitches take the nearer one's stereo lag since, which
+   // sums their two channels less alike, and took it to -9.21.
    .7492,
-   1.7066,
+   1.7443,
    true,
    newyork::glide},
 };

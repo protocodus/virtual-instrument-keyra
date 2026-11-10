@@ -43,6 +43,23 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.34 — 2026-11-10 — the keys between recorded pitches as wide as their neighbours
+
+On the Hamburg, New York and Hamamatsu grands a key between two recorded
+pitches turned each partial's right channel to the lag between theirs,
+which no recording follows and which pulls the partials towards in phase:
+those keys sounded narrower than the recorded pitches around them, New
+York's between C3 and C5 at a median correlation of 0.64 between the two
+channels against 0.35. They take the nearer pitch's lag now, as their
+phases already did, and stand at 0.35
+([stereo lag](Docs/research/network-key-stereo-lag-2026-11-10.md)). The
+recorded pitches play as before; over the eleven measures other than level
+New York's dev takes stand 1.07 tolerance units closer to their recordings,
+the Hamamatsu's 0.42 and the Hamburg's 0.56 further, all in the rise
+([New York](Docs/validation/newyork-network-key-lag-benchmark-2026-11-10.md)).
+New York's tube, which hears the two channels' sum, is re-pinned to the
+level it read before. The grand and the upright are unchanged.
+
 ### 0.4.33 — 2026-11-10 — the keys between recorded pitches no brighter than their neighbours
 
 On the Hamburg, New York and Hamamatsu grands a key between two recorded
@@ -1550,8 +1567,10 @@ each partial's decays, unison offsets, pickups and levels per layer from the
 network, its tuning and rise from the blend, and its power in each channel
 over 50 to 750 ms moved by what the fits hold over the network at the two
 pitches around it, so that the per-key trims leave the recorded pitches where
-they were. Its phases come from the nearer pitch, its right channel's lag
-moves between the two pitches' as the blend's does, and a lane the network
+they were. Its phases and its right channel's lag come from the nearer
+pitch: the lag between the two, as the blend moves it, narrowed those keys'
+stereo against their neighbours', and no recording follows it
+([stereo lag](Docs/research/network-key-stereo-lag-2026-11-10.md)). A lane the network
 decays faster than both fits around the key is left out: it clicked. A
 partial only one of the two pitches holds sounds no louder than the louder
 of them at its frequency, the line through each one's partials in log Hz:
