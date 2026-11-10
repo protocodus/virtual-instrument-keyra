@@ -43,6 +43,22 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.33 — 2026-11-10 — the keys between recorded pitches no brighter than their neighbours
+
+On the Hamburg, New York and Hamamatsu grands a key between two recorded
+pitches took a partial only one of them holds at that pitch's level by
+number, though at the key it sounds higher: struck hard, the Hamburg's E3 to
+A♯3 stood 34 to 42 dB over their recorded neighbours somewhere from 2 to
+16 kHz, New York's G3 to G♯4 13 to 21 dB. Each such partial now sounds no
+louder than the louder neighbour at its frequency, and they stand 16 to 22
+and 6 to 10 dB over
+([upper partials](Docs/research/network-key-upper-partials-2026-11-10.md)).
+The recorded pitches play as before; the Hamburg's dev takes, keys the fit
+never saw, stand 3.02 tolerance units closer to their recordings over the
+eleven measures other than level, New York's 0.28 and the Hamamatsu's 0.04
+([Hamburg](Docs/validation/hamburg-network-high-partials-benchmark-2026-11-10.md)).
+The grand and the upright are unchanged.
+
 ### 0.4.32 — 2026-11-10 — each key's level and balance at its neighbours'
 
 The libraries record a piano one pitch at a time, each with its own
@@ -1536,7 +1552,12 @@ over 50 to 750 ms moved by what the fits hold over the network at the two
 pitches around it, so that the per-key trims leave the recorded pitches where
 they were. Its phases come from the nearer pitch, its right channel's lag
 moves between the two pitches' as the blend's does, and a lane the network
-decays faster than both fits around the key is left out: it clicked.
+decays faster than both fits around the key is left out: it clicked. A
+partial only one of the two pitches holds sounds no louder than the louder
+of them at its frequency, the line through each one's partials in log Hz:
+that pitch gives it its level by number, and at the key it sounds higher,
+which put the Hamburg's E3 to A♯3 up to 42 dB over their neighbours from 2
+to 16 kHz ([upper partials](Docs/research/network-key-upper-partials-2026-11-10.md)).
 
 The Kakegawa grand's and the upright's keys between two recorded pitches
 above the bass break blend them and then take a correction the same tool
