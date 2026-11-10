@@ -77,8 +77,8 @@ Single notes and chords keep their level, within 0.001 dB in the median of
 the factory audit. The 88 keys struck in turn with the pedal down render in
 0.5 % more CPU on the grand, 0.3 % more on the upright, 3.3 % more on the
 Hamamatsu, 1.6 % more on the Hamburg and 2.5 % more on New York, on the
-development machine. One reading then stands past its approved level: the
-Hamburg's loudest chords through the tube, by 0.03 VU.
+development machine. One reading then passed its approved level, and the
+owner accepted it: the Hamburg's loudest chords through the tube, by 0.03 VU.
 
 ### 0.4.29 — 2026-11-09 — the strike's wave reaches the bridge
 
