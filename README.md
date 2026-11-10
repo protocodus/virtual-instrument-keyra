@@ -43,6 +43,30 @@ the checkout from a fetched copy of the library.
 
 ## Version history
 
+### 0.4.38 — 2026-11-10 — no key stands off its neighbours
+
+Struck one by one, some keys still stood off the keys beside them. The key
+smoothing of 0.4.32 summed a key's partials as recorded, without the velocity
+colour a strike adds, and the gain that colour takes is each key's own: at
+velocity 40 the Hamamatsu grand's C1 played 4.8 dB under its neighbours. It
+kept the lowest and highest keys as they were, the Hamamatsu's A0 5 dB over
+its neighbours and its C8 6 dB to their right, and it set its gains at the
+recorded layers only, so New York's D♯7 stood 6.5 dB to one side at velocity
+80. The smoothing now counts the colour, carries the six lowest keys along
+the bass's own slope, holds the six highest keys' balance at the top
+thirteen's median and, on the pianos of six layers or fewer, also sets gains
+halfway between the layers. Across the four grands the largest jump from a
+key to its neighbours falls from 5.8 to 2.6 dB in level and from 6.5 to
+2.3 dB in balance, and the upright's from 2.0 to 1.2 dB in level; every
+key's tone, decay and rise stay as they were
+([key smoothing](Docs/research/key-balance-smoothing-2026-11-10.md)). The
+upright's balance from G6 up, which its undamped strings carry, is unchanged
+(Known gaps). On the grand's recordings no benchmark mean moves by more than
+0.07; the other pianos' recordings were not at hand and their benchmarks
+were not run. The Kakegawa grand's, the Hamamatsu's and the Hamburg's
+default sounds are re-pinned to the level they read before, and the grand's
+other four presets read 0.19 to 0.26 dB higher on the meter.
+
 ### 0.4.37 — 2026-11-10 — the grands' soft pedal as concert pianists' sounds
 
 The grands' una corda took too much. Played from the MIDI of thirty concert
@@ -1655,11 +1679,15 @@ The recordings' own jumps from key to key, in level and in stereo balance,
 are smoothed: each pitch was recorded alone, with its own microphone image
 and gain. When the engine is built it sums every key's partials and the
 components beside them over 50 to 750 ms in each channel at each of its
-piano's layers, with the per-key trims, and takes each key's level and its
-balance to the median of the thirteen keys around it, averaged over the
-seven around, both windows narrowing at the keyboard's ends. A strike plays
-the gains on each channel between the layers around its own, on the key's
-partials and its noise burst; its tone and decay stay as recorded
+piano's layers and, on a piano of six layers or fewer, halfway between them,
+with the per-key trims and the velocity colour a strike adds, and takes each
+key's level and its balance to the median of the thirteen keys around it,
+averaged over the seven around. The six lowest keys take the lowest
+thirteen's median carried along the bass's own slope; at the top the
+level's windows narrow and the balance holds at the top thirteen's median.
+A strike plays the gains on each channel between the velocities around its
+own, on the key's partials and its noise burst; its tone and decay stay as
+recorded
 ([key smoothing](Docs/research/key-balance-smoothing-2026-11-10.md)).
 
 The upright's `Source/DSP/MeasuredUprightData.h` comes from the same tool
@@ -1830,7 +1858,7 @@ notes every fourth semitone and eight chords at velocities 70, 90 and 110
 for typical playing, and the chords at 127 for the loudest. Each piano's
 output scale brings its default sound's typical playing to −9 VU at the
 default Output, where the portfolio's newer instruments play; the other
-presets without felt read from −11.0 to −8.1 VU, Three Cities −10.2 VU. The
+presets without felt read from −10.4 to −8.0 VU, Three Cities −10.1 VU. The
 half-drive response chosen for 0.4.11 applies at factory Output. The level
 before the portfolio guard is halved and the level after it doubled. A short
 stereo gain curve protects the restored signal when an attack crosses the
@@ -2187,6 +2215,14 @@ particularly when bass partials cancel in the tube mic. See the
   ring under the pedal at the Kakegawa grand's rates. Its second layer's
   takes from E3 up stop at a noise gate 0.6 to 15 s after the strike, and the
   fit reads them no further.
+- Struck one by one, a few keys still stand off the keys beside them
+  (`Tools/survey_keyboard.py`,
+  [key smoothing](Docs/research/key-balance-smoothing-2026-11-10.md)): the
+  upright's stereo balance from G6 up, where its undamped strings ring with
+  each strike in their own image, by up to 4.9 dB at velocity 40 (G6, F7);
+  the Kakegawa grand's G7 and G♯7 by 2.3 dB in balance at velocity 120; and
+  the Hamamatsu grand's A0 at velocity 120, 2.6 dB over its neighbours. A
+  key's decay and tone stay as its pitch was recorded.
 - Five pianos are measured separately. Yamaha C3 supplies additional calibration
   measurements. Predictions between recorded pitches remain approximate;
   the [interpolation validation](Docs/validation/realism-baseline-and-trials-2026-11-01.md)

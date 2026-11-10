@@ -140,7 +140,7 @@ channel. New York's and the Hamamatsu's 88 keys struck in turn with the
 pedal down render in a median 3.35 and 3.11 s of CPU against 3.23 and 2.91,
 seven alternating runs, the construction's 0.23 s included.
 
-## What it does not do
+## What 0.4.32 did not do
 
 The measure is the key's partials and burst; from F6 up the undamped
 strings ring with each strike and carry their own image, so a top key's
@@ -153,3 +153,101 @@ moves linearly, while a key's partials move between the layers' fits, so a
 key can still jump at a velocity between: New York's D♯7 at velocity 80
 stands 6.5 dB to one side of its neighbours, and 1 dB at velocities 40 and
 120.
+
+## 0.4.38: the ends, the velocities between and the velocity colour
+
+The survey of 0.4.37 still showed single keys off their neighbours, and each
+had a cause in how the smoothing measured a key.
+
+- **The velocity colour.** A strike tilts its partials by its velocity
+  (`colour()`, 0.4 of the layer's level against velocity 100's, per octave of
+  partial order up to four) and scales the whole strike so that its energy to
+  silence stays. That scale is each key's own: where a key's energy lies in
+  slow low partials the colour leaves alone, the scale is small. The
+  smoothing summed the partials without the colour, so the Hamamatsu's C1,
+  level with its neighbours in that sum, played 8 dB under them at velocity
+  27 and 4.8 dB under at velocity 40. The sum now applies the colour and its
+  scale as the strike does.
+- **The bass end.** The windows narrowed to nothing, and the Hamamatsu's A0,
+  recorded 12 dB over C1 in its softest layer, stood 5 dB over its
+  neighbours. The six lowest keys now take the median of the lowest thirteen
+  carried along the bass's own slope (the lowest six's median against the
+  six above the seventh), which keeps the bass's rise or fall. The same at
+  the top put the Hamamatsu's C8 7.5 dB under its neighbours at velocity 40,
+  so the level's windows still narrow there.
+- **The top keys' balance.** The Hamamatsu's C8 is recorded 9 to 10 dB to the
+  right and A7 in the middle, and the keys between played between them. The
+  six highest keys' balance now holds at the top thirteen's median.
+- **Between the layers.** The gains were set at a piano's recorded layers and
+  moved along a line between them, while a key's partials move between two
+  layers' fits: New York's D♯7 stood 6.5 dB to one side at velocity 80,
+  between layers that each sat level. A piano of six layers or fewer (all but
+  the Kakegawa grand, whose twelve lie close) now also takes gains halfway
+  between its layers.
+
+The same survey, 0.4.37 against 0.4.38 (rms / largest jump, dB):
+
+| piano | velocity | level, 0.4.37 | level, 0.4.38 | balance, 0.4.37 | balance, 0.4.38 |
+|---|---:|---:|---:|---:|---:|
+| Kakegawa grand | 40 | 0.34 / 1.3 | 0.18 / 0.8 | 0.43 / 1.7 | 0.36 / 1.7 |
+| | 80 | 0.15 / 0.6 | 0.14 / 0.6 | 0.24 / 1.1 | 0.24 / 1.2 |
+| | 120 | 0.17 / 0.8 | 0.14 / 0.8 | 0.49 / 2.3 | 0.47 / 2.3 |
+| upright | 40 | 0.53 / 2.0 | 0.21 / 1.2 | 1.10 / 5.0 | 0.96 / 4.9 |
+| | 80 | 0.22 / 0.8 | 0.16 / 0.6 | 0.71 / 3.8 | 0.68 / 3.8 |
+| | 120 | 0.31 / 0.9 | 0.20 / 0.8 | 0.68 / 3.5 | 0.63 / 3.5 |
+| Hamamatsu grand | 40 | 1.08 / 5.2 | 0.36 / 1.6 | 0.88 / 6.0 | 0.24 / 1.0 |
+| | 80 | 0.66 / 3.3 | 0.31 / 1.6 | 0.79 / 5.7 | 0.21 / 1.0 |
+| | 120 | 0.79 / 5.8 | 0.50 / 2.6 | 0.78 / 5.0 | 0.24 / 1.1 |
+| Hamburg grand | 40 | 0.30 / 1.2 | 0.23 / 0.9 | 0.22 / 1.0 | 0.18 / 0.7 |
+| | 80 | 0.26 / 0.9 | 0.24 / 1.1 | 0.16 / 0.6 | 0.16 / 0.6 |
+| | 120 | 0.34 / 2.3 | 0.17 / 0.8 | 0.16 / 0.6 | 0.12 / 0.4 |
+| New York grand | 40 | 0.40 / 3.2 | 0.14 / 0.8 | 0.26 / 1.4 | 0.09 / 0.4 |
+| | 80 | 0.33 / 2.3 | 0.23 / 1.3 | 0.72 / 6.5 | 0.08 / 0.3 |
+| | 120 | 0.40 / 2.0 | 0.35 / 1.8 | 0.20 / 1.0 | 0.15 / 0.6 |
+
+Brightness and decay jumps stay within 0.01 and 0.02 in rms and rise within
+0.03. Each piano's median key moves by at most 0.09 dB in level at any of
+the three velocities.
+
+On the Kakegawa grand's recordings (`Tools/benchmark_recordings.py`, 0.4.37
+against 0.4.38) no measure's mean moves by more than 0.07: the train takes'
+rise from 3.60 to 3.67 ms, their balance from 1.48 to 1.54 dB and their
+level from 1.10 to 1.05 dB. The regressions past a tolerance are two
+recorded pitches leaving their own recording for their neighbours: C4's
+balance (train 1.76 to 2.63 dB, dev 1.47 to 2.21 dB) and A0's balance (0.33
+to 1.03 and 0.35 to 1.12 dB) and level (0.25 to 0.75 and 0.20 to 0.82 dB)
+([comparison](../validation/grand-key-evenness-benchmark-2026-11-10.md)).
+The other four pianos' recordings were not at hand, and their benchmarks
+were not run on 0.4.38.
+
+Reason's meter reads the louder channel, and the balance with the colour
+counted moved three pianos' default sounds on it: the Kakegawa grand's to
+−9.29 VU, the Hamamatsu's to −8.79 and the Hamburg's to −8.88, their tubes
+to −9.02, −10.02 and −9.23. Their output and tube scales are re-pinned to
+the readings they had (−9.07 and −9.07, −8.92 and −9.99, −8.95 and −9.17
+VU). The presets that play the grand at another width, brightness or mute
+had not moved and now read higher, and ten readings are re-baselined, to
+six decimals: the typical playing of Studio Grand (−9.88 to −9.66 VU), Warm
+Walnut (−10.66 to −10.41), Felt Nocturne (−17.54 to −17.28), Open Strings
+(−8.17 to −7.98) and Pop Upright (−9.71 to −9.85), and the loudest chords of
+the Kakegawa Grand (1.57 to 1.70 VU), Studio Grand (1.23 to 1.29), Warm
+Walnut (1.01 to 1.16), Felt Nocturne (−5.32 to −5.11) and Open Strings (2.05
+to 2.16).
+
+The `unit` and `audio` tiers pass but for `Keyra.FactoryDynamics`, which
+failed before, `Keyra.Levels` on the re-baselined readings; the `perf` tier
+passes and `KeyraDSPCxx17` builds. `Keyra.RateInterpolation` compares a
+recorded pitch's render with and without the support prior between pitches:
+a pitch's gain now follows its neighbours' energy to silence, which the
+prior moves, so the test zeroes the gains on both sides and compares the
+pitch's own partials, bit for bit as before. The gains are set at 3,872
+series where 2,640 were, and the engine's construction takes 0.36 s of CPU
+on the development machine against 0.27 (seven alternating runs).
+
+What remains: the upright's balance from G6 up (G6 4.9 dB and F7 4.8 dB off
+their neighbours at velocity 40), which the survey's targets for its
+partials do not show and the gains on partials and burst do not move, its
+undamped strings ringing in their own image; the Kakegawa grand's G7 and G♯7
+at velocity 120 (2.3 dB in balance); and the Hamamatsu's A0 at velocity 120,
+above its loudest layer (117), 2.6 dB over its neighbours, whose cause is
+not traced.

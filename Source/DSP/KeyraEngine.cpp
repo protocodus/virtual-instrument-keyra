@@ -204,13 +204,16 @@ constexpr Model models[]{
    // Re-pinned in 0.4.32 with its tube to the -9.06 and -9.10 VU they read
    // before, from .7615 and 1.5671: each key's level and stereo balance at
    // its neighbours' since took them to -9.29 and -9.10.
-   .7819,
+   // And in 0.4.38 to the -9.07 and -9.07 VU they read before, from .7819
+   // and 1.5261: the smoothing counts the velocity colour since, which took
+   // them to -9.29 and -9.02.
+   .8022,
    // The tube's level against the pair's. The recordings' levels are each
    // microphone's preamp's, so this sets typical playing through the tube
    // alone (Mic at 1) to the pair's reading on Reason's meter
    // (Tools/KeyraLevels.cpp). Its response takes less from the grand's
    // typical playing than from the upright's, so the grand needs less.
-   1.5261,
+   1.4798,
    true,
    grand::glide},
   {upright::layers,upright::layerVelocity.data(),upright::layerLevelDb.data(),upright::anchors.data(),static_cast<int>(upright::anchors.size()),upright::phantoms.data(),
@@ -288,7 +291,11 @@ constexpr Model models[]{
    // Re-pinned in 0.4.32 with its tube to the -8.97 and -9.95 VU they read
    // before, from 3.4816 and 1.2391: each key's level and stereo balance at
    // its neighbours' since took them to -8.71 and -9.32.
-   3.3518,
+   // And in 0.4.38 to the -8.92 and -9.99 VU they read before, from 3.3518
+   // and 1.1901: the smoothing counts the velocity colour and carries the
+   // bass end along its slope since, which took them to -8.79 and
+   // -10.02.
+   3.3,
    // Its tube alone plays typical playing at -10.0 VU, 1.0 dB under the
    // pair's: within 0.5 dB, its loudest chords through the tube reach the
    // red (+0.07 VU at -9.73, -0.004 here). Its A2 is recorded about 4 dB over
@@ -302,7 +309,7 @@ constexpr Model models[]{
    // read before, from 1.2364: the knock under 400 Hz, which the tube's
    // response favours, took it to -9.87. And in 0.4.29, from 1.2253: the
    // strike's wave took it to -9.99, and its pair's re-pin to -10.05.
-   1.1901,
+   1.2141,
    true,
    kawai::glide},
   {hamburg::layers,hamburg::layerVelocity.data(),hamburg::layerLevelDb.data(),hamburg::anchors.data(),static_cast<int>(hamburg::anchors.size()),hamburg::phantoms.data(),
@@ -332,8 +339,11 @@ constexpr Model models[]{
    // Re-pinned in 0.4.32 with its tube to the -8.94 and -9.16 VU they read
    // before, from 2.6414 and 1.4655: each key's level and stereo balance at
    // its neighbours' since took them to -9.09 and -8.77.
-   2.6874,
-   1.3772,
+   // And in 0.4.38 to the -8.95 and -9.17 VU they read before, from 2.6874
+   // and 1.3772: the smoothing counts the velocity colour since, which took
+   // them to -8.88 and -9.23.
+   2.6658,
+   1.3975,
    true,
    hamburg::glide},
   {newyork::layers,newyork::layerVelocity.data(),newyork::layerLevelDb.data(),newyork::anchors.data(),static_cast<int>(newyork::anchors.size()),newyork::phantoms.data(),
@@ -1371,7 +1381,13 @@ struct Engine::Impl {
   // Each key's gain on its left and right pickups (dB) at each of its
   // piano's layers, which put its level and balance at its neighbours'
   // median (initCalibrations()).
+  // A piano of six layers or fewer also takes them halfway between its
+  // layers (keyFixVelocity): a key's partials move between two layers'
+  // fits, not along a line, and New York's D#7 stood 6.5 dB to one side of
+  // its neighbours at velocity 80, between layers that each sat level.
   std::array<std::array<std::array<float,measured::maxLayers>,keyCount>,pianoCount> keyLeftDb{},keyRightDb{};
+  std::array<std::array<float,measured::maxLayers>,pianoCount> keyFixVelocity{};
+  std::array<int,pianoCount> keyFixCount{};
   std::array<std::array<double,maxAnchors>,pianoCount> actionAnchorGainDb{};
   std::array<std::array<float,maxAnchors*halo>,pianoCount> haloLevelDb{};
   // The built piano's parts that ring between strikes (assemble()): each
@@ -2652,11 +2668,12 @@ struct Engine::Impl {
     // initCalibrations()'s level and balance, between the layers the strike
     // plays between.
     const auto keyFixDb=[&](const auto& table,int p){
-      const Model& m=models[p];const double v=sides[p].v;const auto& row=table[p][note-21];
-      if(v<=m.layerVelocity[0])return static_cast<double>(row[0]);
-      if(v>=m.layerVelocity[m.layers-1])return static_cast<double>(row[m.layers-1]);
-      int i=0;while(v>m.layerVelocity[i+1])++i;
-      return mix(row[i],row[i+1],(v-m.layerVelocity[i])/(m.layerVelocity[i+1]-m.layerVelocity[i]));
+      const auto& at=keyFixVelocity[p];const int last=keyFixCount[p]-1;
+      const double v=sides[p].v;const auto& row=table[p][note-21];
+      if(v<=at[0])return static_cast<double>(row[0]);
+      if(v>=at[last])return static_cast<double>(row[last]);
+      int i=0;while(v>at[i+1])++i;
+      return mix(row[i],row[i+1],(v-at[i])/(at[i+1]-at[i]));
     };
     const double leftFixDb=fold(hammers,[&](int p){return keyFixDb(keyLeftDb,p);},pick);
     const double rightFixDb=fold(hammers,[&](int p){return keyFixDb(keyRightDb,p);},pick);
@@ -3453,9 +3470,20 @@ struct Engine::Impl {
       // trims above) and its balance go to its neighbours' median, keeping
       // its tone and decay as recorded
       // (Docs/research/key-balance-smoothing-2026-11-10.md).
-      for(int i=0;i<m.layers;++i){
-        const double lv=m.layerVelocity[i];
+      const bool between=m.layers<=6;
+      keyFixCount[p]=between?2*m.layers-1:m.layers;
+      for(int i=0;i<keyFixCount[p];++i)
+        keyFixVelocity[p][i]=!between?m.layerVelocity[i]
+          :i%2?.5f*(m.layerVelocity[i/2]+m.layerVelocity[i/2+1]):m.layerVelocity[i/2];
+      for(int i=0;i<keyFixCount[p];++i){
+        const double lv=keyFixVelocity[p][i];
         std::array<double,keyCount> levelDb{},balanceDb{};
+        // The strike's velocity colour counts here as the strike applies it
+        // (colour() and the scale that keeps the energy to silence): that
+        // scale is each key's own, and without it the Hamamatsu's C1, whose
+        // energy lies in slow low partials the colour leaves alone, played
+        // 8 dB under its neighbours at velocity 27.
+        const double colourDb=additionalVelocityColour*(levelAt(m,m.layerLevelDb,lv)-levelAt(m,m.layerLevelDb,100));
         for(int k=0;k<keyCount;++k){
           const int note=21+k;
           const int upper=upperAnchor(m,note);
@@ -3463,12 +3491,18 @@ struct Engine::Impl {
           const double t=std::max(0.,std::min(1.,static_cast<double>(note-ancA.note)/(ancB.note-ancA.note)));
           Side x{&m,&ancA,&ancB,upper,lv,t,0.,0.,0.,0.,scaleDb,0.};
           const int count=series(x,p,note);
-          double left=1e-18,right=1e-18;
-          for(int j=0;j<count;++j){
-            const double w=seriesWeight[p][j];
-            const auto [l,r]=windowPowers(seriesData[p][j]);
-            left+=l*w*w;right+=r*w*w;
-          }
+          double left=1e-18,right=1e-18,plain=1e-30,coloured=1e-30;
+          const auto add=[&](const PartialData& d,double order,double share){
+            const double c=std::pow(10.,colourDb*std::min(4.,std::log2(order))/10);
+            const auto [l,r]=windowPowers(d);
+            left+=l*share*c;right+=r*share*c;
+            for(const auto& lane:d.lane){
+              const auto power=[](const Complex& z){return z.re*z.re+z.im*z.im;};
+              const double e=share*std::pow(10.,lane.level/10)*(power(lane.left)+power(lane.right))/std::exp(lane.rate);
+              plain+=e;coloured+=e*c;
+            }
+          };
+          for(int j=0;j<count;++j)add(seriesData[p][j],seriesData[p][j].order,seriesWeight[p][j]*seriesWeight[p][j]);
           for(int q=0;q<2;++q){
             const double sharePwr=q?t:1.-t;
             if(sharePwr<=0)continue;
@@ -3477,25 +3511,45 @@ struct Engine::Impl {
               PartialData ed{};ed.lane[0]=laneAt(m,m.extras[e].lane,extraLanes[m.extraFirst+e],lv);
               ed.lane[0].level+=scaleDb;
               for(int j=1;j<lanes;++j)ed.lane[j].level=-300.;
-              const auto [l,r]=windowPowers(ed);
-              left+=l*sharePwr;right+=r*sharePwr;
+              add(ed,m.extras[e].order,sharePwr);
             }
           }
+          left*=plain/coloured;right*=plain/coloured;
           levelDb[k]=10*std::log10(left+right)+keyToneDb[p][k];
           balanceDb[k]=10*std::log10(right/left);
         }
         // A median alone keeps the steps of a swing longer than its window,
-        // so the medians are averaged over the seven keys around; both
-        // windows narrow at the keyboard's ends, which keep their own slope.
-        const auto smooth=[](const std::array<double,keyCount>& a){
+        // so the medians are averaged over the seven keys around. The six
+        // lowest keys have no window around them: they take the median of
+        // the lowest thirteen carried along their own slope (the lowest
+        // six's median against the six above the seventh), which keeps the
+        // bass's rise or fall and brings a key that stands off it to the
+        // line. Until 0.4.37 the windows narrowed to the key itself, and the
+        // Hamamatsu's A0 stood 5 dB over its neighbours. At the top the
+        // level's windows still narrow: carried along the slope the
+        // Hamamatsu's C8 fell 7 dB under its neighbours. The balance's hold
+        // at the top thirteen keys' median (holdTop): narrowing, that C8
+        // played 6 dB to the right of its neighbours.
+        const auto smooth=[](const std::array<double,keyCount>& a,bool holdTop){
           std::array<double,keyCount> med{},out{};
-          for(int k=0;k<keyCount;++k){
-            const int h=std::min(6,std::min(k,keyCount-1-k));
-            double v[13];int n=0;
-            for(int j=k-h;j<=k+h;++j)v[n++]=a[j];
+          const auto median=[](double* v,int n){
             for(int j=1;j<n;++j)
               for(int g=j;g>0&&v[g-1]>v[g];--g)std::swap(v[g-1],v[g]);
-            med[k]=v[n/2];
+            return n%2?v[n/2]:.5*(v[n/2-1]+v[n/2]);
+          };
+          for(int k=0;k<keyCount;++k){
+            double v[13];
+            if(k>=6){
+              const int h=holdTop?6:std::min(6,keyCount-1-k),mid=std::min(k,keyCount-1-h);
+              for(int j=0;j<=2*h;++j)v[j]=a[mid-h+j];
+              med[k]=median(v,2*h+1);
+              continue;
+            }
+            double low[6],high[6];
+            for(int j=0;j<6;++j){low[j]=a[j];high[j]=a[7+j];}
+            const double slope=(median(high,6)-median(low,6))/7;
+            for(int j=0;j<13;++j)v[j]=a[j]+slope*(k-j);
+            med[k]=median(v,13);
           }
           for(int k=0;k<keyCount;++k){
             const int h=std::min(3,std::min(k,keyCount-1-k));
@@ -3505,7 +3559,7 @@ struct Engine::Impl {
           }
           return out;
         };
-        const auto levelTo=smooth(levelDb),balanceTo=smooth(balanceDb);
+        const auto levelTo=smooth(levelDb,false),balanceTo=smooth(balanceDb,true);
         for(int k=0;k<keyCount;++k){
           const double toLevel=levelTo[k]-levelDb[k];
           const double share=1/(1+std::pow(10.,.1*balanceTo[k]));

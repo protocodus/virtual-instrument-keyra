@@ -68,6 +68,13 @@ int main(int argc,char** argv){try{
     // lowest, middle and highest whose series holds none, so the renders
     // still show the prior leaves every fitted partial of a recorded pitch
     // as it was.
+    // Since 0.4.38 a key's level and balance gains (initCalibrations())
+    // count each neighbour's energy to silence, as the strike's velocity
+    // colour does, and the prior moves that energy at the keys between the
+    // pitches: a recorded pitch's gain follows its neighbours by design. The
+    // gains are zeroed on both sides, so the renders compare the pitch's own
+    // partials as before.
+    engine.impl->keyLeftDb={};engine.impl->keyRightDb={};
     const auto unfilled=[](const keyra::Model& m,int index){
       const auto& a=m.anchors[index];
       for(int k=1;k<a.count;++k)if(keyra::Engine::Impl::denseGap(&m.partials[a.first],a.count,k))return false;
