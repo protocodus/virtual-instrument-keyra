@@ -1558,8 +1558,9 @@ struct Engine::Impl {
   ActionParameters parameters{};
   Parameters set{};
   model::Piano piano;
-  // Pascals at the microphones to the output's units.
-  static constexpr double pascalScale=1;
+  // Pascals at the microphones to the output's units, for each piano: what
+  // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
+  static constexpr double pascalScale[model::bodyCount]{.224,.226,.172,.226};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75,mute=0,mic=0,resonance=.25;
   // The tube's response (MeasuredMicData.h) designed at the engine's rate,
@@ -3834,10 +3835,11 @@ struct Engine::Impl {
       roomSounding=true;playRoom(frames);
     }
     piano.process(pianoLeft.data(),pianoRight.data(),frames);
+    const double scale=pascalScale[static_cast<int>(set.body)];
     for(int i=0;i<frames;++i){
       width+=smooth*(parameters.width-width);
       gain+=smooth*(parameters.gain-gain);
-      double l=dryLeft[i]+pascalScale*pianoLeft[i],r=dryRight[i]+pascalScale*pianoRight[i];
+      double l=dryLeft[i]+scale*pianoLeft[i],r=dryRight[i]+scale*pianoRight[i];
       if(roomPlays){l+=roomLeft[i];r+=roomRight[i];}
       // The pairs' own image at the default width; narrower towards mono.
       const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;

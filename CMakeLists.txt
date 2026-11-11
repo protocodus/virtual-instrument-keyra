@@ -65,9 +65,10 @@ if(KEYRA_ENABLE_SANITIZERS)
     add_link_options(-fsanitize=address,undefined,float-cast-overflow)
 endif()
 
-set(KEYRA_DSP_SOURCES Source/DSP/KeyraEngine.cpp)
+set(KEYRA_DSP_SOURCES Source/DSP/KeyraEngine.cpp Source/DSP/PianoModel.cpp)
 set(KEYRA_DSP_HEADERS
     Source/DSP/KeyraEngine.h
+    Source/DSP/PianoModel.h
     Source/DSP/MechanicsControl.h
     Source/DSP/KeyraPresets.h
     Source/DSP/MeasuredTypes.h

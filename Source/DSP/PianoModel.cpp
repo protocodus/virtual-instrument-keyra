@@ -130,8 +130,10 @@ constexpr Design designs[bodyCount]{
   {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65},
   // 1.50 m baby grand
   {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80},
-  // 1.25 m upright
-  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,1.25,90},
+  // 1.25 m upright. Its hammers' stiffness is fitted to eleven forte notes
+  // of a recorded upright (MAPS, ENSTDkCl: a Yamaha Disklavier, close pair),
+  // whose bass notes hold more above 2 kHz than softer hammers gave.
+  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90},
 };
 // The soundboard as one ribbed plate smeared out: bending stiffnesses along
 // and across the grain with the ribs' counted in, and the mass per area of
@@ -147,13 +149,13 @@ constexpr double radiationCorner=3000;  // Hz: above it the board radiates less,
 constexpr double patchRadius=.5;        // m: what radiates about the bridge above the modes
 // The blow's thump. A string struck at an eighth of its length leans seven
 // eighths of the blow on its near end, the agraffe in the iron frame, and the
-// frame knocks the board it is bolted over: what comes of it under
-// frameHertz, a share frameShare of it, spread along the bridge. Both are
+// frame knocks the board it is bolted over: what comes of it about
+// frameHertz, frameShare times as strong, spread along the bridge. Both are
 // fitted to what the Steinway notes hold under their fundamentals in their
 // first 150 ms (12 to 18 dB under the note, most of it from 60 to 240 Hz,
 // swelling for 20 ms and gone in 150); the strings' own pull on the bridge
 // is 20 dB short of it.
-constexpr double frameShare=.1,frameHertz=250;
+constexpr double frameShare=2,frameHertz=160;
 
 MicSpec micSpec(const Design& d,int mic) noexcept {
   const double X=d.boardX,Y=d.boardY;
@@ -259,22 +261,28 @@ void designStrings(Tables& t,int body) noexcept {
     // the exponents and stiffnesses the fit starts from (2.3, 2.5 and 3.0;
     // 4.0e8, 4.5e9 and 1.0e12 N/m^p) are the set A. Chaigne and
     // A. Askenfelt give ("Numerical simulations of piano strings II",
-    // JASA 95, 1994), quoted from memory. The rest is fitted to how the
-    // partials and the level of the Steinway notes of
-    // Tools/compare_model_notes.py follow their four dynamic layers: felt a
-    // sixth as stiff at middle C and stiffer again towards both ends, the
-    // exponent 0.07 higher, and a hysteresis time of 69 microseconds at
-    // middle C, shorter up the scale, where a longer one lets a soft blow's
-    // felt lie on the string and damp it.
+    // JASA 95, 1994), quoted from memory. Theirs is the hammer one string
+    // meets: three times 2.97 g is a middle hammer's weight, so each string
+    // of a unison is struck by that much. A third of it left the Steinway
+    // notes' fundamentals 10 to 20 dB under their second partials, the
+    // contact being too short. The rest is fitted to the Steinway notes of
+    // Tools/compare_model_notes.py, their first 0.3 s in third octaves from
+    // the fundamental to 10 kHz and the levels of their four dynamic layers:
+    // felt 0.3 as stiff at middle C, softer than their line towards the
+    // treble and stiffer towards the bass, the exponent 0.05 higher and
+    // falling a little down the bass, and a hysteresis time of 65
+    // microseconds at middle C, shorter up the scale, where a longer one
+    // lets a soft blow's felt lie on the string and damp it. A fit to the
+    // first twenty partials alone left the loud bass 15 to 25 dB short above
+    // 2 kHz.
     // Stulov's own measured hammers, as published, left the soft layers'
-    // upper partials 20 dB above the recordings'. Each string of a unison
-    // takes its share of the hammer.
+    // upper partials 20 dB above the recordings'.
     const double fromMiddle=i-39;
-    k.hammerExponent=throughThree(i,2.3,2.5,3.0)+.0674;
-    k.hammerMass=d.hammerMass*1e-3*throughThree(i,4.9,2.97,2.2)/k.strings;
-    k.hammerStiffness=d.hammerStiffness*.1715*std::exp(throughThree(i,std::log(4.0e8),std::log(4.5e9),std::log(1.0e12))
-      +2.302585*(fromMiddle>0?.02:-.023)*fromMiddle)/k.strings;
-    k.hammerSeconds=68.9e-6*std::exp((fromMiddle>0?-.03:-.0074)*fromMiddle);
+    k.hammerExponent=throughThree(i,2.3,2.5,3.0)+.047-.0033*std::max(0.,-fromMiddle);
+    k.hammerMass=d.hammerMass*1e-3*throughThree(i,4.9,2.97,2.2);
+    k.hammerStiffness=d.hammerStiffness*.305*std::exp(throughThree(i,std::log(4.0e8),std::log(4.5e9),std::log(1.0e12))
+      +2.302585*(fromMiddle>0?-.0092:-.0079)*fromMiddle);
+    k.hammerSeconds=65e-6*std::exp((fromMiddle>0?-.066:-.0141)*fromMiddle);
     k.strike=clamp(throughThree(i,.12,.12,.0625),.05,.125);
     // The string's own losses, without the bridge's: the fundamental's,
     // slow at the bottom and faster up the keyboard; what each kHz above the
@@ -284,8 +292,8 @@ void designStrings(Tables& t,int body) noexcept {
     // the sideways motion below, to how twelve Steinway notes die away over
     // six seconds, whole and at their fundamental
     // (Tools/compare_model_notes.py).
-    k.loss1=.11*std::exp(.0116*i);
-    k.loss2=.7*(.05+.45*clamp((i-12)/40.,0,1));
+    k.loss1=.12*std::exp(.013*i);
+    k.loss2=.72*(.05+.45*clamp((i-12)/40.,0,1));
     k.loss3=1.2e-9;
     // The top keys have no dampers: theirs is what Mute's felt takes.
     k.damper=mix(22,150,std::min(1.,i/static_cast<double>(d.undamped)));
@@ -300,7 +308,7 @@ void designStrings(Tables& t,int body) noexcept {
       // little to the board and is the aftersound left once the first, loud
       // decay is over (Weinreich, JASA 62, 1977). Fitted with the losses.
       k.across[j]=static_cast<float>(.97*(.16+.14*r.uniform()));
-      k.acrossDrive[j]=static_cast<float>(.43*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1));
+      k.acrossDrive[j]=static_cast<float>(.36*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1));
     }
     // A unison's strings sit about its pitch.
     if(k.strings>1){float mean=0;for(int j=0;j<k.strings;++j)mean+=k.detune[j];
@@ -385,7 +393,7 @@ void designBoard(Tables& t,int body){
       const std::complex<double> c=2*key.hertz*key.impedance*Y;
       // How firmly the bridge holds the strings against the plate's own
       // admittance: more up the keyboard, fitted with the losses.
-      const double stiff=1.14*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3));
+      const double stiff=1.12*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3));
       // The plate's single modes would let one key die four times as fast as
       // its neighbour; a bridge and its ribs even that out, so a key keeps
       // within about a third of the infinite plate's value.

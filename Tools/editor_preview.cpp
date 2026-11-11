@@ -8,7 +8,8 @@ int main(int argc, char** argv)
     juce::ScopedJuceInitialiser_GUI initialiser;
     KeyraAudioProcessor processor;
     const auto mode = argc > 2 ? juce::String(argv[2]) : juce::String();
-    processor.editorShowsBuild = mode == "--build";
+    // The view above the pedals: the piano's knobs unless the body's or the microphones' are asked for.
+    processor.editorView = mode == "--body" ? 1 : mode == "--mics" ? 2 : 0;
     std::unique_ptr<juce::AudioProcessorEditor> editor(processor.createEditor());
     if (mode == "--pedals-down" || mode == "--half-sustain") {
         processor.prepareToPlay(48000, 256);
