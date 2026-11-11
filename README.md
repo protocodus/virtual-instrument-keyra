@@ -49,6 +49,47 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.1.0 — 2026-11-11 — velocity, the stereo image and a closer fit
+
+The physical model fitted closer to the recordings. The panel and the saved
+state are 2.0.0's; a 2.0.0 session opens as saved and sounds different.
+
+- **Velocity**: the hammer's speed now follows the velocity, so that at
+  Dynamics 0.5 the notes' levels stand within 2 dB of the Salamander grand's
+  sixteen layers from velocity 31 up and 2.6 dB under them below it.
+  2.0.0's speeds were even in dB, which left its soft and medium notes
+  2.5 dB too quiet and its hardest 4.5 dB too loud against those layers.
+  Dynamics spans 10 dB at 0, 25 dB at 0.5 and 40 dB at 1.
+- **Felt**: the felt stiffens more steeply under a harder blow, fitted to
+  the same layers, so soft notes are darker and hard ones brighter. Hammer
+  and the practice felt cover half as many decades again, which keeps what
+  each did to the tone.
+- **Stereo image**: wider. A microphone pair's channels may now be up to a
+  quarter turn out of step at each mode of the board, where 2.0.0 held them
+  within 70°: on the first demo's phrase the channels' correlation is 0.33
+  where it was 0.49, and each pair still sums to mono (Close 0.33, XY 0.67,
+  Live 0.31, Distant 0.06).
+- **Top end**: the board radiates fully up to 6 kHz, where 2.0.0's began to
+  fall at 3 kHz. On the first demo's phrase the concert grand holds 3.6 dB
+  more in the 2 kHz octave, 3.7 dB at 4 kHz and 7.1 dB at 8 kHz.
+- **Treble sustain**: the bridge takes less from the strings between D♯3 and
+  D6, so the upper keys ring longer.
+- **Level**: each piano's typical playing is pinned to −9 VU again.
+- **Against the recordings**: closer to the Salamander grand than 2.0.0 on
+  ten of the benchmark's twelve scores, on the notes 1.0.0 never fitted
+  (partial levels 11.7 to 8.2 dB, decay 5.5 to 3.7 dB/s, sustain 10.9 to
+  9.1 dB). Its two stereo scores did not improve (the channels' level
+  difference 5.4 to 5.6 dB, their correlation 0.21 as before), and 97
+  single-note scores are worse, C3's rise the furthest (19 to 57 ms)
+  ([report](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md)).
+  The upright is benchmarked against the Helsinki recordings for the first
+  time, and there the change is mixed: on the notes 1.0.0 never fitted the
+  partials (8.8 to 8.4 dB), the tuning (6.1 to 4.7 cents) and the envelope
+  are closer, and the attack (7.7 to 8.5 dB), the first half second, the
+  sustain (9.9 to 10.8 dB), the decay, the noise between the partials and
+  the rise are further off
+  ([report](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md)).
+
 ### 2.0.0 — 2026-11-11 — a physical piano
 
 The strings, hammers, soundboard and microphones are a new engine, written
@@ -129,10 +170,18 @@ hammers, given at C2, C4 and C7 as Chaigne and Askenfelt's three hammers are
 and carried across the keys. The blow is solved against the string's own
 motion at the strike point, twice a sample at 44.1 and 48 kHz, for as long
 as they touch, so a hard blow is brighter because the felt is stiffer under
-it and a restrike meets a string already moving. The hammers' stiffness and the strings' losses are fitted to notes of
-one recorded grand (Jon Meyer's "Steinway Grand" for Decent Sampler, from
-the owner's reference set); the upright's stiffness to eleven forte notes of
-a recorded upright (MAPS, ENSTDkCl).
+it and a restrike meets a string already moving. The hammers' stiffness and
+the strings' losses are fitted to notes of one recorded grand (Jon Meyer's
+"Steinway Grand" for Decent Sampler, from the owner's reference set); the
+upright's stiffness to eleven forte notes of a recorded upright (MAPS,
+ENSTDkCl). How steeply the felt stiffens is fitted to the Salamander grand's
+sixteen velocity layers, with the force kept where the felt is 1 mm in.
+
+**Velocity.** Full velocity is a blow of 5 m/s, and under it the hammer's
+speed is the velocity to a power that Dynamics sets: 1 at 0.5, where the
+notes' levels stand within 2 dB of the Salamander's layers from velocity 31
+up (2.6 dB under them below it) and within 2 dB of a Disklavier's notes
+(MAPS, ENSTDkCl). The softest key still strikes, at 0.28 m/s.
 
 **Unisons.** The strings of a key, each in two polarisations, share the
 bridge, whose admittance couples them (Weinreich 1977): that gives the
@@ -194,23 +243,34 @@ which hears the piano as the distant pair does and which each pair hears by
 its distance; Room sets how much. Width at 0.75 is the pairs' own image and
 0 is mono.
 
+A pair is placed so that it sums to mono: no mode of the board reaches one
+microphone more than 70° out of step with the other, or half the pair's
+spacing in wavelengths where that is more, up to a quarter turn. A spaced
+pair so opens from 70° to 90° (between 220 and 280 Hz for a grand's close
+pair) and the coincident pair is held at 70°. The quarter turn is as far as
+a phrase through the distant pair allows before it sums out of phase; the
+Salamander grand's two channels are less alike still (Known gaps). The
+recordings at hand show no steady lean of low keys to one side and high
+keys to the other, so the model adds none: where a key sits in the image is
+what the board and the microphones give it.
+
 ### Controls
 
 | Control | Range | What it changes |
 | --- | --- | --- |
 | Piano | four | The piano that plays (above) |
-| Hammer | −1 to 1 | The felt's stiffness, a decade from soft and worn-in to hard: ×10^(0.5 Hammer) |
+| Hammer | −1 to 1 | The felt's stiffness, a decade and a half from soft and worn-in to hard: ×10^(0.75 Hammer) |
 | String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves |
 | Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano. 0.3 by default |
 | Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 in the treble, 6:3 in the bass, Railsback's curve); 0 is equal temperament |
-| Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow, 10 dB at 0 to 38 dB at 1 under 5 m/s at full velocity |
+| Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow under 5 m/s at full velocity: 10 dB at 0, 25 dB at 0.5, where the speed follows the velocity, and 40 dB at 1 |
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
 | Soundboard | 0 to 1 | How long the board rings: its loss halves from 0.5 to 1 and doubles to 0 |
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |
 | Close, XY, Live, Distant | 0 to 1 | Each microphone pair's level |
 | Room | 0 to 1 | The room in the pairs that hear it |
 | Width | 0 to 1 | The stereo image |
-| Practice felt | 0 to 1 | A felt strip between hammers and strings: up to two decades softer |
+| Practice felt | 0 to 1 | A felt strip between hammers and strings: up to three decades softer |
 | Felt mute | 0 to 1 | Felt laid on every sounding string, held or not (the mod wheel) |
 | A4 tuning | 415 to 466 Hz | Concert pitch |
 | Mechanics | 0 to 2 | How loud the action plays |
@@ -269,8 +329,8 @@ meter (the louder channel's RMS over 300 ms, 0 VU at −12 dBFS), playing
 single notes every fourth semitone and eight chords at velocities 70, 90 and
 110 for typical playing. Each piano's output scale puts its default sound's
 typical playing at −9 VU at the default Output; a preset has no level of its
-own, and its microphone levels keep it within 2 dB of that (they read −9.3
-to −8.3 VU). The output stage after it is the portfolio's compressor and
+own, and its microphone levels keep it within 2 dB of that (they read −10.0
+to −8.0 VU). The output stage after it is the portfolio's compressor and
 peak limiter with 1.0.0's half-drive response: nothing passes −1.5 dBFS, and
 its 2.5 ms look-ahead is reported to the host.
 
@@ -283,27 +343,40 @@ is written independently of it.
 
 ## Known gaps
 
-- **Not fitted to a recording.** The model is a description of a piano, and
-  note by note it stands further from the Salamander grand than 1.0.0, which
-  was fitted to those recordings, on every score of
-  `Tools/benchmark_recordings.py`: on the notes 1.0.0 never fitted, the
-  partials' levels differ by 11.7 dB where 1.0.0's differed by 5.3, the
-  tuning by 3.1 cents against 0.9, the decay by 5.5 dB/s against 2.1 and the
-  rise by 15 ms against 4.5
-  ([report](Docs/validation/grand-recording-benchmark-2026-11-11.md)). The
-  furthest are the treble (partial levels 16 dB off, decay 14 dB/s) and the
-  bass's rise (25 ms on average, 70 ms at F♯1). Whether it sounds better is
-  the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
+- **Not fitted note by note.** The model is a description of a piano with a
+  few constants set against recordings, and note by note it stands further
+  from the Salamander grand than 1.0.0, which was fitted to those
+  recordings, on every score of `Tools/benchmark_recordings.py`: on the
+  notes 1.0.0 never fitted, the partials' levels differ by 8.2 dB where
+  1.0.0's differed by 5.3, the tuning by 2.9 cents against 0.9, the decay by
+  3.7 dB/s against 2.1 and the rise by 15 ms against 4.5
+  ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
+  [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md)).
+  The furthest are the treble's first half second (16 dB off in third
+  octaves) and the bass's rise (28 ms on average). Whether it sounds better
+  is the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
   measurement.
-- **The upright is not benchmarked.** Its recordings (Helsinki 1967) were not
-  available when 2.0.0 was written; `Tools/benchmark_recordings.py --model
-  upright` has not been run against it.
+- **The upright against its recordings.** Against the Helsinki upright the
+  partials' levels differ by 8.4 dB, the tuning by 4.7 cents, the decay by
+  5.5 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted, and 2.1.0
+  moved its attack, sustain and noise further off than 2.0.0's
+  ([report](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md)).
+  That library's five layers cover wide velocity ranges; the velocity each
+  was played at is not documented.
+- **A narrower image than the recordings.** Between 500 Hz and 2 kHz the
+  two channels of a forte note are 0.4 alike on average where the
+  Salamander grand's are 0.05, and the benchmark's two stereo scores stand
+  where 2.0.0's did.
 - **Less top end than 1.0.0.** On the first demo's phrase the concert grand
-  holds 3.5 dB less in the 2 kHz octave, 6 dB less at 4 kHz and 14 dB less
-  at 8 kHz than 1.0.0's grand; Hammer at +0.6 gives back 7, 8 and 13 dB of
-  that over −0.6.
-- **The treble.** F6 and the notes about it lack upper partials against the
-  recordings, and soft blows in the treble are too quiet.
+  holds 2 dB less in the 4 kHz octave and 7 dB less at 8 kHz than 1.0.0's
+  grand; Hammer at +0.6 holds 4, 7 and 18 dB more in the 2, 4 and 8 kHz
+  octaves than at −0.6. Against the Salamander's single notes, a note's
+  share above its sixth partial is 4 to 8 dB less at every velocity, and the
+  middle of the keyboard holds 13 to 15 dB less in the 2 kHz octave from
+  mezzo-forte up.
+- **The treble.** The top two octaves lack the knock under their
+  fundamentals that the recordings have, and their first half second is the
+  benchmark's furthest score.
 - **Slow bass onsets.** The lowest octaves take longer to rise than recorded
   grands do.
 - **Uneven keys on the close pair.** Two keys lean to one side of the image

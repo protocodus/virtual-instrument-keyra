@@ -157,7 +157,11 @@ constexpr double boardMass=19.5,boardStiffX=6500,boardStiffY=3800;
 constexpr double boardLoss=.025;        // loss factor at Soundboard = .5
 constexpr double boardEdge=.5;          // edges between hinged (0) and clamped (.5)
 constexpr double modesTop=2600;         // Hz: no mode is kept above it
-constexpr double radiationCorner=3000;  // Hz: above it the board radiates less, 6 dB an octave
+// Hz: above it the board radiates less, 6 dB an octave. At 3 kHz (2.0.0) the
+// middle of the keyboard held 5 to 9 dB less in the 4 kHz octave than the
+// Salamander grand's forte notes; at 12 kHz the bass held more between its
+// partials than they do.
+constexpr double radiationCorner=6000;
 constexpr double patchRadius=.5;        // m: what radiates about the bridge above the modes
 // The blow's thump. A string struck at an eighth of its length leans seven
 // eighths of the blow on its near end, the agraffe in the iron frame, and the
@@ -168,6 +172,20 @@ constexpr double patchRadius=.5;        // m: what radiates about the bridge abo
 // swelling for 20 ms and gone in 150); the strings' own pull on the bridge
 // is 20 dB short of it.
 constexpr double frameShare=2,frameHertz=160;
+
+// The blow: 5 m/s at full velocity, and under it the velocity to a power:
+// 1 at Dynamics 0.5, where the notes' levels stand within 2 dB of the
+// Salamander grand's sixteen layers from velocity 31 up and 2.6 dB under
+// them below it (2.0.0's speeds, even in dB, were 2.5 dB under in the soft
+// and medium layers and 4.4 dB over at the hardest) and within 2 dB of a
+// Disklavier's notes (MAPS, ENSTDkCl), and 0.4 to 1.6 from Dynamics 0 to 1:
+// 10, 25 and 40 dB between the softest and the hardest blow. `softest`
+// keeps the lowest velocity a blow, 0.28 m/s at Dynamics 0.5.
+constexpr double softest=.05;
+double dynamicsPower(double dynamics) noexcept {return .4+1.2*dynamics;}
+double hammerSpeed(double velocity,double dynamics) noexcept {
+  return 5*std::pow((velocity+softest)/(1+softest),dynamicsPower(dynamics));
+}
 
 MicSpec micSpec(const Design& d,int mic) noexcept {
   const double X=d.boardX,Y=d.boardY;
@@ -289,11 +307,19 @@ void designStrings(Tables& t,int body) noexcept {
     // 2 kHz.
     // Stulov's own measured hammers, as published, left the soft layers'
     // upper partials 20 dB above the recordings'.
+    // The felt stiffens faster than that fit's as it is compressed: the
+    // exponent is `steeper` higher with the force at `kept` of compression
+    // unchanged, fitted to the Salamander grand's sixteen layers under the
+    // blow's speeds above (hammerSpeed). With the first fit's exponent its
+    // soft layers were brighter than the recordings and its loud ones
+    // duller; keeping the force at 0.4 mm instead left the soft bass with
+    // more between its partials than the recordings hold.
+    constexpr double steeper=1,kept=1e-3;
     const double fromMiddle=i-39;
-    k.hammerExponent=throughThree(i,2.3,2.5,3.0)+.047-.0033*std::max(0.,-fromMiddle);
+    k.hammerExponent=throughThree(i,2.3,2.5,3.0)+.047-.0033*std::max(0.,-fromMiddle)+steeper;
     k.hammerMass=d.hammerMass*1e-3*throughThree(i,4.9,2.97,2.2);
     k.hammerStiffness=d.hammerStiffness*.305*std::exp(throughThree(i,std::log(4.0e8),std::log(4.5e9),std::log(1.0e12))
-      +2.302585*(fromMiddle>0?-.0092:-.0079)*fromMiddle);
+      +2.302585*(fromMiddle>0?-.0092:-.0079)*fromMiddle)*std::pow(kept,-steeper);
     k.hammerSeconds=65e-6*std::exp((fromMiddle>0?-.066:-.0141)*fromMiddle);
     k.strike=clamp(throughThree(i,.12,.12,.0625),.05,.125);
     // The string's own losses, without the bridge's: the fundamental's,
@@ -406,8 +432,11 @@ void designBoard(Tables& t,int body){
       const double unit=2*key.hertz*key.impedance/t.infinite;
       const std::complex<double> c=2*key.hertz*key.impedance*Y;
       // How firmly the bridge holds the strings against the plate's own
-      // admittance: more up the keyboard, fitted with the losses.
-      const double stiff=1.12*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3));
+      // admittance: more up the keyboard, fitted with the losses, and from
+      // D#3 to D6 down to 0.3 of that, fitted to how the Salamander grand's
+      // notes die away (its treble's partials fell 10 dB/s out of step with
+      // the full hold, 6 with this; a hold of 0.15 or 0.5 was further off).
+      const double stiff=1.12*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3))*(1-.7*clamp((i-30)/35.,0,1));
       // The plate's single modes would let one key die four times as fast as
       // its neighbour; a bridge and its ribs even that out, so a key keeps
       // within about a third of the infinite plate's value.
@@ -579,9 +608,19 @@ void designBoard(Tables& t,int body){
       t.direct[mic][ch][part][k]*=trim[k];t.floor[mic][ch][part][k]*=trim[k];t.diffuse[mic][ch][part][k]*=trim[k];
       for(int stop=0;stop<lidStops;++stop)t.lid[stop][mic][ch][part][k]*=trim[k];}
     // An engineer moves a pair until it sums to mono: no mode reaches the
-    // right microphone more than pairTurn out of step with the left.
-    const double pairTurn=70*pi/180;
+    // right microphone more than 70 degrees out of step with the left, or
+    // than half the pair's spacing in wavelengths where that is more, up to
+    // the quarter turn past which a mode starts to cancel in the sum. So a
+    // spaced pair opens from 70 to 90 degrees (between 220 and 280 Hz for a
+    // grand's close pair) and a coincident one is held at 70 throughout.
+    // Set against how alike the Salamander grand's two channels are in
+    // forte notes from 500 Hz to 2 kHz: 0.05 on average over the keyboard,
+    // where 70 degrees at every frequency (2.0.0) left 0.6 and this leaves
+    // 0.4. Without the quarter turn the notes came closer still, and a
+    // phrase through the distant pair summed out of phase (-0.3).
+    const double spacing=norm(spec.position[0]-spec.position[1]);
     for(int k=0;k<t.modes;++k){
+      const double pairTurn=std::min(pi/2,std::max(70*pi/180,pi*all[k].hertz*spacing/soundSpeed));
       const std::complex<double> l(heard[0][0][k],-heard[0][1][k]),r(heard[1][0][k],-heard[1][1][k]);
       const double apart=std::arg(r*std::conj(l));
       if(std::abs(apart)<=pairTurn)continue;
@@ -868,20 +907,23 @@ struct Piano::Impl {
       c.give+=static_cast<double>(c.shape[k])*c.turnIm[k]*c.drive[k];
     }
     const bool upright=table->design.upright;
-    // The blow: 5 m/s at full velocity, and Dynamics' span of hammer speeds
-    // under it, 10 to 38 dB. An upright's soft pedal halves the hammers'
-    // run, so they arrive sqrt(1/2) as fast.
-    const double span=10+28*controls.dynamics;
-    c.velocity=5*std::pow(10.,-span*(1-velocity)/20)*(upright?std::sqrt(1-.5*soft):1);
+    // An upright's soft pedal halves the hammers' run, so they arrive
+    // sqrt(1/2) as fast.
+    c.velocity=hammerSpeed(velocity,controls.dynamics)*(upright?std::sqrt(1-.5*soft):1);
     c.position=0;c.previous=0;c.deepest=0;
     c.mass=key.hammerMass;
-    // Hammer: a decade of stiffness between soft and hard felt. The felt
-    // strip softens the blow by up to two decades; shifted, a grand's hammer
-    // strikes with felt the strings have not packed. The exponent stays the
-    // key's: the stiffness is in newtons per metre to that power, so a
-    // change of exponent is a far larger change of stiffness the other way
-    // at the few tenths of a millimetre a blow compresses the felt.
-    const double stiffness=key.hammerStiffness*std::pow(10.,.5*controls.hammer-2*controls.felt-(upright?0:.2*soft));
+    // Hammer: a decade and a half of stiffness between soft and hard felt.
+    // The felt strip softens the blow by up to three decades; shifted, a
+    // grand's hammer strikes with felt the strings have not packed. The
+    // exponent stays the key's: the stiffness is in newtons per metre to
+    // that power, so a change of exponent is a far larger change of
+    // stiffness the other way at the few tenths of a millimetre a blow
+    // compresses the felt. Under the steeper felt a factor on the stiffness
+    // moves the tone less, so these are half as many decades again as
+    // 2.0.0's, which keeps what each does to middle C: Hammer -1 takes
+    // 8 dB from what it holds above 2 kHz, and the strip 8 dB from its
+    // level and 30 dB from what it holds above 1 kHz.
+    const double stiffness=key.hammerStiffness*std::pow(10.,.75*controls.hammer-3*controls.felt-(upright?0:.3*soft));
     c.exponent=key.hammerExponent;
     c.relaxed=stiffness;
     c.prompt=stiffness*key.hammerSeconds*sampleRate*substeps;
@@ -1299,6 +1341,10 @@ struct Piano::Impl {
     }
   }
 };
+
+float touched(float velocity,float decibels,float dynamics) noexcept {
+  return static_cast<float>((velocity+softest)*std::pow(10.,decibels/(20*dynamicsPower(dynamics)))-softest);
+}
 
 Piano::Piano():impl(new Impl){prepare(48000);}
 Piano::~Piano()=default;

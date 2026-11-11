@@ -43,9 +43,13 @@ N. Bertin, B. David and R. Badeau, "MAPS: a piano database for multipitch
 estimation and automatic transcription of music", Télécom ParisTech, 2010),
 licensed under
 [CC BY-NC-SA 2.0 FR](https://creativecommons.org/licenses/by-nc-sa/2.0/fr/).
-From each, a handful of numbers was compared and a constant chosen; nothing
-is copied. These credits do not imply endorsement by the authors or the
-instruments' makers.
+Since 2.1.0 the velocity's law, how steeply the felt stiffens, what the
+bridge takes from the upper strings, where the board's radiation begins to
+fall and how far apart a pair's channels may be were set against the
+Salamander recordings above, and the velocity's law was compared with the
+same MAPS upright's notes. From each, a handful of numbers was compared and
+a constant chosen; nothing is copied. These credits do not imply endorsement
+by the authors or the instruments' makers.
 
 **Benchmarks.** 1.x also measured VCSL Keys' "Grand Piano, K" (Versilian
 Studios, CC0 1.0) and "Grandpa's Piano" (David Hawkins, Pianobook) for two
