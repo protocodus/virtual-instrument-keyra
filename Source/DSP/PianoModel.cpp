@@ -70,6 +70,9 @@ Rng seeded(int a,int b,int c=0) noexcept {
 double clamp(double x,double lo,double hi) noexcept {return x<lo?lo:x>hi?hi:x;}
 float clampf(float x,float lo,float hi) noexcept {return x!=x?lo:x<lo?lo:x>hi?hi:x;}
 double mix(double a,double b,double t) noexcept {return a+(b-a)*t;}
+// A signed size turned by an angle. std::polar is undefined for a negative
+// size, and libc++ (macOS) answers it with NaN.
+std::complex<double> turned(double size,double angle) noexcept {return {size*std::cos(angle),size*std::sin(angle)};}
 // The sum of a[k] b[k] in eight strands: summed in order, every add waits for
 // the one before it, which was most of what a sounding string cost.
 inline float dot(const float* a,const float* b,int n) noexcept {
@@ -449,7 +452,7 @@ void designBoard(Tables& t,int body){
           const Vec source{d.boardX*(a+.5)/nx,d.boardY*(b+.5)/ny,0};
           const Vec path=source-rec.at;const double R=norm(path);
           const double heard=1-spec.cardioid+spec.cardioid*.5*(1+dot(path,rec.axis)/R);
-          sum+=std::polar(sx[a]*sy[b]*heard/R,-wave*(R-nearest));
+          sum+=turned(sx[a]*sy[b]*heard/R,-wave*(R-nearest));
         }
         // p = scale * Im(z C): on Re z its imaginary part, on Im z its real.
         float* out=image==0?t.direct[mic][ch][0]:image==1?t.floor[mic][ch][0]:t.lid[image-2][mic][ch][0];
@@ -525,8 +528,8 @@ void designBoard(Tables& t,int body){
       const double z=(i+.5)/directions,rho=std::sqrt(1-z*z),turn=i*2.39996323;
       const double ux=wave*rho*std::cos(turn),uy=wave*rho*std::sin(turn);
       std::complex<double> across=0,along=0;
-      for(int a=0;a<nx;++a)across+=std::polar(std::sin(mode.m*pi*(a+.5)/nx),ux*d.boardX*(a+.5)/nx);
-      for(int b=0;b<ny;++b)along+=std::polar(std::sin(mode.n*pi*(b+.5)/ny),uy*d.boardY*(b+.5)/ny);
+      for(int a=0;a<nx;++a)across+=turned(std::sin(mode.m*pi*(a+.5)/nx),ux*d.boardX*(a+.5)/nx);
+      for(int b=0;b<ny;++b)along+=turned(std::sin(mode.n*pi*(b+.5)/ny),uy*d.boardY*(b+.5)/ny);
       total+=std::norm(across*along)/directions;}
     const double w=2*pi*mode.hertz;
     power[k]=total*std::pow(w*w*d.boardX*d.boardY/(nx*ny)*mode.hertz,2)/(mode.hertz*mode.hertz+d.dipoleHertz*d.dipoleHertz);

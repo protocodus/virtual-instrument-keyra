@@ -312,11 +312,10 @@ is written independently of it.
   beside the model: a pedal going down does not set the freed strings
   whispering, and a key's knock does not reach the soundboard's model.
 - **Changing the piano cuts what sounds.** A new body starts silent.
-- **CPU.** The eight demos take 6 to 13 % of one core on a development
-  machine (an Intel Xeon at 2.1 GHz, GCC 13), and their heaviest 256-frame
-  blocks 20 to 54 % of the block's time. There is no Quality
-  setting to lighten it, and the CI runner's figures are not measured yet;
-  `Keyra.CpuBudget` fails above 40 % until they are.
+- **CPU.** The eight demos take 5 to 11 % of one core on the CI runner
+  (main build 105), and their heaviest 256-frame blocks 12 to 29 % of the
+  block's time; on a development machine (an Intel Xeon at 2.1 GHz, GCC 13)
+  6 to 13 % and 20 to 54 %. There is no Quality setting to lighten it.
 - **Typical dimensions.** The four pianos are typical of their kinds, not
   one maker's instruments, and their soundboards are a smeared plate, not a
   ribbed board with its bridges.
@@ -354,8 +353,7 @@ model's tuning, partials, hammer, decay, coupling and controls),
 `Keyra.DspFuzzReplay`, the fuzz harness replaying `Tests/Fixtures/fuzz/` and
 seeded inputs; `audio` is `Keyra.AudioDemos` and `Keyra.Levels`; and `perf`
 is `Keyra.CpuBudget`, the demos timed in a Release build, which fails above
-0.4 of real time, three times the slowest demo's figure on a development
-machine, until the CI runner's median is known.
+0.33 of real time, three times the slowest demo's median on the CI runner.
 `KeyraDSPCxx17` compiles the engine as C++17, the Rack Extension toolchain's
 standard. `-DKEYRA_ENABLE_SANITIZERS=ON` builds everything under ASan and
 UBSan, and `-DKEYRA_BUILD_FUZZER=ON` (Clang) makes `KeyraDspFuzz` a libFuzzer
