@@ -53,7 +53,11 @@ and against pedal-down notes of "Yamaha C3" for Decent Sampler by
 **wesleywilson29** (Pianobook), from a copy of the library
 (`Tools/corpus/yamaha-c3.json` pins it by SHA256, and
 `Tools/corpus/yamaha-c3-pedal-wash.json` holds the band levels
-`Tools/benchmark_pedal_wash.py` compares, no audio). From each, a handful
+`Tools/benchmark_pedal_wash.py` compares, no audio). Since 2.4.0 the two
+knocks under a note, the top octave's hammers and strings, the close pair's
+share of the room and how far the action's noises vary were set against the
+Salamander recordings, and the upright's thump against the same MAPS
+upright's notes at three loudnesses. From each, a handful
 of numbers was compared and a constant chosen; nothing is copied. These
 credits do not imply endorsement by the authors or the instruments' makers.
 

@@ -27,8 +27,8 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
 | 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -7.3 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -10.9 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -2.4 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -11.0 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -2.7 dBFS |
 | 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.3 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
 | 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.6 dBFS |
@@ -48,6 +48,58 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.4.0 — 2026-11-11 — the key presses
+
+No two presses of a key sound alike, the thump under a note is the action
+catching the hammer, and the top octave is set against the recordings. The
+panel and the saved state are 2.3.0's; a 2.3.0 session opens as saved and
+sounds different.
+
+- **Key noises that vary**: a key landing or coming back, a damper and the
+  pedal were the same sound every time. Each knock now draws its own level,
+  each of its body modes a level and a phase, and its click a rise and a
+  level in each band: two returns of one key differ by 1.4 to 1.9 dB and
+  are 0.60 to 0.75 alike, where the Salamander grand's neighbouring keys
+  differ by 1.5 dB and are 0.56 alike.
+- **Two knocks under a note**, where one thump came with the blow. Recorded
+  notes hold a thump under 180 Hz that comes 14.5 to 22 ms after the onset,
+  later the softer the note: the action catching the hammer on its way
+  back. The model's arrives within 4 ms of the Salamander's at seven
+  velocity layers and stands within 4 dB of it in the median from C4 to C8
+  (single keys up to 14 dB off), and no two catches are alike. Above 180 Hz
+  a knock comes with the blow, from A5 up only, where the strings end on the
+  frame's capo d'astro bar: 2 to 4 dB over the recording's from A6 to C8.
+  Nothing precedes a bass note any more.
+- **The top octave**: the hammers above C5 are harder (by three quarters of
+  a decade at C8), the bridge holds the top strings in full, and they lose
+  more on their own. The fundamentals of C7, F♯7 and C8 fall 28 to 35 dB in
+  their first 300 ms, where the Salamander's fall 21 to 36 and 2.3.0's fell
+  8 to 15; a soft note's stands 9 to 17 dB under a mezzo-forte one's, where
+  the Salamander's stands 8 and 2.3.0's stood 12 to 20.
+- **The room in the close pair**: what a treble note leaves from 280 to
+  710 Hz, 300 ms after the knock under it, stood 67 dB down; it stands 47,
+  the Salamander's 36. Room still sets how much.
+- **The upright's thump** is set against a recorded upright (MAPS,
+  ENSTDkCl): within 3.1 dB of it in three bands at three velocities.
+- **Level**: each piano's typical playing stays at −9 VU.
+- **Against the recordings**: on the Salamander grand's notes 1.0.0 never
+  fitted, the attack is closer (7.8 to 6.6 dB), the first half second (8.1
+  to 7.0), the noise between the partials (9.3 to 7.8), the sustain (8.7 to
+  8.4) and the rise (15 to 13 ms); from C6 up the first half second moves
+  from 12.7 to 9.6 dB and the partials from 9.0 to 7.5. Further off: the
+  tuning (2.8 to 3.2 cents), the decay (3.7 to 4.1 dB/s; from C6 up 5.3 to
+  7.0), the envelope (4.2 to 4.6 dB) and the bass's partials (8.6 to
+  9.7 dB), the price of the room in the close pair. 106 single-note scores
+  are worse, where 2.3.0 had six: the furthest F♯3's rise (41 to 51 ms),
+  C8's decay (7.8 to 15.4 dB/s) and sustain (18.8 to 22.4 dB) and A3's
+  noise (7.4 to 10.6 dB)
+  ([report](Docs/validation/grand-key-presses-benchmark-2026-11-11.md)). On
+  the Helsinki upright's the attack (8.5 to 7.5 dB), the first half second
+  (10.2 to 9.1) and the noise (11.2 to 9.8) are closer and the partials
+  further off (8.6 to 9.6 dB); 39 single-note scores are worse, the furthest
+  D♯1's rise (38 to 50 ms) and E7's decay (3.6 to 11.6 dB/s)
+  ([report](Docs/validation/upright-key-presses-benchmark-2026-11-11.md)).
 
 ### 2.3.0 — 2026-11-11 — the open strings
 
@@ -194,7 +246,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 110](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43007331777/artifacts/13853086060)**, built from [`34a319c8140f`](https://github.com/protocodus/virtual-instrument-keyra/commit/34a319c8140fb4b2baad570397748e5a5d4ad7a3). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 111](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43017154914/artifacts/13854900221)**, built from [`bc0886853b6f`](https://github.com/protocodus/virtual-instrument-keyra/commit/bc0886853b6f3a3b4acfcba6db2feae8b5c26653). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -252,9 +304,21 @@ impedance of about 2500 kg/s and a modal density of about 0.05 per Hz, as
 measured boards have (Ege, Boutillon and Rebillat 2013; Giordano 1998). The
 bridge's admittance at each key comes from those modes, so a string's decay
 depends on where it crosses the bridge. Above the modes the board moves and
-radiates near the bridge only. A blow also leans on the iron frame, which
-knocks the board: the thump under a note's fundamental, fitted to the same
-Steinway notes.
+radiates near the bridge only.
+
+**The knocks under a note.** Recorded notes hold two knocks under their
+fundamental, and so does the model. The thump, under about 350 Hz, is the
+action catching the hammer as it comes back off the string: 14 ms and the
+time the hammer takes over 11 mm at the speed it rebounds with, so later
+after a soft blow, and at once on the upright. Its momentum goes through the
+key into the keybed, and the case hands it to the board's edge, three
+quarters of it along the whole edge and the rest at the key's own place. The
+knock, above 180 Hz, comes with the blow and only from A5 up, where the
+strings end on the frame's capo d'astro bar instead of on agraffes: the
+blow's lean on that bar reaches the board's edge at the key's place. Both
+are fitted to the Salamander grand's notes, the upright's thump to a
+recorded upright's (MAPS, ENSTDkCl); no catch is like the last, by 2 dB and
+a fifth of its time.
 
 **Voicing.** A board answers each frequency in its own way, so a key comes
 out of the microphones stronger or weaker than its neighbours, as a piano's
@@ -266,7 +330,7 @@ waves, against a smooth line through the keys, and writes
 `Source/DSP/KeyVoicing.h`. Each key's strings pull on the board by what
 brings the key onto that line in the mix that is set, by no more than 12 dB
 either way. The table is measured at the default Lid and Soundboard and at
-half velocity; the frame's knock is not voiced.
+half velocity; the knocks under a note are not voiced.
 
 **Sympathetic strings and duplex scales.** Every string whose damper is
 lifted, by its key, the sostenuto or the pedal, answers what is played, ten
@@ -312,7 +376,8 @@ At the same level every pair plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
 feedback delay network of eight lines (Jot and Chaigne 1991) ringing 0.8 s,
 which hears the piano as the distant pair does and which each pair hears by
-its distance; Room sets how much. Width at 0.75 is the pairs' own image and
+its distance, the close pair too (set against what the Salamander grand's
+treble notes leave after the knock under them); Room sets how much. Width at 0.75 is the pairs' own image and
 0 is mono.
 
 A pair is placed so that it sums to mono: no mode of the board reaches one
@@ -359,7 +424,10 @@ bursts of band noise, fitted as numbers from the Salamander grand's
 recordings under the three grands and from the Helsinki upright's under the
 upright, in the room those were recorded in. No recorded waveform plays.
 They follow the velocity of the strike they belong to, and Mechanics sets
-their level. They play beside the model and do not drive its strings.
+their level. No two are alike: each knock draws its level (1 dB), each body
+mode its level and phase (2 dB, a radian), and the click its rise and each
+band's level (3 dB), set against how far the Salamander's keys stand from
+their neighbours. They play beside the model and do not drive its strings.
 
 ### Pedals and keyswitches
 
@@ -420,24 +488,31 @@ is written independently of it.
   from the Salamander grand than 1.0.0, which was fitted to those
   recordings, on every score of `Tools/benchmark_recordings.py`: on the
   notes 1.0.0 never fitted, the partials' levels differ by 8.2 dB where
-  1.0.0's differed by 5.3, the tuning by 2.8 cents against 0.9, the decay by
-  3.7 dB/s against 2.1 and the rise by 15 ms against 4.5
+  1.0.0's differed by 5.3, the tuning by 3.2 cents against 0.9, the decay by
+  4.1 dB/s against 2.1 and the rise by 13 ms against 4.5
   ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
   [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md),
   [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md),
-  [2.3.0 against 2.2.0](Docs/validation/grand-open-strings-benchmark-2026-11-11.md)).
-  The furthest are the treble's first half second (13 dB off in third
-  octaves) and the bass's rise (28 ms on average). Whether it sounds better
+  [2.3.0 against 2.2.0](Docs/validation/grand-open-strings-benchmark-2026-11-11.md),
+  [2.4.0 against 2.3.0](Docs/validation/grand-key-presses-benchmark-2026-11-11.md)).
+  The furthest are the treble's sustain (11 dB off in third octaves) and
+  the bass's rise (23 ms on average). 2.4.0 moved the tuning, the decay and
+  the bass's partials further off, and 106 single-note scores. Whether it sounds better
   is the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
   measurement.
 - **The upright against its recordings.** Against the Helsinki upright the
-  partials' levels differ by 8.6 dB, the tuning by 4.6 cents, the decay by
-  5.7 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
+  partials' levels differ by 9.6 dB, the tuning by 4.3 cents, the decay by
+  5.5 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
   moved its attack, sustain and noise further off than 2.0.0's, 2.2.0 its
-  noise a little further, and 2.3.0 its partials and decay
+  noise a little further, 2.3.0 its partials and decay, and 2.4.0 its
+  partials by another 1.0 dB
   ([2.1.0](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md),
   [2.2.0](Docs/validation/upright-even-scale-benchmark-2026-11-11.md),
-  [2.3.0](Docs/validation/upright-open-strings-benchmark-2026-11-11.md)).
+  [2.3.0](Docs/validation/upright-open-strings-benchmark-2026-11-11.md),
+  [2.4.0](Docs/validation/upright-key-presses-benchmark-2026-11-11.md)).
+  Against a second recorded upright (MAPS, ENSTDkCl) the notes from C6 up
+  stand 1 to 4 dB louder beside the middle ones than recorded, and the
+  thump arrives up to 10 ms later.
   That library's five layers cover wide velocity ranges; the velocity each
   was played at is not documented.
 - **A narrower image than the recordings.** Between 500 Hz and 2 kHz the
@@ -460,8 +535,23 @@ is written independently of it.
   Salamander's. The note itself does not gain under the pedal where the
   takes gain 3 to 7 dB between C3 and A4. The frame's give is fitted to two
   recordings that disagree by a few dB.
-- **The thump under the fundamental** is up to 12 dB stronger than the
-  Salamander's from C4 to F♯5 and 2 to 10 dB weaker from A5 to F♯6.
+- **The knocks under a note.** Key by key the thump stands up to 14 dB
+  from the Salamander's (within 4 dB in the median), and it rings on for a
+  shorter time: the recording's peaks 24 to 42 ms after the onset, the
+  model's 20 to 27. The knock with the blow is 2 to 12 dB weak from C6 to
+  F♯6, and from C5 to A5 the model holds something under 180 Hz with the
+  blow that the recording does not. That the catch and the capo d'astro bar
+  are their causes is the reading the timing and the keys suggest, not a
+  measurement of a piano's action. A Steinway's notes thump 8 to 10 dB
+  harder than the Salamander's; the grands share one level.
+- **The room against the recordings.** With the room now in the close pair,
+  a treble note's tail still falls faster than the Salamander's (69 dB down
+  after 600 ms against 47), and the bass's partials stand 1 dB further from
+  the recordings than without it.
+- **The softest treble and the bass's level.** At the softest layer the
+  keys from F♯6 up stand 5 to 13 dB quiet beside the middle of the keyboard
+  against the Salamander's, and at the hardest up to 6 dB loud; the keys
+  from C1 to F♯2 stand 1 to 8 dB quiet from a soft layer up, as in 2.3.0.
 - **Rough partials.** Within a note a partial stands 6 to 10 dB from the
   mean of its neighbours where the Salamander's stand 2.5 to 5 dB: the
   model's board answers single frequencies more unevenly than a real one.
@@ -480,10 +570,11 @@ is written independently of it.
   beside the model: a pedal going down does not set the freed strings
   whispering, and a key's knock does not reach the soundboard's model.
 - **Changing the piano cuts what sounds.** A new body starts silent.
-- **CPU.** The eight demos take 5 to 11 % of one core on the CI runner
-  (main build 105), and their heaviest 256-frame blocks 12 to 29 % of the
-  block's time; on a development machine (an Intel Xeon at 2.1 GHz, GCC 13)
-  6 to 13 % and 20 to 54 %. There is no Quality setting to lighten it.
+- **CPU.** On a development machine (an Intel Xeon at 2.1 GHz, GCC 13) the
+  eight demos take 6 to 14 % of one core and their heaviest 256-frame
+  blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to
+  54 % there, and 5 to 11 % and 12 to 29 % on the CI runner (main build
+  105). There is no Quality setting to lighten it.
 - **Typical dimensions.** The four pianos are typical of their kinds, not
   one maker's instruments, and their soundboards are a smeared plate, not a
   ribbed board with its bridges.

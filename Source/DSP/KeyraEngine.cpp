@@ -153,6 +153,19 @@ constexpr float pedalLift=.7f;
 // it there. Their pitches differ by a median 0.02 cents, so a strike keeps
 // its tuning.
 constexpr double touchSpreadDb=1.085;
+// Nor do two knocks of the action sound alike. The Salamander grand's key
+// returns, each key's recorded once, stand 1.5 dB from their neighbours' in
+// level (1.6, 2.1, 3.4 and 3.8 dB in the bands from 50 Hz, 200 Hz, 800 Hz and
+// 3.2 kHz up), and their waveforms correlate 0.56 at the best lag: an upper
+// bound on what two returns of one key differ by. Each knock draws its level
+// (knockSpreadDb), each body mode its own level and phase about the recorded
+// ones, each band of the click its level, and the click its rise (a factor's
+// logarithm). Two returns of C3, C4 or C6 then differ by 1.4 to 1.8, 1.5 to
+// 1.8, 2.3 to 2.9 and 3.3 to 3.8 dB in those bands and 1.4 to 1.9 dB in
+// all, and correlate 0.60 to 0.75. The recorded pedal's two takes correlate
+// 0.52 going down and 0.36 coming up; these spreads leave the engine's at
+// 0.89 and 0.62, more alike than the recorded.
+constexpr double knockSpreadDb=1,modeSpreadDb=2,modeSpreadPhase=1,clickSpreadDb=3,clickSpreadRise=.3;
 #if (defined(__clang__) || defined(__GNUC__)) && !defined(KEYRA_FORCE_SCALAR)
 // Explicit 128-bit lanes also survive the freestanding Rack compiler, whose
 // ordinary loops do not auto-vectorize. One vector holds four body modes.
@@ -435,7 +448,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1717,.1603,.1282,.1727};
+  static constexpr double pascalScale[model::bodyCount]{.1733,.1627,.1268,.1698};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75;
   double smooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
@@ -443,6 +456,7 @@ struct Engine::Impl {
   std::uint64_t clock=0; // samples processed since reset, asleep or not
   bool steady=false;
   std::uint32_t touch=1; // the strikes' own draws, apart from the noise's; from 1 on reset
+  std::uint32_t chance=1; // the action's knocks' own draws, apart from both; from 1 on reset
   bool sleeping=true;
   bool pedalHeld=false;  // the sustain pedal's dampers off the strings
   // The half-drive response keeps normal playing at the calibrated level.
@@ -806,7 +820,7 @@ struct Engine::Impl {
     actionKnock(keys,true);
     syncPiano();
     piano.strike(key,bounded(model::touched(velocity,static_cast<float>(touchDb),set.dynamics),1/127.f,1.f),
-                 static_cast<float>(pedal));
+                 static_cast<float>(pedal),steady?0:touch);
   }
   // The dampers the keys and the sostenuto hold off their strings, the
   // sustain pedal's travel and the mod wheel's felt, as the channels stand.
@@ -833,8 +847,16 @@ struct Engine::Impl {
   // pianos by the action's build, ringing at the action's decay. It builds
   // up under the action's rise, or, `struck` with a strike, under the
   // body's as the strike's knock does.
+  // A uniform draw of unit spread for a knock of the action; a measurement's
+  // knocks are the recorded ones.
+  double actionDraw() noexcept {
+    if(steady)return 0;
+    chance^=chance<<13;chance^=chance>>17;chance^=chance<<5;
+    return std::sqrt(12.)*(chance*(1./4294967296.)-.5);
+  }
   void actionKnock(const ActionSide (&side)[pianoCount],bool struck=false) noexcept {
     if(!(parameters.mechanics>0))return;
+    const double knockDb=knockSpreadDb*actionDraw();
     const int ahead=static_cast<int>((chunk-(frame%chunk))%chunk);
     int counts[pianoCount];
     for(int p=0;p<pianoCount;++p)counts[p]=side[p].count;
@@ -842,6 +864,7 @@ struct Engine::Impl {
     for(int k=0;k<bodyModeCount;++k){double level=0,phase=0;
       if(!betweenPianos(share.action,k,counts,[&](int p,double& l,double& ph){const auto& x=side[p];
            l=mix(x.x[k].levelDb,x.y[k].levelDb,x.t)+x.gainDb;ph=x.t<.5?x.x[k].phase:x.y[k].phase;},level,phase))continue;
+      level+=knockDb+modeSpreadDb*actionDraw();phase+=modeSpreadPhase*actionDraw();
       const double amplitude=parameters.mechanics*std::pow(10.,level/20);
       const Complex g{amplitude*std::cos(phase),amplitude*std::sin(phase)};
       knock(actionRing[k/lanes],k%lanes,g,ahead);
@@ -851,7 +874,7 @@ struct Engine::Impl {
       any=true;
     }
     if(any){wake();actionRinging=true;rising=rising||struck;}
-    actionClick(side);
+    actionClick(side,knockDb);
   }
   // The click above the body modes, as a burst per noise band under the
   // action's rise, mixed as the knock's modes are: on each piano between its
@@ -860,8 +883,8 @@ struct Engine::Impl {
   // and the balances weighted by those powers. A band silent at one pitch
   // has no level to mix in dB: the other's fades in power towards it,
   // rather than towards -200 dB.
-  void actionClick(const ActionSide (&side)[pianoCount]) noexcept {
-    Burst* burst=nullptr;
+  void actionClick(const ActionSide (&side)[pianoCount],double knockDb) noexcept {
+    Burst* burst=nullptr;double rise=actionRise;
     for(int k=0;k<noiseBands;++k){
       if(noise[k].scale==0)continue;
       double power=0,logRate=0,balance=0;
@@ -881,13 +904,13 @@ struct Engine::Impl {
       }
       // Under -180 dB the band is silent, as a burst's stages end there.
       if(!(power>=1e-18))continue;
-      if(!burst){burst=&claimBurst();*burst=Burst{};}
+      if(!burst){burst=&claimBurst();*burst=Burst{};rise*=std::exp(clickSpreadRise*actionDraw());}
       const double rate=std::exp(logRate/power),tilt=balance/power;
-      const double amplitude=parameters.mechanics*std::sqrt(power)*noise[k].scale;
+      const double amplitude=parameters.mechanics*std::sqrt(power)*noise[k].scale*std::pow(10.,(knockDb+clickSpreadDb*actionDraw())/20);
       burst->knockLeft[k]=burst->riseLeft[k]=amplitude*std::pow(10.,-tilt/40);
       burst->knockRight[k]=burst->riseRight[k]=amplitude*std::pow(10.,tilt/40);
       burst->knockStep[k]=std::exp(-rate*chunk/sampleRate);
-      burst->riseStep[k]=std::exp(-(rate+1/actionRise)*chunk/sampleRate);
+      burst->riseStep[k]=std::exp(-(rate+1/rise)*chunk/sampleRate);
     }
     if(burst){burst->active=true;burst->serial=serial;hissing=true;wake();}
   }
@@ -1099,7 +1122,7 @@ void Engine::reset() noexcept {
   // A hard reset starts the current action afresh, even if a live change had
   // not finished gliding its pickups. Live changes still glide.
   p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
-  p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;
+  p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.chance=1;p.gain=p.parameters.gain;p.width=p.parameters.width;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
   p.output.Reset();

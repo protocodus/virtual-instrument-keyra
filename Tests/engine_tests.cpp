@@ -137,7 +137,8 @@ int main(){
   {
     // Silence, the host's blocks, and starting over.
     const auto score=[](keyra::Engine& engine,Take& take,int block){
-      render(engine,take,.05,block);engine.noteOn(60,.7f);engine.noteOn(36,.9f,2);render(engine,take,.2,block);
+      // A top key with them: its blow knocks on the capo bar, and each key's hammer is caught.
+      render(engine,take,.05,block);engine.noteOn(60,.7f);engine.noteOn(36,.9f,2);engine.noteOn(98,.8f);render(engine,take,.2,block);
       engine.controlChange(64,127);engine.noteOff(60);render(engine,take,.15,block);
       engine.controlChange(64,0);engine.noteOff(36,2);render(engine,take,.2,block);
     };
@@ -308,9 +309,14 @@ int main(){
     b.run(.6);check(b.take.db(.6,.8)<b.take.db(.05,.2)-30,"reset all controllers lets a pedalled note fall");
     b.start(strings());e.noteOn(60,.7f);e.noteOn(64,.7f);b.run(.3);e.controlChange(123,0);b.run(.5);
     check(b.take.db(.6,.8)<b.take.db(.1,.3)-30,"all notes off lets every key go");
-    b.start(strings());e.controlChange(64,127);e.noteOn(60,.7f);b.run(.8);const double pedalled=b.take.db(.6,.8);
+    // Against the key let go under the pedal, not the key kept down: the
+    // pedal holds the dampers a little less clear of the strings than a key
+    // does (pedalLift), which takes 1.0 dB by then on its own, the whole of
+    // the 1 dB this check allowed when it compared with the key kept down.
+    b.start(strings());e.controlChange(64,127);e.noteOn(60,.7f);b.run(.3);e.noteOff(60);b.run(.5);const double pedalled=b.take.db(.6,.8);
     b.start(strings());e.controlChange(64,127);e.noteOn(60,.7f);b.run(.3);e.controlChange(123,0);b.run(.5);
-    check(std::abs(b.take.db(.6,.8)-pedalled)<1,"all notes off leaves the pedal down");
+    std::cout<<"C4 let go under the pedal "<<pedalled<<" dB, by all notes off "<<b.take.db(.6,.8)<<" dB\n";
+    check(std::abs(b.take.db(.6,.8)-pedalled)<.1,"all notes off leaves the pedal down");
   }
   {
     // The action beside the strings: every key lands and returns, louder with

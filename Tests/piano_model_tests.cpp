@@ -1,11 +1,13 @@
 // The physical model's own contracts (PianoModel.h), below the engine: what
 // a key is built as, the stiff strings' partials, the hammer's blow, the
-// strings' decay, the dampers, the open strings and the bridge. The keys,
-// pedals and controls as a front end meets them are in engine_tests.cpp.
+// knocks under a note, the strings' decay, the dampers, the open strings and
+// the bridge. The keys, pedals and controls as a front end meets them are in
+// engine_tests.cpp.
 #include "DSP/PianoModel.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -147,6 +149,47 @@ int main(){
     b.start(c);piano.holdDamper(keyOf(48),true);
     for(int k=0;k<12;++k){piano.strike(keyOf(48),.9f);b.run(.08);}
     check(b.take.finite()&&b.take.db(.88,.96)<b.take.db(0,.08)+12,"a repeated key stays a piano's");
+  }
+  {
+    // The two knocks under a note. What a span holds under `hz`, dB re 1 Pa.
+    const auto under=[&](double hz,double from,double to){
+      return b.take.db(from,to)+10*std::log10(std::max(1e-30,1-std::pow(10.,b.take.above(hz,from,to)/10)));};
+    Controls c=bare();
+    // The thump: the action catches the hammer well after the blow, later
+    // the softer it was. When what C7 holds under 120 Hz (four one-pole
+    // low-passes, which the knock above 180 Hz does not pass) peaks, ms.
+    const auto thump=[&](float velocity){b.start(c);piano.strike(keyOf(96),velocity);b.run(.1);
+      const double pole=1-std::exp(-2*pi*120/rate);double state[4]{},most=0;std::size_t at=0;
+      for(std::size_t i=0;i<b.take.left.size();++i){double x=b.take.left[i]+b.take.right[i];
+        for(double& z:state){z+=pole*(x-z);x=z;}
+        if(std::abs(x)>most){most=std::abs(x);at=i;}}
+      return 1000.*static_cast<double>(at)/rate;};
+    const double hard=thump(.9f),soft=thump(.25f);
+    std::cout<<"under 120 Hz C7 peaks "<<hard<<" ms after a forte blow, "<<soft<<" ms after a piano one\n";
+    check(hard>12,"the thump comes after the blow");
+    check(soft>hard+3,"and later after a soft one");
+    // The knock: a top key's blow leans on the capo bar and is heard at
+    // once; a bass key's strings end on agraffes, and nothing is heard of it
+    // before the strings' own sound has reached the bridge.
+    b.start(c);piano.strike(keyOf(102),.6f);b.run(.1);
+    const double knock=under(1500,0,.006)-b.take.db(.01,.1);
+    b.start(c);piano.strike(keyOf(24),.6f);b.run(.2);
+    const double before=b.take.db(0,.004)-b.take.db(.02,.2);
+    std::cout<<"under 1.5 kHz in its first 6 ms F#7 holds "<<knock<<" dB re the note; C1's first 4 ms hold "<<before<<" dB re the note\n";
+    check(knock>-12,"a top key's blow knocks");
+    check(before<-50,"nothing precedes a bass string");
+    // No two catches are alike once a strike carries its chance, and the
+    // same chance is the same catch.
+    const auto caught=[&](std::uint32_t chance){b.start(c);piano.strike(keyOf(96),.6f,0,chance);b.run(.1);return b.take;};
+    const Take one=caught(1),two=caught(2),oneAgain=caught(1);
+    check(one.left==oneAgain.left,"a strike's chance repeats exactly");
+    check(one.left!=two.left&&std::abs(one.db(0,.1)-two.db(0,.1))<1.5,"another chance is another catch of the same note");
+    // The top strings, which the bridge holds hardest, only lose energy.
+    for(const float soundboard:{0.f,1.f}){Controls d;d.soundboard=soundboard;b.start(d);piano.setPedal(1);
+      for(int key=76;key<keyra::model::keyCount;++key)piano.strike(key,1);
+      b.run(4);
+      bool falling=true;for(double t=.5;t<3.5;t+=.5)falling=falling&&b.take.db(t+.5,t+1)<b.take.db(t,t+.5)+.5;
+      check(b.take.finite()&&falling,"the top octave rings down at either end of Soundboard");}
   }
   {
     // The strings lose their energy and gain none: once the blow is over a
