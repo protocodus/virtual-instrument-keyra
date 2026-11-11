@@ -43,6 +43,11 @@ pedal acquisition state, so it cannot validate pedal fidelity.
 
 ## Iteration discipline
 
+This section is 1.x's: it governs an engine fitted from recordings. 2.0.0's
+physical model (2026-11-11) is fitted to no split; the recordings remain its
+benchmark through `Tools/benchmark_recordings.py`, and
+`Tools/evaluate_recordings.py` went with the fitted engine.
+
 Keep the calibration split `Tools/corpus/split-2026-10-27.json` locked: fit
 only its train role, score its dev role at every iteration without fitting
 it, and open the sealed pitches (D♯2, D♯4, D♯6) only to report a candidate the

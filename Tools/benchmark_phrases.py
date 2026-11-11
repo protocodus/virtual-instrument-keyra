@@ -139,7 +139,7 @@ def render(renderer, model, item, folder, soft):
     score, wav = folder/(item['id']+'.events'), folder/(item['id']+'.wav')
     score.write_text('\n'.join(lines)+'\n')
     subprocess.run([str(renderer), '--events', str(score), '--output', str(wav), '--duration', str(SECONDS),
-                    '--model', model, '--vary'], check=True, stdout=subprocess.DEVNULL)
+                    '--body', model, '--vary'], check=True, stdout=subprocess.DEVNULL)
     return played, wav
 
 
@@ -266,7 +266,7 @@ def show(cell):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--renderer', type=Path, required=True)
-    parser.add_argument('--model', default='grand')
+    parser.add_argument('--model', default='concert')
     parser.add_argument('--corpus', type=Path, default=ROOT/'out/maestro')
     parser.add_argument('--without-soft', action='store_true', help='leave the soft pedal out of the render')
     parser.add_argument('--jobs', type=int, default=4)

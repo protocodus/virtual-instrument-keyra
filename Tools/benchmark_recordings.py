@@ -82,10 +82,7 @@ SPLIT = fit.MODELS['grand']['split']
 MANIFEST = fit.MODELS['grand']['corpus']
 # Each piano's record of the openings of its sealed cases.
 SEALED_LOGS = {'grand': ROOT / 'Tools/corpus/sealed-openings.json',
-               'upright': ROOT / 'Tools/corpus/sealed-openings-helsinki.json',
-               'kawai': ROOT / 'Tools/corpus/sealed-openings-kawai.json',
-               'hamburg': ROOT / 'Tools/corpus/sealed-openings-hamburg.json',
-               'newyork': ROOT / 'Tools/corpus/sealed-openings-newyork.json'}
+               'upright': ROOT / 'Tools/corpus/sealed-openings-helsinki.json'}
 WINDOWS = [(.05, .25), (.25, .75), (.75, 1.5), (1.5, 3.5)]
 LAYER_VELOCITY = fit.LAYER_VELOCITY
 RENDER_SECONDS = 4.6
@@ -453,7 +450,7 @@ def main():
     if keep:
         keep.mkdir(exist_ok=True)
     # The renderer plays the piano it is scored against.
-    extra = (['--model', a.model] if a.model != 'grand' else []) + [x for x in a.renderer_args if x != '--']
+    extra = (['--body', a.model] if a.model != 'grand' else []) + [x for x in a.renderer_args if x != '--']
     if a.rescore:
         # Under the split as it stands: a case it no longer gives these roles is dropped.
         rows, extra = [r for r in old['cases'] if split[r['case']] in a.roles], old['renderer_args']

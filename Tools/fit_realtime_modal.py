@@ -89,58 +89,6 @@ MODELS = {
                 'uncalibrated': {}, 'release': 'hammer{note}', 'pedal': (), 'tail_floor': True, 'damper': True,
                 'actions': 'The action\'s knocks on the body modes: the hammer noise the library plays as each '
                            'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
-    'kawai': {'title': 'the VCSL Keys "Grand Piano, K" (Versilian Studios, CC0 1.0)',
-              'corpus': ROOT / 'Tools/corpus/vcsl-kawai.json',
-              'split': ROOT / 'Tools/corpus/split-vcsl-kawai-2026-10-31.json',
-              'wav': ROOT / 'out/vcsl/kawai', 'cache': ROOT / 'out/calibration/kawai',
-              'header': ROOT / 'Source/DSP/MeasuredKawaiData.h',
-              'metadata': ROOT / 'Docs/research/kawai-modal-fit-2026-10-31.json',
-              'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (),
-              # An order counts where two layers find it, not three. The four
-              # layers span 33 dB, and the second softest finds C4's series to
-              # the 15th partial where the two loudest find it to the 29th and
-              # 38th, each on the ladder the orders below predict: asked of
-              # three of the four, those partials, a forte strike's
-              # brilliance, went unplayed.
-              'min_layers': 2,
-              # Its release takes scatter by up to 20 dB between neighbouring
-              # keys (at their 10 ms peaks C4 -39 dBFS, E4 -56, C5 -41, C6
-              # -61) about a fall of 38 dB from A0 to C6; played take by take,
-              # a key let go at C4 knocked 34 dB louder against its note than
-              # one at C6.
-              'release_trend': True,
-              'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
-                         'recorded pitch\'s key is let go (from F6 up, where it plays none, the take of D#6\'s), '
-                         'from one take each in those recordings\' own scale.'},
-    'hamburg': {'title': 'the Decent Sampler "Steinway Grand" (Jon Meyer); nothing from the library is copied',
-                'corpus': ROOT / 'Tools/corpus/hamburg-grand.json',
-                'split': ROOT / 'Tools/corpus/split-hamburg-2026-10-31.json',
-                'wav': ROOT / 'out/hamburg/wav', 'cache': ROOT / 'out/calibration/hamburg',
-                'header': ROOT / 'Source/DSP/MeasuredHamburgData.h',
-                'metadata': ROOT / 'Docs/research/hamburg-modal-fit-2026-10-31.json',
-                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
-                # Only 1 % of its undamped strings' tones stand 20 dB over their
-                # neighbours a second after contact, too few to give a fall.
-                # From 16 dB the shared rate holds: 0.76/s, and 0.77/s from 14.
-                'halo_fall_margin': 16,
-                'actions': 'The action\'s knocks on the body modes: the release take the library plays as each '
-                           'recorded pitch\'s key is let go, from one take each in those recordings\' own scale.'},
-    'newyork': {'title': 'the Pianobook "Grandpa\'s Piano" (David Hawkins); nothing from the library is copied',
-                'corpus': ROOT / 'Tools/corpus/newyork-grand.json',
-                'split': ROOT / 'Tools/corpus/split-newyork-2026-10-31.json',
-                'wav': ROOT / 'out/newyork/wav', 'cache': ROOT / 'out/calibration/newyork',
-                'header': ROOT / 'Source/DSP/MeasuredNewYorkData.h',
-                'metadata': ROOT / 'Docs/research/newyork-modal-fit-2026-10-31.json',
-                'uncalibrated': {}, 'release': 'rel{note}', 'pedal': (), 'min_layers': 2,
-                # G5, A#6, D#7 and G#7 have no mapped FF take at their pitches, and
-                # their steep upper layers, carried on by slope, played D#7 41 dB
-                # louder from velocity 91 to 127 where F6, which has its FF,
-                # plays 11 dB. Their top layer takes the median step the other
-                # pitches record from F to FF instead.
-                'carried_top': True,
-                'actions': 'The action\'s knocks on the body modes: the seven key-noise takes the library plays '
-                           'as any key is let go, one to each recorded pitch in turn, in those recordings\' own '
-                           'scale.'},
 }
 # The keys from F6 up have no dampers: every strike sets their strings
 # ringing at their own pitches (halo_data). The analysis also searches the

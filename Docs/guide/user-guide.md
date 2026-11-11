@@ -1,56 +1,97 @@
 # Keyra
 
-Keyra generates an 88-key piano from five measured pianos, the Kakegawa, Hamamatsu,
-Hamburg and New York grands and the Helsinki upright, mixed part by part, using a
-real-time reduced modal engine and numerical measurements of acoustic
-recordings. The preserved nonlinear
-research renderer remains available separately. The host acceptance not yet
-verified for version 1.0.0 is listed in the README's Known gaps.
+Keyra is an 88-key piano made by a physical model: hammers, strings, a
+soundboard and microphones are computed as you play, and no samples are
+loaded. You choose one of four pianos, keep it as you like it and place the
+microphones. The keys', dampers' and pedals' own noises play beside it. What
+is not yet verified for version 2.0.0 is listed in the README's Known gaps.
 
-## Playing and controls
+## Playing
 
-Send MIDI notes A0–C8 (21–108). MIDI velocity changes spectral balance and
-excitation level continuously, along one curve on every piano: halfway
-between a straight line and an S-curve in level, from the grand's softest
-recorded strike at velocity 1 to each piano's loudest at 127. Each strike
-lands a little harder or softer than its velocity, as a player's do. MIDI
-note-on with velocity zero releases a key.
-Each MIDI channel owns its key and controller state.
+Send MIDI notes A0–C8 (21–108). Velocity sets how fast the hammer is thrown:
+a faster hammer is louder and, because its felt stiffens under the blow,
+brighter. Each strike lands a little harder or softer than its velocity, as a
+player's do. A note-on with velocity zero releases a key. Each MIDI channel
+owns its keys and pedals; the strings are one piano's, so all channels play
+the same strings.
+
+The panel has three views, Piano, Body and Mics, and the tables below follow
+them.
+
+## The piano
 
 | Control | Behavior |
 | --- | --- |
-| Strings, Hammers, Soundboard, Action | In the Build view: a row per part, with a weight from 0 to 100% for each measured piano (Kakegawa, Helsinki, Hamamatsu, Hamburg, New York). The part mixes the pianos at their shares of its row, so 100% Kakegawa and 50% Helsinki plays two thirds of the one and a third of the other, and a row of zeros plays the Kakegawa grand's. Strings set the tuning stretch, stiffness, unisons and how the partials ring; Hammers how hard each partial is struck, how fast it rises and how the tone follows velocity; Soundboard the body's modes, the strike's knock and the board's noise; Action the knocks of keys, dampers and pedals and how the soft pedal works. A change applies from the next note: what sounds rings on, and held keys and pedals keep their state; the soundboard's modes move at once |
-| Stiffness, Unisons, Ring | In the Build view: the strings' inharmonicity from ×0.25 to ×4, how far each note's unison strings sit apart from ×0 (one pitch) to ×3, and how long the strings ring from ×0.5 to ×2, each ×1.00 as built. A change applies from the next note |
-| Quality | How much of each note plays, for CPU on slower machines. Full, the default, plays all of it; Balanced and Light leave out the partials 60 and 50 dB under the note's strongest, which changes no third of an octave of its spectrum by more than 0.04 and 0.74 dB. A change applies from the next note |
-| Output | Master output level, smoothed during playback. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2.5 ms (120 frames at 48 kHz), which the plug-in reports to the host |
-| Brightness | Changes partial balance; the neutral setting is 50% |
-| Resonance | Amount of the reduced sympathetic response |
-| Width | Stereo spread, from centered to wide |
-| Tube Mic | Where the piano is heard from: at 0% the stereo pair the piano was recorded with, close over the strings (Kakegawa grand), at the player's position by the hammers (Helsinki upright) or at the player's position (Hamamatsu grand); at 100% a vintage tube microphone at shin height, mono, with more deep bass and top and less low midrange, measured on the upright's recordings. Between, the two are mixed and the image narrows. Typical playing reads the same on the meter at 0% and 100%, and about half a decibel less mixed halfway |
-| Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling, the sustain pedal's knocks and the strings it sets ringing going down. Silent at 0%; the quieter default is 40%. Turn up for more mechanical detail, or double-click to reset. The hammer/body attack stays present at 0% |
-| Tuning | Concert A frequency; the DAW interface shows hertz |
-| Felt mute | Adds damping to sounding modes, including physically held notes |
-| Sustain | Continuous damper lifting; intermediate positions produce half-pedal damping. Full pedal lifts the dampers 80% of the way clear, so the felt still grazes the strings: a chord let go under it falls 60 dB in about 9 s on the Kakegawa grand and 11 s on the Helsinki upright |
-| Sostenuto | Captures only keys held when the pedal crosses 50% upward; later notes release normally |
-| Soft | Changes the level, high-partial excitation and unison balance of subsequent strikes |
+| Piano | Concert Grand (2.74 m), Parlor Grand (1.86 m), Baby Grand (1.50 m) or Upright (1.25 m). Smaller pianos have shorter bass strings, a smaller soundboard and lighter, harder hammers. Changing the piano stops what sounds. Not offered for automation |
+| Hammer | The felt, from soft and worn-in at −1 to hard and bright at +1; 0 is the piano as built. Applies from the next strike |
+| String age | 0 is new strings. Towards 1 the strings lose their upper partials' sustain, the wound bass strings most, and beat against themselves. Applies from the next strike |
+| Detune | How far apart the two or three strings of a note are tuned: pure at 0, a well-kept piano at the default 0.3, a bar piano at 1 |
+| Stretch | The tuner's stretch. At 1 the octaves are tuned to the strings' own slightly sharp overtones, as a tuner does; 0 is equal temperament, 2 twice the stretch |
+| Dynamics | How far apart the softest and the hardest blow are, in loudness and in tone: a narrow, even touch at 0, the widest at 1. Applies from the next strike |
+| Practice felt | A felt strip between hammers and strings: a soft, muffled attack. Applies from the next strike |
+| Felt mute | Felt laid on the sounding strings, held notes included. The mod wheel moves it |
 
-The twelve factory presets set the build, Brightness, Resonance, Width and
-Felt mute; Output, Tuning, Quality, Tube Mic, Mechanics and the pedals keep
-their settings. Five play the Kakegawa grand and three the Helsinki upright,
-Hamamatsu Grand plays the Hamamatsu grand, Three Cities plays every part
-at equal thirds of the first three, and Hamburg Grand and New York Grand play
-those grands. The DAW interface's on-screen keyboard
-is playable. Three brass pedal controls
-show the effective soft, sostenuto and sustain positions, in the physical
-piano's left-to-right order. Hold a pedal to press it and release to lift it;
-the continuous travel controls remain available for half pedalling. The
-display also follows MIDI pedals and keyswitches. The Rack Extension has
-host pitch and modulation wheels; pitch bend spans two semitones each way.
-Reason's master tuning is included by the adapter.
+## The body
 
-Older saved Mechanics settings and automation keep their sound. In the DAW's
-generic parameter view, Mechanics still uses its original raw 0–2 scale; the
-instrument panel shows a tapered 0–100% knob, with the new default at 40%.
+| Control | Behavior |
+| --- | --- |
+| Lid | Closed at 0, the short stick at 0.5, open at 1 (an upright's top). A closed lid keeps the high frequencies from the microphones outside the piano |
+| Soundboard | How long the soundboard rings: heavily damped at 0, lively at 1 |
+| Sympathetic | How strongly the strings whose dampers are off answer the notes you play: held keys, everything under the sustain pedal, and the top keys, which have no dampers |
+| Duplex | How strongly the short lengths of string beyond the bridge ring. The upright has none |
+| Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling and the sustain pedal's knocks. Silent at 0%; the default is 40%. Double-click to reset |
+| Output | Master output level. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2.5 ms, which the plug-in reports to the host |
+
+## The microphones
+
+Four pairs hear the piano, each with its own level. At the same level each
+plays the piano as loud as the close pair, so the levels are a balance.
+
+| Control | Behavior |
+| --- | --- |
+| Close | A spaced pair inside the piano over the strings by the hammers (behind an upright's soundboard): the direct, percussive pop sound |
+| XY | A coincident pair at the open lid, about a metre off: a focused, natural image |
+| Live | A spaced pair in the room beside a grand, or over the player's head at an upright: the piano with some of its room |
+| Distant | A wide pair across the room: mostly room |
+| Room | How much of the room's reverberation the pairs that hear it take; none at 0 |
+| Width | The stereo image: the microphones' own at 0.75, mono at 0 |
+
+Tuning, in the header of every view, sets concert A from 415 to 466 Hz.
+
+## Pedals
+
+| Control | Behavior |
+| --- | --- |
+| Sustain | Lifts the dampers continuously. The half pedal is the upper middle of the travel, about 64 to 89 on CC64: the strings ring on, shortened. A full pedal leaves the felt grazing the strings, so a chord let go under it falls 60 dB in about 10 s rather than ringing on for 20 |
+| Sostenuto | Holds only the keys that are down when the pedal crosses halfway; later notes release normally |
+| Soft | On a grand, una corda: the hammers shift off one string of each note and strike with softer felt. On the upright the hammers start closer to the strings and arrive slower |
+
+Three brass pedal controls show the effective soft, sostenuto and sustain
+positions, in the piano's left-to-right order. Hold a pedal to press it and
+release to lift it; the continuous travel controls remain available for half
+pedalling. The display also follows MIDI pedals and keyswitches. The on-screen
+keyboard is playable. Pitch bend spans two semitones each way.
+
+## Presets
+
+The twelve factory presets set the piano, its controls, the microphones, Room,
+Width and the practice felt; Output, Tuning, Mechanics, the felt mute and the
+pedals keep their settings. Every preset plays at about the same level.
+
+| Preset | What it is |
+| --- | --- |
+| Concert Grand | The concert grand as built, close pair, lid open |
+| Studio Grand | The parlor grand with harder hammers, close and XY, a drier room |
+| Warm Walnut | The parlor grand with soft hammers on the short stick, three pairs |
+| Felt Nocturne | The concert grand under the practice felt |
+| Open Strings | The concert grand with the soundboard, sympathetic strings and duplex scales turned up, mostly from the room |
+| Upright | The upright as kept at home: slightly aged strings, a little more detune |
+| Felt Upright | The upright under the practice felt, top half open |
+| Pop Upright | The upright with hard hammers, close and dry |
+| Baby Grand | The baby grand, close and XY |
+| Distant Hall | The concert grand from across the room |
+| Old Parlor | The parlor grand with old strings and wide unisons |
+| Bar Piano | The upright with old strings, hard hammers and unisons far apart |
 
 ## Pedal keyswitches
 
@@ -74,7 +115,7 @@ hardware or panel pedal engaged. Each MIDI channel owns its switches. All Notes
 Off releases held keys and switches while other pedal sources continue to
 apply; resetting MIDI controllers does not synthesize a new sostenuto press.
 
-## Pedals and modulation
+## Pedals and modulation by MIDI
 
 | MIDI controller | Meaning |
 | --- | --- |
@@ -93,40 +134,29 @@ the physical controller. Repeated sostenuto messages above its midpoint do
 not capture new notes; release and press it again to capture a new set.
 
 Sustain can catch a still-decaying released note. It cannot restore energy
-already lost to damping. The highest twenty keys have no ordinary key damper;
-the felt mute can damp them as well.
+already lost to damping. The top keys have no dampers (from F♯6 on the
+concert grand, D♯6 on the upright); the felt mute damps them as well.
 
 ## Save and recall
 
-DAW state stores the 39 saved parameters. Transient held notes and MIDI
-controller positions are performance state. Malformed, incomplete or unsupported
-state is rejected; a session saved before the build existed opens with the
-grand it was made with, and one saved with the Piano control as the build it
-chose. The build and Quality are not offered for automation. The Rack Extension uses Reason patches for its panel state
-and native host performance properties for pitch, mod and sustain.
+The host's state stores the 24 saved parameters. Held notes and MIDI
+controller positions are performance state. Malformed, incomplete or
+unsupported state is rejected.
+
+A session saved with Keyra 1.x opens, but does not sound as it did: that
+version played pianos fitted from recordings, which 2.0.0 does not have. It
+keeps its Output, Width, Tuning, Felt mute, Mechanics and pedals, its
+Brightness becomes Hammer and its Resonance becomes Sympathetic, and it loads
+the Concert Grand, or the Upright where its strings were mostly the Helsinki
+upright's. In the host's generic parameter view Mechanics uses a raw 0–2
+scale; the panel shows a tapered 0–100% knob.
 
 ## Scope of the sound model
 
-The live core plays each partial as four measured decay lanes, with the
-beating and left/right balance of its unison strings, over a bank of measured
-soundboard and case modes and the board's band noise, which every strike
-excites; the open-string bank adds a reduced sympathetic response. The strings
-from F6 up have no dampers: every strike sets them ringing, whatever the
-Resonance control, and they ring on after the key is let go. The felt
-mute damps the strings, not the board's ring, which dies within a second. The
-core does not reproduce the reference solver's nonlinear hammer contact or
-full reciprocal soundboard network. Detailed key/damper noises and
-recording-room acoustics are not calibrated.
-The current isolated-note library cannot establish pedal realism because the
-recording pedal positions and timings are undocumented.
-
-The upright is measured the same way from another library's recordings, which
-hold no pedal recordings: its sustain pedal makes no sound of its own, and its
-soft pedal brings the hammers closer to the strings, as an upright's does
-(half-blow), by a derivation no recording measures. The Hamamatsu grand is
-measured from a third library's recordings, which hold no pedal recordings
-either: its sustain pedal makes no sound of its own, its strings ring under
-it at the Kakegawa grand's rates, and its soft pedal shifts the hammers, as a
-grand's does. The Hamburg and New York grands are played the same way; their
-libraries' takes hold no notes under the pedal, and New York's pedal noises are
-not played yet.
+The strings, hammers, soundboard and microphones are computed from a
+description of each piano; none of it is fitted to a recording note by note,
+and the four pianos are typical of their kinds, not one maker's instruments.
+The keys', dampers' and pedals' noises are numbers fitted from recordings of
+a grand and an upright and play beside the model: the pedal going down does
+not set the strings whispering. The room is a small reverberator, not a
+measured hall. The README's How it works and Known gaps say more.

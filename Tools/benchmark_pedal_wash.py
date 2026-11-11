@@ -130,7 +130,7 @@ def render(renderer, model):
                     events, wav = Path(tmp) / 'note.events', Path(tmp) / 'note.wav'
                     events.write_text(('0 pedal 1\n' if pedal == 'down' else '') + f'0.5 on {midi} {velocity}\n')
                     subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--duration', '7',
-                                    '--model', model], check=True, stdout=subprocess.DEVNULL)
+                                    '--body', model], check=True, stdout=subprocess.DEVNULL)
                     rendered[midi, layer, pedal] = measure(pa.load(wav)[1], midi)
     return rendered
 
@@ -188,7 +188,7 @@ def main():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--renderer')
     mode.add_argument('--library', type=Path, help='original YamahaC3.dslibrary ZIP; rewrites the tracked energies')
-    parser.add_argument('--model', default='grand')
+    parser.add_argument('--model', default='concert')
     parser.add_argument('--out', type=Path, help='write every scored row here as JSON')
     args = parser.parse_args()
     if args.library:

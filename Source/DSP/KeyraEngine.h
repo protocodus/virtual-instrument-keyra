@@ -1,98 +1,48 @@
 #pragma once
 #include "MechanicsControl.h"
-#include <array>
-#include <cstddef>
+#include "PianoModel.h"
 #include <memory>
 
 namespace keyra {
-// The measured pianos, each fitted from its own recordings: the grand from
-// the Salamander Grand Piano V3's, the upright from the Helsinki 1967
-// Tube-Ribbon Edition's, the Kawai grand from the VCSL Keys "Grand Piano,
-// K"'s, the Hamburg grand from the Decent Sampler "Steinway Grand"'s and the
-// New York grand from the Pianobook "Grandpa's Piano"'s. Saved songs and
-// patches recall a piano by its value, so pianos are only ever added or
-// removed at the end: the sixth, the Belmont baby grand, was removed.
-enum class Piano {grand,upright,kawai,hamburg,newyork};
-constexpr int pianoCount=5;
-// How much of each measured piano a part of the build takes, by Piano:
-// weights from 0 to 1, played as shares of their sum, so that any number of
-// pianos mix in one part. A part with no weight plays the grand's.
-using Mix=std::array<float,pianoCount>;
-constexpr Mix only(Piano piano) noexcept {Mix mix{};mix[static_cast<std::size_t>(piano)]=1;return mix;}
-// The piano that plays, built part by part from the measured pianos. Each
-// part mixes the pianos by its Mix; between them it blends them, a piano no
-// recording is. The modifiers scale what the parts give, 0 leaving them as
-// built. A change applies from the next strike, and the soundboard's modes
-// and the undamped strings move at once.
-struct Build {
-  // The strings: their stretch and stiffness, unisons, decays and pickups,
-  // the undamped top strings and the components beside the series.
-  Mix strings=only(Piano::grand);
-  // The hammers: what a strike excites, each partial's level and phase at
-  // contact, the tone's change with velocity, the onset and the contact.
-  Mix hammers=only(Piano::grand);
-  // The soundboard and case: their modes, a strike's knock on them and the
-  // board's noise.
-  Mix soundboard=only(Piano::grand);
-  // The action: the knocks of keys, dampers and pedals.
-  Mix action=only(Piano::grand);
-  // The strings' inharmonicity, times 4^stiffness (-1 to 1: a quarter to four
-  // times as built).
-  float stiffness=0;
-  // How far the unison strings sit apart: -1 pure, 0 as built, 1 three times
-  // as far.
-  float unisons=0;
-  // How long the strings ring, times 2^ring (-1 to 1: half to twice).
-  float ring=0;
-};
-// Each measured piano's build: every part its own, the modifiers at 0.
-constexpr Build measuredBuild(Piano piano) noexcept {return {only(piano),only(piano),only(piano),only(piano),0,0,0};}
-// A build between two pianos, as the controls of songs and patches saved
-// before the mixes describe it: each part moved from `piano`'s (0) toward
-// `toward`'s (1), and the modifiers. A piano built toward itself is just
-// itself.
-constexpr Build buildToward(Piano piano,Piano toward,float strings,float hammers,float soundboard,float action,
-                            float stiffness,float unisons,float ring) noexcept {
-  const auto part=[piano,toward](float x){
-    Mix mix{};mix[static_cast<std::size_t>(piano)]+=1-x;mix[static_cast<std::size_t>(toward)]+=x;return mix;};
-  return {part(strings),part(hammers),part(soundboard),part(action),stiffness,unisons,ring};
-}
-// The piano a measured piano's parts moved toward in those songs and
-// patches: the upright's for the grand, the grand's for every other.
-constexpr Piano partner(Piano piano) noexcept {return piano==Piano::grand?Piano::upright:Piano::grand;}
-// How much of each strike plays, for CPU: every partial, or those whose peak
-// or held-energy proxy can come within 60 dB (balanced) or 50 dB (light) of
-// the strongest at any Brightness setting. These proxies do not guarantee
-// an error bound for every band/window. A change applies from the next strike.
-enum class Quality {full,balanced,light};
+// The piano that plays and where it is heard from. Every control but the
+// body is continuous; PianoModel.h says what each one is in the instrument.
 struct Parameters {
-  float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
-  float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
-  // Where the piano is heard from: 0 the stereo pair each piano is fitted
-  // from (the upright's ribbons in player position, the grand's pair over
-  // the strings), 1 the upright recordings' other microphone, a mono tube
-  // further off on the same strikes, by its difference from the ribbons
-  // (MeasuredMicData.h); between them the two mixed. It applies at once, to
-  // everything sounding.
-  float mic=0.f;
+  float gain=.7f;
+  model::Body body=model::Body::concertGrand;
+  // The hammers' felt, -1 soft to 1 hard; the strings' age, 0 new to 1 old;
+  // the unisons' spread, 0 pure to 1 a bar piano; the tuner's stretch, 0
+  // equal temperament, 1 the strings' own, 2 twice that; the span between
+  // the softest and the hardest blow, 0 narrow to 1 wide.
+  float hammer=0.f, age=0.f, detune=.3f, stretch=1.f, dynamics=.5f;
+  // The lid, 0 closed, .5 the short stick, 1 open; how long the soundboard
+  // rings; how strongly the open strings and the duplex scales answer.
+  float lid=1.f, soundboard=.5f, sympathetic=.5f, duplex=.5f;
+  // Each microphone pair's level as an amplitude, by model::Mic: the close
+  // pair over the hammers (the pop sound), the XY pair at the lid, the live
+  // pair in the room and the distant pair across it. Each hears the piano
+  // as loud as the close pair at the same level; its room comes on top.
+  float mic[model::micCount]{1.f,0.f,0.f,0.f};
+  // The room in the pairs that hear it, and in the action's sound: 0 none.
+  float room=.5f;
+  // The stereo image: .75 as the pairs hear it, 0 mono.
+  float width=.75f;
+  float tuning=440.f;
+  // A practice felt between hammers and strings, from the next strike; felt
+  // on the sounding strings themselves, at once (the mod wheel's).
+  float felt=0.f, mute=0.f;
+  float sustain=0.f, sostenuto=0.f, soft=0.f;
   // How loud the action plays, as an amplitude: the keys landing and coming
-  // back, the dampers falling, the sustain pedal's knocks and the strings its
-  // lifting sets ringing. 0 silent, 1 as calibrated, 2 twice as loud.
-  // New instruments use the owner's quieter choice; saved gains keep their
-  // physical meaning. The knob's display taper lives in MechanicsControl.h.
+  // back, the dampers falling and the sustain pedal's knocks. 0 silent, 1 as
+  // recorded, 2 twice as loud. New instruments use the owner's quieter
+  // choice; the knob's display taper lives in MechanicsControl.h.
   float mechanics=defaultMechanicsGain;
-  // How loud the room the piano was recorded in plays (MeasuredRoom.h), as
-  // an amplitude: 0 none, 1 as measured, 2 twice as loud. The soundboard's
-  // build chooses whose room; the strings' partials hold it already, so it
-  // hears the strike's noise and the board's ring.
-  float room=1.f;
-  Build build{};
-  Quality quality=Quality::full;
 };
 struct PedalState {float sustain=0,sostenuto=0,soft=0;};
 
-// Front-end-neutral reduced modal piano. Construct/prepare outside the callback.
-// All event and render methods are bounded, allocation-free and C++17 compatible.
+// Front-end-neutral piano: the physical model (PianoModel.h) under the keys,
+// pedals and controllers, with the action's recorded noises beside it.
+// Construct/prepare outside the callback. All event and render methods are
+// bounded, allocation-free and C++17 compatible.
 class Engine {
 public:
   explicit Engine(double sampleRate=48000);
@@ -115,49 +65,12 @@ public:
   // Total look-ahead of the piano output stage at the prepared rate.
   // Front ends report this frame count to the host.
   int outputLatencySamples() const noexcept;
-  // Offline diagnostic: fixed 2ms rise versus training-recording rise. This
-  // changes only future strikes; it is deliberately absent from product UIs.
-  void setLegacyAttackForComparison(bool enabled) noexcept;
-  // Offline measurement: every strike at exactly the recorded layers'
-  // velocity it is given, where strikes otherwise go through the shared
-  // velocity response and vary as a player's do. Also absent from product UIs.
+  // Offline measurement: every strike at exactly the velocity it is given,
+  // where strikes otherwise vary a little as a player's do. Absent from
+  // product UIs.
   void setSteadyStrikesForMeasurement(bool enabled) noexcept;
-  // Offline measurement (Tools/fit_room.py): the room plays as given, its
-  // decay rates below and above the crossover (dB/s, Hz) and the gain its
-  // input enters with, in place of the build's, until it is given a gain of
-  // 0. Absent from product UIs.
-  void setRoomForMeasurement(float lowRate,float highRate,float crossover,float gain) noexcept;
-  // Offline measurement (Tools/fit_low_knock.py): strikes from now on play no
-  // knock under the noise bands while disabled. Absent from product UIs.
-  void setLowKnockForMeasurement(bool enabled) noexcept;
 private:
   struct Impl;
   std::unique_ptr<Impl> impl;
-  // The native damper test compares the direct and sympathetic string state.
-  friend struct DamperTestObserver;
-  // The native pitch-blend test reads the partials a strike plays.
-  friend struct PitchBlendTestObserver;
-  // The native phantom test reads each key's phantom partials' state.
-  friend struct PhantomTestObserver;
-  // The native glide test reads each key's pitch glide and its voices'
-  // tuning.
-  friend struct GlideTestObserver;
-  // The native action click test reads the bursts a knock of the action
-  // plays.
-  friend struct ActionClickTestObserver;
-  // The native halo beat test reads the parts of the undamped strings a
-  // strike sets ringing.
-  friend struct HaloBeatTestObserver;
-  // The native halo own-string test reads the undamped strings a key's own
-  // strike sets ringing.
-  friend struct HaloOwnTestObserver;
-  // The native room test plays the room's network on its own.
-  friend struct RoomTestObserver;
-  // The native low knock test reads the low knock bands' filter states.
-  friend struct LowKnockTestObserver;
 };
-// The recorded layers' velocity (1..127) a strike at MIDI `velocity` (0..1)
-// plays on a measured piano before its player's spread: one response for
-// every piano.
-float responseVelocity(Piano piano,float velocity) noexcept;
 }

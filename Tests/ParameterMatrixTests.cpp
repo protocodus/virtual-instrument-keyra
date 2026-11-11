@@ -10,8 +10,8 @@
 // modulo N is K (numbered from 0), --case runs only the case a FAIL line
 // names, and --count and --list print the cases and parameters.
 //
-// The limits below follow from Source/DSP/KeyraEngine.cpp; each one names
-// the mechanism it comes from.
+// The limits below follow from Source/DSP/KeyraEngine.cpp and the piano in
+// Source/DSP/PianoModel.cpp; each one names the mechanism it comes from.
 
 #include "PluginProcessor.h"
 #include "ParameterMatrix.h"
@@ -45,38 +45,27 @@ public:
         // no sample passes its limiter's ceiling, -1.5 dBFS, at any Output;
         // the margin is the float rounding its own test allows.
         limits.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
-        // Output at zero is silent by design, in whichever row has it. So are
-        // held notes under the felt mute, which is what it is for: control()
-        // adds 180 m^2 (0.5 + 0.00015 f) nepers per second of loss to held
-        // strings, 40 dB on the chord's G4 by the held window at Felt
-        // Nocturne's 0.32. Whether a muted chord is still above the -60 dBFS
-        // floor then depends on its level, so the check holds only with the
-        // felt off in both rows.
-        limits.soundsWhileHeld = std::min (value (c.values, "gain"), value (c.base, "gain")) > 0.0
+        // A row is silent by design with the Output at zero, and while the
+        // chord is held with no microphone pair up: the action's noises,
+        // which need none, are over by then. Felt Mute lays felt on the held
+        // strings too (PianoModel.h, Controls::mute), so whether a muted
+        // chord is still above the -60 dBFS floor depends on its level, and
+        // the check holds only with the felt off in both rows.
+        const auto heard = [this] (const std::vector<float>& row)
+        {
+            return value (row, "gain") > 0.0
+                && value (row, "micClose") + value (row, "micXY") + value (row, "micLive") + value (row, "micDistant") > 0.0;
+        };
+        limits.soundsWhileHeld = heard (c.values) && heard (c.base)
                               && std::max (value (c.values, "mute"), value (c.base, "mute")) == 0.0;
         // The ramp is back on the case's own values before note-off, so the
-        // case row decides the release. Any sustain lifts the dampers part
-        // way (control(): target 1 - 0.8 sustain), and a sostenuto at or above
-        // its 0.5 threshold catches the held chord when the ramp brings it
-        // back up (capture()), so those strings ring on after the keys go up.
-        // But with the felt on as well it damps them (about 80 dB/s on C4
-        // at the bank's lightest, Felt Nocturne's 0.32), while the keys
-        // coming back knock the body at the Mechanics level whatever the
-        // felt does: up to 30 dB over the muted chord a quarter of a second
-        // later through the Tube Mic, under -100 dBFS a second after that.
-        // So the felt's silence is due, not a tail as loud as the chord.
+        // case row decides the release. A sustain pedal part way down holds
+        // the dampers off or lightly on the strings (PianoModel.cpp,
+        // damperGoal()), and a sostenuto at or above its 0.5 threshold
+        // catches the held chord when the ramp brings it back up, so those
+        // strings ring on after the keys go up.
         if (value (c.values, "sustain") > 0.0 || value (c.values, "sostenuto") >= 0.5)
-            limits.releaseSeconds = value (c.values, "mute") > 0.0 ? 1.5 : -1.0;
-        // The upright's dampers hold part of each partial only loosely, as its
-        // release takes show (setDamper(), measured::Damper): C4's keeps 12.9 dB
-        // under the partial and falls about 6 dB a second, lower keys more of
-        // it and slower. At -9 VU typical playing (Tools/KeyraLevels.cpp) the
-        // chord's strings sit at the -60 dBFS floor 2 s after the release, and
-        // at full Output 3 dB over it, so silence is due a second later.
-        // A preset whose strings take any of the upright's has its dampers.
-        else if (c.preset >= 0
-                 && keyra::factoryPresets[static_cast<std::size_t> (c.preset)].build.strings[static_cast<std::size_t> (keyra::Piano::upright)] > 0)
-            limits.releaseSeconds = 3.0;
+            limits.releaseSeconds = -1.0;
         return limits;
     }
 

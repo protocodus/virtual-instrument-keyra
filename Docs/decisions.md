@@ -4287,3 +4287,70 @@ recall, retail Reason, target-chip CPU) are as they were, and
 `Keyra.FactoryDynamics` fails as it did on 0.4.37. Tagging and publishing
 the release remain the owner's steps.
 
+
+## 2026-11-11 — the piano rewritten as a physical model (2.0.0)
+
+The owner was not happy with the engine: the mechanical part was liked, the
+keys' own sound "very low-quality". The owner asked for it to be rewritten
+from zero as a physical model of the piano on current research, versatile
+enough to be kept as various grands and uprights, with several microphone
+positions (pop, XY, live, distant) and controls for the hammers, the strings'
+age, the unisons' detuning, the stretch tuning, the dynamic range, the lid
+and the soundboard's, sympathetic and duplex resonance, with the samples of
+the owner's training set as reference and benchmark.
+
+2.0.0 is that: `Source/DSP/PianoModel.cpp` replaces the partials fitted from
+recordings, and the action's noises, the pedals, the keyswitches and the
+output stage are 1.0.0's. Its hammers, losses and frame knock are fitted to
+notes of the training set's Steinway grand, the upright's hammer stiffness
+to eleven notes of a recorded upright; nothing else is fitted to a recording.
+
+What the measurement says: against the Salamander grand, which 1.0.0 was
+fitted to, 2.0.0 is further off on every score of
+`Tools/benchmark_recordings.py`, on the notes 1.0.0 trained on and on those
+it never fitted (dev: partial levels 5.3 to 11.7 dB, tuning 0.9 to 3.1
+cents, decay 2.1 to 5.5 dB/s, rise 4.5 to 15.5 ms;
+[report](validation/grand-recording-benchmark-2026-11-11.md)). The upright
+was not benchmarked: the Helsinki recordings were not in the session, and
+the owner is to be asked for them.
+
+What was decided by ear: two lettered sets went to the owner on 2026-11-11,
+A 1.0.0 and B the model, on four phrases (the first demo, the upright demo,
+the pedal wash of 2026-11-10 and the nocturne), B matched to A on whole-file
+RMS (in the final set by +0.09, +0.98, +0.08 and −0.03 dB), with previews of
+each control. The sets are in the project's files and not committed. In the
+first set the Hammer previews ran backwards (hard for soft); the final set
+replaces it. By the project's standing rule B stands unless the owner says
+otherwise, and the owner had asked for the rewrite; no letter-by-letter
+account of what was heard has come back yet. So 2.0.0 ships on the owner's
+request and that rule, against a benchmark that favours A, and this entry is
+to be amended with the owner's verdict when there is one.
+
+## 2026-11-11 — the full pedal rings as long as the one chosen on 2026-10-30
+
+Clear of the strings, the model's dampers let a chord of C3, C4, C5 and C6
+ring 17.4 s to −60 dB on the concert grand and 20.5 s on the upright. On
+2026-10-30 the owner had found such a ring too long and chosen a full pedal
+whose felt still grazes the strings, which on 1.0.0 gave 9.5 s on the grand
+and 11.3 s on the upright by the same protocol. That choice is kept, re-pinned
+on the new strings: the engine stops the pedal at 0.7 of the travel the model
+takes (`pedalLift`, `KeyraEngine.cpp`), which gives 9.6 s on the concert
+grand, 12.3 s on the parlor grand, 9.9 s on the baby grand and 10.4 s on the
+upright. The number 0.7 is pinned to that earlier choice by measurement; the
+owner has not heard it against other stops.
+
+## 2026-11-11 — pinned without the owner's ear in 2.0.0
+
+These were set by derivation or to a recording, and the owner may want them
+otherwise:
+
+- The hammers are as hard as the Steinway notes ask, which leaves the grand
+  3.5 to 14 dB under 1.0.0's from the 2 kHz octave to the 8 kHz octave on the
+  first demo's phrase. Hammer is the control for it; the default was not
+  chosen by ear.
+- The half pedal lies between about 64 and 89 of CC64, by a law in which the
+  felt's loss grows as the square of how far it is let down
+  (`damperGoal()`, `PianoModel.cpp`). No recording with documented pedal
+  travel is at hand to fit it to.
+- The four pianos' dimensions, the microphones' positions and the room are
+  typical values, not measurements of an instrument or a hall.

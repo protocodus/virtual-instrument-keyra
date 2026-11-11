@@ -1,8 +1,10 @@
 // U4 input fuzzing of the JUCE-free engine through the shared portfolio
 // harness (Tests/FuzzHarness.h is a byte-identical copy of the master; change
-// it in reason-rack-extensions). Every input starts from a fresh engine, so a
-// saved crash replays alone; commands and rendered frames are bounded
-// whatever the input length.
+// it in reason-rack-extensions). Every input starts from an engine prepared
+// and reset, which plays as a fresh one (Keyra.Engine checks that), so a
+// saved crash replays alone; constructing one designs every piano, too slow
+// to do for each input. Commands and rendered frames are bounded whatever
+// the input length.
 #include "DSP/KeyraEngine.h"
 #include "DSP/KeyraPresets.h"
 #include "FuzzHarness.h"
@@ -17,7 +19,9 @@ extern "C" int LLVMFuzzerTestOneInput (const std::uint8_t* data, std::size_t siz
     Input input { data, size };
 
     // prepare() clamps any rate, including the nonsense ones Rate() returns.
-    auto engine = std::make_unique<keyra::Engine> (input.Rate());
+    static const auto engine = std::make_unique<keyra::Engine>();
+    engine->prepare (input.Rate());
+    engine->reset();
     keyra::Parameters parameters = keyra::withPreset ({}, keyra::factoryPresets[input.Pick (keyra::factoryPresets.size())]);
     engine->setParameters (parameters);
 
@@ -31,25 +35,24 @@ extern "C" int LLVMFuzzerTestOneInput (const std::uint8_t* data, std::size_t siz
     {
         switch (input.Pick (10))
         {
-            case 0: engine->noteOn (midi() + 64, input.Scalar(), midi() / 4); break;
-            case 1: engine->noteOff (midi() + 64, midi() / 4); break;
-            case 2: engine->noteOn (any(), input.Scalar(), any()); break;
-            case 3: engine->controlChange (input.Byte(), any(), input.Byte() % 18); break;
-            case 4: engine->pitchBend (input.Scalar() * 96.0f - 48.0f, input.Byte() % 18); break;
+            // Each read in its own statement: the order a call's arguments
+            // are evaluated in is the compiler's, and a saved input must
+            // replay the same on all of them.
+            case 0: { const int note = midi() + 64; const float velocity = input.Scalar(); engine->noteOn (note, velocity, midi() / 4); break; }
+            case 1: { const int note = midi() + 64; engine->noteOff (note, midi() / 4); break; }
+            case 2: { const int note = any(); const float velocity = input.Scalar(); engine->noteOn (note, velocity, any()); break; }
+            case 3: { const int controller = input.Byte(); const int value = any(); engine->controlChange (controller, value, input.Byte() % 18); break; }
+            case 4: { const float semitones = input.Scalar() * 96.0f - 48.0f; engine->pitchBend (semitones, input.Byte() % 18); break; }
             case 5:
             {
-                // One raw write, which may be any float, to any control,
-                // the build's included.
-                auto& build = parameters.build;
-                float* fields[] { &parameters.gain, &parameters.brightness, &parameters.resonance,
-                                  &parameters.width, &parameters.tuning, &parameters.mute,
-                                  &parameters.sustain, &parameters.sostenuto, &parameters.soft,
-                                  &build.stiffness, &build.unisons, &build.ring };
-                // Or one piano's weight in one part.
-                keyra::Mix* parts[] { &build.strings, &build.hammers, &build.soundboard, &build.action };
-                const auto pick = input.Pick (std::size(fields) + std::size(parts) * keyra::pianoCount);
-                float& field = pick < std::size(fields) ? *fields[pick]
-                             : (*parts[(pick - std::size(fields)) / keyra::pianoCount])[(pick - std::size(fields)) % keyra::pianoCount];
+                // One raw write, which may be any float, to any control.
+                float* fields[] { &parameters.gain, &parameters.hammer, &parameters.age, &parameters.detune,
+                                  &parameters.stretch, &parameters.dynamics, &parameters.lid, &parameters.soundboard,
+                                  &parameters.sympathetic, &parameters.duplex, &parameters.mic[0], &parameters.mic[1],
+                                  &parameters.mic[2], &parameters.mic[3], &parameters.room, &parameters.width,
+                                  &parameters.tuning, &parameters.felt, &parameters.mute, &parameters.sustain,
+                                  &parameters.sostenuto, &parameters.soft, &parameters.mechanics };
+                float& field = *fields[input.Pick (std::size (fields))];
                 field = input.Scalar();
                 engine->setParameters (parameters);
                 break;
@@ -60,7 +63,11 @@ extern "C" int LLVMFuzzerTestOneInput (const std::uint8_t* data, std::size_t siz
                 break;
             case 7: engine->reset(); break;
             case 8: engine->prepare (input.Rate()); break;
-            default: engine->setLegacyAttackForComparison (input.Byte() & 1); break;
+            // Any piano, including one that does not exist.
+            default:
+                parameters.body = static_cast<keyra::model::Body> (static_cast<int> (input.Byte()) - 8);
+                engine->setParameters (parameters);
+                break;
         }
         const auto frames = 1 + input.Word() % maxFrames;
         block.Arm();
