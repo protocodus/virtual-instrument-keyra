@@ -4722,7 +4722,11 @@ the keys from F♯6 up are 5 to 13 dB quiet at the softest layer and up to
 they were in 2.3.0. The upright's notes from C6 up stand 1 to 4 dB louder
 beside its middle than MAPS's. The causes named for the two knocks (the
 catch, the capo d'astro bar) are what their timing and their keys suggest;
-no action was measured.
+no action was measured. The literature names the key meeting the key frame
+for the thump, at the hammer's contact at mezzo-forte, 12 ms after it at a
+piano touch and 3 ms before it at forte (Askenfelt and Jansson 1990, as
+cited by Goebl 2001); that reading is not built or compared yet
+([options](plans/realism-options-2026-11-11.md)).
 
 **What the benchmark says** (`Tools/benchmark_recordings.py`, 2.3.0 to
 2.4.0). The grand against Salamander
