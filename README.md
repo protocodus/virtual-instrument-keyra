@@ -26,13 +26,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -7.3 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -11.0 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -2.7 dBFS |
-| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.3 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
-| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.6 dBFS |
-| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -4.1 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -6.7 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -12.1 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.1 dBFS |
+| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.7 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -2.0 dBFS |
+| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.9 dBFS |
+| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.5 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -48,6 +48,29 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.5.0 — 2026-11-11 — the string scale
+
+The strings are as stiff as the recorded pianos' are, so a note's upper
+partials sit where a real piano's do. The panel and the saved state are
+2.4.0's; a 2.4.0 session opens as saved and sounds different.
+
+- **Strings of the measured stiffness**: the plain strings were 10 to 100 %
+  stiffer than the Salamander grand's and the Helsinki upright's, which put
+  middle C's twentieth partial 18 cents sharp of the recorded note's and
+  C3's thirtieth 37 cents. The plain strings now keep their length down to
+  the break and the wound strings have their own run to A0; the concert
+  grand's inharmonicity stands within 8 % of the Salamander's from C3 to
+  F♯6. The tuner's stretch follows the new partials.
+- **Against the recordings**
+  ([grand](Docs/validation/grand-string-scale-benchmark-2026-11-11.md),
+  [upright](Docs/validation/upright-string-scale-benchmark-2026-11-11.md)):
+  on the notes 1.0.0 never fitted, the grand's partials stand 7.9 dB from
+  the Salamander's (8.2 in 2.4.0, their first move since 2.0.0) and its
+  tuning 2.1 cents (3.2); the upright's 8.4 dB (9.6) and 3.2 cents (4.3).
+  The other scores moved by 0.2 or less. 13 single-note scores of the grand
+  and 11 of the upright are worse, all listed in the reports.
+- Keys re-voiced and each piano's typical playing re-pinned to −9 VU.
 
 ### 2.4.0 — 2026-11-11 — the key presses
 
@@ -246,7 +269,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 111](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43017154914/artifacts/13854900221)**, built from [`bc0886853b6f`](https://github.com/protocodus/virtual-instrument-keyra/commit/bc0886853b6f3a3b4acfcba6db2feae8b5c26653). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 114](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43066313773/artifacts/13877320771)**, built from [`39d0c7e879c0`](https://github.com/protocodus/virtual-instrument-keyra/commit/39d0c7e879c0bdfc9d34e027ef8435fb5a2d8f38). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -263,11 +286,14 @@ follows are cited beside the code.
 **Strings.** Each string is the modes of a stiff, lossy string hinged at both
 ends, partial k at k f0 √(1 + B k²) (Fletcher 1964), up to 160 partials in
 the bass and three at C8. The scale is built from each piano's size: speaking
-lengths that double a little less than every octave down from C8's 50 mm
-until the case bends them over, plain steel wire from 0.775 mm at the top to
+lengths that double a little less than every octave down from C8's 51.5 mm,
+no plain string longer than 0.87 of A0's, the wound strings running from
+there to A0's length on a bridge of their own (set against the
+inharmonicity the Salamander grand's and the Helsinki upright's partials
+give), plain steel wire from 0.775 mm at the top to
 1.125 mm at the break, copper-wound strings below it, one string a key at
 the bottom, then two, then three. Tension, mass and inharmonicity follow from
-those (B is 0.00035 at the concert grand's middle C and 0.00049 at the baby
+those (B is 0.00028 at the concert grand's middle C and 0.00031 at the baby
 grand's). Every partial loses by the string's own damping, which rises with
 frequency, and by what the bridge takes from it.
 
@@ -487,29 +513,39 @@ is written independently of it.
   few constants set against recordings, and note by note it stands further
   from the Salamander grand than 1.0.0, which was fitted to those
   recordings, on every score of `Tools/benchmark_recordings.py`: on the
-  notes 1.0.0 never fitted, the partials' levels differ by 8.2 dB where
-  1.0.0's differed by 5.3, the tuning by 3.2 cents against 0.9, the decay by
-  4.1 dB/s against 2.1 and the rise by 13 ms against 4.5
+  notes 1.0.0 never fitted, the partials' levels differ by 7.9 dB where
+  1.0.0's differed by 5.3, the tuning by 2.1 cents against 0.9, the decay by
+  4.2 dB/s against 2.1 and the rise by 12 ms against 4.5
   ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
   [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md),
   [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md),
   [2.3.0 against 2.2.0](Docs/validation/grand-open-strings-benchmark-2026-11-11.md),
-  [2.4.0 against 2.3.0](Docs/validation/grand-key-presses-benchmark-2026-11-11.md)).
+  [2.4.0 against 2.3.0](Docs/validation/grand-key-presses-benchmark-2026-11-11.md),
+  [2.5.0 against 2.4.0](Docs/validation/grand-string-scale-benchmark-2026-11-11.md)).
   The furthest are the treble's sustain (11 dB off in third octaves) and
   the bass's rise (23 ms on average). 2.4.0 moved the tuning, the decay and
-  the bass's partials further off, and 106 single-note scores. Whether it sounds better
+  the bass's partials further off, and 106 single-note scores; 2.5.0 brought
+  the tuning and the partials closer and left 13 single-note scores worse. Whether each sounds better
   is the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
   measurement.
 - **The upright against its recordings.** Against the Helsinki upright the
-  partials' levels differ by 9.6 dB, the tuning by 4.3 cents, the decay by
-  5.5 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
+  partials' levels differ by 8.4 dB, the tuning by 3.2 cents, the decay by
+  5.3 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
   moved its attack, sustain and noise further off than 2.0.0's, 2.2.0 its
   noise a little further, 2.3.0 its partials and decay, and 2.4.0 its
   partials by another 1.0 dB
   ([2.1.0](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md),
   [2.2.0](Docs/validation/upright-even-scale-benchmark-2026-11-11.md),
   [2.3.0](Docs/validation/upright-open-strings-benchmark-2026-11-11.md),
-  [2.4.0](Docs/validation/upright-key-presses-benchmark-2026-11-11.md)).
+  [2.4.0](Docs/validation/upright-key-presses-benchmark-2026-11-11.md));
+  2.5.0 took 1.2 dB off its partials and 1.1 cents off its tuning
+  ([2.5.0](Docs/validation/upright-string-scale-benchmark-2026-11-11.md)).
+- **The bass strings' stiffness.** The concert grand's wound strings are 14
+  to 53 % less stiff than the Salamander's, a grand 0.7 m shorter, so in
+  the bass the benchmark still looks for upper partials where the model
+  does not put them; the upright's are 6 to 41 % under the Helsinki's. No
+  recorded concert grand's bass is in the reference set to say what the
+  model's should be.
   Against a second recorded upright (MAPS, ENSTDkCl) the notes from C6 up
   stand 1 to 4 dB louder beside the middle ones than recorded, and the
   thump arrives up to 10 ms later.
