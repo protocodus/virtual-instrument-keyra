@@ -4358,3 +4358,86 @@ otherwise:
   travel is at hand to fit it to.
 - The four pianos' dimensions, the microphones' positions and the room are
   typical values, not measurements of an instrument or a hall.
+
+## 2026-11-11 — velocity, the stereo image and a closer fit (2.1.0)
+
+After choosing the physical model the owner asked for the work to go on:
+"continue in improving stereo image, behaviour based on velocity, dynamics"
+and "keep improving and fitting the physical model to get more real", with a
+demo of the microphone pairs, and brought the Helsinki recordings into the
+session. 2.1.0 is that round. Five things changed in
+`Source/DSP/PianoModel.cpp`, each set against recordings by measurement, none
+by ear:
+
+- **Velocity.** The hammer's speed is the velocity to a power, 1 at Dynamics
+  0.5 (0.4 to 1.6 across the control), where 2.0.0's speeds were even in dB.
+  Against the Salamander grand's sixteen layers 2.0.0's soft and medium
+  notes were 2.5 dB too quiet and its hardest 4.4 dB too loud; 2.1.0's stand
+  within 2 dB from velocity 31 up and 2.6 dB too quiet below it, and within
+  2 dB of the MAPS Disklavier's notes. The Helsinki upright's five layers,
+  which cover wide velocity ranges and whose played velocities are not
+  documented, agree less well (1.5 dB over at the softest to 4.3 dB under
+  at the hardest).
+- **Felt.** The felt's exponent is 1 higher with the force kept at 1 mm of
+  compression, fitted to the same sixteen layers. Hammer, the practice felt
+  and una corda cover half as many decades again, which keeps what each did
+  to middle C.
+- **Stereo image.** Each soundboard mode may reach a pair's two microphones
+  up to a quarter turn out of step (70° under about 220 Hz for the close
+  pair), where 2.0.0 held every mode within 70°. Between 500 Hz and 2 kHz
+  the Salamander's two channels are 0.05 alike on average in forte notes,
+  2.0.0's 0.6 and 2.1.0's 0.4. A law with no quarter-turn bound came closer
+  on single notes and was rejected by measurement: a phrase through the
+  distant pair summed out of phase (correlation −0.3). On whole phrases the
+  channels' correlation went from 0.49 to 0.33 (first demo) and 0.54 to 0.44
+  (upright).
+- **Radiation.** The board radiates fully to 6 kHz (3 kHz in 2.0.0): the
+  middle of the keyboard held 5 to 9 dB less in the 4 kHz octave than the
+  Salamander's forte notes.
+- **Bridge.** The bridge takes 0.3 as much from the strings between D♯3 and
+  D6, fitted to how the Salamander's notes die away.
+
+Not done, by measurement: no lean of low keys to one side and high keys to
+the other was added. The Salamander's notes lean left by 3 dB in the bass
+and right by 6 dB around A4 to G♯5 with no steady trend, the MAPS upright's
+not at all, and neither the microphones' placement nor a lower crossover
+gives the model one.
+
+What the benchmark says (`Tools/benchmark_recordings.py`, 2.0.0 to 2.1.0, on
+the notes 1.0.0 never fitted). The grand against Salamander
+([report](validation/grand-velocity-stereo-benchmark-2026-11-11.md)):
+partial levels 11.7 to 8.2 dB, tuning 3.1 to 2.9 cents, decay 5.5 to
+3.7 dB/s, attack 9.5 to 8.1 dB, first half second 10.0 to 8.9 dB, sustain
+10.9 to 9.1 dB, noise 10.6 to 10.1 dB, envelope 4.8 to 4.2 dB, rise 15.5 to
+14.9 ms, level 4.5 to 3.4 dB with each version's own gain. Worse: the
+channels' level difference 5.4 to 5.6 dB, their correlation by 0.004, the
+level by 0.1 dB when both are scored with 2.0.0's gain, on the fitted notes
+the rise (16.1 to 17.3 ms), and 97 single-note scores, the furthest C3's
+rise (19 to 57 ms), the levels of C7, A7 and A5 with 2.0.0's gain (4 to
+7 dB), C6's first half second (12.8 to 17.2 dB) and the partials and
+sustain of F♯5 and C5 (3 to 4 dB). The stereo change is therefore not one
+the benchmark's stereo scores confirm.
+
+The upright against Helsinki, benchmarked for the first time
+([report](validation/upright-velocity-stereo-benchmark-2026-11-11.md)), is
+mixed. Closer: partial levels 8.8 to 8.4 dB, tuning 6.1 to 4.7 cents,
+envelope 5.2 to 4.7 dB, level 4.1 to 3.0 dB. Further: decay 5.3 to
+5.5 dB/s, attack 7.7 to 8.5 dB, first half second 9.7 to 10.2 dB, sustain
+9.9 to 10.8 dB, noise 10.4 to 11.0 dB, rise 12.2 to 12.6 ms, and on the
+notes 1.0.0 fitted the attack (8.9 to 9.2 dB), the noise (11.2 to 11.8 dB)
+and the channels' level difference (6.4 to 6.7 dB), with 109 single-note
+scores worse, most in the bass's noise between its partials (C1 13.7 to
+18.5 dB). These come mostly with the velocity law, which the Helsinki
+layers fit less well than 2.0.0's; one law was kept for all four pianos
+because the Salamander's sixteen layers and the MAPS Disklavier, whose
+velocities are the MIDI's own, agree on it.
+
+What is the owner's to hear: a lettered set went to the owner on 2026-11-11
+(`2026-11-11-velocity-stereo-fit` in the project's files, not committed), A
+2.0.0 and B 2.1.0, on the first demo, the nocturne, the upright demo and one
+arpeggio at six velocities, B matched to A on whole-file RMS by −0.65,
+−3.61, −1.16 and +0.91 dB, with the first demo through each microphone pair
+alone. By the project's standing rule B stands unless the owner says
+otherwise; no verdict has been given yet, and 2.1.0 ships on that rule and
+on the grand's benchmark, with the upright's regressions as listed.
+

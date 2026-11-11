@@ -53,6 +53,10 @@ struct Controls {
   float mute=0;
 };
 
+// The velocity whose blow is `decibels` harder than `velocity`'s at these
+// Dynamics: a player's uneven touch is so many dB of hammer speed.
+float touched(float velocity,float decibels,float dynamics) noexcept;
+
 // Allocation-free, bounded and C++17 after prepare().
 class Piano {
 public:
