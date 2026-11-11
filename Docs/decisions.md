@@ -4787,3 +4787,9 @@ upright, and the first demo and the nocturne. B and C are matched to A on
 whole-file RMS; the trims are within 0.2 dB except the soft treble melody
 (−1.4 and −1.6 dB) and the treble staccato (−0.6 and −0.7 dB). By the
 project's standing rule B stands unless the owner says otherwise.
+
+**The owner's verdict, 2026-11-11.** "B is ok - continue, iterate until the
+piano sounds absolutely real." B (2.4.0) stands, chosen by ear on the
+`2026-11-11-key-presses` set; C (without the room in the close pair) was
+not taken up, so the close pair keeps its share of the room. The next
+rounds follow [the ranked options](plans/realism-options-2026-11-11.md).
