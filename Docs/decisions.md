@@ -4537,3 +4537,101 @@ A 2.1.0 and B 2.2.0: chromatic scales on the concert grand at velocity 80
 90), one on the upright, and the first demo and the nocturne. B is matched
 to A on whole-file RMS by +0.26, +0.10, +1.63, −0.27, −0.35 and +0.88 dB.
 By the project's standing rule B stands unless the owner says otherwise.
+
+## 2026-11-11 — the open strings (2.3.0)
+
+**The owner on 2.2.0.** No verdict on the `2026-11-11-even-scale` set came
+back; the owner's next messages asked for natural key noises and a closer
+calibration to the recordings. By the project's standing rule B (2.2.0)
+stands.
+
+**What 2.3.0 changes: the open strings answer through the iron frame.** The
+last round found the open strings 25 dB too quiet under the pedal and 40 dB
+too quiet at the top, and that the bridge was not the missing path. Two
+things ship.
+
+- *The frame's give.* A blow leans on the iron frame through the string's
+  near end (the lean that already knocks the board). The frame gives, and
+  with it the near end of every string whose damper is off, so each such
+  string is driven at that end. The give is one damped resonance: 1.2e-7 m/N
+  below 500 Hz, falling above it as the iron's mass holds it still. A string
+  that only follows its end pulls on nothing, so that part is taken out and
+  the bridge hears what the string rings beyond it.
+- *Detuned unisons load the bridge once.* The open strings are one mode a
+  unison. In tune, its three strings load the bridge three times; further
+  apart than the bridge couples them, each rings alone and loads it once
+  (Weinreich 1977, the faster decay of a coupled pair). Loaded three times
+  the top strings died at 35 to 80 dB/s; they now die at 16 to 62 dB/s (27
+  to 29 in the median) where the Salamander's take 8 to 35.
+
+Both constants of the give are fitted, and the two recordings they are
+fitted to disagree by a few dB. Against the Yamaha C3's pedal-down takes
+(`Tools/benchmark_pedal_wash.py`, parlor grand) the bands that hold a note's
+partials stood 25.6 dB short in the median on the fitted takes and 24.6 on
+the others; they stand 5.6 and 7.9 dB short (3.0 dB in the first half
+second, 10.0 after three seconds). Against the Salamander's forte notes
+(layer 14), the median top string under a note struck from C5 to F♯7 rings
+within 3.3 dB of the recording's (it was 40 dB under). A give of 1.5e-7
+closed the first to 3.8 and 6.0 dB and put the second between 2 dB under
+and 4 dB over; half the shipped give rings the strings 6 dB less. The
+shipped value is between what each asks.
+
+**Forms tried and not shipped, by measurement.** The ring scaled by each
+key's voicing: the string-to-string spread did not fall. The frame as a
+mobility (a velocity for a force): the wrong tilt across the pedal takes'
+bands. The frame as a plain spring at every frequency: in the first half
+second 6.4 dB short from 150 to 300 Hz and 16.5 dB over from 1.2 to
+2.4 kHz. The damped resonance at 500 Hz fits the four octave bands from
+150 Hz to 2.4 kHz within 3.5 dB in the first half second at a give of
+1.5e-7 (−3.5, −1.5, −1.0 and +0.9 dB).
+
+**What it leaves wrong.** Under the pedal, a key from about C♯4 up rings the
+strings below its own pitch too much: the bands under the first partial
+stand 8.2 dB over the takes in the median (12.9 on the takes not fitted),
+where they stood 14.9 short on the fitted takes. Under A7 and C8 the top strings ring 7 to 10 dB
+too much, and under C3 and C4 10 to 13 dB above what the recording holds
+there, which is near its floor. The ring still dies about twice as fast as
+recorded. The note itself still gains nothing under the pedal where the
+takes gain 3 to 7 dB from C3 to A4, and after three seconds the wash is
+10 to 12 dB short.
+
+**What the benchmark says** (`Tools/benchmark_recordings.py`, 2.2.0 to
+2.3.0). The grand against Salamander
+([report](validation/grand-open-strings-benchmark-2026-11-11.md)), on the
+notes 1.0.0 never fitted: first half second 8.86 to 8.08 dB, noise between
+the partials 9.89 to 9.30 dB, sustain 9.11 to 8.73 dB, attack 8.07 to
+7.82 dB, tuning 2.90 to 2.81 cents; partials 8.19 to 8.23 dB and the
+channels' correlation 0.214 to 0.218 are further off; decay, envelope, rise
+and level within 0.01. From C6 up: first half second 15.40 to 12.65 dB,
+noise 15.14 to 13.10, sustain 13.74 to 12.40, attack 12.29 to 11.39. On the
+fitted notes the same: first half second 9.39 to 8.71, noise 10.23 to 9.63,
+sustain 10.09 to 9.66, attack 8.39 to 8.13, partials 8.94 to 8.98. Six
+single-note scores are worse: the channels' correlation at C8 (0.26 to 0.37,
+0.33 to 0.44 on the fitted layers), F♯7 (0.45 to 0.51, 0.47 to 0.52) and
+D♯7 (0.36 to 0.40), and F♯2's noise (11.5 to 12.7 dB).
+
+The upright against Helsinki
+([report](validation/upright-open-strings-benchmark-2026-11-11.md)): on the
+fitted notes attack 9.11 to 8.89 dB, first half second 11.20 to 10.86,
+noise 11.74 to 11.41, tuning 4.08 to 4.02 cents; on the 21 notes 1.0.0 never
+fitted attack 8.61 to 8.52, first half second 10.25 to 10.17, noise 11.42 to
+11.23 and rise 12.95 to 12.84 ms are closer, and the partials (8.46 to
+8.57 dB) and the decay (5.55 to 5.72 dB/s) further off. Two single-note
+scores are worse: B3's decay (6.0 to 7.6 dB/s) and D3's noise (7.0 to
+7.5 dB).
+
+The benchmarks and the listening set were rendered before a fault was found
+in the tests: a pitch bend four octaves down at 192 kHz divided by zero in
+the term that takes out a string following its end. That term is now taken
+from each mode as it turns. On three of the set's phrases the output moved
+by −142 to −163 dB against a signal at −21 to −31 dB, so the numbers stand.
+
+**What is the owner's to hear.** A lettered set went to the owner on
+2026-11-11 (`2026-11-11-open-strings` in the project's files, not
+committed): A 2.2.0, B 2.3.0, C 2.3.0 with half the frame's give, since the
+recordings disagree on it. Eight phrases: treble staccato and a treble
+melody without the pedal, chords, a treble arpeggio and bass notes under
+the pedal on the concert grand, the chords on the upright, and the first
+demo and the nocturne. B and C are matched to A on whole-file RMS; every
+trim is within 0.03 dB. By the project's standing rule B stands unless the
+owner says otherwise.
