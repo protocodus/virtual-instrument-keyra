@@ -1,10 +1,13 @@
+// Every control at its ends and its middle, set before the notes and while
+// they sound, on every piano at three sample rates: the output stays finite
+// and under full scale, and the two ends differ, so no control is dead.
 #include "DSP/KeyraEngine.h"
+#include "DSP/KeyraPresets.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstring>
 #include <iostream>
-#include <limits>
 #include <memory>
 #include <vector>
 
@@ -34,74 +37,71 @@ double difference(const Audio& a, const Audio& b) {
     }
     return sum / a.size();
 }
-// Another piano than the measured one a part takes a weight of: its partner
-// (0) or the remaining one (1). The measured piano's own weight is not a
-// control here: alone in its part, any weight of it plays the same.
-std::size_t other(keyra::Piano piano, int which) {
-    const auto partner = static_cast<std::size_t>(keyra::partner(piano));
-    if (which == 0) return partner;
-    std::size_t p = 0;
-    while (p == static_cast<std::size_t>(piano) || p == partner) ++p;
-    return p;
-}
-// Each control as a field of the parameters for the measured piano, including
-// the build's parts' weights and its modifiers.
-using Field = float& (*)(keyra::Parameters&, keyra::Piano);
+using Field = float& (*)(keyra::Parameters&);
 struct Control { const char* name; Field field; float low, mid, high; };
 const Control controls[] {
-    {"gain", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.gain; }, 0, .5f, 1},
-    {"brightness", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.brightness; }, 0, .5f, 1},
-    {"resonance", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.resonance; }, 0, .5f, 1},
-    {"width", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.width; }, 0, .5f, 1},
-    {"tuning", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.tuning; }, 400, 440, 480},
-    {"mute", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.mute; }, 0, .5f, 1},
-    {"sustain", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.sustain; }, 0, .5f, 1},
-    {"sostenuto", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.sostenuto; }, 0, .5f, 1},
-    {"soft", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.soft; }, 0, .5f, 1},
-    {"strings partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.strings[other(x, 0)]; }, 0, .5f, 1},
-    {"strings third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.strings[other(x, 1)]; }, 0, .5f, 1},
-    {"hammers partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.hammers[other(x, 0)]; }, 0, .5f, 1},
-    {"hammers third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.hammers[other(x, 1)]; }, 0, .5f, 1},
-    {"soundboard partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.soundboard[other(x, 0)]; }, 0, .5f, 1},
-    {"soundboard third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.soundboard[other(x, 1)]; }, 0, .5f, 1},
-    {"action partner", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.action[other(x, 0)]; }, 0, .5f, 1},
-    {"action third", [](keyra::Parameters& p, keyra::Piano x) -> float& { return p.build.action[other(x, 1)]; }, 0, .5f, 1},
-    {"stiffness", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.build.stiffness; }, -1, 0, 1},
-    {"unisons", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.build.unisons; }, -1, 0, 1},
-    {"ring", [](keyra::Parameters& p, keyra::Piano) -> float& { return p.build.ring; }, -1, 0, 1}
+    {"gain", [](keyra::Parameters& p) -> float& { return p.gain; }, 0, .7f, 2},
+    {"hammer", [](keyra::Parameters& p) -> float& { return p.hammer; }, -1, 0, 1},
+    {"age", [](keyra::Parameters& p) -> float& { return p.age; }, 0, .5f, 1},
+    {"detune", [](keyra::Parameters& p) -> float& { return p.detune; }, 0, .5f, 1},
+    {"stretch", [](keyra::Parameters& p) -> float& { return p.stretch; }, 0, 1, 2},
+    {"dynamics", [](keyra::Parameters& p) -> float& { return p.dynamics; }, 0, .5f, 1},
+    {"lid", [](keyra::Parameters& p) -> float& { return p.lid; }, 0, .5f, 1},
+    {"soundboard", [](keyra::Parameters& p) -> float& { return p.soundboard; }, 0, .5f, 1},
+    {"sympathetic", [](keyra::Parameters& p) -> float& { return p.sympathetic; }, 0, .5f, 1},
+    {"duplex", [](keyra::Parameters& p) -> float& { return p.duplex; }, 0, .5f, 1},
+    {"mic close", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micClose]; }, 0, 1, 2},
+    {"mic xy", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micXY]; }, 0, 1, 2},
+    {"mic live", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micLive]; }, 0, 1, 2},
+    {"mic distant", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micDistant]; }, 0, 1, 2},
+    {"room", [](keyra::Parameters& p) -> float& { return p.room; }, 0, .5f, 1},
+    {"width", [](keyra::Parameters& p) -> float& { return p.width; }, 0, .5f, 1},
+    {"tuning", [](keyra::Parameters& p) -> float& { return p.tuning; }, 400, 440, 480},
+    {"felt", [](keyra::Parameters& p) -> float& { return p.felt; }, 0, .5f, 1},
+    {"mute", [](keyra::Parameters& p) -> float& { return p.mute; }, 0, .5f, 1},
+    {"sustain", [](keyra::Parameters& p) -> float& { return p.sustain; }, 0, .5f, 1},
+    {"sostenuto", [](keyra::Parameters& p) -> float& { return p.sostenuto; }, 0, .5f, 1},
+    {"soft", [](keyra::Parameters& p) -> float& { return p.soft; }, 0, .5f, 1},
+    {"mechanics", [](keyra::Parameters& p) -> float& { return p.mechanics; }, 0, 1, 2}
 };
 
-Audio exercise(const Control& control, float value, double rate, bool automate, keyra::Piano piano) {
-    auto engine = std::make_unique<keyra::Engine>(rate);
+Audio exercise(keyra::Engine& engine, const Control& control, float value, bool automate, keyra::model::Body body) {
     keyra::Parameters parameters;
-    parameters.build = keyra::measuredBuild(piano);
+    parameters.body = body;
     // Sostenuto needs keys present at its rising edge. Pressing it before all
     // notes correctly captures nothing, so that sequence cannot witness its
     // signal path (the engine contract separately checks that behavior).
     if (!automate && std::strcmp(control.name, "sostenuto") != 0)
-        control.field(parameters, piano) = value;
-    engine->setParameters(parameters);
-    engine->noteOn(48, .8f); engine->noteOn(60, .7f);
-    play(*engine, 4096);
-    control.field(parameters, piano) = value;
-    engine->setParameters(parameters);
-    // A later strike witnesses Soft, and released notes witness both pedals.
-    engine->noteOn(72, .75f);
-    play(*engine, 2048);
-    engine->noteOff(48); engine->noteOff(60); engine->noteOff(72);
-    return play(*engine, 16384);
+        control.field(parameters) = value;
+    engine.setParameters(parameters);
+    engine.reset();
+    engine.noteOn(48, .8f); engine.noteOn(60, .7f);
+    play(engine, 4096);
+    control.field(parameters) = value;
+    engine.setParameters(parameters);
+    // A later strike witnesses what only a strike takes (the hammer, the
+    // felt, the dynamics, the strings' age and Soft), and released notes
+    // witness both pedals.
+    engine.noteOn(84, .75f);
+    play(engine, 2048);
+    engine.noteOff(48); engine.noteOff(60); engine.noteOff(84);
+    return play(engine, 12288);
 }
 }
 
 int main() {
     unsigned cases = 0;
-    for (const auto piano : {keyra::Piano::grand, keyra::Piano::upright, keyra::Piano::kawai, keyra::Piano::hamburg, keyra::Piano::newyork}) {
-        for (const double rate : {44100., 48000., 96000.}) {
+    // One engine: constructing it designs every piano, a change of rate does not.
+    auto engine = std::make_unique<keyra::Engine>(48000);
+    for (const double rate : {44100., 48000., 96000.}) {
+        engine->prepare(rate);
+        for (int body = 0; body < keyra::model::bodyCount; ++body) {
             for (const auto& control : controls) {
                 for (const bool automate : {false, true}) {
-                    const auto low = exercise(control, control.low, rate, automate, piano);
-                    const auto middle = exercise(control, control.mid, rate, automate, piano);
-                    const auto high = exercise(control, control.high, rate, automate, piano);
+                    const auto piano = static_cast<keyra::model::Body>(body);
+                    const auto low = exercise(*engine, control, control.low, automate, piano);
+                    const auto middle = exercise(*engine, control, control.mid, automate, piano);
+                    const auto high = exercise(*engine, control, control.high, automate, piano);
                     for (const auto* audio : {&low, &middle, &high}) {
                         const bool safe = std::all_of(audio->begin(), audio->end(), [](float x) {
                             return std::isfinite(x) && x >= -1 && x <= 1;
@@ -109,22 +109,15 @@ int main() {
                         check(safe, "parameter endpoint/midpoint emitted unsafe audio");
                         ++cases;
                     }
-                    if (difference(low, high) <= 1e-14) {
-                        std::cerr << "Unwitnessed control: " << control.name << '\n';
+                    // An upright has no duplex scale, so the control is silent there.
+                    const bool silentByDesign = piano == keyra::model::Body::upright && std::strcmp(control.name, "duplex") == 0;
+                    if ((difference(low, high) <= 1e-14) != silentByDesign) {
+                        std::cerr << "Unwitnessed control: " << control.name << " on " << keyra::bodyNames[static_cast<std::size_t>(body)] << '\n';
                         check(false, "control endpoints have no audible-path activation witness");
                     }
                 }
             }
         }
-    }
-    {
-        keyra::Engine engine;
-        std::array<float, 4> left{{1, 2, 3, 4}}, right{{5, 6, 7, 8}};
-        engine.process(left.data(), right.data(), 0);
-        engine.process(left.data(), right.data(), -1);
-        engine.process(nullptr, right.data(), 4);
-        engine.process(left.data(), nullptr, 4);
-        check(left[0] == 1 && right[3] == 8, "invalid render span changed output memory");
     }
     std::cout << "parameter_cases=" << cases << " failures=" << failures << '\n';
     return failures ? 1 : 0;

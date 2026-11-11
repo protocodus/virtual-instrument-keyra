@@ -58,10 +58,20 @@ void KeyraAudioProcessor::setCurrentProgram(int index)
 juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    // Version hint 1 is the parameters 1.x had, 2 the physical piano's.
+    // Version hint 1 is the parameters 1.x had, 2 the physical piano's. The
+    // piano's read to two decimals, which give a host back the value it
+    // read; seven, the default, do not on -1..1 once the range's scaling
+    // rounds (clap-validator's param-conversions).
     const auto add = [&layout](const char* id, const char* name, float lo, float hi, float initial, int version = 2) {
+        juce::AudioParameterFloatAttributes attributes;
+        if (version == 2)
+            attributes = attributes.withStringFromValueFunction([](float x, int length) {
+                // Adding zero keeps a value that rounds to nothing from reading "-0.00".
+                const auto text = juce::String(std::round(x * 100.0f) / 100.0f + 0.0f, 2);
+                return length > 0 ? text.substring(0, length) : text;
+            });
         layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { id, version }, name,
-            juce::NormalisableRange<float>(lo, hi), initial));
+            juce::NormalisableRange<float>(lo, hi), initial, attributes));
     };
     const keyra::Parameters initial;
     add("gain", "Output", 0.0f, 1.0f, initial.gain, 1);

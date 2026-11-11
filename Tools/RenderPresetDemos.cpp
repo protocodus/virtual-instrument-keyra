@@ -59,13 +59,15 @@ int main (int argc, char** argv)
     instrument.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
     for (const auto& preset : keyra::factoryPresets)
         instrument.presets.push_back (preset.name);
-    // U7 perf budget: about 3x the slowest demo's median realtime factor on
-    // the CI runner, 0.203 (08-pop-upright) in ci.yml run 58 (ubuntu-24.04,
-    // Intel Xeon Platinum 8573C, three repeats), 2026-10-29.
-    instrument.cpuBudget = 0.6;
+    // U7 perf budget: about 3x the slowest demo's median realtime factor,
+    // 0.125 (01-concert-grand, three repeats) on a development machine
+    // (Intel Xeon at 2.1 GHz, GCC 13 -O3), 2026-11-11. The CI runner has not
+    // timed the physical piano yet: pin this again from its first run.
+    instrument.cpuBudget = 0.4;
     instrument.open = [] (std::size_t preset, double sampleRate, int, std::uint32_t)
     {
-        // The engine has no random source, so it takes no seed.
+        // The engine's strikes vary by a sequence of its own that starts
+        // again at every reset, so it takes no seed.
         return std::make_unique<KeyraVoice> (keyra::factoryPresets[preset], sampleRate);
     };
     return protocodus::demos::Main (argc, argv, instrument);

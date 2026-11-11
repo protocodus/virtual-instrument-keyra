@@ -71,8 +71,8 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         events, render = Path(tmp) / 'pedal.events', out / 'pedal-down.wav'
         events.write_text('0.05 pedal 1\n')
-        subprocess.run([args.renderer, '--events', str(events), '--output', str(render), '--duration', '6.5',
-                        '--model', 'grand'], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run([args.renderer, '--events', str(events), '--output', str(render), '--duration', '6.5'],
+                       check=True, stdout=subprocess.DEVNULL)
         rendered = measure(render)
     report = {'renderer': args.renderer, 'band_hz': [round(f, 1) for f in fit.LIFT_BANDS], 'render': rendered,
               'takes': {}}

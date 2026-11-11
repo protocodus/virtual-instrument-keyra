@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 1.0.0 LANGUAGES C CXX)
+project(Keyra VERSION 2.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,16 +45,9 @@ option(KEYRA_ENABLE_SANITIZERS "Instrument development builds with ASan and UBSa
 option(KEYRA_BUILD_FUZZER "Build KeyraDspFuzz as a Clang libFuzzer target" OFF)
 option(KEYRA_REQUIRE_PYTHON_TESTS "Fail to configure without the interpreter the Python checks need" OFF)
 option(KEYRA_ENABLE_MODEL_VALIDATION_TESTS
-       "Require numerical model, generated-mask and native-probe checks (NumPy/SciPy, GCC/Clang)" OFF)
+       "Require the recording benchmark tools' own checks (NumPy/SciPy)" OFF)
 if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS AND NOT BUILD_TESTING)
     message(FATAL_ERROR "KEYRA_ENABLE_MODEL_VALIDATION_TESTS requires BUILD_TESTING=ON")
-endif()
-# The keyboard network (Tools/keyboard_network.py) is an offline experiment
-# that needs PyTorch, which CI does not install; its `all` stage runs this
-# self-test first.
-option(KEYRA_ENABLE_NETWORK_TESTS "Require the keyboard network's self-test (NumPy, SciPy, PyTorch)" OFF)
-if(KEYRA_ENABLE_NETWORK_TESTS AND NOT BUILD_TESTING)
-    message(FATAL_ERROR "KEYRA_ENABLE_NETWORK_TESTS requires BUILD_TESTING=ON")
 endif()
 if(KEYRA_ENABLE_SANITIZERS)
     if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
@@ -72,10 +65,11 @@ set(KEYRA_DSP_HEADERS
     Source/DSP/MechanicsControl.h
     Source/DSP/KeyraPresets.h
     Source/DSP/MeasuredTypes.h
-    Source/DSP/MeasuredMicData.h
     Source/DSP/MeasuredModalData.h
     Source/DSP/MeasuredUprightData.h
-    Source/DSP/MeasuredVelocityInterpolation.h
+    Source/DSP/MeasuredActionNoise.h
+    Source/DSP/MeasuredRoom.h
+    Source/DSP/ForteOutput.h
     Source/DSP/OutputStage.h)
 
 add_library(KeyraDSP STATIC ${KEYRA_DSP_SOURCES} ${KEYRA_DSP_HEADERS})
@@ -166,7 +160,7 @@ if(KEYRA_BUILD_PLUGIN)
         PLUGIN_MANUFACTURER_CODE Ptoc
         PLUGIN_CODE Kyra
         PRODUCT_NAME "Keyra"
-        DESCRIPTION "Modelled grand piano"
+        DESCRIPTION "Physically modelled grand and upright pianos"
         FORMATS ${KEYRA_PLUGIN_FORMATS}
         VST3_CATEGORIES Instrument Piano
         AU_MAIN_TYPE kAudioUnitType_MusicDevice
@@ -231,9 +225,12 @@ if(KEYRA_BUILD_PLUGIN)
 endif()
 
 if(KEYRA_BUILD_TOOLS)
-    # The research renderer the recording comparisons under Tools/ drive.
+    # The research renderer the recording comparisons under Tools/ drive, and
+    # the piano model's own, below the engine (Tools/compare_model_notes.py).
     add_executable(keyra_render Tools/render.cpp)
     target_link_libraries(keyra_render PRIVATE KeyraDSP)
+    add_executable(render_model Tools/render_model.cpp)
+    target_link_libraries(render_model PRIVATE KeyraDSP)
 
     # One README demo per factory preset from Docs/audio/midi (Tools/
     # PresetDemoRenderer.h is the shared portfolio copy; do not edit it here).
@@ -247,7 +244,7 @@ if(KEYRA_BUILD_TOOLS)
     endif()
 
     # Every preset's level on Reason's channel meter, and each piano's
-    # outputScale calibration (Tools/KeyraLevels.cpp).
+    # pascalScale calibration (Tools/KeyraLevels.cpp).
     add_executable(KeyraLevels Tools/KeyraLevels.cpp)
     target_link_libraries(KeyraLevels PRIVATE KeyraDSP Threads::Threads)
 endif()
@@ -255,93 +252,29 @@ endif()
 if(BUILD_TESTING)
     # CI requires the interpreter, so a missing one cannot silently register
     # fewer tests.
-    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS OR KEYRA_ENABLE_NETWORK_TESTS)
+    if(KEYRA_REQUIRE_PYTHON_TESTS OR KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
         find_package(Python3 COMPONENTS Interpreter REQUIRED)
     else()
         find_package(Python3 COMPONENTS Interpreter)
     endif()
 
+    # The engine's playing contracts: keys, pedals, channels, controls, levels.
+    find_package(Threads REQUIRED)
     add_executable(KeyraEngineTests Tests/engine_tests.cpp)
-    target_link_libraries(KeyraEngineTests PRIVATE KeyraDSP)
+    target_link_libraries(KeyraEngineTests PRIVATE KeyraDSP Threads::Threads)
     add_test(NAME Keyra.Engine COMMAND KeyraEngineTests)
+
+    # The piano below the engine: its keys' build, partials, decay, dampers
+    # and sympathetic strings.
+    add_executable(KeyraPianoModelTests Tests/piano_model_tests.cpp)
+    target_link_libraries(KeyraPianoModelTests PRIVATE KeyraDSP)
+    add_test(NAME Keyra.PianoModel COMMAND KeyraPianoModelTests)
 
     add_executable(KeyraForteOutputTests Tests/forte_output_tests.cpp)
     target_include_directories(KeyraForteOutputTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
     target_compile_features(KeyraForteOutputTests PRIVATE cxx_std_17)
     add_test(NAME Keyra.ForteOutput COMMAND KeyraForteOutputTests)
     set_tests_properties(Keyra.ForteOutput PROPERTIES LABELS unit)
-
-    # Observe both ends of the shared damper in one test translation unit.
-    add_executable(KeyraDamperInteractionTests Tests/damper_interaction_tests.cpp)
-    target_include_directories(KeyraDamperInteractionTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraDamperInteractionTests PRIVATE cxx_std_17)
-    add_test(NAME Keyra.DamperInteraction COMMAND KeyraDamperInteractionTests)
-
-    # Every key between two recorded pitches against them, from the partials
-    # a strike plays, in one test translation unit.
-    add_executable(KeyraPitchBlendTests Tests/pitch_blend_tests.cpp)
-    target_include_directories(KeyraPitchBlendTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraPitchBlendTests PRIVATE cxx_std_17)
-    # It includes KeyraEngine.cpp to read the series a strike plays, so GCC
-    # finds the engine's internal-linkage types in an included file and warns
-    # about every class that holds one.
-    target_compile_options(KeyraPitchBlendTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.PitchBlend COMMAND KeyraPitchBlendTests)
-
-    # The phantom partials' square against the lines it makes, and each
-    # key's gain and gate in the engine, in one test translation unit.
-    add_executable(KeyraPhantomTests Tests/phantom_tests.cpp)
-    target_include_directories(KeyraPhantomTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraPhantomTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraPhantomTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.Phantoms COMMAND KeyraPhantomTests)
-
-    # Each key's pitch glide in the engine and its voices' tuning to it, in
-    # one test translation unit.
-    add_executable(KeyraGlideTests Tests/glide_tests.cpp)
-    target_include_directories(KeyraGlideTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraGlideTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraGlideTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.Glide COMMAND KeyraGlideTests)
-
-    # The action's click in the engine's noise bands, in one test translation
-    # unit.
-    add_executable(KeyraActionClickTests Tests/action_click_tests.cpp)
-    target_include_directories(KeyraActionClickTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraActionClickTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraActionClickTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.ActionClick COMMAND KeyraActionClickTests)
-
-    # The undamped strings' beat in the engine, in one test translation unit.
-    add_executable(KeyraHaloBeatTests Tests/halo_beat_tests.cpp)
-    target_include_directories(KeyraHaloBeatTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraHaloBeatTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraHaloBeatTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.HaloBeat COMMAND KeyraHaloBeatTests)
-
-    # A struck key's own undamped string in the engine, in one test
-    # translation unit.
-    add_executable(KeyraHaloOwnTests Tests/halo_own_tests.cpp)
-    target_include_directories(KeyraHaloOwnTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraHaloOwnTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraHaloOwnTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.HaloOwn COMMAND KeyraHaloOwnTests)
-
-    # The recording room's network in the engine, in one test translation
-    # unit.
-    add_executable(KeyraRoomTests Tests/room_tests.cpp)
-    target_include_directories(KeyraRoomTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraRoomTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraRoomTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.Room COMMAND KeyraRoomTests)
-
-    # The strike's knock under the noise bands in the engine, in one test
-    # translation unit.
-    add_executable(KeyraLowKnockTests Tests/low_knock_tests.cpp)
-    target_include_directories(KeyraLowKnockTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-    target_compile_features(KeyraLowKnockTests PRIVATE cxx_std_17)
-    target_compile_options(KeyraLowKnockTests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
-    add_test(NAME Keyra.LowKnock COMMAND KeyraLowKnockTests)
 
     add_executable(KeyraParameterExtremesTests Tests/parameter_extremes.cpp)
     target_link_libraries(KeyraParameterExtremesTests PRIVATE KeyraDSP)
@@ -378,9 +311,6 @@ if(BUILD_TESTING)
     endif()
 
     if(Python3_Interpreter_FOUND)
-        add_test(NAME Keyra.RecordingParityPaths
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_parity_paths.py")
         # The committed demo phrases are what the writer writes (G3a).
         add_test(NAME Keyra.DemoMidiSources
                  COMMAND "${Python3_EXECUTABLE}" -B
@@ -388,22 +318,12 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.YamahaCorpusImport
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_yamaha_c3_import.py")
-        add_test(NAME Keyra.FactoryDynamicsContract
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_factory_dynamics.py")
-        set_tests_properties(Keyra.FactoryDynamicsContract PROPERTIES LABELS unit TIMEOUT 60)
     endif()
 
     # Required in the primary Linux CI job. An explicit option keeps the
-    # portable DSP/plugin tiers independent of scientific Python and a second
-    # compiler driver; enabling this tier never silently skips a dependency.
+    # portable DSP/plugin tiers independent of scientific Python; enabling
+    # this tier never silently skips a dependency.
     if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
-        if(NOT CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-            message(FATAL_ERROR "Model validation native probes require a GCC/Clang compiler driver")
-        endif()
-        find_program(KEYRA_MODEL_CXX NAMES c++ REQUIRED)
-        find_program(KEYRA_MODEL_FFMPEG NAMES ffmpeg REQUIRED)
-        find_program(KEYRA_MODEL_FFPROBE NAMES ffprobe REQUIRED)
         execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import numpy; import scipy"
                         RESULT_VARIABLE KEYRA_MODEL_PYTHON_RESULT
                         ERROR_VARIABLE KEYRA_MODEL_PYTHON_ERROR
@@ -413,95 +333,9 @@ if(BUILD_TESTING)
                 "Model validation needs NumPy/SciPy in ${Python3_EXECUTABLE}. "
                 "Install Tools/requirements-model-validation.txt. ${KEYRA_MODEL_PYTHON_ERROR}")
         endif()
-        add_test(NAME Keyra.VelocityInterpolation
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_velocity_interpolation.py")
-        add_test(NAME Keyra.VelocityInterpolationFreshness
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/generate_velocity_interpolation.py" --check)
-        # The phantom gains are the ones their receipt gives, for the
-        # recorded pitches the engine has, and the receipt is the current
-        # fit's on the current modal data, split and corpus.
-        add_test(NAME Keyra.MeasuredPhantoms
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_phantoms.py" --check)
-        # The glide is the one its receipt gives, and the receipt is the
-        # current fit's on the current modal data, split and corpus.
-        add_test(NAME Keyra.MeasuredGlide
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_glide.py" --check)
-        # The action's clicks are the ones their receipt gives, and the
-        # receipt is the current fit's on the current modal data, split and
-        # corpus.
-        add_test(NAME Keyra.MeasuredActionNoise
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_action_noise.py" --check)
-        # The undamped strings' beats are the ones their receipt gives, and
-        # the receipt is the current fit's on the current modal data, split
-        # and corpus.
-        add_test(NAME Keyra.MeasuredHaloBeats
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_halo_beats.py" --check)
-        # The undamped strings' levels in their own keys' strikes are the ones
-        # their receipt gives, and the receipt is the current fit's on the
-        # current modal data, split and corpus.
-        add_test(NAME Keyra.MeasuredHaloOwn
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_halo_own.py" --check)
-        # The treble's strings beside the series are the ones their receipt
-        # gives, and the receipt is the current measurement's on the current
-        # modal data, split, corpus and undamped strings' own levels.
-        add_test(NAME Keyra.MeasuredTrebleUnisons
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_treble_unisons.py" --check)
-        # The rooms are the ones their receipt gives, and the receipt is the
-        # current measurement's on the current modal data, split and corpus.
-        add_test(NAME Keyra.MeasuredRoom
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_room.py" --check)
-        # The knock under the noise bands is the one its receipt gives, and the
-        # receipt is the current tool's measurement on the current room, modal
-        # data, split and corpus.
-        add_test(NAME Keyra.MeasuredLowKnock
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/fit_low_knock.py" --check)
-        add_test(NAME Keyra.RateInterpolation
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_rate_interpolation.py")
         add_test(NAME Keyra.ComponentWarmStart
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_component_warm_start.py")
-        add_test(NAME Keyra.IncrementalMeasurements
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_incremental_measurements.py")
-        add_test(NAME Keyra.MeasurementSourceProvenance
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_source_provenance.py"
-                         --decoder-dir "${CMAKE_CURRENT_SOURCE_DIR}/Tools")
-        add_test(NAME Keyra.MeasurementSnapshots
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_measurement_snapshots.py")
-        add_test(NAME Keyra.MeasurementOutputSafety
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_measurement_output_safety.py")
-        add_test(NAME Keyra.SoftLaneContinuity
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_soft_lane_continuity.py")
-        add_test(NAME Keyra.LiveControlSmoothing
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_live_control_smoothing.py")
-        add_test(NAME Keyra.BuildControlSmoothing
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_build_control_smoothing.py")
-        add_test(NAME Keyra.QualityAuditContract
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_quality_audit.py")
-        add_test(NAME Keyra.QualityRetention
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_quality_retention.py")
-        add_test(NAME Keyra.ReleaseBalance
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_release_balance.py")
         add_test(NAME Keyra.RecordingReferenceCache
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_recording_reference_cache.py")
@@ -511,43 +345,12 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.BenchmarkBands
                  COMMAND "${Python3_EXECUTABLE}" -B
                          "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_benchmark_bands.py")
-        add_test(NAME Keyra.KeyboardMetricContract
-                 COMMAND "${Python3_EXECUTABLE}" -B
-                         "${CMAKE_CURRENT_SOURCE_DIR}/Tools/benchmark_keyboard.py" --self-check)
-        set_tests_properties(Keyra.VelocityInterpolation Keyra.VelocityInterpolationFreshness Keyra.MeasuredPhantoms Keyra.MeasuredGlide
-                             Keyra.MeasuredActionNoise Keyra.MeasuredHaloBeats Keyra.MeasuredHaloOwn Keyra.MeasuredTrebleUnisons
-                             Keyra.MeasuredRoom Keyra.MeasuredLowKnock
-                             Keyra.RateInterpolation Keyra.ComponentWarmStart
-                             Keyra.IncrementalMeasurements Keyra.MeasurementSourceProvenance
-                             Keyra.MeasurementSnapshots Keyra.MeasurementOutputSafety
-                             Keyra.SoftLaneContinuity
-                             Keyra.LiveControlSmoothing Keyra.BuildControlSmoothing
-                             Keyra.QualityAuditContract Keyra.QualityRetention Keyra.ReleaseBalance
-                             Keyra.RecordingReferenceCache Keyra.BenchmarkComparison Keyra.BenchmarkBands
-                             Keyra.KeyboardMetricContract
+        set_tests_properties(Keyra.ComponentWarmStart Keyra.RecordingReferenceCache
+                             Keyra.BenchmarkComparison Keyra.BenchmarkBands
                              PROPERTIES TIMEOUT 600
-                             ENVIRONMENT "CXX=${KEYRA_MODEL_CXX};KEYRA_MODEL_FFMPEG=${KEYRA_MODEL_FFMPEG};KEYRA_MODEL_FFPROBE=${KEYRA_MODEL_FFPROBE};OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
-    else()
-        message(STATUS "Numerical model validation disabled; enable KEYRA_ENABLE_MODEL_VALIDATION_TESTS for the required Linux CI tier")
-    endif()
-
-    if(KEYRA_ENABLE_NETWORK_TESTS)
-        execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import numpy; import scipy; import torch"
-                        RESULT_VARIABLE KEYRA_NETWORK_PYTHON_RESULT
-                        ERROR_VARIABLE KEYRA_NETWORK_PYTHON_ERROR
-                        OUTPUT_QUIET)
-        if(NOT KEYRA_NETWORK_PYTHON_RESULT EQUAL 0)
-            message(FATAL_ERROR
-                "The keyboard network's checks need NumPy, SciPy and PyTorch in ${Python3_EXECUTABLE}. "
-                "${KEYRA_NETWORK_PYTHON_ERROR}")
-        endif()
-        add_test(NAME Keyra.KeyboardNetwork
-                 COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_keyboard_network.py")
-        # Source/DSP/MeasuredNetworkKeys.h is what the writer's defaults write.
-        add_test(NAME Keyra.MeasuredNetworkKeys
-                 COMMAND "${Python3_EXECUTABLE}" -I -B "${CMAKE_CURRENT_SOURCE_DIR}/Tools/write_network_tables.py" --check)
-        set_tests_properties(Keyra.KeyboardNetwork Keyra.MeasuredNetworkKeys PROPERTIES LABELS unit TIMEOUT 300
                              ENVIRONMENT "OPENBLAS_NUM_THREADS=1;OMP_NUM_THREADS=1")
+    else()
+        message(STATUS "Recording benchmark tool checks disabled; enable KEYRA_ENABLE_MODEL_VALIDATION_TESTS for the required Linux CI tier")
     endif()
 
     if(KEYRA_BUILD_TOOLS)
@@ -557,20 +360,11 @@ if(BUILD_TESTING)
                  COMMAND RenderKeyraPresetDemos --jobs 4 --check
                          "${CMAKE_CURRENT_SOURCE_DIR}/Docs/audio/midi")
         set_tests_properties(Keyra.AudioDemos PROPERTIES TIMEOUT 300 LABELS audio)
-        # Typical playing at -9 VU on Reason's meter and the loudest chords
-        # out of the red (Tools/KeyraLevels.cpp).
+        # Every piano's and preset's typical playing at -9 VU on Reason's
+        # meter, velocity 127 louder than 110 and no sample past the ceiling
+        # (Tools/KeyraLevels.cpp).
         add_test(NAME Keyra.Levels COMMAND KeyraLevels --check --jobs 4)
         set_tests_properties(Keyra.Levels PROPERTIES TIMEOUT 900 LABELS audio)
-        if(KEYRA_ENABLE_MODEL_VALIDATION_TESTS)
-            # Run a single fresh factory audit in the required Linux audio
-            # tier, retaining the same CSV the row-by-row checker inspected.
-            add_test(NAME Keyra.FactoryDynamics
-                     COMMAND "${Python3_EXECUTABLE}" -B
-                             "${CMAKE_CURRENT_SOURCE_DIR}/Tools/check_factory_dynamics.py"
-                             --renderer "$<TARGET_FILE:KeyraLevels>" --jobs 4
-                             --output "${CMAKE_CURRENT_BINARY_DIR}/factory-dynamics.csv")
-            set_tests_properties(Keyra.FactoryDynamics PROPERTIES LABELS audio TIMEOUT 900)
-        endif()
         # U7: the preset demos timed on one thread against the budget in
         # Tools/RenderPresetDemos.cpp. Timing means nothing instrumented.
         if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT KEYRA_ENABLE_SANITIZERS)

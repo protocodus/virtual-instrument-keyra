@@ -2,14 +2,17 @@
 
 ## Architecture
 
-This is Keyra's canonical repository: it owns the real-time modal piano in
-`Source/DSP/`, its measured numeric data and the JUCE plug-in (VST3, AU, CLAP,
-Standalone) that wraps it. The Reason Rack Extension in the private
+This is Keyra's canonical repository: it owns the physically modelled piano
+in `Source/DSP/` (`PianoModel.cpp`, the strings, hammers, soundboard and
+microphones; `KeyraEngine.cpp`, the keys, pedals, MIDI and the action's
+measured noises around it) and the JUCE plug-in (VST3, AU, CLAP, Standalone)
+that wraps it. The Reason Rack Extension in the private
 `protocodus/reason-rack-extensions` repository is a thin adapter that mounts
 this repository as the pinned submodule `Examples/Keyra/Instrument` and
-compiles `Source/DSP/KeyraEngine.cpp` directly. DSP and playing-model changes
-land here first; the Rack pin then advances. Reason property mapping, MIDI/CV,
-routing, host latency, patches and panels stay in the adapter.
+compiles `Source/DSP/KeyraEngine.cpp` and `PianoModel.cpp` directly. DSP and
+playing-model changes land here first; the Rack pin then advances. Reason
+property mapping, MIDI/CV, routing, host latency, patches and panels stay in
+the adapter.
 
 Repository layout, naming, CI, versions and the `Docs/` taxonomy follow the
 Protocodus portfolio standard kept in the project, not in this repository.
@@ -25,9 +28,9 @@ Protocodus portfolio standard kept in the project, not in this repository.
   renderer read. `PLUGIN_MANUFACTURER_CODE Ptoc` / `PLUGIN_CODE Kyra`,
   `BUNDLE_ID` and the CLAP id `cz.protocodus.keyra` never change: hosts recall
   sessions by them.
-- `Experiments/` is the full physical piano research, a separate CMake project
-  (`cmake -S Experiments -B Experiments/build`) that the product build does not
-  build. It keeps its own layout, so its receipts and tools still resolve; its
+- `Experiments/` is the earlier offline physical piano research, a separate
+  CMake project (`cmake -S Experiments -B Experiments/build`) that the product
+  build does not build. It keeps its own layout, so its receipts and tools still resolve; its
   documents and evidence stay inside it.
 - This repository is public. Never add Reason/Jukebox SDK material, secrets or
   unreleased commercial material.
@@ -213,9 +216,12 @@ ctest --test-dir build-dsp -L unit --output-on-failure
 
 Use a separate `build-plugin` directory (`-DKEYRA_BUILD_PLUGIN=ON`, the
 default) for the processor, editor and packaging. Keyra's suites by tier:
-`unit` (including `Keyra.DspFuzzReplay`), `audio` (`Keyra.AudioDemos`, every
-preset demo rendered twice), `render` (`Keyra.EditorRender`, the editor
-screenshot), `fuzz` (`Keyra.DspFuzz` with `-DKEYRA_BUILD_FUZZER=ON` and Clang;
+`unit` (`Keyra.PianoModel`, the model alone; `Keyra.Engine`, the instrument
+around it; `Keyra.ParameterExtremes`; `Keyra.DspFuzzReplay`; the Python tool
+checks, with `-DKEYRA_ENABLE_MODEL_VALIDATION_TESTS=ON` and NumPy and SciPy),
+`audio` (`Keyra.AudioDemos`, every preset demo rendered twice, and
+`Keyra.Levels`, each piano and preset on Reason's meter), `render`
+(`Keyra.EditorRender`, the editor screenshot), `fuzz` (`Keyra.DspFuzz` with `-DKEYRA_BUILD_FUZZER=ON` and Clang;
 `Keyra.ParameterMatrix` in the plug-in build, every case at one rate and block
 size, while the main build runs it in full across sixteen shards) and `perf`
 (`Keyra.CpuBudget`, Release builds without sanitizers). Select the suites that
@@ -228,17 +234,33 @@ suite. `scripts/validate-plugins.sh build-plugin Keyra aumu Kyra Ptoc
 - `Experiments/Research/GrandPianoV2/` is the preserved offline nonlinear
   reference. Do not rewrite its solver, training split or frozen benchmark
   results to make a new candidate look better.
-- `Tools/` holds the current measurement, render and calibration workflows for
-  the modal engine; `Source/DSP/MeasuredModalData.h` comes from
-  `Tools/fit_realtime_modal.py` and changes only through it.
+- `Source/DSP/PianoModel.cpp` is the piano: a description (`Design`, the
+  string scale, the constants beside them) and the controls. Nothing in it is
+  fitted to a recording note by note, and no measured table feeds it. A
+  constant set against a recording says which beside it. The dimensions are
+  typical of each kind of piano, not one maker's; never present them as
+  measured. `build-dsp/render_model --report --body <piano>` prints what each
+  key is built as.
+- `Source/DSP/MeasuredModalData.h`, `MeasuredUprightData.h`,
+  `MeasuredActionNoise.h` and `MeasuredRoom.h` are 1.0.0's fits, frozen. The
+  engine reads only the action's rows of them (body modes, knocks, clicks,
+  layers, the action's room); their generators went with the fitted engine
+  and are in Git history at `dbc5692`. Do not edit or regenerate them.
+- `Tools/` holds the render and benchmark workflows: `keyra_render` (an event
+  score through the engine), `benchmark_recordings.py` and
+  `compare_benchmarks.py` (notes against the recordings), the pedal, release
+  and phrase benchmarks, and `KeyraLevels`. `fit_realtime_modal.py` no longer
+  fits anything the engine plays; the benchmarks use its corpus definitions
+  and analysis.
+- 1.x is described in `Docs/research/modal-engine-1.0.0.md` and
+  `Docs/release/release-history-1.x.md`; documents dated before 2026-11-11
+  under `Docs/` describe that engine and name its sources and tools.
 
-The live reduced modal model is a separate candidate. Never describe its sound,
-physics or CPU as equivalent to the preserved solver without measurements.
-For that retained frontend, the locked split `Tools/corpus/split-2026-10-27.json` decides the
-training data: its train role is fitted, dev is scored and never fitted, and the sealed pitches are
-opened only for a candidate the owner is asked to approve. Report every regression
-`Tools/compare_benchmarks.py` lists, and all twelve in-range held-out cases and both edge cases of
-`Tools/evaluate_recordings.py`. Reference audio is
+The benchmark's locked split `Tools/corpus/split-2026-10-27.json` names the
+notes 1.x trained on, scored (dev) and sealed. The physical model is fitted to
+none of them, so every role is a held-out measurement for it; still report
+every regression `Tools/compare_benchmarks.py` lists, and open the sealed
+pitches only for a candidate the owner is asked to approve. Reference audio is
 Salamander Grand Piano V3, Alexander Holm, CC BY 3.0; retain attribution and
 hashes. No recorded waveform or impulse response is loaded by the instrument.
 
@@ -247,9 +269,7 @@ the real recordings. Every audible engine change runs
 `Tools/benchmark_recordings.py` against the shipping engine before it ships,
 the grand on Salamander (`Tools/fetch_salamander.py`), with
 `--model upright` the upright on the Helsinki 1967 recordings
-(`Tools/decode_helsinki.py`, from the owner's copy of the library) and, with
-`--model kawai`, the Hamamatsu grand on VCSL Keys' Grand Piano K
-(`Tools/decode_vcsl.py`, from a copy of the CC0 library). Report the
+(`Tools/decode_helsinki.py`, from the owner's copy of the library). Report the
 movement with the change; where the owner chooses by ear against the
 recordings, record both. When a piano's recordings are not in the session,
 ask the owner for them rather than ship that piano's change unmeasured.
@@ -264,7 +284,7 @@ native tests, isolated-note agreement, host acceptance and listening judgment
 are separate evidence. Record unverified release gates explicitly. Keep the
 licensed Jukebox SDK out of Git; never label a source-only wrapper a built U45.
 
-The later full physical path lives in `Experiments/src/full_instrument/`,
+The offline full physical path lives in `Experiments/src/full_instrument/`,
 `Experiments/include/keyra/` and `Experiments/src/full_reference/`. Its locked
 full-range corpus is documented under `Experiments/References/GrandFullRange/`:
 34 TRAIN cases at 17 anchors, with separately identified previously observed

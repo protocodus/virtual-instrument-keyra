@@ -137,7 +137,7 @@ def main():
     model = fit.MODELS[args.model]
     split = json.loads(model['split'].read_text())['cases']
     items = {i['id']: i for i in json.loads(model['corpus'].read_text())['files']}
-    options = ['--model', args.model] if args.model != 'grand' else []
+    options = ['--body', args.model] if args.model != 'grand' else []
     jobs = [(case, items[case]['midi'], items[case]['layer'], fit.layer_velocity(items[case]), args.renderer,
              options, model['wav'], args.cache)
             for case, role in split.items() if role in args.roles and items[case]['kind'] == 'note']

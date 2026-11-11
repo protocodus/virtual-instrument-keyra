@@ -70,6 +70,15 @@ Rng seeded(int a,int b,int c=0) noexcept {
 double clamp(double x,double lo,double hi) noexcept {return x<lo?lo:x>hi?hi:x;}
 float clampf(float x,float lo,float hi) noexcept {return x!=x?lo:x<lo?lo:x>hi?hi:x;}
 double mix(double a,double b,double t) noexcept {return a+(b-a)*t;}
+// The sum of a[k] b[k] in eight strands: summed in order, every add waits for
+// the one before it, which was most of what a sounding string cost.
+inline float dot(const float* a,const float* b,int n) noexcept {
+  float strand[8]{};int k=0;
+  for(;k+8<=n;k+=8)for(int j=0;j<8;++j)strand[j]+=a[k+j]*b[k+j];
+  float rest=0;
+  for(;k<n;++k)rest+=a[k]*b[k];
+  return ((strand[0]+strand[1])+(strand[2]+strand[3]))+((strand[4]+strand[5])+(strand[6]+strand[7]))+rest;
+}
 // cos and sin of an angle from 0 to pi, to 1e-7: every partial sounding is
 // retuned through here while the pitch bends. Their series about pi/2, put
 // back on the unit circle so that no partial gains or loses by the error.
@@ -331,14 +340,16 @@ void designStrings(Tables& t,int body) noexcept {
   // above tuned 4:2 (the upper note's second partial on the lower's fourth),
   // the bass 6:3, each on the strings' own partials (O. L. Railsback,
   // "Scale temperament as applied to piano tuning", JASA 9, 1938).
+  // A pitch here is the ideal string's, which its stiffness raises to its
+  // first partial: that partial is what is tuned.
   double pitch[keyCount];
   const auto partial=[&](int key,int n){return n*std::sqrt(1+t.keys[key].inharmonicity*n*n);};
-  pitch[48]=440;
+  pitch[48]=440/partial(48,1);
   pitch[36]=pitch[48]*partial(48,2)/partial(36,4);
   for(int i=37;i<48;++i)pitch[i]=pitch[36]*std::pow(pitch[48]/pitch[36],(i-36)/12.);
   for(int i=49;i<keyCount;++i)pitch[i]=pitch[i-12]*partial(i-12,4)/partial(i,2);
   for(int i=35;i>=0;--i)pitch[i]=pitch[i+12]*partial(i+12,3)/partial(i,6);
-  for(int i=0;i<keyCount;++i)t.keys[i].stretchCents=1200*std::log2(pitch[i]/t.keys[i].hertz);
+  for(int i=0;i<keyCount;++i)t.keys[i].stretchCents=1200*std::log2(pitch[i]*partial(i,1)/t.keys[i].hertz);
 }
 
 // --- the soundboard --------------------------------------------------------
@@ -533,7 +544,7 @@ void designBoard(Tables& t,int body){
       patchMean[mic]+=patch[mic][p]/points;}
     for(int p=0;p<points;++p)patch[mic][p]/=patchMean[mic];
   }
-  static double heard[2][2][maxModes],direct[2][2][maxModes],level[bins];
+  double heard[2][2][maxModes]{},direct[2][2][maxModes]{},level[bins]{};
   for(int mic=0;mic<micCount;++mic){const MicSpec& spec=t.mic[mic];
     // The pair hears the board itself, and the room's first answer to all
     // it radiates: every mode by its power, in a phase of the room's.
@@ -709,10 +720,18 @@ struct Piano::Impl {
   float roomGain[roomLines]{},roomDamp[roomLines]{},roomState[roomLines]{};
   double dcL=0,dcR=0,dcInL=0,dcInR=0,dcPole=0;
   double frame[2]{},framePole=0; // the frame's knock, twice smoothed, newtons
+  bool frameRings=false;         // through this chunk: decided at its boundary, or by a blow in it
 
-  double tuningRatio(const KeyData& key) const noexcept {
-    return controls.tuning/440.*std::pow(2.,(controls.stretch*key.stretchCents/1200.)+bend/12.);
+  // The ideal string's pitch against the key's in equal temperament: the
+  // string's stiffness raises its first partial, which is the one tuned.
+  // A bend or a sample rate that would put a key's first partial past what
+  // the rate can carry holds it there: a string turning more than half a
+  // circle a step has no stable contact with its hammer.
+  double tuningRatio(const KeyData& key,double bend) const noexcept {
+    const double ratio=controls.tuning/440.*std::pow(2.,(controls.stretch*key.stretchCents/1200.)+bend/12.)/std::sqrt(1+key.inharmonicity);
+    return std::min(ratio,.45*sampleRate/(key.hertz*key.ratio[0]));
   }
+  double tuningRatio(const KeyData& key) const noexcept {return tuningRatio(key,bend);}
   // The strings' own loss for a partial at w rad/s, 1/s. Old strings lose
   // their upper partials, wound ones most.
   double stringLoss(const KeyData& key,double w) const noexcept {
@@ -739,7 +758,13 @@ struct Piano::Impl {
   // and the bend stand.
   void tune(Voice& v,int index) noexcept {
     const KeyData& key=table->keys[index];
-    const double f0=key.hertz*tuningRatio(key);
+    // The bridge gives under the strings and so moves their pitch, by up to
+    // 2.4 cents where a mode of the board lies near (each step turns a
+    // partial by its angle less the unison's coupling, renderChunk). A tuner
+    // tunes what sounds: the key's first partial is set where it is heard.
+    const double ideal=key.hertz*tuningRatio(key),angle=2*pi*ideal*key.ratio[0]/sampleRate;
+    const double pulled=-key.strings*(key.couplingIm[0]*std::cos(angle)-key.couplingRe[0]*std::sin(angle))/sampleRate;
+    const double f0=ideal*angle/(angle+pulled);
     v.strings=key.strings;
     int count=key.partials;
     while(count>1&&f0*key.ratio[count-1]>.45*sampleRate)--count;
@@ -849,9 +874,12 @@ struct Piano::Impl {
     c.mass=key.hammerMass;
     // Hammer: a decade of stiffness between soft and hard felt. The felt
     // strip softens the blow by up to two decades; shifted, a grand's hammer
-    // strikes with felt the strings have not packed.
-    double stiffness=key.hammerStiffness*std::pow(10.,.5*controls.hammer-2*controls.felt-(upright?0:.2*soft));
-    c.exponent=clamp(key.hammerExponent+.3*controls.hammer-.5*controls.felt,2.,8);
+    // strikes with felt the strings have not packed. The exponent stays the
+    // key's: the stiffness is in newtons per metre to that power, so a
+    // change of exponent is a far larger change of stiffness the other way
+    // at the few tenths of a millimetre a blow compresses the felt.
+    const double stiffness=key.hammerStiffness*std::pow(10.,.5*controls.hammer-2*controls.felt-(upright?0:.2*soft));
+    c.exponent=key.hammerExponent;
     c.relaxed=stiffness;
     c.prompt=stiffness*key.hammerSeconds*sampleRate*substeps;
   }
@@ -906,7 +934,7 @@ struct Piano::Impl {
     }
   }
   void play(Voice& v,float* out,int frames) noexcept {
-    alignas(32) float sumRe[maxK],sumIm[maxK];
+    alignas(32) float sumRe[maxK],sumIm[maxK],stretch[maxKl];
     const int n=v.sounding;
     const int lengths[6]{planeLength(v,0),planeLength(v,1),planeLength(v,2),planeLength(v,3),planeLength(v,4),planeLength(v,5)};
     for(int s=0;s<frames;++s){
@@ -914,13 +942,11 @@ struct Piano::Impl {
       for(int k=0;k<n;++k){sumRe[k]=v.re[k];sumIm[k]=v.im[k];}
       for(int plane=1;plane<3;++plane){const int len=lengths[plane],o=planeStart[plane];
         for(int k=0;k<len;++k){sumRe[k]+=v.re[o+k];sumIm[k]+=v.im[o+k];}}
-      float pull=0;
-      for(int k=0;k<n;++k)pull+=v.bridge[k]*sumIm[k];
-      for(int plane=3;plane<6;++plane){const int len=lengths[plane],o=planeStart[plane];const float u=v.u[plane];
-        for(int k=0;k<len;++k)pull+=u*v.bridge[k]*v.im[o+k];}
+      float pull=dot(v.bridge,sumIm,n);
+      for(int plane=3;plane<6;++plane)pull+=v.u[plane]*dot(v.bridge,v.im+planeStart[plane],lengths[plane]);
       const int longitudinal=std::min(n,v.longitudinal);
-      for(int k=0;k<longitudinal;++k)pull+=v.tension[k]*(v.re[k]*v.re[k]-v.im[k]*v.im[k]);
-      out[s]=pull;
+      for(int k=0;k<longitudinal;++k)stretch[k]=v.re[k]*v.re[k]-v.im[k]*v.im[k];
+      out[s]=pull+dot(v.tension,stretch,longitudinal);
       // The bridge gives under the strings' sum and takes from each.
       for(int k=0;k<n;++k){
         const float cr=v.couplingRe[k]*sumRe[k]-v.couplingIm[k]*sumIm[k];
@@ -953,8 +979,11 @@ struct Piano::Impl {
   float damperGoal(int index) const noexcept {
     if(index>=table->design.undamped||held[index])return muted();
     // The dampers start to clear the strings a fifth of the way down and
-    // are off them at three quarters.
-    return std::max(muted(),static_cast<float>(1-clamp((pedal-.2)/.55,0,1)));
+    // are off them at three quarters. Felt presses harder the further it is
+    // let down, so its loss grows as the square of the way: the last third
+    // of the lift is the half pedal, where the strings ring on, shortened.
+    const double on=1-clamp((pedal-.2)/.55,0,1);
+    return std::max(muted(),static_cast<float>(on*on));
   }
   // The open strings' and duplex scales' modes for the controls as they are;
   // under a bend (`pitchOnly`) their frequencies alone.
@@ -969,13 +998,16 @@ struct Piano::Impl {
           turnOf(2*pi*std::min(hertz,.45*sampleRate)/sampleRate,bankCos[at],bankSin[at]);}
         continue;
       }
+      // What a string is, it is unbent: a bend moves its pitch alone, so
+      // that it comes back from one as it was.
+      const double still=key.hertz*tuningRatio(key,0),bent=f0/still;
       bankPoint[i]=std::min(points-2,static_cast<int>(key.bridge));bankMix[i]=static_cast<float>(key.bridge-bankPoint[i]);
       for(int slot=0;slot<bankSlots;++slot){const int at=i*bankSlots+slot;
         const bool isDuplex=slot>=bankPartials;
         double hertz,loss,damper,drive,pull;
         if(!isDuplex){
-          if(slot>=key.partials||f0*key.ratio[slot]>.45*sampleRate){bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
-          hertz=f0*key.ratio[slot];const double w=2*pi*hertz;
+          if(slot>=key.partials||still*key.ratio[slot]>.45*sampleRate){bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
+          hertz=still*key.ratio[slot];const double w=2*pi*hertz;
           // The strings of the unison move together here: one mode for all,
           // loading the bridge once each.
           loss=stringLoss(key,w)+key.strings*key.couplingRe[slot];
@@ -986,7 +1018,7 @@ struct Piano::Impl {
         }else{
           // The length behind the bridge as a short string of its own.
           const double ratio=key.duplexRatio[slot-bankPartials];
-          hertz=f0*ratio;
+          hertz=still*ratio;
           if(!table->design.duplex||i<51||hertz>.45*sampleRate){bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
           const double w=2*pi*hertz,length=key.length/ratio;
           loss=5+stringLoss(key,w);damper=0;
@@ -994,7 +1026,7 @@ struct Piano::Impl {
           drive=2/(key.density*length*w)*pull;
           pull*=key.strings;
         }
-        turnOf(2*pi*hertz/sampleRate,bankCos[at],bankSin[at]);
+        turnOf(2*pi*std::min(hertz*bent,.45*sampleRate)/sampleRate,bankCos[at],bankSin[at]);
         bankOpen[at]=static_cast<float>(std::exp(-loss/sampleRate));
         bankDamped[at]=static_cast<float>(std::exp(-(loss+damper)/sampleRate));
         const double amount=isDuplex?2*controls.duplex:2*controls.sympathetic;
@@ -1027,8 +1059,9 @@ struct Piano::Impl {
     double send=0;
     for(int mic=0;mic<micCount;++mic){
       const MicSpec& spec=t.mic[mic];
-      // Every pair plays as loud as the close one at the same level: a
-      // fader is a balance, and the distance is in the sound already.
+      // Every pair hears the piano as loud as the close one at the same
+      // level: a fader is a balance, and the distance is in the sound
+      // already. The room each pair sends to comes on top of that.
       const double level=clamp(controls.mic[mic],0,2)*std::sqrt(t.micLevel[micClose]/t.micLevel[mic]);
       const double shut=spec.shade*std::pow(1-lid,1.5);
       send+=level*spec.room;
@@ -1089,8 +1122,12 @@ struct Piano::Impl {
     std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
     for(double& x:travel)x=0;
-    frame[0]=frame[1]=0;
+    for(float& x:knocks)x=0;
+    frame[0]=frame[1]=0;frameRings=false;
     for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
+    // Silence takes the microphones' mix at once.
+    for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
+    outMoving=false;
     dcL=dcR=dcInL=dcInR=0;rest();
   }
   void select() noexcept {
@@ -1142,6 +1179,7 @@ struct Piano::Impl {
       if(was&&!bankAwake[i]&&bankDamper[i]>=1)for(int k=0;k<bankSlots;++k)bankRe[i*bankSlots+k]=bankIm[i*bankSlots+k]=0;
     }
     for(const auto& c:contacts)sounding=sounding||c.active;
+    frameRings=frame[0]*frame[0]+frame[1]*frame[1]>1e-12;
     if(outMoving){float furthest=0;
       for(int out=0;out<4;++out)for(int part=0;part<2;++part)for(int k=0;k<modes;++k){
         float& now=outNow[out][part][k];const float step=(outGoal[out][part][k]-now)*.25f;now+=step;furthest=std::max(furthest,std::abs(step));}
@@ -1167,19 +1205,18 @@ struct Piano::Impl {
     for(auto& c:contacts)if(c.active)runContact(c,frames);
     for(int p=0;p<points;++p){struck[p][0]=knocks[p];knocks[p]=0;}
     alignas(32) float blow[chunk]{};
-    bool blown=frame[0]*frame[0]+frame[1]*frame[1]>1e-12;
     for(int i=0;i<keyCount;++i){Voice& v=voices[i];
       if(!v.active)continue;
       if(v.forcing){const float near=static_cast<float>((1-table->keys[i].strike)*v.strings);
         for(int s=0;s<frames;++s)blow[s]+=near*v.force[s];
-        blown=true;}
+        frameRings=true;}
       play(v,each,frames);
       const float b=v.pointMix*voicing[i],a=voicing[i]-b;
       for(int s=0;s<frames;++s){struck[v.point][s]+=a*each[s];struck[v.point+1][s]+=b*each[s];}
       if(v.forcing){bool still=false;for(const auto& c:contacts)still=still||(c.active&&c.key==i);
         std::memset(v.force,0,sizeof(v.force));v.forcing=still;}
     }
-    if(blown)for(int s=0;s<frames;++s){
+    if(frameRings)for(int s=0;s<frames;++s){
       frame[0]+=framePole*(blow[s]-frame[0]);frame[1]+=framePole*(frame[0]-frame[1]);
       const float knock=static_cast<float>(frameShare/points*(frame[0]-frame[1]));
       for(int p=0;p<points;++p)struck[p][s]+=knock;}
@@ -1201,16 +1238,21 @@ struct Piano::Impl {
       const bool own=voices[i].active;
       const int p=bankPoint[i];const float b=bankMix[i],a=1-b;
       float energy=0;
+      // The key's modes out of the arrays for the chunk, where the compiler
+      // can keep them in registers and take them four at a time.
+      alignas(16) float re[bankSlots],im[bankSlots],turnRe[bankSlots],turnIm[bankSlots],in[bankSlots],out[bankSlots];
+      for(int k=0;k<bankSlots;++k){re[k]=bankRe[o+k];im[k]=bankIm[o+k];turnRe[k]=bankTurnRe[o+k];turnIm[k]=bankTurnIm[o+k];
+        in[k]=bankIn[o+k];out[k]=bankOut[o+k];}
       for(int s=0;s<frames;++s){
         const float x=own?0:a*moved[p][s]+b*moved[p+1][s];
-        float pull=0;
         for(int k=0;k<bankSlots;++k){
-          const float re=bankTurnRe[o+k]*bankRe[o+k]-bankTurnIm[o+k]*bankIm[o+k]+bankIn[o+k]*x;
-          bankIm[o+k]=bankTurnIm[o+k]*bankRe[o+k]+bankTurnRe[o+k]*bankIm[o+k];bankRe[o+k]=re;
-          pull+=bankOut[o+k]*bankIm[o+k];
+          const float r=turnRe[k]*re[k]-turnIm[k]*im[k]+in[k]*x;
+          im[k]=turnIm[k]*re[k]+turnRe[k]*im[k];re[k]=r;
         }
+        const float pull=dot(out,im,bankSlots);
         answered[p][s]+=a*pull;answered[p+1][s]+=b*pull;energy+=pull*pull;
       }
+      for(int k=0;k<bankSlots;++k){bankRe[o+k]=re[k];bankIm[o+k]=im[k];}
       bankEnergy[i]+=energy;
     }
     // The board, and above its modes the bridge's own radiation.
@@ -1225,17 +1267,15 @@ struct Piano::Impl {
         const float* gain=boardIn[p];
         for(int k=0;k<modes;++k)in[k]+=gain[k]*force;
       }
-      float o[4]{};
       for(int k=0;k<modes;++k){
         const float re=boardTurnRe[k]*boardRe[k]-boardTurnIm[k]*boardIm[k]+in[k];
-        const float im=boardTurnIm[k]*boardRe[k]+boardTurnRe[k]*boardIm[k];
-        boardRe[k]=re;boardIm[k]=im;
-        o[0]+=outNow[0][0][k]*re+outNow[0][1][k]*im;o[1]+=outNow[1][0][k]*re+outNow[1][1][k]*im;
-        o[2]+=outNow[2][0][k]*re+outNow[2][1][k]*im;o[3]+=outNow[3][0][k]*re+outNow[3][1][k]*im;
+        boardIm[k]=boardTurnIm[k]*boardRe[k]+boardTurnRe[k]*boardIm[k];boardRe[k]=re;
       }
-      for(int out=0;out<4;++out){const Tap* tap=taps[out];float sum=0;
+      float o[4];
+      for(int out=0;out<4;++out){const Tap* tap=taps[out];
+        float sum=dot(outNow[out][0],boardRe,modes)+dot(outNow[out][1],boardIm,modes);
         for(int k=0;k<tapCount[out];++k)sum+=tap[k].gain*line[tap[k].point][(lineAt-tap[k].delay)&mask];
-        o[out]+=sum;}
+        o[out]=sum;}
       lineAt=(lineAt+1)&mask;
       // The room.
       float back[roomLines],total=0;
@@ -1275,7 +1315,9 @@ void Piano::prepare(double sampleRate){
   reset();
 }
 void Piano::reset() noexcept {
-  auto& p=*impl;p.pedal=0;p.bend=0;for(bool& h:p.held)h=false;p.silence();
+  auto& p=*impl;p.pedal=0;for(bool& h:p.held)h=false;p.silence();
+  // The sympathetic strings come back from a bend with it.
+  if(p.bend!=0){p.bend=0;p.tuneBank(true);}
 }
 void Piano::setControls(const Controls& input) noexcept {
   auto& p=*impl;const Controls old=p.controls;Controls c=input;

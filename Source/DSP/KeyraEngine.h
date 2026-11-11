@@ -19,8 +19,8 @@ struct Parameters {
   float lid=1.f, soundboard=.5f, sympathetic=.5f, duplex=.5f;
   // Each microphone pair's level as an amplitude, by model::Mic: the close
   // pair over the hammers (the pop sound), the XY pair at the lid, the live
-  // pair in the room and the distant pair across it. Each plays as loud as
-  // the close pair at the same level.
+  // pair in the room and the distant pair across it. Each hears the piano
+  // as loud as the close pair at the same level; its room comes on top.
   float mic[model::micCount]{1.f,0.f,0.f,0.f};
   // The room in the pairs that hear it, and in the action's sound: 0 none.
   float room=.5f;

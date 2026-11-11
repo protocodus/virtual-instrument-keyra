@@ -90,7 +90,7 @@ def run_case(args):
     with tempfile.TemporaryDirectory(prefix='keyra-release-') as tmp:
         events, wav = Path(tmp) / 'release.events', Path(tmp) / 'render.wav'
         events.write_text(f'0 on {note} {VELOCITY}\n{HOLD} off {note} 0\n')
-        subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--model', model_name,
+        subprocess.run([renderer, '--events', str(events), '--output', str(wav), '--body', model_name,
                         '--duration', str(HOLD + SHIFTS[-1] + times[-1] + .2)] + bench.MEASURE,
                        check=True, stdout=subprocess.DEVNULL)
         sr, x = pa.load(wav)

@@ -16,7 +16,7 @@ Per renderer, velocity and measure the table gives the jumps' rms and the
 largest. No recording is read and nothing is fitted.
 
   python3 -B Tools/survey_keyboard.py --renderer 0.4.31=old/keyra_render \\
-      --renderer 0.4.32=build/keyra_render [--model kawai] [--jobs 3] [--json OUT]
+      --renderer 0.4.32=build/keyra_render [--model parlor] [--jobs 3] [--json OUT]
 """
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ from scipy import ndimage, signal, stats
 
 import piano_analysis as pa
 
-MODELS = ('grand', 'upright', 'kawai', 'hamburg', 'newyork')
+MODELS = ('concert', 'parlor', 'baby', 'upright')
 VELOCITIES = (40, 80, 120)
 MEASURES = ('level', 'balance', 'bright', 'decay', 'rise')
 
@@ -51,7 +51,7 @@ def measure(job):
             f.write(f'0.1 on {note} {velocity}\n')
         wav = os.path.join(tmp, 'render.wav')
         subprocess.run([renderer, '--events', events, '--output', wav, '--duration', '4', '--gain', '.07',
-                        '--model', model], check=True, stdout=subprocess.DEVNULL)
+                        '--body', model], check=True, stdout=subprocess.DEVNULL)
         sr, x = pa.load(wav)
     x = signal.sosfiltfilt(signal.butter(2, 20, 'highpass', fs=sr, output='sos'), x, axis=0)
     s = pa.onset(x, sr)
