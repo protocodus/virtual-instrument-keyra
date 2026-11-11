@@ -542,7 +542,9 @@ is written independently of it.
   F♯6, and from C5 to A5 the model holds something under 180 Hz with the
   blow that the recording does not. That the catch and the capo d'astro bar
   are their causes is the reading the timing and the keys suggest, not a
-  measurement of a piano's action. A Steinway's notes thump 8 to 10 dB
+  measurement of a piano's action; the literature names the key meeting
+  the key frame for the thump (Askenfelt and Jansson), which is not built
+  or compared yet ([options](Docs/plans/realism-options-2026-11-11.md)). A Steinway's notes thump 8 to 10 dB
   harder than the Salamander's; the grands share one level.
 - **The room against the recordings.** With the room now in the close pair,
   a treble note's tail still falls faster than the Salamander's (69 dB down
