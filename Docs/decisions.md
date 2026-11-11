@@ -4793,3 +4793,75 @@ piano sounds absolutely real." B (2.4.0) stands, chosen by ear on the
 `2026-11-11-key-presses` set; C (without the room in the close pair) was
 not taken up, so the close pair keeps its share of the room. The next
 rounds follow [the ranked options](plans/realism-options-2026-11-11.md).
+
+## 2026-11-11 — the string scale (2.5.0)
+
+**What was looked for.** Why the partials' score had stood at 8.2 dB since
+2.0.0. Each partial's signed error on every scored note of the Salamander
+(the benchmark's own measure, taken apart): 7 % of the scored partials were
+ones the search did not find in the render at all, each counted as 30 dB,
+nearly all from the fifteenth partial up. They were there, at other pitches.
+
+**The cause.** The inharmonicity the recordings' partials give, beside the
+model's: the concert grand's plain strings were 1.1 to 1.5 times as stiff as
+the Salamander's from C3 up and twice at F♯2 and A2, the upright's up to
+twice the Helsinki's, and both pianos' wound strings 0.4 to 0.85 of the
+recorded ones. The lengths the Salamander's stiffness implies, at the
+model's wire, follow the scale's own rule (doubling 0.93 of an octave) all
+the way down to the break at 1.035 of it, with no bend; the Helsinki's bend
+only in the last half octave above its break. The model bent every string
+from the bass up.
+
+**What 2.5.0 changes.** C8 at 51.5 mm; the plain strings keep the rule down
+to 0.87 of A0's length; the wound strings run from the lowest plain
+string's length to A0's; their cores 1.035 to 1.555 mm and tensions 1000 to
+1300 N. The 0.87, the cores and the tensions were fitted to the two pianos'
+inharmonicity with the recorded pianos' own sizes left free; the rule's
+form is the model's. The concert grand then stands within 8 % of the
+Salamander from C3 to F♯6, 15 to 19 % over at F♯2 and A2 (plain in the
+model, wound in the Salamander), and 14 to 53 % under in the wound strings:
+the Salamander is a 2 m grand, and the parlor grand's A0 is within 3 % of
+it. The upright's plain strings stand 22 % under to 38 % over the
+Helsinki's, its wound strings 6 to 41 % under. Keys re-voiced, levels
+re-pinned (0.1 to 0.3 dB).
+
+**Measured.** Grand, the notes 1.0.0 never fitted, 2.4.0 to 2.5.0: partials
+8.23 to 7.91 dB, tuning 3.20 to 2.10 cents, decay 4.15 to 4.17 dB/s, attack
+6.60 to 6.56, early 6.96 to 6.98, sustain 8.39 to 8.35, noise 7.83 to 7.64,
+envelope 4.55 to 4.55, rise 12.98 to 12.15 ms, level 2.42 to 2.50. Upright:
+partials 9.57 to 8.42, tuning 4.32 to 3.17, decay 5.51 to 5.33, attack 7.50
+to 7.56, early 9.12 to 9.27, noise 9.80 to 9.65. 13 single-note scores of
+the grand are worse (the furthest F♯7's decay, 4.3 to 9.6 dB/s, and F♯6's
+tuning, 1.7 to 3.5 cents) and 11 of the upright
+(C1's rise 6.5 to 21.6 ms, F♯5's tuning 1.2 to 4.3 cents).
+
+**Tried and dropped.** On the new scale, two searches against the
+Salamander at four layers. The felt by register (exponent, stiffness,
+hysteresis) brought the partials' levels averaged by register, band and
+layer from 4.3 to 3.6 dB off, stopping at the edge of what it was allowed
+(exponent +0.6, a factor 2 on the hysteresis), and on the benchmark took
+0.2 dB off the partials while the noise between them went 1.2 dB further
+off for the exponent and stiffness and 1.5 more for the hysteresis. The
+strings' losses and the bridge's hold by register brought how the partials
+fall after their first 200 ms from 3.5 to 3.1 dB off, and on the benchmark
+took 0.3 dB off the partials, sustain and envelope while the decay went 0.3
+to 0.5 dB/s and the level 0.5 dB further off. Neither is in 2.5.0. A search
+on one measure moves the others; the next fit of the felt has to score the
+noise between the partials with them.
+
+**Also measured, not acted on.** The strike point: the Salamander's bass
+notes fit a strike at 0.117 to 0.123 of the length (the model's 0.12), with
+the eighth partial 14 dB under its neighbours where the model's is 6 to 9,
+and the twenty-fifth 9 under where the model's, an exact node, is 26.
+Whether the model's partials within a note are rougher than a real
+piano's: through the close pair a partial stands 6 to 7 dB from its
+neighbours, the same notes averaged over all four pairs 4 to 5 under 2 kHz,
+so about half of it is common to every microphone.
+
+**What is the owner's to hear.** A lettered set (`2026-11-11-string-scale`
+in the project's files, not committed): A 2.4.0, B 2.5.0. Eight phrases:
+long forte notes from C2 to C5, held octaves and fifths, wide chords, a
+loud bass line, the chords on the upright, the octaves on the parlor grand,
+and the first demo and the nocturne. B is matched to A on whole-file RMS;
+the trims are within 0.25 dB. By the project's standing rule B stands
+unless the owner says otherwise.

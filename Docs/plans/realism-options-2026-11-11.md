@@ -48,6 +48,17 @@ a cause, and should come last.
 **Cost.** (a) is a change to the tables, not to the per-sample loop.
 Moderate.
 
+**After 2.5.0.** Part of this distance was not the board. The strings were
+10 to 100 % stiffer than the recorded ones, so the benchmark looked for the
+upper partials where the model did not have them; with the scale rebuilt the
+score is 7.9 dB. Of what is left (measured over all four windows of the
+score), the larger part is each partial against its neighbours and the
+rest a tilt by register and loudness: loud notes from A3 to G♯4 hold 7 to
+8 dB too little from 1.2 to 4.8 kHz, notes from A4 to G♯5 6 dB too much from 1.2 to
+2.4 kHz. Along the keyboard the recorded grand's first four partials stand
+6 to 8 dB off their neighbours a minor third away, the model's 4 to 11, so
+the recorded piano is not even either.
+
 ### 2. The action through the model
 
 **Gap.** The owner's complaint was the key presses. 2.4.0 makes the recorded

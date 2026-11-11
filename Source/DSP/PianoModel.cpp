@@ -319,31 +319,45 @@ struct Tables {
 // --- the scale -----------------------------------------------------------
 void designStrings(Tables& t,int body) noexcept {
   const Design& d=t.design;
-  // The speaking length doubles a little less than every octave down from
-  // C8's 50 mm, until the case's length bends it over.
-  const auto ideal=[](int key){return .050*std::pow(2.,(87-key)/12.*.93);};
-  constexpr double bend=2.5;
-  const double longest=std::pow(std::pow(d.bassLength,-bend)-std::pow(ideal(0),-bend),-1/bend);
+  // The plain strings' speaking length doubles a little less than every
+  // octave down from C8's 51.5 mm, until the case's length bends it over: no
+  // plain string is longer than 0.87 of A0's. The wound strings have a bridge
+  // of their own: from the lowest plain string's length at the break to A0's.
+  // Set against the strings' stiffness as the recorded pianos' partials give
+  // it: the concert grand's inharmonicity stands within 8 % of the
+  // Salamander grand's from C3 to F#6 and the upright's within 38 % of the
+  // Helsinki upright's plain strings (22 % low to 38 % high). Through 2.4.0
+  // the rule bent every string from the bass up, which left the plain
+  // strings 10 to 100 % stiffer than the recorded ones: C4's twentieth
+  // partial 18 cents and C3's thirtieth 37 cents sharp of the Salamander's.
+  const auto ideal=[](int key){return .0515*std::pow(2.,(87-key)/12.*.93);};
+  constexpr double bend=8;
+  const double longest=.87*d.bassLength;
+  const auto plainLength=[&](int key){return std::pow(std::pow(ideal(key),-bend)+std::pow(longest,-bend),-1/bend);};
   for(int i=0;i<keyCount;++i){
     KeyData& k=t.keys[i];
     k.hertz=440*std::pow(2.,(i-48)/12.);
     k.strings=i<d.monochords?1:i<d.trichords?2:3;
-    k.length=std::pow(std::pow(ideal(i),-bend)+std::pow(longest,-bend),-1/bend);
     k.wound=i<d.plain;
     double core;
     if(!k.wound){
       // Plain wire from 0.775 mm at the top to 1.125 mm at the break.
       core=(.775+.35*(87-i)/(87.-d.plain))*1e-3;
+      k.length=plainLength(i);
       k.density=steelDensity*pi*core*core/4;
       k.tension=4*k.length*k.length*k.hertz*k.hertz*k.density;
       k.inharmonicity=pi*pi*pi*steelYoung*std::pow(core,4)/(64*k.tension*k.length*k.length);
     }else{
       // Copper-wound strings: the winding sets the mass for the tension the
-      // scale asks, the steel core the stiffness.
-      const double deep=(d.plain-i)/static_cast<double>(d.plain);
-      k.tension=850+550*deep;
+      // scale asks, the steel core the stiffness. The cores and tensions
+      // are set with the lengths above. The upright's wound strings stand
+      // 6 to 41 % under the Helsinki's stiffness; the concert grand's 14 to
+      // 53 % under the Salamander's, a grand 0.7 m shorter.
+      const double deep=(d.plain-i)/static_cast<double>(d.plain),top=plainLength(d.plain);
+      k.length=top*std::pow(d.bassLength/top,(d.plain-1-i)/(d.plain-1.));
+      k.tension=1000+300*deep;
       k.density=k.tension/(4*k.length*k.length*k.hertz*k.hertz);
-      core=(1.05+.45*deep)*1e-3;
+      core=(1.035+.52*deep)*1e-3;
       k.inharmonicity=pi*pi*pi*steelYoung*std::pow(core,4)/(64*k.tension*k.length*k.length);
     }
     k.young=steelYoung*pi*core*core/4;
