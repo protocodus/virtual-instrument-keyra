@@ -1,4 +1,5 @@
 #include "PianoModel.h"
+#include "KeyVoicing.h"
 #include <algorithm>
 #include <cmath>
 #include <complex>
@@ -244,8 +245,8 @@ struct Tables {
   float floor[micCount][2][2][maxModes]{};
   float lid[lidStops][micCount][2][2][maxModes]{};
   float diffuse[micCount][2][2][maxModes]{};
-  // Each pair's level, and each key's against the scale's in each pair.
-  float micLevel[micCount]{},keyLevel[micCount][keyCount]{};
+  // Each pair's level in the mix.
+  float micLevel[micCount]{};
   HfTap hfDirect[micCount][2][points]{},hfFloor[micCount][2][points]{},hfLid[lidStops][micCount][2][points]{};
   HfTap hfDiffuse[micCount][2][points][2]{};
   MicSpec mic[micCount]{};
@@ -563,18 +564,13 @@ void designBoard(Tables& t,int body){
     const double w=2*pi*mode.hertz;
     power[k]=total*std::pow(w*w*d.boardX*d.boardY/(nx*ny)*mode.hertz,2)/(mode.hertz*mode.hertz+d.dipoleHertz*d.dipoleHertz);
   }
-  // What each pair hears of the patch at each point of the bridge, against
-  // the points' mean.
-  double patch[micCount][points],patchMean[micCount];
+  // What each pair hears of the patch, over the bridge's points.
+  double patchMean[micCount]{};
   for(int mic=0;mic<micCount;++mic){const MicSpec& spec=t.mic[mic];
-    patchMean[mic]=0;
-    for(int p=0;p<points;++p){patch[mic][p]=0;
-      for(int ch=0;ch<2;++ch){
-        const auto add=[&](HfTap tap,double g){patch[mic][p]+=g*g*tap.gain*tap.gain/2;};
-        add(t.hfDirect[mic][ch][p],1);add(t.hfFloor[mic][ch][p],spec.floor);add(t.hfLid[lidStops-1][mic][ch][p],spec.lid);
-        for(int e=0;e<2;++e)add(t.hfDiffuse[mic][ch][p][e],1);}
-      patchMean[mic]+=patch[mic][p]/points;}
-    for(int p=0;p<points;++p)patch[mic][p]/=patchMean[mic];
+    for(int p=0;p<points;++p)for(int ch=0;ch<2;++ch){
+      const auto add=[&](HfTap tap,double g){patchMean[mic]+=g*g*tap.gain*tap.gain/(2*points);};
+      add(t.hfDirect[mic][ch][p],1);add(t.hfFloor[mic][ch][p],spec.floor);add(t.hfLid[lidStops-1][mic][ch][p],spec.lid);
+      for(int e=0;e<2;++e)add(t.hfDiffuse[mic][ch][p][e],1);}
   }
   double heard[2][2][maxModes]{},direct[2][2][maxModes]{},level[bins]{};
   for(int mic=0;mic<micCount;++mic){const MicSpec& spec=t.mic[mic];
@@ -629,32 +625,8 @@ void designBoard(Tables& t,int body){
         gain[0][k]=static_cast<float>(a*c+b*sn);gain[1][k]=static_cast<float>(b*c-a*sn);};
       rotate(t.direct[mic][1]);rotate(t.floor[mic][1]);rotate(t.diffuse[mic][1]);
       for(int stop=0;stop<lidStops;++stop)rotate(t.lid[stop][mic][1]);
-      const double a=heard[1][0][k],b=heard[1][1][k];heard[1][0][k]=a*c+b*sn;heard[1][1][k]=b*c-a*sn;
     }
-    // A board answers each frequency in its own way, so one key's partials
-    // come out stronger than its neighbour's: each key's level in this pair
-    // against what the even board would give it, from its lowest partials
-    // weighed as a blow drives them. The mix sets each key's pull by it.
     t.micLevel[mic]=static_cast<float>(anchor[mic]);
-    for(int i=0;i<keyCount;++i){const KeyData& key=t.keys[i];
-      const int p=std::min(points-2,static_cast<int>(key.bridge));const double b=key.bridge-p;
-      double got=0,even=0;
-      for(int n=0;n<std::min(key.partials,24);++n){
-        const double hertz=key.hertz*key.ratio[n],w=2*pi*hertz;
-        // A blow's force on the bridge falls about 12 dB an octave over
-        // 330 Hz (this model's hammers at mezzo forte, C2 to C6).
-        const double weight=key.shape[n]*key.shape[n]/(1+std::pow(hertz/330,4));
-        even+=weight*radiated(hertz);
-        if(hertz>.9*t.crossover){got+=weight*radiated(hertz)*mix(patch[mic][p],patch[mic][p+1],b);continue;}
-        double norm=0;
-        for(int ch=0;ch<2;++ch){std::complex<double> H=0;
-          for(int k=0;k<t.modes;++k){const double wk=2*pi*all[k].hertz;const std::complex<double> s(pi*all[k].hertz*boardLoss,w);
-            H+=mix(t.modeIn[p][k],t.modeIn[p+1][k],b)*(heard[ch][0][k]*s+heard[ch][1][k]*wk)/(s*s+wk*wk);}
-          norm+=std::norm(H)/2;}
-        got+=weight*norm/anchor[mic];
-      }
-      t.keyLevel[mic][i]=static_cast<float>(got/even);
-    }
   }
   // Above the modes the board moves and radiates near the bridge only, and
   // the ribs and the case scatter it: each pair hears that at the level its
@@ -752,6 +724,7 @@ struct Piano::Impl {
   Tap taps[4][points*hfTapsPerPoint*micCount]{};int tapCount[4]{};
   float roomSend=0;
   float voicing[keyCount]{};   // each key's pull on the board, evened for the mix
+  float pull[keyCount];        // a tool's own pull in its place; negative, none
 
   // The room: a feedback delay network (J.-M. Jot and A. Chaigne, "Digital
   // delay networks for designing artificial reverberators", AES 90th
@@ -1139,11 +1112,20 @@ struct Piano::Impl {
       }
     }
     roomSend=static_cast<float>(send*2*clamp(controls.room,0,1));
-    // The scale is voiced for what is heard: no key more than 6 dB.
+    // A board answers each frequency in its own way, so a key comes out of
+    // the microphones stronger or weaker than its neighbours, as a piano's
+    // keys do before it is voiced. KeyVoicing.h holds what each key's strings
+    // alone give every pair, and every two pairs together, since pairs in a
+    // mix add as waves, against the even scale through the keys: each key
+    // pulls on the board by what brings it there in this mix, no more than
+    // 12 dB either way.
+    const int body=static_cast<int>(controls.body);
     for(int i=0;i<keyCount;++i){double got=0,even=0;
-      for(int mic=0;mic<micCount;++mic){const double power=controls.mic[mic]*controls.mic[mic];
-        got+=power*t.keyLevel[mic][i];even+=power;}
-      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/got),.5,2)):1;}
+      const float* heard=keyHeard[body][i];
+      for(int a=0;a<micCount;++a){const double level=clamp(controls.mic[a],0,2);
+        even+=level*level*keyEven[body][i][a];
+        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*clamp(controls.mic[b],0,2)**heard++;}
+      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/16)),.25,4)):1;}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
@@ -1256,7 +1238,7 @@ struct Piano::Impl {
         for(int s=0;s<frames;++s)blow[s]+=near*v.force[s];
         frameRings=true;}
       play(v,each,frames);
-      const float b=v.pointMix*voicing[i],a=voicing[i]-b;
+      const float pulled=pull[i]<0?voicing[i]:pull[i],b=v.pointMix*pulled,a=pulled-b;
       for(int s=0;s<frames;++s){struck[v.point][s]+=a*each[s];struck[v.point+1][s]+=b*each[s];}
       if(v.forcing){bool still=false;for(const auto& c:contacts)still=still||(c.active&&c.key==i);
         std::memset(v.force,0,sizeof(v.force));v.forcing=still;}
@@ -1346,7 +1328,7 @@ float touched(float velocity,float decibels,float dynamics) noexcept {
   return static_cast<float>((velocity+softest)*std::pow(10.,decibels/(20*dynamicsPower(dynamics)))-softest);
 }
 
-Piano::Piano():impl(new Impl){prepare(48000);}
+Piano::Piano():impl(new Impl){for(float& gain:impl->pull)gain=-1;prepare(48000);}
 Piano::~Piano()=default;
 void Piano::prepare(double sampleRate){
   auto& p=*impl;
@@ -1425,6 +1407,7 @@ void Piano::knockBridge(int key,float newtonSeconds) noexcept {
   const float impulse=static_cast<float>(newtonSeconds*p.sampleRate),b=static_cast<float>(at-point);
   p.knocks[point]+=(1-b)*impulse;p.knocks[point+1]+=b*impulse;p.wake();
 }
+void Piano::pullKey(int key,float gain) noexcept {if(key>=0&&key<keyCount)impl->pull[key]=gain;}
 Piano::KeyReport Piano::report(Body body,int key) const noexcept {
   const KeyData& k=impl->tables[static_cast<int>(body)].keys[std::max(0,std::min(keyCount-1,key))];
   return {k.strings,k.partials,k.hertz,k.length,k.tension,k.inharmonicity,k.stretchCents,k.hammerMass};

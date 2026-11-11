@@ -37,7 +37,7 @@ Only numbers are tracked: Tools/corpus/yamaha-c3-pedal-wash.json holds the
 takes' energies in dB, written with --library from a copy of the library
 (NumPy alone, the monolith read forward; exact PCM duplicates left out).
 
-  python3 Tools/benchmark_pedal_wash.py --renderer build-dsp/keyra_render --model grand
+  python3 Tools/benchmark_pedal_wash.py --renderer build-dsp/keyra_render --model parlor
   python3 Tools/benchmark_pedal_wash.py --library /path/YamahaC3.dslibrary
 """
 from __future__ import annotations
