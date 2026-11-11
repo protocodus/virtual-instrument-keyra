@@ -157,6 +157,10 @@ answer; less low end in what the close pair hears of the room.
 **Cost.** Moderate. The listening set's C (no added room) decides first
 whether the close pair should hear it at all.
 
+**After 2.6.0.** The 600 ms figure above was the recording's own floor.
+To 300 ms the treble's tail now falls as recorded, by the case's knock in
+the room; the board at half its loss did as much and slowed the bass.
+
 ### 8. Each piano against its own recordings
 
 **Gap.** The three grands share constants set on the Salamander (a Yamaha

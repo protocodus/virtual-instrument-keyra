@@ -4865,3 +4865,91 @@ loud bass line, the chords on the upright, the octaves on the parlor grand,
 and the first demo and the nocturne. B is matched to A on whole-file RMS;
 the trims are within 0.25 dB. By the project's standing rule B stands
 unless the owner says otherwise.
+
+## 2026-11-11 — what rings under a treble note (2.6.0)
+
+**What was looked for.** What stands between a note's partials, each sound
+with its own stiff string's partials left out, on the Salamander at four
+layers. The model held less than the recording nearly everywhere (4.4 dB
+on average, signed), most from A5 up: 7 to 17 dB less from 125 Hz to 2 kHz
+from 50 ms after the blow. From A4 to G♯5 it held 5 to 13 dB more in the
+first 50 ms, and from A4 up a loud note 10 to 40 dB less above 5 kHz.
+
+**The benchmark corrected.** Its noise score left out of a render only the
+partials matched to the recording's, so a render's partial standing off
+the recording's was scored twice, as missing and as noise. At the orders
+the recording holds, the render's own partials are now left out too
+(orders above them stay in for both: left out for the render alone, the
+bass's bands kept only what the recording never resolved, and its noise
+read 28 dB). 2.5.0 reads 7.45 dB by it where it read 7.64, the upright
+9.54 where 9.65. The reports of 2.6.0 compare both versions by the
+corrected score.
+
+**The felt, again.** With the corrected score the felt refit dropped from
+2.5.0 (exponent +0.6, stiffness by register) still took 0.1 dB off the
+partials at four layers and put the noise 0.7 to 1.1 dB further off. By
+third octaves the middle register is not short of top end as a whole: it
+holds 4 to 9 dB less at 1.6 kHz and 4 to 9 dB more from 2 to 5 kHz half a
+second on. A harder felt is not the remedy; not in 2.6.0.
+
+**A correction to 2.4.0.** The close pair's share of the room was set
+against what the Salamander's treble notes leave from 280 to 710 Hz, 24, 36
+and 47 dB down at 150, 300 and 600 ms. From 400 ms on that recording stands
+at its own floor (51 dB under the knock's peak from one second to four), so
+the 600 ms figure was not the piano. The first two stand.
+
+**What rang in the recording.** Valid to 300 ms, the recorded tail falls
+15 dB in 200 ms from 100 ms on, as a space ringing 0.8 s does, from 13 dB
+under the knock's peak. Three readings were built. The board at half its
+loss rings as long (16, 28 and 39 dB down at 100, 200 and 300 ms against
+the recording's 21, 28 and 36) and brings the treble's first half second
+2.3 dB closer, but the bass and the middle then take twice as long to
+reach their level (the benchmark's rise, 14 to 26 ms), and halving the
+loss only above 250 to 600 Hz kept most of that cost for a seventh of the
+gain. More room for everything: at the Room control's top the tail is
+still 3 to 5 dB short. The case's own sound in the room: the pairs hear
+the board from near it, and what the knock shakes in the frame and the
+case reaches them mostly by the room.
+
+**What 2.6.0 changes.** The knock the blow gives the board's edge (keys
+from A5 up, 2.4.0) also goes to the room, 0.6 of it, in other signs than
+the board's sound. From 280 to 710 Hz the tail stands 15, 21, 29, 29 and
+39 dB down at 60, 100, 150, 200 and 300 ms (recorded 15, 21, 24, 28, 36;
+2.5.0 19, 28, 32, 38, 47), and from 180 to 280 Hz 11, 16, 21, 27 and 34
+(recorded 14, 19, 22, 27, 34). Between the partials the notes from A6 to
+G♯7 now stand within 6 dB of the recording from 250 Hz to 1.6 kHz; from A5
+to G♯6, where the knock itself is weak, 4 to 11 dB short. Nothing a key's
+strings give the microphones moved: the voicing table is byte for byte
+2.5.0's and the levels hold at −9 VU without a re-pin.
+
+**Tried on the way.** The caught hammer's thump in the room as well, at
+0.4: the treble's first half second another 0.4 to 0.6 dB closer, the
+bass's partials 0.2 to 0.3 dB and its noise 0.4 to 0.6 dB further off, and from 60 to
+110 Hz the thump's tail already stands within 2 dB of the recorded one to
+200 ms without it; left out. The knock in the room in the same signs as
+the room's output: the top keys' two channels came out 0.04 to 0.28 more
+alike than the recording's; fed in other signs they are as far apart as in
+2.5.0.
+
+**Measured.** Grand, the notes 1.0.0 never fitted, 2.5.0 to 2.6.0: attack
+6.56 to 6.39 dB, early 6.98 to 6.49, noise 7.45 to 7.00, partials 7.91 to
+7.90, tuning 2.10 to 2.10, decay 4.17 to 4.16, sustain 8.35 to 8.33, rise
+12.15 to 12.16 ms, level 2.50 to 2.49; from C6 up attack 7.75 to 7.15,
+early 9.58 to 7.86, noise 9.05 to 7.53. Two single-note scores are worse:
+C8's level difference between the channels, 1.2 to 1.9 dB and 1.2 to 1.7.
+Upright against the Helsinki: attack 7.56 to 7.42, early 9.27 to 8.95,
+noise 9.54 to 9.22, partials 8.42 to 8.55, tuning 3.17 to 3.09; one
+single-note score worse (E6's partials, 10.5 to 11.0 dB). A drier recording
+of an upright (MAPS, ENSTDkCl) held less from 150 ms on than the model did
+with the knock and the thump in the room at 0.4 (25, 26 and 36 dB down at
+150, 200 and 300 ms against its 29, 35 and 44); the shipped form was not
+measured against it.
+
+**What is the owner's to hear.** A lettered set (`2026-11-11-case-ring` in
+the project's files, not committed): A 2.5.0, B 2.6.0. Seven phrases:
+single notes from C6 to C8 soft then loud, the same keys staccato, a
+melody in the top two octaves over a held chord, the melody on the
+upright, the single notes on the parlor grand, and the first demo and the
+nocturne. B is matched to A on whole-file RMS; the trims are within
+0.01 dB. Keys below A5 are the same in both. By the project's standing
+rule B stands unless the owner says otherwise.
