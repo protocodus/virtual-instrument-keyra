@@ -161,7 +161,7 @@ def score(rendered):
                 between = lambda t: t['between'][w][b]
                 if any(between(t) is None for t in (*down, *up, ours)) or median(down, between) < median(up, between) + 6:
                     continue
-                rows.append({'role': roles[midi], 'midi': midi, 'layer': layer, 'window': w, 'holds': holds,
+                rows.append({'role': roles[midi], 'midi': midi, 'layer': layer, 'window': w, 'band': b, 'holds': holds,
                              'db': between(ours) - whole(ours) - (median(down, between) - median(down, whole))})
     return rows
 

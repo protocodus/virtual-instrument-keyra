@@ -26,13 +26,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -7.0 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -9.9 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.2 dBFS |
-| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.8 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -7.3 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -10.9 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -2.4 dBFS |
+| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.3 dBFS |
 | 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
-| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -5.5 dBFS |
-| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -3.6 dBFS |
+| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.6 dBFS |
+| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -4.1 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -48,6 +48,35 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.3.0 — 2026-11-11 — the open strings
+
+The strings whose dampers are off answer a blow as recorded pianos' do. The
+panel and the saved state are 2.2.0's; a 2.2.0 session opens as saved and
+sounds different.
+
+- **Under the pedal**: a blow now moves the iron frame the strings end on,
+  and that sets every open string ringing. Between a note's partials the
+  parlor grand held 25 dB less than the Yamaha C3's pedal-down takes; it
+  holds 6 to 8 dB less.
+- **The top strings**, which have no dampers, ring under every note: 40 dB
+  too quietly before, within 3 dB of the Salamander grand's under a forte
+  note from C5 to F♯7. They ring longer too (about 28 dB/s where they died
+  at 35 to 80; the recording's take 8 to 35), since a unison out of tune
+  loads the bridge once, not once a string.
+- **Level**: each piano's typical playing stays at −9 VU.
+- **Against the recordings**: on the Salamander grand's notes 1.0.0 never
+  fitted, the first half second is closer (8.9 to 8.1 dB, from C6 up 15.4 to
+  12.7), the noise between the partials (9.9 to 9.3), the sustain (9.1 to
+  8.7) and the attack (8.1 to 7.8); the partials are 0.04 dB further off.
+  Six single-note scores are worse, five of them the channels' likeness at
+  C8, F♯7 and D♯7
+  ([report](Docs/validation/grand-open-strings-benchmark-2026-11-11.md)). On
+  the Helsinki upright the attack, the first half second and the noise are
+  closer by 0.1 to 0.3 dB; on the notes 1.0.0 never fitted the partials (8.5
+  to 8.6 dB) and the decay (5.6 to 5.7 dB/s) are further off, and two
+  single-note scores are worse
+  ([report](Docs/validation/upright-open-strings-benchmark-2026-11-11.md)).
 
 ### 2.2.0 — 2026-11-11 — an even scale
 
@@ -165,7 +194,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 108](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/42987159721/artifacts/13840224868)**, built from [`9f44b8aa9c4f`](https://github.com/protocodus/virtual-instrument-keyra/commit/9f44b8aa9c4f4c3ec2656cfc58926777c803debc). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 110](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43007331777/artifacts/13853086060)**, built from [`34a319c8140f`](https://github.com/protocodus/virtual-instrument-keyra/commit/34a319c8140fb4b2baad570397748e5a5d4ad7a3). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -240,10 +269,15 @@ either way. The table is measured at the default Lid and Soundboard and at
 half velocity; the frame's knock is not voiced.
 
 **Sympathetic strings and duplex scales.** Every string whose damper is
-lifted, by its key, the sostenuto or the pedal, is driven by the
-bridge's motion, ten partials and two duplex-scale modes a key. The top
-keys have no dampers (from F♯6 on the concert grand) and always answer. The
-upright has no duplex scales.
+lifted, by its key, the sostenuto or the pedal, answers what is played, ten
+partials and two duplex-scale modes a key. Two things drive it: the
+bridge's motion, and the iron frame, which gives under a blow's lean and
+moves the string's near end (1.2e-7 m/N below 500 Hz, less above, fitted to
+the Yamaha C3's pedal-down takes and the Salamander grand's top strings). A
+unison rings as one mode: in tune its strings load the bridge once each,
+and further apart than the bridge couples them, once in all (Weinreich
+1977). The top keys have no dampers (from F♯6 on the concert grand) and
+always answer. The upright has no duplex scales.
 
 ### Four pianos
 
@@ -386,22 +420,24 @@ is written independently of it.
   from the Salamander grand than 1.0.0, which was fitted to those
   recordings, on every score of `Tools/benchmark_recordings.py`: on the
   notes 1.0.0 never fitted, the partials' levels differ by 8.2 dB where
-  1.0.0's differed by 5.3, the tuning by 2.9 cents against 0.9, the decay by
+  1.0.0's differed by 5.3, the tuning by 2.8 cents against 0.9, the decay by
   3.7 dB/s against 2.1 and the rise by 15 ms against 4.5
   ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
   [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md),
-  [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md)).
-  The furthest are the treble's first half second (15 dB off in third
+  [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md),
+  [2.3.0 against 2.2.0](Docs/validation/grand-open-strings-benchmark-2026-11-11.md)).
+  The furthest are the treble's first half second (13 dB off in third
   octaves) and the bass's rise (28 ms on average). Whether it sounds better
   is the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
   measurement.
 - **The upright against its recordings.** Against the Helsinki upright the
-  partials' levels differ by 8.5 dB, the tuning by 4.6 cents, the decay by
-  5.5 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
-  moved its attack, sustain and noise further off than 2.0.0's, and 2.2.0
-  its noise a little further
+  partials' levels differ by 8.6 dB, the tuning by 4.6 cents, the decay by
+  5.7 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
+  moved its attack, sustain and noise further off than 2.0.0's, 2.2.0 its
+  noise a little further, and 2.3.0 its partials and decay
   ([2.1.0](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md),
-  [2.2.0](Docs/validation/upright-even-scale-benchmark-2026-11-11.md)).
+  [2.2.0](Docs/validation/upright-even-scale-benchmark-2026-11-11.md),
+  [2.3.0](Docs/validation/upright-open-strings-benchmark-2026-11-11.md)).
   That library's five layers cover wide velocity ranges; the velocity each
   was played at is not documented.
 - **A narrower image than the recordings.** Between 500 Hz and 2 kHz the
@@ -415,17 +451,15 @@ is written independently of it.
   share above its sixth partial is 4 to 8 dB less at every velocity, and the
   middle of the keyboard holds 13 to 15 dB less in the 2 kHz octave from
   mezzo-forte up.
-- **The open strings answer too weakly.** A struck treble note sets the top
-  strings, which have no dampers, ringing: in the Salamander grand's notes
-  each stands about 30 dB under the struck note's fundamental over the
-  first second, and the model's stand 40 dB and more under that. This ring,
-  not a knock, is what the recordings hold under a treble fundamental after
-  the blow, and most of why the treble's first half second is the
-  benchmark's furthest score. Under the pedal it is the same: a struck note leaves 19
-  to 38 dB less between its partials than the Yamaha C3's pedal-down takes
-  (25 dB in the median, `Tools/benchmark_pedal_wash.py` on the parlor
-  grand), and the note does not gain under the pedal where the takes gain 3
-  to 7 dB between C3 and A4.
+- **The open strings, where they are still off.** Under the pedal a note
+  leaves 6 to 8 dB less between its partials than the Yamaha C3's
+  pedal-down takes (`Tools/benchmark_pedal_wash.py` on the parlor grand), 10
+  to 12 dB less after three seconds, and a key from about C♯4 up rings the
+  strings below its own pitch 8 to 13 dB too much. The top strings ring 7 to
+  10 dB too much under A7 and C8 and die about twice as fast as the
+  Salamander's. The note itself does not gain under the pedal where the
+  takes gain 3 to 7 dB between C3 and A4. The frame's give is fitted to two
+  recordings that disagree by a few dB.
 - **The thump under the fundamental** is up to 12 dB stronger than the
   Salamander's from C4 to F♯5 and 2 to 10 dB weaker from A5 to F♯6.
 - **Rough partials.** Within a note a partial stands 6 to 10 dB from the

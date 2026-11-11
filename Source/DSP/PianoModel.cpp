@@ -173,6 +173,18 @@ constexpr double patchRadius=.5;        // m: what radiates about the bridge abo
 // swelling for 20 ms and gone in 150); the strings' own pull on the bridge
 // is 20 dB short of it.
 constexpr double frameShare=2,frameHertz=160;
+// The same lean moves the iron the strings end on, and with it the near end
+// of every string whose damper is off: frameGive metres a newton, the iron
+// under the string ends taken as one damped resonance at frameCorner (a
+// Butterworth pair), above which its mass holds it still. Both are fitted:
+// to what the Yamaha C3's pedalled takes hold between a note's partials
+// from 150 Hz to 2.4 kHz (Tools/benchmark_pedal_wash.py), and to the top
+// strings of the Salamander grand, the median of which rings at its own
+// pitch 72 to 89 dB under the peak of a forte note struck from C6 to F#7.
+// The bridge's own travel left the first 25 dB short in the median and the
+// second 40. The two disagree by a few dB: at this give the first is still
+// 6 to 8 dB short and the second within 3 dB.
+constexpr double frameGive=1.2e-7,frameCorner=500;
 
 // The blow: 5 m/s at full velocity, and under it the velocity to a power:
 // 1 at Dynamics 0.5, where the notes' levels stand within 2 dB of the
@@ -702,6 +714,8 @@ struct Piano::Impl {
   alignas(32) float bankCos[keyCount*bankSlots]{},bankSin[keyCount*bankSlots]{};
   alignas(32) float bankIn[keyCount*bankSlots]{},bankOut[keyCount*bankSlots]{};
   alignas(32) float bankOpen[keyCount*bankSlots]{},bankDamped[keyCount*bankSlots]{};
+  alignas(32) float bankEnd[keyCount*bankSlots]{}; // a mode's drive from its string's near end
+  float bankFollow[keyCount]{};                    // the pull of a string that only follows that end
   float bankDamper[keyCount]{},bankApplied[keyCount]{};
   bool bankAwake[keyCount]{};float bankEnergy[keyCount]{};
   int bankPoint[keyCount]{};float bankMix[keyCount]{};
@@ -736,6 +750,7 @@ struct Piano::Impl {
   double dcL=0,dcR=0,dcInL=0,dcInR=0,dcPole=0;
   double frame[2]{},framePole=0; // the frame's knock, twice smoothed, newtons
   bool frameRings=false;         // through this chunk: decided at its boundary, or by a blow in it
+  Biquad frameTravel;            // the blow to the string ends' travel on the frame, metres
 
   // The ideal string's pitch against the key's in equal temperament: the
   // string's stiffness raises its first partial, which is the one tuned.
@@ -1020,15 +1035,26 @@ struct Piano::Impl {
       // that it comes back from one as it was.
       const double still=key.hertz*tuningRatio(key,0),bent=f0/still;
       bankPoint[i]=std::min(points-2,static_cast<int>(key.bridge));bankMix[i]=static_cast<float>(key.bridge-bankPoint[i]);
+      // How far the unison's strings stand apart, as tune() sets them.
+      double apart=0;for(int j=0;j<key.strings;++j)apart+=key.detune[j]*key.detune[j];
+      apart=std::pow(2.,(6*controls.detune*controls.detune+.15)*std::sqrt(apart/key.strings)/1200)-1;
       for(int slot=0;slot<bankSlots;++slot){const int at=i*bankSlots+slot;
+        bankEnd[at]=0;
         const bool isDuplex=slot>=bankPartials;
         double hertz,loss,damper,drive,pull;
         if(!isDuplex){
           if(slot>=key.partials||still*key.ratio[slot]>.45*sampleRate){bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
           hertz=still*key.ratio[slot];const double w=2*pi*hertz;
-          // The strings of the unison move together here: one mode for all,
-          // loading the bridge once each.
-          loss=stringLoss(key,w)+key.strings*key.couplingRe[slot];
+          // One mode for the unison, set going with its strings in step.
+          // In tune they stay so and load the bridge once each; further
+          // apart than the bridge couples them (the loss it gives one
+          // string, in rad/s) each rings on alone and loads it once in all:
+          // the faster of a coupled pair's two decays (G. Weinreich,
+          // "Coupled piano strings", JASA 62, 1977), taken for three too.
+          // Loaded three times, the Salamander's top strings died at 35 to
+          // 80 dB/s under a treble note where the recording's take 8 to 35.
+          const double split=apart*w/std::max(1e-9,static_cast<double>(key.couplingRe[slot]));
+          loss=stringLoss(key,w)+(1+(key.strings-1)*std::sqrt(std::max(0.,1-split*split)))*key.couplingRe[slot];
           damper=key.damper*(.2+.8*std::pow(std::sin((slot+1)*pi*.115),2));
           pull=key.tension*(slot+1)*pi/key.length*((slot&1)?-1:1);
           drive=2/(key.density*key.length*w)*pull;
@@ -1049,6 +1075,9 @@ struct Piano::Impl {
         bankDamped[at]=static_cast<float>(std::exp(-(loss+damper)/sampleRate));
         const double amount=isDuplex?2*controls.duplex:2*controls.sympathetic;
         bankIn[at]=static_cast<float>(amount*drive/sampleRate);bankOut[at]=static_cast<float>(pull);
+        // The near end moves every mode the same way, where the bridge
+        // moves them by turns; the duplex lengths lie beyond the bridge.
+        if(!isDuplex)bankEnd[at]=std::abs(bankIn[at]);
       }
     }
   }
@@ -1150,7 +1179,7 @@ struct Piano::Impl {
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
     for(double& x:travel)x=0;
     for(float& x:knocks)x=0;
-    frame[0]=frame[1]=0;frameRings=false;
+    frame[0]=frame[1]=0;frameRings=false;frameTravel.z1=frameTravel.z2=0;
     for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
     // Silence takes the microphones' mix at once.
     for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
@@ -1247,6 +1276,10 @@ struct Piano::Impl {
       frame[0]+=framePole*(blow[s]-frame[0]);frame[1]+=framePole*(frame[0]-frame[1]);
       const float knock=static_cast<float>(frameShare/points*(frame[0]-frame[1]));
       for(int p=0;p<points;++p)struck[p][s]+=knock;}
+    // The string ends' travel on the frame under the blow.
+    alignas(32) float pushed[chunk]{};
+    if(frameRings)for(int s=0;s<frames;++s)pushed[s]=static_cast<float>(frameTravel.run(frameGive*blow[s]));
+    else frameTravel.z1=frameTravel.z2=0;
     // The bridge's displacement under what was struck, which drives every
     // string whose damper is off it.
     alignas(32) float moved[points][chunk];
@@ -1260,6 +1293,12 @@ struct Piano::Impl {
       if(bankDamper[i]!=bankApplied[i]){const float d=bankDamper[i];
         for(int k=0;k<bankSlots;++k){const float g=k<bankPartials?bankOpen[o+k]+(bankDamped[o+k]-bankOpen[o+k])*d:bankOpen[o+k];
           bankTurnRe[o+k]=bankCos[o+k]*g;bankTurnIm[o+k]=bankSin[o+k]*g;}
+        // What the string pulls with while it only follows its end: each
+        // mode's answer to an end that stands still, as it turns now.
+        double follow=0;
+        for(int k=0;k<bankPartials;++k){const double re=1-bankTurnRe[o+k],im=bankTurnIm[o+k];
+          follow+=bankOut[o+k]*bankEnd[o+k]*im/std::max(1e-30,re*re+im*im);}
+        bankFollow[i]=static_cast<float>(follow);
         bankApplied[i]=d;}
       // A sounding key's own strings are its voice's.
       const bool own=voices[i].active;
@@ -1267,16 +1306,20 @@ struct Piano::Impl {
       float energy=0;
       // The key's modes out of the arrays for the chunk, where the compiler
       // can keep them in registers and take them four at a time.
-      alignas(16) float re[bankSlots],im[bankSlots],turnRe[bankSlots],turnIm[bankSlots],in[bankSlots],out[bankSlots];
+      alignas(16) float re[bankSlots],im[bankSlots],turnRe[bankSlots],turnIm[bankSlots],in[bankSlots],end[bankSlots],out[bankSlots];
       for(int k=0;k<bankSlots;++k){re[k]=bankRe[o+k];im[k]=bankIm[o+k];turnRe[k]=bankTurnRe[o+k];turnIm[k]=bankTurnIm[o+k];
-        in[k]=bankIn[o+k];out[k]=bankOut[o+k];}
+        in[k]=bankIn[o+k];end[k]=bankEnd[o+k];out[k]=bankOut[o+k];}
+      const float follow=bankFollow[i];
       for(int s=0;s<frames;++s){
-        const float x=own?0:a*moved[p][s]+b*moved[p+1][s];
+        const float x=own?0:a*moved[p][s]+b*moved[p+1][s],y=own?0:pushed[s];
         for(int k=0;k<bankSlots;++k){
-          const float r=turnRe[k]*re[k]-turnIm[k]*im[k]+in[k]*x;
+          const float r=turnRe[k]*re[k]-turnIm[k]*im[k]+in[k]*x+end[k]*y;
           im[k]=turnIm[k]*re[k]+turnRe[k]*im[k];re[k]=r;
         }
-        const float pull=dot(out,im,bankSlots);
+        // A string that only follows its end leans on the frame and the
+        // bridge as it stands between them; what it rings beyond that is
+        // what the bridge hears.
+        const float pull=dot(out,im,bankSlots)-follow*y;
         answered[p][s]+=a*pull;answered[p+1][s]+=b*pull;energy+=pull*pull;
       }
       for(int k=0;k<bankSlots;++k){bankRe[o+k]=re[k];bankIm[o+k]=im[k];}
@@ -1341,6 +1384,8 @@ void Piano::prepare(double sampleRate){
   p.travelLeak=std::exp(-2*pi*8/p.sampleRate);
   p.dcPole=std::exp(-2*pi*10/p.sampleRate);
   p.framePole=1-std::exp(-2*pi*frameHertz/p.sampleRate);
+  {const double w=2*pi*frameCorner/p.sampleRate,alpha=std::sin(w)/std::sqrt(2.),c=std::cos(w),a0=1+alpha;
+    Biquad& f=p.frameTravel;f.b0=f.b2=(1-c)/2/a0;f.b1=(1-c)/a0;f.a1=-2*c/a0;f.a2=(1-alpha)/a0;}
   p.prepareRoom();
   p.select();
   reset();
@@ -1361,7 +1406,7 @@ void Piano::setControls(const Controls& input) noexcept {
   p.controls=c;
   if(c.body!=old.body){p.select();p.silence();return;}
   if(c.soundboard!=old.soundboard)p.tuneBoard();
-  if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.age!=old.age||c.sympathetic!=old.sympathetic||c.duplex!=old.duplex)p.tuneBank();
+  if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.age!=old.age||c.detune!=old.detune||c.sympathetic!=old.sympathetic||c.duplex!=old.duplex)p.tuneBank();
   // What sounds follows the tuner at the next boundary.
   if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.detune!=old.detune)p.retune=!p.quiet;
   bool mics=c.lid!=old.lid||c.room!=old.room;

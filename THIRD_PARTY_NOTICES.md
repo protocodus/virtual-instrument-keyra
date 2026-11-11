@@ -47,9 +47,15 @@ Since 2.1.0 the velocity's law, how steeply the felt stiffens, what the
 bridge takes from the upper strings, where the board's radiation begins to
 fall and how far apart a pair's channels may be were set against the
 Salamander recordings above, and the velocity's law was compared with the
-same MAPS upright's notes. From each, a handful of numbers was compared and
-a constant chosen; nothing is copied. These credits do not imply endorsement
-by the authors or the instruments' makers.
+same MAPS upright's notes. Since 2.3.0 how far the iron frame gives under a
+blow, and up to what frequency, were set against the Salamander recordings
+and against pedal-down notes of "Yamaha C3" for Decent Sampler by
+**wesleywilson29** (Pianobook), from a copy of the library
+(`Tools/corpus/yamaha-c3.json` pins it by SHA256, and
+`Tools/corpus/yamaha-c3-pedal-wash.json` holds the band levels
+`Tools/benchmark_pedal_wash.py` compares, no audio). From each, a handful
+of numbers was compared and a constant chosen; nothing is copied. These
+credits do not imply endorsement by the authors or the instruments' makers.
 
 **Benchmarks.** 1.x also measured VCSL Keys' "Grand Piano, K" (Versilian
 Studios, CC0 1.0) and "Grandpa's Piano" (David Hawkins, Pianobook) for two
