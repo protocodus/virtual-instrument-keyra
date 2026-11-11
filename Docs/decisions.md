@@ -4321,10 +4321,14 @@ RMS (in the final set by +0.09, +0.98, +0.08 and −0.03 dB), with previews of
 each control. The sets are in the project's files and not committed. In the
 first set the Hammer previews ran backwards (hard for soft); the final set
 replaces it. By the project's standing rule B stands unless the owner says
-otherwise, and the owner had asked for the rewrite; no letter-by-letter
-account of what was heard has come back yet. So 2.0.0 ships on the owner's
-request and that rule, against a benchmark that favours A, and this entry is
-to be amended with the owner's verdict when there is one.
+otherwise, and the owner had asked for the rewrite. So 2.0.0 shipped on the
+owner's request and that rule, against a benchmark that favours A.
+
+The verdict, the same day: the owner chose B by ear ("B sounds good
+enough"), without a letter-by-letter account, and asked for the work to go
+on: the stereo image, how the piano answers velocity, its dynamics, and the
+model fitted closer to the recordings. The choice licenses the physical
+model as the product; it does not say the benchmark's distance is closed.
 
 ## 2026-11-11 — the full pedal rings as long as the one chosen on 2026-10-30
 
