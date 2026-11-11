@@ -49,6 +49,32 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.2.0 — 2026-11-11 — an even scale
+
+The keys are voiced. The panel and the saved state are 2.1.0's; a 2.1.0
+session opens as saved and sounds different.
+
+- **Even keys**: a board answers each frequency in its own way, so 2.1.0's
+  keys came out of the microphones 2.2 to 2.8 dB apart from one to the next
+  on average, single keys 7 to 11 dB off the line through the keyboard. Each
+  key's strings now pull on the board by what puts the key on that line in
+  the microphone mix that is set: neighbours stand 0.3 to 0.4 dB apart at
+  the default Lid and Soundboard, in single pairs and in mixes, and 0.9 to
+  1.6 dB at other Lid and Soundboard settings (2.0 to 2.8 dB before).
+- **Level**: each piano's typical playing is pinned to −9 VU again.
+- **Against the recordings**: the loudness error across the Salamander
+  grand's notes falls from 3.4 to 2.5 dB on the notes 1.0.0 never fitted
+  (3.7 to 2.7 dB on the fitted ones) and the noise between the partials from
+  10.1 to 9.9 dB; no other score moves by more than 0.2. 21 single-note
+  scores are worse, the furthest F♯4's rise (16 to 22 ms) and noise (5.7 to
+  7.4 dB) and the levels of D♯7 and A5 (by 1.6 to 1.7 dB)
+  ([report](Docs/validation/grand-even-scale-benchmark-2026-11-11.md)). On
+  the Helsinki upright the level error falls from 5.0 to 4.3 dB on the
+  fitted notes; on the 21 notes 1.0.0 never fitted the noise is further off
+  (11.0 to 11.4 dB) and the rise (12.6 to 13.0 ms), and 15 single-note
+  scores are worse, the furthest F♯4's rise (1.7 to 8.5 ms)
+  ([report](Docs/validation/upright-even-scale-benchmark-2026-11-11.md)).
+
 ### 2.1.0 — 2026-11-11 — velocity, the stereo image and a closer fit
 
 The physical model fitted closer to the recordings. The panel and the saved
@@ -201,6 +227,18 @@ radiates near the bridge only. A blow also leans on the iron frame, which
 knocks the board: the thump under a note's fundamental, fitted to the same
 Steinway notes.
 
+**Voicing.** A board answers each frequency in its own way, so a key comes
+out of the microphones stronger or weaker than its neighbours, as a piano's
+keys do before a technician voices them: unvoiced, the model's neighbours
+stand 3.7 to 4.5 dB apart and single keys up to 12 dB off.
+`KeyraLevels --write-keys` measures what each key's strings alone give each
+microphone pair, and every two pairs together, since pairs in a mix add as
+waves, against a smooth line through the keys, and writes
+`Source/DSP/KeyVoicing.h`. Each key's strings pull on the board by what
+brings the key onto that line in the mix that is set, by no more than 12 dB
+either way. The table is measured at the default Lid and Soundboard and at
+half velocity; the frame's knock is not voiced.
+
 **Sympathetic strings and duplex scales.** Every string whose damper is
 lifted, by its key, the sostenuto or the pedal, is driven by the
 bridge's motion, ten partials and two duplex-scale modes a key. The top
@@ -330,7 +368,7 @@ single notes every fourth semitone and eight chords at velocities 70, 90 and
 110 for typical playing. Each piano's output scale puts its default sound's
 typical playing at −9 VU at the default Output; a preset has no level of its
 own, and its microphone levels keep it within 2 dB of that (they read −10.0
-to −8.0 VU). The output stage after it is the portfolio's compressor and
+to −7.9 VU). The output stage after it is the portfolio's compressor and
 peak limiter with 1.0.0's half-drive response: nothing passes −1.5 dBFS, and
 its 2.5 ms look-ahead is reported to the host.
 
@@ -351,16 +389,19 @@ is written independently of it.
   1.0.0's differed by 5.3, the tuning by 2.9 cents against 0.9, the decay by
   3.7 dB/s against 2.1 and the rise by 15 ms against 4.5
   ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
-  [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md)).
-  The furthest are the treble's first half second (16 dB off in third
+  [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md),
+  [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md)).
+  The furthest are the treble's first half second (15 dB off in third
   octaves) and the bass's rise (28 ms on average). Whether it sounds better
   is the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
   measurement.
 - **The upright against its recordings.** Against the Helsinki upright the
-  partials' levels differ by 8.4 dB, the tuning by 4.7 cents, the decay by
-  5.5 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted, and 2.1.0
-  moved its attack, sustain and noise further off than 2.0.0's
-  ([report](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md)).
+  partials' levels differ by 8.5 dB, the tuning by 4.6 cents, the decay by
+  5.5 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
+  moved its attack, sustain and noise further off than 2.0.0's, and 2.2.0
+  its noise a little further
+  ([2.1.0](Docs/validation/upright-velocity-stereo-benchmark-2026-11-11.md),
+  [2.2.0](Docs/validation/upright-even-scale-benchmark-2026-11-11.md)).
   That library's five layers cover wide velocity ranges; the velocity each
   was played at is not documented.
 - **A narrower image than the recordings.** Between 500 Hz and 2 kHz the
@@ -374,9 +415,29 @@ is written independently of it.
   share above its sixth partial is 4 to 8 dB less at every velocity, and the
   middle of the keyboard holds 13 to 15 dB less in the 2 kHz octave from
   mezzo-forte up.
-- **The treble.** The top two octaves lack the knock under their
-  fundamentals that the recordings have, and their first half second is the
-  benchmark's furthest score.
+- **The open strings answer too weakly.** A struck treble note sets the top
+  strings, which have no dampers, ringing: in the Salamander grand's notes
+  each stands about 30 dB under the struck note's fundamental over the
+  first second, and the model's stand 40 dB and more under that. This ring,
+  not a knock, is what the recordings hold under a treble fundamental after
+  the blow, and most of why the treble's first half second is the
+  benchmark's furthest score. Under the pedal it is the same: a struck note leaves 19
+  to 38 dB less between its partials than the Yamaha C3's pedal-down takes
+  (25 dB in the median, `Tools/benchmark_pedal_wash.py` on the parlor
+  grand), and the note does not gain under the pedal where the takes gain 3
+  to 7 dB between C3 and A4.
+- **The thump under the fundamental** is up to 12 dB stronger than the
+  Salamander's from C4 to F♯5 and 2 to 10 dB weaker from A5 to F♯6.
+- **Rough partials.** Within a note a partial stands 6 to 10 dB from the
+  mean of its neighbours where the Salamander's stand 2.5 to 5 dB: the
+  model's board answers single frequencies more unevenly than a real one.
+  The voicing evens the keys, not the partials within a key.
+- **Evenness away from the default panel.** The voicing is measured at the
+  default Lid and Soundboard, so at other settings neighbouring keys stand
+  0.9 to 1.6 dB apart, and with the unisons' Detune at 1, 0.7 dB. One key
+  (the concert grand's F♯5) needs more than the 12 dB the voicing allows
+  and stays 1.5 dB off in one mix, and in the top treble, where the frame's
+  knock is part of the sound, keys stand up to 1.3 dB off.
 - **Slow bass onsets.** The lowest octaves take longer to rise than recorded
   grands do.
 - **Uneven keys on the close pair.** Two keys lean to one side of the image

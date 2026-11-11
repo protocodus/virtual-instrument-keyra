@@ -241,6 +241,13 @@ suite. `scripts/validate-plugins.sh build-plugin Keyra aumu Kyra Ptoc
   typical of each kind of piano, not one maker's; never present them as
   measured. `build-dsp/render_model --report --body <piano>` prints what each
   key is built as.
+- `Source/DSP/KeyVoicing.h` is generated: the model's own keys measured
+  through its microphones, never a recording. After any change that moves
+  what a key gives the microphones (strings, hammers, board, microphones,
+  room), write it again last (`build-dsp/KeyraLevels --write-keys
+  Source/DSP/KeyVoicing.h`), rebuild, re-pin `pascalScale` in
+  `KeyraEngine.cpp` to what `KeyraLevels --report` reads, and run
+  `KeyraLevels --check`, which fails on a stale table.
 - `Source/DSP/MeasuredModalData.h`, `MeasuredUprightData.h`,
   `MeasuredActionNoise.h` and `MeasuredRoom.h` are 1.0.0's fits, frozen. The
   engine reads only the action's rows of them (body modes, knocks, clicks,

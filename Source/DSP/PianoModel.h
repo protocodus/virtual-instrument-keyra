@@ -84,8 +84,11 @@ public:
   void process(float* left,float* right,int frames) noexcept;
   bool silent() const noexcept;
   // Offline diagnostics for Tools/: an impulse on the bridge where `key`'s
-  // strings cross it, and what a key is built as.
+  // strings cross it, a key's pull on the board in place of its voicing's
+  // (negative: the voicing's again; KeyraLevels voices the scale with it),
+  // and what a key is built as.
   void knockBridge(int key,float newtonSeconds) noexcept;
+  void pullKey(int key,float gain) noexcept;
   struct KeyReport {int strings,partials;double hertz,length,tension,inharmonicity,stretchCents,hammerMass;};
   KeyReport report(Body body,int key) const noexcept;
 private:

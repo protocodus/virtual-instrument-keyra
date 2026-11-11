@@ -4441,3 +4441,99 @@ alone. By the project's standing rule B stands unless the owner says
 otherwise; no verdict has been given yet, and 2.1.0 ships on that rule and
 on the grand's benchmark, with the upright's regressions as listed.
 
+
+## 2026-11-11 — an even scale (2.2.0)
+
+**The owner's verdict on 2.1.0, by ear.** After the
+`2026-11-11-velocity-stereo-fit` set (A 2.0.0, B 2.1.0) and the first demo
+through each microphone pair, the owner wrote on 2026-11-11: "sounds like we
+are on the right track. keep improving the model further please." B stands:
+2.1.0's velocity law, felt, stereo image, radiation and bridge are kept,
+chosen by ear. No letter was singled out and no measurement settled it.
+
+**What 2.2.0 changes: the keys are voiced.** Measured key by key at one
+velocity, 2.1.0's keys stood 2.2 to 2.8 dB apart from one to the next and
+single keys 7 to 11 dB off a smooth line through the keyboard, in every
+microphone pair; the Salamander's keys stand 1.1 to 1.6 dB (standard
+deviation) off a cubic through theirs, 2.1.0's 2.1 to 2.2 dB. The cause is
+the board: its modes answer each partial's frequency in their own way, which
+the model's transfer predicts within 1.5 to 3 dB a partial. A real piano's
+keys are uneven in the same way before a technician voices the hammers, so
+the model is voiced: `KeyraLevels --write-keys` measures what each key's
+strings alone give each pair and every two pairs together (pairs in a mix
+add as waves, so a table per pair left mixes 1.8 dB apart), and each key's
+strings pull on the board by what brings the key onto a smooth line through
+the keys in the mix that is set, at most 12 dB either way. Neighbours stand
+0.3 to 0.4 dB apart at the default Lid and Soundboard in single pairs and
+mixes, at velocities 40 to 115 and at 44.1 and 96 kHz, and 0.9 to 1.6 dB at
+other Lid and Soundboard settings (2.0 to 2.8 dB in 2.1.0). `KeyraLevels
+--check` fails when a key stands more than 2 dB off the line. Each piano's
+output scale was re-pinned to −9 VU.
+
+This is a measurement's decision, not one by ear: an uneven scale is a
+fault a technician removes, and the numbers show it removed.
+
+**Tried and not shipped, by measurement.** The middle of the keyboard holds
+13 to 15 dB less in the 2 kHz octave than the Salamander's forte notes. A
+rise in the board's radiation around 1.3 to 1.9 kHz (3 to 6 dB, Q 1 to 2.2)
+was benchmarked in eleven variants, with and without the rise carried above
+the modes. Every one was further from the recordings than 2.1.0 on the
+notes 1.0.0 never fitted: with the rise carried, attack 8.50 to 8.76 dB
+(2.1.0: 8.11), first half second 9.40 to 9.70 (8.92), sustain 9.57 to 9.83
+(9.10), noise 10.70 to 11.13 (10.07), level 4.11 to 4.41 (3.39), and the
+middle's partials 7.74 to 8.16 (7.49). None ships. Smoothing the partials
+within a note (6 to 10 dB from their neighbours' mean where the
+Salamander's stand 2.5 to 5 dB) needed the board's loss raised four to
+eight times, which is not a board's; not shipped either.
+
+**What the benchmark says** (`Tools/benchmark_recordings.py`, 2.1.0 to
+2.2.0). The grand against Salamander
+([report](validation/grand-even-scale-benchmark-2026-11-11.md)), on the
+notes 1.0.0 never fitted: level 3.39 to 2.51 dB, noise 10.07 to 9.89 dB,
+attack 8.11 to 8.07 dB, first half second 8.92 to 8.86 dB; partials,
+tuning, decay, sustain, the stereo scores and the envelope within 0.02; the
+rise 14.93 to 15.06 ms. On the fitted notes the partials are 0.08 dB
+further off (8.86 to 8.94) and the level 3.72 to 2.68 dB. 21 single-note
+scores are worse: F♯4's rise (16.4 to 21.8 ms, 18.0 to 22.9 on the fitted
+layers), noise (5.7 to 7.4 dB), attack (4.9 to 5.7 dB) and first half
+second (5.0 to 5.5 dB), the levels of
+D♯7 (1.5 to 3.2 dB) and A5 (3.3 to 4.9 dB), A1's rise (9.6 to 12.3 ms),
+C8's sustain and first half second (by 0.8 to 0.9 dB), A4's noise (6.7 to
+7.6 dB), A2's rise (24.1 to 25.7 ms), A7's partials (by 0.7 dB) and A1's
+level (0.5 to 1.1 dB).
+
+The upright against Helsinki
+([report](validation/upright-even-scale-benchmark-2026-11-11.md)): on the
+fitted notes level 5.03 to 4.29 dB and attack 9.21 to 9.11 dB, the rise
+16.0 to 16.6 ms; on the 21 notes 1.0.0 never fitted the noise 11.01 to
+11.42 dB, the rise 12.6 to 13.0 ms, the level 2.78 to 2.87 dB and the
+attack 8.54 to 8.61 dB are further off. 15 single-note scores are worse,
+the furthest the rises of F♯4 (1.7 to 8.5 ms), D♯1 (33.1 to 37.9 ms), C1,
+C2, C5 and A♯3, the levels of G7 (3.1 to 4.8 dB) and A♯3 (3.6 to 4.3 dB)
+and the noise of B3, G♯3, D4, A♯3, D5, C5 and G♯4 (by 0.6 to 1.3 dB).
+
+**Found and left for the next round.** The open strings answer a blow far
+too weakly. In the Salamander's treble notes the undamped top strings ring
+at their own pitches about 30 dB under the struck note's fundamental over
+the first second, more the nearer the struck key, and the model's ring is
+40 dB and more under that; what the recordings hold under a treble
+fundamental after the blow is this ring, not a knock. Against the Yamaha
+C3's pedal-down takes (`Tools/benchmark_pedal_wash.py`, parlor grand) a
+struck note leaves 25 dB less between its partials in the median (19 dB in
+the first half second, 38 dB after three), and gains nothing under the
+pedal where the takes gain 3 to 7 dB from C3 to A4. The model moves a
+string's end by the force at its own bridge point through a third of the
+plate's point mobility. A first experiment, not shipped, says the bridge is
+not the path that is missing: driven by the board's own motion at the
+bridge, the top strings ring no more than they do now, while the blow's
+lean on the iron frame moving the string ends there gives the recorded
+ring's level and its fall for keys struck further down. That is the next
+round's work.
+
+**What is the owner's to hear.** A lettered set went to the owner on
+2026-11-11 (`2026-11-11-even-scale` in the project's files, not committed),
+A 2.1.0 and B 2.2.0: chromatic scales on the concert grand at velocity 80
+(C3 to C6) and 45 (C4 to C7), one through a room mix (C2 to C5, velocity
+90), one on the upright, and the first demo and the nocturne. B is matched
+to A on whole-file RMS by +0.26, +0.10, +1.63, −0.27, −0.35 and +0.88 dB.
+By the project's standing rule B stands unless the owner says otherwise.
