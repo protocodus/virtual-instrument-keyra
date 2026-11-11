@@ -4635,3 +4635,151 @@ the pedal on the concert grand, the chords on the upright, and the first
 demo and the nocturne. B and C are matched to A on whole-file RMS; every
 trim is within 0.03 dB. By the project's standing rule B stands unless the
 owner says otherwise.
+
+## 2026-11-11 — the key presses (2.4.0)
+
+**The owner on 2.3.0.** No verdict on the `2026-11-11-open-strings` set came
+back. The owner's next messages: "the key presses (noises) sound too
+mechanical, ensure they are realistic, natural and vary naturally", then to
+calibrate further against the training material, MAPS included, and to
+"research, invent, reuse any algorithm or model necessary to make the piano
+sound real". By the project's standing rule B (2.3.0) stands.
+
+**What 2.4.0 changes.**
+
+- *The action's noises vary.* A key landing or returning, a damper and the
+  pedal were one sound each, repeated. The Salamander grand's key returns,
+  each key's recorded once, stand 1.5 dB from their neighbours' in level and
+  are 0.56 alike at the best lag: an upper bound on how two returns of one
+  key differ. Each knock now draws its level (1 dB), each body mode its
+  level and phase (2 dB, 1 radian), each band of the click its level (3 dB)
+  and the click its rise (a factor of e^0.3). Two returns of C3, C4 or C6
+  then differ by 1.4 to 1.9 dB and are 0.60 to 0.75 alike. The pedal's two
+  recorded takes are 0.52 and 0.36 alike; the engine's stay more alike than
+  that, 0.89 and 0.62. The draws are the engine's own, apart from the
+  strikes' and the noise's, and a measurement (`steady`) draws none.
+- *Two knocks under a note.* Read on the Salamander where the fundamental
+  leaves room: from 180 Hz up, what a treble note holds under its
+  fundamental reaches half its peak within 5 ms of the onset at every
+  layer; from 60 to 180 Hz it reaches half 14.5 ms (hardest layers) to
+  22 ms (softest) after the onset. 2.3.0 had one thump, with the blow, on
+  every key. Now the thump is the action catching the hammer on its way
+  back (14 ms and 11 mm at the hammer's own rebound speed after it leaves
+  the string), handed to the board's edge by the keybed, and the knock is
+  the blow's lean on the capo d'astro bar, from A5 up and above 180 Hz. The
+  catch varies from strike to strike by 2 dB and a fifth of its time: over
+  a Salamander key's sixteen layers the thump stands 2.6 to 2.7 dB off a
+  line in the note's level, the model's 2.2 to 2.5.
+- *The top octave.* Hammers above C5 harder by up to three quarters of a
+  decade at C8, the bridge's full hold from A♯6 up, more loss in the top
+  strings, and three times the sideways drive at the very top.
+- *The room in the close pair*, 0.45 where it was 0.03.
+- *The upright's thump* is caught at once (MAPS ENSTDkCl is a Disklavier,
+  and its thump comes with the blow).
+
+**What they are set against, and how close.** All Salamander unless said,
+model against recording, each against its own piano's middle notes.
+
+- Thump timing (when 60 to 180 Hz comes within 6 dB of its peak, median
+  from D♯4 to C8, seven layers from the second to the sixteenth): recorded
+  21.9, 23.2, 18.9, 15.0, 14.0, 14.5 and 14.6 ms; model 21.3, 19.6, 18.2,
+  16.7, 15.6, 15.1 and 14.7. The first fit, with 10 ms in place of 14, was
+  2.4 to 7.3 ms early and was corrected before the benchmarks.
+- Thump level by key from C4 to C8 at layers 4, 9 and 14: medians −4 to
+  0 dB from 60 to 110 Hz and −1 to +2 dB from 110 to 180 Hz; single keys up
+  to 14 dB off.
+- Knock from A6 to C8: +2 to +3 dB in the median from 350 to 700 Hz and +2
+  to +4 from 700 to 1100 Hz, single keys within 8 dB. From C6 to F♯6 it is
+  2 to 12 dB short.
+- Top octave: the fundamentals of C7, F♯7 and C8 fall 30, 35 and 28 dB in
+  their first 300 ms (recorded 21 to 28, 22 to 24 and 30 to 36; 2.3.0 15, 8
+  and 14).
+- Room: from 280 to 710 Hz a treble note stands 32, 47 and 69 dB under the
+  knock's peak 150, 300 and 600 ms after it (recorded 24, 36 and 47; 2.3.0
+  41, 67 and 88).
+- Upright against MAPS ENSTDkCl, soft, medium and loud notes from C4 to B5
+  and from C6 to C8: the bands from 60 to 110, 110 to 180 and above 180 Hz
+  within 3.1 dB; the thump arrives 4 to 13 ms after the onset where the
+  recorded one arrives −3 to 10.
+
+**Forms tried and not shipped, by measurement.** The blow's knock on every
+key, without the high-pass: 15 to 20 ms before a bass note the recording
+holds 41 to 70 dB less than the note's low band from 400 to 1200 Hz, that
+form 13 to 36, and the bass's rise moved from 23 to 30 ms. A catch that
+hardens with speed: it fitted the bass and broke the treble's slope across
+the layers. A static correction for the modes the strings do not keep:
+right in principle, ±1 dB on the knock's bands, so left out. Hammers a
+decade and a half harder at C8: the softest layer fitted and the others
+came out up to 8 dB loud beside the middle of the keyboard. Five times the
+reduced hold at the top: C8 gained energy.
+
+**What it leaves wrong.** The thump rings for a shorter time than recorded
+(its peak 20 to 27 ms after the onset, recorded 24 to 42). From C5 to A5 the
+model holds something under 180 Hz with the blow that the recording does
+not. The knock is short from C6 to F♯6. Beside the middle of the keyboard
+the keys from F♯6 up are 5 to 13 dB quiet at the softest layer and up to
+6 dB loud at the hardest, and the keys from C1 to F♯2 1 to 8 dB quiet, as
+they were in 2.3.0. The upright's notes from C6 up stand 1 to 4 dB louder
+beside its middle than MAPS's. The causes named for the two knocks (the
+catch, the capo d'astro bar) are what their timing and their keys suggest;
+no action was measured.
+
+**What the benchmark says** (`Tools/benchmark_recordings.py`, 2.3.0 to
+2.4.0). The grand against Salamander
+([report](validation/grand-key-presses-benchmark-2026-11-11.md)), on the
+notes 1.0.0 never fitted: attack 7.82 to 6.60 dB, first half second 8.08 to
+6.96, noise between the partials 9.30 to 7.83, sustain 8.73 to 8.39, rise
+15.06 to 12.98 ms, level 2.52 to 2.39 dB, the channels' correlation 0.218
+to 0.203; further off: tuning 2.81 to 3.20 cents, decay 3.67 to
+4.15 dB/s, envelope 4.18 to 4.55 dB, the channels' level difference 5.60 to
+5.66 dB; partials 8.23 to 8.23. By register on those notes: from C6 up
+partials 8.96 to 7.51, attack 11.39 to 7.81, first half second 12.65 to
+9.55, sustain 12.40 to 11.07, noise 13.10 to 8.95, and decay 5.33 to 7.04,
+envelope 4.62 to 5.93 and tuning 3.30 to 3.66 further off; below C3
+partials 8.59 to 9.66 and tuning 3.57 to 4.05 further off, rise 28.1 to
+22.8 ms closer. On the fitted notes: partials 8.98 to 8.62, attack 8.13 to
+7.08, first half second 8.71 to 7.70, noise 9.63 to 8.40, rise 17.3 to
+15.2 ms; tuning 2.72 to 2.81, decay 4.72 to 4.84 and envelope 4.23 to 4.40
+further off. 106 single-note scores are worse, where 2.3.0 had six; the
+furthest are F♯3's rise (41.0 to 50.9 ms fitted, 40.4 to 49.7 not), C8's
+decay (7.8 to 15.4 dB/s; 5.4 to 12.0 fitted) and sustain (18.8 to 22.4 dB),
+A3's noise (7.4 to 10.6 dB), C7's envelope (3.8 to 7.0 dB) and A7's sustain
+(11.0 to 14.1 dB). The report lists every one.
+
+With the room share back at 0.03 and all else the same, an earlier build of
+this candidate scored the fitted bass's partials 8.93 dB where it scored
+9.81 with 0.45, and its tuning 3.12 cents against 3.45: the room in the
+close pair is what moves the bass's partials further off.
+
+The upright against Helsinki
+([report](validation/upright-key-presses-benchmark-2026-11-11.md)): on the
+fitted notes attack 8.89 to 7.58 dB, first half second 10.86 to 9.70,
+sustain 11.32 to 10.88, noise 11.41 to 10.23, envelope 4.42 to 4.17, rise
+16.6 to 15.5 ms; tuning 4.02 to 4.25 cents and level 4.29 to 4.36 dB
+further off. On the 21 notes 1.0.0 never fitted: attack 8.52 to 7.50, first
+half second 10.17 to 9.12, noise 11.23 to 9.80, tuning 4.55 to 4.32, decay
+5.72 to 5.51; partials 8.57 to 9.57 dB, rise 12.8 to 13.1 ms, level 2.85 to
+3.04 dB and the channels' level difference 5.10 to 5.24 dB further off. 39
+single-note scores are worse, the furthest D♯1's rise (37.9 to 50.2 ms),
+E7's decay (3.6 to 11.6 dB/s), E6's partials (8.2 to 11.8 dB) and G♯6's
+tuning (3.2 to 6.6 cents).
+
+**Two test fixtures.** The block-size check now plays a top key too, and
+found that a finished catch was put to rest when a render call ended, which
+the host's blocks decide; it is put to rest at the model's own 32-sample
+boundary. "All notes off leaves the pedal down" compared a note let go under
+the pedal with the same note kept down, within 1 dB; the pedal holds the
+dampers a little less clear than a key does (the owner's choice of
+2026-10-30), which takes 0.99 dB in 2.3.0 and 1.00 dB now. It now compares
+with the key let go under the pedal, within 0.1 dB, and reads 0.00.
+
+**What is the owner's to hear.** A lettered set went to the owner on
+2026-11-11 (`2026-11-11-key-presses` in the project's files, not
+committed): A 2.3.0, B 2.4.0, C 2.4.0 with 2.3.0's room share in the close
+pair, since the room brings the treble's tail closer and the bass's
+partials further off. Eight phrases: one key pressed sixteen times, a soft
+treble melody, soft bass notes, chords, treble staccato, the chords on the
+upright, and the first demo and the nocturne. B and C are matched to A on
+whole-file RMS; the trims are within 0.2 dB except the soft treble melody
+(−1.4 and −1.6 dB) and the treble staccato (−0.6 and −0.7 dB). By the
+project's standing rule B stands unless the owner says otherwise.

@@ -135,18 +135,20 @@ struct Design {
   bool duplex;
   double hammerMass,hammerStiffness; // against the reference hammers
   double dipoleHertz;     // under it the two faces cancel
+  double catchSeconds,catchRun; // the action catches the hammer catchSeconds + catchRun / its speed after the blow
+  double caseArm;         // m: the moment on the board's edge for each newton of the catch
 };
 constexpr Design designs[bodyCount]{
   // 2.74 m concert grand
-  {false,2.01,8,20,20,1.45,1.55,{.86,.10},{.22,.80},69,true,1.,1.,50},
+  {false,2.01,8,20,20,1.45,1.55,{.86,.10},{.22,.80},69,true,1.,1.,50,.014,.011,.25},
   // 1.86 m parlor grand
-  {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65},
+  {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65,.014,.011,.25},
   // 1.50 m baby grand
-  {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80},
+  {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80,.014,.011,.25},
   // 1.25 m upright. Its hammers' stiffness is fitted to eleven forte notes
   // of a recorded upright (MAPS, ENSTDkCl: a Yamaha Disklavier, close pair),
   // whose bass notes hold more above 2 kHz than softer hammers gave.
-  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90},
+  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90,0,0,.5},
 };
 // The soundboard as one ribbed plate smeared out: bending stiffnesses along
 // and across the grain with the ribs' counted in, and the mass per area of
@@ -164,17 +166,59 @@ constexpr double modesTop=2600;         // Hz: no mode is kept above it
 // partials than they do.
 constexpr double radiationCorner=6000;
 constexpr double patchRadius=.5;        // m: what radiates about the bridge above the modes
-// The blow's thump. A string struck at an eighth of its length leans seven
-// eighths of the blow on its near end, the agraffe in the iron frame, and the
-// frame knocks the board it is bolted over: what comes of it about
-// frameHertz, frameShare times as strong, spread along the bridge. Both are
-// fitted to what the Steinway notes hold under their fundamentals in their
-// first 150 ms (12 to 18 dB under the note, most of it from 60 to 240 Hz,
-// swelling for 20 ms and gone in 150); the strings' own pull on the bridge
-// is 20 dB short of it.
-constexpr double frameShare=2,frameHertz=160;
-// The same lean moves the iron the strings end on, and with it the near end
-// of every string whose damper is off: frameGive metres a newton, the iron
+// A note holds two knocks under its fundamental, read on the Salamander
+// grand where the fundamental leaves room for them.
+// The thump, from 60 to about 350 Hz, is not the blow: it arrives 22 ms
+// after the softest notes' onsets and 14.5 after the hardest (the median
+// from C#4 to C8 of when what a note holds from 60 to 180 Hz comes within
+// 6 dB of its peak), which is when the action catches the hammer coming back
+// off the string, taken here as its cause: catchSeconds and catchRun metres
+// at the speed the model's hammer comes back with, after it leaves (the
+// model's thump then arrives within 4 ms of the recorded one, by the same
+// median, at each of seven layers). The hammer's momentum then goes through the key into the keybed, and the case
+// hands it, twice smoothed at caseHertz, to the edge of the board the action
+// is hung along: a moment of caseArm metres for each newton, keybedShare of
+// it on the whole edge alike, where it also heaves the board by rimHeave of
+// each mode's mean shape for each metre of the arm, and the rest at the
+// key's own place, so that no two keys thump alike. The four are fitted to
+// the same notes: from C4 to C8 at three layers, what a key holds from 60 to
+// 110 and from 110 to 180 Hz stands within 4 dB of the recording's in the
+// median and within 14 on single keys, each against its piano's middle
+// notes, and the 40 to 70 Hz the top keys ring on with for a quarter of a
+// second within a few dB. (Through 2.3.0 the blow itself knocked every point
+// of the bridge alike, which rang one mode, the same on every key, 13 to
+// 17 dB over these notes from 110 to 180 Hz. A Steinway's notes thump 8 to
+// 10 dB harder than the Salamander's: the level is one piano's.) The
+// upright's are set against a recorded upright's notes from C4 up (MAPS,
+// ENSTDkCl), a Disklavier, whose thump comes with the blow: caught at once,
+// the model's stands within 3.1 dB of it in every band.
+constexpr double caseHertz=300,keybedShare=.75,rimHeave=15;
+// The knock, from 180 Hz up, comes with the blow, within 5 ms of the onset
+// at every layer, and only at the top: from C6 up it is as loud as the note
+// itself at a middle layer, at A5 it is not there, and under a bass note
+// nothing precedes the strings (15 ms before a note from C1 to D#3 the
+// recording holds 20 to 30 dB less from 400 to 1200 Hz than a knock on every
+// key gave). The top strings end on the capo d'astro bar, a bar of the
+// frame itself, where the others end on agraffes over the pin block: the
+// blow's lean on that bar is taken as the cause. From capoFrom up (faded in
+// over six keys) it reaches the board's edge at the key's place, above
+// knockHertz, as a moment of knockArm metres for each newton. Fitted: from
+// A6 to C8 what a key holds from 350 to 700 and from 700 to 1100 Hz stands
+// 2 to 4 dB over the recording's in the median and within 8 on single keys;
+// from C6 to F#6 it is 2 to 12 dB short. The strings' own pull on the bridge
+// is 15 to 25 dB short of it.
+constexpr double knockArm=.017,knockHertz=180;
+constexpr int capoFrom=60;
+// One catch is not the next. Over the sixteen layers of a Salamander key the
+// thump stands 2.7 dB (60 to 110 Hz) and 2.6 dB (110 to 180 Hz) off a line
+// in the note's level; these spreads of its strength (dB) and of its time (a
+// factor's logarithm) give 2.5 and 2.2.
+constexpr double catchSpreadDb=2,catchSpreadTime=.2;
+constexpr double keyboardWidth=1.23;    // m, centred on the board's edge
+// A string struck at an eighth of its length leans seven eighths of the blow
+// on its near end, in the iron frame. That lean moves the iron the strings
+// end on, and with it the near end of every string whose damper is off:
+// frameGive metres a newton, the iron
 // under the string ends taken as one damped resonance at frameCorner (a
 // Butterworth pair), above which its mass holds it still. Both are fitted:
 // to what the Yamaha C3's pedalled takes hold between a note's partials
@@ -205,8 +249,14 @@ MicSpec micSpec(const Design& d,int mic) noexcept {
   const auto toward=[](Vec from,Vec to,double turn){ // the axis toward `to`, turned about the vertical
     const Vec a=unit(to-from);const double c=std::cos(turn),s=std::sin(turn);
     return Vec{a.x*c-a.y*s,a.x*s+a.y*c,a.z};};
+  // The close pair's share of the room is set against what the Salamander's
+  // treble notes leave from 280 to 710 Hz once the knock under them is over:
+  // 24, 36 and 47 dB down 150, 300 and 600 ms after its peak. At 0.03
+  // (2.3.0) the model's stood 41, 67 and 88 dB down, at 0.45 it stands 32,
+  // 47 and 69. It is not free: the bass partials stand 0.9 dB further from
+  // the recording's than without it.
   if(!d.upright)switch(mic){
-    case micClose: return {{{.30*X,.22,.20},{.72*X,.20,.20}},{{0,0,-1},{0,0,-1}},0,1,0,0,.5,.03,.35};
+    case micClose: return {{{.30*X,.22,.20},{.72*X,.20,.20}},{{0,0,-1},{0,0,-1}},0,1,0,0,.5,.45,.35};
     case micXY: {const Vec at{X+.8,.45*Y,1.3},aim{.5*X,.4*Y,0};
       return {{at,at},{toward(at,aim,-pi/4),toward(at,aim,pi/4)},1,1,.8,-.3,.6,.18,.7};}
     case micLive: return {{{X+2.3,.5*Y-.6,1.6},{X+2.3,.5*Y+.6,1.6}},{{-1,0,0},{-1,0,0}},0,1,.85,-.3,.6,.45,1.2};
@@ -214,7 +264,7 @@ MicSpec micSpec(const Design& d,int mic) noexcept {
   }
   // An upright: x across, y up, the open back on the z > 0 side.
   switch(mic){
-    case micClose: return {{{.30*X,.55*Y,.30},{.70*X,.55*Y,.30}},{{0,0,-1},{0,0,-1}},0,1,0,.3,0,.04,.35};
+    case micClose: return {{{.30*X,.55*Y,.30},{.70*X,.55*Y,.30}},{{0,0,-1},{0,0,-1}},0,1,0,.3,0,.45,.35};
     case micXY: {const Vec at{.5*X,.6*Y,1.};
       return {{at,at},{unit(Vec{-1,0,-1}),unit(Vec{1,0,-1})},1,1,0,.4,0,.18,.7};}
     case micLive: return {{{.25*X,Y+.45,-.45},{.75*X,Y+.45,-.45}},{{0,-1,0},{0,-1,0}},0,-1,.9,0,0,.4,1.};
@@ -251,6 +301,8 @@ struct Tables {
   double infinite=0;           // the plate's point impedance, kg/s
   float modeHertz[maxModes]{};
   float modeIn[points][maxModes]{};         // shape at the point / (modal mass w)
+  float modeHeave[maxModes]{};              // mean shape / (modal mass w)
+  float modeEdge[points][maxModes]{};       // slope across the action's edge at a place / (modal mass w)
   // Each mode's radiation to a microphone, as acceleration to pascals:
   // directly, by the floor and by the lid at each stop.
   float direct[micCount][2][2][maxModes]{};
@@ -332,7 +384,17 @@ void designStrings(Tables& t,int body) noexcept {
     k.hammerExponent=throughThree(i,2.3,2.5,3.0)+.047-.0033*std::max(0.,-fromMiddle)+steeper;
     k.hammerMass=d.hammerMass*1e-3*throughThree(i,4.9,2.97,2.2);
     k.hammerStiffness=d.hammerStiffness*.305*std::exp(throughThree(i,std::log(4.0e8),std::log(4.5e9),std::log(1.0e12))
-      +2.302585*(fromMiddle>0?-.0092:-.0079)*fromMiddle)*std::pow(kept,-steeper);
+      +2.302585*(fromMiddle>0?-.0092:-.0079)*fromMiddle)*std::pow(kept,-steeper)
+      // Above C5 the felt is harder still, by three quarters of a decade at
+      // C8: with the slope above, the Salamander's soft notes from A6 up
+      // stood 15 to 40 dB under their middle layer at the fundamental where
+      // the recording's stand 12 to 25, and the softest were near silent.
+      // Set against how loud its keys from F#6 up are beside its middle
+      // ones, layer by layer (rms from 50 to 750 ms): within 2 dB at a
+      // middle layer, up to 6 loud at the hardest and up to 10 quiet at a
+      // soft one (5 to 13 at the softest). Twice as many decades fitted the
+      // softest notes and left the others up to 8 dB loud.
+      *std::pow(10.,.75*clamp((i-51)/36.,0,1));
     k.hammerSeconds=65e-6*std::exp((fromMiddle>0?-.066:-.0141)*fromMiddle);
     k.strike=clamp(throughThree(i,.12,.12,.0625),.05,.125);
     // The string's own losses, without the bridge's: the fundamental's,
@@ -343,7 +405,10 @@ void designStrings(Tables& t,int body) noexcept {
     // the sideways motion below, to how twelve Steinway notes die away over
     // six seconds, whole and at their fundamental
     // (Tools/compare_model_notes.py).
-    k.loss1=.12*std::exp(.013*i);
+    // The top strings lose more: with the bridge's full hold there (below)
+    // 0.75 a second more from D7 up, faded in from E6, fitted to how the
+    // Salamander's C7, F#7 and C8 fall in their first second and a half.
+    k.loss1=.12*std::exp(.013*i)+.75*clamp((i-65)/10.,0,1);
     k.loss2=.72*(.05+.45*clamp((i-12)/40.,0,1));
     k.loss3=1.2e-9;
     // The top keys have no dampers: theirs is what Mute's felt takes.
@@ -359,7 +424,10 @@ void designStrings(Tables& t,int body) noexcept {
       // little to the board and is the aftersound left once the first, loud
       // decay is over (Weinreich, JASA 62, 1977). Fitted with the losses.
       k.across[j]=static_cast<float>(.97*(.16+.14*r.uniform()));
-      k.acrossDrive[j]=static_cast<float>(.36*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1));
+      k.acrossDrive[j]=static_cast<float>(.36*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1)
+        // Three times the share from G#7 up, faded in from A#6: what is left
+        // of the top notes once the bridge has taken the rest.
+        *mix(1,3,clamp((i-70)/10.,0,1)));
     }
     // A unison's strings sit about its pitch.
     if(k.strings>1){float mean=0;for(int j=0;j<k.strings;++j)mean+=k.detune[j];
@@ -425,6 +493,13 @@ void designBoard(Tables& t,int body){
     t.modeHertz[k]=static_cast<float>(all[k].hertz);
     for(int p=0;p<points;++p){double x,y;bridgePoint(d,p,x,y);
       t.modeIn[p][k]=static_cast<float>(shapeAt(d,all[k],x,y)/(modalMass*2*pi*all[k].hertz));}
+    // The action hangs along the edge by the tuning pins, the bridge's
+    // treble end's: eight places under the keyboard, the bass first.
+    t.modeHeave[k]=static_cast<float>(((all[k].m&1)&&(all[k].n&1)?4/(pi*pi*all[k].m*all[k].n):0)/(modalMass*2*pi*all[k].hertz));
+    const bool far=d.trebleEnd[1]>.5;
+    const double slope=(far&&(all[k].n&1)?-1:1)*all[k].n*pi/d.boardY,margin=(1-keyboardWidth/d.boardX)/2;
+    for(int p=0;p<points;++p)
+      t.modeEdge[p][k]=static_cast<float>(slope*std::sin(all[k].m*pi*mix(margin,1-margin,p/(points-1.)))/(modalMass*2*pi*all[k].hertz));
   }
   // The bridge's admittance at each key, which loads its strings:
   // Y(w) = sum of i w shape^2 / (M (wm^2 - w^2 + 2 i sm w)) over the modes,
@@ -449,7 +524,12 @@ void designBoard(Tables& t,int body){
       // D#3 to D6 down to 0.3 of that, fitted to how the Salamander grand's
       // notes die away (its treble's partials fell 10 dB/s out of step with
       // the full hold, 6 with this; a hold of 0.15 or 0.5 was further off).
-      const double stiff=1.12*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3))*(1-.7*clamp((i-30)/35.,0,1));
+      // From A#6 to G#7 it comes back to the full hold: at 0.3 the
+      // fundamentals of C7, F#7 and C8 fell 8 to 15 dB in their first
+      // 300 ms where the Salamander's fall 21 to 36; held in full, 28 to
+      // 35. Never more than the full hold: at five times the reduced one C8
+      // gains energy.
+      const double stiff=1.12*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3))*(1-.7*(clamp((i-30)/35.,0,1)-clamp((i-70)/10.,0,1)));
       // The plate's single modes would let one key die four times as fast as
       // its neighbour; a bridge and its ribs even that out, so a key keeps
       // within about a third of the infinite plate's value.
@@ -682,6 +762,7 @@ struct Contact {
   int key=0,partials=0,age=0;
   double position=0,velocity=0,mass=0,relaxed=0,prompt=0,exponent=0,previous=0,deepest=0;
   double give=0;             // the string's yielding at the hammer within a step, m/N
+  double late=1,strength=1;  // this blow's catch against the middle one's: its time and its push
   alignas(32) float re[maxK]{},im[maxK]{},turnRe[maxK]{},turnIm[maxK]{},drive[maxK]{},shape[maxK]{};
 };
 struct Biquad {
@@ -748,9 +829,14 @@ struct Piano::Impl {
   int roomDelay[roomLines]{},roomAt=0;
   float roomGain[roomLines]{},roomDamp[roomLines]{},roomState[roomLines]{};
   double dcL=0,dcR=0,dcInL=0,dcInR=0,dcPole=0;
-  double frame[2]{},framePole=0; // the frame's knock, twice smoothed, newtons
-  bool frameRings=false;         // through this chunk: decided at its boundary, or by a blow in it
+  alignas(32) float boardRim[points+1][maxModes]{}; // the edge's places, and last all of them alike
+  int catchIn[keyCount]{},catches=0;  // samples until a key's hammer is caught (-1: none), and how many wait
+  float catchPush[keyCount]{};        // newtons for one sample
+  double catchAt[keyCount][2]{};      // each catch's push, twice smoothed, newtons
+  double casePole=0;
+  bool frameRings=false;              // through this chunk: decided at its boundary, or by a blow in it
   Biquad frameTravel;            // the blow to the string ends' travel on the frame, metres
+  Biquad frameKnock[points][2];  // the blow's lean on the capo bar to the edge's places, above knockHertz
 
   // The ideal string's pitch against the key's in equal temperament: the
   // string's stiffness raises its first partial, which is the one tuned.
@@ -880,12 +966,12 @@ struct Piano::Impl {
     for(auto& c:contacts){if(!c.active)return c;if(c.age>oldest->age)oldest=&c;}
     return *oldest;
   }
-  void startContact(int index,float velocity,float soft) noexcept {
+  void startContact(int index,float velocity,float soft,double late,double strength) noexcept {
     const KeyData& key=table->keys[index];
     Contact& c=claimContact();
     const Voice& v=voices[index];
     const double f0=key.hertz*tuningRatio(key),rate=sampleRate*substeps;
-    c.active=true;c.key=index;c.age=0;c.partials=v.partials;c.give=0;
+    c.active=true;c.key=index;c.age=0;c.partials=v.partials;c.give=0;c.late=late;c.strength=strength;
     for(int k=0;k<c.partials;++k){
       const double w=2*pi*f0*key.ratio[k],loss=std::exp(-stringLoss(key,w)/rate);
       c.turnRe[k]=static_cast<float>(std::cos(w/rate)*loss);c.turnIm[k]=static_cast<float>(std::sin(w/rate)*loss);
@@ -963,7 +1049,13 @@ struct Piano::Impl {
       v.force[s]+=static_cast<float>(total/substeps);
       ++c.age;
       // The hammer has left once it is falling back clear of the string.
-      if((c.velocity<0&&c.position<-2*c.deepest-1e-5)||c.age>sampleRate*.08){c.active=false;break;}
+      if((c.velocity<0&&c.position<-2*c.deepest-1e-5)||c.age>sampleRate*.08){c.active=false;
+        // The action catches the hammer with the momentum it comes back with.
+        if(c.velocity<0){const Design& d=table->design;const double back=-c.velocity;
+          if(catchIn[c.key]<0&&catchAt[c.key][0]==0&&catchAt[c.key][1]==0)++catches;
+          catchIn[c.key]=s+static_cast<int>(sampleRate*(d.catchSeconds+d.catchRun/back)*c.late);
+          catchPush[c.key]=static_cast<float>(c.mass*back*c.strength*sampleRate);}
+        break;}
     }
   }
   void play(Voice& v,float* out,int frames) noexcept {
@@ -1086,7 +1178,11 @@ struct Piano::Impl {
     const double loss=boardLoss*std::pow(2.,1-2*controls.soundboard);
     for(int k=0;k<modes;++k){const double hertz=t.modeHertz[k],w=2*pi*hertz/sampleRate,g=std::exp(-pi*hertz*loss/sampleRate);
       boardTurnRe[k]=static_cast<float>(std::cos(w)*g);boardTurnIm[k]=static_cast<float>(std::sin(w)*g);
-      for(int p=0;p<points;++p)boardIn[p][k]=static_cast<float>(t.modeIn[p][k]/sampleRate);}
+      for(int p=0;p<points;++p){boardIn[p][k]=static_cast<float>(t.modeIn[p][k]/sampleRate);
+        boardRim[p][k]=static_cast<float>(t.modeEdge[p][k]/sampleRate);}
+      double all=0;
+      for(int p=0;p<points;++p)all+=t.modeEdge[p][k];
+      boardRim[points][k]=static_cast<float>((all/points+rimHeave*t.modeHeave[k])/sampleRate);}
     for(int p=0;p<points;++p){for(int stage=0;stage<2;++stage){
       // A fourth-order high-pass at the modes' top.
       const double q=stage?1.3066:.5412,w0=2*pi*t.crossover/sampleRate,alpha=std::sin(w0)/(2*q),c=std::cos(w0),a0=1+alpha;
@@ -1179,7 +1275,11 @@ struct Piano::Impl {
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
     for(double& x:travel)x=0;
     for(float& x:knocks)x=0;
-    frame[0]=frame[1]=0;frameRings=false;frameTravel.z1=frameTravel.z2=0;
+    for(auto& state:catchAt)state[0]=state[1]=0;
+    for(int& in:catchIn)in=-1;
+    catches=0;
+    frameRings=false;frameTravel.z1=frameTravel.z2=0;
+    for(auto& place:frameKnock)for(auto& f:place)f.z1=f.z2=0;
     for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
     // Silence takes the microphones' mix at once.
     for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
@@ -1235,7 +1335,15 @@ struct Piano::Impl {
       if(was&&!bankAwake[i]&&bankDamper[i]>=1)for(int k=0;k<bankSlots;++k)bankRe[i*bankSlots+k]=bankIm[i*bankSlots+k]=0;
     }
     for(const auto& c:contacts)sounding=sounding||c.active;
-    frameRings=frame[0]*frame[0]+frame[1]*frame[1]>1e-12;
+    // A catch is over once the case has handed all of it on. Counted here,
+    // at the chunk's boundary, so that the host's blocks do not decide when.
+    if(catches>0){catches=0;
+      for(int i=0;i<keyCount;++i){double* state=catchAt[i];
+        if(catchIn[i]<0&&std::abs(state[0])+std::abs(state[1])<=1e-9*catchPush[i])state[0]=state[1]=0;
+        if(catchIn[i]>=0||state[0]!=0||state[1]!=0)++catches;}}
+    sounding=sounding||catches>0;
+    frameRings=std::abs(frameTravel.z1)+std::abs(frameTravel.z2)>still;
+    for(const auto& place:frameKnock)for(const auto& f:place)frameRings=frameRings||std::abs(f.z1)+std::abs(f.z2)>still;
     if(outMoving){float furthest=0;
       for(int out=0;out<4;++out)for(int part=0;part<2;++part)for(int k=0;k<modes;++k){
         float& now=outNow[out][part][k];const float step=(outGoal[out][part][k]-now)*.25f;now+=step;furthest=std::max(furthest,std::abs(step));}
@@ -1261,10 +1369,20 @@ struct Piano::Impl {
     for(auto& c:contacts)if(c.active)runContact(c,frames);
     for(int p=0;p<points;++p){struck[p][0]=knocks[p];knocks[p]=0;}
     alignas(32) float blow[chunk]{};
+    // What reaches the board's edge at each of its places, and last at all
+    // of them alike: the blows' lean on the capo bar and the caught hammers.
+    alignas(32) float rim[points+1][chunk],leans[points][chunk];
+    bool rimmed=false,leaned=false;
+    const auto placeOf=[](int key,int& place,float& share){const double at=key/(keyCount-1.)*(points-1);
+      place=std::min(points-2,static_cast<int>(at));share=static_cast<float>(at-place);};
     for(int i=0;i<keyCount;++i){Voice& v=voices[i];
       if(!v.active)continue;
       if(v.forcing){const float near=static_cast<float>((1-table->keys[i].strike)*v.strings);
-        for(int s=0;s<frames;++s)blow[s]+=near*v.force[s];
+        if(!leaned){std::memset(leans,0,sizeof(leans));leaned=true;}
+        int place;float share;placeOf(i,place,share);
+        const float arm=static_cast<float>(knockArm*clamp((i-capoFrom+3)/6.,0,1));
+        for(int s=0;s<frames;++s){const float lean=near*v.force[s];blow[s]+=lean;
+          leans[place][s]+=arm*(1-share)*lean;leans[place+1][s]+=arm*share*lean;}
         frameRings=true;}
       play(v,each,frames);
       const float pulled=pull[i]<0?voicing[i]:pull[i],b=v.pointMix*pulled,a=pulled-b;
@@ -1272,10 +1390,26 @@ struct Piano::Impl {
       if(v.forcing){bool still=false;for(const auto& c:contacts)still=still||(c.active&&c.key==i);
         std::memset(v.force,0,sizeof(v.force));v.forcing=still;}
     }
-    if(frameRings)for(int s=0;s<frames;++s){
-      frame[0]+=framePole*(blow[s]-frame[0]);frame[1]+=framePole*(frame[0]-frame[1]);
-      const float knock=static_cast<float>(frameShare/points*(frame[0]-frame[1]));
-      for(int p=0;p<points;++p)struck[p][s]+=knock;}
+    if(frameRings){std::memset(rim,0,sizeof(rim));rimmed=true;
+      if(!leaned)std::memset(leans,0,sizeof(leans));
+      for(int p=0;p<points;++p)for(int s=0;s<frames;++s)rim[p][s]=static_cast<float>(frameKnock[p][1].run(frameKnock[p][0].run(leans[p][s])));}
+    else for(auto& place:frameKnock)for(auto& f:place)f.z1=f.z2=0;
+    // The hammers the action catches in this chunk, and what the case hands
+    // on of them.
+    if(catches>0){
+      if(!rimmed){std::memset(rim,0,sizeof(rim));rimmed=true;}
+      for(int i=0;i<keyCount;++i){double* state=catchAt[i];
+        int lands=frames;
+        if(catchIn[i]>=frames)catchIn[i]-=frames;
+        else if(catchIn[i]>=0){lands=catchIn[i];catchIn[i]=-1;}
+        if(lands==frames&&state[0]==0&&state[1]==0)continue;
+        const double pole=casePole;int place;float share;placeOf(i,place,share);
+        const float whole=static_cast<float>(keybedShare*table->design.caseArm),own=static_cast<float>(table->design.caseArm)-whole;
+        const float b=share*own,a=own-b;
+        for(int s=0;s<frames;++s){
+          state[0]+=pole*((s==lands?catchPush[i]:0)-state[0]);state[1]+=pole*(state[0]-state[1]);
+          const float push=static_cast<float>(state[1]);
+          rim[points][s]+=whole*push;rim[place][s]+=a*push;rim[place+1][s]+=b*push;}}}
     // The string ends' travel on the frame under the blow.
     alignas(32) float pushed[chunk]{};
     if(frameRings)for(int s=0;s<frames;++s)pushed[s]=static_cast<float>(frameTravel.run(frameGive*blow[s]));
@@ -1337,6 +1471,12 @@ struct Piano::Impl {
         const float* gain=boardIn[p];
         for(int k=0;k<modes;++k)in[k]+=gain[k]*force;
       }
+      if(rimmed)for(int p=0;p<=points;++p){
+        const float push=rim[p][s];
+        if(push==0)continue;
+        const float* gain=boardRim[p];
+        for(int k=0;k<modes;++k)in[k]+=gain[k]*push;
+      }
       for(int k=0;k<modes;++k){
         const float re=boardTurnRe[k]*boardRe[k]-boardTurnIm[k]*boardIm[k]+in[k];
         boardIm[k]=boardTurnIm[k]*boardRe[k]+boardTurnRe[k]*boardIm[k];boardRe[k]=re;
@@ -1371,7 +1511,7 @@ float touched(float velocity,float decibels,float dynamics) noexcept {
   return static_cast<float>((velocity+softest)*std::pow(10.,decibels/(20*dynamicsPower(dynamics)))-softest);
 }
 
-Piano::Piano():impl(new Impl){for(float& gain:impl->pull)gain=-1;prepare(48000);}
+Piano::Piano():impl(new Impl){for(float& gain:impl->pull)gain=-1;for(int& in:impl->catchIn)in=-1;prepare(48000);}
 Piano::~Piano()=default;
 void Piano::prepare(double sampleRate){
   auto& p=*impl;
@@ -1383,9 +1523,13 @@ void Piano::prepare(double sampleRate){
   p.substeps=p.sampleRate<70000?2:1;
   p.travelLeak=std::exp(-2*pi*8/p.sampleRate);
   p.dcPole=std::exp(-2*pi*10/p.sampleRate);
-  p.framePole=1-std::exp(-2*pi*frameHertz/p.sampleRate);
   {const double w=2*pi*frameCorner/p.sampleRate,alpha=std::sin(w)/std::sqrt(2.),c=std::cos(w),a0=1+alpha;
     Biquad& f=p.frameTravel;f.b0=f.b2=(1-c)/2/a0;f.b1=(1-c)/a0;f.a1=-2*c/a0;f.a2=(1-alpha)/a0;}
+  p.casePole=1-std::exp(-2*pi*caseHertz/p.sampleRate);
+  // A fourth-order high-pass.
+  for(auto& place:p.frameKnock)for(int stage=0;stage<2;++stage){Biquad& f=place[stage];
+    const double w=2*pi*knockHertz/p.sampleRate,alpha=std::sin(w)/(2*(stage?1.3066:.5412)),c=std::cos(w),a0=1+alpha;
+    f.b0=f.b2=(1+c)/2/a0;f.b1=-(1+c)/a0;f.a1=-2*c/a0;f.a2=(1-alpha)/a0;}
   p.prepareRoom();
   p.select();
   reset();
@@ -1413,7 +1557,7 @@ void Piano::setControls(const Controls& input) noexcept {
   for(int m=0;m<micCount;++m)mics=mics||c.mic[m]!=old.mic[m];
   if(mics)p.mixMics();
 }
-void Piano::strike(int key,float velocity,float soft) noexcept {
+void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexcept {
   if(key<0||key>=keyCount||!(velocity>0))return;
   auto& p=*impl;Voice& v=p.voices[key];
   p.wake();
@@ -1424,7 +1568,17 @@ void Piano::strike(int key,float velocity,float soft) noexcept {
   v.damper=p.bankDamper[key]=p.muted();
   p.applyDamper(v);
   p.setDrive(v,key,clampf(soft,0,1));
-  p.startContact(key,clampf(velocity,0,1),clampf(soft,0,1));
+  // The action catches the hammer a little sooner or later and harder or
+  // softer than the last time.
+  double late=1,strength=1;
+  if(chance){
+    chance=chance*747796405u+2891336453u;if(!chance)chance=1;
+    const auto draw=[&chance]{ // near enough normal: four uniform draws summed, within 3.5 spreads
+      double sum=0;
+      for(int k=0;k<4;++k){chance^=chance<<13;chance^=chance>>17;chance^=chance<<5;sum+=chance*(1./4294967296.)-.5;}
+      return std::sqrt(3.)*sum;};
+    late=std::exp(catchSpreadTime*draw());strength=std::pow(10.,catchSpreadDb*draw()/20);}
+  p.startContact(key,clampf(velocity,0,1),clampf(soft,0,1),late,strength);
 }
 void Piano::holdDamper(int key,bool held) noexcept {if(key>=0&&key<keyCount)impl->held[key]=held;}
 void Piano::setPedal(float travel) noexcept {impl->pedal=clampf(travel,0,1);}

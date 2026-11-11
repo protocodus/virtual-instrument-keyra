@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <memory>
 
 // Keyra's physical piano: hammers thrown at stiff strings, the strings of a
@@ -72,8 +73,10 @@ public:
   // strike takes.
   void setControls(const Controls&) noexcept;
   // The hammer of `key` thrown at `velocity` (0..1); `soft` is the soft
-  // pedal's travel (una corda on a grand, half-blow on an upright).
-  void strike(int key,float velocity,float soft=0) noexcept;
+  // pedal's travel (una corda on a grand, half-blow on an upright). `chance`
+  // is a random word for what no two strikes share, when and how hard the
+  // action catches the hammer; 0 catches it as the middle strike is caught.
+  void strike(int key,float velocity,float soft=0,std::uint32_t chance=0) noexcept;
   // Whether a key or the sostenuto holds this key's damper off its strings.
   void holdDamper(int key,bool held) noexcept;
   // The sustain pedal's travel, 0 up to 1 down.
