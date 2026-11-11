@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 """Write the committed per-preset demo phrases, Docs/audio/midi/<NN>-<slug>.mid.
 
-One phrase for each of eight of the ten factory presets (README G3a), <NN>
-its program number, each written for what that preset is for: Kakegawa
+One phrase for each of eight of the twelve factory presets (README G3a), <NN>
+its program number, each written for what that preset is for: Concert
 Grand plays a full-range romantic phrase with legato pedalling, Warm Walnut
 jazz voicings with the soft pedal, Felt Nocturne a quiet nocturne whose felt
 the modulation wheel brings in, and Open Strings struck notes with the
-dampers raised so the undamped strings ring. Helsinki Upright plays a song
+dampers raised so the undamped strings ring. Upright plays a song
 accompaniment of broken chords under a tune, and Pop Upright pumping chords
-over octave roots with the pedal up. Hamamatsu Grand plays two voices without
-the pedal, each line heard on its own, and Three Cities, every part a third
-of each piano, a chorale whose chords sound the blend across the range.
-Studio Grand and Felt Upright, voicings of the grand and the upright like
-those beside them, have none. The .mid files are the committed sources the
+over octave roots with the pedal up. Baby Grand plays two voices without
+the pedal, each line heard on its own, and Distant Hall a chorale whose
+chords fill the room from the bass to the treble. Studio Grand, Felt
+Upright, Old Parlor and Bar Piano, pianos like those beside them kept or
+heard another way, have none. The phrases are the ones written for the 1.0.0
+bank; Concert Grand's, Upright's, Baby Grand's and Distant Hall's were its
+Kakegawa Grand's, Helsinki Upright's, Hamamatsu Grand's and Three Cities'.
+The .mid files are the committed sources the
 demo renderer reads; this script only records how they were written. Re-run
 it only to change a phrase on purpose, and commit the changed .mid files on
 their own:
@@ -116,7 +119,7 @@ class Phrase:
                 + b"MTrk" + struct.pack(">I", len(track)) + track)
 
 
-def kakegawa_grand():
+def concert_grand():
     # C minor, a bar of the tonic and one of the dominant in left-hand
     # arpeggios under a melody that grows from piano to forte, then a
     # full-range final chord.
@@ -210,7 +213,7 @@ def open_strings():
     return p
 
 
-def helsinki_upright():
+def upright():
     # A song accompaniment in G: a bass note and broken chords in the left
     # hand under a plain tune, the pedal changed with each chord, home to a
     # spread G major.
@@ -266,7 +269,7 @@ def pop_upright():
     return p
 
 
-def hamamatsu_grand():
+def baby_grand():
     # Two voices in D without the pedal: the right hand's figure answered by
     # the left a bar later and two octaves down, then a cadence home, so each
     # note's attack and decay is heard on its own.
@@ -281,10 +284,10 @@ def hamamatsu_grand():
     return p
 
 
-def three_cities():
+def distant_hall():
     # A chorale in B-flat, four voices moving to the dominant seventh and
     # home, the pedal changed with each chord and the last spread over five
-    # octaves, so the blend is heard in chords from the bass to the treble.
+    # octaves, so the hall is heard under chords from the bass to the treble.
     p = Phrase(80)
     chords = [
         ["Bb2", "F3", "D4", "Bb4"],
@@ -306,10 +309,10 @@ def three_cities():
 # The demos, each by its preset's slug: at most eight, so the bank's other
 # presets have none (README G3).
 PRESETS = [
-    ("kakegawa-grand", kakegawa_grand), ("warm-walnut", warm_walnut),
+    ("concert-grand", concert_grand), ("warm-walnut", warm_walnut),
     ("felt-nocturne", felt_nocturne), ("open-strings", open_strings),
-    ("helsinki-upright", helsinki_upright), ("pop-upright", pop_upright),
-    ("hamamatsu-grand", hamamatsu_grand), ("three-cities", three_cities),
+    ("upright", upright), ("pop-upright", pop_upright),
+    ("baby-grand", baby_grand), ("distant-hall", distant_hall),
 ]
 
 
