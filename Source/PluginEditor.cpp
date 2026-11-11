@@ -1,30 +1,51 @@
 #include "PluginEditor.h"
 #include <cmath>
+#include <vector>
 
 namespace {
 const juce::Colour ink(0xff302c26), ivory(0xffeee8dc), brass(0xffa48448), muted(0xff7c766b), footer(0xffc6ad89);
-constexpr std::array<const char*, 11> ids {{ "gain", "brightness", "resonance", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics", "mic" }};
-constexpr std::array<const char*, 11> captions {{ "OUTPUT", "BRIGHTNESS", "RESONANCE", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS", "TUBE MIC" }};
-// The voicing view's knobs, left to right.
-constexpr std::array<int, 7> voicing {{ 1, 2, 3, 10, 9, 5, 0 }};
-// The build view: a row of weights for each part, one per piano, then past a
-// divider the three modifiers.
-constexpr std::array<const char*, 4> partCaptions {{ "STRINGS", "HAMMERS", "SOUNDBOARD", "ACTION" }};
-constexpr std::array<const char*, 4> partHints {{
-    "strings, as a share of the row: their stretch and stiffness, unisons, decays and pickups. Applies from the next note.",
-    "hammers, as a share of the row: how hard each partial is struck, how fast it rises and how the tone follows velocity. "
+constexpr size_t tuningIndex = 2, sustainIndex = 4, softIndex = 6, mechanicsIndex = 7;
+constexpr std::array<const char*, 23> ids {{ "gain", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics",
+    "hammer", "age", "detune", "stretch", "dynamics", "lid", "soundboard", "sympathetic", "duplex",
+    "micClose", "micXY", "micLive", "micDistant", "room", "felt" }};
+constexpr std::array<const char*, 23> captions {{ "OUTPUT", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS",
+    "HAMMER", "STRING AGE", "DETUNE", "STRETCH", "DYNAMICS", "LID", "SOUNDBOARD", "SYMPATHETIC", "DUPLEX",
+    "CLOSE", "XY", "LIVE", "DISTANT", "ROOM", "PRACTICE FELT" }};
+constexpr std::array<const char*, 23> hints {{
+    "Output level.",
+    "The stereo image: 75% as the microphone pairs hear it, 0% mono.",
+    "A4 in Hz.",
+    "Felt laid on the sounding strings, also on the modulation wheel (CC1). Works while keys are held.",
+    "Damper pedal (CC64). Intermediate positions allow half pedalling.",
+    "Sostenuto (CC66). Captures only the notes held when the pedal crosses its latch point.",
+    "Soft pedal (CC67): una corda on a grand, a shorter blow on the upright.",
+    "How loud the action plays: the keys landing and coming back, the dampers falling and "
+    "the sustain pedal. 0% silences the action; 40% is the natural, quieter default. "
+    "The upper range brings the mechanics forward. Double-click to reset.",
+    "The hammers' felt, from soft and worn-in to hard and bright. Applies from the next note.",
+    "The strings' age: old strings lose their upper partials' sustain and beat against themselves. "
     "Applies from the next note.",
-    "soundboard and case, as a share of the row: the body's modes, the strike's knock on them and the board's noise.",
-    "action, as a share of the row: the knocks of keys, dampers and pedals."
+    "How far apart the strings of each unison are tuned, from pure to a bar piano.",
+    "The tuner's stretch: 0% equal temperament, 100% octaves tuned to the strings' own partials, 200% twice that.",
+    "How far apart the softest and the hardest blow are. Applies from the next note.",
+    "The lid: closed, on the short stick at 50%, open.",
+    "How long the soundboard rings, from heavily damped to lively.",
+    "How strongly the strings whose dampers are off answer the ones struck.",
+    "How strongly the lengths of string behind the bridge ring with the treble.",
+    "A spaced pair inside the piano, over the hammers: the pop sound. Behind an upright's soundboard.",
+    "A coincident pair at the open lid, a metre off.",
+    "A spaced pair in the room at 2.5 m; on the upright, the player's side.",
+    "A wide pair across the room.",
+    "The room's reverberation in the pairs that hear it.",
+    "A practice felt between the hammers and the strings. Applies from the next note."
 }};
-constexpr std::array<const char*, 3> modifierIds {{ "stiffness", "unisons", "ring" }};
-constexpr std::array<const char*, 3> modifierCaptions {{ "STIFFNESS", "UNISONS", "RING" }};
-constexpr std::array<const char*, 3> modifierHints {{
-    "The strings' inharmonicity, from a quarter to four times as built. Applies from the next note.",
-    "How far each note's unison strings sit apart, from one pitch to three times as far as built. Applies from the next note.",
-    "How long the strings ring, from half to twice as long as built. Applies from the next note."
+// Each view's knobs, left to right.
+constexpr std::array<const char*, 3> viewHints {{
+    "The hammers and strings: hardness, age, unison detune, stretch, dynamics, practice felt and felt mute.",
+    "The case: lid, soundboard, sympathetic and duplex resonance, mechanics and output.",
+    "Where the piano is heard from: four microphone pairs, the room and the stereo width."
 }};
-constexpr int gridLeft = 176, gridPitch = 83, rowTop = 188, rowPitch = 31;
+const std::array<std::vector<size_t>, 3> views {{ { 8, 9, 10, 11, 12, 22, 3 }, { 13, 14, 15, 16, 7, 0 }, { 17, 18, 19, 20, 21, 1 } }};
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {
@@ -44,12 +65,6 @@ KeyraLookAndFeel::KeyraLookAndFeel()
     setColour(juce::TextEditor::textColourId, ink);
 }
 
-// The footer's Quality selector sets its text in the footer's small type.
-juce::Font KeyraLookAndFeel::getComboBoxFont(juce::ComboBox& box)
-{
-    return box.getHeight() < 24 ? juce::Font(juce::FontOptions(11.0f)) : LookAndFeel_V4::getComboBoxFont(box);
-}
-
 void KeyraLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
     float position, float start, float end, juce::Slider& slider)
 {
@@ -60,7 +75,7 @@ void KeyraLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int wid
     ring.addCentredArc(cx, cy, radius + 7, radius + 7, 0, start, end, true);
     g.setColour(ink.withAlpha(.16f));
     g.strokePath(ring, juce::PathStrokeType(2));
-    // A modifier's arc runs from its centre, where it leaves the piano as built.
+    // A two-sided knob's arc runs from its centre.
     const auto from = slider.getMinimum() < 0 ? (start + end) * .5f : start, to = start + position * (end - start);
     juce::Path active;
     active.addCentredArc(cx, cy, radius + 7, radius + 7, 0, juce::jmin(from, to), juce::jmax(from, to), true);
@@ -191,24 +206,23 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     program.setColour(juce::ComboBox::outlineColourId, brass.withAlpha(.35f));
     program.setColour(juce::ComboBox::arrowColourId, brass);
     program.onChange = [this] { processor.setCurrentProgram(program.getSelectedId() - 1); };
-    program.setTooltip("A factory piano: each measured piano as built, by the city it comes from, voiced several "
-                       "ways, and pianos between them. It sets the build and the voicing; output, tuning, "
-                       "mechanics, the tube mic and the pedals stay.");
+    program.setTooltip("A factory piano: a body, how its hammers and strings are kept and where it is heard from. "
+                       "Output, tuning, mechanics, felt mute and the pedals stay.");
     addAndMakeVisible(program);
     // The attachment selects item index + 1 of the choice, so the items go in first.
-    quality.addItemList({ "Full", "Balanced", "Light" }, 1);
-    quality.setColour(juce::ComboBox::backgroundColourId, juce::Colours::transparentBlack);
-    quality.setColour(juce::ComboBox::textColourId, footer);
-    quality.setColour(juce::ComboBox::outlineColourId, footer.withAlpha(.35f));
-    quality.setColour(juce::ComboBox::arrowColourId, footer);
-    quality.setTooltip("How much of each note plays, for CPU. Full plays every partial; Balanced and Light "
-                       "leave out those 60 and 50 dB under the note's strongest. Applies from the next note.");
-    addAndMakeVisible(quality);
-    qualityAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "quality", quality);
+    for (size_t i = 0; i < keyra::bodyNames.size(); ++i) body.addItem(keyra::bodyNames[i], static_cast<int>(i) + 1);
+    body.setColour(juce::ComboBox::backgroundColourId, ivory.withAlpha(.55f));
+    body.setColour(juce::ComboBox::textColourId, ink);
+    body.setColour(juce::ComboBox::outlineColourId, brass.withAlpha(.35f));
+    body.setColour(juce::ComboBox::arrowColourId, brass);
+    body.setTooltip("The piano: its string scale, hammers, soundboard and case. A physical model of each kind of "
+                    "piano at a typical size, not one maker's instrument.");
+    addAndMakeVisible(body);
+    bodyAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "body", body);
     for (size_t i = 0; i < controls.size(); ++i) {
         auto& slider = controls[i];
         slider.setName(captions[i]);
-        slider.setSliderStyle(i >= 6 && i <= 8 ? juce::Slider::LinearHorizontal : juce::Slider::RotaryHorizontalVerticalDrag);
+        slider.setSliderStyle(i >= sustainIndex && i <= softIndex ? juce::Slider::LinearHorizontal : juce::Slider::RotaryHorizontalVerticalDrag);
         slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 92, 22);
         slider.setRotaryParameters(juce::MathConstants<float>::pi * 1.23f,
             juce::MathConstants<float>::pi * 2.77f, true);
@@ -220,8 +234,9 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         slider.setColour(juce::Slider::textBoxTextColourId, ink);
         slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::transparentBlack);
         slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
-        slider.setNumDecimalPlacesToDisplay(i == 4 ? 1 : 0);
-        if (i == 9) {
+        slider.setNumDecimalPlacesToDisplay(i == tuningIndex ? 1 : 0);
+        slider.setTooltip(hints[i]);
+        if (i == mechanicsIndex) {
             // The attachment and host retain physical gain 0..2. Change only
             // knob travel and its readout, so old automation plays unchanged.
             // Install after SliderAttachment: its constructor sets the range.
@@ -235,7 +250,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
                 return keyra::mechanicsGainFromPosition(static_cast<float>(value.getDoubleValue() * .01));
             };
             slider.setDoubleClickReturnValue(true, keyra::defaultMechanicsGain);
-        } else if (i != 4) {
+        } else if (i != tuningIndex) {
             slider.textFromValueFunction = [](double value) { return juce::String(juce::roundToInt(value * 100)) + "%"; };
             slider.valueFromTextFunction = [](const juce::String& value) { return value.getDoubleValue() * .01; };
         } else {
@@ -244,64 +259,15 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         }
         slider.updateText();
     }
-    controls[4].setSliderStyle(juce::Slider::IncDecButtons);
-    controls[4].setTextBoxStyle(juce::Slider::TextBoxLeft, false, 84, 28);
-    controls[4].setIncDecButtonsMode(juce::Slider::incDecButtonsDraggable_Vertical);
-    controls[5].setTooltip("Continuous felt damping, also controlled by modulation wheel (CC1). Works while keys are held.");
-    controls[6].setTooltip("Damper pedal (CC64). Intermediate positions allow half pedalling.");
-    controls[7].setTooltip("Sostenuto (CC66). Captures only the notes held when the pedal crosses its latch point.");
-    controls[8].setTooltip("Soft pedal (CC67). Changes hammer excitation and unison balance.");
-    controls[9].setTooltip("How loud the action plays: the keys landing and coming back, the dampers falling and "
-                           "the sustain pedal. 0% silences the action; 40% is the natural, quieter default. "
-                           "The upper range brings the mechanics forward. Double-click to reset.");
-    controls[10].setTooltip("Where the piano is heard from: the stereo pair close over the strings, or a vintage tube "
-                            "microphone at shin height, mono, its colour measured on the upright's recordings. "
-                            "Between, the two are mixed.");
-    const auto plain = [](juce::Slider& slider) {
-        slider.setColour(juce::Slider::textBoxTextColourId, ink);
-        slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::transparentBlack);
-        slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
-    };
-    for (size_t part = 0; part < buildParts.size(); ++part)
-        for (size_t piano = 0; piano < keyra::pianoCount; ++piano) {
-            auto& slider = weights[part * keyra::pianoCount + piano];
-            const juce::String name = juce::String(keyra::pianoCities[piano]) + " " + keyra::pianoKinds[piano];
-            slider.setName(juce::String(partCaptions[part]) + " " + keyra::pianoCities[piano]);
-            slider.setSliderStyle(juce::Slider::LinearHorizontal);
-            slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 36, 22);
-            slider.setTooltip("The piano takes this much of the " + name + "'s " + partHints[part]);
-            addChildComponent(slider);
-            weightAttachments[part * keyra::pianoCount + piano] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
-                processor.parameters, weightId(part, piano), slider);
-            plain(slider);
-            slider.textFromValueFunction = [](double x) { return juce::String(juce::roundToInt(x * 100)) + "%"; };
-            slider.valueFromTextFunction = [](const juce::String& text) { return text.getDoubleValue() * .01; };
-            slider.updateText();
-        }
-    // A modifier reads as its parameter does, the factor it scales by.
-    for (size_t i = 0; i < modifiers.size(); ++i) {
-        auto& slider = modifiers[i];
-        slider.setName(modifierCaptions[i]);
-        slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-        slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 92, 22);
-        slider.setRotaryParameters(juce::MathConstants<float>::pi * 1.23f,
-            juce::MathConstants<float>::pi * 2.77f, true);
-        slider.setDoubleClickReturnValue(true, 0.0);
-        slider.setTooltip(modifierHints[i]);
-        addChildComponent(slider);
-        modifierAttachments[i] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.parameters, modifierIds[i], slider);
-        plain(slider);
-        slider.updateText();
+    controls[tuningIndex].setSliderStyle(juce::Slider::IncDecButtons);
+    controls[tuningIndex].setTextBoxStyle(juce::Slider::TextBoxLeft, false, 84, 28);
+    controls[tuningIndex].setIncDecButtonsMode(juce::Slider::incDecButtonsDraggable_Vertical);
+    for (size_t i = 0; i < tabs.size(); ++i) {
+        tabs[i].setTooltip(viewHints[i]);
+        tabs[i].onClick = [this, i] { showView(static_cast<int>(i)); };
+        addAndMakeVisible(tabs[i]);
     }
-    voicingTab.setTooltip("Brightness, resonance, width, tube mic, mechanics, felt mute and output.");
-    buildTab.setTooltip(juce::String("The piano's build: how much of each measured piano's strings, hammers, soundboard and "
-                        "action it takes, a row of zeros playing the ") + keyra::pianoCities[0] + " " + keyra::pianoKinds[0]
-                        + "'s, and its strings' stiffness, unisons and ring.");
-    voicingTab.onClick = [this] { showBuild(false); };
-    buildTab.onClick = [this] { showBuild(true); };
-    addAndMakeVisible(voicingTab);
-    addAndMakeVisible(buildTab);
-    showBuild(processor.editorShowsBuild);
+    showView(processor.editorView);
     constexpr std::array<const char*, 3> pedalNames {{ "Soft pedal", "Sostenuto pedal", "Sustain pedal" }};
     constexpr std::array<const char*, 3> pedalHints {{
         "Hold to press the soft pedal. Keyswitch C0 / MIDI 12; controller CC67. Slider sets continuous pedal depth.",
@@ -317,7 +283,7 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         pedal.setTravel(initialTravel[i]);
         pedal.onHold = [this, i](bool down) { processor.enqueueKeyboard(down, 12 + static_cast<int>(i), 1.0f); };
         addAndMakeVisible(pedal);
-        controls[8 - i].setTextBoxStyle(juce::Slider::TextBoxRight, false, 38, 22);
+        controls[softIndex - i].setTextBoxStyle(juce::Slider::TextBoxRight, false, 38, 22);
     }
     keyboard.setAvailableRange(21, 108);
     keyboard.setLowestVisibleKey(36);
@@ -357,65 +323,34 @@ KeyraAudioProcessorEditor::~KeyraAudioProcessorEditor()
     setLookAndFeel(nullptr);
 }
 
-void KeyraAudioProcessorEditor::showBuild(bool on)
+void KeyraAudioProcessorEditor::showView(int view)
 {
-    processor.editorShowsBuild = on;
-    voicingTab.setToggleState(!on, juce::dontSendNotification);
-    buildTab.setToggleState(on, juce::dontSendNotification);
-    for (const auto i : voicing)
-        controls[static_cast<size_t>(i)].setVisible(!on);
-    for (auto& slider : weights)
-        slider.setVisible(on);
-    for (auto& slider : modifiers)
-        slider.setVisible(on);
-    repaint();
-}
-
-// The piano the build plays, for the header: one measured piano, every part
-// its alone, or a hybrid of those the parts take (a part at zero takes the
-// first piano's, as the engine plays it).
-juce::String KeyraAudioProcessorEditor::pianoName() const
-{
-    std::array<bool, keyra::pianoCount> taken {};
-    for (size_t part = 0; part < buildParts.size(); ++part) {
-        bool any = false;
-        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
-            if (weights[part * keyra::pianoCount + piano].getValue() > 0) taken[piano] = any = true;
-        if (!any) taken[0] = true;
+    view = juce::jlimit(0, static_cast<int>(views.size()) - 1, view);
+    processor.editorView = view;
+    for (size_t i = 0; i < views.size(); ++i) {
+        tabs[i].setToggleState(static_cast<int>(i) == view, juce::dontSendNotification);
+        for (const auto knob : views[i])
+            controls[knob].setVisible(static_cast<int>(i) == view);
     }
-    juce::StringArray cities;
-    size_t only = 0;
-    for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
-        if (taken[piano]) { cities.add(keyra::pianoCities[piano]); only = piano; }
-    if (cities.size() == 1) return (juce::String("MODELLED ") + keyra::pianoCities[only] + " " + keyra::pianoKinds[only]).toUpperCase();
-    const auto last = cities[cities.size() - 1];
-    cities.remove(cities.size() - 1);
-    return ("MODELLED HYBRID OF " + cities.joinIntoString(", ") + " AND " + last).toUpperCase();
+    repaint();
 }
 
 void KeyraAudioProcessorEditor::resized()
 {
-    for (size_t i = 0; i < voicing.size(); ++i)
-        controls[static_cast<size_t>(voicing[i])].setBounds(74 + static_cast<int>(i) * 120, 170, 112, 126);
-    for (size_t part = 0; part < buildParts.size(); ++part)
-        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
-            // JUCE reserves 30 px for the track before the 36 px value box.
-            // Keep both widths so a full "100%" remains visible in every column.
-            weights[part * keyra::pianoCount + piano].setBounds(gridLeft + static_cast<int>(piano) * gridPitch,
-                rowTop + static_cast<int>(part) * rowPitch, gridPitch - 3, 26);
-    for (size_t i = 0; i < modifiers.size(); ++i)
-        modifiers[i].setBounds(594 + static_cast<int>(i) * 104, 170, 104, 126);
-    voicingTab.setBounds(410, 138, 80, 21);
-    buildTab.setBounds(490, 138, 80, 21);
-    controls[4].setBounds(794, 100, 112, 28);
+    for (const auto& view : views)
+        for (size_t i = 0; i < view.size(); ++i)
+            controls[view[i]].setBounds(74 + static_cast<int>(i) * 120 + static_cast<int>(7 - view.size()) * 60, 170, 112, 126);
+    for (size_t i = 0; i < tabs.size(); ++i)
+        tabs[i].setBounds(370 + static_cast<int>(i) * 80, 138, 80, 21);
+    controls[tuningIndex].setBounds(794, 100, 112, 28);
+    body.setBounds(74, 100, 190, 28);
     program.setBounds(520, 99, 184, 30);
     for (int i = 0; i < 3; ++i) {
         const auto x = 90 + i * 282;
         pedals[static_cast<size_t>(i)].setBounds(x, 341, 70, 83);
-        controls[static_cast<size_t>(8 - i)].setBounds(x + 86, 388, 164, 29);
+        controls[softIndex - static_cast<size_t>(i)].setBounds(x + 86, 388, 164, 29);
     }
     keyboard.setBounds(54, 442, 872, 82);
-    quality.setBounds(452, 535, 92, 19);
     about.setBounds(70, 52, 300, 50); // where paint() draws the title
 }
 
@@ -443,38 +378,21 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(juce::Colours::white.withAlpha(.65f));
     g.drawRoundedRectangle(39, 29, 902, 502, 4, 1);
     text(g, "KEYRA", { 70, 52, 300, 50 }, 43, ink, juce::Justification::centredLeft, true);
-    text(g, pianoName(), { 74, 103, 366, 22 }, 12, muted);
     text(g, "PRESET", { 440, 102, 72, 25 }, 12, muted, juce::Justification::centredRight);
     text(g, "PROTOCODUS", { 718, 54, 188, 24 }, 15, ink, juce::Justification::centredRight, true);
     text(g, "A4", { 750, 101, 36, 25 }, 12, muted, juce::Justification::centredRight);
-    // The rule under the header parts around the two views' tabs.
+    // The rule under the header parts around the views' tabs.
     g.setColour(brass.withAlpha(.4f));
-    g.drawLine(74, 148, 402, 148, 1);
-    g.drawLine(578, 148, 906, 148, 1);
-    if (buildTab.getToggleState()) {
-        // Each column a piano, over its weights' tracks; each row a part.
-        for (size_t piano = 0; piano < keyra::pianoCount; ++piano)
-            text(g, juce::String(keyra::pianoCities[piano]).toUpperCase(),
-                { gridLeft + static_cast<int>(piano) * gridPitch, 164, gridPitch - 4, 18 }, 10, muted, juce::Justification::centred, true);
-        for (size_t part = 0; part < buildParts.size(); ++part)
-            text(g, partCaptions[part], { 74, rowTop + static_cast<int>(part) * rowPitch, gridLeft - 82, 26 }, 12, ink,
-                juce::Justification::centredLeft, true);
-        for (size_t i = 0; i < modifiers.size(); ++i)
-            text(g, modifierCaptions[i], modifiers[i].getBounds().withY(301).withHeight(24), 12, ink, juce::Justification::centred, true);
-        g.setColour(ink.withAlpha(.12f));
-        g.drawLine(574, 182, 574, 314, 1);
-    } else {
-        for (const auto i : voicing) {
-            const auto& knob = controls[static_cast<size_t>(i)];
-            text(g, captions[static_cast<size_t>(i)], knob.getBounds().withY(301).withHeight(24), 12, ink, juce::Justification::centred, true);
-        }
-    }
+    g.drawLine(74, 148, 362, 148, 1);
+    g.drawLine(618, 148, 906, 148, 1);
+    for (const auto i : views[static_cast<size_t>(processor.editorView)])
+        text(g, captions[i], controls[i].getBounds().withY(301).withHeight(24), 12, ink, juce::Justification::centred, true);
     g.setColour(brass.withAlpha(.25f));
     g.drawLine(74, 332, 906, 332, 1);
     for (int i = 0; i < 3; ++i) {
         const auto x = 90 + i * 282;
         constexpr std::array<const char*, 3> keyLabels {{ "C0 / 12", "C#0 / 13", "D0 / 14" }};
-        text(g, captions[static_cast<size_t>(8 - i)], { x + 86, 350, 164, 20 }, 12, ink, juce::Justification::centredLeft, true);
+        text(g, captions[softIndex - static_cast<size_t>(i)], { x + 86, 350, 164, 20 }, 12, ink, juce::Justification::centredLeft, true);
         text(g, keyLabels[static_cast<size_t>(i)], { x + 86, 371, 164, 18 }, 11, muted);
         if (i < 2) {
             g.setColour(ink.withAlpha(.12f));
@@ -486,7 +404,6 @@ void KeyraAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(brass.withAlpha(.8f));
     g.fillRect(54, 434, 872, 1);
     text(g, "88 KEYS", { 56, 536, 140, 17 }, 10, footer);
-    text(g, "QUALITY", { 372, 536, 72, 17 }, 10, footer, juce::Justification::centredRight);
     text(g, "MOD WHEEL  /  FELT MUTE", { 620, 536, 304, 17 }, 10, footer, juce::Justification::centredRight);
     g.setColour(activity ? brass : ink.withAlpha(.22f));
     g.fillEllipse(887, 137, 5, 5);

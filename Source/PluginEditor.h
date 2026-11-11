@@ -10,10 +10,9 @@ public:
     void drawRotarySlider(juce::Graphics&, int, int, int, int, float, float, float, juce::Slider&) override;
     void drawLinearSlider(juce::Graphics&, int, int, int, int, float, float, float,
         juce::Slider::SliderStyle, juce::Slider&) override;
-    juce::Font getComboBoxFont(juce::ComboBox&) override;
 };
 
-// One of the two views above the pedals: the voicing knobs or the build's.
+// One of the views above the pedals: the piano's, the body's or the microphones' knobs.
 class KeyraTab final : public juce::Button
 {
 public:
@@ -57,22 +56,15 @@ private:
     void timerCallback() override;
     void handleNoteOn(juce::MidiKeyboardState*, int, int note, float velocity) override;
     void handleNoteOff(juce::MidiKeyboardState*, int, int note, float) override;
-    void showBuild(bool);
-    juce::String pianoName() const;
+    void showView(int);
     KeyraAudioProcessor& processor;
     KeyraLookAndFeel look;
-    juce::ComboBox program, quality;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> qualityAttachment;
-    std::array<juce::Slider, 11> controls;
+    juce::ComboBox program, body;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> bodyAttachment;
+    std::array<juce::Slider, 23> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
-    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 11> attachments;
-    KeyraTab voicingTab { "VOICING" }, buildTab { "BUILD" };
-    // The build view: each part's weight of each piano (weightId), part by
-    // part, and the three modifiers.
-    std::array<juce::Slider, buildParts.size() * keyra::pianoCount> weights;
-    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, buildParts.size() * keyra::pianoCount> weightAttachments;
-    std::array<juce::Slider, 3> modifiers;
-    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 3> modifierAttachments;
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 23> attachments;
+    std::array<KeyraTab, 3> tabs {{ KeyraTab { "PIANO" }, KeyraTab { "BODY" }, KeyraTab { "MICS" } }};
     juce::MidiKeyboardState keyboardState;
     juce::MidiKeyboardComponent keyboard { keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard };
     juce::TooltipWindow tooltips { this, 750 };

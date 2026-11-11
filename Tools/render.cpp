@@ -15,74 +15,47 @@
 
 namespace {
 struct Event { double time;std::string type;int note;float value;int channel=1; };
-// The pianos by the names the fitter and benchmarks give them, in keyra::Piano's order.
-const std::array<const char*,keyra::pianoCount> pianoNames{"grand","upright","kawai","hamburg","newyork"};
-keyra::Piano pianoNamed(const std::string& name){
-  for(std::size_t i=0;i<pianoNames.size();++i)if(name==pianoNames[i])return static_cast<keyra::Piano>(i);
-  throw std::runtime_error("unknown model "+name);
+const char* const bodyNames[keyra::model::bodyCount]{"concert","parlor","baby","upright"};
+keyra::model::Body bodyNamed(const std::string& name){
+  for(int i=0;i<keyra::model::bodyCount;++i)if(name==bodyNames[i])return static_cast<keyra::model::Body>(i);
+  throw std::runtime_error("unknown body "+name);
 }
 void u16(std::ofstream& f,std::uint16_t v){char b[2]={static_cast<char>(v),static_cast<char>(v>>8)};f.write(b,2);}
 void u32(std::ofstream& f,std::uint32_t v){char b[4]={static_cast<char>(v),static_cast<char>(v>>8),static_cast<char>(v>>16),static_cast<char>(v>>24)};f.write(b,4);}
 }
 int main(int argc,char** argv){try {
-  std::string eventsPath,outputPath,metricsPath;int rate=48000;double duration=5;bool legacy=false,vary=false,lowKnock=true;
+  std::string eventsPath,outputPath,metricsPath;int rate=48000;double duration=5;bool vary=false;
   keyra::Parameters parameters;
-  keyra::Piano piano=keyra::Piano::grand;bool towardGiven=false;keyra::Piano toward=piano;
-  std::array<float,7> build{};
-  std::array<float,4> roomShelf{};
-  // The parts given as mixes (--strings, --hammers, --soundboard, --action).
-  std::array<bool,4> mixed{};std::array<keyra::Mix,4> mixes{};
   for(int i=1;i<argc;++i){const std::string option=argv[i];
     auto value=[&](){if(++i>=argc)throw std::runtime_error("missing argument after "+option);return std::string(argv[i]);};
     if(option=="--help"){
-      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--gain .7] [--brightness .5] [--resonance .25] [--width .75] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mic 0] [--mechanics .175] [--room 1] [--room-shelf low,high,crossover,gain] [--model grand|upright|kawai|hamburg|newyork] [--toward grand|upright|kawai|hamburg|newyork] [--build strings,hammers,soundboard,action[,stiffness,unisons,ring]] [--strings|--hammers|--soundboard|--action piano=weight[,piano=weight...]] [--quality full|balanced|light] [--legacy-attack] [--vary] [--no-low-knock]\n"
-      <<"The build's parts move from the model toward the --toward piano (by default the upright from the grand, the grand from any other): 0 the model's own, 1 the other's.\n"
-      <<"A part given as piano=weight pairs mixes those pianos at their shares of the weights instead, as the plug-in's controls do.\n"
-      <<"--room-shelf plays the room as given (decay dB/s below and above the crossover in Hz, input gain) in place of the build's, for Tools/fit_room.py.\n"
-      <<"--no-low-knock plays no knock under the noise bands, for Tools/fit_low_knock.py.\n"
-      <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain. Use cc for channel-specific pedal events.\n";return 0;
+      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--body concert|parlor|baby|upright] [--hammer 0] [--age 0] [--detune .2] [--stretch 1] [--dynamics .5] [--lid 1] [--soundboard .5] [--sympathetic .5] [--duplex .5] [--mics close,xy,live,distant] [--room .5] [--width .75] [--tuning 440] [--felt 0] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mechanics .175] [--gain .7] [--vary]\n"
+      <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain.\n";
+      return 0;
     }else if(option=="--events")eventsPath=value();else if(option=="--output")outputPath=value();
     else if(option=="--metrics")metricsPath=value();else if(option=="--sample-rate")rate=std::stoi(value());
-    else if(option=="--duration")duration=std::stod(value());else if(option=="--legacy-attack")legacy=true;
-    else if(option=="--vary")vary=true;else if(option=="--no-low-knock")lowKnock=false;
-    else if(option=="--gain")parameters.gain=std::stof(value());else if(option=="--brightness")parameters.brightness=std::stof(value());
-    else if(option=="--resonance")parameters.resonance=std::stof(value());else if(option=="--width")parameters.width=std::stof(value());
+    else if(option=="--duration")duration=std::stod(value());else if(option=="--vary")vary=true;
+    else if(option=="--body")parameters.body=bodyNamed(value());
+    else if(option=="--hammer")parameters.hammer=std::stof(value());else if(option=="--age")parameters.age=std::stof(value());
+    else if(option=="--detune")parameters.detune=std::stof(value());else if(option=="--stretch")parameters.stretch=std::stof(value());
+    else if(option=="--dynamics")parameters.dynamics=std::stof(value());else if(option=="--lid")parameters.lid=std::stof(value());
+    else if(option=="--soundboard")parameters.soundboard=std::stof(value());else if(option=="--sympathetic")parameters.sympathetic=std::stof(value());
+    else if(option=="--duplex")parameters.duplex=std::stof(value());
+    else if(option=="--mics"){
+      std::istringstream in(value());int n=0;
+      for(std::string field;std::getline(in,field,',');++n){
+        if(n==keyra::model::micCount)throw std::runtime_error("--mics takes four levels");
+        parameters.mic[n]=std::stof(field);}
+      if(n<keyra::model::micCount)throw std::runtime_error("--mics takes four levels");}
+    else if(option=="--room")parameters.room=std::stof(value());else if(option=="--width")parameters.width=std::stof(value());
+    else if(option=="--tuning")parameters.tuning=std::stof(value());else if(option=="--felt")parameters.felt=std::stof(value());
     else if(option=="--mute")parameters.mute=std::stof(value());
     else if(option=="--sustain")parameters.sustain=std::stof(value());else if(option=="--soft")parameters.soft=std::stof(value());
-    else if(option=="--sostenuto")parameters.sostenuto=std::stof(value());else if(option=="--mic")parameters.mic=std::stof(value());
-    else if(option=="--mechanics")parameters.mechanics=std::stof(value());
-    else if(option=="--room")parameters.room=std::stof(value());
-    else if(option=="--room-shelf"){
-      std::istringstream in(value());std::size_t n=0;
-      for(std::string field;std::getline(in,field,',');++n){
-        if(n==roomShelf.size())throw std::runtime_error("--room-shelf takes four values");
-        roomShelf[n]=std::stof(field);}
-      if(n<roomShelf.size())throw std::runtime_error("--room-shelf takes four values");}
-    else if(option=="--model")piano=pianoNamed(value());
-    else if(option=="--toward"){toward=pianoNamed(value());towardGiven=true;}
-    else if(option=="--build"){
-      // strings,hammers,soundboard,action[,stiffness,unisons,ring]
-      std::istringstream in(value());
-      std::size_t n=0;for(std::string field;std::getline(in,field,',');++n){
-        if(n==build.size())throw std::runtime_error("--build takes at most seven values");
-        build[n]=std::stof(field);}
-      if(n<4)throw std::runtime_error("--build takes the four parts, then optionally the three modifiers");}
-    else if(option=="--strings"||option=="--hammers"||option=="--soundboard"||option=="--action"){
-      const int part=option=="--strings"?0:option=="--hammers"?1:option=="--soundboard"?2:3;
-      std::istringstream in(value());keyra::Mix mix{};
-      for(std::string field;std::getline(in,field,',');){const auto at=field.find('=');
-        if(at==std::string::npos)throw std::runtime_error(option+" takes piano=weight pairs");
-        mix[static_cast<std::size_t>(pianoNamed(field.substr(0,at)))]=std::stof(field.substr(at+1));}
-      mixed[part]=true;mixes[part]=mix;}
-    else if(option=="--quality"){const auto quality=value();
-      if(quality!="full"&&quality!="balanced"&&quality!="light")throw std::runtime_error("unknown quality "+quality);
-      parameters.quality=quality=="light"?keyra::Quality::light:quality=="balanced"?keyra::Quality::balanced:keyra::Quality::full;}
+    else if(option=="--sostenuto")parameters.sostenuto=std::stof(value());
+    else if(option=="--mechanics")parameters.mechanics=std::stof(value());else if(option=="--gain")parameters.gain=std::stof(value());
     else throw std::runtime_error("unknown option "+option);
   }
   if(outputPath.empty()||rate<8000||rate>192000||!std::isfinite(duration)||duration<=0||duration>600)throw std::runtime_error("invalid output/rate/duration");
-  parameters.build=keyra::buildToward(piano,towardGiven?toward:keyra::partner(piano),build[0],build[1],build[2],build[3],build[4],build[5],build[6]);
-  keyra::Mix* const parts[]{&parameters.build.strings,&parameters.build.hammers,&parameters.build.soundboard,&parameters.build.action};
-  for(std::size_t k=0;k<mixes.size();++k)if(mixed[k])*parts[k]=mixes[k];
   std::vector<Event> events;
   if(!eventsPath.empty()){
     std::ifstream file(eventsPath);if(!file)throw std::runtime_error("cannot open "+eventsPath);
@@ -119,13 +92,10 @@ int main(int argc,char** argv){try {
     }
   }else{events.push_back({0,"on",60,80,1});events.push_back({1,"off",60,0,1});}
   std::stable_sort(events.begin(),events.end(),[](const Event&a,const Event&b){return a.time<b.time;});
-  keyra::Engine engine(rate);engine.setParameters(parameters);engine.setLegacyAttackForComparison(legacy);
-  // Measurements play each strike at exactly the recorded layers' velocity it is
-  // given; --vary plays them as the plug-in does, through the shared velocity
-  // response and each a little harder or softer.
+  keyra::Engine engine(rate);engine.setParameters(parameters);
+  // Measurements play each strike at exactly the velocity it is given; --vary
+  // plays them as the plug-in does, each a little harder or softer.
   engine.setSteadyStrikesForMeasurement(!vary);
-  engine.setRoomForMeasurement(roomShelf[0],roomShelf[1],roomShelf[2],roomShelf[3]);
-  engine.setLowKnockForMeasurement(lowKnock);
   const auto frames=static_cast<std::uint64_t>(std::llround(duration*rate));
   if(frames*8>0xffffffffu-36u)throw std::runtime_error("WAV too large");
   std::ofstream out(outputPath,std::ios::binary);if(!out)throw std::runtime_error("cannot write "+outputPath);
@@ -152,7 +122,7 @@ int main(int argc,char** argv){try {
     out.write(reinterpret_cast<const char*>(interleaved.data()),kept*8);frame+=count;
   }
   const double elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
-  std::ostringstream json;json<<std::setprecision(10)<<"{\"sample_rate\":"<<rate<<",\"frames\":"<<frames<<",\"duration_seconds\":"<<duration<<",\"wall_seconds\":"<<elapsed<<",\"realtime_factor\":"<<elapsed/duration<<",\"peak\":"<<peak<<",\"rms\":"<<std::sqrt(squares/(2*frames))<<",\"legacy_attack\":"<<(legacy?"true":"false")<<"}";
+  std::ostringstream json;json<<std::setprecision(10)<<"{\"sample_rate\":"<<rate<<",\"frames\":"<<frames<<",\"duration_seconds\":"<<duration<<",\"wall_seconds\":"<<elapsed<<",\"realtime_factor\":"<<elapsed/duration<<",\"peak\":"<<peak<<",\"rms\":"<<std::sqrt(squares/(2*frames))<<"}";
   if(!metricsPath.empty()){std::ofstream metrics(metricsPath);metrics<<json.str()<<'\n';}
   std::cout<<json.str()<<'\n';return 0;
 }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}}

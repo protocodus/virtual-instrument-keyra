@@ -27,6 +27,31 @@
 
 namespace keyra {
 namespace {
+// The measured pianos whose actions play (MeasuredTypes.h).
+enum class Piano {grand,upright,kawai,hamburg,newyork};
+constexpr int pianoCount=5;
+using Mix=std::array<float,pianoCount>;
+constexpr Mix only(Piano piano) noexcept {Mix mix{};mix[static_cast<std::size_t>(piano)]=1;return mix;}
+struct Build {
+  Mix strings=only(Piano::grand);
+  Mix hammers=only(Piano::grand);
+  Mix soundboard=only(Piano::grand);
+  Mix action=only(Piano::grand);
+  float stiffness=0;
+  float unisons=0;
+  float ring=0;
+};
+constexpr Build measuredBuild(Piano piano) noexcept {return {only(piano),only(piano),only(piano),only(piano),0,0,0};}
+enum class Quality {full,balanced,light};
+struct ActionParameters {
+  float gain=.7f, brightness=.5f, resonance=.25f, width=.75f, tuning=440.f;
+  float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
+  float mic=0.f;
+  float mechanics=defaultMechanicsGain;
+  float room=1.f;
+  Build build{};
+  Quality quality=Quality::full;
+};
 constexpr double pi=3.14159265358979323846;
 // Controls, damping and retuning take effect every `chunk` samples; each
 // partial's exact double-precision state is carried from chunk to chunk and
@@ -1530,7 +1555,12 @@ struct Engine::Impl {
   std::array<double,chunk> partialMid{},roomInput{},roomLeft{},roomRight{};
   int roomGlide=0,roomQuiet=0,roomLongest=0;
   bool roomSounding=false;
-  Parameters parameters{};
+  ActionParameters parameters{};
+  Parameters set{};
+  model::Piano piano;
+  // Pascals at the microphones to the output's units.
+  static constexpr double pascalScale=1;
+  std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75,mute=0,mic=0,resonance=.25;
   // The tube's response (MeasuredMicData.h) designed at the engine's rate,
   // each section in transposed direct form II, and its level on the built
@@ -2281,96 +2311,6 @@ struct Engine::Impl {
     if(rising){const bool body=advance(onset),contact=advance(contactOnset);rising=body||contact;}
     if(actionRinging){const bool action=advance(actionRing),onset=advance(actionOnset);actionRinging=action||onset;}
     if(hissing)advanceNoise();
-    const bool tintChanged=previousBrightness!=parameters.brightness;
-    previousBrightness=parameters.brightness;
-    // A key's sympathetic vibration meets the same moving felt as its struck
-    // vibration. Lehtonen, Askenfelt & Valimaki (JASA 126, 2009, EL49-54)
-    // measured the transition into contact under partial pedal. Use the
-    // struck strings' existing travel time and contact law for the receivers.
-    updateReceiverDampers(controlSmooth);
-    openChunk();
-    double contact=1;
-    keyEnergy.fill(0);
-    for(auto& voice:voices)if(voice.active){
-      const auto& channel=channels[voice.channel];
-      const int key=voice.note-21;
-      const bool open=channel.presses[key]>0||channel.captured[key];
-      const double sustain=pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2]);
-      const double target=open?0:1-dampersLift*sustain;
-      voice.damper=moveDamper(voice.damper,target,controlSmooth);
-      // Continuous felt contact, including partial engagement and re-pedaling.
-      // The undamped top twenty keys do not acquire a fictitious key damper.
-      voice.contact=voice.note>=89?0:feltContact(voice.damper);
-      // The body rings on while any sounding string is free: an undamped one
-      // keeps it up as a held key's does, whatever its key. CC1's mute damps
-      // the strings that drive it as the felt does.
-      contact=std::min(contact,std::max(voice.contact,channel.smoothedMute*channel.smoothedMute));
-      const bool damping=voice.contact!=voice.appliedContact||channel.smoothedMute!=voice.appliedMute;
-      voice.appliedContact=voice.contact;voice.appliedMute=channel.smoothedMute;
-      // The strings play sharp in proportion to their energy (Tools/fit_glide.py):
-      // a key's voices retune to its glide at the last boundary whenever it
-      // has moved by glideStep.
-      if(std::abs(glideCents[key]-voice.glide)>=glideStep){voice.glide=glideCents[key];voice.retune=true;}
-      const double ratio=voice.retune?tuningRatio(voice.channel)*std::exp2(voice.glide/1200):0;
-      double energy=0;
-      for(int k=0;k<voice.count;){auto& partial=voice.partials[k];
-        if(voice.retune)tunePartial(partial,ratio);
-        bool weights=false;
-        if(tintChanged)partial.targetTint=static_cast<float>(std::pow(2.,(parameters.brightness-.5)*partial.tintScale));
-        if(partial.audibility!=partial.targetAudibility){
-          const float step=static_cast<float>(controlSmooth)*(partial.targetAudibility-partial.audibility);
-          partial.audibility=std::abs(step)<1e-6f?partial.targetAudibility:partial.audibility+step;weights=true;}
-        if(weights)updateWeights(partial);
-        if(partial.rising){
-          // Below -140 dB the rise is complete and the partial runs unscaled.
-          partial.riseRemaining=floatRise(partial.riseExact);
-          partial.rising=partial.riseExact>1e-7;
-          partial.riseExact*=partial.riseLeap;
-        }
-        double e=0;
-        for(int j=0;j<lanes;++j){Complex& z=partial.exact[j];
-          // A lane 600 dB under its contact plays nothing. Flushed, its float
-          // state never turns subnormal, which x86 multiplies far slower
-          // where the host leaves subnormals on: the keyboard network gives
-          // every partial a lane decaying at about 35/s beside slow ones
-          // that keep the partial playing, and unflushed the grand's D#3
-          // took twice as long to render.
-          if(z.re*z.re+z.im*z.im<1e-60)z=Complex{};
-          setLane(partial.re,j,static_cast<float>(z.re));setLane(partial.im,j,static_cast<float>(z.im));
-          e+=(z.re*z.re+z.im*z.im)*partial.energyWeight[j];}
-        // The floor judges the gain the chunk's first sample plays: a gliding
-        // Brightness takes its first step there (nextTint in the render).
-        double tint=partial.tint;
-        if(partial.tintState!=partial.targetTint){
-          const double target=partial.targetTint;double state=partial.tintState+smooth*(target-partial.tintState);
-          if(std::abs(target-state)<1e-9*target)state=target;
-          tint=static_cast<float>(state);
-        }
-        e*=partial.audibility*partial.audibility*tint*tint;
-        // A partial 120 dB under a full-scale peak (power in the output's
-        // units under 1e-12) is dropped. Against 1e-15, dropping them changed
-        // no 100 ms window of the demos by more than -112 dBFS and no
-        // third-octave band in one by more than -114 dBFS, under the smallest
-        // step of 16-bit audio, and saved a quarter of the heaviest demos'
-        // work (2026-11-04).
-        if(e<1e-12&&partial.targetAudibility==partial.audibility){partial=voice.partials[--voice.count];continue;}
-        energy+=e;
-        if(voice.contact>0&&partial.slowShare>0&&partial.slowShare<1)feltChunk(voice,partial);
-        else if(damping||voice.retune)setRotation(partial,dampingFactor(voice,partial));
-        for(int j=0;j<lanes;++j)partial.exact[j]=partial.exact[j]*partial.leap[j];
-        ++k;
-      }
-      voice.retune=false;
-      keyEnergy[key]+=energy;
-      if(voice.count==0||energy<1e-15)voice.active=false;
-    }
-    bodyContact=contact;
-    // A key's phantom partials play while their lines can reach the floor a
-    // partial is dropped under: for gain g and its partials' power e, the
-    // lines' power in both channels is at most (g e)^2 where no two of them
-    // fall together, and lines that do beat about the sum of theirs.
-    for(int k=0;k<keyCount;++k){const double ge=phantomGain[k]*keyEnergy[k];phantomOn[k]=ge*ge>=1e-12;}
-    for(int k=0;k<keyCount;++k)glideCents[k]=builtGlide[k]*keyEnergy[k];
   }
   // A body mode's level (dB) and phase on the built piano at a part's shares
   // w, each piano's from get(p, level, phase) for its first counts[p] modes:
@@ -2569,7 +2509,73 @@ struct Engine::Impl {
     }
     return n;
   }
+  // A key struck: the hammer is thrown at its strings (PianoModel.h) and the
+  // key lands on the keybed.
   void strike(int note,float velocity,int ch) noexcept {
+    wake();
+    auto& channel=channels[ch];const int key=note-21;
+    if(channel.presses[key]<std::numeric_limits<std::uint16_t>::max())++channel.presses[key];
+    const double pedal=pedalLevel(parameters.soft,channel.soft,channel.keySwitches[0]);
+    // An upright's soft pedal moves the hammers toward the strings: thrown
+    // as hard by the key, a hammer that starts halfway there arrives
+    // sqrt(1/2) as fast, and the key lands as softly.
+    const double hammer=bounded(velocity)*std::sqrt(1-.5*pedal*shareWith(share.action,[](const Model& m){return !m.unaCorda;}));
+    // No two strikes land alike: each moves the blow's level by a draw of
+    // spread touchSpreadDb (four uniform draws summed, within 3.5 spreads).
+    double draw=0;
+    for(int k=0;k<4;++k){touch^=touch<<13;touch^=touch>>17;touch^=touch<<5;draw+=touch*(1./4294967296.)-.5;}
+    const double touchDb=steady?0.:touchSpreadDb*std::sqrt(3.)*draw;
+    const double requestedDb=responseDb(127*hammer)+touchDb;
+    const double releaseReferenceDb=responseDb(127*double(80/127.f));
+    // Every piano's, so that a key let go knocks as its strike played on
+    // whichever action plays then.
+    ActionSide keys[pianoCount];
+    for(int p=0;p<pianoCount;++p){const Model& m=models[p];
+      const double v=steady?std::max(1.,127.*hammer):layerAt(m,requestedDb);
+      channel.velocity[p][key]=static_cast<float>(v/127);
+      const double actual=channel.velocity[p][key];
+      const double reference=static_cast<float>(layerAt(m,releaseReferenceDb)/127.);
+      const double tracking=trackingGain(m.releaseTracking,actual)/trackingGain(m.noteTracking,actual);
+      const double referenceTracking=trackingGain(m.releaseTracking,reference)/trackingGain(m.noteTracking,reference);
+      channel.releaseCapDb[p][key]=static_cast<float>(steady?0:
+        releaseBalanceCapDb(requestedDb,releaseReferenceDb,tracking,referenceTracking));
+      const int upper=upperAnchor(m,note);const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
+      const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
+      // The key landing on the keybed knocks the body's modes as its return
+      // does, growing with the strike's layer, but as an impact.
+      keys[p]={m.releaseKnocks+(upper-1)*m.bodyModeCount,m.releaseKnocks+upper*m.bodyModeCount,t,
+               m.keyDownDb+levelAt(m,m.layerLevelDb,v)+20*std::log10(m.outputScale),m.bodyModeCount};
+    }
+    channel.struck[key]=clock;
+    ++serial;
+    actionKnock(keys,true);
+    // The model's blow spans 10 + 28 Dynamics dB of hammer speed over the
+    // velocities (PianoModel.cpp), so the draw moves the velocity by that.
+    const double span=10+28*set.dynamics;
+    syncPiano();
+    piano.strike(key,bounded(static_cast<float>(velocity+touchDb/span),1/127.f,1.f),static_cast<float>(pedal));
+  }
+  // The dampers the keys and the sostenuto hold off their strings, the
+  // sustain pedal's travel and the mod wheel's felt, as the channels stand.
+  void syncPiano() noexcept {
+    float wheel=0;
+    for(const auto& channel:channels)wheel=std::max(wheel,channel.mute);
+    if(wheel!=wheelMute){wheelMute=wheel;applyControls();}
+    for(int key=0;key<88;++key){bool held=false;
+      for(const auto& channel:channels)held=held||channel.presses[key]>0||channel.captured[key];
+      piano.holdDamper(key,held);}
+    piano.setPedal(sharedSustain(parameters.sustain));
+  }
+  void applyControls() noexcept {
+    model::Controls c;
+    c.body=set.body;c.hammer=set.hammer;c.age=set.age;c.detune=set.detune;c.stretch=set.stretch;c.dynamics=set.dynamics;
+    c.lid=set.lid;c.soundboard=set.soundboard;c.sympathetic=set.sympathetic;c.duplex=set.duplex;
+    for(int m=0;m<model::micCount;++m)c.mic[m]=set.mic[m];
+    c.room=set.room;c.tuning=set.tuning;c.felt=set.felt;c.mute=std::max(set.mute,wheelMute);
+    piano.setControls(c);
+  }
+  float wheelMute=0;
+  void legacyStrike(int note,float velocity,int ch) noexcept {
     wake();
     auto& channel=channels[ch];
     if(channel.presses[note-21]<std::numeric_limits<std::uint16_t>::max())++channel.presses[note-21];
@@ -3334,7 +3340,7 @@ struct Engine::Impl {
     wake();
     const double target=1-dampersLift*level;
     const double scale=1.68*parameters.mechanics*std::pow(10.,(g.pedalDownDb+20*std::log10(g.outputScale))/20)*std::sqrt(grandShare)
-                       /(Parameters{}.resonance*.35);
+                       /(ActionParameters{}.resonance*.35);
     for(int i=0;i<damped;++i){
       bool held=false;for(const auto& c:channels)held=held||c.presses[i]>0||c.captured[i];
       if(held)continue;
@@ -3367,7 +3373,7 @@ struct Engine::Impl {
     // The Resonance control scales the open strings' sound; at its default
     // they ring as measured.
     const double strikeDb=-49.0-2.7*std::log2(hz[0]/261.63);
-    const double gain=std::pow(10.,strikeDb/20)*toneGain/(Parameters{}.resonance*.35);
+    const double gain=std::pow(10.,strikeDb/20)*toneGain/(ActionParameters{}.resonance*.35);
     const int own=note-21;
     for(int i=0;i<damped;++i){
       if(i==own||!(openness[i]>0))continue;
@@ -3803,46 +3809,6 @@ struct Engine::Impl {
   void render(float* left,float* right,int frames) noexcept {
     const V4 zero{};
     for(int i=0;i<frames;++i){mixLeft[i]=zero;mixRight[i]=zero;}
-    owned.fill(false);
-    bool anyVoice=false;
-    // Under the pedal the notes drive the open strings 1.65 times as hard
-    // (0.4.12's, without a source). On the Yamaha C3's pedal pairs a note
-    // holds up the same within 1.5 dB from 1 to 9 times; 21 times puts the
-    // train median 2 dB over the takes to 3 s and the pairs' mean miss
-    // before 1.5 s from 2.6 to 4.6 dB
-    // (Docs/validation/pedalled-note-ring-2026-11-10.md).
-    const float openBridgeGain=static_cast<float>(1+.65*pedalOpenness);
-    // Key by key, each key's strikes in the pool's order.
-    keyVoice.fill(-1);
-    for(int v=maxVoices-1;v>=0;--v)if(voices[v].active){const int key=voices[v].note-21;nextVoice[v]=keyVoice[key];keyVoice[key]=v;}
-    for(int key=0;key<keyCount;++key){
-      if(keyVoice[key]<0){phantom[key].warm=false;continue;}
-      anyVoice=true;
-      const bool own=key<damped&&openness[key]>0,squared=phantomOn[key];
-      if(!squared)phantom[key].warm=false;
-      if(!own&&!squared){
-        for(int v=keyVoice[key];v>=0;v=nextVoice[v])play(voices[v],mixLeft.data(),mixRight.data(),frames);
-        continue;
-      }
-      for(int i=0;i<frames;++i){voiceLeft[i]=zero;voiceRight[i]=zero;}
-      for(int v=keyVoice[key];v>=0;v=nextVoice[v])play(voices[v],voiceLeft.data(),voiceRight.data(),frames);
-      if(squared)square(phantom[key],phantomGain[key],static_cast<float>(highpassCoefficient),voiceLeft.data(),voiceRight.data(),frames);
-      if(own){auto& drive=ownDrive[key];owned[key]=true;
-        for(int i=0;i<frames;++i){const V4 l4=voiceLeft[i],r4=voiceRight[i];mixLeft[i]+=l4;mixRight[i]+=r4;
-          drive[i]=.5f*openBridgeGain*(lane(l4,0)+lane(l4,1)+lane(l4,2)+lane(l4,3)+lane(r4,0)+lane(r4,1)+lane(r4,2)+lane(r4,3));}
-      }else for(int i=0;i<frames;++i){mixLeft[i]+=voiceLeft[i];mixRight[i]+=voiceRight[i];}
-    }
-    // The room hears the board's ring and the noise: what the mix holds
-    // beyond the partials' mid here, before the rings join it.
-    const bool roomHears=(ringing||rising||actionRinging||hissing)&&roomGain*parameters.room>0;
-    if(anyVoice)
-      for(int i=0;i<frames;++i){
-        const V4 l4=mixLeft[i],r4=mixRight[i];
-        openDrive[i]=.5f*openBridgeGain*(lane(l4,0)+lane(l4,1)+lane(l4,2)+lane(l4,3)+lane(r4,0)+lane(r4,1)+lane(r4,2)+lane(r4,3));
-        if(roomHears)partialMid[i]=.5*(static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3)
-                                       +(static_cast<double>(lane(r4,0))+lane(r4,1)+lane(r4,2)+lane(r4,3)));
-      }
-    else{std::fill_n(openDrive.begin(),frames,0.f);if(roomHears)std::fill_n(partialMid.begin(),frames,0.);}
     if(ringing){ringBody(ring,frames);ringBody(lateRing,frames);}
     if(rising){ringBody(onset,frames);ringBody(contactOnset,frames);}
     if(actionRinging){ringBody(actionRing,frames);ringBody(actionOnset,frames);}
@@ -3850,111 +3816,32 @@ struct Engine::Impl {
     const bool noisy=hissing;
     if(noisy)hiss(frames);
     // The noise source runs on the engine's clock, sounding or not, so that a
-    // strike's noise does not depend on how long earlier noise sounded: a
-    // key let go clicks for a second or two, and without this every strike
-    // after it drew other noise (Felt Upright's typical playing then read
-    // 0.11 dB lower in KeyraLevels, all of it the strikes' draws).
+    // click's noise does not depend on how long earlier noise sounded.
     else for(int i=0;i<2*frames;++i){seed^=seed<<13;seed^=seed>>17;seed^=seed<<5;}
-    const double openBridgeScale=anyVoice?1+.65*pedalOpenness:1.;
-    const double muteDamp=1./(1+180*mute*mute/sampleRate);
-    // The strings' and the noise's sum per sample, in dryLeft and dryRight
-    // until the image's width is applied below.
-    const bool haloDriven=anyVoice&&pedalOpenness>0;
+    // The action's room hears its rings and its noise.
+    const bool roomHears=(ringing||rising||actionRinging||hissing)&&roomGain*parameters.room>0;
     for(int i=0;i<frames;++i){
       const V4 l4=mixLeft[i],r4=mixRight[i];
       double l=static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3);
       double r=static_cast<double>(lane(r4,0))+lane(r4,1)+lane(r4,2)+lane(r4,3);
       if(noisy){l+=noiseLeft[i];r+=noiseRight[i];}
       dryLeft[i]=l;dryRight[i]=r;
-      haloDrive[i]=haloDriven?static_cast<double>(openDrive[i])*.0025*pedalOpenness:0.;
-      if(roomHears)roomInput[i]=.5*(l+r)-partialMid[i];
+      if(roomHears)roomInput[i]=.5*(l+r);
     }
     const bool roomPlays=roomHears||roomSounding;
     if(roomPlays){
       if(!roomHears)std::fill_n(roomInput.begin(),frames,0.);
       roomSounding=true;playRoom(frames);
     }
-    // The undamped strings ring from their strikes (strike()) and, when the
-    // sustain pedal lifts the damper bank, from the bridge's motion across
-    // the open harp, heard through their measured pickups like the partials.
-    // String by string through the chunk, each string's state held in
-    // registers; every sample still adds the strings in their order, so the
-    // sums are the same bit for bit as sample by sample. A string at rest
-    // and undriven stays at rest and adds nothing.
-    for(int j=0;j<halo;++j){
-      Resonator string=haloRing[j],prompt=haloPrompt[j];
-      if(!haloDriven&&string.q==0&&string.p==0&&prompt.q==0&&prompt.p==0)continue;
-      // The bank turns the other way to the partials' lanes.
-      const auto& pickup=haloString[j];
-      for(int i=0;i<frames;++i){
-        string.turn(muteDamp);prompt.turn(muteDamp);
-        if(haloDrive[i]!=0)string.p+=(1-string.decay)*haloDrive[i];
-        const double q=string.q+prompt.q,im=string.p+prompt.p;
-        if(q!=0||im!=0){dryLeft[i]+=pickup.left*q;dryRight[i]+=pickup.rightRe*q+pickup.rightIm*im;}
-      }
-      haloRing[j]=string;haloPrompt[j]=prompt;
-    }
-    for(int k=0;k<beatingCount;++k){const int j=beating[k];Resonator beat=haloBeat[j];const auto& pickup=haloString[j];
-      for(int i=0;i<frames;++i){
-        beat.turn(muteDamp);
-        if(beat.q!=0||beat.p!=0){dryLeft[i]+=pickup.left*beat.q;dryRight[i]+=pickup.rightRe*beat.q+pickup.rightIm*beat.p;}
-      }
-      haloBeat[j]=beat;
-    }
+    piano.process(pianoLeft.data(),pianoRight.data(),frames);
     for(int i=0;i<frames;++i){
       width+=smooth*(parameters.width-width);
-      const double l=dryLeft[i],r=dryRight[i];
-      const double voiceDrive=static_cast<double>(openDrive[i]);
-      // The pickup's own image at the default width; narrower towards mono.
-      double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
-      openDrive[i]=static_cast<float>(voiceDrive*pedalOpenness+mid*openBridgeScale*(1-pedalOpenness));
-      // The room through the same image; the open strings do not hear it.
-      if(roomPlays){mid+=.5*(roomLeft[i]+roomRight[i]);side+=.5*(roomLeft[i]-roomRight[i])*width/.75;}
-      dryLeft[i]=mid+side;dryRight[i]=mid-side;
-      openWidth[i]=width;
-    }
-    // Feed-forward bridge-to-open-string radiation. The reduced core does not
-    // claim the reference solver's reciprocal 475-mode soundboard network.
-    // No feedback reaches the driven voices, so this response cannot run away.
-    for(int i=0;i<frames;++i){openSum[i]=V4{};openPan[i]=V4{};}
-    // The active banks four at a time (openRun), each still added in order.
-    OpenBank* run[4];const float* own[4];int n=0;
-    const auto flush=[&]{
-      if(n==4)openRun<4>(run,own,frames);
-      else if(n>=2){openRun<2>(run,own,frames);if(n==3)openRun<1>(run+2,own+2,frames);}
-      else if(n==1)openRun<1>(run,own,frames);
-      n=0;
-    };
-    for(int b=0;b<openBanks;++b){auto& bank=open[b];if(!bank.active)continue;
-      const int string=b*lanes/openPartials;
-      // An owned string hears the drive less its own strike's.
-      run[n]=&bank;own[n]=owned[string]?ownDrive[string].data():silentDrive.data();
-      if(++n==4)flush();
-    }
-    flush();
-    for(int i=0;i<frames;++i){
       gain+=smooth*(parameters.gain-gain);
-      // Changing the receiver's monitoring level must not step an already
-      // ringing signal. Like Output, Width and Mic, it follows a bounded
-      // 12 ms sample-rate-independent glide; the resonators keep their state.
-      resonance+=smooth*(parameters.resonance-resonance);
-      // The hammers' tube calibration is an audible monitoring gain too:
-      // changing a build must not step an already sounding Mic signal.
-      // Keep advancing with Mic at zero so a later fade-in has no stale gain.
-      tubeScale+=smooth*(tubeScaleTarget-tubeScale);
-      const V4 s4=openSum[i],p4=openPan[i];
-      const double sum=static_cast<double>(lane(s4,0))+lane(s4,1)+lane(s4,2)+lane(s4,3);
-      const double panned=(static_cast<double>(lane(p4,0))+lane(p4,1)+lane(p4,2)+lane(p4,3))*openWidth[i];
-      double outL=dryLeft[i]+(sum-panned)*resonance*.35,outR=dryRight[i]+(sum+panned)*resonance*.35;
-      // The tube hears the pair's mid through its response, the same on both
-      // sides, and the Mic control mixes it in.
-      if(mic>0||parameters.mic>0){
-        mic+=smooth*(parameters.mic-mic);
-        if(std::abs(parameters.mic-mic)<1e-6)mic=parameters.mic;
-        const double heard=tubeScale*tubeHears(.5*(outL+outR));
-        outL+=mic*(heard-outL);outR+=mic*(heard-outR);
-        if(mic==0)silenceTube();
-      }
+      double l=dryLeft[i]+pascalScale*pianoLeft[i],r=dryRight[i]+pascalScale*pianoRight[i];
+      if(roomPlays){l+=roomLeft[i];r+=roomRight[i];}
+      // The pairs' own image at the default width; narrower towards mono.
+      const double mid=(l+r)*.5,side=(l-r)*.5*width/.75;
+      const double outL=mid+side,outR=mid-side;
       // Remove DC before measuring stereo peaks and applying the output gain.
       const double hpL=outL-previousL+highpassCoefficient*highpassL,hpR=outR-previousR+highpassCoefficient*highpassR;
       previousL=outL;previousR=outR;highpassL=hpL;highpassR=hpR;
@@ -4003,71 +3890,66 @@ void Engine::prepare(double sampleRate){
   for(int i=0;i<=sineSize;++i)p.sine[i]=std::sin(2*pi*i/sineSize);
   p.smooth=1-std::exp(-1/(.012*p.sampleRate));p.contactShare=static_cast<float>(1-std::exp(-1/(contactSmoothing*p.sampleRate)));p.controlSmooth=1-std::exp(-chunk/(damperTravelSeconds*p.sampleRate));
   p.highpassCoefficient=std::exp(-2*pi*10/p.sampleRate);
-  p.retuneSympathetic();
   p.prepareBody();
   p.prepareNoise();p.prepareNoiseStates();
   p.output.Prepare(p.sampleRate);
-  p.prepareTube();
   p.prepareRoomLines();p.prepareRoom();
+  p.piano.prepare(p.sampleRate);p.applyControls();
   reset();
 }
 void Engine::reset() noexcept {
-  auto& p=*impl;for(auto& voice:p.voices){voice.active=false;voice.count=0;}
+  auto& p=*impl;
   for(auto& channel:p.channels)channel=Channel{};
-  p.silenceStrings();
   p.silenceBody();p.silenceNoise();p.silenceRoom();
-  // A hard reset starts the current build afresh, even if a live model
-  // change had not finished gliding its pickups. Live changes still glide.
+  // A hard reset starts the current action afresh, even if a live change had
+  // not finished gliding its pickups. Live changes still glide.
   p.pickup=p.pickupTarget;p.pickupStep={};p.pickupGlide=0;
-  p.serial=0;p.frame=0;p.clock=0;p.receiverClock=0;p.lastStrikeClock=0;p.crowded=false;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
-  p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.silenceTube();
-  p.previousBrightness=p.parameters.brightness;
+  p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.gain=p.parameters.gain;p.width=p.parameters.width;p.mute=p.parameters.mute;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
   p.output.Reset();
   for(int ch=0;ch<16;++ch)p.capture(ch);
-  p.updateReceiverDampers(1);
   p.pedalHeld=false;p.pedalEdge(false);
+  p.piano.reset();p.wheelMute=-1;p.syncPiano();
 }
 void Engine::setParameters(const Parameters& input) noexcept {
-  auto& p=*impl;const float oldTune=p.parameters.tuning;
-  const float sustain=bounded(input.sustain),sostenuto=bounded(input.sostenuto);
-  p.prepareSleepingPedals(sustain,sostenuto);
-  p.parameters.gain=bounded(input.gain,0,2);p.parameters.brightness=bounded(input.brightness);
-  p.parameters.resonance=bounded(input.resonance);p.parameters.width=bounded(input.width);p.parameters.mic=bounded(input.mic);
-  p.parameters.mechanics=bounded(input.mechanics,0,2);p.parameters.room=bounded(input.room,0,2);
+  auto& p=*impl;auto& set=p.set;
+  set=input;
+  set.gain=bounded(input.gain,0,2);set.width=bounded(input.width);set.room=bounded(input.room);
   // Wrappers combine their 400..480 Hz user range with host master tuning.
-  p.parameters.tuning=bounded(input.tuning,300,600);p.parameters.mute=bounded(input.mute);
-  p.parameters.sustain=sustain;p.parameters.sostenuto=sostenuto;
-  p.parameters.soft=bounded(input.soft);p.parameters.quality=input.quality;
-  // The parts' weights from 0 to 1, a weight that is not a number none; the
-  // modifiers within their ranges, one that is not a number left as built.
-  const auto weights=[](const Mix& x){Mix w{};for(int k=0;k<pianoCount;++k)w[k]=bounded(x[k]);return w;};
-  const auto modifier=[](float x){return x!=x?0.f:bounded(x,-1,1);};
-  const Build old=p.parameters.build;auto& build=p.parameters.build;
-  build={weights(input.build.strings),weights(input.build.hammers),weights(input.build.soundboard),weights(input.build.action),
-         modifier(input.build.stiffness),modifier(input.build.unisons),modifier(input.build.ring)};
-  if(old.strings!=build.strings||old.hammers!=build.hammers||old.soundboard!=build.soundboard||old.action!=build.action
-     ||old.stiffness!=build.stiffness||old.unisons!=build.unisons||old.ring!=build.ring){
+  set.tuning=bounded(input.tuning,300,600);set.mute=bounded(input.mute);
+  set.sustain=bounded(input.sustain);set.sostenuto=bounded(input.sostenuto);set.soft=bounded(input.soft);
+  set.mechanics=bounded(input.mechanics,0,2);
+  if(static_cast<int>(set.body)<0||static_cast<int>(set.body)>=model::bodyCount)set.body=model::Body::concertGrand;
+  auto& action=p.parameters;
+  action.gain=set.gain;action.width=set.width;action.tuning=set.tuning;action.mute=set.mute;
+  action.sustain=set.sustain;action.sostenuto=set.sostenuto;action.soft=set.soft;action.mechanics=set.mechanics;
+  // The action's room is the one its noises were recorded in: as measured at
+  // the Room control's default.
+  action.room=2*set.room;
+  // The action whose noises play: the measured grand's under every grand,
+  // the measured upright's under the upright.
+  const Build build=measuredBuild(set.body==model::Body::upright?Piano::upright:Piano::grand);
+  if(build.action!=action.build.action){
+    action.build=build;
     p.share={sharesOf(build.strings),sharesOf(build.hammers),sharesOf(build.soundboard),sharesOf(build.action)};
-    p.assemble();p.retuneSympathetic();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();p.prepareRoom(true);}
-  for(int ch=0;ch<16;++ch){p.capture(ch);if(oldTune!=p.parameters.tuning)p.retune(ch);}
-  if(oldTune!=p.parameters.tuning)p.retuneSympathetic();
-  // A setting selected before any sound starts is the new initial state,
-  // rather than a delayed transition from the previous silent preset.
-  if(p.sleeping){p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();}
+    p.assemble();p.prepareBody(p.ringing||p.rising||p.actionRinging);p.prepareNoise();p.prepareRoom(true);}
+  for(int ch=0;ch<16;++ch)p.capture(ch);
+  if(p.sleeping)p.snapNoiseMixes();
+  p.applyControls();
   p.pedalEdge();
+  p.syncPiano();
 }
 void Engine::noteOn(int note,float velocity,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   if(!(velocity>0)){noteOff(note,channel);return;}
   const int sw=switchIndex(note);
   if(sw>=0){
-    impl->advanceSleepingReceivers();
     auto& count=impl->channels[ch].keySwitches[sw];
     if(count<std::numeric_limits<std::uint16_t>::max())++count;
     if(sw==1)impl->capture(ch);
     if(sw==2)impl->pedalEdge();
+    impl->syncPiano();
     return;
   }
   if(note<21||note>108)return;
@@ -4077,44 +3959,43 @@ void Engine::noteOff(int note,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   const int sw=switchIndex(note);
   if(sw>=0){
-    impl->advanceSleepingReceivers();
     auto& count=impl->channels[ch].keySwitches[sw];if(count>0)--count;
     if(sw==1)impl->capture(ch);
     if(sw==2)impl->pedalEdge();
+    impl->syncPiano();
     return;
   }
   if(note<21||note>108)return;
-  impl->advanceSleepingReceivers();
   auto& count=impl->channels[ch].presses[note-21];
-  if(count>0&&--count==0)impl->release(note,ch);
+  if(count>0&&--count==0){impl->release(note,ch);impl->syncPiano();}
 }
 void Engine::controlChange(int cc,int value,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   auto& p=*impl;auto& state=p.channels[ch];const float amount=bounded(value/127.f);
-  if(cc==64||cc==66||cc==120||cc==121||cc==123)p.advanceSleepingReceivers();
   if(cc==1)state.mute=amount;
   else if(cc==64){state.sustain=amount;p.pedalEdge();}
   else if(cc==66){state.sostenuto=amount;p.capture(ch);}
   else if(cc==67)state.soft=amount;
   else if(cc==123){state.presses.fill(0);state.keySwitches.fill(0);p.capture(ch);p.pedalEdge(false);}
   else if(cc==120){
+    // The strings are one piano's, whichever channel plays them.
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
-    for(auto& voice:p.voices)if(voice.channel==ch)voice.active=false;
-    bool any=false;for(const auto& voice:p.voices)any=any||voice.active;
-    if(!any){
-      p.silenceStrings();p.updateReceiverDampers(1);p.silenceBody();p.silenceNoise();p.silenceRoom();
-      p.tubeScale=p.tubeScaleTarget;p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();
-    }
+    p.piano.reset();p.piano.setBend(state.bend);
+    p.silenceBody();p.silenceNoise();p.silenceRoom();
+    p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
     p.capture(ch);p.pedalEdge(false);
-    p.retune(ch);
+    p.piano.setBend(0);
   }
+  else return;
+  p.syncPiano();
 }
 void Engine::pitchBend(float semitones,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
-  impl->channels[ch].bend=bounded(semitones,-48,48);impl->retune(ch);
+  // The strings are one piano's: the latest bend moves them all.
+  impl->channels[ch].bend=bounded(semitones,-48,48);impl->piano.setBend(impl->channels[ch].bend);
 }
 PedalState Engine::pedalState(int channel) const noexcept {
   PedalState state;
@@ -4129,18 +4010,7 @@ PedalState Engine::pedalState(int channel) const noexcept {
   return state;
 }
 int Engine::outputLatencySamples() const noexcept {return impl->output.DelaySamples();}
-void Engine::setLegacyAttackForComparison(bool enabled) noexcept {impl->legacyAttack=enabled;}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
-void Engine::setLowKnockForMeasurement(bool enabled) noexcept {impl->lowKnockOn=enabled;}
-void Engine::setRoomForMeasurement(float lowRate,float highRate,float crossover,float gain) noexcept {
-  auto& p=*impl;
-  p.measuredRoom=gain>0?measured::Room{bounded(lowRate,0,1000),bounded(highRate,0,1000),bounded(crossover,20,20000),bounded(gain,0,16)}
-                       :measured::Room{};
-  p.prepareRoom(true);
-}
-float responseVelocity(Piano piano,float velocity) noexcept {
-  return static_cast<float>(responseAt(models[static_cast<int>(piano)],127*bounded(velocity)));
-}
 void Engine::process(float* left,float* right,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;
@@ -4148,8 +4018,7 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;
-    p.mute=p.parameters.mute;p.mic=p.parameters.mic;p.resonance=p.parameters.resonance;p.tubeScale=p.tubeScaleTarget;p.snapNoiseMixes();
-    for(auto& channel:p.channels)channel.smoothedMute=std::max(p.parameters.mute,channel.mute);
+    p.mute=p.parameters.mute;p.snapNoiseMixes();
     return;
   }
   int done=0;
@@ -4159,21 +4028,15 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     p.render(left+done,right+done,n);
     done+=n;p.frame+=static_cast<std::uint64_t>(n);
   }
-  bool any=p.ringing||p.rising||p.actionRinging||p.hissing||p.roomSounding||p.waitingCount>0;
-  for(const auto& voice:p.voices)any=any||voice.active;
-  if(!any){
-    double residue=std::abs(p.highpassL)+std::abs(p.highpassR);
-    residue+=p.stringResidue();
-    if(residue<1e-14){
-      // Chunks restart with the next strike, so a silent engine's output
-      // does not depend on how long it has been silent. The output stage
-      // restarts empty too: its look-ahead holds only the last few ms, which
-      // are as quiet as the residue.
-      p.sleeping=true;p.receiverClock=p.clock;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-      p.silenceStrings();p.silenceTube();
-      p.silenceNoise();p.tubeScale=p.tubeScaleTarget;
-      p.output.Reset();
-    }
+  if(!(p.ringing||p.rising||p.actionRinging||p.hissing||p.roomSounding||p.waitingCount>0||!p.piano.silent())
+     &&std::abs(p.highpassL)+std::abs(p.highpassR)<1e-14){
+    // Chunks restart with the next strike, so a silent engine's output does
+    // not depend on how long it has been silent. The output stage restarts
+    // empty too: its look-ahead holds only the last few ms, which are as
+    // quiet as the residue.
+    p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
+    p.silenceNoise();
+    p.output.Reset();
   }
 }
 }
