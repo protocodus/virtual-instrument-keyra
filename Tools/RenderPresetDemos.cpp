@@ -59,11 +59,10 @@ int main (int argc, char** argv)
     instrument.ceiling = protocodus::OutputStage<2>::kCeiling * (1.0f + 1.0e-6f);
     for (const auto& preset : keyra::factoryPresets)
         instrument.presets.push_back (preset.name);
-    // U7 perf budget: about 3x the slowest demo's median realtime factor,
-    // 0.125 (01-concert-grand, three repeats) on a development machine
-    // (Intel Xeon at 2.1 GHz, GCC 13 -O3), 2026-11-11. The CI runner has not
-    // timed the physical piano yet: pin this again from its first run.
-    instrument.cpuBudget = 0.4;
+    // U7 perf budget: about 3x the slowest demo's median realtime factor on
+    // the CI runner, 0.108 (01-concert-grand) in main build 105
+    // (ubuntu-24.04, three repeats), 2026-11-11.
+    instrument.cpuBudget = 0.33;
     instrument.open = [] (std::size_t preset, double sampleRate, int, std::uint32_t)
     {
         // The engine's strikes vary by a sequence of its own that starts
