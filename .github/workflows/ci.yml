@@ -240,10 +240,18 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  # Every case at one rate and block size, as Keyra.ParameterMatrix runs it.
+  # Under the sanitizers the physical model takes the whole rotation past the
+  # test's 30 minutes on one runner (a sixteenth of it takes 87 s on a
+  # four-core Xeon), so four jobs take a quarter each and no case is dropped.
   parameter-matrix:
-    name: Parameter-extremes matrix sample under ASan + UBSan
+    name: Parameter-extremes matrix under ASan + UBSan, shard ${{ matrix.shard }}/4
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     env:
       ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
       UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
@@ -269,8 +277,8 @@ jobs:
           -DBUILD_TESTING=ON
           && cmake --build build-sanitize-plugin --parallel --target KeyraParameterMatrixTests
 
-      - name: Parameter matrix sample
-        run: ctest --test-dir build-sanitize-plugin -R '^Keyra[.]ParameterMatrix$' --no-tests=error --output-on-failure
+      - name: Parameter matrix shard
+        run: ./build-sanitize-plugin/KeyraParameterMatrixTests --rotation --shard ${{ matrix.shard }}/4 --jobs 4
 
   # The full physical research is its own CMake project (Experiments/), not
   # part of the product build; its tests still run on every push.
