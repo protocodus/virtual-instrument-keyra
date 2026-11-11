@@ -208,6 +208,23 @@ constexpr double caseHertz=300,keybedShare=.75,rimHeave=15;
 // from C6 to F#6 it is 2 to 12 dB short. The strings' own pull on the bridge
 // is 15 to 25 dB short of it.
 constexpr double knockArm=.017,knockHertz=180;
+// The case sounds too. The pairs hear the board from near it, but what the
+// blow's knock shakes in the frame and the case reaches them mostly by the
+// room: caseSound of what the knock gives the board's edge goes to the room
+// as well, in other signs than the board's sound, so that the two channels
+// stay as far apart as they were. Fitted to what the Salamander's notes
+// from C6 to C8 leave from 280 to 710 Hz after the knock: 15, 21, 24, 28
+// and 36 dB under its peak 60, 100, 150, 200 and 300 ms after it (from
+// 400 ms on that recording is at its own floor), where the model without it
+// stood 19, 28, 32, 38 and 47 dB under and with it stands 15, 21, 29, 29
+// and 39; from 180 to 280 Hz the recording's 14, 19, 22, 27 and 34 against
+// 11, 16, 21, 27 and 34. The board at half its loss rang as long, but took
+// the bass and the middle twice as long to reach their level (the
+// benchmark's rise, 14 to 26 ms). The caught hammer's thump is left out:
+// from 60 to 110 Hz the model's stands within 2 dB of the recorded one to
+// 200 ms without the room, and with it in the room the bass's partials
+// stood 0.2 to 0.3 dB further from the recording's.
+constexpr float caseSound=.6f;
 constexpr int capoFrom=60;
 // One catch is not the next. Over the sixteen layers of a Salamander key the
 // thump stands 2.7 dB (60 to 110 Hz) and 2.6 dB (110 to 180 Hz) off a line
@@ -251,10 +268,11 @@ MicSpec micSpec(const Design& d,int mic) noexcept {
     return Vec{a.x*c-a.y*s,a.x*s+a.y*c,a.z};};
   // The close pair's share of the room is set against what the Salamander's
   // treble notes leave from 280 to 710 Hz once the knock under them is over:
-  // 24, 36 and 47 dB down 150, 300 and 600 ms after its peak. At 0.03
-  // (2.3.0) the model's stood 41, 67 and 88 dB down, at 0.45 it stands 32,
-  // 47 and 69. It is not free: the bass partials stand 0.9 dB further from
-  // the recording's than without it.
+  // 24 and 36 dB down 150 and 300 ms after its peak. At 0.03 (2.3.0) the
+  // model's stood 41 and 67 dB down, at 0.45 it stood 32 and 47, and with
+  // the case's own sound in the room (caseSound) 29 and 39. It is not free:
+  // the bass partials stand 0.9 dB further from the recording's than without
+  // it. (2.4.0 also read 47 dB at 600 ms, which is that recording's floor.)
   if(!d.upright)switch(mic){
     case micClose: return {{{.30*X,.22,.20},{.72*X,.20,.20}},{{0,0,-1},{0,0,-1}},0,1,0,0,.5,.45,.35};
     case micXY: {const Vec at{X+.8,.45*Y,1.3},aim{.5*X,.4*Y,0};
@@ -1408,6 +1426,9 @@ struct Piano::Impl {
       if(!leaned)std::memset(leans,0,sizeof(leans));
       for(int p=0;p<points;++p)for(int s=0;s<frames;++s)rim[p][s]=static_cast<float>(frameKnock[p][1].run(frameKnock[p][0].run(leans[p][s])));}
     else for(auto& place:frameKnock)for(auto& f:place)f.z1=f.z2=0;
+    // What the case gives the room of the knock.
+    alignas(32) float cased[chunk]{};
+    if(rimmed)for(int p=0;p<points;++p)for(int s=0;s<frames;++s)cased[s]+=caseSound*rim[p][s];
     // The hammers the action catches in this chunk, and what the case hands
     // on of them.
     if(catches>0){
@@ -1509,7 +1530,7 @@ struct Piano::Impl {
       total*=2.f/roomLines;
       float roomL=0,roomR=0;
       for(int k=0;k<roomLines;++k){
-        roomLine[k][roomAt]=back[k]-total+((k&1)?o[3]:o[2])*((k&2)?-.5f:.5f);
+        roomLine[k][roomAt]=back[k]-total+((k&1)?o[3]:o[2])*((k&2)?-.5f:.5f)+cased[s]*(((k^(k>>1))&2)?-.5f:.5f);
         if(k&1)roomR+=(k&4)?-back[k]:back[k];else roomL+=(k&4)?-back[k]:back[k];}
       roomAt=(roomAt+1)&roomMask;
       const double l=o[0]+roomSend*roomL,r=o[1]+roomSend*roomR;

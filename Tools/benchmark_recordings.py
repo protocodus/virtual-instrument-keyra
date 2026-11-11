@@ -197,7 +197,18 @@ def features(path, note, reference=None):
     pw = np.mean(np.abs(zw) ** 2, axis=1)
     second = np.array([pw[:, k:k + 20].mean(axis=1) for k in range(max(1, pw.shape[1] - 19))])
     partial_floor = 10 * np.log10(np.maximum(second.min(axis=0), 1e-30))
-    _, noise = pa.residual_bands(x, sr, freqs, f1, start, seconds=.3, hop_s=.01)
+    # A render's partial that stands off the recording's (strings stiffer or
+    # slacker than the recorded ones) is already scored as a missing partial;
+    # left in here it scored a second time as noise. At the orders the
+    # recording holds, the render's own partials are left out as well. Orders
+    # above them stay in for both: left out for the render alone, the bass's
+    # bands kept only the bins between partials the recording never resolved.
+    own = freqs
+    if reference is not None:
+        _, _, found = pa.partials(x, sr, note, start)
+        held = set(int(n) for n in reference['n'])
+        own = np.union1d(freqs, [q['hz'] for q in found if q['n'] in held])
+    _, noise = pa.residual_bands(x, sr, own, f1, start, seconds=.3, hop_s=.01)
     # The broadband measures leave out the room's infrasonic rumble, which in
     # the quiet treble files outweighs the piano a second after the strike.
     xh = signal.sosfiltfilt(signal.butter(2, 20, 'highpass', fs=sr, output='sos'), x, axis=0)

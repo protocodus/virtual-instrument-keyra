@@ -26,13 +26,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -6.7 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -12.1 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.1 dBFS |
-| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.7 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -2.0 dBFS |
-| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.9 dBFS |
-| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.5 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -7.7 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -12.2 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.4 dBFS |
+| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -4.0 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.7 dBFS |
+| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.6 dBFS |
+| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.4 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -48,6 +48,33 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.6.0 — 2026-11-11 — what rings under a treble note
+
+From A5 up something rings on under a note after the blow, as it does on the
+recorded grand. The panel and the saved state are 2.5.0's; a 2.5.0 session
+opens as saved and its top two and a half octaves sound different.
+
+- **The case in the room**: the knock the blow gives the frame and the case
+  (2.4.0) reached the microphones only through the board, and died away
+  under a treble note twice as fast as on the Salamander grand. The room
+  now hears it as well: from 280 to 710 Hz it stands 21 and 39 dB under its
+  peak 100 and 300 ms on, where the recording's stands 21 and 36 and
+  2.5.0's stood 28 and 47. Keys below A5 are as they were.
+- **Against the recordings**
+  ([grand](Docs/validation/grand-case-ring-benchmark-2026-11-11.md),
+  [upright](Docs/validation/upright-case-ring-benchmark-2026-11-11.md)):
+  on the notes 1.0.0 never fitted, the grand's first half second stands
+  6.5 dB from the Salamander's in third octaves (7.0 in 2.5.0), its attack
+  6.4 (6.6) and the noise between its partials 7.0 (7.5); from C6 up 7.9
+  (9.6), 7.2 (7.8) and 7.5 (9.1). The upright's stand 9.0 (9.3), 7.4 (7.6)
+  and 9.2 (9.5). The other scores moved by 0.1 or less. Two single-note
+  scores of the grand and one of the upright are worse, listed in the
+  reports.
+- **The benchmark's noise score** counted a render's partial that stood off
+  the recording's twice, as a missing partial and as noise; it is now left
+  out of the noise. 2.5.0's noise reads 7.5 dB by it (7.6 before) and the
+  upright's 9.5 (9.7).
 
 ### 2.5.0 — 2026-11-11 — the string scale
 
@@ -269,7 +296,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 114](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43066313773/artifacts/13877320771)**, built from [`39d0c7e879c0`](https://github.com/protocodus/virtual-instrument-keyra/commit/39d0c7e879c0bdfc9d34e027ef8435fb5a2d8f38). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 115](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43103922254/artifacts/13893812344)**, built from [`d9a0e52a4b69`](https://github.com/protocodus/virtual-instrument-keyra/commit/d9a0e52a4b696c9844f60a910b63aab2bf157632). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -403,7 +430,9 @@ level is a balance, and the distance is in the sound already. The room is a
 feedback delay network of eight lines (Jot and Chaigne 1991) ringing 0.8 s,
 which hears the piano as the distant pair does and which each pair hears by
 its distance, the close pair too (set against what the Salamander grand's
-treble notes leave after the knock under them); Room sets how much. Width at 0.75 is the pairs' own image and
+treble notes leave after the knock under them); Room sets how much. The
+room also hears the case: the knock the blow gives the frame under the top
+strings goes to it directly, as well as through the board. Width at 0.75 is the pairs' own image and
 0 is mono.
 
 A pair is placed so that it sums to mono: no mode of the board reaches one
@@ -521,7 +550,8 @@ is written independently of it.
   [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md),
   [2.3.0 against 2.2.0](Docs/validation/grand-open-strings-benchmark-2026-11-11.md),
   [2.4.0 against 2.3.0](Docs/validation/grand-key-presses-benchmark-2026-11-11.md),
-  [2.5.0 against 2.4.0](Docs/validation/grand-string-scale-benchmark-2026-11-11.md)).
+  [2.5.0 against 2.4.0](Docs/validation/grand-string-scale-benchmark-2026-11-11.md),
+  [2.6.0 against 2.5.0](Docs/validation/grand-case-ring-benchmark-2026-11-11.md)).
   The furthest are the treble's sustain (11 dB off in third octaves) and
   the bass's rise (23 ms on average). 2.4.0 moved the tuning, the decay and
   the bass's partials further off, and 106 single-note scores; 2.5.0 brought
@@ -539,7 +569,9 @@ is written independently of it.
   [2.3.0](Docs/validation/upright-open-strings-benchmark-2026-11-11.md),
   [2.4.0](Docs/validation/upright-key-presses-benchmark-2026-11-11.md));
   2.5.0 took 1.2 dB off its partials and 1.1 cents off its tuning
-  ([2.5.0](Docs/validation/upright-string-scale-benchmark-2026-11-11.md)).
+  ([2.5.0](Docs/validation/upright-string-scale-benchmark-2026-11-11.md));
+  2.6.0 its first half second by 0.3 dB and put its partials 0.1 dB further
+  ([2.6.0](Docs/validation/upright-case-ring-benchmark-2026-11-11.md)).
 - **The bass strings' stiffness.** The concert grand's wound strings are 14
   to 53 % less stiff than the Salamander's, a grand 0.7 m shorter, so in
   the bass the benchmark still looks for upper partials where the model
@@ -582,10 +614,16 @@ is written independently of it.
   the key frame for the thump (Askenfelt and Jansson), which is not built
   or compared yet ([options](Docs/plans/realism-options-2026-11-11.md)). A Steinway's notes thump 8 to 10 dB
   harder than the Salamander's; the grands share one level.
-- **The room against the recordings.** With the room now in the close pair,
-  a treble note's tail still falls faster than the Salamander's (69 dB down
-  after 600 ms against 47), and the bass's partials stand 1 dB further from
-  the recordings than without it.
+- **The room against the recordings.** With the room in the close pair the
+  bass's partials stand 1 dB further from the recordings than without it.
+  What a treble note leaves under it now falls as the Salamander's does for
+  300 ms (39 dB down against 36); after 400 ms that recording is at its own
+  floor and says nothing (2.4.0 read its 47 dB at 600 ms as the piano).
+  Between its partials a note from A5 to G♯6, where the knock itself is
+  weak, still holds 4 to 11 dB less than the recording from 125 Hz to 2 kHz
+  after its first 50 ms; the softest notes from A7 up hold 3 to 7 dB more
+  from 250 Hz to 2.5 kHz; and from A4 up a loud note holds 10 to 40 dB less
+  above 5 kHz.
 - **The softest treble and the bass's level.** At the softest layer the
   keys from F♯6 up stand 5 to 13 dB quiet beside the middle of the keyboard
   against the Salamander's, and at the hardest up to 6 dB loud; the keys
