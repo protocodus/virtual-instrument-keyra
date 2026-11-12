@@ -452,7 +452,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1826,.1701,.1330,.1904};
+  static constexpr double pascalScale[model::bodyCount]{.1826,.1701,.1330,.1904,.1782};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75;
   double smooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
@@ -836,6 +836,8 @@ struct Engine::Impl {
       for(const auto& channel:channels)held=held||channel.presses[key]>0||channel.captured[key];
       piano.holdDamper(key,held);}
     piano.setPedal(std::min(pedalLift,sharedSustain(parameters.sustain)));
+    // The pedal alone sets the freed strings whispering.
+    if(!piano.silent())wake();
   }
   void applyControls() noexcept {
     model::Controls c;

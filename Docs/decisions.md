@@ -5065,3 +5065,58 @@ grand: held notes from C4 to C7, slow chords, a treble melody over a held
 chord and the first demo. B is matched to A on whole-file RMS; the trims
 are in its key. By the project's standing rule B stands unless the owner
 says otherwise.
+
+## 2026-11-12 — a Studio Grand, and the pedal's whisper (2.9.0)
+
+**Asked.** The owner chose to add a fifth piano, a 2.0 m studio grand the
+size of the recorded Yamaha, and asked for audible phenomena the model
+lacks, those that cost little CPU first.
+
+**The Studio Grand.** The concert grand's wound strings are 14 to 53 %
+less stiff than the Salamander's, a grand 0.7 m shorter. A scan of the bass
+length and the first plain-steel key against the recordings' inharmonicity
+at eleven notes below C4 (one layer) stood, as the rms of log2 of the
+ratio, at 0.38 for 1.55 m, 0.34 for 1.60 m, 0.32 for 1.65 m and 0.30 for
+1.75 m, with plain steel from B2. 1.60 m is kept: a length a 2.0 m case
+holds, where 1.75 m would be fitted past the instrument. The board, bridge,
+hammers and case are typical of the size, between the concert and the
+parlor grand. It is appended as the last Piano so that saved sessions keep
+their piano; the Studio Grand preset moved to it from the parlor grand.
+
+**Measured.** Against the Salamander, the notes 1.0.0 never fitted, the
+Concert Grand of 2.8.0 to the Studio Grand: partials 7.74 to 7.73 dB (bass
+9.84 to 9.73, middle 6.65 to 7.02, treble 7.34 to 6.82), tuning 2.21 to
+2.02 cents, decay 3.80 to 3.69 dB/s, envelope 4.18 to 3.94 dB, level 2.07
+to 2.06; attack 6.26 to 6.78, early 6.29 to 7.06, sustain 7.85 to 8.78,
+noise 6.78 to 7.01, stereo balance 5.31 to 6.08 and rise 12.65 to 19.66 ms
+(the bass 22 to 37) further off; 221 single-note scores worse. The size
+alone does not bring the model nearer the recording, so the benchmark's
+default piano stays the Concert Grand.
+
+**The pedal's whisper.** The Salamander's pedal-down takes ring for more
+than five seconds after the knock, on the strings; the model was silent
+after one. Each damper now plucks its strings by a hair as it leaves them
+(`whisper()` in `PianoModel.cpp`, where the fit is written). An impulse on
+the bridge with the pedal, tried for the takes' low ring, left no ring on
+the open strings and is not kept. The whisper's level was first read
+against the library's notes, on the assumption that its pedal takes share
+their gain: that stood 18 dB higher and 30 dB over the engine's knock at
+the default Mechanics. It is set beside the engine's knock instead, which
+is the project's standing reading of the same takes.
+
+**Tried and left out.** The radiation's corner at 10 kHz for 6: on four
+layers the partials moved by 0.13 dB at most either way, the bass's noise
+on the fitted notes from 6.44 to 7.42 and the middle's on the others from
+8.32 to 7.80. On the Studio Grand the notes A4, D♯5, A5 and A6 hold 2 to
+9 dB less from 5 to 10 kHz than the recordings 10 to 30 ms after the
+onset, D♯6 22 to 25, at a middle and a loud layer alike, so the shortfall
+is not the felt's stiffening.
+
+**What is the owner's to hear.** A lettered set (`2026-11-12-pedal-whisper`
+in the project's files, not committed): A 2.8.0, B 2.9.0, on the concert
+grand: the pedal alone (not level-matched, the whisper's level being what
+is judged), soft chords with legato pedalling and staccato notes with the
+pedal between them (B matched to A on whole-file RMS; the trims, under
+0.02 dB, are in its key). Beside it, unlettered, the first demo's phrase
+on the Concert and the Studio Grand. By the project's standing rule B
+stands unless the owner says otherwise.

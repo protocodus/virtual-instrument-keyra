@@ -253,7 +253,9 @@ int main(){
   {
     // C0, C#0 and D0 are the soft, sostenuto and sustain pedals while held,
     // on their own channel's count, and the engine reports the pedals.
-    b.start(strings());
+    // Without the open strings: a pedal going down sets them whispering,
+    // which is no note.
+    {auto quiet=strings();quiet.sympathetic=0;b.start(quiet);}
     e.noteOn(14,1,3);check(e.pedalState(3).sustain==1&&e.pedalState(0).sustain==1&&e.pedalState(1).sustain==0,"D0 is the sustain pedal on its channel");
     e.noteOn(14,1,3);e.noteOff(14,3);check(e.pedalState(3).sustain==1,"a switch held twice stays down until both let go");
     e.noteOff(14,3);check(e.pedalState(0).sustain==0,"D0 let go lifts the pedal");
@@ -261,7 +263,7 @@ int main(){
     e.noteOn(12,1);check(e.pedalState(1).soft==1,"C0 is the soft pedal");e.noteOff(12);
     e.controlChange(64,64,5);e.controlChange(67,127,5);
     check(std::abs(e.pedalState(5).sustain-64/127.f)<1e-6f&&e.pedalState(5).soft==1&&e.pedalState(4).sustain==0,"the pedals are reported per channel");
-    keyra::Parameters panel=strings();panel.sustain=.3f;panel.sostenuto=1;e.setParameters(panel);
+    keyra::Parameters panel=strings();panel.sympathetic=0;panel.sustain=.3f;panel.sostenuto=1;e.setParameters(panel);
     check(e.pedalState(4).sustain==.3f&&std::abs(e.pedalState(5).sustain-64/127.f)<1e-6f&&e.pedalState(9).sostenuto==1,"the panel's pedals reach every channel");
     check(e.pedalState(17).sustain==0&&e.pedalState(-1).sustain==0,"a channel that does not exist reports no pedal");
     b.run(.1);check(b.take.peak(0,.1)==0,"the switches play no note");
@@ -300,6 +302,21 @@ int main(){
     Take muted=b.take;
     b.start(strings());e.noteOn(48,.8f);b.run(.5);
     check(muted.db(.3,.5)<b.take.db(.3,.5)-20,"Felt mute damps as the wheel does");
+  }
+  {
+    // The pedal alone sets the strings its dampers free whispering: by
+    // Sympathetic, not at all without it, and not when a reset finds the
+    // pedal already down.
+    b.start(strings());b.run(.1);e.controlChange(64,127);b.run(1);
+    const double whisper=b.take.db(.2,1.1);
+    std::cout<<"the pedal's whisper: "<<whisper<<" dB\n";
+    check(b.take.peak(0,.1)==0&&whisper>-110&&whisper<-60,"the pedal going down sets the open strings whispering");
+    auto half=strings();half.sympathetic=.25f;b.start(half);b.run(.1);e.controlChange(64,127);b.run(1);
+    check(std::abs(whisper-b.take.db(.2,1.1)-6.02)<1,"the whisper follows Sympathetic");
+    auto none=strings();none.sympathetic=0;b.start(none);b.run(.1);e.controlChange(64,127);b.run(1);
+    check(b.take.peak(0,1.1)==0,"without the open strings the pedal whispers nothing");
+    b.start(strings());e.controlChange(64,127);b.run(2);e.controlChange(120,0);const double t=b.now();b.run(.5);
+    check(b.take.peak(t,t+.5)==0,"a pedal held through all sound off does not whisper again");
   }
   {
     // All sound off, reset all controllers, all notes off.
@@ -491,7 +508,7 @@ int main(){
      check(felted.db(.02,.4)<bare.db(.02,.4)-3&&felted.above(1000,.02,.4)<bare.above(1000,.02,.4)-10,"the practice felt plays softer and darker");}
     {auto p=strings();p.gain=.35f;const Take half=note(p,60,.5f,.3);p.gain=.7f;
      check(std::abs(note(p,60,.5f,.3).db(.02,.3)-half.db(.02,.3)-6.02)<.5,"Output is the level");}
-    // The four pianos are four instruments.
+    // Each piano is its own instrument.
     {Take body[keyra::model::bodyCount];
      for(int k=0;k<keyra::model::bodyCount;++k){auto p=strings();p.body=static_cast<keyra::model::Body>(k);body[k]=note(p,36,.8f,.5);
        check(body[k].db(.02,.5)>-40&&body[k].safe(),"every piano plays");
