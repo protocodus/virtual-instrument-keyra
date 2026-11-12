@@ -193,7 +193,7 @@ compression for the softest blows.
 
 Measured on 2026-11-12 against the Salamander; nothing here shipped.
 
-- **The loud notes' top.** Partial by partial (the first 100 ms, four
+- **The loud notes' top.** Partial by partial (50 to 750 ms, four
   layers) the model's upper partials stand from 12 dB under to 18 dB over
   the recording's from one note to the next (A3 9 under, C5 10 over, F♯5
   18 over, C6 12 under), and alike at a soft and a loud layer. It is each
