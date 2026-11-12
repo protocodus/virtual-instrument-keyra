@@ -244,8 +244,31 @@ middle layer, 50 to 550 ms, rms in dB):
 
 A real grand's keys are that uneven partial by partial through a close
 pair, and the Concert Grand's are as even as the recording's up to B5.
-From C6 up, and on the smaller pianos, the model's keys are 6 to 8 dB
-rougher than the recording's: that, not a fit, is what is left to mend.
+From C6 up, and on the smaller pianos, the model's keys read 6 to 8 dB
+rougher than the recording's.
+
+That last reading was wrong (corrected the same day). From C6 up most of
+partials 2 to 8 lie under the recording's noise floor, 90 dB under the
+fundamental, where the recording reads the same on every key and the
+model, which has no floor, reads whatever its skirts leave. Counting only
+the partials that stand more than 60 dB over that on both, on the key and
+on the two beside it:
+
+| | bass | middle | treble (10 readings) |
+| --- | --- | --- | --- |
+| the recording | 9.3 | 12.0 | 9.9 |
+| Concert Grand | 8.9 | 8.6 | 8.4 |
+| Studio Grand | 12.5 | 8.6 | 11.4 |
+
+And how far a key leans left or right (right over left, the first 500 ms,
+C5 to C8, standard deviation in dB): the recording 4.9 to 5.0 on three
+layers, with one key 13 dB to the right; Concert 4.9, Studio 5.7, Parlor
+5.0, Baby 6.0, Upright 5.0, every key. Taking the board's modes only to
+1.4 kHz, leaving out the scattered arrivals above them, or giving each
+key one place on the bridge left that between 3.5 and 6.0.
+
+So the model's keys are as uneven as a real grand's through a close pair
+and no more, in their partials and in their place: nothing here to mend.
 
 ## Not about the sound
 
