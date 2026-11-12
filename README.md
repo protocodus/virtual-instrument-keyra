@@ -390,7 +390,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 118](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43149490207/artifacts/13913808155)**, built from [`b810582d3eb0`](https://github.com/protocodus/virtual-instrument-keyra/commit/b810582d3eb0e42178ef0e38e75cc9703a5e575e). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 119](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43157246693/artifacts/13917542339)**, built from [`ecbd706c5b08`](https://github.com/protocodus/virtual-instrument-keyra/commit/ecbd706c5b087611a43ed036a21b34ddbd39d733). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
