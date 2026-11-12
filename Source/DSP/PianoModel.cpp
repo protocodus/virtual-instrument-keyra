@@ -915,6 +915,20 @@ struct Piano::Impl {
     return std::min(ratio,.45*sampleRate/(key.hertz*key.ratio[0]));
   }
   double tuningRatio(const KeyData& key) const noexcept {return tuningRatio(key,bend);}
+  // How far a unison's strings stand apart, in cents for one deviation: at
+  // Detune 1, 6 cents up to B3, narrowing to half that from C5 up. A tuner
+  // sets a unison by its beats, which the same cents make faster up the
+  // keyboard. With the full spread everywhere the Salamander grand's first
+  // partials from C5 up stood 7 to 8 dB over the recorded ones 1 to 1.5 s
+  // after the blow (1.0 and 1.4 with this), and on four layers its partials'
+  // decay stood 3.89 dB/s from the recorded on the unfitted notes, 3.36 with
+  // this; narrowed on to 0.3 or all the way as 250/f, 3.52 and 3.36 with the
+  // top octaves' sustain 0.8 dB further off. The upright keeps the full
+  // spread: narrowed like the grand's, the decay of the notes it is fitted
+  // on stood 4.95 dB/s from the Helsinki upright's where it stands 4.54.
+  double unisonSpread(const KeyData& key) const noexcept {
+    return (6*controls.detune*controls.detune+.15)*(table->design.upright?1:clamp(250/key.hertz,.5,1));
+  }
   // The strings' own loss for a partial at w rad/s, 1/s. Old strings lose
   // their upper partials, wound ones most.
   double stringLoss(const KeyData& key,double w) const noexcept {
@@ -956,9 +970,8 @@ struct Piano::Impl {
     v.across=std::min(count,maxKh);
     v.longitudinal=index<52?std::min(count,maxKl):0;
     v.point=std::min(points-2,static_cast<int>(key.bridge));v.pointMix=static_cast<float>(key.bridge-v.point);
-    // Unison spread: at Detune 1 a deviation of 6 cents; false beats grow
-    // with the strings' age.
-    const double spread=6*controls.detune*controls.detune+.15,split=1e-4*(1+7*controls.age);
+    // False beats grow with the strings' age.
+    const double spread=unisonSpread(key),split=1e-4*(1+7*controls.age);
     for(int plane=0;plane<6;++plane){
       const int string=plane%3;const bool isAcross=plane>=3;
       const int n=plane==0?count:isAcross?(string<v.strings?v.across:0):(string<v.strings?v.apart:0);
@@ -1196,7 +1209,7 @@ struct Piano::Impl {
       bankPoint[i]=std::min(points-2,static_cast<int>(key.bridge));bankMix[i]=static_cast<float>(key.bridge-bankPoint[i]);
       // How far the unison's strings stand apart, as tune() sets them.
       double apart=0;for(int j=0;j<key.strings;++j)apart+=key.detune[j]*key.detune[j];
-      apart=std::pow(2.,(6*controls.detune*controls.detune+.15)*std::sqrt(apart/key.strings)/1200)-1;
+      apart=std::pow(2.,unisonSpread(key)*std::sqrt(apart/key.strings)/1200)-1;
       for(int slot=0;slot<bankSlots;++slot){const int at=i*bankSlots+slot;
         bankEnd[at]=0;
         const bool isDuplex=slot>=bankPartials;
