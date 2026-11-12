@@ -10,9 +10,9 @@
 namespace keyra { namespace model {
 constexpr int keyCount=88;   // A0 (key 0) to C8 (key 87)
 // The pianos designed at prepare(): each a string scale, hammers, soundboard
-// and case of its size.
-enum class Body {concertGrand,parlorGrand,babyGrand,upright};
-constexpr int bodyCount=4;
+// and case of its size. A new piano goes last: sessions keep the number.
+enum class Body {concertGrand,parlorGrand,babyGrand,upright,studioGrand};
+constexpr int bodyCount=5;
 // The microphone pairs, each mixed at its own level:
 // close    a spaced pair inside, over the hammers (behind an upright's board)
 // xy       a coincident cardioid pair at the open lid, a metre off

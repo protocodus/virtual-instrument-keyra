@@ -90,7 +90,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     // nothing anew but takes the next strike to be heard whole, so it is not
     // offered for automation.
     layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "body", 2 }, "Piano",
-        juce::StringArray { keyra::bodyNames[0], keyra::bodyNames[1], keyra::bodyNames[2], keyra::bodyNames[3] }, 0,
+        juce::StringArray(keyra::bodyNames.data(), static_cast<int>(keyra::bodyNames.size())), 0,
         juce::AudioParameterChoiceAttributes().withAutomatable(false)));
     add("hammer", "Hammer hardness", -1.0f, 1.0f, initial.hammer);
     add("age", "String age", 0.0f, 1.0f, initial.age);

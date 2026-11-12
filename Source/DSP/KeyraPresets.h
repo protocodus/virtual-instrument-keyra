@@ -4,7 +4,7 @@
 
 namespace keyra {
 // The pianos as the front ends name them, by model::Body.
-inline constexpr std::array<const char*, model::bodyCount> bodyNames {{ "Concert Grand", "Parlor Grand", "Baby Grand", "Upright" }};
+inline constexpr std::array<const char*, model::bodyCount> bodyNames {{ "Concert Grand", "Parlor Grand", "Baby Grand", "Upright", "Studio Grand" }};
 // The microphone pairs as the front ends name them, by model::Mic.
 inline constexpr std::array<const char*, model::micCount> micNames {{ "Close", "XY", "Live", "Distant" }};
 // The factory bank: the plug-in's programs and the README demos. A preset is
@@ -24,7 +24,7 @@ struct Preset {
 };
 inline constexpr std::array<Preset, 12> factoryPresets {{
     { "Concert Grand", model::Body::concertGrand, 0.f, 0.f, .3f, 1.f, .5f, 1.f, .5f, .5f, .5f, { 1.f, 0.f, 0.f, 0.f }, .5f, .75f, 0.f },
-    { "Studio Grand", model::Body::parlorGrand, .3f, 0.f, .25f, 1.f, .45f, 1.f, .4f, .35f, .5f, { .9f, .45f, 0.f, 0.f }, .3f, .6f, 0.f },
+    { "Studio Grand", model::Body::studioGrand, .3f, 0.f, .25f, 1.f, .45f, 1.f, .4f, .35f, .5f, { .9f, .45f, 0.f, 0.f }, .3f, .6f, 0.f },
     { "Warm Walnut", model::Body::parlorGrand, -.5f, .25f, .35f, 1.f, .5f, .5f, .6f, .6f, .4f, { .7f, .7f, .3f, 0.f }, .5f, .7f, 0.f },
     { "Felt Nocturne", model::Body::concertGrand, -.3f, .1f, .3f, 1.f, .4f, .5f, .55f, .5f, .3f, { 1.f, .75f, 0.f, 0.f }, .5f, .65f, .6f },
     { "Open Strings", model::Body::concertGrand, 0.f, 0.f, .35f, 1.f, .55f, 1.f, .7f, 1.f, 1.f, { .42f, .42f, .67f, 0.f }, .6f, .9f, 0.f },

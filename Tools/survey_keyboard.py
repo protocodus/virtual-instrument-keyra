@@ -38,7 +38,7 @@ from scipy import ndimage, signal, stats
 
 import piano_analysis as pa
 
-MODELS = ('concert', 'parlor', 'baby', 'upright')
+MODELS = ('concert', 'parlor', 'baby', 'upright', 'studio')
 VELOCITIES = (40, 80, 120)
 MEASURES = ('level', 'balance', 'bright', 'decay', 'rise')
 

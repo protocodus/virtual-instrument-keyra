@@ -2,7 +2,7 @@
 
 Keyra is an 88-key piano made by a physical model: hammers, strings, a
 soundboard and microphones are computed as you play, and no samples are
-loaded. You choose one of four pianos, keep it as you like it and place the
+loaded. You choose one of five pianos, keep it as you like it and place the
 microphones. The keys', dampers' and pedals' own noises play beside it. What
 is not yet verified for version 2.0.0 is listed in the README's Known gaps.
 
@@ -22,7 +22,7 @@ them.
 
 | Control | Behavior |
 | --- | --- |
-| Piano | Concert Grand (2.74 m), Parlor Grand (1.86 m), Baby Grand (1.50 m) or Upright (1.25 m). Smaller pianos have shorter bass strings, a smaller soundboard and lighter, harder hammers. Changing the piano stops what sounds. Not offered for automation |
+| Piano | Concert Grand (2.74 m), Parlor Grand (1.86 m), Baby Grand (1.50 m), Upright (1.25 m) or Studio Grand (2.0 m). Smaller pianos have shorter bass strings, a smaller soundboard and lighter, harder hammers. Changing the piano stops what sounds. Not offered for automation |
 | Hammer | The felt, from soft and worn-in at −1 to hard and bright at +1; 0 is the piano as built. Applies from the next strike |
 | String age | 0 is new strings. Towards 1 the strings lose their upper partials' sustain, the wound bass strings most, and beat against themselves. Applies from the next strike |
 | Detune | How far apart the two or three strings of a note are tuned: pure at 0, a well-kept piano at the default 0.3, a bar piano at 1 |
@@ -37,7 +37,7 @@ them.
 | --- | --- |
 | Lid | Closed at 0, the short stick at 0.5, open at 1 (an upright's top). A closed lid keeps the high frequencies from the microphones outside the piano |
 | Soundboard | How long the soundboard rings: heavily damped at 0, lively at 1 |
-| Sympathetic | How strongly the strings whose dampers are off answer the notes you play: held keys, everything under the sustain pedal, and the top keys, which have no dampers |
+| Sympathetic | How strongly the strings whose dampers are off answer the notes you play: held keys, everything under the sustain pedal, and the top keys, which have no dampers. It also sets how loud the strings whisper when the pedal lifts their dampers |
 | Duplex | How strongly the short lengths of string beyond the bridge ring. The upright has none |
 | Mechanics | How loud the action plays: the keys landing and coming back, the dampers falling and the sustain pedal's knocks. Silent at 0%; the default is 40%. Double-click to reset |
 | Output | Master output level. At its default, typical playing reads about −9 VU on Reason's channel meter; the output stage keeps every sample under −1.5 dBFS and delays the sound by 2.5 ms, which the plug-in reports to the host |
@@ -81,7 +81,7 @@ pedals keep their settings. Every preset plays at about the same level.
 | Preset | What it is |
 | --- | --- |
 | Concert Grand | The concert grand as built, close pair, lid open |
-| Studio Grand | The parlor grand with harder hammers, close and XY, a drier room |
+| Studio Grand | The studio grand with harder hammers, close and XY, a drier room |
 | Warm Walnut | The parlor grand with soft hammers on the short stick, three pairs |
 | Felt Nocturne | The concert grand under the practice felt |
 | Open Strings | The concert grand with the soundboard, sympathetic strings and duplex scales turned up, mostly from the room |
@@ -155,7 +155,7 @@ scale; the panel shows a tapered 0–100% knob.
 
 The strings, hammers, soundboard and microphones are computed from a
 description of each piano; none of it is fitted to a recording note by note,
-and the four pianos are typical of their kinds, not one maker's instruments.
+and the five pianos are typical of their kinds, not one maker's instruments.
 The keys', dampers' and pedals' noises are numbers fitted from recordings of
 a grand and an upright and play beside the model: the pedal going down does
 not set the strings whispering. The room is a small reverberator, not a

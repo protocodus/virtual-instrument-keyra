@@ -3,8 +3,9 @@
 Keyra is a physically modelled piano that plays no samples: felt hammers
 thrown at stiff strings, the strings of each unison coupled at the bridge, a
 soundboard of plate modes radiating to four microphone pairs, and the open
-strings and duplex scales ringing with them. Four pianos are designed, a
-concert grand, a parlor grand, a baby grand and an upright, and each is kept
+strings and duplex scales ringing with them. Five pianos are designed, a
+concert grand, a studio grand, a parlor grand, a baby grand and an upright,
+and each is kept
 as you like it: the hammers' felt, the strings' age, the unisons' tuning, the
 tuner's stretch, the dynamic range, the lid, and how the soundboard, the
 sympathetic strings and the duplex scales ring. Beside the model plays the
@@ -48,6 +49,39 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.9.0 — 2026-11-12 — a Studio Grand, and the pedal's whisper
+
+A fifth piano, and the strings answer the pedal itself. The saved state is
+2.8.0's with one more choice of Piano; a 2.8.0 session opens as saved, and
+the four older pianos' notes are 2.8.0's sample for sample until the pedal
+goes down.
+
+- **Studio Grand**, 2.0 m: the size of the grand the benchmark's recordings
+  are of. Its bass strings' length (1.60 m at A0) and the key where plain
+  steel begins (B2) are set against those recordings' inharmonicity below
+  C4, which the model's then stands within a factor of 0.75 to 1.54 of,
+  note by note; the rest is typical of the size. It is the last choice of
+  Piano, and the Studio Grand preset, which played the parlor grand, plays
+  it. Against the recordings it is no nearer than the Concert Grand
+  overall: on the notes 1.0.0 never fitted its partials stand as far
+  (7.7 dB), its tuning, decay and envelope a little nearer (2.0 cents,
+  3.7 dB/s, 3.9 dB against 2.2, 3.8 and 4.2), and its attack, sustain,
+  stereo balance and rise further (the rise 20 ms against 13), with 221
+  single-note scores worse
+  ([benchmark](Docs/validation/studio-grand-benchmark-2026-11-12.md)).
+- **The pedal's whisper.** A damper's felt lets its strings go as it
+  lifts, and they ring: the sustain pedal alone now sets the open strings
+  whispering, less for a pedal let down slowly, scaled by Sympathetic and
+  silent at 0. It is set beside the engine's pedal knock as the
+  Salamander's two pedal-down takes hold it from 300 Hz to 1 kHz; the
+  takes' low ring, 25 to 35 dB stronger under 150 Hz, is not there. It
+  costs nothing while notes sound; pressed on a silent piano the pedal
+  wakes the model until the whisper has died.
+- **Tried and left out.** A brighter radiation above 6 kHz, for the top
+  end loud notes lack: on four layers the partials moved by 0.13 dB at
+  most either way, the bass's noise on the fitted notes 1.0 dB further off
+  and the middle's on the others 0.5 dB nearer.
 
 ### 2.8.0 — 2026-11-12 — how a grand's upper notes die away
 
@@ -459,7 +493,7 @@ and further apart than the bridge couples them, once in all (Weinreich
 1977). The top keys have no dampers (from F♯6 on the concert grand) and
 always answer. The upright has no duplex scales.
 
-### Four pianos
+### Five pianos
 
 | Piano | A0's speaking length | Soundboard | First plain-steel key | First key without a damper |
 | --- | --- | --- | --- | --- |
@@ -467,6 +501,7 @@ always answer. The upright has no duplex scales.
 | Parlor Grand, 1.86 m | 1.40 m | 1.42 × 1.12 m | B2 | F♯6 |
 | Baby Grand, 1.50 m | 1.14 m | 1.40 × 0.86 m | C♯3 | F6 |
 | Upright, 1.25 m | 1.18 m | 1.40 × 0.95 m | D♯3 | D♯6 |
+| Studio Grand, 2.0 m | 1.60 m | 1.43 × 1.22 m | B2 | F♯6 |
 
 The dimensions are typical of each kind of piano, not one maker's
 instrument. The smaller pianos have shorter, stiffer bass strings (more
@@ -515,7 +550,7 @@ what the board and the microphones give it.
 
 | Control | Range | What it changes |
 | --- | --- | --- |
-| Piano | four | The piano that plays (above) |
+| Piano | five | The piano that plays (above) |
 | Hammer | −1 to 1 | The felt's stiffness, a decade and a half from soft and worn-in to hard: ×10^(0.75 Hammer) |
 | String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves |
 | Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano (on a grand, half that from C5 up). 0.3 by default |
@@ -557,9 +592,9 @@ let go it stands 87 dB under where it was at 64, 47 dB at 76, 22 dB at 86
 and 18 dB from 89 up, against 95 dB with the pedal up. At the owner's
 choice a full pedal stops
 short of lifting the felt clear, so that it still grazes the strings: a
-chord of C3, C4, C5 and C6 let go under it falls 60 dB in 9.6 s on the
-concert grand, 12.3 s on the parlor grand, 9.9 s on the baby grand and
-10.4 s on the upright, where clear of the strings the concert grand takes
+chord of C3, C4, C5 and C6 let go under it falls 60 dB in 11.1 s on the
+concert grand, 8.6 s on the studio grand, 10.6 s on the parlor grand, 9.0 s
+on the baby grand and 9.2 s on the upright (2.9.0, in 0.1 s windows), where clear of the strings the concert grand takes
 17.4 s. Sostenuto captures the keys held as it crosses halfway down. Soft is
 una corda on a grand: the hammers shift off each unison's last string and
 strike with softer felt. On the upright it halves the hammers' run, so they
@@ -716,15 +751,22 @@ is written independently of it.
 - **Uneven keys on the close pair.** Two keys lean to one side of the image
   on the Close pair.
 - **The action does not ring the strings.** The recorded action noises play
-  beside the model: a pedal going down does not set the freed strings
-  whispering, and a key's knock does not reach the soundboard's model.
+  beside the model: a key's or the pedal's knock does not reach the
+  soundboard's model. The pedal's whisper is the felt letting the strings
+  go and holds, under 150 Hz, 25 to 35 dB less than the Salamander's
+  pedal-down takes ring there; its level against the notes rests on the
+  engine's pedal knock, 2.8.0's, not on a measurement of its own.
+- **The Studio Grand is not fitted further.** Only its bass scale is set
+  against the recordings; its microphones, hammers and voicing are the
+  other grands' ways at its size, and the benchmark still scores the
+  Concert Grand by default (`-- --body studio` scores this one).
 - **Changing the piano cuts what sounds.** A new body starts silent.
 - **CPU.** On a development machine (an Intel Xeon at 2.1 GHz, GCC 13) the
   eight demos take 6 to 14 % of one core and their heaviest 256-frame
   blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to
   54 % there, and 5 to 11 % and 12 to 29 % on the CI runner (main build
   105). There is no Quality setting to lighten it.
-- **Typical dimensions.** The four pianos are typical of their kinds, not
+- **Typical dimensions.** The five pianos are typical of their kinds, not
   one maker's instruments, and their soundboards are a smeared plate, not a
   ribbed board with its bridges.
 - **The room** is a small feedback delay network, not a measured hall.

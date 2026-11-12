@@ -149,6 +149,11 @@ constexpr Design designs[bodyCount]{
   // of a recorded upright (MAPS, ENSTDkCl: a Yamaha Disklavier, close pair),
   // whose bass notes hold more above 2 kHz than softer hammers gave.
   {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90,0,0,.5},
+  // 2.0 m studio grand, the size of the grand the benchmark's recordings
+  // are of (Salamander: a Yamaha C5). Its bass length and the key where
+  // plain steel begins are set against those recordings' inharmonicity
+  // below C4, eleven notes at one layer; the rest is typical of the size.
+  {false,1.60,8,26,26,1.43,1.22,{.86,.11},{.20,.82},69,true,.97,1.08,62,.014,.011,.25},
 };
 // The soundboard as one ribbed plate smeared out: bending stiffnesses along
 // and across the grain with the ribs' counted in, and the mass per area of
@@ -208,6 +213,7 @@ constexpr double caseHertz=300,keybedShare=.75,rimHeave=15;
 // from C6 to F#6 it is 2 to 12 dB short. The strings' own pull on the bridge
 // is 15 to 25 dB short of it.
 constexpr double knockArm=.017,knockHertz=180;
+constexpr double whisperTravel=1.9e-6;   // m: see whisper()
 // The case sounds too. The pairs hear the board from near it, but what the
 // blow's knock shakes in the frame and the case reaches them mostly by the
 // room: caseSound of what the knock gives the board's edge goes to the room
@@ -856,7 +862,10 @@ struct Piano::Impl {
   alignas(32) float bankEnd[keyCount*bankSlots]{}; // a mode's drive from its string's near end
   float bankFollow[keyCount]{};                    // the pull of a string that only follows that end
   float bankDamper[keyCount]{},bankApplied[keyCount]{};
+  float damperOn[keyCount]{};   // each damper's own weight on its strings, 0 off to 1
   bool bankAwake[keyCount]{};float bankEnergy[keyCount]{};
+  bool pedalKnown=false;     // setPedal() has said where the pedal stands since reset()
+  std::uint32_t lifts=0;     // dampers lifted since silence, which draws each whisper
   int bankPoint[keyCount]{};float bankMix[keyCount]{};
   double travel[points]{};   // the bridge's displacement at each point
   double travelLeak=1,mobility=0;
@@ -1181,14 +1190,36 @@ struct Piano::Impl {
   }
   // Mute lays felt on every string, held or not, lightly at first.
   float muted() const noexcept {return controls.mute*controls.mute;}
-  float damperGoal(int index) const noexcept {
-    if(index>=table->design.undamped||held[index])return muted();
+  float damperGoal(int index,bool withMute=true) const noexcept {
+    const float felt=withMute?muted():0;
+    if(index>=table->design.undamped||held[index])return felt;
     // The dampers start to clear the strings a fifth of the way down and
     // are off them at three quarters. Felt presses harder the further it is
     // let down, so its loss grows as the square of the way: the last third
     // of the lift is the half pedal, where the strings ring on, shortened.
     const double on=1-clamp((pedal-.2)/.55,0,1);
-    return std::max(muted(),static_cast<float>(on*on));
+    return std::max(felt,static_cast<float>(on*on));
+  }
+  // A damper's felt, pressed into its strings, lets them go as it lifts: each
+  // string is left a hair off its rest and rings, so that the pedal alone
+  // sets the whole piano whispering. A pluck of `whisperTravel` metres where
+  // the damper sat, less for a pedal let down slowly (`speed`, 1 for a lift
+  // as fast as the dampers move), its size and sign the felt's chance.
+  // whisperTravel is fitted to the Salamander's two pedal-down takes, beside
+  // the engine's pedal knock at a Mechanics gain of 1: from 0.5 to 2.5 s
+  // after the knock the takes hold, under its peak, 46, 47 and 51 dB and
+  // 40, 38 and 45 dB from 300 to 450 Hz, to 700 Hz and to 1 kHz; the
+  // concert grand's whisper 44, 42 and 47. Under 150 Hz the takes ring 25
+  // to 35 dB more than that, on the strings from D2 to F2, which this does
+  // not give.
+  void whisper(int i,float speed) noexcept {
+    const float size=static_cast<float>(whisperTravel*controls.sympathetic*2*speed);
+    if(size==0)return;
+    Rng r=seeded(i,static_cast<int>(lifts++),91);
+    const float pluck=size*static_cast<float>(r.normal());
+    for(int k=0;k<bankPartials;++k){const int at=i*bankSlots+k;
+      if(bankOut[at]==0)continue;
+      bankIm[at]+=pluck*static_cast<float>(std::sin((k+1)*pi*.115)/((k+1)*(k+1)));}
   }
   // The open strings' and duplex scales' modes for the controls as they are;
   // under a bend (`pitchOnly`) their frequencies alone.
@@ -1366,6 +1397,7 @@ struct Piano::Impl {
     frameRings=false;frameTravel.z1=frameTravel.z2=0;
     for(auto& place:frameKnock)for(auto& f:place)f.z1=f.z2=0;
     for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
+    lifts=0;
     // Silence takes the microphones' mix at once.
     for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
     outMoving=false;
@@ -1388,7 +1420,7 @@ struct Piano::Impl {
     quietChunks=0;
     if(!quiet)return;
     quiet=false;
-    for(int i=0;i<keyCount;++i){bankDamper[i]=damperGoal(i);bankApplied[i]=-1;}
+    for(int i=0;i<keyCount;++i){bankDamper[i]=damperGoal(i);damperOn[i]=damperGoal(i,false);bankApplied[i]=-1;}
   }
   // Every `chunk` samples, the same samples however the host cuts its blocks:
   // the bend is taken up, the dampers and the mix move on, and what has
@@ -1415,6 +1447,13 @@ struct Piano::Impl {
         sounding=sounding||v.active;
       }
       if(bankDamper[i]!=goal){bankDamper[i]+=(goal-bankDamper[i])*damperStep;if(std::abs(bankDamper[i]-goal)<.002f)bankDamper[i]=goal;}
+      // The damper alone, without Mute's felt, which lets go of no string
+      // at once. No two dampers leave their strings at the same height.
+      const float lifted=damperGoal(i,false);
+      if(damperOn[i]!=lifted){const float before=damperOn[i];
+        damperOn[i]+=(lifted-before)*damperStep;if(std::abs(damperOn[i]-lifted)<.002f)damperOn[i]=lifted;
+        const float leaves=.2f+.6f*static_cast<float>(seeded(i,17).uniform());
+        if(before>=leaves&&damperOn[i]<leaves&&muted()<leaves&&!v.active)whisper(i,std::min(1.f,(before-lifted)/leaves));}
       const bool was=bankAwake[i];
       bankAwake[i]=bankEnergy[i]>chunk*1e-14f;bankEnergy[i]=0;
       if(was&&!bankAwake[i]&&bankDamper[i]>=1)for(int k=0;k<bankSlots;++k)bankRe[i*bankSlots+k]=bankIm[i*bankSlots+k]=0;
@@ -1629,7 +1668,7 @@ void Piano::prepare(double sampleRate){
   reset();
 }
 void Piano::reset() noexcept {
-  auto& p=*impl;p.pedal=0;for(bool& h:p.held)h=false;p.silence();
+  auto& p=*impl;p.pedal=0;p.pedalKnown=false;for(bool& h:p.held)h=false;p.silence();
   // The sympathetic strings come back from a bend with it.
   if(p.bend!=0){p.bend=0;p.tuneBank(true);}
 }
@@ -1675,7 +1714,13 @@ void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexc
   p.startContact(key,clampf(velocity,0,1),clampf(soft,0,1),late,strength);
 }
 void Piano::holdDamper(int key,bool held) noexcept {if(key>=0&&key<keyCount)impl->held[key]=held;}
-void Piano::setPedal(float travel) noexcept {impl->pedal=clampf(travel,0,1);}
+void Piano::setPedal(float travel) noexcept {
+  auto& p=*impl;travel=clampf(travel,0,1);
+  // A pedal going down wakes a silent piano: its strings whisper.
+  // The first travel after reset() is where the pedal stands, not a press.
+  if(p.quiet&&p.pedalKnown&&travel>p.pedal&&p.controls.sympathetic>0)p.wake();
+  p.pedal=travel;p.pedalKnown=true;
+}
 void Piano::setBend(float semitones) noexcept {
   auto& p=*impl;const float bend=clampf(semitones,-48,48);
   if(bend==p.bend)return;

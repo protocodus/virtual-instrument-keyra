@@ -29,7 +29,7 @@ int main(int argc,char** argv){try{
     if(option=="--events")eventsPath=value();else if(option=="--output")outputPath=value();
     else if(option=="--sample-rate")rate=std::stoi(value());else if(option=="--duration")duration=std::stod(value());
     else if(option=="--scale")scale=std::stod(value());else if(option=="--block")block=std::stoi(value());
-    else if(option=="--body"){const auto b=value();controls.body=b=="concert"?Body::concertGrand:b=="parlor"?Body::parlorGrand:b=="baby"?Body::babyGrand:b=="upright"?Body::upright:throw std::runtime_error("unknown body "+b);}
+    else if(option=="--body"){const auto b=value();controls.body=b=="concert"?Body::concertGrand:b=="parlor"?Body::parlorGrand:b=="baby"?Body::babyGrand:b=="upright"?Body::upright:b=="studio"?Body::studioGrand:throw std::runtime_error("unknown body "+b);}
     else if(option=="--hammer")controls.hammer=std::stof(value());else if(option=="--age")controls.age=std::stof(value());
     else if(option=="--detune")controls.detune=std::stof(value());else if(option=="--stretch")controls.stretch=std::stof(value());
     else if(option=="--dynamics")controls.dynamics=std::stof(value());else if(option=="--lid")controls.lid=std::stof(value());
