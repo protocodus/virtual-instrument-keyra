@@ -373,6 +373,32 @@ Measured on 2026-11-12; open:
   strings take 10 to 15 and its whole notes 14 to 19 at C7 and C8. Nothing
   in the description explains a stiffer treble yet, so that probe is a fit
   and stays out.
+- **The treble's place from key to key, on the smaller pianos.** Through
+  the close pair alone, a key's lean (left over right, 0.1 to 1.1 s)
+  moves between keys three apart by an rms of 10.4 dB from C7 to C8 on the
+  Baby Grand, 8.4 on the Studio, 8.3 on the Parlor and 6.7 on the Upright;
+  the Concert Grand's 3.1, the Salamander's 2.7 (from C5 to A6 the
+  recording's 9.6, the model's 2.6 to 8.9). In the Baby Grand preset
+  neighbours stand up to 20 dB apart (G6 and G♯6). Three things do it:
+  the small boards' few modes under 2.6 kHz (76 on the Baby Grand, 158 on
+  the Concert), each throwing a key to one side; a key between two of the
+  bridge's eight drive points radiating from both above the modes, which
+  combs; and each microphone's two scattered arrivals. The room, the lid's
+  reflection and the room's first answer are not it.
+
+  On a probe the board radiated as modes only up to 1.1 kHz and near the
+  bridge above (where Ege and Boutillon measured its motion gather between
+  the ribs), each key from its nearest drive point, without the scattered
+  arrivals: the top's steps through one pair fell to 1.3 to 3.9 dB on
+  every piano. Against the Salamander on four layers (108 notes, the
+  Concert Grand, keys not levelled again) its partials came nearer (7.75
+  to 7.31 dB on the train notes, 6.90 to 6.66 on dev) and the treble's
+  attack (7.72 to 9.35), noise (7.99 to 9.71) and image (2.55 to 5.12)
+  went further off; each part alone took the treble's image further off
+  (5.51, 3.44 and 3.16). The Baby Grand preset also mixes the close and the
+  XY pair, which comb against each other in the treble: with the probe its
+  steps stay at 8.9 dB, 5.7 with the XY at 0.2, 4.2 with the close pair
+  alone. Nothing shipped.
 
 ## Not about the sound
 
