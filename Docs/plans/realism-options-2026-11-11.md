@@ -270,6 +270,37 @@ key one place on the bridge left that between 3.5 and 6.0.
 So the model's keys are as uneven as a real grand's through a close pair
 and no more, in their partials and in their place: nothing here to mend.
 
+## After 2.10.0: open, and tried and left out
+
+2.10.0 radiates what the smeared board's modes leave out beside them and
+puts the bridge in series between the strings and the board
+(`Docs/decisions.md`). Measured on 2026-11-12; open:
+
+- **The top octave loud.** From C7 up the grand plays about 3.2 dB louder
+  beside the middle than the Salamander (0.5 quieter in 2.9.0), and its
+  whole notes die at 18.5 dB/s at C7 against the recording's 8.7.
+- **The middle long.** Middle C and C5 die at 5.6 and 6.0 dB/s from 0.4 to
+  2.6 s; the Salamander's at 9.2 and 10.5, the reference grands' at 6.2 to
+  8.6 and 7.7 to 9.1.
+- **40 to 56 Hz.** The concert grand's partials there stand 5.2 dB over
+  the reference grands' median (0.6 in 2.9.0), where 56 to 80 Hz still
+  stand 2.7 under.
+- **The bass's onset.** A0 to C2 rise 25 to 60 ms later than the
+  Salamander's at some layers, more than in 2.9.0.
+- **The upright's image.** Its stereo balance stands 0.5 to 0.6 dB further
+  from the Helsinki's than 2.9.0's; on the treble notes 1.0.0 fitted,
+  7.7 dB (6.0).
+- **One board for every maker.** Each piano's description holds its board,
+  bridge and strike point, and the five share one set. Telling one maker's
+  board from another's needs a measurement of each (a board's point
+  impedance, its first modes), not a recording of the whole piano.
+
+Tried and left out: a board of 1.0e3 kg/s (whole notes from A1 to A3 die
+too fast); each partial weighted by what the board leaves out of it (not
+causal); the modes levelled to a response rising to the treble; the ribs'
+stiffness above their spacing; tuning a key by its first six partials. The
+figures are in `Docs/decisions.md`.
+
 ## Not about the sound
 
 - The Rack Extension adapter still pins engine 1.0.0.

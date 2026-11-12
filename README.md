@@ -50,6 +50,71 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.10.0 — 2026-11-12 — a heavier bass, from the board beside its modes
+
+The bass and the low middle are fuller, and how a note dies away comes from
+the board and the bridge instead of a curve fitted to one recorded piano.
+The panel and the saved state are 2.9.0's; a 2.9.0 session opens as saved,
+and every piano sounds different.
+
+- **What the board gives beside its modes.** The model's board is one
+  smeared plate, whose few lowest modes take less from the strings than a
+  ribbed board with its bridge does: between two of them a partial died as
+  fast as its neighbours but reached the air a tenth as strong. That rest
+  now radiates about the bridge through one filter per piano, from the
+  board's lowest mode (50 Hz on the concert grand, 101 Hz on the baby
+  grand) to where it falls past half (510 to 680 Hz), and only once the
+  string's wave has reached the bridge. Against three reference grands (a
+  commercial modelled piano's American, German and Japanese grands, the
+  owner's renders) the concert grand's partials from 56 to 80 Hz stand
+  2.7 dB under their median, where 2.9.0's stood 9.5 under, and from 112
+  to 160 Hz 0.2 dB over (3.7 under); from 40 to 56 Hz they now stand
+  5.2 dB over (0.6). The upright's bass rises by 5 to 10 dB and stays 7 to
+  10 dB under those grands'.
+- **The bridge between the strings and the board.** 2.9.0 held each key's
+  pull on the board to a curve fitted to the Salamander's decay. That
+  curve is gone: the strings meet the board through the bridge, a maple
+  beam whose own impedance stands in their way, lighter from C5 to the top,
+  and the board under it is evened as before to between 0.7 and 1.5 times
+  an endless plate's. The strings' sideways motion, the aftersound, is set
+  again for it.
+- **Each piano's description** now holds its board (its mass and its two
+  bending stiffnesses), its bridge (its mass and how it narrows) and where
+  its hammers strike: what a piano from another maker would change. The
+  five share one set today, typical values, since nothing measured tells
+  one maker's board from another's.
+- **The microphone pairs** were balanced on the board's modes alone, and the
+  new sound beside them adds 0.2 dB to the concert grand's close pair and
+  up to 1.3 dB to the others. The voicing now sets each pair's scale at the
+  close pair's level without the room, averaged over the keys, and pulls a
+  key down as far as up, 15 dB (the Studio Grand's G♯3 needed 14 in one
+  mix).
+- **Against the recordings**
+  ([grand](Docs/validation/grand-board-beside-benchmark-2026-11-12.md),
+  [upright](Docs/validation/upright-board-beside-benchmark-2026-11-12.md)):
+  on the notes 1.0.0 never fitted, the grand's partials stand 7.4 dB from
+  the Salamander's (7.7 in 2.9.0), its decay 3.3 dB/s (3.8), its first
+  half second 6.0 dB (6.3), its envelope 3.9 (4.2) and its rise 11.9 ms
+  (12.7); on the notes 1.0.0 fitted, its rise 13.2 ms (15.0). Further off:
+  its level by register, 2.6 dB (2.1), because the top octave now plays
+  about 3.2 dB louder beside the middle than the recording's (0.5 quieter
+  in 2.9.0); the onset of A0 to C2, up to 60 ms later at some layers; its
+  attack by 0.06 dB, and on the notes 1.0.0 fitted its tuning by
+  0.08 cents. 108 single-note scores are worse. The upright's partials
+  stand 7.6 dB from the Helsinki's (8.1), its sustain 10.0 dB (10.6) and its rise 9.1 ms (13.1); on the
+  notes 1.0.0 fitted the bass's rise is 10.7 ms (22.4). Further off: its
+  stereo balance, 6.2 dB (5.7), and on the notes 1.0.0 fitted its tuning,
+  3.4 cents (3.3), and attack, 7.5 dB (7.3); 72 single-note scores are
+  worse. The CPU is 2.9.0's within the development machine's noise.
+- **Tried and left out.** A board of 1.0e3 kg/s, under half a measured
+  board's impedance: whole notes from A1 to A3 died
+  too fast (C3 at 12.3 dB/s, the Salamander's 7.1). Weighing each partial
+  by what the board leaves out of it: a bass note then sounded before its
+  string's wave had reached the bridge. A radiation rising to the treble,
+  the ribs' stiffness above their spacing, and tuning a key by its first
+  six partials: each put the recordings' notes further off on four layers
+  (`Docs/decisions.md`).
+
 ### 2.9.0 — 2026-11-12 — a Studio Grand, and the pedal's whisper
 
 A fifth piano, and the strings answer the pedal itself. The saved state is
@@ -390,7 +455,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 121](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43161440607/artifacts/13918593938)**, built from [`6a7637a984d7`](https://github.com/protocodus/virtual-instrument-keyra/commit/6a7637a984d72bdff7dbf2b9ae52a98a1a222ad2). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 124](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43200941050/artifacts/13943032727)**, built from [`8c0744366e04`](https://github.com/protocodus/virtual-instrument-keyra/commit/8c0744366e04ca2f9665bc797b71c21106dd86fa). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -449,9 +514,17 @@ they swing pulls the bridge at twice each partial's frequency (Conklin
 one orthotropic plate, up to 224 of them under 2.6 kHz, with a point
 impedance of about 2500 kg/s and a modal density of about 0.05 per Hz, as
 measured boards have (Ege, Boutillon and Rebillat 2013; Giordano 1998). The
-bridge's admittance at each key comes from those modes, so a string's decay
-depends on where it crosses the bridge. The long bridge is a beam: a plain
-string's force reaches each mode as the mean of the mode's shape along half
+bridge's admittance at each key comes from those modes, evened to between
+0.7 and 1.5 times an endless plate's as a ribbed board's is, so a string's
+decay depends on where it crosses the bridge. The strings meet the board
+through the bridge itself, a maple beam 33 mm high whose own impedance
+stands in their way, lighter toward the treble (an assumed narrowing to
+25 mm, 0.47 of its impedance at C8). What the smeared plate's few lowest
+modes leave out of that, between them a partial dying as fast but reaching
+the air a tenth as strong, radiates about the bridge as the bridge's own
+sound does above the modes: through one filter per piano, from the board's
+lowest mode to a few hundred hertz, after the string's wave has arrived.
+The long bridge is a beam: a plain string's force reaches each mode as the mean of the mode's shape along half
 the bridge's bending wavelength at that frequency; the wound strings' short
 bridge drives the board at a point. Above the modes the board moves and
 radiates near the bridge only.
@@ -478,9 +551,11 @@ stand 3.7 to 4.5 dB apart and single keys up to 12 dB off.
 microphone pair, and every two pairs together, since pairs in a mix add as
 waves, against a smooth line through the keys, and writes
 `Source/DSP/KeyVoicing.h`. Each key's strings pull on the board by what
-brings the key onto that line in the mix that is set, by no more than 12 dB
-either way. The table is measured at the default Lid and Soundboard and at
-half velocity; the knocks under a note are not voiced.
+brings the key onto that line in the mix that is set, by no more than 15 dB
+either way. Each pair's line is set at the close pair's level without the
+room, averaged over the keys, which keeps the pairs balanced where the
+board's modes alone do not. The table is measured at the default Lid and
+Soundboard and at half velocity; the knocks under a note are not voiced.
 
 **Sympathetic strings and duplex scales.** Every string whose damper is
 lifted, by its key, the sostenuto or the pedal, answers what is played, ten
@@ -504,8 +579,12 @@ always answer. The upright has no duplex scales.
 | Studio Grand, 2.0 m | 1.60 m | 1.43 × 1.22 m | B2 | F♯6 |
 
 The dimensions are typical of each kind of piano, not one maker's
-instrument. The smaller pianos have shorter, stiffer bass strings (more
-inharmonic, so tuned with more stretch), lighter and harder hammers and a
+instrument. Each piano's description also holds its board's mass and
+bending stiffnesses, its bridge's mass and narrowing, and where its hammers
+strike; the five share one board, bridge and strike point (a board of
+about 2500 kg/s, a maple bridge, the hammers at 0.12 of the string up to
+C5), since no measurement says how one maker's differ from another's. The
+smaller pianos have shorter, stiffer bass strings (more inharmonic, so tuned with more stretch), lighter and harder hammers and a
 smaller board. Changing the piano stops what sounds.
 
 ### Microphones and the room
@@ -653,9 +732,11 @@ is written independently of it.
   [2.5.0 against 2.4.0](Docs/validation/grand-string-scale-benchmark-2026-11-11.md),
   [2.6.0 against 2.5.0](Docs/validation/grand-case-ring-benchmark-2026-11-11.md),
   [2.7.0 against 2.6.0](Docs/validation/grand-room-bridge-benchmark-2026-11-12.md),
-  [2.8.0 against 2.7.0](Docs/validation/grand-unison-spread-benchmark-2026-11-12.md)).
+  [2.8.0 against 2.7.0](Docs/validation/grand-unison-spread-benchmark-2026-11-12.md),
+  [2.10.0 against 2.9.0](Docs/validation/grand-board-beside-benchmark-2026-11-12.md)).
   2.7.0 put the bass's partials 0.3 to 0.4 dB and the rise 0.5 ms further
-  off, and 71 single-note scores.
+  off, and 71 single-note scores; 2.10.0 the level by register 0.5 dB, and
+  108 single-note scores.
   The furthest are the treble's sustain (11 dB off in third octaves) and
   the bass's rise (23 ms on average). 2.4.0 moved the tuning, the decay and
   the bass's partials further off, and 106 single-note scores; 2.5.0 brought
@@ -679,7 +760,10 @@ is written independently of it.
   2.7.0 took 0.5 dB off its partials there (five treble notes carry it; on
   the notes 1.0.0 fitted 0.1) and put its tuning 0.5 cents, its sustain
   0.2 dB and its bass's partials 0.4 dB further off
-  ([2.7.0](Docs/validation/upright-room-bridge-benchmark-2026-11-12.md)).
+  ([2.7.0](Docs/validation/upright-room-bridge-benchmark-2026-11-12.md));
+  2.10.0 took 0.4 dB off its partials and 4 ms off its rise and put its
+  stereo balance 0.5 to 0.6 dB further off
+  ([2.10.0](Docs/validation/upright-board-beside-benchmark-2026-11-12.md)).
 - **The bass strings' stiffness.** The concert grand's wound strings are 14
   to 53 % less stiff than the Salamander's, a grand 0.7 m shorter, so in
   the bass the benchmark still looks for upper partials where the model
@@ -742,12 +826,20 @@ is written independently of it.
   The voicing evens the keys, not the partials within a key.
 - **Evenness away from the default panel.** The voicing is measured at the
   default Lid and Soundboard, so at other settings neighbouring keys stand
-  0.9 to 1.6 dB apart, and with the unisons' Detune at 1, 0.7 dB. One key
-  (the concert grand's F♯5) needs more than the 12 dB the voicing allows
-  and stays 1.5 dB off in one mix, and in the top treble, where the frame's
-  knock is part of the sound, keys stand up to 1.3 dB off.
+  0.9 to 1.6 dB apart, and with the unisons' Detune at 1, 0.7 dB. At the
+  default panel the furthest key stands 1.1 dB off (the concert grand's C8,
+  where the frame's knock is part of the sound), the others within 1.0 dB.
 - **Slow bass onsets.** The lowest octaves take longer to rise than recorded
-  grands do.
+  grands do, and 2.10.0's sound beside the board's modes made the grand's
+  A0 to C2 slower still: against the Salamander their rise is off by 25 to
+  60 ms more at some layers.
+- **The top octave loud, the middle long.** Since 2.10.0 the grand's notes
+  from C7 up play about 3.2 dB louder beside the middle of the keyboard than
+  the Salamander's do (0.5 quieter in 2.9.0). From 0.4 to 2.6 s after the blow
+  middle C and C5 die at 5.6 and 6.0 dB a second, where the Salamander's
+  die at 9.2 and 10.5 and the three reference grands' at 6.2 to 8.6 and
+  7.7 to 9.1 (2.9.0: 6.2 and 7.2). The concert grand's partials from 40 to
+  56 Hz stand 5.2 dB over those grands'.
 - **Uneven keys on the close pair.** Two keys lean to one side of the image
   on the Close pair.
 - **The action does not ring the strings.** The recorded action noises play
@@ -765,10 +857,15 @@ is written independently of it.
   eight demos take 6 to 14 % of one core and their heaviest 256-frame
   blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to
   54 % there, and 5 to 11 % and 12 to 29 % on the CI runner (main build
-  105). There is no Quality setting to lighten it.
+  105). Timed one after the other on that machine, 2.9.0 and 2.10.0 both
+  took 7 to 16 %, with heaviest blocks so unsteady there (0.2 to 1.6 of
+  the block for both) that they compare nothing. There is no Quality
+  setting to lighten it.
 - **Typical dimensions.** The five pianos are typical of their kinds, not
-  one maker's instruments, and their soundboards are a smeared plate, not a
-  ribbed board with its bridges.
+  one maker's instruments, and they share one board, bridge and strike
+  point. Their soundboards are a smeared plate under a bridge beam, with
+  what the plate leaves out radiated beside its modes by one filter, not a
+  ribbed board.
 - **The room** is a small feedback delay network, not a measured hall.
 - **1.x sessions do not sound as they did.** They load mapped to the nearest
   piano (Version history).

@@ -137,31 +137,43 @@ struct Design {
   double dipoleHertz;     // under it the two faces cancel
   double catchSeconds,catchRun; // the action catches the hammer catchSeconds + catchRun / its speed after the blow
   double caseArm;         // m: the moment on the board's edge for each newton of the catch
+  // The soundboard as one ribbed plate smeared out: the mass per area of
+  // board and ribs, kg/m^2, and the bending stiffnesses along and across
+  // the grain with the ribs' counted in, N m.
+  double boardMass,boardStiffX,boardStiffY;
+  double bridgeMass;      // the bridge at its bass end, kg/m
+  double bridgeTaper;     // its treble end's impedance against the bass end's
+  double strike;          // where the hammers strike from the bass to C5, as a share of the string
 };
+// One board, bridge and strike point stand for all five. The plate is chosen
+// so that its point impedance, 8 sqrt(D m), is about 2.5e3 kg/s and its modal
+// density about 0.05 per Hz for 1.6 m^2, as measured boards' are (Ege et al.
+// 2013; N. Giordano, "Mechanical impedance of a piano soundboard", JASA 103,
+// 1998). The bridge is maple 33 mm high and 30 wide at the bass end; toward
+// the treble it is taken as narrowing to 25 by 25 mm, an assumption, which
+// leaves 0.47 of its impedance (as width times height to the 3/2). A maker's
+// piano differs from another's in these numbers, and in the hammers and the
+// scale above.
 constexpr Design designs[bodyCount]{
   // 2.74 m concert grand
-  {false,2.01,8,20,20,1.45,1.55,{.86,.10},{.22,.80},69,true,1.,1.,50,.014,.011,.25},
+  {false,2.01,8,20,20,1.45,1.55,{.86,.10},{.22,.80},69,true,1.,1.,50,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
   // 1.86 m parlor grand
-  {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65,.014,.011,.25},
+  {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
   // 1.50 m baby grand
-  {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80,.014,.011,.25},
+  {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
   // 1.25 m upright. Its hammers' stiffness is fitted to eleven forte notes
   // of a recorded upright (MAPS, ENSTDkCl: a Yamaha Disklavier, close pair),
   // whose bass notes hold more above 2 kHz than softer hammers gave.
-  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90,0,0,.5},
+  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90,0,0,.5,19.5,6500,3800,.64,.47,.12},
   // 2.0 m studio grand, the size of the grand the benchmark's recordings
   // are of (Salamander: a Yamaha C5). Its bass length and the key where
   // plain steel begins are set against those recordings' inharmonicity
   // below C4, eleven notes at one layer; the rest is typical of the size.
-  {false,1.60,8,26,26,1.43,1.22,{.86,.11},{.20,.82},69,true,.97,1.08,62,.014,.011,.25},
+  {false,1.60,8,26,26,1.43,1.22,{.86,.11},{.20,.82},69,true,.97,1.08,62,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
 };
-// The soundboard as one ribbed plate smeared out: bending stiffnesses along
-// and across the grain with the ribs' counted in, and the mass per area of
-// board, ribs and bridges. Chosen so that the plate's point impedance,
-// 8 sqrt(D m), is about 2.5e3 kg/s and its modal density about 0.05 per Hz
-// for 1.6 m^2, as measured boards' are (Ege et al. 2013; N. Giordano,
-// "Mechanical impedance of a piano soundboard", JASA 103, 1998).
-constexpr double boardMass=19.5,boardStiffX=6500,boardStiffY=3800;
+// The bridge's bending waves are bridgeWave / sqrt(f) m long (maple 33 mm
+// high).
+constexpr double bridgeWave=16.3;
 constexpr double boardLoss=.025;        // loss factor at Soundboard = .5
 constexpr double boardEdge=.5;          // edges between hinged (0) and clamped (.5)
 constexpr double modesTop=2600;         // Hz: no mode is kept above it
@@ -325,6 +337,7 @@ struct Tables {
   KeyData keys[keyCount];
   int modes=0;
   double crossover=0;          // Hz, the modes' top
+  double besideGain=0,besideLow=0,besideHigh=0; // what radiates beside the modes: its level, and Hz
   double infinite=0;           // the plate's point impedance, kg/s
   float modeHertz[maxModes]{};
   float modeIn[points][maxModes]{};         // shape at the point / (modal mass w)
@@ -437,18 +450,18 @@ void designStrings(Tables& t,int body) noexcept {
       // softest notes and left the others up to 8 dB loud.
       *std::pow(10.,.75*clamp((i-51)/36.,0,1));
     k.hammerSeconds=65e-6*std::exp((fromMiddle>0?-.066:-.0141)*fromMiddle);
-    k.strike=clamp(throughThree(i,.12,.12,.0625),.05,.125);
+    k.strike=clamp(throughThree(i,d.strike,d.strike,.0625),.05,.125);
     // The string's own losses, without the bridge's: the fundamental's,
     // slow at the bottom and faster up the keyboard; what each kHz above the
     // fundamental adds, hardly anything in the long bass strings; and a
     // term with the square of frequency, which only the top partials feel.
-    // The first two are fitted, with the bridge's hold on the strings and
-    // the sideways motion below, to how twelve Steinway notes die away over
-    // six seconds, whole and at their fundamental
-    // (Tools/compare_model_notes.py).
-    // The top strings lose more: with the bridge's full hold there (below)
-    // 0.75 a second more from D7 up, faded in from E6, fitted to how the
-    // Salamander's C7, F#7 and C8 fall in their first second and a half.
+    // The first two were fitted, with the bridge as it was to 2.9.0, to how
+    // twelve Steinway notes die away over six seconds, whole and at their
+    // fundamental (Tools/compare_model_notes.py).
+    // The top strings lose more: 0.75 a second more from D7 up, faded in
+    // from E6, fitted on that bridge to how the Salamander's C7, F#7 and C8
+    // fall in their first second and a half. Neither is fitted again to the
+    // bridge and board below.
     k.loss1=.12*std::exp(.013*i)+.75*clamp((i-65)/10.,0,1);
     k.loss2=.72*(.05+.45*clamp((i-12)/40.,0,1));
     k.loss3=1.2e-9;
@@ -463,12 +476,18 @@ void designStrings(Tables& t,int body) noexcept {
       // A string also moves sideways, along the soundboard, which the
       // bridge hardly follows: that motion takes a share of the blow, loses
       // little to the board and is the aftersound left once the first, loud
-      // decay is over (Weinreich, JASA 62, 1977). Fitted with the losses.
-      k.across[j]=static_cast<float>(.97*(.16+.14*r.uniform()));
-      k.acrossDrive[j]=static_cast<float>(.36*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1)
-        // Three times the share from G#7 up, faded in from A#6: what is left
-        // of the top notes once the bridge has taken the rest.
-        *mix(1,3,clamp((i-70)/10.,0,1)));
+      // decay is over (Weinreich, JASA 62, 1977). Set against how the
+      // fundamentals of three reference grands fall in their first 2.7 s,
+      // key by key (a commercial modelled piano's American, German and
+      // Japanese grands at velocity 80, the owner's renders), on a softer
+      // board than this one, and kept on this board, where 2.9.0's sideways
+      // motion put the Salamander's notes further off on four layers. From
+      // A0 to B6, octave by octave over 0.03 to 2.7 s, the model's
+      // fundamentals stand 3.9 dB from the median of the three on average
+      // (2.9.0: 4.1). The top octave does not: its fundamentals hold up 14 dB
+      // more than theirs.
+      k.across[j]=static_cast<float>(.25+.22*r.uniform());
+      k.acrossDrive[j]=static_cast<float>(.58*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1));
     }
     // A unison's strings sit about its pitch.
     if(k.strings>1){float mean=0;for(int j=0;j<k.strings;++j)mean+=k.detune[j];
@@ -528,7 +547,7 @@ double shade(double amount,double hertz) noexcept {
 double bridgeShape(const Design& d,const BoardMode& mode,double at) noexcept {
   double x,y,x0,y0,x1,y1;bridgePoint(d,0,x0,y0);bridgePoint(d,points-1,x1,y1);
   const double spacing=std::hypot(x1-x0,y1-y0)/(points-1);
-  const double half=.25*16.3/std::sqrt(mode.hertz)/spacing;
+  const double half=.25*bridgeWave/std::sqrt(mode.hertz)/spacing;
   // The wound strings stand on a short bridge of their own, taken as a
   // point: spread along its length it put the upright's bass partials 0.3 dB
   // further from the recorded ones (11.39 against 11.13 dB).
@@ -545,15 +564,15 @@ void designBoard(Tables& t,int body){
   Rng r=seeded(body,777);
   for(int m=1;m<=40;++m)for(int n=1;n<=40;++n){
     const double a=(m+boardEdge)/d.boardX,b=(n+boardEdge)/d.boardY;
-    const double hertz=pi/2*std::sqrt((boardStiffX*a*a*a*a+2*std::sqrt(boardStiffX*boardStiffY)*a*a*b*b+boardStiffY*b*b*b*b)/boardMass)
+    const double hertz=pi/2*std::sqrt((d.boardStiffX*a*a*a*a+2*std::sqrt(d.boardStiffX*d.boardStiffY)*a*a*b*b+d.boardStiffY*b*b*b*b)/d.boardMass)
                        *(1+.03*r.symmetric());
     if(hertz<modesTop)all[found++]={hertz,m,n};
   }
   std::sort(all,all+found,[](const BoardMode& a,const BoardMode& b){return a.hertz<b.hertz;});
   t.modes=std::min(found,maxModes);
   t.crossover=t.modes<found?all[t.modes].hertz:modesTop;
-  t.infinite=8*std::sqrt(std::sqrt(boardStiffX*boardStiffY)*boardMass);
-  const double modalMass=boardMass*d.boardX*d.boardY/4;
+  t.infinite=8*std::sqrt(std::sqrt(d.boardStiffX*d.boardStiffY)*d.boardMass);
+  const double modalMass=d.boardMass*d.boardX*d.boardY/4;
   for(int k=0;k<t.modes;++k){
     t.modeHertz[k]=static_cast<float>(all[k].hertz);
     for(int p=0;p<points;++p)t.modeIn[p][k]=static_cast<float>(bridgeShape(d,all[k],p)/(modalMass*2*pi*all[k].hertz));
@@ -571,35 +590,61 @@ void designBoard(Tables& t,int body){
   // 2 f0 Z0 Re Y each (Weinreich 1977). A mode right under a partial would
   // drain it at once and a node would never: both are held within what a
   // bridge, which spreads the string's force along its length, allows.
+  // What the strings meet of an admittance Y at `hertz`, and what the plate's
+  // own modes would take of them, both as 2 f0 Z0 Y, 1/s.
+  struct Met {std::complex<double> plate,met;};
+  const auto meets=[&](int i,const KeyData& key,double hertz,std::complex<double> Y){
+    const double above=hertz*hertz/(hertz*hertz+t.crossover*t.crossover);
+    Y+=above/t.infinite;
+    const double unit=2*key.hertz*key.impedance/t.infinite;
+    const std::complex<double> c=2*key.hertz*key.impedance*Y;
+    // The plate's single modes would let one key die four times as fast as
+    // its neighbour; a bridge and its ribs even that out, so a key keeps
+    // within about a third of the infinite plate's value. Under the board's
+    // lowest mode there is nothing to even out: the board is a spring there,
+    // the bridge moves with it as one, and a string keeps what it has.
+    const bool under=hertz<all[0].hertz;
+    const std::complex<double> board(clamp(c.real(),under?0:.7*unit,1.5*unit),clamp(c.imag(),-unit,unit));
+    // The bridge is a beam between the strings and the board, and a beam's
+    // own point impedance, 2 m' c (1 + i) with c its bending waves' speed,
+    // stands in the strings' way before the board's does: they meet
+    // 1 / (1 / Y + Z beam). It narrows from C5 to the top.
+    const double beam=under?0:mix(1,d.bridgeTaper,clamp((i-51)/36.,0,1))*2*d.bridgeMass*bridgeWave*std::sqrt(hertz)/(2*key.hertz*key.impedance);
+    return Met{c,board/(1.+board*std::complex<double>(beam,beam))};
+  };
+  // What the strings lose to the bridge is what the board is given, and the
+  // plate's own modes take less than the evened board: between two of the
+  // lowest a partial dies as fast as its neighbours and reaches the air a
+  // tenth as strong. The rest goes to the board the smeared plate leaves out,
+  // which answers at once and about the bridge: it radiates as the bridge's
+  // own sound does above the modes (`beside`). restSteps a twelfth of an
+  // octave apart from 20 Hz hold that rest for each key, against the
+  // infinite plate's share.
+  constexpr int restSteps=97;
+  const auto restHertz=[](int step){return 20*std::pow(2.,step/12.);};
+  const std::unique_ptr<std::complex<double>[][maxModes]> mobility(new std::complex<double>[restSteps][maxModes]);
+  for(int step=0;step<restSteps;++step){const double w=2*pi*restHertz(step);
+    for(int k=0;k<t.modes;++k){const double wm=2*pi*all[k].hertz,sm=pi*all[k].hertz*boardLoss;
+      mobility[step][k]=std::complex<double>(0,w)/(modalMass*std::complex<double>(wm*wm-w*w,2*sm*w));}}
+  const std::unique_ptr<double[][restSteps]> rest(new double[keyCount][restSteps]);
   for(int i=0;i<keyCount;++i){KeyData& key=t.keys[i];
-    double x,y;bridgePoint(d,key.bridge,x,y);
+    double shape2[maxModes];
+    for(int k=0;k<t.modes;++k){const double shape=bridgeShape(d,all[k],key.bridge);shape2[k]=shape*shape;}
     for(int n=0;n<key.partials;++n){
       const double hertz=key.hertz*key.ratio[n],w=2*pi*hertz;
       std::complex<double> Y=0;
       for(int k=0;k<t.modes;++k){const double wm=2*pi*all[k].hertz,sm=pi*all[k].hertz*boardLoss;
-        const double s=bridgeShape(d,all[k],key.bridge);
-        Y+=std::complex<double>(0,w)*s*s/(modalMass*std::complex<double>(wm*wm-w*w,2*sm*w));}
-      const double above=hertz*hertz/(hertz*hertz+t.crossover*t.crossover);
-      Y+=above/t.infinite;
-      const double unit=2*key.hertz*key.impedance/t.infinite;
-      const std::complex<double> c=2*key.hertz*key.impedance*Y;
-      // How firmly the bridge holds the strings against the plate's own
-      // admittance: more up the keyboard, fitted with the losses, and from
-      // D#3 to D6 down to 0.3 of that, fitted to how the Salamander grand's
-      // notes die away (its treble's partials fell 10 dB/s out of step with
-      // the full hold, 6 with this; a hold of 0.15 or 0.5 was further off).
-      // From A#6 to G#7 it comes back to the full hold: at 0.3 the
-      // fundamentals of C7, F#7 and C8 fell 8 to 15 dB in their first
-      // 300 ms where the Salamander's fall 21 to 36; held in full, 28 to
-      // 35. Never more than the full hold: at five times the reduced one C8
-      // gains energy.
-      const double stiff=1.12*std::exp((i-44)/44.)/(1+.095*std::pow(i/87.,3))*(1-.7*(clamp((i-30)/35.,0,1)-clamp((i-70)/10.,0,1)));
-      // The plate's single modes would let one key die four times as fast as
-      // its neighbour; a bridge and its ribs even that out, so a key keeps
-      // within about a third of the infinite plate's value.
-      key.couplingRe[n]=static_cast<float>(stiff*clamp(c.real(),.7*unit,1.5*unit));
-      key.couplingIm[n]=static_cast<float>(stiff*clamp(c.imag(),-unit,unit));
+        Y+=std::complex<double>(0,w)*shape2[k]/(modalMass*std::complex<double>(wm*wm-w*w,2*sm*w));}
+      const Met m=meets(i,key,hertz,Y);
+      key.couplingRe[n]=static_cast<float>(m.met.real());key.couplingIm[n]=static_cast<float>(m.met.imag());
     }
+    const double unit=2*key.hertz*key.impedance/t.infinite;
+    for(int step=0;step<restSteps;++step){const double hertz=restHertz(step);
+      std::complex<double> Y=0;
+      for(int k=0;k<t.modes;++k)Y+=shape2[k]*mobility[step][k];
+      const Met m=meets(i,key,hertz,Y);
+      const double below=t.crossover*t.crossover/(hertz*hertz+t.crossover*t.crossover);
+      rest[i][step]=below*below*std::max(0.,m.met.real()-m.plate.real())/unit;}
   }
   // Each mode's radiation: Rayleigh's integral p = rho / (2 pi) * integral of
   // the plate's acceleration, delayed by R / c, over R, summed on a grid of
@@ -794,6 +839,30 @@ void designBoard(Tables& t,int body){
       for(int stop=0;stop<lidStops;++stop)t.hfLid[stop][mic][ch][p].gain*=join;
       for(int e=0;e<2;++e)t.hfDiffuse[mic][ch][p][e].gain*=join;}
   }
+  // Beside the modes the bridge's force radiates through one filter, which
+  // waits as a board does: nothing under the lowest mode, then the root of
+  // that rest, the keys' mean taken over a third of an octave, times how
+  // much louder the pairs hear the modes there than at their top, where the
+  // bridge's own sound is joined; and falling from where that is past half
+  // its most. (Each partial weighed by its own rest filled the same holes
+  // and answered before it was asked: C1 sounded 13 ms before its string's
+  // wave had reached the bridge, 35 dB up.)
+  {
+    double shaped[restSteps],most=0;int last=0;
+    constexpr double wide=.33;
+    for(int step=0;step<restSteps;++step){double total=0,sum=0;
+      for(int other=0;other<restSteps;++other){const double octaves=(other-step)/12.,w=std::exp(-octaves*octaves/(2*wide*wide));
+        double mean=0;for(int i=0;i<keyCount;++i)mean+=rest[i][other]/keyCount;
+        total+=w*mean;sum+=w;}
+      shaped[step]=total/sum*radiated(restHertz(step));most=std::max(most,shaped[step]);}
+    for(int step=0;step<restSteps;++step)if(shaped[step]>=.5*most)last=step;
+    t.besideLow=all[0].hertz;t.besideHigh=restHertz(last);
+    // The two slopes take a little off the most between them.
+    double passed=0;
+    for(int step=0;step<restSteps;++step){const double low=std::pow(restHertz(step)/t.besideLow,4),high=std::pow(restHertz(step)/t.besideHigh,2);
+      passed=std::max(passed,low/(1+low)/(1+high));}
+    t.besideGain=std::sqrt(most/passed);
+  }
 }
 
 // --- what sounds -----------------------------------------------------------
@@ -884,6 +953,11 @@ struct Piano::Impl {
   float line[points][lineSize]{};
   int lineAt=0;
   Tap taps[4][points*hfTapsPerPoint*micCount]{};int tapCount[4]{};
+  // Beside the modes: each point's force through the board's filter, to
+  // each microphone by the direct path, the floor and the lid.
+  Biquad besideFilter[points][2];
+  float lineBeside[points][lineSize]{};
+  Tap tapsBeside[4][points*4*micCount]{};int tapBesideCount[4]{};
   float roomSend=0;
   float voicing[keyCount]{};   // each key's pull on the board, evened for the mix
   float pull[keyCount];        // a tool's own pull in its place; negative, none
@@ -964,13 +1038,12 @@ struct Piano::Impl {
   // and the bend stand.
   void tune(Voice& v,int index) noexcept {
     const KeyData& key=table->keys[index];
-    // The bridge gives under the strings and so moves their pitch, by up to
-    // 2.4 cents where a mode of the board lies near (each step turns a
-    // partial by its angle less the unison's coupling, renderChunk). A tuner
-    // tunes what sounds: the key's first partial is set where it is heard.
-    const double ideal=key.hertz*tuningRatio(key),angle=2*pi*ideal*key.ratio[0]/sampleRate;
-    const double pulled=-key.strings*(key.couplingIm[0]*std::cos(angle)-key.couplingRe[0]*std::sin(angle))/sampleRate;
-    const double f0=ideal*angle/(angle+pulled);
+    // The bridge gives under the strings and so moves their pitch where a
+    // mode of the board lies near (each step turns a partial by its angle
+    // and by the unison's coupling, renderChunk). A tuner tunes what sounds:
+    // the key's first partial is set where it is heard.
+    const double ideal=key.hertz*tuningRatio(key);
+    const double f0=ideal/(1-key.strings*key.couplingIm[0]/(2*pi*ideal*key.ratio[0]));
     v.strings=key.strings;
     int count=key.partials;
     while(count>1&&f0*key.ratio[count-1]>.45*sampleRate)--count;
@@ -994,6 +1067,18 @@ struct Piano::Impl {
         turnOf(2*pi*f0*key.ratio[k]*tuned/sampleRate,v.cosine[o+k],v.sine[o+k]);
       }
     }
+    for(int k=0;k<count;++k){
+      // Above `apart` plane 0 is the strings' sum: together they load the
+      // bridge once each.
+      const double together=k>=v.apart&&v.strings>1?v.strings:1;
+      // The coupling acts with the partial's turn, as the string's own loss
+      // does. Taken before the turn it met the string a step late, and
+      // where a step is a quarter of the partial's period or more the
+      // bridge's springiness came out as a gain.
+      const double re=key.couplingRe[k]*together/sampleRate,im=key.couplingIm[k]*together/sampleRate;
+      v.couplingRe[k]=static_cast<float>(re*v.cosine[k]-im*v.sine[k]);
+      v.couplingIm[k]=static_cast<float>(re*v.sine[k]+im*v.cosine[k]);
+    }
   }
   // A voice's losses, coupling and pull on the bridge from its key as the
   // controls stand.
@@ -1010,11 +1095,6 @@ struct Piano::Impl {
       const double felt=.2+.8*std::pow(std::sin((k+1)*pi*.115),2);
       v.open[k]=static_cast<float>(std::exp(-loss/sampleRate));
       v.damped[k]=static_cast<float>(std::exp(-(loss+key.damper*felt)/sampleRate));
-      // Above `apart` plane 0 is the strings' sum: together they load the
-      // bridge once each.
-      const double together=k>=v.apart&&v.strings>1?v.strings:1;
-      v.couplingRe[k]=static_cast<float>(key.couplingRe[k]*together/sampleRate);
-      v.couplingIm[k]=static_cast<float>(key.couplingIm[k]*together/sampleRate);
       // The string's pull on the bridge is its tension times its slope
       // there: T k pi / L per metre of mode k, alternating.
       v.bridge[k]=static_cast<float>(key.tension*(k+1)*pi/key.length*((k&1)?-1:1));
@@ -1301,7 +1381,13 @@ struct Piano::Impl {
       b.b0=(1+c)/2/a0;b.b1=-(1+c)/a0;b.b2=(1+c)/2/a0;b.a1=-2*c/a0;b.a2=(1-alpha)/a0;
     }
       const double pole=std::exp(-2*pi*std::min(.45*sampleRate,radiationCorner)/sampleRate);
-      Biquad& fall=highpass[p][2];fall.b0=1-pole;fall.b1=fall.b2=fall.a2=0;fall.a1=-pole;}
+      Biquad& fall=highpass[p][2];fall.b0=1-pole;fall.b1=fall.b2=fall.a2=0;fall.a1=-pole;
+      // Beside the modes: a second-order high-pass at the board's lowest
+      // mode, and one pole above.
+      {const double w0=2*pi*t.besideLow/sampleRate,alpha=std::sin(w0)/std::sqrt(2.),c=std::cos(w0),a0=1+alpha;
+        Biquad& low=besideFilter[p][0];low.b0=(1+c)/2/a0;low.b1=-(1+c)/a0;low.b2=(1+c)/2/a0;low.a1=-2*c/a0;low.a2=(1-alpha)/a0;
+        const double top=std::exp(-2*pi*std::min(.45*sampleRate,t.besideHigh)/sampleRate);
+        Biquad& high=besideFilter[p][1];high.b0=t.besideGain*(1-top);high.b1=high.b2=high.a2=0;high.a1=-top;}}
   }
   // Each microphone's share of every mode and of the bridge's direct sound,
   // for the lid and the levels as they are.
@@ -1309,7 +1395,7 @@ struct Piano::Impl {
     const Tables& t=*table;
     const double lid=clamp(controls.lid,0,1);
     const double at=lid*(lidStops-1);const int stop=std::min(lidStops-2,static_cast<int>(at));const double between=at-stop;
-    for(int out=0;out<4;++out){std::memset(outGoal[out],0,sizeof(outGoal[out]));tapCount[out]=0;}
+    for(int out=0;out<4;++out){std::memset(outGoal[out],0,sizeof(outGoal[out]));tapCount[out]=tapBesideCount[out]=0;}
     double send=0;
     for(int mic=0;mic<micCount;++mic){
       const MicSpec& spec=t.mic[mic];
@@ -1334,15 +1420,19 @@ struct Piano::Impl {
                                                 +spec.lid*(lidA[k]+(lidB[k]-lidA[k])*between)));
           }
           for(int p=0;p<points;++p){
-            const auto add=[&](HfTap tap,double g){
+            const auto add=[&](HfTap tap,double g,bool beside){
               if(tap.gain==0||g==0)return;
               const int delay=std::min(lineSize-1,static_cast<int>(tap.seconds*sampleRate+.5));
-              taps[out][tapCount[out]++]={p,delay,static_cast<float>(g*tap.gain)};};
-            add(t.hfDirect[mic][ch][p],gain*(1-.85*shut));
-            add(t.hfFloor[mic][ch][p],gain*spec.floor);
-            add(t.hfLid[stop][mic][ch][p],gain*spec.lid*(1-between));
-            add(t.hfLid[stop+1][mic][ch][p],gain*spec.lid*between);
-            for(int e=0;e<2;++e)add(t.hfDiffuse[mic][ch][p][e],gain*(1-.85*shut));
+              taps[out][tapCount[out]++]={p,delay,static_cast<float>(g*tap.gain)};
+              if(beside)tapsBeside[out][tapBesideCount[out]++]={p,delay,static_cast<float>(g*tap.gain)};};
+            add(t.hfDirect[mic][ch][p],gain*(1-.85*shut),true);
+            add(t.hfFloor[mic][ch][p],gain*spec.floor,true);
+            add(t.hfLid[stop][mic][ch][p],gain*spec.lid*(1-between),true);
+            add(t.hfLid[stop+1][mic][ch][p],gain*spec.lid*between,true);
+            // The two scattered arrivals stay above the modes: lower, where
+            // they come within a wave of the first, they would only tilt a
+            // channel's level.
+            for(int e=0;e<2;++e)add(t.hfDiffuse[mic][ch][p][e],gain*(1-.85*shut),false);
           }
         }
       }
@@ -1354,7 +1444,9 @@ struct Piano::Impl {
     // alone give every pair, and every two pairs together, since pairs in a
     // mix add as waves, against the even scale through the keys: each key
     // pulls on the board by what brings it there in this mix, no more than
-    // 12 dB either way.
+    // 15 dB either way. Each pair's scale is set at the close pair's level
+    // without the room, which also keeps the balance above where the modes
+    // alone do not.
     const int body=static_cast<int>(controls.body);
     for(int i=0;i<keyCount;++i){double got=0,even=0;
       const float* heard=keyHeard[body][i];
@@ -1362,8 +1454,10 @@ struct Piano::Impl {
         even+=level*level*keyEven[body][i][a];
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*clamp(controls.mic[b],0,2)**heard++;}
       // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
-      // under the even scale (the baby grand's G#5 through the close pair).
-      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),.25,5.6)):1;}
+      // under the even scale (the baby grand's G#5 through the close pair),
+      // and one 14 dB over it (the studio grand's G#3 in the four pairs
+      // Keyra.Levels mixes).
+      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1;}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
@@ -1389,6 +1483,8 @@ struct Piano::Impl {
     std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
     std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(spreadLine,0,sizeof(spreadLine));
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
+    for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
+    std::memset(lineBeside,0,sizeof(lineBeside));
     for(double& x:travel)x=0;
     for(float& x:knocks)x=0;
     for(auto& state:catchAt)state[0]=state[1]=0;
@@ -1475,6 +1571,7 @@ struct Piano::Impl {
     for(double& x:travel)if(std::abs(x)<still)x=0;
     for(int k=0;k<modes;++k)if(std::abs(boardRe[k])+std::abs(boardIm[k])<still)boardRe[k]=boardIm[k]=0;
     for(auto& point:highpass)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
+    for(auto& point:besideFilter)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
     for(float& x:roomState)if(std::abs(x)<still)x=0;
     quietChunks=sounding||loud>1e-9f?0:quietChunks+1;loud=0;
     // Two seconds of nothing: everything left is put to rest.
@@ -1484,6 +1581,8 @@ struct Piano::Impl {
       std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(spreadLine,0,sizeof(spreadLine));
       for(double& x:travel)x=0;
       for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
+      for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
+      std::memset(lineBeside,0,sizeof(lineBeside));
       for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
       dcL=dcR=dcInL=dcInR=0;rest();}
   }
@@ -1594,6 +1693,7 @@ struct Piano::Impl {
       for(int p=0;p<points;++p){
         const float force=struck[p][s]+answered[p][s];
         line[p][lineAt]=static_cast<float>(highpass[p][2].run(highpass[p][1].run(highpass[p][0].run(force))));
+        lineBeside[p][lineAt]=static_cast<float>(besideFilter[p][1].run(besideFilter[p][0].run(force)));
         if(force==0)continue;
         const float* gain=boardIn[p];
         for(int k=0;k<modes;++k)in[k]+=gain[k]*force;
@@ -1612,6 +1712,8 @@ struct Piano::Impl {
       for(int out=0;out<4;++out){const Tap* tap=taps[out];
         float sum=dot(outNow[out][0],boardRe,modes)+dot(outNow[out][1],boardIm,modes);
         for(int k=0;k<tapCount[out];++k)sum+=tap[k].gain*line[tap[k].point][(lineAt-tap[k].delay)&mask];
+        const Tap* beside=tapsBeside[out];
+        for(int k=0;k<tapBesideCount[out];++k)sum+=beside[k].gain*lineBeside[beside[k].point][(lineAt-beside[k].delay)&mask];
         o[out]=sum;}
       lineAt=(lineAt+1)&mask;
       // The room.

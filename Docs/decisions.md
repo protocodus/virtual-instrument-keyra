@@ -5120,3 +5120,96 @@ pedal between them (B matched to A on whole-file RMS; the trims, under
 0.02 dB, are in its key). Beside it, unlettered, the first demo's phrase
 on the Concert and the Studio Grand. By the project's standing rule B
 stands unless the owner says otherwise.
+
+## 2026-11-12 — a heavier bass, from the board beside its modes (2.10.0)
+
+**Asked.** The owner asked whether the model sounds rich enough, "heavy,
+expensive wood", and whether material, weight and timing could move one
+piano toward another: a grand toward an upright, one maker toward another.
+
+**What was missing.** Against three reference grands (a commercial modelled
+piano's American, German and Japanese grands at velocity 80, the owner's
+renders), partial by partial from 50 to 350 ms, the concert grand's
+partials from 56 to 80 Hz stood 9.5 dB under their median and from 112 to
+160 Hz 3.7 dB under; the upright's bass 14 to 17 dB under. The smeared
+plate has few modes there, and between two of them a partial died as fast
+as its neighbours but reached the air a tenth as strong: a ribbed board
+under its bridge takes more from the strings at those frequencies than the
+plate's lowest modes do.
+
+**The first candidate, rejected.** A softer board, 1.0e3 kg/s, under half a
+measured board's impedance, brought the partials nearer (7.74 to 7.15 dB on
+the notes 1.0.0 never fitted) but put the tuning 0.4 cents and the decay
+0.2 dB/s further off and 129 single-note scores; whole notes from A1 to A3
+died too fast (C3 at 12.3 dB/s; the Salamander's 7.1, the reference
+grands' 6.5 to 8.2). Weighing each partial by what the board leaves out of
+it was not causal: C1 sounded at -23.5 dB re the note in its first 4 ms,
+before its string's wave had reached the bridge (`Keyra.PianoModel` holds
+that under -50).
+
+**Chosen.** 2.9.0's board (about 2.5e3 kg/s); 2.0, 2.5 and 3.2e3 kg/s
+scored within 0.2 dB of one another on the partials of the fitted notes.
+2.9.0's hold on each key's pull, a curve fitted to the Salamander's decay,
+is gone: the strings meet the board through the bridge, a maple beam whose
+own impedance stands in series, assumed to narrow from C5 to 0.47 of its
+impedance at C8, over a board evened to 0.7 to 1.5 times an endless
+plate's. What the plate's modes leave out radiates beside them, from the
+bridge force through one causal filter per piano, from the board's lowest
+mode to where it falls past half (50 to 508 Hz on the concert grand, 101
+to 604 on the baby grand), into the direct, floor and lid taps. The
+strings' sideways motion was set again against the reference grands'
+fundamentals (3.9 dB from their median from A0 to B6, 2.9.0 4.1). The
+bridge's pull on a partial now acts with the partial's turn in each step,
+as the string's own loss does: taken before it, the pull met the string a
+step late, and where a step is a quarter of the partial's period or more
+the bridge's springiness came out as a gain. On four layers, voicing not
+rewritten:
+
+- the sound beside the modes, against none: on the notes 1.0.0 never
+  fitted the partials 7.19 to 7.01 dB, the attack 6.52 to 6.32, the first
+  half second 6.24 to 5.76, the sustain 7.42 to 7.13; on the fitted notes
+  the rise 15.63 to 12.56 ms;
+- no beam: the fitted notes' partials 8.86 dB and 207 single-note scores
+  worse;
+- no narrowing: the fitted treble's attack 7.91 against 7.61 dB and its
+  level 3.35 against 2.87;
+- the modes levelled to their own response, rising to the treble, instead
+  of flat: the unfitted notes' attack 6.32 to 7.12 dB (halfway, 6.75);
+- the ribs' stiffness above their spacing, in an earlier candidate:
+  without it the unfitted notes' decay 3.64 to 3.14 and 2.99 dB/s on two
+  readings;
+- each key tuned by its first six partials instead of its first: the
+  tuning 0.08 cents further off.
+
+**The microphone pairs.** The sound beside the modes adds 0.2 dB to the
+concert grand's close pair and up to 1.3 dB to the others, which took the
+distant pair 2.6 dB over the close one in `Keyra.Engine`'s chord. An
+estimate made when the piano is designed did not agree with the renders
+(the close pair +0.95 dB computed, +0.15 measured), so `KeyraLevels` now
+sets each pair's scale at the close pair's level without the room, on
+average over the keys. One key then needed 14.1 dB (the Studio Grand's G♯3
+in one mix) and the voicing's limit went from 12 to 15 dB; it is the
+engine's limit, not a test tolerance.
+
+**Makers.** Each piano's description now holds its board's mass and two
+bending stiffnesses, its bridge's mass and narrowing, and its strike point,
+beside the hammers, the scale and the case it held already. The five share
+one board, bridge and strike point: no measurement in hand says how one
+maker's board differs from another's, and the recordings are of one grand
+and one upright.
+
+**Measured** (`Docs/validation/grand-board-beside-benchmark-2026-11-12.md`,
+`upright-board-beside-benchmark-2026-11-12.md`): see the 2.10.0 entry of
+the README. Further off: the grand's level by register (the top octave
+about 3.2 dB louder beside the middle than the recording's), the onset of
+A0 to C2 by up to 60 ms at some layers, the upright's stereo balance by
+0.5 to 0.6 dB; 108 and 72 single-note scores. Middle C and C5 now die at
+5.6 and 6.0 dB/s from 0.4 to 2.6 s (2.9.0 6.2 and 7.2; the Salamander 9.2
+and 10.5, the reference grands 6.2 to 8.6 and 7.7 to 9.1).
+
+**What is the owner's to hear.** A lettered set (`2026-11-12-board-beside`
+in the project's files, not committed): A 2.9.0, B 2.10.0, the concert
+grand through the close pair: low chords, bass notes alone and left-hand
+octaves under soft chords around middle C. B is matched to A on whole-file
+RMS; the trims, -0.63 to -0.92 dB, are in its key. By the project's
+standing rule B stands unless the owner says otherwise.
