@@ -211,6 +211,42 @@ Measured on 2026-11-12 against the Salamander; nothing here shipped.
   Concert Grand's treble balance from 2.5 to 5.0 dB off the recording's.
   The floor's and lid's reflections and the room are what is left to try.
 
+## The Studio Grand voiced key by key: tried and dropped (2026-11-12)
+
+The owner chose to try it and asked whether it would be 1.x's trap again.
+A gain on what the strings take of the blow, for each key's first sixteen
+partials, was measured on the Salamander's train notes (276 notes at 23
+keys; the keys between in a straight line, within 12 dB) and scored on
+four layers:
+
+| Partials, dB | 2.9.0 | voiced |
+| --- | --- | --- |
+| the notes it was fitted to | 7.97 | 6.05 |
+| the notes it never saw | 7.32 | 7.40 |
+| of those, bass / middle / treble | 9.27 / 6.76 / 6.22 | 9.36 / 6.31 / 7.11 |
+
+It moved what it was fitted to and nothing else, and put the unseen treble
+0.9 dB further off: what it learns is each recorded note's own response,
+which does not carry to the key beside it. The table and its tool are not
+in the repository. (The keys' levels were not evened again for this
+reading; the level score is left out.)
+
+How even the keys are, as partials 2 to 8 against the first, each key
+against the mean of the two measured keys beside it (every third key, a
+middle layer, 50 to 550 ms, rms in dB):
+
+| | bass | middle | treble |
+| --- | --- | --- | --- |
+| the recording | 9.3 | 11.8 | 9.9 |
+| Concert Grand | 8.9 | 11.3 | 15.7 |
+| Studio Grand | 12.6 | 10.0 | 18.0 |
+| Baby Grand | 12.1 | 16.7 | 18.1 |
+
+A real grand's keys are that uneven partial by partial through a close
+pair, and the Concert Grand's are as even as the recording's up to B5.
+From C6 up, and on the smaller pianos, the model's keys are 6 to 8 dB
+rougher than the recording's: that, not a fit, is what is left to mend.
+
 ## Not about the sound
 
 - The Rack Extension adapter still pins engine 1.0.0.
