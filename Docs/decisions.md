@@ -4953,3 +4953,72 @@ upright, the single notes on the parlor grand, and the first demo and the
 nocturne. B is matched to A on whole-file RMS; the trims are within
 0.01 dB. Keys below A5 are the same in both. By the project's standing
 rule B stands unless the owner says otherwise.
+
+## 2026-11-12 — a denser room, and a bridge with length (2.7.0)
+
+**What the owner said.** Of 2.6.0's short demo: "sounds good. maybe too
+"springy" and cheap". Then: research, reuse or invent what makes the piano
+sound real, and keep on until the benchmark against the recordings is good.
+
+**The room.** 2.6.0's eight lines under a Householder reflection took
+310 ms to grow dense (normalized echo density 0.9, measured on a copy of
+the network) and their spectrum from 200 Hz to 2 kHz stood 8.9 dB about its
+mean where a diffuse field's stands 5.6; since 2.6.0 the case's knock goes
+straight into them. Sixteen lines under a Hadamard mix take 180 ms and
+stand 5.9 dB; behind three allpass sections 130 ms. With every feed through
+the allpass sections the upright's bass partials stood 0.4 dB further from
+the Helsinki's (11.13 against 10.73 dB), so only the knock goes through
+them. The room's level is kept (sixteen lines give an impulse back 1.4 dB
+louder, so 0.85 of them). Under a treble note the knock's tail from 280 to
+710 Hz now stands 15, 19, 24, 27 and 37 dB under its peak at 60, 100, 150,
+200 and 300 ms, where the Salamander's stands 15, 21, 24, 28 and 36 and
+2.6.0's stood 15, 21, 29, 29 and 39.
+
+**The bridge.** Partial by partial against the Salamander, single keys
+stood far from their neighbours: C5's partials 2 to 4 were 10 to 15 dB
+over, C6's 2 to 6 were 16 to 22 dB under. Each key drove the board at one
+point, so its partials stood as the board's modes fell under that point.
+A plain string's force now reaches each mode as the mean of the mode's
+shape along half the bridge's bending wavelength at that frequency. On
+four layers, unvoiced, half that length and twice it did less for the
+partials than the length itself (7.35 and 7.17 against 7.17 dB, with a
+worse level and rise at twice); voiced again, the length itself brought the
+unfitted notes' partials from 7.51 to 7.25. The wound strings' short bridge
+stays a point: spread along its own length the upright's bass partials
+stood 0.3 dB further off. The bridge's admittance is taken the same way as
+its drive; with the admittance left at a point the grand's treble partials
+stood 0.7 dB further from the recording (7.88 against 7.20).
+
+**What followed from it.** Every key voiced again; the furthest unvoiced
+key now stands 14 dB under the even scale, so a key may be pulled 15 dB
+(12 before). A chord let go under the full pedal rang longer (58 dB down
+after 12 s where it stood 64 down), past what the owner chose on
+2026-10-30, so the pedal stops at 0.695 of its travel instead of 0.7:
+60 dB in 11.1 s on the concert grand and 9.2 s on the upright, where
+2.6.0 took 10.7 and 10.2 by the same measure. The engine test of a
+re-pedalled note had its limit 0.1 dB from the grazing pedal's own decay;
+it is 4 dB now, with the reason beside it.
+
+**Measured.** Grand, the notes 1.0.0 never fitted, 2.6.0 to 2.7.0: partials
+7.90 to 7.86 dB (bass 9.50 to 9.85, middle 7.11 to 7.01, treble 7.52 to
+7.20), tuning 2.10 to 2.10, decay 4.16 to 4.23, attack 6.39 to 6.28, early
+6.49 to 6.27, sustain 8.33 to 8.24, noise 7.00 to 6.75, level between the
+channels 5.67 to 5.30, envelope 4.54 to 4.35, rise 12.16 to 12.65 ms, level
+2.49 to 2.11. On the fitted notes the partials went 8.03 to 8.11 (bass 8.78
+to 9.17, treble 7.84 to 8.06). 71 single-note scores are worse. Upright
+against the Helsinki, unfitted notes: partials 8.55 to 8.06 (five treble
+notes carry it, 10.98 to 7.43; fitted notes 8.03 to 7.92, their bass 10.36
+to 10.75), tuning 3.09 to 3.63, decay 5.33 to 5.36, attack 7.42 to 7.54,
+early 8.95 to 8.77, sustain 10.42 to 10.61, noise 9.22 to 8.91, level
+between the channels 5.07 to 5.65, rise 12.77 to 13.07, level 3.03 to
+3.16; 29 single-note scores worse. The bass's partials are further off on
+both pianos with the wound strings' bridge unchanged; what in the new room
+or the new voicing costs them is not found.
+
+**What is the owner's to hear.** A lettered set (`2026-11-12-room-and-bridge`
+in the project's files, not committed): A 2.6.0, B 2.7.0. Five phrases:
+short loud middle notes, the top keys staccato, the white keys from C4 to
+C6 and back at one touch, the first demo, and a treble melody on the
+upright. B is matched to A on whole-file RMS (trims +0.61, +1.39, +0.37,
++0.02 and +0.89 dB). By the project's standing rule B stands unless the
+owner says otherwise.

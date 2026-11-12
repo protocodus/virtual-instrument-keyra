@@ -54,7 +54,7 @@ constexpr int bankPartials=10,duplexModes=2,bankSlots=bankPartials+duplexModes;
 constexpr int chunk=32;
 constexpr int maxContacts=24;
 constexpr int hfTapsPerPoint=6;
-constexpr int roomLines=8;
+constexpr int roomLines=16,roomSpreads=3;
 
 struct Rng {
   std::uint32_t s;
@@ -225,6 +225,9 @@ constexpr double knockArm=.017,knockHertz=180;
 // 200 ms without the room, and with it in the room the bass's partials
 // stood 0.2 to 0.3 dB further from the recording's.
 constexpr float caseSound=.6f;
+// Sixteen lines give an impulse back 1.4 dB louder than the eight of 2.6.0
+// did; this keeps the room's level.
+constexpr float roomLevel=.85f;
 constexpr int capoFrom=60;
 // One catch is not the next. Over the sixteen layers of a Salamander key the
 // thump stands 2.7 dB (60 to 110 Hz) and 2.6 dB (110 to 180 Hz) off a line
@@ -506,6 +509,30 @@ void bridgePoint(const Design& d,double at,double& x,double& y) noexcept {
 double shade(double amount,double hertz) noexcept {
   return 1-amount+.7*amount/std::sqrt(1+hertz*hertz/(500.*500.));
 }
+// A bridge is a beam, not a point: it hands a string's force to the board
+// along its own length, so a mode takes the mean of its shape there, over half
+// the bridge's bending wavelength at the mode's frequency (16.3/sqrt(f) m, a
+// maple beam some 33 mm high). Driven at a point, a key's partials stood as the
+// board's modes happened to fall under it, 10 to 20 dB apart from the
+// recorded key's on single notes (C5, C6 on Salamander). On the four-layer
+// benchmark the spread, each key voiced again, brought the unfitted notes'
+// partials from 7.51 to 7.25 dB, the level between the channels from 5.93
+// to 5.35 and the top octaves' partials from 7.12 to 6.45; half the length
+// and twice it both did less (unvoiced, 7.35 and 7.17 against 7.17).
+double bridgeShape(const Design& d,const BoardMode& mode,double at) noexcept {
+  double x,y,x0,y0,x1,y1;bridgePoint(d,0,x0,y0);bridgePoint(d,points-1,x1,y1);
+  const double spacing=std::hypot(x1-x0,y1-y0)/(points-1);
+  const double half=.25*16.3/std::sqrt(mode.hertz)/spacing;
+  // The wound strings stand on a short bridge of their own, taken as a
+  // point: spread along its length it put the upright's bass partials 0.3 dB
+  // further from the recorded ones (11.39 against 11.13 dB).
+  const double split=(87.5-d.plain)/87*(points-1);
+  if(at>split){bridgePoint(d,at,x,y);return shapeAt(d,mode,x,y);}
+  double sum=0,weight=0;
+  for(int j=-4;j<=4;++j){const double w=.5+.5*std::cos(pi*j/5.);
+    bridgePoint(d,clamp(at+half*j/4.,0,split),x,y);sum+=w*shapeAt(d,mode,x,y);weight+=w;}
+  return sum/weight;
+}
 void designBoard(Tables& t,int body){
   const Design& d=t.design;
   BoardMode all[40*40];int found=0;
@@ -523,8 +550,7 @@ void designBoard(Tables& t,int body){
   const double modalMass=boardMass*d.boardX*d.boardY/4;
   for(int k=0;k<t.modes;++k){
     t.modeHertz[k]=static_cast<float>(all[k].hertz);
-    for(int p=0;p<points;++p){double x,y;bridgePoint(d,p,x,y);
-      t.modeIn[p][k]=static_cast<float>(shapeAt(d,all[k],x,y)/(modalMass*2*pi*all[k].hertz));}
+    for(int p=0;p<points;++p)t.modeIn[p][k]=static_cast<float>(bridgeShape(d,all[k],p)/(modalMass*2*pi*all[k].hertz));
     // The action hangs along the edge by the tuning pins, the bridge's
     // treble end's: eight places under the keyboard, the bass first.
     t.modeHeave[k]=static_cast<float>(((all[k].m&1)&&(all[k].n&1)?4/(pi*pi*all[k].m*all[k].n):0)/(modalMass*2*pi*all[k].hertz));
@@ -545,7 +571,7 @@ void designBoard(Tables& t,int body){
       const double hertz=key.hertz*key.ratio[n],w=2*pi*hertz;
       std::complex<double> Y=0;
       for(int k=0;k<t.modes;++k){const double wm=2*pi*all[k].hertz,sm=pi*all[k].hertz*boardLoss;
-        const double s=shapeAt(d,all[k],x,y);
+        const double s=bridgeShape(d,all[k],key.bridge);
         Y+=std::complex<double>(0,w)*s*s/(modalMass*std::complex<double>(wm*wm-w*w,2*sm*w));}
       const double above=hertz*hertz/(hertz*hertz+t.crossover*t.crossover);
       Y+=above/t.infinite;
@@ -855,11 +881,20 @@ struct Piano::Impl {
 
   // The room: a feedback delay network (J.-M. Jot and A. Chaigne, "Digital
   // delay networks for designing artificial reverberators", AES 90th
-  // Convention, 1991) of eight lines under a Householder reflection.
-  static constexpr int roomSize=16384;
+  // Convention, 1991) of sixteen lines mixed by a Hadamard matrix. Eight
+  // lines under a Householder reflection, as 2.6.0 had, took 310 ms to grow
+  // dense (normalized echo density 0.9, Abel and Huang 2006) and a knock rang
+  // in them as in a spring; sixteen take 180 ms, and 130 behind three allpass
+  // sections (M. R. Schroeder, "Natural sounding artificial reverberation",
+  // JAES 10, 1962). Only the case's knock goes through those: with the board
+  // through them too, the upright's bass partials stood 0.4 dB further from
+  // the recorded ones (11.13 against 10.73 dB).
+  static constexpr int roomSize=32768,spreadSize=4096;
   float roomLine[roomLines][roomSize]{};
   int roomDelay[roomLines]{},roomAt=0;
   float roomGain[roomLines]{},roomDamp[roomLines]{},roomState[roomLines]{};
+  float spreadLine[roomSpreads][spreadSize]{};
+  int spreadDelay[roomSpreads]{};
   double dcL=0,dcR=0,dcInL=0,dcInR=0,dcPole=0;
   alignas(32) float boardRim[points+1][maxModes]{}; // the edge's places, and last all of them alike
   int catchIn[keyCount]{},catches=0;  // samples until a key's hammer is caught (-1: none), and how many wait
@@ -1282,15 +1317,20 @@ struct Piano::Impl {
       for(int a=0;a<micCount;++a){const double level=clamp(controls.mic[a],0,2);
         even+=level*level*keyEven[body][i][a];
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*clamp(controls.mic[b],0,2)**heard++;}
-      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/16)),.25,4)):1;}
+      // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
+      // under the even scale (the baby grand's G#5 through the close pair).
+      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),.25,5.6)):1;}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
   }
   void prepareRoom() noexcept {
-    // Line lengths spread over 21 to 66 ms; the room falls 60 dB in 0.8 s,
+    // Line lengths spread over 23 to 97 ms; the room falls 60 dB in 0.8 s,
     // its top in half that.
-    constexpr double seconds[roomLines]{.0211,.0253,.0309,.0361,.0425,.0495,.0573,.0663};
+    constexpr double seconds[roomLines]{.0229,.0267,.0311,.0353,.0397,.0441,.0487,.0533,
+                                        .0581,.0631,.0683,.0737,.0793,.0851,.0911,.0973};
+    constexpr double spreads[roomSpreads]{.0047,.0073,.0113};
+    for(int k=0;k<roomSpreads;++k)spreadDelay[k]=std::min(spreadSize-1,static_cast<int>(spreads[k]*sampleRate)|1);
     for(int k=0;k<roomLines;++k){
       roomDelay[k]=std::min(roomSize-1,static_cast<int>(seconds[k]*sampleRate)|1);
       roomGain[k]=static_cast<float>(std::pow(10.,-3*seconds[k]/.8));
@@ -1303,7 +1343,7 @@ struct Piano::Impl {
     for(auto& c:contacts)c.active=false;
     std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
     std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
-    std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));
+    std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(spreadLine,0,sizeof(spreadLine));
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
     for(double& x:travel)x=0;
     for(float& x:knocks)x=0;
@@ -1389,7 +1429,7 @@ struct Piano::Impl {
     if(quietChunks*chunk>2*sampleRate){
       std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
       std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
-      std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));
+      std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(spreadLine,0,sizeof(spreadLine));
       for(double& x:travel)x=0;
       for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
       for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
@@ -1523,16 +1563,22 @@ struct Piano::Impl {
         o[out]=sum;}
       lineAt=(lineAt+1)&mask;
       // The room.
-      float back[roomLines],total=0;
+      float knock=cased[s];
+      for(int k=0;k<roomSpreads;++k){
+        float* held=spreadLine[k];
+        const float old=held[(roomAt-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
+        held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
+      float back[roomLines],roomL=0,roomR=0;
       for(int k=0;k<roomLines;++k){
         const float x=roomLine[k][(roomAt-roomDelay[k])&roomMask];
-        roomState[k]+=roomDamp[k]*(x-roomState[k]);back[k]=roomState[k]*roomGain[k];total+=back[k];}
-      total*=2.f/roomLines;
-      float roomL=0,roomR=0;
-      for(int k=0;k<roomLines;++k){
-        roomLine[k][roomAt]=back[k]-total+((k&1)?o[3]:o[2])*((k&2)?-.5f:.5f)+cased[s]*(((k^(k>>1))&2)?-.5f:.5f);
+        roomState[k]+=roomDamp[k]*(x-roomState[k]);back[k]=roomState[k]*roomGain[k];
         if(k&1)roomR+=(k&4)?-back[k]:back[k];else roomL+=(k&4)?-back[k]:back[k];}
+      for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
+        const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
+      for(int k=0;k<roomLines;++k)
+        roomLine[k][roomAt]=.25f*back[k]+((k&1)?o[3]:o[2])*((k&2)?-.5f:.5f)+knock*(((k^(k>>1))&2)?-.5f:.5f);
       roomAt=(roomAt+1)&roomMask;
+      roomL*=roomLevel;roomR*=roomLevel;
       const double l=o[0]+roomSend*roomL,r=o[1]+roomSend*roomR;
       // Nothing under 10 Hz is sound.
       dcL=dcPole*(dcL+l-dcInL);dcInL=l;dcR=dcPole*(dcR+r-dcInR);dcInR=r;

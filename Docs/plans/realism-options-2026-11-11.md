@@ -161,6 +161,11 @@ whether the close pair should hear it at all.
 To 300 ms the treble's tail now falls as recorded, by the case's knock in
 the room; the board at half its loss did as much and slowed the bass.
 
+**After 2.7.0.** The room is sixteen lines under a Hadamard mix with the
+knock diffused before it, and the long bridge spreads a string's force
+along its length (`Docs/decisions.md`, 2026-11-12). Open: the bass's
+partials stand 0.3 to 0.4 dB further off than in 2.6.0, cause not found.
+
 ### 8. Each piano against its own recordings
 
 **Gap.** The three grands share constants set on the Salamander (a Yamaha
