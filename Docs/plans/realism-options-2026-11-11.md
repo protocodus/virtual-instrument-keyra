@@ -189,6 +189,28 @@ recording does not hold; the softest treble layer 5 to 13 dB quiet.
 **Options.** Follow from 2(c) and 6; a felt law with a floor at light
 compression for the softest blows.
 
+## After 2.9.0: looked at and not built
+
+Measured on 2026-11-12 against the Salamander; nothing here shipped.
+
+- **The loud notes' top.** Partial by partial (the first 100 ms, four
+  layers) the model's upper partials stand from 12 dB under to 18 dB over
+  the recording's from one note to the next (A3 9 under, C5 10 over, F♯5
+  18 over, C6 12 under), and alike at a soft and a loud layer. It is each
+  key's own response, the recorded piano's and the model's board's, not a
+  mechanism the hammers or the strings lack.
+- **The pedal's low ring.** The takes' ring under 150 Hz is the
+  fundamentals of D2 to F2 (73, 77.5, 82 and 86.5 Hz). An impulse on the
+  bridge with the pedal leaves no such ring on the model's open strings.
+- **The image from key to key.** Through the close pair a note's two
+  channels stand up to 12 dB apart on the Studio, Parlor and Baby Grand
+  from C6 up (the Concert Grand within 3, the recording within 4 but for
+  one note). Neither keeping the board's modes only up to 1.4 kHz nor
+  taking the scattered arrivals out of the bridge's own radiation steadied
+  it (a note still stood 13 to 15 dB to one side), and the first put the
+  Concert Grand's treble balance from 2.5 to 5.0 dB off the recording's.
+  The floor's and lid's reflections and the room are what is left to try.
+
 ## Not about the sound
 
 - The Rack Extension adapter still pins engine 1.0.0.
