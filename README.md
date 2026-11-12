@@ -27,13 +27,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -6.6 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -12.3 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.7 dBFS |
-| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.7 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.6 dBFS |
-| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.6 dBFS |
-| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.3 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -5.0 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -10.5 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.8 dBFS |
+| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -4.5 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.5 dBFS |
+| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -8.0 dBFS |
+| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.2 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -49,6 +49,46 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.11.0 — 2026-11-12 — bass strings that beat each their own way
+
+A held bass chord no longer sweeps like a phaser. The panel and the saved
+state are 2.10.0's; a 2.10.0 session opens as saved. Every piano's wound
+strings sound different, and the plain strings play as in 2.10.0, up to
+0.25 dB louder with each piano's level pinned again.
+
+- **Each wound string strays on its own.** A real string's partials stray
+  from the ideal stiff string's series: the Salamander's bass partials
+  stand 1.54 cents (median, A0 to B2) off the best stiff-string fit,
+  2.10.0's 0.40. 2.10.0 drew that small stray once for a key, so the
+  strings of a unison stood one ratio apart at every partial, each partial
+  beat at a rate in proportion to its frequency, and together they swept
+  like a flanger. Each wound string's partials now stray 1.5 cents (one
+  standard deviation) their own way from the second up; the plain strings
+  keep the shared stray. Measured as the recording is
+  (`Tools/measure_partial_stray.py`, every third key from A0 to B2 at two
+  layers): the stray 1.31 cents; on the partials within 20 dB of the
+  strongest, how far each one's beat rate lies off its neighbours' 0.25
+  (2.10.0 0.12, the Salamander 0.20), and how deep they swing 2.7 dB
+  (1.4; the Salamander 2.0).
+- **Against the recordings**
+  ([grand](Docs/validation/grand-wound-stray-benchmark-2026-11-12.md),
+  [upright](Docs/validation/upright-wound-stray-benchmark-2026-11-12.md)):
+  the grand's bass decay stands 2.46 dB/s from the Salamander's on the
+  notes 1.0.0 fitted (2.66) and 2.28 on the others (2.42), and its tuning
+  on the fitted notes 2.12 cents (2.15). Further off: the bass's envelope,
+  3.62 dB on the fitted notes (3.26) and 3.04 on the others (2.78), its
+  beats now landing where the recording's do not; 12 single-note scores,
+  at C1, A1 and C2, the largest C1's rise on the notes 1.0.0 never fitted,
+  12.0 ms (4.1), and C2's envelope, 7.8 dB (5.5). The upright's decay
+  stands 4.70 dB/s from the Helsinki's on the notes 1.0.0 never fitted
+  (5.24) and its tuning 3.44 cents (3.67); 6 single-note scores are worse,
+  at A1, A2 and C3, the largest A2's envelope and noise by 1.0 dB. The
+  strays are drawn when the piano is designed and cost no CPU while it
+  plays.
+- **Tried and left out.** A smaller stray: at 1.0 and 0.75 cents the
+  strong partials swing 2.4 and 2.3 dB, nearly as deep, so how deep they
+  swing is not the stray's size (`Docs/decisions.md`).
 
 ### 2.10.0 — 2026-11-12 — a heavier bass, from the board beside its modes
 
@@ -455,7 +495,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 124](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43200941050/artifacts/13943032727)**, built from [`8c0744366e04`](https://github.com/protocodus/virtual-instrument-keyra/commit/8c0744366e04ca2f9665bc797b71c21106dd86fa). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 125](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43220012009/artifacts/13947401005)**, built from [`3b820cea11c0`](https://github.com/protocodus/virtual-instrument-keyra/commit/3b820cea11c0b2fe96637219cb5934b52da96b1b). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---

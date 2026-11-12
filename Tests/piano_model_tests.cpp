@@ -102,7 +102,11 @@ int main(){
           "the concert grand's bass strings are the longest and the least stiff");
   }
   {
-    // A stiff string's partials: n f1 sqrt((1 + B n^2) / (1 + B)).
+    // A stiff string's partials: n f1 sqrt((1 + B n^2) / (1 + B)). A wound
+    // string's stray from it on purpose, 1.5 cents for one deviation each
+    // (KeyData::stray): C2's are held within twice that, the plain strings'
+    // to the law. (Reading a plain string's partials here strays 1.3 cents
+    // rms of itself.)
     for(const int midi:{36,60,84}){
       Controls c=bare();c.detune=0;c.stretch=0;b.start(c);piano.strike(keyOf(midi),.6f);piano.holdDamper(keyOf(midi),true);b.run(1.5);
       const auto k=piano.report(Body::concertGrand,keyOf(midi));
@@ -111,18 +115,21 @@ int main(){
       // under it.
       const double to=midi<72?1.5:.4;
       const double f1=b.take.pitch(440*std::pow(2.,(midi-69)/12.),.03,to);
-      double worst=0;int heard=0;
+      double worst=0,square=0;int heard=0;
       for(int n=2;n<=std::min(12,k.partials);++n){
         const double expected=n*f1*std::sqrt((1+k.inharmonicity*n*n)/(1+k.inharmonicity));
         if(expected>.4*rate)break;
         const double f=b.take.pitch(expected,.03,to,25);
         // A partial the hammer's place on the string leaves out is not there to read.
         if(b.take.tone(f,.03,to)<b.take.tone(f1,.03,to)-55)continue;
-        worst=std::max(worst,std::abs(1200*std::log2(f/expected)));++heard;
+        const double cents=1200*std::log2(f/expected);
+        worst=std::max(worst,std::abs(cents));square+=cents*cents;++heard;
       }
-      std::cout<<"MIDI "<<midi<<": first partial "<<f1<<" Hz, B "<<k.inharmonicity<<", "<<heard<<" partials within "<<worst<<" cents of the stiff string's\n";
+      const double rms=std::sqrt(square/std::max(1,heard));
+      std::cout<<"MIDI "<<midi<<": first partial "<<f1<<" Hz, B "<<k.inharmonicity<<", "<<heard<<" partials within "<<worst<<" cents of the stiff string's, "<<rms<<" rms\n";
       check(std::abs(1200*std::log2(f1/(440*std::pow(2.,(midi-69)/12.))))<1.5,"without stretch a key's first partial is equal-tempered");
-      check(heard>=3&&worst<3,"the partials are a stiff string's");
+      if(midi<41)check(heard>=3&&rms<3,"a wound string's partials stray about a stiff string's");
+      else check(heard>=3&&worst<3,"the partials are a stiff string's");
     }
   }
   {
@@ -177,7 +184,12 @@ int main(){
     const double before=b.take.db(0,.004)-b.take.db(.02,.2);
     std::cout<<"under 1.5 kHz in its first 6 ms F#7 holds "<<knock<<" dB re the note; C1's first 4 ms hold "<<before<<" dB re the note\n";
     check(knock>-12,"a top key's blow knocks");
-    check(before<-50,"nothing precedes a bass string");
+    // No knock reaches C1 (knockArm is nil below capoFrom), so what these
+    // 4 ms hold is the strings' own modes summed before their wave has
+    // reached the bridge: 50.4 dB under the note in 2.10.0, 49.98 with the
+    // wound strings' stray as drawn and 51.7 under another draw of it. A
+    // knock stands tens of dB higher (F#7's, above, 3 dB under its note).
+    check(before<-48,"nothing precedes a bass string");
     // No two catches are alike once a strike carries its chance, and the
     // same chance is the same catch.
     const auto caught=[&](std::uint32_t chance){b.start(c);piano.strike(keyOf(96),.6f,0,chance);b.run(.1);return b.take;};

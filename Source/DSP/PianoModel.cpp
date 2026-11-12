@@ -329,6 +329,7 @@ struct KeyData {
   float ratio[maxK]{},shape[maxK]{};
   float couplingRe[maxK]{},couplingIm[maxK]{}; // 2 f0 Z0 Y(w), 1/s
   float detune[3]{},polarisation[3]{},share[3]{},across[3]{},acrossDrive[3]{};
+  float stray[3][maxKv]{};     // each string's partial against the ratio, wound strings only
   float duplexRatio[duplexModes]{};
 };
 struct HfTap {float gain,seconds;};
@@ -500,11 +501,25 @@ void designStrings(Tables& t,int body) noexcept {
     for(int n=1;n<=maxK;++n){
       const double ratio=n*std::sqrt(1+k.inharmonicity*n*n);
       if(k.hertz*ratio>15000)break;
-      k.ratio[count]=static_cast<float>(ratio*(1+2e-4*r.symmetric()*std::min(1.,n/8.)));
+      // A plain string strays a little from the ideal stiff string, the
+      // same for its unison; a wound one strays on its own, below.
+      const double shared=r.symmetric();
+      k.ratio[count]=static_cast<float>(ratio*(1+(k.wound?0:2e-4)*shared*std::min(1.,n/8.)));
       k.shape[count]=static_cast<float>(std::sin(n*pi*k.strike));
       ++count;
     }
     k.partials=count;
+    // A wound string's winding is not even along its length, so each
+    // string's partials stray from the ideal stiff string's n sqrt(1 + B n^2)
+    // its own way: 1.5 cents for one deviation, from the second partial up.
+    // Shared by a unison's strings, as through 2.10.0, a stray left them one
+    // ratio apart at every partial, each partial beat at a rate in proportion
+    // to its frequency, and a held bass chord swept like a flanger. Set
+    // against the Salamander grand's stray from A0 to B2, a median of 1.54
+    // cents, where 2.10.0's stood at 0.40 (Tools/measure_partial_stray.py).
+    for(int j=0;j<3;++j){Rng q=seeded(body,i,57+j);
+      k.stray[j][0]=1;
+      for(int n=2;n<=maxKv;++n)k.stray[j][n-1]=static_cast<float>(k.wound?std::pow(2.,1.5*q.normal()/1200):1.);}
   }
   // The tuner's stretch: A4 at pitch, the octave under it and every octave
   // above tuned 4:2 (the upper note's second partial on the lower's fourth),
@@ -1063,7 +1078,7 @@ struct Piano::Impl {
       const int o=planeStart[plane];
       for(int k=0;k<n;++k){
         // The partials the strings play together sit at the unison's pitch.
-        const double tuned=plane==0&&k>=v.apart&&v.strings>1?1:apart;
+        const double tuned=plane==0&&k>=v.apart&&v.strings>1?1:apart*(k<maxKv?key.stray[string][k]:1);
         turnOf(2*pi*f0*key.ratio[k]*tuned/sampleRate,v.cosine[o+k],v.sine[o+k]);
       }
     }

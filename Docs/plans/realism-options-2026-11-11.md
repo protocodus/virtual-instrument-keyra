@@ -301,6 +301,38 @@ causal); the modes levelled to a response rising to the treble; the ribs'
 stiffness above their spacing; tuning a key by its first six partials. The
 figures are in `Docs/decisions.md`.
 
+## After 2.11.0: open
+
+2.11.0 lets each wound string's partials stray from the stiff string on
+their own, which ends the held bass chords' flanger (`Docs/decisions.md`).
+Measured on 2026-11-12; open:
+
+- **The stray by register.** The Salamander's stray is about 3 cents from
+  A0 to D♯1, its single strings, and 1.0 to 1.9 from F♯1 to D♯2; 2.11.0
+  draws one 1.5 cents for every wound string and reads 1.25 to 1.55 note
+  by note. What makes the lowest strings stray more (their heavier
+  winding, the bare core at their ends) is not modelled.
+- **The bass's swing.** On the partials within 20 dB of the strongest the
+  bass's beats swing 2.7 dB about their decay, the Salamander's 2.0; a
+  smaller stray swings nearly as deep, so the depth comes from elsewhere,
+  the unisons' spread or their coupling at the bridge.
+- **Neighbours unlike on the Baby Grand, and the ring too long.** From C5 up
+  the unisons are tuned closer than the bridge couples them (2.8.0's
+  narrowing), so most keys hardly beat and a few cancel: E5 and A5 lose 30
+  to 40 dB of their fundamental within a second while their neighbours
+  ring on. Without the narrowing, on the concert grand on four layers, the
+  envelope comes nearer (4.32 to 3.90 dB on the notes 1.0.0 fitted) but
+  the decay goes further off (3.79 to 4.82 dB/s; the treble's 4.56 to
+  8.14; 4.54 without the strings' sideways drive as well). What
+  rings after the first decay dies at 1 to 2 dB/s in the model from A4 to
+  C5 and at 5 to 7 in the Salamander. The strings' own loss there is 0.22
+  to 0.23 a second (1.9 to 2.0 dB/s); a piano string clamped between two
+  fixed ends on an aluminium plate lost 0.43 a second at 810 Hz (3.7 dB/s;
+  Ege and Chaigne, ISMA 2007). The recording's ring dies faster than a
+  string alone, so its strings' slow motion still reaches the board: the
+  strings of a unison meeting the bridge unlike one another is the
+  candidate, not yet tried.
+
 ## Not about the sound
 
 - The Rack Extension adapter still pins engine 1.0.0.
@@ -325,3 +357,5 @@ figures are in `Docs/decisions.md`.
 - K. Ege, X. Boutillon and M. Rébillat, "Vibroacoustics of the piano
   soundboard", JSV 332 (2013).
 - G. Weinreich, "Coupled piano strings", JASA 62 (1977).
+- K. Ege and A. Chaigne, "End conditions of piano strings", ISMA 2007
+  (Barcelona): <https://arxiv.org/abs/1101.4511>

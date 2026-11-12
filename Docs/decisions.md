@@ -5213,3 +5213,64 @@ grand through the close pair: low chords, bass notes alone and left-hand
 octaves under soft chords around middle C. B is matched to A on whole-file
 RMS; the trims, -0.63 to -0.92 dB, are in its key. By the project's
 standing rule B stands unless the owner says otherwise.
+
+## 2026-11-12 — bass strings that beat each their own way (2.11.0)
+
+**Asked.** The owner heard held bass chords sound "phaser like" and asked
+whether the strings vibrate too much alike from note to note, and whether
+something in their dispersion should vary more.
+
+**What was found.** Within a key, yes. 2.10.0 drew a small stray from the
+stiff-string series once for each key, about 0.3 cents, and shared it
+between the key's strings: the strings of a unison stood one ratio apart at
+every partial, so each partial beat at a rate in proportion to its
+frequency, and the partials' beats swept together like a flanger. Measured
+with `Tools/measure_partial_stray.py` (its protocol at its head; every
+third key from A0 to B2, layers 8 and 13), the Salamander's bass partials
+stray 1.54 cents (median) from their best stiff-string fit, 2.10.0's 0.40;
+from C3 to B4 0.59 against 0.27. Per note the recording's stray is about
+3 cents from A0 to D♯1, its single strings, and 1.0 to 1.9 from F♯1 to
+D♯2.
+
+**Chosen.** Each wound string's partials stray on their own, 1.5 cents for
+one standard deviation from the second partial up, drawn when the piano is
+designed; the plain strings keep the shared stray. 1.5 cents is set
+against the Salamander's 1.54 from A0 to B2. The renders now stray 1.31
+cents there, 1.25 to 1.55 note by note. On the partials within 20 dB of the
+strongest, how far each one's beat rate lies off the line through its
+neighbours' (over the median rate), median over the notes: 0.12 in 2.10.0,
+0.25 in 2.11.0, 0.20 in the Salamander; how deep they swing about their
+decay, 1.4, 2.7 and 2.0 dB. Over every partial kept: 0.04, 0.11 and 0.28;
+3.9, 4.8 and 3.5 dB.
+
+**A smaller stray, left out.** On a probe build with the same change, 1.5,
+1.0 and 0.75 cents swing the strong partials 2.47, 2.44 and 2.27 dB: how
+deep they swing is not the stray's size, and a smaller stray would only
+leave the recording's measured stray further off.
+
+**Tests.** `Keyra.PianoModel` held every key's partials within 3 cents of
+the stiff-string law; C2 now strays 3.9 at worst by design, and the test
+holds C2's partials within 3 cents rms, twice the design's deviation, and
+the plain strings' to the law as before. Its check that nothing precedes a bass string read C1 at
+-49.98 dB under the note in its first 4 ms against a limit of -50: no
+knock reaches C1 (`knockArm` is nil below `capoFrom`), and what those
+4 ms hold is the strings' own modes summed before their wave reaches the
+bridge, -50.4 in 2.10.0 and -51.7 under another draw of the stray. The
+limit is now -48 with that reason beside it; a knock stands tens of dB
+higher.
+
+**Measured** (`Docs/validation/grand-wound-stray-benchmark-2026-11-12.md`,
+`upright-wound-stray-benchmark-2026-11-12.md`): see the 2.11.0 entry of the
+README. Further off: the grand's bass envelope (3.26 to 3.62 dB on the
+notes 1.0.0 fitted, 2.78 to 3.04 on the others), its beats now landing
+where the recording's do not; 12 single-note scores at C1, A1 and C2 and 6
+of the upright's at A1, A2 and C3. C1's rise on the notes 1.0.0 never
+fitted, 4.1 to 12.0 ms, is the largest.
+
+**What is the owner's to hear.** A lettered set (`2026-11-12-bass-phaser`
+in the project's files, not committed): A 2.10.0, B 2.11.0, the concert
+grand through the close pair: two low chords held with the pedal, four low
+chords, bass notes alone, and left-hand octaves under soft chords around
+middle C. B is matched to A on whole-file RMS; the trims, -0.02 to
+-0.33 dB, are in its key. By the project's standing rule B stands unless
+the owner says otherwise.
