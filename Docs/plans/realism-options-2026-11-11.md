@@ -325,7 +325,8 @@ Measured on 2026-11-12; open:
   the ring and comes back (34 dB down at 1 s, 28 at 2 s), as the
   recording's F♯5 does (31 to 35 down at 1 s, 29 to 31 at 2 s); and B6 and
   C7, 25 dB apart at 3 s, where C7 dies fast (the top octave, under 2.10.0
-  above). On a probe none of these brought neighbours nearer at every
+  above): the preset's Age of 0.15 does that, its C7 and C8 dying at 21.3
+  and 28.6 dB/s, at Age 0 14.7 and 21.8, the Salamander's 13.8 and 19.4. On a probe none of these brought neighbours nearer at every
   time: unisons not narrowed from C5 up, no sideways drive, every key's
   detune scaled to one size, every unison left the same residual. Without
   the narrowing, on the concert grand on four layers, the envelope comes
@@ -336,6 +337,42 @@ Measured on 2026-11-12; open:
   For reference, the strings' own loss at G5 is 0.26 a second, and a piano
   string clamped between two fixed ends on an aluminium plate lost 0.43 a
   second at 810 Hz, its clamps included (Ege and Chaigne, ISMA 2007).
+- **The open top strings' ring under a treble note.** From 700 Hz up to the
+  band under the fundamental, against the note's loudest band, on the
+  Salamander's 32 notes from C6 up on layers 4, 8, 12 and 16: −52.4 dB at
+  0.5 s, −60.7 at 1 s, −76.5 at 2.9 s; the model −55.4, −72.6 and −108.6.
+  Under the recording's C7 the strings from F♯6 to B6 ring, each unison as
+  two peaks 1.6 to 2.2 cents apart, 18 to 31 dB under the fundamental,
+  dying at 10 to 15.5 dB/s. The model's open strings there die at 20 to
+  74 dB/s: their own loss is 0.7 to 2.1 a second and the bridge takes 1.5 to
+  2.9 from each string, up to three times that from a unison narrowed
+  into step. On a probe build (2026-11-12), at 1 and 2.9 s:
+  - each open string's sideways motion, driven and drained as a played
+    string's is: −72.2 and −106.2;
+  - Weinreich's slow mode for each open unison, at the full spread:
+    −69.4 and −108.4;
+  - the full spread with the sideways motion: −64.4 and −97.3, but the full
+    spread takes the played treble's decay further off (above);
+  - a board three times stiffer under the bridge from C5 to C8: −58.2 and
+    −83.3; with the full spread and without the top keys' extra string
+    loss as well, −54.4 and −74.0, within 6 dB of the recording at every
+    time;
+  - a board three times more mobile there instead, as measured boards are
+    above about 1 kHz, at the full spread: −73.6 and −120.6.
+
+  Only the stiffer board comes near, and the boards measured say the
+  opposite: from about 1.1 kHz, where half a bending wave spans the
+  space between two ribs, the board between them moves on its own and its
+  mean impedance falls, from 800 kg/s to 230 at 2.5 kHz on an upright
+  (Ege and Boutillon; Giordano's and Nakamura's measurements agree), and
+  2.10.0 left the ribs above their spacing out because the notes' decay
+  went further off with them. The recording says its top strings lose less
+  to the bridge than the model's: unisons 1.6 to 2.2 cents apart are wider
+  than the coupling, so each string would die at its own loss plus the
+  bridge's 1.6 to 3 a second, 20 to 30 dB/s, where the recording's open
+  strings take 10 to 15 and its whole notes 14 to 19 at C7 and C8. Nothing
+  in the description explains a stiffer treble yet, so that probe is a fit
+  and stays out.
 
 ## Not about the sound
 
@@ -362,6 +399,9 @@ Measured on 2026-11-12; open:
   piano", JASA 134 (2013).
 - K. Ege, X. Boutillon and M. Rébillat, "Vibroacoustics of the piano
   soundboard", JSV 332 (2013).
+- K. Ege and X. Boutillon, "Synthetic description of the piano soundboard
+  mechanical mobility" (the inter-rib fall, from 800 to 230 kg/s):
+  <https://arxiv.org/abs/1210.5688>
 - G. Weinreich, "Coupled piano strings", JASA 62 (1977).
 - K. Ege and A. Chaigne, "End conditions of piano strings", ISMA 2007
   (Barcelona): <https://arxiv.org/abs/1101.4511>
