@@ -5022,3 +5022,46 @@ C6 and back at one touch, the first demo, and a treble melody on the
 upright. B is matched to A on whole-file RMS (trims +0.61, +1.39, +0.37,
 +0.02 and +0.89 dB). By the project's standing rule B stands unless the
 owner says otherwise.
+
+## 2026-11-12 — how a grand's upper notes die away (2.8.0)
+
+**What was looked for.** The largest scores left: the treble's sustain
+(10.6 dB on the unfitted notes) and its decay (7.5 dB/s). By third octaves
+the recording seemed to hold 26 to 39 dB more than the model from 100 to
+160 Hz half a second after a treble note; those are steady lines at 100.0
+and 144.5 Hz in every take (mains hum, level from 0.1 to 3.6 s), in a few
+frames of each note, and not the piano. A room ringing longer in the bass
+was tried against them and dropped. What the score does hold: from C5 up
+the model's first partial stood 7 to 8 dB over the recorded one 1 to 1.5 s
+after the blow.
+
+**What holds it up.** Halving the sideways motion's share of the blow (the
+aftersound) took 1.5 dB off that and put the decay score further off. The
+unisons' spread decides it: at Detune 0.15 the first partial stood within
+3 dB of the recorded one to 3 s, at the default 0.3 7 to 8 over, at 0.6 8
+over. From C3 to B4 the spread made no such difference.
+
+**The change.** On a grand the spread is whole up to B3 and narrows as
+250/f to half from C5 up. On four layers, unfitted notes: decay 3.89 to
+3.36 dB/s, sustain 7.73 to 7.41, partials 7.27 to 7.27; narrowed on to 0.3
+or all the way, decay 3.52 and 3.36 with the top octaves' sustain 0.8 dB
+further off (10.0 against 9.2). On the upright the same narrowing put the
+fitted notes' decay from 4.54 to 4.95 dB/s and their envelope from 4.27
+to 4.54 (unfitted: decay 5.36 to 4.59, sustain 10.61 to 10.33), so the
+upright keeps the whole spread and is 2.7.0's sample for sample: the
+Helsinki upright's unisons stand wider than a studio grand's.
+
+**Measured.** Grand, the notes 1.0.0 never fitted, 2.7.0 to 2.8.0: decay
+4.23 to 3.80 dB/s (from C6 up 7.53 to 5.80), sustain 8.24 to 7.85 dB,
+envelope 4.35 to 4.18, partials 7.86 to 7.74, tuning 2.10 to 2.21 cents,
+attack 6.28 to 6.26, early 6.27 to 6.29, noise 6.75 to 6.78, level 2.11 to
+2.07. On the fitted notes decay 5.07 to 4.50, sustain 9.01 to 8.80, and
+from C6 up the envelope 4.39 to 4.94 and the partials 8.06 to 8.27 further
+off. 23 single-note scores are worse.
+
+**What is the owner's to hear.** A lettered set (`2026-11-12-unison-spread`
+in the project's files, not committed): A 2.7.0, B 2.8.0, on the concert
+grand: held notes from C4 to C7, slow chords, a treble melody over a held
+chord and the first demo. B is matched to A on whole-file RMS; the trims
+are in its key. By the project's standing rule B stands unless the owner
+says otherwise.

@@ -26,13 +26,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -7.7 dBFS |
-| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -12.2 dBFS |
-| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -2.8 dBFS |
-| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -4.0 dBFS |
-| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.7 dBFS |
-| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.6 dBFS |
-| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.4 dBFS |
+| 3 | Warm Walnut | [03-warm-walnut.wav](Docs/audio/03-warm-walnut.wav) | 11.1 s | -6.6 dBFS |
+| 4 | Felt Nocturne | [04-felt-nocturne.wav](Docs/audio/04-felt-nocturne.wav) | 10.7 s | -12.1 dBFS |
+| 5 | Open Strings | [05-open-strings.wav](Docs/audio/05-open-strings.wav) | 11.7 s | -3.6 dBFS |
+| 6 | Upright | [06-upright.wav](Docs/audio/06-upright.wav) | 11.6 s | -3.7 dBFS |
+| 8 | Pop Upright | [08-pop-upright.wav](Docs/audio/08-pop-upright.wav) | 11.6 s | -1.6 dBFS |
+| 9 | Baby Grand | [09-baby-grand.wav](Docs/audio/09-baby-grand.wav) | 9.7 s | -7.5 dBFS |
+| 10 | Distant Hall | [10-distant-hall.wav](Docs/audio/10-distant-hall.wav) | 10.8 s | -5.3 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -48,6 +48,30 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.8.0 — 2026-11-12 — how a grand's upper notes die away
+
+On the three grands a note from middle C up falls away as the recorded
+grand's does, where it held on too loud after its first second. The panel
+and the saved state are 2.7.0's; a 2.7.0 session opens as saved and the
+grands' notes from C4 up ring differently. The upright is 2.7.0's, sample
+for sample.
+
+- **The unisons** of a grand stand closer together up the keyboard: the
+  spread Detune sets is whole up to B3 and narrows to half from C5 up. A
+  tuner sets a unison by its beats, which the same cents make faster the
+  higher the note. With the whole spread everywhere the first partial of
+  the Salamander grand's notes from C5 up stood 7 to 8 dB over the
+  recorded one 1 to 1.5 s after the blow; it stands 1.0 to 1.4 dB over.
+  The upright keeps the whole spread: narrowed, its decay stood further
+  from the Helsinki upright's.
+- **Against the recordings**
+  ([grand](Docs/validation/grand-unison-spread-benchmark-2026-11-12.md)):
+  on the notes 1.0.0 never fitted, the grand's decay stands 3.8 dB/s from
+  the Salamander's (4.2 in 2.7.0), its sustain 7.9 dB (8.2), its envelope
+  4.2 (4.4) and its partials 7.7 (7.9); its tuning is 2.2 cents off (2.1).
+  The other scores moved by less than 0.05. 23 single-note scores are
+  worse, listed in the report.
 
 ### 2.7.0 — 2026-11-12 — a denser room, and a bridge with length
 
@@ -332,7 +356,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 116](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43118955235/artifacts/13901805058)**, built from [`c40f87066e65`](https://github.com/protocodus/virtual-instrument-keyra/commit/c40f87066e65be82e4f2631db1582e05749eb0cc). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 117](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43142572785/artifacts/13911465734)**, built from [`6aeab6232f0c`](https://github.com/protocodus/virtual-instrument-keyra/commit/6aeab6232f0c8f41842b42cd91b9da2425040a28). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
@@ -494,7 +518,7 @@ what the board and the microphones give it.
 | Piano | four | The piano that plays (above) |
 | Hammer | −1 to 1 | The felt's stiffness, a decade and a half from soft and worn-in to hard: ×10^(0.75 Hammer) |
 | String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves |
-| Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano. 0.3 by default |
+| Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano (on a grand, half that from C5 up). 0.3 by default |
 | Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 in the treble, 6:3 in the bass, Railsback's curve); 0 is equal temperament |
 | Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow under 5 m/s at full velocity: 10 dB at 0, 25 dB at 0.5, where the speed follows the velocity, and 40 dB at 1 |
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
@@ -583,9 +607,9 @@ is written independently of it.
   few constants set against recordings, and note by note it stands further
   from the Salamander grand than 1.0.0, which was fitted to those
   recordings, on every score of `Tools/benchmark_recordings.py`: on the
-  notes 1.0.0 never fitted, the partials' levels differ by 7.9 dB where
-  1.0.0's differed by 5.3, the tuning by 2.1 cents against 0.9, the decay by
-  4.2 dB/s against 2.1 and the rise by 13 ms against 4.5
+  notes 1.0.0 never fitted, the partials' levels differ by 7.7 dB where
+  1.0.0's differed by 5.3, the tuning by 2.2 cents against 0.9, the decay by
+  3.8 dB/s against 2.1 and the rise by 13 ms against 4.5
   ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
   [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md),
   [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md),
@@ -593,7 +617,8 @@ is written independently of it.
   [2.4.0 against 2.3.0](Docs/validation/grand-key-presses-benchmark-2026-11-11.md),
   [2.5.0 against 2.4.0](Docs/validation/grand-string-scale-benchmark-2026-11-11.md),
   [2.6.0 against 2.5.0](Docs/validation/grand-case-ring-benchmark-2026-11-11.md),
-  [2.7.0 against 2.6.0](Docs/validation/grand-room-bridge-benchmark-2026-11-12.md)).
+  [2.7.0 against 2.6.0](Docs/validation/grand-room-bridge-benchmark-2026-11-12.md),
+  [2.8.0 against 2.7.0](Docs/validation/grand-unison-spread-benchmark-2026-11-12.md)).
   2.7.0 put the bass's partials 0.3 to 0.4 dB and the rise 0.5 ms further
   off, and 71 single-note scores.
   The furthest are the treble's sustain (11 dB off in third octaves) and
