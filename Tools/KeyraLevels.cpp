@@ -47,14 +47,18 @@
 // keySpread keys. --write-keys writes KeyVoicing.h: each key's levels and
 // products against the close pair's even scale, and each pair's even scale
 // against it, from which the model's mix pulls each key onto the even scale
-// of the pairs that are up. After any change to the model's sound, write it
+// of the pairs that are up. Each pair's scale keeps its own course through
+// the keys at the close pair's level without the room, on average over the
+// keys: the model balances its pairs on the board's modes alone, and what
+// the bridge radiates beside them adds 0.2 dB to the concert grand's close
+// pair and up to 1.3 dB to the others (2.10.0), which took the distant pair
+// 2.6 dB over the close one in Keyra.Engine's chord. After any change to the model's sound, write it
 // again: --check plays every key, voiced, through each pair alone and
 // through two mixes (keyMixes), and fails when a key is more than keyWindowDb
-// off the curve through its neighbours. With the table fresh the furthest key
-// is 1.5 dB off: the concert grand's F#5 in the first mix, whose pairs cancel
-// by more than the 12 dB a key is pulled at most; the others lie within
-// 1.3 dB, the top treble furthest, where the knock is a good part of a key's
-// sound. A stale table leaves keys 3 dB and more off.
+// off the curve through its neighbours. With the table fresh (2.10.0) the
+// furthest key is 1.1 dB off, the concert grand's C8 through the close pair,
+// where the knock is a good part of a key's sound; the others lie within
+// 1.0 dB. A stale table leaves keys 3 dB and more off.
 #include "DSP/KeyraEngine.h"
 #include "DSP/KeyraPresets.h"
 #include "DSP/KeyVoicing.h"
@@ -165,10 +169,11 @@ constexpr float keyMixes[][pairs]{{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1},{.7f,.
 constexpr int keyMixCount=static_cast<int>(sizeof(keyMixes)/sizeof(keyMixes[0]));
 using KeyLevels=std::array<double,keys>;
 // A key alone through a mix of the pairs, left then right; `pull` as
-// Piano::pullKey takes it.
-std::vector<float> keySound(keyra::model::Piano& piano,int body,const float* mix,int key,float pull){
+// Piano::pullKey takes it, and the room as the controls give it unless `dry`.
+std::vector<float> keySound(keyra::model::Piano& piano,int body,const float* mix,int key,float pull,bool dry=false){
   keyra::model::Controls controls;controls.body=static_cast<keyra::model::Body>(body);
   std::copy(mix,mix+pairs,controls.mic);
+  if(dry)controls.room=0;
   const int skip=static_cast<int>(keySkipSeconds*rate),frames=skip+static_cast<int>(keySeconds*rate);
   std::vector<float> left(static_cast<std::size_t>(frames)),right(left.size());
   piano.reset();piano.setControls(controls);piano.pullKey(key,pull);
@@ -227,13 +232,18 @@ struct Voicing {
 Voicing voice(int body){
   keyra::model::Piano piano;piano.prepare(rate);
   Voicing voicing;
-  std::array<KeyLevels,pairs> level{};
+  std::array<KeyLevels,pairs> level{},dry{};
   for(int key=0;key<keys;++key){
     std::vector<float> strings[pairs];
     for(int pair=0;pair<pairs;++pair){
-      strings[pair]=keySound(piano,body,keyMixes[pair],key,1);
-      const auto knock=keySound(piano,body,keyMixes[pair],key,0);
-      for(std::size_t i=0;i<knock.size();++i)strings[pair][i]-=knock[i];
+      const auto heard=[&](bool withoutRoom){
+        auto sound=keySound(piano,body,keyMixes[pair],key,1,withoutRoom);
+        const auto knock=keySound(piano,body,keyMixes[pair],key,0,withoutRoom);
+        for(std::size_t i=0;i<knock.size();++i)sound[i]-=knock[i];
+        return sound;};
+      strings[pair]=heard(false);
+      const auto alone=heard(true);
+      dry[static_cast<std::size_t>(pair)][static_cast<std::size_t>(key)]=decibels(meanProduct(alone,alone));
     }
     std::size_t at=0;
     for(int a=0;a<pairs;++a)for(int b=a;b<pairs;++b)voicing.heard[static_cast<std::size_t>(key)][at++]=meanProduct(strings[a],strings[b]);
@@ -245,10 +255,17 @@ Voicing voice(int body){
     even[static_cast<std::size_t>(pair)]=evenScale(level[static_cast<std::size_t>(pair)]);
     voicing.unvoiced[pair]=evenness(level[static_cast<std::size_t>(pair)]);
   }
+  // Each pair keeps its own scale through the keys, at the close pair's
+  // level on average: voiced onto it, a key gives the pair what the scale
+  // says, of which the share without the room is what the key gave it dry.
+  // The room comes on top, as the pair sends to it.
+  double offset[pairs]{};
+  for(std::size_t pair=0;pair<pairs;++pair)for(std::size_t key=0;key<keys;++key)
+    offset[pair]+=(even[pair][key]+dry[pair][key]-level[pair][key]-even[0][key]-dry[0][key]+level[0][key])/keys;
   for(std::size_t key=0;key<keys;++key){
     const double close=std::pow(10.,even[0][key]/10);
     for(double& product:voicing.heard[key])product/=close;
-    for(std::size_t pair=0;pair<pairs;++pair)voicing.even[key][pair]=std::pow(10.,(even[pair][key]-even[0][key])/10);
+    for(std::size_t pair=0;pair<pairs;++pair)voicing.even[key][pair]=std::pow(10.,(even[pair][key]-even[0][key]-offset[pair])/10);
   }
   return voicing;
 }
@@ -273,7 +290,8 @@ int writeKeys(const char* path,int jobs){
     }
     std::fprintf(file,"  },\n");
   }
-  std::fprintf(file,"};\n// [body][key]: each pair's even scale against the close pair's.\n"
+  std::fprintf(file,"};\n// [body][key]: each pair's even scale against the close pair's, at the close\n"
+                    "// pair's level without the room on average over the keys.\n"
                     "constexpr float keyEven[%d][%d][%d]{\n",bodies,keys,pairs);
   for(std::size_t body=0;body<all.size();++body){
     std::fprintf(file,"  { // %s\n",keyra::bodyNames[body]);
