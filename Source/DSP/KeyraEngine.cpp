@@ -138,9 +138,13 @@ constexpr float pedalClear=.92f,pedalRest=.08f;
 // The owner found a full pedal's ring too long and chose one whose felt still
 // grazes the strings (Docs/decisions.md, 2026-10-30): a velocity-80 chord of
 // C3, C4, C5 and C6 let go under it fell 60 dB in 9.5 s on 1.0.0's grand and
-// 11.3 s on its upright. Stopped at .7 the concert grand takes 9.6 s and the
-// upright 10.4 s, where clear of the strings they take 17.4 and 20.5 s.
-constexpr float pedalLift=.7f;
+// 11.3 s on its upright. Stopped at .7 the concert grand took 9.6 s and the
+// upright 10.4 s, where clear of the strings they took 17.4 and 20.5 s. With
+// 2.7.0's bridge the grand's chord rang longer at .7 (-58 dB after 12 s
+// where it stood at -64); at .695 it takes 11.1 s and the upright 9.2 to
+// fall 60 dB under the level at letting go, in 0.1 s windows, where
+// 2.6.0's took 10.7 and 10.2.
+constexpr float pedalLift=.695f;
 // How far a player's strikes of one key at one intended force spread, in
 // level. Twelve of the upright library's second takes at train pitches, nine
 // of them at its softest layer, are new strikes rather than copies of the
@@ -448,7 +452,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1677,.1574,.1274,.1672};
+  static constexpr double pascalScale[model::bodyCount]{.1849,.1711,.1352,.1904};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75;
   double smooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;

@@ -49,6 +49,42 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.7.0 — 2026-11-12 — a denser room, and a bridge with length
+
+The room no longer rings like a spring after a short note, and a key's
+colour stands closer to its neighbours'. The panel and the saved state are
+2.6.0's; a 2.6.0 session opens as saved and every key sounds a little
+different.
+
+- **The room** is sixteen delay lines mixed by a Hadamard matrix where it
+  was eight under a Householder reflection, and the case's knock passes
+  three allpass sections before it enters. Its echoes grow dense in 130 to
+  180 ms where they took 310, and its level is kept. Under a treble note
+  the knock's tail from 280 to 710 Hz stands 19, 24 and 37 dB under its
+  peak 100, 150 and 300 ms on, where the recording's stands 21, 24 and 36
+  and 2.6.0's stood 21, 29 and 39.
+- **The bridge** hands a plain string's force to the soundboard along its
+  own length, half its bending wavelength at each board mode, where every
+  string drove the board at a point. Every key is voiced again for it, and
+  a key may now be pulled 15 dB onto the even scale (12 before).
+- **The sustain pedal** stops a little higher (0.695 of its travel, was
+  0.7): with the new bridge a chord let go under it rang longer than the
+  owner chose, and this brings it back (60 dB in 11.1 s on the concert
+  grand and 9.2 s on the upright, where 2.6.0 took 10.7 and 10.2).
+- **Against the recordings**
+  ([grand](Docs/validation/grand-room-bridge-benchmark-2026-11-12.md),
+  [upright](Docs/validation/upright-room-bridge-benchmark-2026-11-12.md)):
+  on the notes 1.0.0 never fitted, the grand's level difference between
+  the channels stands 5.3 dB from the Salamander's (5.7 in 2.6.0), its
+  level 2.1 (2.5), its first half second 6.3 (6.5), its noise 6.7 (7.0),
+  its attack 6.3 (6.4) and its partials 7.9 (7.9): 7.0 (7.1) in the middle
+  and 7.2 (7.5) from C6 up, but 9.9 (9.5) in the bass. Its rise is 12.7 ms
+  off (12.2). The upright's partials stand 8.1 dB off (8.6) and its noise
+  8.9 (9.2); its tuning 3.6 cents (3.1), its level difference between the
+  channels 5.7 dB (5.1) and its sustain 10.6 (10.4) are further off. 71
+  single-note scores of the grand and 29 of the upright are worse, listed
+  in the reports.
+
 ### 2.6.0 — 2026-11-11 — what rings under a treble note
 
 From A5 up something rings on under a note after the blow, as it does on the
@@ -356,7 +392,10 @@ one orthotropic plate, up to 224 of them under 2.6 kHz, with a point
 impedance of about 2500 kg/s and a modal density of about 0.05 per Hz, as
 measured boards have (Ege, Boutillon and Rebillat 2013; Giordano 1998). The
 bridge's admittance at each key comes from those modes, so a string's decay
-depends on where it crosses the bridge. Above the modes the board moves and
+depends on where it crosses the bridge. The long bridge is a beam: a plain
+string's force reaches each mode as the mean of the mode's shape along half
+the bridge's bending wavelength at that frequency; the wound strings' short
+bridge drives the board at a point. Above the modes the board moves and
 radiates near the bridge only.
 
 **The knocks under a note.** Recorded notes hold two knocks under their
@@ -427,12 +466,14 @@ piano, each with its own level:
 
 At the same level every pair plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
-feedback delay network of eight lines (Jot and Chaigne 1991) ringing 0.8 s,
+feedback delay network of sixteen lines under a Hadamard mix (Jot and
+Chaigne 1991) ringing 0.8 s,
 which hears the piano as the distant pair does and which each pair hears by
 its distance, the close pair too (set against what the Salamander grand's
 treble notes leave after the knock under them); Room sets how much. The
 room also hears the case: the knock the blow gives the frame under the top
-strings goes to it directly, as well as through the board. Width at 0.75 is the pairs' own image and
+strings goes to it directly, through three allpass sections (Schroeder
+1962), as well as through the board. Width at 0.75 is the pairs' own image and
 0 is mono.
 
 A pair is placed so that it sums to mono: no mode of the board reaches one
@@ -544,14 +585,17 @@ is written independently of it.
   recordings, on every score of `Tools/benchmark_recordings.py`: on the
   notes 1.0.0 never fitted, the partials' levels differ by 7.9 dB where
   1.0.0's differed by 5.3, the tuning by 2.1 cents against 0.9, the decay by
-  4.2 dB/s against 2.1 and the rise by 12 ms against 4.5
+  4.2 dB/s against 2.1 and the rise by 13 ms against 4.5
   ([2.0.0 against 1.0.0](Docs/validation/grand-recording-benchmark-2026-11-11.md),
   [2.1.0 against 2.0.0](Docs/validation/grand-velocity-stereo-benchmark-2026-11-11.md),
   [2.2.0 against 2.1.0](Docs/validation/grand-even-scale-benchmark-2026-11-11.md),
   [2.3.0 against 2.2.0](Docs/validation/grand-open-strings-benchmark-2026-11-11.md),
   [2.4.0 against 2.3.0](Docs/validation/grand-key-presses-benchmark-2026-11-11.md),
   [2.5.0 against 2.4.0](Docs/validation/grand-string-scale-benchmark-2026-11-11.md),
-  [2.6.0 against 2.5.0](Docs/validation/grand-case-ring-benchmark-2026-11-11.md)).
+  [2.6.0 against 2.5.0](Docs/validation/grand-case-ring-benchmark-2026-11-11.md),
+  [2.7.0 against 2.6.0](Docs/validation/grand-room-bridge-benchmark-2026-11-12.md)).
+  2.7.0 put the bass's partials 0.3 to 0.4 dB and the rise 0.5 ms further
+  off, and 71 single-note scores.
   The furthest are the treble's sustain (11 dB off in third octaves) and
   the bass's rise (23 ms on average). 2.4.0 moved the tuning, the decay and
   the bass's partials further off, and 106 single-note scores; 2.5.0 brought
@@ -559,8 +603,8 @@ is written independently of it.
   is the owner's verdict by ear (`Docs/decisions.md`, 2026-11-11), not a
   measurement.
 - **The upright against its recordings.** Against the Helsinki upright the
-  partials' levels differ by 8.4 dB, the tuning by 3.2 cents, the decay by
-  5.3 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
+  partials' levels differ by 8.1 dB, the tuning by 3.6 cents, the decay by
+  5.4 dB/s and the rise by 13 ms on the notes 1.0.0 never fitted; 2.1.0
   moved its attack, sustain and noise further off than 2.0.0's, 2.2.0 its
   noise a little further, 2.3.0 its partials and decay, and 2.4.0 its
   partials by another 1.0 dB
@@ -571,7 +615,11 @@ is written independently of it.
   2.5.0 took 1.2 dB off its partials and 1.1 cents off its tuning
   ([2.5.0](Docs/validation/upright-string-scale-benchmark-2026-11-11.md));
   2.6.0 its first half second by 0.3 dB and put its partials 0.1 dB further
-  ([2.6.0](Docs/validation/upright-case-ring-benchmark-2026-11-11.md)).
+  ([2.6.0](Docs/validation/upright-case-ring-benchmark-2026-11-11.md));
+  2.7.0 took 0.5 dB off its partials there (five treble notes carry it; on
+  the notes 1.0.0 fitted 0.1) and put its tuning 0.5 cents, its sustain
+  0.2 dB and its bass's partials 0.4 dB further off
+  ([2.7.0](Docs/validation/upright-room-bridge-benchmark-2026-11-12.md)).
 - **The bass strings' stiffness.** The concert grand's wound strings are 14
   to 53 % less stiff than the Salamander's, a grand 0.7 m shorter, so in
   the bass the benchmark still looks for upper partials where the model

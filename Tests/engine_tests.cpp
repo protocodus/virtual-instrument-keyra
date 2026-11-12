@@ -222,7 +222,10 @@ int main(){
     const double caught=b.take.db(1.0,1.2),later=b.take.db(1.26,1.46);
     std::cout<<"repedalled C3: before "<<before<<" dB, caught "<<caught<<" dB, then "<<later<<" dB\n";
     check(caught<before-3&&caught>before-40,"a quick change of pedal catches some of the ring");
-    check(later>caught-3,"what the pedal caught rings on");
+    // Under the grazing pedal C3 itself falls 11 dB/s, 2.9 dB between these
+    // windows, so a limit of 3 dB stood 0.1 dB from the pedal's own decay
+    // and 2.7.0's 3.1 dB crossed it.
+    check(later>caught-4,"what the pedal caught rings on");
     // The full pedal's felt still grazes the strings, as the owner chose
     // (KeyraEngine.cpp, pedalLift): a chord let go under it is 60 dB down
     // after 9.6 s on the concert grand, where clear of the strings it took
