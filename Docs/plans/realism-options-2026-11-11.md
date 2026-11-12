@@ -316,28 +316,34 @@ Measured on 2026-11-12; open:
   bass's beats swing 2.7 dB about their decay, the Salamander's 2.0; a
   smaller stray swings nearly as deep, so the depth comes from elsewhere,
   the unisons' spread or their coupling at the bridge.
-- **Neighbours unlike on the Baby Grand, and the ring too long.** From C5 up
-  the unisons are tuned closer than the bridge couples them (2.8.0's
-  narrowing), so most keys hardly beat and a few cancel: E5 and A5 lose 30
-  to 40 dB of their fundamental within a second while their neighbours
-  ring on. Without the narrowing, on the concert grand on four layers, the
-  envelope comes nearer (4.32 to 3.90 dB on the notes 1.0.0 fitted) but
-  the decay goes further off (3.79 to 4.82 dB/s; the treble's 4.56 to
-  8.14; 4.54 without the strings' sideways drive as well). What
-  rings after the first decay dies at 1 to 2 dB/s in the model from A4 to
-  C5 and at 5 to 7 in the Salamander. The strings' own loss there is 0.22
-  to 0.23 a second (1.9 to 2.0 dB/s); a piano string clamped between two
-  fixed ends on an aluminium plate lost 0.43 a second at 810 Hz (3.7 dB/s;
-  Ege and Chaigne, ISMA 2007). The recording's ring dies faster than a
-  string alone, so its strings' slow motion still reaches the board: the
-  strings of a unison meeting the bridge unlike one another is the
-  candidate, not yet tried.
+- **Neighbours unlike, on the Baby Grand as on the recording.** Each key's
+  whole-note level at 0.5, 1, 2 and 3 s after its onset, re its level at
+  0.1 s: keys three apart differ by a median of 3.3 to 8.1 dB on the
+  Salamander, 1.8 to 6.3 on the Baby Grand (adjacent keys 2.2 to 6.4) and
+  2.0 to 8.0 on the concert grand. The Baby Grand's most unlike neighbours
+  are E5 and F5, 18 dB apart at 1 s: E5 dips where the first decay meets
+  the ring and comes back (34 dB down at 1 s, 28 at 2 s), as the
+  recording's F♯5 does (31 to 35 down at 1 s, 29 to 31 at 2 s); and B6 and
+  C7, 25 dB apart at 3 s, where C7 dies fast (the top octave, under 2.10.0
+  above). On a probe none of these brought neighbours nearer at every
+  time: unisons not narrowed from C5 up, no sideways drive, every key's
+  detune scaled to one size, every unison left the same residual. Without
+  the narrowing, on the concert grand on four layers, the envelope comes
+  nearer (4.32 to 3.90 dB on the notes 1.0.0 fitted) and the decay goes
+  further off (3.79 to 4.82 dB/s; the treble's 4.56 to 8.14). The ring
+  itself is not too long: from 2 to 8 s the fundamental falls 2.0 to
+  4.6 dB/s in the model from A4 to A5 and 2.4 to 4.1 in the Salamander.
+  For reference, the strings' own loss at G5 is 0.26 a second, and a piano
+  string clamped between two fixed ends on an aluminium plate lost 0.43 a
+  second at 810 Hz, its clamps included (Ege and Chaigne, ISMA 2007).
 
 ## Not about the sound
 
 - The Rack Extension adapter still pins engine 1.0.0.
-- CPU: the heaviest blocks take 35 to 62 % of a block on the development
-  machine (20 to 54 % in 2.3.0).
+- CPU: the demos play at 0.07 to 0.18 times real time on the development
+  machine (2.11.0). Its heaviest block is too unsteady there to compare
+  builds: two readings of one build gave 40 to 94 % and 33 to 133 % of a
+  block.
 
 ## Sources
 
