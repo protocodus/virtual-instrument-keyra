@@ -50,6 +50,58 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.13.0 — 2026-11-13 — the bass tuned as a tuner tunes it, and half the cost in Reason
+
+The bass sits lower, most on the small pianos, and the keyboard no longer
+steps a cent at every A. The panel and the saved state are 2.11.0's; a
+session opens as saved. Only the keys below A3 are retuned. The keys'
+level table is written again and each piano's output scale pinned to it
+(the baby grand's 0.1 dB lower).
+
+- **Bass octaves on higher partials.** Through 2.12.0 every bass octave
+  was tuned 6:3 and A3 itself 4:2, so G♯3 stood a cent off the line beside
+  it, and the line stepped again at every A below. A tuner hears a bass octave on higher partials
+  the lower it lies. The octave is now 4:2 at A3, 6:3 by A2 and 8:4 from
+  A1 down, passing from one to the next key by key. Set against the
+  Salamander grand: on that piano's own stiffness, 8:4 leaves its stretch
+  from A0 to A2 within 1.4 cents rms and this ladder within 2.2, where 6:3
+  throughout stood 3.6 cents sharp of it, 7.6 at A0
+  (`Tools/measure_tuner_octaves.py`). At Stretch 1, A0 now stands 9.7
+  cents under equal temperament on the concert grand (6.5 in 2.12.0), 19.6
+  on the parlor grand (12.1), 29.9 on the baby grand (18.6), 28.7 on the
+  upright (18.1) and 15.3 on the studio grand (9.5); A1 stands 4.7, 9.5,
+  14.8, 14.8 and 7.7 under. A2 moves by under 0.3 cents. The Salamander's
+  own A0 and A1 stand 16.5 and 5.1 under; the Studio Grand, whose bass
+  strings are set against that piano, is the one to read beside it.
+- **Four floats abreast, said in the source.** The strings' partials, the
+  open strings, the board's modes and the dot products behind them are
+  written four at a time (`Source/DSP/Four.h`). Each lane does what the
+  one-float loop did, in its order: the same compiler gives the same bytes
+  before and after, and so does the plain-loop fallback other compilers
+  take. A plug-in's compiler already took most of these loops four at a
+  time, so there a dense pedalled phrase costs about a tenth less (GCC 13:
+  38 to 33 % of one core; Clang 18: 36 to 32 %). Reason's compiler takes a
+  loop one float at a time unless the source says four: built the way it
+  builds (no vectoriser, no builtins), the same phrase costs 73 % of a core
+  before and 33 % after, a melody 14 % and 8 %. Those are 30 s renders on a
+  development machine (an Intel Xeon at 2.1 GHz), not Reason's meter.
+- **Nothing on the heap asks for more than a double's alignment.** The
+  Rack's allocator promises 8 bytes, and code that trusts 16 or 32 faults
+  on x86 there. The engine's members no longer ask.
+- **Against the recordings**
+  ([grand](Docs/validation/grand-tuner-ladder-benchmark-2026-11-13.md);
+  [against the shipping 2.11.0](Docs/validation/grand-since-shipping-benchmark-2026-11-13.md)):
+  the benchmark's tuning score moves the wrong way, 2.13 to 2.20 cents on
+  the notes 1.0.0 fitted and 2.22 to 2.32 on the others, all of it in the
+  bass (2.68 to 2.85 and 3.29 to 3.52); four single-note scores are worse:
+  A0's tuning, 4.9 to 5.6 cents on both sets, A1's partials, 10.4 to 10.9
+  dB, and F♯3's rise, 3.1 to 5.4 ms. That score is the mean over a note's
+  first thirty partials, and the concert grand's bass strings are 26 to
+  53 % less stiff than the Salamander's from A0 to C2 (Known gaps): with
+  the fundamental nearer the recording's, the partials above it stand
+  further under. Everything else moves by 0.03 or less. The upright
+  against the Helsinki recordings is not measured yet.
+
 ### 2.12.0 — 2026-11-13 — the image a spaced pair hears
 
 The close pair's image is wider and its bass holds together, as the recorded
@@ -753,7 +805,7 @@ is what the board and the microphones give it.
 | Hammer | −1 to 1 | The felt's stiffness, a decade and a half from soft and worn-in to hard: ×10^(0.75 Hammer) |
 | String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves |
 | Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano (on a grand, half that from C5 up). 0.3 by default |
-| Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 in the treble, 6:3 in the bass, Railsback's curve); 0 is equal temperament |
+| Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 from A3 up; down the bass 6:3 by A2 and 8:4 from A1, Railsback's curve); 0 is equal temperament |
 | Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow under 5 m/s at full velocity: 10 dB at 0, 25 dB at 0.5, where the speed follows the velocity, and 40 dB at 1 |
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
 | Soundboard | 0 to 1 | How long the board rings: its loss halves from 0.5 to 1 and doubles to 0 |
@@ -853,7 +905,9 @@ is written independently of it.
   [2.6.0 against 2.5.0](Docs/validation/grand-case-ring-benchmark-2026-11-11.md),
   [2.7.0 against 2.6.0](Docs/validation/grand-room-bridge-benchmark-2026-11-12.md),
   [2.8.0 against 2.7.0](Docs/validation/grand-unison-spread-benchmark-2026-11-12.md),
-  [2.10.0 against 2.9.0](Docs/validation/grand-board-beside-benchmark-2026-11-12.md)).
+  [2.10.0 against 2.9.0](Docs/validation/grand-board-beside-benchmark-2026-11-12.md),
+  [2.12.0 against 2.11.0](Docs/validation/grand-pair-image-benchmark-2026-11-13.md),
+  [2.13.0 against 2.12.0](Docs/validation/grand-tuner-ladder-benchmark-2026-11-13.md)).
   2.7.0 put the bass's partials 0.3 to 0.4 dB and the rise 0.5 ms further
   off, and 71 single-note scores; 2.10.0 the level by register 0.5 dB, and
   108 single-note scores.
@@ -889,7 +943,19 @@ is written independently of it.
   the bass the benchmark still looks for upper partials where the model
   does not put them; the upright's are 6 to 41 % under the Helsinki's. No
   recorded concert grand's bass is in the reference set to say what the
-  model's should be.
+  model's should be. 2.13.0's bass octaves follow the rule the
+  Salamander's stretch follows, on the model's own less stiff strings, so
+  the concert grand's A0 stands 9.7 cents under equal temperament where
+  the Salamander's stands 16.5 under, and the benchmark's tuning score, a
+  mean over thirty partials, reads the bass 0.2 cents further off than
+  2.12.0's.
+- **Steps in the stretch where the strings change.** Octaves tuned on the
+  strings' own partials step where the scale passes from wound strings to
+  plain ones or from one string to two: 4.2 cents between C3 and C♯3 on
+  the baby grand, 2.5 between D3 and D♯3 on the upright, 2.6 between A♯2
+  and B2 on the parlor grand, 1.8 between E2 and F2 on the concert grand
+  and 1.5 on the studio grand, and about half as much an octave lower. A
+  tuner smooths a break by ear; the model's does not.
   Against a second recorded upright (MAPS, ENSTDkCl) the notes from C6 up
   stand 1 to 4 dB louder beside the middle ones than recorded, and the
   thump arrives up to 10 ms later.
@@ -949,6 +1015,11 @@ is written independently of it.
   keys from F♯6 up stand 5 to 13 dB quiet beside the middle of the keyboard
   against the Salamander's, and at the hardest up to 6 dB loud; the keys
   from C1 to F♯2 stand 1 to 8 dB quiet from a soft layer up, as in 2.3.0.
+  Read again on 2.12.0, layer by layer beside each run's median: the
+  octaves from C2 to B6 follow the recording's dynamics within 1 to 2 dB
+  from the second layer to the fifteenth, A0 to B1 stands 3 to 4 dB low at
+  every layer, and C7 to C8 goes from 0.5 dB loud at the second layer to
+  5.5 at the twelfth.
 - **Rough partials.** Within a note a partial stands 6 to 10 dB from the
   mean of its neighbours where the Salamander's stand 2.5 to 5 dB: the
   model's board answers single frequencies more unevenly than a real one.
@@ -988,8 +1059,12 @@ is written independently of it.
   54 % there, and 5 to 11 % and 12 to 29 % on the CI runner (main build
   105). Timed one after the other on that machine, 2.9.0 and 2.10.0 both
   took 7 to 16 %, with heaviest blocks so unsteady there (0.2 to 1.6 of
-  the block for both) that they compare nothing. There is no Quality
-  setting to lighten it.
+  the block for both) that they compare nothing. 2.13.0 reads 7 to 15 %
+  there, its heaviest blocks as unsteady (0.2 to 1.6 of the block); built
+  the way Reason's compiler builds, a dense pedalled phrase takes 33 % of
+  one core, above the portfolio's 10 %. Designing the five pianos when the
+  engine is made takes about half a second. There is no Quality setting to
+  lighten it.
 - **Typical dimensions.** The five pianos are typical of their kinds, not
   one maker's instruments, and they share one board, bridge and strike
   point. Their soundboards are a smeared plate under a bridge beam, with
@@ -999,8 +1074,9 @@ is written independently of it.
 - **1.x sessions do not sound as they did.** They load mapped to the nearest
   piano (Version history).
 - **Host acceptance.** pluginval, clap-validator, auval, Windows, manual DAW
-  workflows and Reason are unverified for 2.0.0; the Rack Extension adapter
-  still pins 1.0.0.
+  workflows and Reason are unverified for the physical model. The Rack
+  Extension adapter's source pins it, and 2.12.0 compiles and links under
+  Reason's SDK; no Rack Extension of it has been built or run in Reason.
 
 ## Build
 

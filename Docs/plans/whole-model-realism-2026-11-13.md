@@ -26,6 +26,14 @@ benchmarked and heard.
   middle register are the hammer's: its felt behaves like the recorded
   one played 6 to 10 dB softer. Proposal 1 is the felt's law and the
   velocity curve alone.
+- **Proposal 1, the felt, was tried once and left out** (2.13.0,
+  `Docs/decisions.md`, 2026-11-13): a harder felt from C3 to C5 brought
+  the middle's partials 0.4 to 0.9 dB nearer and took the soft pedal, the
+  Hammer control and the practice felt under what `Keyra.Engine` asks of
+  them. It needs the felt's law by register, not one stiffness.
+- **The bass octaves are tuned on higher partials** since 2.13.0, set
+  against the Salamander's stretch (`Tools/measure_tuner_octaves.py`); not
+  among the proposals below.
 - **Proposal 3, new rooms, is dropped.** Asked how a hall and a home
   should appear in the product, the owner chose to leave the room as it
   is (2026-11-13).

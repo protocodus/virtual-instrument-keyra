@@ -4,6 +4,7 @@
 #include "MeasuredRoom.h"
 #include "MeasuredUprightData.h"
 #include "ForteOutput.h"
+#include "Four.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -170,23 +171,11 @@ constexpr double touchSpreadDb=1.085;
 // 0.52 going down and 0.36 coming up; these spreads leave the engine's at
 // 0.89 and 0.62, more alike than the recorded.
 constexpr double knockSpreadDb=1,modeSpreadDb=2,modeSpreadPhase=1,clickSpreadDb=3,clickSpreadRise=.3;
-#if (defined(__clang__) || defined(__GNUC__)) && !defined(KEYRA_FORCE_SCALAR)
-// Explicit 128-bit lanes also survive the freestanding Rack compiler, whose
-// ordinary loops do not auto-vectorize. One vector holds four body modes.
-using V4=float __attribute__((vector_size(16)));
+// One vector holds four body modes (Four.h).
+using V4=Four;
 float lane(const V4& v,int i) noexcept {return v[i];}
-void setLane(V4& v,int i,float x) noexcept {v[i]=x;}
-V4 splat(float x) noexcept {return V4{x,x,x,x};}
-#else
-struct V4 {float v[4];};
-V4 operator+(V4 a,V4 b) noexcept {return {{a.v[0]+b.v[0],a.v[1]+b.v[1],a.v[2]+b.v[2],a.v[3]+b.v[3]}};}
-V4 operator-(V4 a,V4 b) noexcept {return {{a.v[0]-b.v[0],a.v[1]-b.v[1],a.v[2]-b.v[2],a.v[3]-b.v[3]}};}
-V4 operator*(V4 a,V4 b) noexcept {return {{a.v[0]*b.v[0],a.v[1]*b.v[1],a.v[2]*b.v[2],a.v[3]*b.v[3]}};}
-V4& operator+=(V4& a,V4 b) noexcept {a=a+b;return a;}
-float lane(const V4& v,int i) noexcept {return v.v[i];}
-void setLane(V4& v,int i,float x) noexcept {v.v[i]=x;}
-V4 splat(float x) noexcept {return {{x,x,x,x}};}
-#endif
+void setLane(V4& v,int i,float x) noexcept {v.set(i,x);}
+V4 splat(float x) noexcept {return V4::all(x);}
 double mix(double a,double b,double t) noexcept {return a+(b-a)*t;}
 // Between two pianos' values of a part at its build: exactly either at its
 // ends, linear or in the log domain between them.
@@ -242,11 +231,11 @@ Complex power(Complex base,int exponent) noexcept {
 // fixed frequencies, each heard through its own pickup (BodyPickup, shared by
 // the body's banks of those modes). The float state runs one chunk from the
 // exact state.
-struct alignas(16) BodyBank {
+struct BodyBank {
   V4 re{},im{},c{},s{};
   Complex exact[lanes]{},step[lanes]{},leap[lanes]{};
 };
-struct alignas(16) BodyPickup {V4 left{},rightRe{},rightIm{};};
+struct BodyPickup {V4 left{},rightRe{},rightIm{};};
 constexpr int bodyModes=static_cast<int>(std::max({grand::bodyModes.size(),upright::bodyModes.size()})),
               bodyBanks=(bodyModes+lanes-1)/lanes;
 using Body=std::array<BodyBank,bodyBanks>;
@@ -452,7 +441,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1840,.1517,.1128,.1609,.1703};
+  static constexpr double pascalScale[model::bodyCount]{.1840,.1519,.1116,.1609,.1703};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75;
   double smooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;

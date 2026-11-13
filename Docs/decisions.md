@@ -5434,3 +5434,109 @@ matched to A on whole-file RMS over both channels; the trims, -0.06 to
 and not matched again: how much each loses in mono is part of what is
 judged. No verdict yet. This entry is on the work branch until the owner
 has heard it and the upright is benchmarked.
+
+## 2026-11-13 — the bass octaves, and the loops four abreast (2.13.0)
+
+**Asked.** Before a first commercial release the owner asked for the whole
+model to be read again across all five pianos: every note well tuned and
+level, one character across the keyboard, the dynamics balanced, the mix
+of mechanics, strings and resonances natural, every parameter used, the
+CPU cost lower, then a Rack Extension built and tried in Recon with its
+Shop materials.
+
+**What was read, and stands.** On 2.12.0, the concert grand's close pair
+beside the Salamander's 30 pitches and 16 layers:
+
+- From key to key the level, the stereo balance and the brightness are as
+  even as the recording's or more so.
+- A held note's slow swells are the recording's size: 0.1 dB recorded and
+  0.2 in the model from A0 to A2, 0.7 and 1.1 from C3 to A4, 3.9 and 3.5
+  from C5 to A5, 4.8 and 2.8 from C6 to C8.
+- Layer by layer, each run beside its own median, the octaves from C2 to
+  B6 follow the recording's dynamics within 1 to 2 dB from the second
+  layer to the fifteenth. A0 to B1 stands 3 to 4 dB low at every layer,
+  C3 to B3 about 2 dB high, and C7 to C8 goes from 0.5 dB loud at the
+  second layer to 5.5 at the twelfth. The softest layer (velocity 14) is
+  4 to 8 dB quiet from C5 up, 14 at A6. These stay Known gaps: the top
+  octave has been loud since 2.10.0's sound beside the board's modes.
+- Every one of the plug-in's 24 parameters reaches the engine's field of
+  its name (`Source/PluginProcessor.cpp`, read index for index), and
+  `Keyra.ParameterExtremes` plays each at its ends.
+
+The scripts behind these readings are scratch work kept with the project's
+files, not committed.
+
+**The tuner (measured, not by ear).** Through 2.12.0 the bass octaves
+were 6:3 and A3's 4:2, which stepped the line a cent at every A from G♯3
+down. `Tools/measure_tuner_octaves.py` applies each octave type to the
+Salamander's own measured stiffness and reads the stretch it would give
+beside the stretch recorded, A0 to A2: 4:2 stands 7.3 cents rms off (6.0
+sharp in the mean), 6:3 4.5 (3.6 sharp, 7.6 at A0), 8:4 1.4 (0.1), 10:5
+5.1 (4.3 flat). That piano's tuner set its bass 8:4. The model now passes
+from 4:2 at A3 through 6:3 at A2 to 8:4 from A1 down, key by key, which
+reads 2.2 cents rms there and has no step at an A. The ladder and not 8:4
+from A3 down, though 8:4 reads 0.7 cents rms nearer over those eight
+keys: 8:4 on the octave under an A3 tuned 4:2 would bring back the step
+at G♯3.
+The steps that remain are the strings' own, where wound strings give way
+to plain ones (Known gaps).
+
+**What the benchmark says of it**
+(`Docs/validation/grand-tuner-ladder-benchmark-2026-11-13.md`): the tuning
+score goes from 2.13 to 2.20 cents on the notes 1.0.0 fitted and 2.22 to
+2.32 on the others; the bass's from 2.68 to 2.85 and 3.29 to 3.52. Four
+single-note scores are worse: A0's tuning on both sets (4.87 to 5.63 and
+4.91 to 5.61 cents), A1's partials on the unfitted notes (10.39 to 10.90
+dB) and F♯3's rise there (3.05 to 5.44 ms). Everything else moves by 0.03
+or less, and no note from C4 up moves at all. The score is a mean over a
+note's first thirty partials. The concert grand's A0 to C2 are 0.47 to
+0.74 as stiff as the Salamander's (Known gaps), so its upper partials
+already stood under the recording's, and a fundamental 3 cents lower puts
+them further under while it brings the fundamental itself nearer (A0: 6.5
+cents under equal temperament before, 9.7 now, 16.5 recorded). The score
+cannot be brought down by the tuner without tuning the model's bass sharp
+of its own octaves. Against the shipping 2.11.0
+(`grand-since-shipping-benchmark-2026-11-13.md`) 2.13.0 carries 2.12.0's
+89 single-note regressions and these, 90 paired in all.
+
+**Tried and left out: a harder felt in the middle.** The strike
+measurements (the plan's first proposal) read the middle register's felt
+as the recorded one played 6 to 10 dB softer. A felt up to 0.4 of a
+decade stiffer, most at C4 and fading to nothing at C2 and C5, brought the partials of C3 to B3 0.4 to 0.8
+dB and of C4 to B4 0.6 to 0.9 dB nearer the recording, the early spectrum
+0.3 to 0.45 dB from the middle layers up, left C5 and above alone, and
+put the loud noise of C3 to B3 1.1 dB and the decay 0.1 to 0.3 dB/s
+further off. `Keyra.Engine` then failed three checks: the soft pedal's
+darkening above 2 kHz fell to 0.31 dB (the check asks 0.5; 2.12.0 gives
+0.64), the Hammer control's span from −1 to 1 to 5.3 dB (6; 6.9) and the
+practice felt's cut above 1 kHz to 9.4 dB (10; 12.8). A harder felt
+leaves each of those controls less to do, which is the felt's law, not
+the tests' error, so the change is out and the tests are as they were.
+The middle's missing upper partials stay a Known gap until the felt's law
+itself (its exponent and hysteresis by register) is worked through.
+
+**Looked at and set aside.** The board's rise above 1.1 kHz, as too small
+beside the hammer's share. The keys with a hole at their fundamental (D♯5,
+F♯5, A5): the board's modes and the sound beside them cancel there; 16 or
+32 bridge points and a higher top mode leave it as it is.
+
+**The loops four abreast (no listening needed).** The same compiler gives
+the same bytes before and after on a dense pedalled phrase and a melody,
+with GCC 13, Clang 18 and Clang built as Reason's SDK builds (no
+vectoriser, no builtins), and the plain-loop fallback gives GCC's bytes
+too. Cost on the development machine, 30 s renders through
+`keyra_render`: 38.3 to 33.0 % and 9.0 to 8.4 % of one core with GCC,
+35.7 to 32.3 % and 8.9 to 8.2 % with Clang, 72.7 to 33.4 % and 13.8 to
+8.4 % the SDK's way. Not Reason's meter: no Rack Extension of the
+physical model has run in Reason yet.
+
+**Not measured.** The upright against the Helsinki recordings, for 2.12.0
+and for this: the recordings are on the owner's machine and the run is
+still to be made there. By the standing rule neither version is merged
+before it.
+
+**What is the owner's to hear.** The bass tuning is audible, most on the
+baby grand and the upright (A0 11 cents lower than 2.12.0's). It rests on
+the measurement above, not on a listening test; the 2.12.0 image set's
+verdict is still open. This entry is on the work branch until the upright
+is benchmarked and the owner has decided the merge.

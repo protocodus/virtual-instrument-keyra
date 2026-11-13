@@ -1,4 +1,5 @@
 #include "PianoModel.h"
+#include "Four.h"
 #include "KeyVoicing.h"
 #include <algorithm>
 #include <cmath>
@@ -77,11 +78,11 @@ std::complex<double> turned(double size,double angle) noexcept {return {size*std
 // The sum of a[k] b[k] in eight strands: summed in order, every add waits for
 // the one before it, which was most of what a sounding string cost.
 inline float dot(const float* a,const float* b,int n) noexcept {
-  float strand[8]{};int k=0;
-  for(;k+8<=n;k+=8)for(int j=0;j<8;++j)strand[j]+=a[k+j]*b[k+j];
+  Four low=Four::all(0),high=Four::all(0);int k=0;
+  for(;k+8<=n;k+=8){low+=Four::at(a+k)*Four::at(b+k);high+=Four::at(a+k+4)*Four::at(b+k+4);}
   float rest=0;
   for(;k<n;++k)rest+=a[k]*b[k];
-  return ((strand[0]+strand[1])+(strand[2]+strand[3]))+((strand[4]+strand[5])+(strand[6]+strand[7]))+rest;
+  return ((low[0]+low[1])+(low[2]+low[3]))+((high[0]+high[1])+(high[2]+high[3]))+rest;
 }
 // cos and sin of an angle from 0 to pi, to 1e-7: every partial sounding is
 // retuned through here while the pitch bends. Their series about pi/2, put
@@ -523,17 +524,29 @@ void designStrings(Tables& t,int body) noexcept {
   }
   // The tuner's stretch: A4 at pitch, the octave under it and every octave
   // above tuned 4:2 (the upper note's second partial on the lower's fourth),
-  // the bass 6:3, each on the strings' own partials (O. L. Railsback,
-  // "Scale temperament as applied to piano tuning", JASA 9, 1938).
+  // each on the strings' own partials (O. L. Railsback, "Scale temperament as
+  // applied to piano tuning", JASA 9, 1938). Down the bass the octave is
+  // heard on higher partials, as a tuner hears it: 6:3 at A2 and 8:4 from A1
+  // down, passing from one to the next key by key. On the Salamander grand's
+  // own stiffness, 8:4 leaves its stretch from A0 to A2 within 1.4 cents rms
+  // and this ladder within 2.2, where 6:3 throughout, as through 2.12.0,
+  // stood 3.6 cents sharp of it (7.6 at A0) and stepped a cent at every A,
+  // G#3 being tuned 6:3 beside an A3 tuned 4:2
+  // (Tools/measure_tuner_octaves.py).
   // A pitch here is the ideal string's, which its stiffness raises to its
   // first partial: that partial is what is tuned.
   double pitch[keyCount];
   const auto partial=[&](int key,int n){return n*std::sqrt(1+t.keys[key].inharmonicity*n*n);};
+  const auto octaveUnder=[&](int key,int n){return pitch[key+12]*partial(key+12,n/2)/partial(key,n);};
   pitch[48]=440/partial(48,1);
   pitch[36]=pitch[48]*partial(48,2)/partial(36,4);
   for(int i=37;i<48;++i)pitch[i]=pitch[36]*std::pow(pitch[48]/pitch[36],(i-36)/12.);
   for(int i=49;i<keyCount;++i)pitch[i]=pitch[i-12]*partial(i-12,4)/partial(i,2);
-  for(int i=35;i>=0;--i)pitch[i]=pitch[i+12]*partial(i+12,3)/partial(i,6);
+  for(int i=35;i>=0;--i){
+    const double steps=std::min(2.,(36-i)/12.);      // octave types past 4:2
+    const int lower=4+2*static_cast<int>(steps);
+    pitch[i]=steps>=2?octaveUnder(i,8):octaveUnder(i,lower)*std::pow(octaveUnder(i,lower+2)/octaveUnder(i,lower),steps-std::floor(steps));
+  }
   for(int i=0;i<keyCount;++i)t.keys[i].stretchCents=1200*std::log2(pitch[i]*partial(i,1)/t.keys[i].hertz);
 }
 
@@ -929,15 +942,15 @@ struct Voice {
   float damper=0;            // 0 off the strings, 1 on them
   float appliedDamper=-1;
   float u[6]{};              // each plane's hold on the bridge
-  alignas(32) float re[planeFloats]{},im[planeFloats]{};
-  alignas(32) float turnRe[planeFloats]{},turnIm[planeFloats]{}; // the step: rotation times loss
-  alignas(32) float cosine[planeFloats]{},sine[planeFloats]{};
-  alignas(32) float drive[planeFloats]{};   // displacement per newton of hammer force, per sample
-  alignas(32) float couplingRe[maxK]{},couplingIm[maxK]{}; // per sample
-  alignas(32) float bridge[maxK]{};         // newtons on the bridge per metre
-  alignas(32) float open[maxK]{},damped[maxK]{}; // the loss per sample, damper off and on
-  alignas(32) float tension[maxK]{};        // the longitudinal force's share
-  alignas(32) float force[chunk]{};
+  float re[planeFloats]{},im[planeFloats]{};
+  float turnRe[planeFloats]{},turnIm[planeFloats]{}; // the step: rotation times loss
+  float cosine[planeFloats]{},sine[planeFloats]{};
+  float drive[planeFloats]{};   // displacement per newton of hammer force, per sample
+  float couplingRe[maxK]{},couplingIm[maxK]{}; // per sample
+  float bridge[maxK]{};         // newtons on the bridge per metre
+  float open[maxK]{},damped[maxK]{}; // the loss per sample, damper off and on
+  float tension[maxK]{};        // the longitudinal force's share
+  float force[chunk]{};
   float floor2=0;            // the squared bridge force under which a partial is let go
 };
 // A hammer against its string, from contact until it has left.
@@ -947,7 +960,7 @@ struct Contact {
   double position=0,velocity=0,mass=0,relaxed=0,prompt=0,exponent=0,previous=0,deepest=0;
   double give=0;             // the string's yielding at the hammer within a step, m/N
   double late=1,strength=1;  // this blow's catch against the middle one's: its time and its push
-  alignas(32) float re[maxK]{},im[maxK]{},turnRe[maxK]{},turnIm[maxK]{},drive[maxK]{},shape[maxK]{};
+  float re[maxK]{},im[maxK]{},turnRe[maxK]{},turnIm[maxK]{},drive[maxK]{},shape[maxK]{};
 };
 struct Biquad {
   double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;
@@ -974,12 +987,12 @@ struct Piano::Impl {
   int substeps=2;
 
   // The open strings and duplex scales: bankSlots modes a key.
-  alignas(32) float bankRe[keyCount*bankSlots]{},bankIm[keyCount*bankSlots]{};
-  alignas(32) float bankTurnRe[keyCount*bankSlots]{},bankTurnIm[keyCount*bankSlots]{};
-  alignas(32) float bankCos[keyCount*bankSlots]{},bankSin[keyCount*bankSlots]{};
-  alignas(32) float bankIn[keyCount*bankSlots]{},bankOut[keyCount*bankSlots]{};
-  alignas(32) float bankOpen[keyCount*bankSlots]{},bankDamped[keyCount*bankSlots]{};
-  alignas(32) float bankEnd[keyCount*bankSlots]{}; // a mode's drive from its string's near end
+  float bankRe[keyCount*bankSlots]{},bankIm[keyCount*bankSlots]{};
+  float bankTurnRe[keyCount*bankSlots]{},bankTurnIm[keyCount*bankSlots]{};
+  float bankCos[keyCount*bankSlots]{},bankSin[keyCount*bankSlots]{};
+  float bankIn[keyCount*bankSlots]{},bankOut[keyCount*bankSlots]{};
+  float bankOpen[keyCount*bankSlots]{},bankDamped[keyCount*bankSlots]{};
+  float bankEnd[keyCount*bankSlots]{}; // a mode's drive from its string's near end
   float bankFollow[keyCount]{};                    // the pull of a string that only follows that end
   float bankDamper[keyCount]{},bankApplied[keyCount]{};
   float damperOn[keyCount]{};   // each damper's own weight on its strings, 0 off to 1
@@ -992,9 +1005,9 @@ struct Piano::Impl {
 
   // The soundboard.
   int modes=0;
-  alignas(32) float boardRe[maxModes]{},boardIm[maxModes]{},boardTurnRe[maxModes]{},boardTurnIm[maxModes]{};
-  alignas(32) float boardIn[points][maxModes]{};
-  alignas(32) float outNow[4][2][maxModes]{},outGoal[4][2][maxModes]{}; // left, right, room left, room right
+  float boardRe[maxModes]{},boardIm[maxModes]{},boardTurnRe[maxModes]{},boardTurnIm[maxModes]{};
+  float boardIn[points][maxModes]{};
+  float outNow[4][2][maxModes]{},outGoal[4][2][maxModes]{}; // left, right, room left, room right
   bool outMoving=false;
   // Above the modes: each point's force, high-passed, delayed to each
   // microphone.
@@ -1030,7 +1043,7 @@ struct Piano::Impl {
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
   double dcL=0,dcR=0,dcInL=0,dcInR=0,dcPole=0;
-  alignas(32) float boardRim[points+1][maxModes]{}; // the edge's places, and last all of them alike
+  float boardRim[points+1][maxModes]{}; // the edge's places, and last all of them alike
   int catchIn[keyCount]{},catches=0;  // samples until a key's hammer is caught (-1: none), and how many wait
   float catchPush[keyCount]{};        // newtons for one sample
   double catchAt[keyCount][2]{};      // each catch's push, twice smoothed, newtons
@@ -1278,28 +1291,45 @@ struct Piano::Impl {
         break;}
     }
   }
+  // Four partials at a time (Four.h), the last one to three singly: a lane
+  // past a plane's length would wake a partial that was let go.
   void play(Voice& v,float* out,int frames) noexcept {
-    alignas(32) float sumRe[maxK],sumIm[maxK],stretch[maxKl];
+    float sumRe[maxK],sumIm[maxK],stretch[maxKl];
     const int n=v.sounding;
     const int lengths[6]{planeLength(v,0),planeLength(v,1),planeLength(v,2),planeLength(v,3),planeLength(v,4),planeLength(v,5)};
     for(int s=0;s<frames;++s){
       const float force=v.forcing?v.force[s]:0;
-      for(int k=0;k<n;++k){sumRe[k]=v.re[k];sumIm[k]=v.im[k];}
+      int k=0;
+      for(;k+4<=n;k+=4){Four::at(v.re+k).to(sumRe+k);Four::at(v.im+k).to(sumIm+k);}
+      for(;k<n;++k){sumRe[k]=v.re[k];sumIm[k]=v.im[k];}
       for(int plane=1;plane<3;++plane){const int len=lengths[plane],o=planeStart[plane];
-        for(int k=0;k<len;++k){sumRe[k]+=v.re[o+k];sumIm[k]+=v.im[o+k];}}
+        for(k=0;k+4<=len;k+=4){(Four::at(sumRe+k)+Four::at(v.re+o+k)).to(sumRe+k);(Four::at(sumIm+k)+Four::at(v.im+o+k)).to(sumIm+k);}
+        for(;k<len;++k){sumRe[k]+=v.re[o+k];sumIm[k]+=v.im[o+k];}}
       float pull=dot(v.bridge,sumIm,n);
       for(int plane=3;plane<6;++plane)pull+=v.u[plane]*dot(v.bridge,v.im+planeStart[plane],lengths[plane]);
       const int longitudinal=std::min(n,v.longitudinal);
-      for(int k=0;k<longitudinal;++k)stretch[k]=v.re[k]*v.re[k]-v.im[k]*v.im[k];
+      for(k=0;k+4<=longitudinal;k+=4){const Four re=Four::at(v.re+k),im=Four::at(v.im+k);(re*re-im*im).to(stretch+k);}
+      for(;k<longitudinal;++k)stretch[k]=v.re[k]*v.re[k]-v.im[k]*v.im[k];
       out[s]=pull+dot(v.tension,stretch,longitudinal);
       // The bridge gives under the strings' sum and takes from each.
-      for(int k=0;k<n;++k){
+      for(k=0;k+4<=n;k+=4){
+        const Four cRe=Four::at(v.couplingRe+k),cIm=Four::at(v.couplingIm+k),re=Four::at(sumRe+k),im=Four::at(sumIm+k);
+        (cRe*re-cIm*im).to(sumRe+k);(cRe*im+cIm*re).to(sumIm+k);
+      }
+      for(;k<n;++k){
         const float cr=v.couplingRe[k]*sumRe[k]-v.couplingIm[k]*sumIm[k];
         sumIm[k]=v.couplingRe[k]*sumIm[k]+v.couplingIm[k]*sumRe[k];sumRe[k]=cr;
       }
+      const Four forced=Four::all(force);
       for(int plane=0;plane<6;++plane){const int len=lengths[plane],o=planeStart[plane];const float u=plane<3?1.f:0.f;
         float* re=v.re+o;float* im=v.im+o;const float* tr=v.turnRe+o;const float* ti=v.turnIm+o;const float* drive=v.drive+o;
-        for(int k=0;k<len;++k){
+        const Four held=Four::all(u);
+        for(k=0;k+4<=len;k+=4){
+          const Four r=Four::at(re+k),i=Four::at(im+k),turnRe=Four::at(tr+k),turnIm=Four::at(ti+k);
+          (turnRe*r-turnIm*i-held*Four::at(sumRe+k)+Four::at(drive+k)*forced).to(re+k);
+          (turnIm*r+turnRe*i-held*Four::at(sumIm+k)).to(im+k);
+        }
+        for(;k<len;++k){
           const float r=tr[k]*re[k]-ti[k]*im[k]-u*sumRe[k]+drive[k]*force;
           im[k]=ti[k]*re[k]+tr[k]*im[k]-u*sumIm[k];re[k]=r;
         }
@@ -1715,48 +1745,69 @@ struct Piano::Impl {
       const bool own=voices[i].active;
       const int p=bankPoint[i];const float b=bankMix[i],a=1-b;
       float energy=0;
-      // The key's modes out of the arrays for the chunk, where the compiler
-      // can keep them in registers and take them four at a time.
-      alignas(16) float re[bankSlots],im[bankSlots],turnRe[bankSlots],turnIm[bankSlots],in[bankSlots],end[bankSlots],out[bankSlots];
-      for(int k=0;k<bankSlots;++k){re[k]=bankRe[o+k];im[k]=bankIm[o+k];turnRe[k]=bankTurnRe[o+k];turnIm[k]=bankTurnIm[o+k];
-        in[k]=bankIn[o+k];end[k]=bankEnd[o+k];out[k]=bankOut[o+k];}
+      // The key's modes in three vectors for the chunk. The pull is dot()'s
+      // sum of out[k] im[k] over the twelve: eight strands from nothing, then
+      // the last four in order.
+      static_assert(bankSlots==12,"the open strings' modes fill three vectors");
+      Four re[3],im[3];const Four none=Four::all(0);
+      const float* tr=bankTurnRe+o;const float* ti=bankTurnIm+o;const float* in=bankIn+o;const float* end=bankEnd+o;const float* out=bankOut+o;
+      for(int j=0;j<3;++j){re[j]=Four::at(bankRe+o+4*j);im[j]=Four::at(bankIm+o+4*j);}
       const float follow=bankFollow[i];
       for(int s=0;s<frames;++s){
         const float x=own?0:a*moved[p][s]+b*moved[p+1][s],y=own?0:pushed[s];
-        for(int k=0;k<bankSlots;++k){
-          const float r=turnRe[k]*re[k]-turnIm[k]*im[k]+in[k]*x+end[k]*y;
-          im[k]=turnIm[k]*re[k]+turnRe[k]*im[k];re[k]=r;
+        const Four moving=Four::all(x),pushing=Four::all(y);
+        Four product[3];
+        // The SDK's compiler keeps the vectors in registers only when told
+        // the loop is three steps long.
+#if defined(__clang__)
+#pragma unroll
+#endif
+        for(int j=0;j<3;++j){
+          const Four turnRe=Four::at(tr+4*j),turnIm=Four::at(ti+4*j);
+          const Four r=turnRe*re[j]-turnIm*im[j]+Four::at(in+4*j)*moving+Four::at(end+4*j)*pushing;
+          im[j]=turnIm*re[j]+turnRe*im[j];re[j]=r;
+          product[j]=Four::at(out+4*j)*im[j];
         }
         // A string that only follows its end leans on the frame and the
         // bridge as it stands between them; what it rings beyond that is
         // what the bridge hears.
-        const float pull=dot(out,im,bankSlots)-follow*y;
+        const Four low=none+product[0],high=none+product[1];
+        const float rest=(((0.f+product[2][0])+product[2][1])+product[2][2])+product[2][3];
+        const float pull=((low[0]+low[1])+(low[2]+low[3]))+((high[0]+high[1])+(high[2]+high[3]))+rest-follow*y;
         answered[p][s]+=a*pull;answered[p+1][s]+=b*pull;energy+=pull*pull;
       }
-      for(int k=0;k<bankSlots;++k){bankRe[o+k]=re[k];bankIm[o+k]=im[k];}
+      for(int j=0;j<3;++j){re[j].to(bankRe+o+4*j);im[j].to(bankIm+o+4*j);}
       bankEnergy[i]+=energy;
     }
     // The board, and above its modes the bridge's own radiation.
-    alignas(32) float in[maxModes];
     const int mask=lineSize-1,roomMask=roomSize-1;
     for(int s=0;s<frames;++s){
-      for(int k=0;k<modes;++k)in[k]=0;
+      // What pushes the board in this sample: each bridge point's force and
+      // each place of the edge, those at rest left out.
+      const float* pushing[2*points+1];float pushes[2*points+1];int pushCount=0;
       for(int p=0;p<points;++p){
         const float force=struck[p][s]+answered[p][s];
         line[p][lineAt]=static_cast<float>(highpass[p][2].run(highpass[p][1].run(highpass[p][0].run(force))));
         lineBeside[p][lineAt]=static_cast<float>(besideFilter[p][1].run(besideFilter[p][0].run(force)));
         if(force==0)continue;
-        const float* gain=boardIn[p];
-        for(int k=0;k<modes;++k)in[k]+=gain[k]*force;
+        pushing[pushCount]=boardIn[p];pushes[pushCount++]=force;
       }
       if(rimmed)for(int p=0;p<=points;++p){
         const float push=rim[p][s];
         if(push==0)continue;
-        const float* gain=boardRim[p];
-        for(int k=0;k<modes;++k)in[k]+=gain[k]*push;
+        pushing[pushCount]=boardRim[p];pushes[pushCount++]=push;
       }
-      for(int k=0;k<modes;++k){
-        const float re=boardTurnRe[k]*boardRe[k]-boardTurnIm[k]*boardIm[k]+in[k];
+      int k=0;
+      for(;k+4<=modes;k+=4){
+        Four in=Four::all(0);
+        for(int j=0;j<pushCount;++j)in+=Four::at(pushing[j]+k)*Four::all(pushes[j]);
+        const Four re=Four::at(boardRe+k),im=Four::at(boardIm+k),turnRe=Four::at(boardTurnRe+k),turnIm=Four::at(boardTurnIm+k);
+        (turnRe*re-turnIm*im+in).to(boardRe+k);(turnIm*re+turnRe*im).to(boardIm+k);
+      }
+      for(;k<modes;++k){
+        float in=0;
+        for(int j=0;j<pushCount;++j)in+=pushing[j][k]*pushes[j];
+        const float re=boardTurnRe[k]*boardRe[k]-boardTurnIm[k]*boardIm[k]+in;
         boardIm[k]=boardTurnIm[k]*boardRe[k]+boardTurnRe[k]*boardIm[k];boardRe[k]=re;
       }
       float o[4];
