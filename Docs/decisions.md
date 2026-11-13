@@ -5274,3 +5274,163 @@ chords, bass notes alone, and left-hand octaves under soft chords around
 middle C. B is matched to A on whole-file RMS; the trims, -0.02 to
 -0.33 dB, are in its key. By the project's standing rule B stands unless
 the owner says otherwise.
+
+## 2026-11-13 — the image a spaced pair hears (2.12.0)
+
+**Asked.** The owner asked for the pianos to be improved as whole
+instruments against the recordings: how the piano works, the room and what
+the microphones hear, with the recordings as benchmarks of the model and no
+note fitted (`Docs/plans/whole-model-realism-2026-11-13.md`). The image was
+that plan's first step: the close pair's two channels were more alike than
+the recorded pair's above 250 Hz and less alike below it.
+
+**What was found.** The model's board is one smeared plate and its modes
+are exact: every second one is odd across the board's middle, so two
+microphones either side of the middle hear it exactly out of phase, the
+lowest modes too. Left as they fall, the close pair's channels are about
+-0.6 alike from 88 to 354 Hz. The hold from 2.1.0 to 2.11.0 turned any mode
+further than 70 to 90 degrees out of step back to that angle and left the
+others as they fell, half of them in step. Over 150 notes
+(`Tools/measure_pair_image.py`, its protocol at its head: 30 pitches from
+A0 to C8 at five layers, 0.05 to 0.85 s of each) that gave 0.57, 0.30, 0.27
+and 0.17 alike in the octaves at 125, 250, 500 and 1000 Hz, where the
+Salamander's two channels are 0.79, -0.17, 0.05 and 0.08, each within
+0.04: too loose in the bass and too tight above it. No place for a spaced
+pair avoids the odd modes, and a real board, ribbed, bridged and shaped
+like a wing, has none that are exact.
+
+**Chosen.** Each microphone keeps the level it hears of each mode, and the
+angle between a pair's two microphones is set, mode by mode, to the one
+whose cosine the sound field at a pair gives in the mean. For the board's
+own sound that is sin(kr)/(kr), r the most that the two paths from one
+point of the board can differ: the cosine of the path difference averaged
+over a source as wide as the board looks from the pair (the van
+Cittert-Zernike theorem). For the room's share it is sin(kd)/(kd) across
+the spacing d (Cook and others, JASA 27, 1955), times what the two
+patterns share of a diffuse field, (3 + the cosine of the angle between
+them) / 4 for cardioids. The two are weighed by how much of each the pair
+hears of that mode. A mode keeps the side its own phase fell on; half a
+turn is a change of sign, and what is left, a quarter turn at most, is
+shared evenly between the two microphones. The pair's level is set after
+the turning. The law has no constant: nothing in it is fitted, and the
+Salamander's figures stand beside it as a check.
+
+Over the same 150 notes, 2.12.0 beside the recording and 2.11.0, by
+octave and over everything above 20 Hz:
+
+| | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | whole |
+| --- | --- | --- | --- | --- | --- | --- |
+| Salamander | 0.79 | -0.17 | 0.05 | 0.08 | 0.01 | 0.22 |
+| Close, 2.12.0 | 0.78 | 0.01 | -0.05 | 0.08 | 0.04 | 0.15 |
+| Close, 2.11.0 | 0.57 | 0.30 | 0.27 | 0.17 | 0.30 | 0.40 |
+| XY, 2.12.0 | 0.91 | 0.58 | 0.46 | 0.45 | 0.69 | 0.76 |
+| XY, 2.11.0 | 0.85 | 0.49 | 0.35 | 0.29 | 0.61 | 0.65 |
+| Live, 2.12.0 | 0.54 | 0.14 | 0.10 | 0.06 | 0.11 | 0.33 |
+| Live, 2.11.0 | 0.49 | 0.31 | 0.10 | 0.15 | 0.21 | 0.34 |
+| Distant, 2.12.0 | 0.26 | 0.04 | 0.09 | -0.02 | 0.01 | 0.16 |
+| Distant, 2.11.0 | 0.18 | 0.03 | 0.15 | 0.08 | 0.11 | 0.22 |
+
+Each figure stands within 0.05 (one standard error). The recording is one
+spaced pair close over the strings, so only the close pair has a recording
+beside it. The octave at 250 Hz is where the two still differ: the
+recorded pair is a little out of step there, and the law, which knows the
+mean of a sound field and not this piano's, gives 0.
+
+The other pianos' close pairs, 2.12.0, same notes: the studio grand 0.69,
+0.21, -0.10, -0.04 and 0.01; the parlor grand 0.62, 0.36, 0.08, -0.01 and
+0.04; the baby grand 0.86, 0.24, -0.09, 0.03 and 0.04; the upright 0.37,
+0.42, -0.06, -0.29 and -0.07 (2.11.0: 0.25, 0.60, -0.01, 0.38 and 0.28).
+The upright's octave at 1 kHz is the furthest any close pair's octave
+stands under the law's mean, which is near 0 there. It is the draw of the
+room's phases, which decides the side many modes fall on: with those
+drawn again (a scratch build, not shipped) the upright's close pair reads
+0.63, 0.26, -0.19, -0.04 and -0.17. The draw is 2.11.0's and was not
+chosen for its result.
+
+On phrases (a 15 s phrase, held chords and a bass line; whole-signal
+correlation and the mono sum against the two channels' mean level), the
+concert grand's close pair reads 0.14 to 0.29 and sums to mono 1.9 to
+2.5 dB down (2.11.0: 0.38 to 0.49, 1.3 to 1.6), the XY pair 0.79 to 0.88
+and 0.3 to 0.5 (0.65 to 0.79, 0.6 to 0.9), the live pair 0.20 to 0.56 and
+1.1 to 2.2 (0.24 to 0.57, 1.1 to 2.1), the distant pair -0.04 to 0.12 and
+2.5 to 3.2 (0.05 to 0.34, 1.8 to 2.8). The upright's close pair reads 0.01
+to 0.17 and 2.4 to 3.0 (0.34 to 0.40, 1.6 to 1.8). 2.1.0 rejected a law
+without the quarter-turn bound because a phrase through the distant pair
+summed out of phase, at -0.3; under this one the distant pair's lowest
+phrase reads -0.04.
+
+**Tried and left out.**
+
+- *The whole turn given to the right microphone*, the left keeping the
+  board's own phases: 0.70, 0.15, 0.00 and -0.06 at 125 to 1000 Hz.
+  Nothing makes one microphone the one that keeps the board's phases, and
+  sharing the turn holds the bass together better (0.78).
+- *Each mode put on whichever side took the least turning*, not its own:
+  0.56, 0.10, -0.13 and -0.03. Neighbouring modes then land on opposite
+  sides and take the bass apart between them.
+- *The angle changed as little as would bring a third of an octave to the
+  law's cosine*, instead of each mode set to it: 0.81, 0.38, -0.08 and
+  0.06. The octave at 250 Hz stays as tight as 2.11.0's.
+
+**Levels.** `KeyVoicing.h` is written again and `pascalScale` pinned to
+what `KeyraLevels --report` reads (0.1840, 0.1517, 0.1128, 0.1609, 0.1703).
+Bar Piano's typical playing read -11.4 VU with the new image, outside the
+window about -9, so its two pairs' levels go from 0.6 and 0.8 to 0.72 and
+0.96, their ratio kept; it reads -9.8. The Rack adapter's factory patches
+are written from `KeyraPresets.h` and follow when its pin advances.
+
+**Tests.** `Keyra.Engine` now holds, for each pair alone on a chord, that
+its two channels are more than -0.217 alike (the least the law asks, sin
+x / x at its first trough) and that the XY pair's are the most alike of
+the four. No other test changed. How alike a pair's octaves are is a mean
+over many notes, which `Tools/measure_pair_image.py` measures; one chord
+in a test would hold a draw, not the law.
+
+**Measured** (`Docs/validation/grand-pair-image-benchmark-2026-11-13.md`):
+see the 2.12.0 entry of the README. Better: the stereo balance, 5.03 to
+4.79 dB on the notes 1.0.0 fitted and 5.15 to 4.96 on the others, and the
+bass's and the treble's spectral scores by 0.05 to 0.2 dB. Further off:
+the middle register's partials (6.46 to 7.48 dB on the fitted notes, 6.52
+to 7.05 on the others) and with them its attack, early and sustained
+spectra by 0.2 to 0.7 dB; the bass's level by 0.2 to 0.3 dB and the
+treble's stereo balance by 0.1 to 0.4 dB; the rise on the fitted notes
+(13.3 to 14.2 ms); 89 single-note scores (rise 18, level 14, stereo balance 13, partials 10,
+sustain 10, attack 7, noise 6, early 6, the other stereo score 5), the
+largest C1's rise, 12.0 to 35.0 ms, then C3's, F♯4's and A3's.
+
+**What the benchmark can and cannot say here.** A control
+(`Docs/validation/grand-room-draw-control-2026-11-13.md`): 2.11.0 with
+nothing changed but the draw of the room's phases, its key levels not
+written again, so its level score does not compare. It moves the same
+scores as far: the middle's partials on the unfitted notes 6.52 to 7.36
+dB, the unfitted notes' attack and early spectra 6.32 to 6.87 and 5.98 to
+6.56, the stereo balance 5.03 to 5.97 and 5.15 to 5.61, the rise 13.3 to 12.8 and
+12.1 to 10.8 ms, 103 single-note scores worse. So a single note's
+spectrum at one pair depends on the phases its modes arrive in by about as
+much as this change moved it, and the benchmark does not tell this
+change's cost in the middle register from chance. Its second stereo score
+reads how strongly two channels are related and not in which sense, so it
+cannot see what changed (0.20 and 0.19 to 0.20 and 0.18). Its rise is the
+time from 10 to 90 % of an envelope's peak in its first 150 ms, and the
+envelopes looked at (A3, C4, F♯4 and C5; A3 and F♯4 are among the notes it
+calls worse) stand within 1 to 2 dB of 2.11.0's in each channel, on a
+plateau from 15 to 130 ms whose highest point moves.
+
+**Not measured.** The upright against the Helsinki recordings: they were
+not in the session and the owner's machine was not reachable. By the
+standing rule the change is not merged until that benchmark is run; the
+owner has been asked for the recordings. Those are a coincident ribbon
+pair, so they will score the upright's tone and level, not a spaced pair's
+image.
+
+**What is the owner's to hear.** A lettered set (`2026-11-13-pair-image`
+in the project's files, not committed): A 2.11.0, B 2.12.0, one 15 s
+phrase (four rolled low chords with the pedal, a line around C5, single
+notes across the keyboard and a fortissimo chord from C1 to E5) through
+four settings: the concert grand's close pair, its room pairs, all four
+pairs, and the upright's close pair, each also folded to mono. B is
+matched to A on whole-file RMS over both channels; the trims, -0.06 to
++0.57 dB, are in its key. The mono folds are (L+R)/2 of the matched files
+and not matched again: how much each loses in mono is part of what is
+judged. No verdict yet. This entry is on the work branch until the owner
+has heard it and the upright is benchmarked.

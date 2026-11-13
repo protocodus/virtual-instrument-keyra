@@ -488,6 +488,10 @@ int main(){
      for(int m=0;m<keyra::model::micCount;++m){
        std::cout<<keyra::micNames[m]<<": "<<pair[m].db(0,.6)<<" dB (without the room "<<dry[m]<<" dB), tail "<<pair[m].db(.8,1.2)-pair[m].db(0,.6)<<" dB, channels alike "<<pair[m].correlation(0,.6)<<'\n';
        check(std::abs(dry[m]-dry[0])<2,"each pair hears the piano as loud as the close pair does");
+       // The least alike the image's law asks two microphones to be is
+       // sin x / x at its first trough, -0.217 (PianoModel.cpp, designBoard).
+       check(pair[m].correlation(0,.6)>-.217,"no pair sums out of phase");
+       if(m!=keyra::model::micXY)check(pair[keyra::model::micXY].correlation(0,.6)>pair[m].correlation(0,.6),"the coincident pair's channels are the most alike");
        for(int k=0;k<m;++k)check(pair[m].audio!=pair[k].audio,"each pair hears its own sound");}
      check(pair[keyra::model::micDistant].db(.8,1.2)-pair[keyra::model::micDistant].db(0,.6)
            >pair[keyra::model::micClose].db(.8,1.2)-pair[keyra::model::micClose].db(0,.6)+6,"the distant pair hears more of the room");

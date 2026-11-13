@@ -34,7 +34,7 @@ inline constexpr std::array<Preset, 12> factoryPresets {{
     { "Baby Grand", model::Body::babyGrand, .1f, .15f, .35f, 1.f, .5f, 1.f, .5f, .5f, .5f, { .72f, .54f, 0.f, 0.f }, .4f, .75f, 0.f },
     { "Distant Hall", model::Body::concertGrand, -.1f, 0.f, .3f, 1.f, .55f, 1.f, .6f, .6f, .5f, { 0.f, .12f, .27f, .39f }, .8f, .9f, 0.f },
     { "Old Parlor", model::Body::parlorGrand, -.2f, .8f, .6f, .8f, .5f, .5f, .5f, .6f, .6f, { .71f, 0.f, .95f, 0.f }, .5f, .7f, 0.f },
-    { "Bar Piano", model::Body::upright, .5f, .7f, 1.f, .6f, .45f, 1.f, .5f, .5f, 0.f, { .6f, 0.f, .8f, 0.f }, .5f, .7f, 0.f }
+    { "Bar Piano", model::Body::upright, .5f, .7f, 1.f, .6f, .45f, 1.f, .5f, .5f, 0.f, { .72f, 0.f, .96f, 0.f }, .5f, .7f, 0.f }
 }};
 
 inline Parameters withPreset(Parameters parameters, const Preset& preset) noexcept {

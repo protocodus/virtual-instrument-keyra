@@ -804,6 +804,65 @@ void designBoard(Tables& t,int body){
       t.diffuse[mic][ch][part][k]=static_cast<float>(diffuse*heard[ch][part][k]);
       heard[ch][part][k]=direct[ch][part][k]+t.diffuse[mic][ch][part][k];}
     anchor[mic]*=1+spec.diffuse*spec.diffuse;
+    // The smeared plate's modes are exact: every second one is odd across the
+    // board's middle and reaches two microphones either side of it exactly
+    // out of phase, in the bass too, and no place for a spaced pair avoids
+    // them. A real board, ribbed, bridged and shaped like a wing, has no such
+    // mode. So each microphone keeps the level it hears of a mode, and the
+    // phase between the two is set to what the sound field at a pair gives in
+    // the mean, on the side the mode's own fell.
+    // The board's own sound reaches the pair from every direction the board
+    // subtends: its paths to the two microphones differ by up to `reach`,
+    // evenly, and the mean of the cosine over that span is
+    // sin(k reach) / (k reach), a wide source's coherence (the van
+    // Cittert-Zernike theorem). The room's first answer is a diffuse field,
+    // sin(kd) / (kd) between two points d apart (R. K. Cook and others,
+    // "Measurement of correlation coefficients in reverberant sound fields",
+    // JASA 27, 1072-1077, 1955), times what two patterns share of
+    // it, (3 + cos of their angle) / 4 for cardioids. A mode is turned to the
+    // angle whose cosine is the two, weighed by what the pair hears of each.
+    // So the bass is in phase, a spaced pair opens to a quarter turn where
+    // its spacing is half a wavelength (280 Hz for a grand's close pair) and
+    // a coincident one stays nearly together.
+    // Nothing in it is fitted. Over 150 of the Salamander's notes
+    // (Tools/measure_pair_image.py, its protocol at its head) the two
+    // channels are 0.79, -0.17, 0.05 and 0.08 alike in the octaves at 125,
+    // 250, 500 and 1000 Hz, each within 0.04. The close pair gives 0.78,
+    // 0.01, -0.05 and 0.08; the hold to 2.11.0 (no mode more than 70 to 90
+    // degrees out of step, the others left as they fell) gave 0.57, 0.30,
+    // 0.27 and 0.17.
+    const double spacing=norm(spec.position[0]-spec.position[1]);
+    double reach=0;
+    for(int a=0;a<=16;++a)for(int b=0;b<=16;++b){const Vec source{d.boardX*a/16,d.boardY*b/16,0};
+      reach=std::max(reach,std::abs(norm(source-spec.position[0])-norm(source-spec.position[1])));}
+    const double omni=1-spec.cardioid/2,figure=spec.cardioid/2;
+    const double shared=(omni*omni+figure*figure*dot(spec.axis[0],spec.axis[1])/3)/(omni*omni+figure*figure/3);
+    const auto alike=[](double turns){return turns>1e-6?std::sin(turns)/turns:1.;};
+    for(int k=0;k<t.modes;++k){
+      const double wave=2*pi*all[k].hertz/soundSpeed;
+      double own=1,rooms=1;
+      for(int ch=0;ch<2;++ch){const auto& room=t.diffuse[mic][ch];
+        own*=std::hypot(heard[ch][0][k]-room[0][k],heard[ch][1][k]-room[1][k]);rooms*=std::hypot(room[0][k],room[1][k]);}
+      const double cosine=(own*alike(wave*reach)+rooms*shared*alike(wave*spacing))/std::max(own+rooms,1e-300);
+      const std::complex<double> l(heard[0][0][k],-heard[0][1][k]),r(heard[1][0][k],-heard[1][1][k]);
+      const double apart=std::arg(r*std::conj(l)),held=std::acos(clamp(cosine,-1,1));
+      // Half a turn is a change of sign. What is left to turn, a quarter turn
+      // at most, is shared evenly between the two microphones: neither is the
+      // one that keeps the board's own phases, and no mode is turned more than
+      // an eighth of a turn in either.
+      const double whole=(apart<0?-held:held)-apart,halves=std::round(whole/pi),least=whole-pi*halves;
+      for(int ch=0;ch<2;++ch){
+        const double turn=ch?least/2+pi*halves:-least/2,c=std::cos(turn),sn=std::sin(turn);
+        const auto rotate=[&](float (*gain)[maxModes]){const float a=gain[0][k],b=gain[1][k];
+          gain[0][k]=static_cast<float>(a*c+b*sn);gain[1][k]=static_cast<float>(b*c-a*sn);};
+        rotate(t.direct[mic][ch]);rotate(t.floor[mic][ch]);rotate(t.diffuse[mic][ch]);
+        for(int stop=0;stop<lidStops;++stop)rotate(t.lid[stop][mic][ch]);
+      }
+    }
+    // The pair's level is set on what it hears with the modes so turned.
+    for(int ch=0;ch<2;++ch)for(int part=0;part<2;++part)for(int k=0;k<t.modes;++k)
+      heard[ch][part][k]=t.direct[mic][ch][part][k]+spec.floor*t.floor[mic][ch][part][k]
+                         +spec.lid*t.lid[lidStops-1][mic][ch][part][k]+t.diffuse[mic][ch][part][k];
     float trim[maxModes];
     for(int k=0;k<t.modes;++k)trim[k]=1;
     for(int pass=0;pass<3;++pass){
@@ -819,29 +878,6 @@ void designBoard(Tables& t,int body){
     for(int k=0;k<t.modes;++k)for(int ch=0;ch<2;++ch)for(int part=0;part<2;++part){
       t.direct[mic][ch][part][k]*=trim[k];t.floor[mic][ch][part][k]*=trim[k];t.diffuse[mic][ch][part][k]*=trim[k];
       for(int stop=0;stop<lidStops;++stop)t.lid[stop][mic][ch][part][k]*=trim[k];}
-    // An engineer moves a pair until it sums to mono: no mode reaches the
-    // right microphone more than 70 degrees out of step with the left, or
-    // than half the pair's spacing in wavelengths where that is more, up to
-    // the quarter turn past which a mode starts to cancel in the sum. So a
-    // spaced pair opens from 70 to 90 degrees (between 220 and 280 Hz for a
-    // grand's close pair) and a coincident one is held at 70 throughout.
-    // Set against how alike the Salamander grand's two channels are in
-    // forte notes from 500 Hz to 2 kHz: 0.05 on average over the keyboard,
-    // where 70 degrees at every frequency (2.0.0) left 0.6 and this leaves
-    // 0.4. Without the quarter turn the notes came closer still, and a
-    // phrase through the distant pair summed out of phase (-0.3).
-    const double spacing=norm(spec.position[0]-spec.position[1]);
-    for(int k=0;k<t.modes;++k){
-      const double pairTurn=std::min(pi/2,std::max(70*pi/180,pi*all[k].hertz*spacing/soundSpeed));
-      const std::complex<double> l(heard[0][0][k],-heard[0][1][k]),r(heard[1][0][k],-heard[1][1][k]);
-      const double apart=std::arg(r*std::conj(l));
-      if(std::abs(apart)<=pairTurn)continue;
-      const double turn=(apart>0?pairTurn:-pairTurn)-apart,c=std::cos(turn),sn=std::sin(turn);
-      const auto rotate=[&](float (*gain)[maxModes]){const float a=gain[0][k],b=gain[1][k];
-        gain[0][k]=static_cast<float>(a*c+b*sn);gain[1][k]=static_cast<float>(b*c-a*sn);};
-      rotate(t.direct[mic][1]);rotate(t.floor[mic][1]);rotate(t.diffuse[mic][1]);
-      for(int stop=0;stop<lidStops;++stop)rotate(t.lid[stop][mic][1]);
-    }
     t.micLevel[mic]=static_cast<float>(anchor[mic]);
   }
   // Above the modes the board moves and radiates near the bridge only, and
