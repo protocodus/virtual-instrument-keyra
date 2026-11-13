@@ -1001,8 +1001,8 @@ is written independently of it.
   0.2 to 0.3 dB further off
   ([2.13.0](Docs/validation/upright-tuner-ladder-benchmark-2026-11-13.md);
   [both against 2.11.0](Docs/validation/upright-since-shipping-benchmark-2026-11-13.md),
-  62 single-note scores worse); 2.13.1 took that back and 0.5 to 0.8
-  cents and 0.7 to 1.1 dB more off them
+  62 single-note scores worse); 2.13.1 took 0.5 to 0.8 cents and 0.7 to
+  1.1 dB off them, which leaves them under 2.12.0's
   ([2.13.1](Docs/validation/upright-bass-octaves-benchmark-2026-11-13.md);
   [against 2.11.0](Docs/validation/upright-bass-octaves-since-shipping-benchmark-2026-11-13.md),
   55 single-note scores worse).
