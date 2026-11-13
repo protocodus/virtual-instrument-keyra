@@ -1001,6 +1001,7 @@ struct Piano::Impl {
   int phase=0;               // samples into the chunk
   float loud=0;              // the chunk's peak
   bool retune=false;         // the pitch moved since the last boundary
+  bool aged=false;           // the strings' age moved since the last boundary
   float knocks[points]{};    // impulses waiting for the bridge, newton-samples
 
   Voice voices[keyCount];
@@ -1165,14 +1166,11 @@ struct Piano::Impl {
       v.couplingIm[k]=static_cast<float>(re*v.sine[k]+im*v.cosine[k]);
     }
   }
-  // A voice's losses, coupling and pull on the bridge from its key as the
-  // controls stand.
-  void build(Voice& v,int index) noexcept {
+  // A voice's own losses, open and under its damper, as the controls stand.
+  void lose(Voice& v,int index) noexcept {
     const KeyData& key=table->keys[index];
     const double f0=key.hertz*tuningRatio(key);
-    tune(v,index);
-    const int count=v.partials;
-    for(int k=0;k<count;++k){
+    for(int k=0;k<v.partials;++k){
       const double w=2*pi*f0*key.ratio[k];
       const double loss=stringLoss(key,w);
       // Dampers hold a partial the less the nearer one of its nodes lies to
@@ -1180,6 +1178,16 @@ struct Piano::Impl {
       const double felt=.2+.8*std::pow(std::sin((k+1)*pi*.115),2);
       v.open[k]=static_cast<float>(std::exp(-loss/sampleRate));
       v.damped[k]=static_cast<float>(std::exp(-(loss+key.damper*felt)/sampleRate));
+    }
+    v.appliedDamper=-1;
+  }
+  // A voice's losses, coupling and pull on the bridge from its key as the
+  // controls stand.
+  void build(Voice& v,int index) noexcept {
+    const KeyData& key=table->keys[index];
+    tune(v,index);lose(v,index);
+    const int count=v.partials;
+    for(int k=0;k<count;++k){
       // The string's pull on the bridge is its tension times its slope
       // there: T k pi / L per metre of mode k, alternating.
       v.bridge[k]=static_cast<float>(key.tension*(k+1)*pi/key.length*((k&1)?-1:1));
@@ -1612,7 +1620,7 @@ struct Piano::Impl {
   }
 
   // Asleep: nothing sounds and nothing is computed until wake().
-  void rest() noexcept {quiet=true;quietChunks=0;phase=0;loud=0;retune=false;}
+  void rest() noexcept {quiet=true;quietChunks=0;phase=0;loud=0;retune=false;aged=false;}
   // What moved while it slept is where it now stands.
   void wake() noexcept {
     quietChunks=0;
@@ -1628,6 +1636,13 @@ struct Piano::Impl {
       for(int i=0;i<keyCount;++i){Voice& v=voices[i];if(!v.active)continue;
         const int sounding=v.sounding;tune(v,i);v.sounding=std::min(sounding,v.partials);v.appliedDamper=-1;}
       tuneBank(true);retune=false;
+    }
+    // Strings that have aged while they sound: their losses, and the false
+    // beats tune() gives them.
+    if(aged){
+      for(int i=0;i<keyCount;++i){Voice& v=voices[i];if(!v.active)continue;
+        const int sounding=v.sounding;tune(v,i);lose(v,i);v.sounding=std::min(sounding,v.partials);}
+      aged=false;
     }
     // The dampers fall and lift over about 15 ms.
     const float damperStep=static_cast<float>(std::min(1.,chunk/(.015*sampleRate)));
@@ -1909,8 +1924,10 @@ void Piano::setControls(const Controls& input) noexcept {
   if(c.body!=old.body){p.select();p.silence();return;}
   if(c.soundboard!=old.soundboard)p.tuneBoard();
   if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.age!=old.age||c.detune!=old.detune||c.sympathetic!=old.sympathetic||c.duplex!=old.duplex)p.tuneBank();
-  // What sounds follows the tuner at the next boundary.
+  // What sounds follows the tuner at the next boundary, and the strings'
+  // age.
   if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.detune!=old.detune)p.retune=!p.quiet;
+  if(c.age!=old.age)p.aged=!p.quiet;
   bool mics=c.lid!=old.lid||c.room!=old.room;
   for(int m=0;m<micCount;++m)mics=mics||c.mic[m]!=old.mic[m];
   if(mics)p.mixMics();

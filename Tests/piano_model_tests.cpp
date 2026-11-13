@@ -291,6 +291,26 @@ int main(){
     // The bend and the tuning move what sounds.
     b.start(bare());piano.holdDamper(keyOf(69),true);piano.strike(keyOf(69),.6f);b.run(.6);piano.setBend(1);b.run(1);
     check(std::abs(1200*std::log2(b.take.pitch(440*std::pow(2.,1/12.),.9,1.6)/440)-100)<3,"the bend moves sounding strings");
+    // So does the strings' age: an old string's upper partials die sooner,
+    // and one that ages while it sounds ends where one struck old does.
+    const auto aged=[&](float from,float later){Controls c=bare();c.age=from;b.start(c);piano.holdDamper(keyOf(48),true);piano.strike(keyOf(48),.8f);b.run(.5);
+      c.age=later;piano.setControls(c);b.run(2.5);return b.take.above(1000,2.5,3.);};
+    const double young=aged(0,0),ageing=aged(0,1),old=aged(1,1);
+    std::cout<<"C3 above 1 kHz from 2.5 to 3 s: "<<young<<" dB of the whole, "<<ageing<<" dB aged at 0.5 s, "<<old<<" dB struck old\n";
+    check(ageing<young-6&&ageing<old+3,"the strings' age reaches a sounding string");
+    // And how strongly the open strings and the duplex scales answer, which
+    // the plug-in's reach test cannot hear under its chord: turned up half a
+    // second into a note, they answer what is left of it (the difference
+    // from the note left alone: -15.5 dB of C3 and -28.4 dB of C6 as built).
+    const auto answering=[&](int midi,bool duplex,float later){Controls c=bare();b.start(c);piano.setPedal(1);piano.strike(keyOf(midi),.9f);b.run(.5);
+      (duplex?c.duplex:c.sympathetic)=later;piano.setControls(c);b.run(1);return b.take;};
+    const auto apart=[&](const Take& plain,const Take& other){double sum=0,all=0;
+      for(std::size_t i=plain.at(.6);i<plain.left.size();++i){const double d=other.left[i]-plain.left[i];sum+=d*d;all+=static_cast<double>(plain.left[i])*plain.left[i];}
+      return 10*std::log10((sum+1e-30)/(all+1e-30));};
+    const Take plain=answering(48,false,0),open=answering(48,false,1),high=answering(84,true,0),sheen=answering(84,true,1);
+    std::cout<<"turned up at 0.5 s: the open strings "<<apart(plain,open)<<" dB of C3, the duplex scales "<<apart(high,sheen)<<" dB of C6\n";
+    check(apart(plain,open)>-21,"Sympathetic reaches a sounding note");
+    check(apart(high,sheen)>-34,"Duplex reaches a sounding note");
     // Another sample rate is the same piano.
     piano.prepare(96000);
     Controls d=bare();piano.setControls(d);piano.reset();piano.holdDamper(keyOf(69),true);piano.strike(keyOf(69),.6f);

@@ -50,6 +50,16 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.13.2 — 2026-11-13 — String age reaches the notes that sound
+
+Turning String age while notes sound now changes those notes: the decay of
+their upper partials and their false beats follow the control within 32
+samples. 2.13.1 aged the open strings at once and left a sounding note as
+it was struck until its key was struck again. A C3 aged half a second in
+ends within 1.5 dB of one struck old (its share above 1 kHz, 2.5 to 3 s
+in). Nothing else changes: every preset demo is 2.13.1's to the byte, and
+so are the panel and the saved state.
+
 ### 2.13.1 — 2026-11-13 — the upright's bass tuned as an upright's is
 
 The upright's keys below A3 sit higher again: A0 stands 8.9 cents under
@@ -1142,7 +1152,10 @@ is written independently of it.
   the block for both) that they compare nothing. 2.13.0 reads 7 to 15 %
   there, its heaviest blocks as unsteady (0.2 to 1.6 of the block); built
   the way Reason's compiler builds, a dense pedalled phrase takes 33 % of
-  one core, above the portfolio's 10 %. Designing the five pianos when the
+  one core, above the portfolio's 10 %. The portfolio's stress phrase,
+  sixteen notes ringing under the pedal, takes 12 to 18 % of one core
+  through the eight demos' presets there (2.13.2) and its heaviest block
+  24 to 29 %; `Keyra.CpuBudget` warns of it and does not fail. Designing the five pianos when the
   engine is made takes about a fifth of a second there; how long Reason's
   own maths library takes over it is not measured. There is no Quality
   setting to lighten it.
@@ -1182,11 +1195,15 @@ cmake --build build-plugin --parallel && ctest --test-dir build-plugin --output-
 Every test carries one tier label, so `ctest -L unit`, `-L audio`, `-L render`,
 `-L fuzz` or `-L perf` selects a tier. `unit` holds `Keyra.PianoModel` (the
 model's tuning, partials, hammer, decay, coupling and controls),
-`Keyra.Engine` (MIDI, pedals, the action, block invariance) and
+`Keyra.Engine` (MIDI, pedals, the action, block invariance),
 `Keyra.DspFuzzReplay`, the fuzz harness replaying `Tests/Fixtures/fuzz/` and
-seeded inputs; `audio` is `Keyra.AudioDemos` and `Keyra.Levels`; and `perf`
+seeded inputs, and in the plug-in build `Keyra.ParameterReach`, which moves
+every control under held notes and before new ones and fails where the sound
+does not follow; `audio` is `Keyra.AudioDemos` and `Keyra.Levels`; and `perf`
 is `Keyra.CpuBudget`, the demos timed in a Release build, which fails above
-0.33 of real time, three times the slowest demo's median on the CI runner.
+0.33 of real time, three times the slowest demo's median on the CI runner,
+and warns where a block of a demo or of its stress phrase takes more than a
+tenth of a core.
 `KeyraDSPCxx17` compiles the engine as C++17, the Rack Extension toolchain's
 standard. `-DKEYRA_ENABLE_SANITIZERS=ON` builds everything under ASan and
 UBSan, and `-DKEYRA_BUILD_FUZZER=ON` (Clang) makes `KeyraDspFuzz` a libFuzzer

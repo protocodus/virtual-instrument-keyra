@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 2.13.1 LANGUAGES C CXX)
+project(Keyra VERSION 2.13.2 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -395,6 +395,9 @@ if(BUILD_TESTING)
         add_test(NAME Keyra.ParameterMatrix
                  COMMAND KeyraParameterMatrixTests --rotation --jobs 4)
         set_tests_properties(Keyra.ParameterMatrix PROPERTIES TIMEOUT 1800 LABELS fuzz)
+        # U11: no parameter goes stale, through the same processor.
+        add_test(NAME Keyra.ParameterReach COMMAND KeyraParameterMatrixTests --reach --jobs 4)
+        set_tests_properties(Keyra.ParameterReach PROPERTIES TIMEOUT 1800 LABELS unit)
 
         if(Python3_Interpreter_FOUND)
             add_test(NAME Keyra.EditorRender
