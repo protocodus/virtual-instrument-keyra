@@ -197,8 +197,15 @@ int main(){
   }
   {
     // The sustain pedal is continuous, and catches what still rings.
+    // Without the room: its tail of the struck note is as loud as what the
+    // loosened strings answer short of the lift, has had its own phases at
+    // each microphone since 2.12.0, and stood against that answer by 0.46 dB
+    // from travel 26 to 45 here and 0.55 dB under MSVC, where this check
+    // allows 0.5. Without it the levels rise at every step (2.13.0: -80.9,
+    // -80.2, -78.5, -57.1 dB at 0, 26, 45, 64).
     const auto after=[&](int pedal){
-      b.start(strings());e.controlChange(64,pedal);e.noteOn(60,.7f);b.run(.4);e.noteOff(60);b.run(.6);
+      auto p=strings();p.room=0;
+      b.start(p);e.controlChange(64,pedal);e.noteOn(60,.7f);b.run(.4);e.noteOff(60);b.run(.6);
       return b.take.db(.8,1.0);
     };
     // The dampers lift between a fifth and seven tenths of the way down
