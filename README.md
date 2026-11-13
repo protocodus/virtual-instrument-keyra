@@ -50,16 +50,6 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
-### 2.13.2 — 2026-11-13 — String age reaches the notes that sound
-
-Turning String age while notes sound now changes those notes: the decay of
-their upper partials and their false beats follow the control within 32
-samples. 2.13.1 aged the open strings at once and left a sounding note as
-it was struck until its key was struck again. A C3 aged half a second in
-ends within 1.5 dB of one struck old (its share above 1 kHz, 2.5 to 3 s
-in). Nothing else changes: every preset demo is 2.13.1's to the byte, and
-so are the panel and the saved state.
-
 ### 2.13.1 — 2026-11-13 — the upright's bass tuned as an upright's is
 
 The upright's keys below A3 sit higher again: A0 stands 8.9 cents under
@@ -1154,7 +1144,7 @@ is written independently of it.
   the way Reason's compiler builds, a dense pedalled phrase takes 33 % of
   one core, above the portfolio's 10 %. The portfolio's stress phrase,
   sixteen notes ringing under the pedal, takes 12 to 18 % of one core
-  through the eight demos' presets there (2.13.2) and its heaviest block
+  through the eight demos' presets there (2.13.1) and its heaviest block
   24 to 29 %; `Keyra.CpuBudget` warns of it and does not fail. Designing the five pianos when the
   engine is made takes about a fifth of a second there; how long Reason's
   own maths library takes over it is not measured. There is no Quality

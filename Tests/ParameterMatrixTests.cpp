@@ -72,8 +72,9 @@ public:
         return limits;
     }
 
-    // U11. A blow is over within milliseconds, so what shapes the blow
-    // shapes the next note; everything else reaches the strings that sound.
+    // U11. The hammer, the practice felt, the dynamics and the strings' age
+    // are taken by the next strike, and everything else reaches what sounds
+    // (README, the controls; the user guide says so of each).
     protocodus::matrix::ReachRule ReachFor (std::size_t index, float) const override
     {
         using protocodus::matrix::Reach;
@@ -89,6 +90,10 @@ public:
             return { Reach::NewNotes, "the hammer's speed at the blow" };
         if (name == "Practice felt")
             return { Reach::NewNotes, "a felt strip between the hammers and the strings at the blow" };
+        // strike() builds a voice's losses and false beats from the age it
+        // finds (build(), stringLoss()); a sounding string keeps them.
+        if (name == "String age")
+            return { Reach::NewNotes, "a string is as old as it was when struck" };
         // setDrive() and startContact(): a grand's hammers shift off each
         // unison's last string, an upright's start nearer the strings.
         if (name == "Soft pedal")
