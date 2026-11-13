@@ -11,6 +11,25 @@ Nothing here is shipped. The gaps are measurements. The probes were scratch
 builds outside the checkout. The remedies are proposals until each is built,
 benchmarked and heard.
 
+## Since it was written
+
+- **Proposal 2, the image, is built** as 2.12.0 on the work branch
+  (`Docs/decisions.md`, 2026-11-13). The law is not the one sketched
+  below: the board's own sound is alike across a pair by how far the paths
+  from the board to its two microphones can differ, the room's by the
+  pair's spacing.
+- **The unisons are not why the strike has no bite** (finding 2 and the
+  first half of proposal 1). Measured afterwards from how far each
+  note's partials split, the Salamander's unisons stand 0.23, 0.30 and
+  0.29 cents apart from C3 to A3, C4 to A4 and C5 to C6, and the model's
+  at the default 0.26, 0.24 and 0.14. The default stays, and the upper partials missing from the
+  middle register are the hammer's: its felt behaves like the recorded
+  one played 6 to 10 dB softer. Proposal 1 is the felt's law and the
+  velocity curve alone.
+- **Proposal 3, new rooms, is dropped.** Asked how a hall and a home
+  should appear in the product, the owner chose to leave the room as it
+  is (2026-11-13).
+
 ## How it was measured
 
 - **The model alone**: `build-dsp/render_model` (the piano without the
