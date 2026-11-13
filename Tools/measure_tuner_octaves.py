@@ -9,9 +9,18 @@ Tools/benchmark_recordings.py), carries B in log over the keys between the
 sampled pitches, tunes A4 where the recording's stands and the octave A3-A4
 4:2, and chains each rule's octaves down from there on the recording's own
 partials, n f sqrt(1 + B n^2). Printed for A0 to A2, rule against recording in
-cents: the rms, the mean and each pitch. The last rule is PianoModel.cpp's.
-With --model upright, the same for the Helsinki upright's pitches (its five
-layers; `Tools/benchmark_recordings.py --model upright` writes them).
+cents: the rms, the mean and each pitch. The last rule is the grands' in
+PianoModel.cpp. With --model upright, the same for the Helsinki upright's
+pitches (its five layers; `Tools/benchmark_recordings.py --model upright`
+writes them).
+
+Before the rules, two things read straight from the recording. Each bass
+pitch's stretch and stiffness. And each octave both of whose notes were
+recorded, with no stiffness law between: how far, in cents, the upper note's
+partial n stands above the lower's partial 2n as the benchmark measured the
+two (the median of the layers that hold both), for 2:1 to 12:6. The octave
+the tuner tuned is the one that stands at nothing; wider types stand narrow
+and narrower ones wide.
 
   python3 Tools/measure_tuner_octaves.py [--model upright] [--cache out/bench/reference-cache]
 """
@@ -37,7 +46,7 @@ def main():
     ap.add_argument('--cache', type=Path, default=Path(__file__).resolve().parents[1] / 'out/bench/reference-cache')
     ap.add_argument('--model', choices=('grand', 'upright'), default='grand')
     args = ap.parse_args()
-    read = {}
+    read, heard = {}, {}
     for path in sorted(args.cache.glob('*.npz')):
         # The Salamander's takes are named by pitch, the Helsinki's by MIDI note.
         m = re.match(r'([A-G]#?\d)v\d+-' if args.model == 'grand' else r'n(\d+)v\d+r\d+-', path.name)
@@ -45,6 +54,7 @@ def main():
             z = np.load(path, allow_pickle=True)
             key = key_of(m.group(1)) if args.model == 'grand' else int(m.group(1)) - 21
             read.setdefault(key, []).append((float(z['f1']), float(z['B'])))
+            heard.setdefault(key, []).append(dict(zip(z['n'].tolist(), z['hz'].tolist())))
     keys = sorted(read)
     if not keys or keys[0] > 24 or keys[-1] < 48:
         raise SystemExit(f'no pitches from A2 down and A4 up in {args.cache}: run Tools/benchmark_recordings.py first')
@@ -72,6 +82,20 @@ def main():
         return {k: 1200 * np.log2(pitch[k] * partial(k, 1) / nominal(k)) for k in range(49)}
 
     bass = [k for k in keys if k <= 24]
+    print('recorded                           ' + ' '.join(f'{k:5d}' for k in bass) + '   (key, A0 = 0)')
+    print('stretch, cents                     ' + ' '.join(f'{stretch[k]:+5.1f}' for k in bass))
+    print('B x 10000                          ' + ' '.join(f'{B[k] * 1e4:5.2f}' for k in bass))
+
+    def partial_heard(key, n):
+        found = [take[n] for take in heard[key] if take.get(n, 0) > 0 and np.isfinite(take[n])]
+        return np.median(found) if len(found) >= 3 else np.nan
+
+    print('\noctave      2:1    4:2    6:3    8:4   10:5   12:6   (upper partial n above lower partial 2n, cents)')
+    for k in keys:
+        if k <= 36 and k + 12 in heard:
+            print(f'{k:3d}-{k + 12:3d}  ' + ' '.join(
+                f'{1200 * np.log2(partial_heard(k + 12, n) / partial_heard(k, 2 * n)):+6.1f}' for n in range(1, 7)))
+    print()
     print('rule                         rms   mean  ' + ' '.join(f'{k:5d}' for k in bass) + '   (key, A0 = 0)')
     for name, rule in (('4:2', lambda i: 4), ('6:3 (through 2.12.0)', lambda i: 6), ('8:4', lambda i: 8), ('10:5', lambda i: 10),
                        ('4:2 at A3, 6:3 A2, 8:4 A1', lambda i: min(8., 4 + (36 - i) / 6))):
