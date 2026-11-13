@@ -145,6 +145,7 @@ struct Design {
   double bridgeMass;      // the bridge at its bass end, kg/m
   double bridgeTaper;     // its treble end's impedance against the bass end's
   double strike;          // where the hammers strike from the bass to C5, as a share of the string
+  int bassOctave;         // the lower note's partial the lowest octaves are tuned on (designStrings)
 };
 // One board, bridge and strike point stand for all five. The plate is chosen
 // so that its point impedance, 8 sqrt(D m), is about 2.5e3 kg/s and its modal
@@ -157,20 +158,20 @@ struct Design {
 // scale above.
 constexpr Design designs[bodyCount]{
   // 2.74 m concert grand
-  {false,2.01,8,20,20,1.45,1.55,{.86,.10},{.22,.80},69,true,1.,1.,50,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
+  {false,2.01,8,20,20,1.45,1.55,{.86,.10},{.22,.80},69,true,1.,1.,50,.014,.011,.25,19.5,6500,3800,.64,.47,.12,8},
   // 1.86 m parlor grand
-  {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
+  {false,1.40,8,26,26,1.42,1.12,{.86,.11},{.20,.82},69,true,.96,1.1,65,.014,.011,.25,19.5,6500,3800,.64,.47,.12,8},
   // 1.50 m baby grand
-  {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
+  {false,1.14,10,28,28,1.40,.86,{.86,.13},{.18,.84},68,true,.92,1.2,80,.014,.011,.25,19.5,6500,3800,.64,.47,.12,8},
   // 1.25 m upright. Its hammers' stiffness is fitted to eleven forte notes
   // of a recorded upright (MAPS, ENSTDkCl: a Yamaha Disklavier, close pair),
   // whose bass notes hold more above 2 kHz than softer hammers gave.
-  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90,0,0,.5,19.5,6500,3800,.64,.47,.12},
+  {true,1.18,10,30,30,1.40,.95,{.84,.80},{.14,.22},66,false,.9,2.6,90,0,0,.5,19.5,6500,3800,.64,.47,.12,4},
   // 2.0 m studio grand, the size of the grand the benchmark's recordings
   // are of (Salamander: a Yamaha C5). Its bass length and the key where
   // plain steel begins are set against those recordings' inharmonicity
   // below C4, eleven notes at one layer; the rest is typical of the size.
-  {false,1.60,8,26,26,1.43,1.22,{.86,.11},{.20,.82},69,true,.97,1.08,62,.014,.011,.25,19.5,6500,3800,.64,.47,.12},
+  {false,1.60,8,26,26,1.43,1.22,{.86,.11},{.20,.82},69,true,.97,1.08,62,.014,.011,.25,19.5,6500,3800,.64,.47,.12,8},
 };
 // The bridge's bending waves are bridgeWave / sqrt(f) m long (maple 33 mm
 // high).
@@ -525,14 +526,23 @@ void designStrings(Tables& t,int body) noexcept {
   // The tuner's stretch: A4 at pitch, the octave under it and every octave
   // above tuned 4:2 (the upper note's second partial on the lower's fourth),
   // each on the strings' own partials (O. L. Railsback, "Scale temperament as
-  // applied to piano tuning", JASA 9, 1938). Down the bass the octave is
-  // heard on higher partials, as a tuner hears it: 6:3 at A2 and 8:4 from A1
-  // down, passing from one to the next key by key. On the Salamander grand's
-  // own stiffness, 8:4 leaves its stretch from A0 to A2 within 1.4 cents rms
-  // and this ladder within 2.2, where 6:3 throughout, as through 2.12.0,
-  // stood 3.6 cents sharp of it (7.6 at A0) and stepped a cent at every A,
-  // G#3 being tuned 6:3 beside an A3 tuned 4:2
-  // (Tools/measure_tuner_octaves.py).
+  // applied to piano tuning", JASA 9, 1938). Down a grand's bass the octave
+  // is heard on higher partials, as its tuner hears it: 6:3 at A2 and 8:4
+  // from A1 down, passing from one to the next key by key. On the Salamander
+  // grand's own stiffness, 8:4 leaves its stretch from A0 to A2 within 1.4
+  // cents rms and this ladder within 2.2, where 6:3 throughout, as through
+  // 2.12.0, stood 3.6 cents sharp of it (7.6 at A0) and stepped a cent at
+  // every A, G#3 being tuned 6:3 beside an A3 tuned 4:2; its octave A0-A1
+  // stands 4 cents wide at 8:4 and 4 narrow at 10:5.
+  // The upright's bass is tuned 4:2 throughout (Design::bassOctave). The Helsinki
+  // upright, whose bass strings are three times as stiff as that grand's, reads
+  // so: 4:2 leaves its stretch from C1 to A2 within 2.4 cents rms, 6:3
+  // within 9.1 and the grands' ladder, which 2.13.0 gave every piano, 14.9
+  // flat of it (30 at C1); its octave C1-C2 stands 0.8 cents narrow at 4:2
+  // and 18 at 8:4. No small grand is among the recordings: the baby grand,
+  // whose bass strings are as stiff as the upright's here, keeps the
+  // grands' ladder until one is heard (README, Known gaps).
+  // (Tools/measure_tuner_octaves.py, with --model upright.)
   // A pitch here is the ideal string's, which its stiffness raises to its
   // first partial: that partial is what is tuned.
   double pitch[keyCount];
@@ -543,7 +553,7 @@ void designStrings(Tables& t,int body) noexcept {
   for(int i=37;i<48;++i)pitch[i]=pitch[36]*std::pow(pitch[48]/pitch[36],(i-36)/12.);
   for(int i=49;i<keyCount;++i)pitch[i]=pitch[i-12]*partial(i-12,4)/partial(i,2);
   for(int i=35;i>=0;--i){
-    const double steps=std::min(2.,(36-i)/12.);      // octave types past 4:2
+    const double steps=std::min((t.design.bassOctave-4)/2.,(36-i)/12.); // octave types past 4:2
     const int lower=4+2*static_cast<int>(steps);
     pitch[i]=steps>=2?octaveUnder(i,8):octaveUnder(i,lower)*std::pow(octaveUnder(i,lower+2)/octaveUnder(i,lower),steps-std::floor(steps));
   }

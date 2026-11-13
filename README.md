@@ -50,6 +50,30 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.13.1 — 2026-11-13 — the upright's bass tuned as an upright's is
+
+The upright's keys below A3 sit higher again: A0 stands 8.9 cents under
+equal temperament at Stretch 1 where 2.13.0 put it 28.7 under, A1 5.4
+(14.8) and A2 2.8 (3.7). The four grands are 2.13.0's to the byte. The
+panel and the saved state do not change. The upright's rows of the keys'
+level table are written again and its output scale pinned to them (0.07
+dB higher).
+
+- **The upright's bass octaves are 4:2 all the way down.** 2.13.0 gave every piano the
+  bass octaves read from the Salamander grand (6:3 by A2, 8:4 from A1).
+  The Helsinki upright does not read so. On its own stiffness, about three
+  times that grand's in the bass, 4:2 leaves its stretch from C1 to A2
+  within 2.4 cents rms, 6:3 within 9.1 and 8:4 within 19.6; the grands'
+  ladder stands 14.9 cents flat of it, 30 at C1
+  (`Tools/measure_tuner_octaves.py --model upright`, which now also prints
+  each recorded octave's partials beside one another: C1 to C2 stands 0.8
+  cents narrow at 4:2, 5 at 6:3 and 18 at 8:4, where the grand's A0 to A1
+  stands 4 wide at 8:4). Strings that stiff put the high partials a grand's
+  tuner listens to too far apart to tune on.
+- **The baby grand is not changed.** Its bass strings are as stiff as the
+  model's upright's, and no small grand is among the recordings to say how
+  one is tuned, so it keeps the grands' ladder (Known gaps).
+
 ### 2.13.0 — 2026-11-13 — the bass tuned as a tuner tunes it, and half the cost in Reason
 
 The bass sits lower, most on the small pianos, and the keyboard no longer
@@ -825,7 +849,7 @@ is what the board and the microphones give it.
 | Hammer | −1 to 1 | The felt's stiffness, a decade and a half from soft and worn-in to hard: ×10^(0.75 Hammer) |
 | String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves |
 | Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano (on a grand, half that from C5 up). 0.3 by default |
-| Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 from A3 up; down the bass 6:3 by A2 and 8:4 from A1, Railsback's curve); 0 is equal temperament |
+| Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 from A3 up; down a grand's bass 6:3 by A2 and 8:4 from A1, the upright's 4:2 throughout; Railsback's curve); 0 is equal temperament |
 | Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow under 5 m/s at full velocity: 10 dB at 0, 25 dB at 0.5, where the speed follows the velocity, and 40 dB at 1 |
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
 | Soundboard | 0 to 1 | How long the board rings: its loss halves from 0.5 to 1 and doubles to 0 |
@@ -977,13 +1001,25 @@ is written independently of it.
   the Salamander's stands 16.5 under, and the benchmark's tuning score, a
   mean over thirty partials, reads the bass 0.2 cents further off than
   2.12.0's.
+- **How a small piano's bass is tuned.** One recorded grand (the
+  Salamander) and one recorded upright (the Helsinki) say how the bass
+  octaves are tuned: the grand's on high partials (8:4 from A1 down), the
+  upright's 4:2 throughout, by the stretch each octave type would give on
+  the recording's own stiffness. The single recorded octaves scatter: the
+  upright's read from 2:1 to 8:4 one by one, its lowest between 4:2 and
+  6:3. No small grand is among the recordings. The baby grand's bass
+  strings are as stiff as the model's upright's (A0's inharmonicity
+  3.4e-4 beside 3.1e-4) and are tuned by the grands' rule, which puts its
+  A0 29.9 cents under equal temperament where the upright's rule would
+  put it 9.1 under; which is right for it is not measured.
 - **Steps in the stretch where the strings change.** Octaves tuned on the
   strings' own partials step where the scale passes from wound strings to
   plain ones or from one string to two: 4.2 cents between C3 and C♯3 on
-  the baby grand, 2.5 between D3 and D♯3 on the upright, 2.6 between A♯2
-  and B2 on the parlor grand, 1.8 between E2 and F2 on the concert grand
-  and 1.5 on the studio grand, and about half as much an octave lower. A
-  tuner smooths a break by ear; the model's does not.
+  the baby grand, 2.6 between A♯2 and B2 on the parlor grand, 1.8 between
+  E2 and F2 on the concert grand and 1.5 on the studio grand, and about
+  half as much an octave lower; 1.2 between D3 and D♯3 on the upright
+  (2.5 through 2.13.0) and 0.8 an octave and two below. A tuner smooths a
+  break by ear; the model's does not.
   Against a second recorded upright (MAPS, ENSTDkCl) the notes from C6 up
   stand 1 to 4 dB louder beside the middle ones than recorded, and the
   thump arrives up to 10 ms later.

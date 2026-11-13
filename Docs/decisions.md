@@ -5552,3 +5552,79 @@ baby grand and the upright (A0 11 cents lower than 2.12.0's). It rests on
 the measurement above, not on a listening test; the 2.12.0 image set's
 verdict is still open. This entry is on the work branch until the upright
 is benchmarked and the owner has decided the merge.
+
+## 2026-11-13 — the upright's bass octaves are an upright's (2.13.1)
+
+**What was wrong.** 2.13.0 gave every piano the bass octaves read from the
+Salamander grand: 4:2 at A3, 6:3 at A2, 8:4 from A1 down. Its own upright
+benchmark, run after it was written, put the upright's bass tuning 0.1 to
+0.45 cents further off and seven single notes worse, all at C1, D♯1 and
+C2. That asked whether an upright's tuner hears its bass octaves where a
+grand's does.
+
+**Measured.** `Tools/measure_tuner_octaves.py --model upright`, on the
+Helsinki upright's own stiffness with its own A4 as the reference, rule
+against recording from C1 to A2 (seven pitches):
+
+| Rule | rms, cents | mean |
+| --- | --- | --- |
+| 4:2 throughout | 2.39 | |
+| 6:3 | 9.08 | flat |
+| 8:4 | 19.56 | flat |
+| 10:5 | 32.99 | flat |
+| the grands' ladder | 14.87 | −12.17 (−30.1 at C1) |
+
+The same table for the Salamander reads 7.3, 4.5, 1.4, 5.1 and 2.2 (the
+2.13.0 entry above). The tool now prints what it reads straight from the
+recording too. Stiffness, B × 10⁴, at C1, D♯1, A1, C2, D♯2, F♯2, A2: the
+Helsinki 4.90, 3.82, 2.42, 2.37, 2.30, 2.05, 2.12; the Salamander at A0,
+C1, D♯1, F♯1, A1 2.28, 1.61, 1.32, 0.88, 0.88. And each octave both of
+whose notes were recorded, the upper note's partial n above the lower's
+partial 2n in cents (the octave tuned stands at nothing):
+
+| Octave | 2:1 | 4:2 | 6:3 | 8:4 | 10:5 | 12:6 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Helsinki C1–C2 | +1.9 | −0.8 | −5.2 | −18.3 | −40.0 | −57.7 |
+| D♯1–D♯2 | +9.0 | +7.5 | −1.1 | −12.0 | −21.4 | −35.6 |
+| A1–A2 | +7.0 | +3.6 | +2.6 | −4.0 | −12.1 | −18.9 |
+| C2–C3 | +0.1 | −2.6 | −3.0 | −9.0 | −19.8 | −25.6 |
+| F♯2–F♯3 | +8.5 | +8.2 | +4.6 | +0.2 | −6.8 | −12.7 |
+| C3–C4 | +3.5 | +8.5 | +2.5 | −1.6 | −8.9 | −16.2 |
+| D3–D4 | −3.8 | −1.8 | −1.0 | −4.3 | −4.5 | −7.7 |
+| F♯3–F♯4 | +0.5 | −2.6 | −2.3 | −7.4 | −11.6 | −15.1 |
+| G♯3–G♯4 | −4.0 | −4.5 | −6.5 | −8.2 | −7.9 | −12.0 |
+| Salamander A0–A1 | +16.0 | +13.8 | +11.6 | +4.1 | −4.3 | −14.5 |
+| C1–C2 | +12.6 | +10.8 | +9.3 | +6.2 | −2.4 | −10.7 |
+| A1–A2 | +0.9 | +4.6 | +3.2 | +2.5 | −0.8 | −2.9 |
+| A3–A4 | +2.1 | +0.1 | −0.6 | −2.8 | −3.3 | −5.8 |
+
+The grand's lowest octaves stand at nothing between 8:4 and 10:5 and its
+A3–A4 at 4:2, as the rules table said. The upright's single octaves
+scatter from 2:1 to 8:4 (an old instrument, each octave from one pair of
+notes), its two lowest between 4:2 and 6:3; none of its bass octaves is
+as wide as 8:4 but F♯2's. The chain and the single octaves agree that the
+grands' ladder is not this upright's tuning; the chain says 4:2, the
+lowest single octaves 4:2 to 6:3.
+
+**Decided (measured, not by ear).** The upright's bass octaves are 4:2
+all the way down (`Design::bassOctave`), the rule its recording's stretch
+follows; the four grands keep the ladder and render to the byte as
+2.13.0. The upright's A0 stands 8.9 cents under equal temperament (28.7
+in 2.13.0, 18.1 through 2.12.0), C1 7.7, A1 5.4, A2 2.8. Its level rows
+are written again and its output scale pinned to them (.1609 to .1622).
+
+**Not measured: the baby grand.** The model's baby grand has bass strings
+as stiff as its upright's (B at A0 3.35e-4 beside 3.13e-4; the Helsinki's
+C1 4.9e-4, the Salamander's 1.6e-4). No small grand is in the reference
+set, and no source found says at what size a tuner leaves the wide bass
+octaves. It keeps the ladder (A0 29.9 cents under; 18.6 with 6:3 below
+A2; 9.1 with 4:2).
+
+**A listening set for the owner** (not committed; A is 2.13.0 as built
+into the U45, one 16 s phrase of low octaves under held chords, default
+controls, each letter trimmed to A's whole-file RMS: upright B −0.13 dB
+and C +0.12, baby grand B −0.02 and C −0.28), on the upright and on the
+baby grand: A the grands' ladder, B 4:2 throughout, C 4:2 at A3 to 6:3 at
+A2 and 6:3 below. The upright stands at B by the measurement unless the
+owner chooses otherwise; the baby grand at A until the owner chooses. No
+verdict yet.
