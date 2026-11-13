@@ -5432,8 +5432,8 @@ pairs, and the upright's close pair, each also folded to mono. B is
 matched to A on whole-file RMS over both channels; the trims, -0.06 to
 +0.57 dB, are in its key. The mono folds are (L+R)/2 of the matched files
 and not matched again: how much each loses in mono is part of what is
-judged. No verdict yet. This entry is on the work branch until the owner
-has heard it and the upright is benchmarked.
+judged. No verdict yet. Merged to `main` on 2026-11-13 with the verdict
+open (2.13.1's entry).
 
 ## 2026-11-13 — the bass octaves, and the loops four abreast (2.13.0)
 
@@ -5550,8 +5550,7 @@ coincident ribbon pair and say nothing of a spaced pair's image.
 **What is the owner's to hear.** The bass tuning is audible, most on the
 baby grand and the upright (A0 11 cents lower than 2.12.0's). It rests on
 the measurement above, not on a listening test; the 2.12.0 image set's
-verdict is still open. This entry is on the work branch until the upright
-is benchmarked and the owner has decided the merge.
+verdict is still open. Merged to `main` on 2026-11-13 (2.13.1's entry).
 
 ## 2026-11-13 — the upright's bass octaves are an upright's (2.13.1)
 
@@ -5650,3 +5649,10 @@ over thirty partials with no common pitch removed, and here it agrees
 with the tuner's reading. The recording's own middle stands within 4
 cents of A 440 (F♯4 −0.3, G♯4 −3.9, A♯4 −3.8), so its bass's 6 to 15
 cents under is its tuner's stretch and not a flat piano.
+
+**Merged.** On 2026-11-13 the owner chose "Merge all three with the
+website": 2.12.0, 2.13.0 and 2.13.1 went to `main` at `7c0724c` and the
+Rack device 2.13.1f1 with them. Both listening sets were still unheard:
+2.12.0's image and this entry's bass tuning. What is on `main` is what
+each entry says the engine does, and a verdict that goes the other way
+is a new version.
