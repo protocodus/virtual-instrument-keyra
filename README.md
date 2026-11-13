@@ -103,8 +103,16 @@ level table is written again and each piano's output scale pinned to it
   first thirty partials, and the concert grand's bass strings are 26 to
   53 % less stiff than the Salamander's from A0 to C2 (Known gaps): with
   the fundamental nearer the recording's, the partials above it stand
-  further under. Everything else moves by 0.03 or less. The upright
-  against the Helsinki recordings is not measured yet.
+  further under. Everything else moves by 0.03 or less. The
+  [upright](Docs/validation/upright-tuner-ladder-benchmark-2026-11-13.md)
+  against the Helsinki recordings: its tuning goes from 3.36 to 3.43
+  cents on the fitted notes and 3.41 to 3.55 on the others, its bass's
+  from 4.77 to 5.22 and 4.02 to 4.12, and its bass's partials 0.2 to 0.3
+  dB further off; seven single-note scores are worse, all at C1, D♯1 and
+  C2 (their tuning by 0.6 to 1.0 cents, C1's and C2's partials by 0.8 to
+  0.9 dB, D♯1's rise, 10.6 to 19.4 ms, and decay). Nothing above the bass
+  moves but the middle's tuning on the unfitted notes, 2.08 to 2.29
+  cents.
 
 ### 2.12.0 — 2026-11-13 — the image a spaced pair hears
 
@@ -164,10 +172,18 @@ through every pair, with each piano's level pinned again.
   6.52 to 7.36 dB, the stereo balance on the fitted notes from 5.03 to
   5.97, and 103 single-note scores worse. The law is drawn when the piano
   is designed and costs no CPU while it plays.
-- **Not measured yet.** The upright against the Helsinki recordings, which
-  were not at hand: this version is not released until that benchmark is
-  run. Those recordings are a coincident ribbon pair, so they can score
-  the upright's tone and level but not a spaced pair's image.
+- **The upright against the Helsinki recordings**
+  ([report](Docs/validation/upright-pair-image-benchmark-2026-11-13.md),
+  run with 2.13.0's): its stereo balance stands 6.43 dB off on the fitted
+  notes (6.62) and 6.03 on the others (6.21). Further off: its attack,
+  7.65 dB (7.50) and 7.68 (7.33), its early spectrum on the unfitted
+  notes, 9.08 (8.70), its noise, 9.80 (9.66) and 8.66 (8.49), the
+  treble's partials on the fitted notes, 5.80 (5.35), and 58 single-note
+  scores, the largest D3's rise, 79 ms (68), and the stereo balance of
+  D7, C3 and D4, 7 to 12 dB (3 to 7). Those recordings are a coincident
+  ribbon pair, so they score the upright's tone and level and not a
+  spaced pair's image; as on the grand, a change of the phases alone
+  moves single notes this far.
 - **Tried and left out** (`Docs/decisions.md`): the whole turn given to
   one microphone; each mode put on whichever side was nearer, which took
   the bass apart (0.56 alike at 125 Hz); and the angle smoothed over a
@@ -941,7 +957,15 @@ is written independently of it.
   ([2.7.0](Docs/validation/upright-room-bridge-benchmark-2026-11-12.md));
   2.10.0 took 0.4 dB off its partials and 4 ms off its rise and put its
   stereo balance 0.5 to 0.6 dB further off
-  ([2.10.0](Docs/validation/upright-board-beside-benchmark-2026-11-12.md)).
+  ([2.10.0](Docs/validation/upright-board-beside-benchmark-2026-11-12.md));
+  2.12.0 took 0.2 dB off its stereo balance and put its attack 0.15 to
+  0.35 dB and its noise 0.15 dB further off
+  ([2.12.0](Docs/validation/upright-pair-image-benchmark-2026-11-13.md));
+  2.13.0 put its bass's tuning 0.1 to 0.45 cents and its bass's partials
+  0.2 to 0.3 dB further off
+  ([2.13.0](Docs/validation/upright-tuner-ladder-benchmark-2026-11-13.md);
+  [both against 2.11.0](Docs/validation/upright-since-shipping-benchmark-2026-11-13.md),
+  62 single-note scores worse).
 - **The bass strings' stiffness.** The concert grand's wound strings are 14
   to 53 % less stiff than the Salamander's, a grand 0.7 m shorter, so in
   the bass the benchmark still looks for upper partials where the model

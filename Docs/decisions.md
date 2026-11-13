@@ -5530,10 +5530,22 @@ too. Cost on the development machine, 30 s renders through
 8.4 % the SDK's way. Not Reason's meter: no Rack Extension of the
 physical model has run in Reason yet.
 
-**Not measured.** The upright against the Helsinki recordings, for 2.12.0
-and for this: the recordings are on the owner's machine and the run is
-still to be made there. By the standing rule neither version is merged
-before it.
+**The upright against the Helsinki recordings**, run on the owner's
+machine the same day for 2.11.0, 2.12.0 and 2.13.0
+(`Docs/validation/upright-pair-image-`, `upright-tuner-ladder-` and
+`upright-since-shipping-benchmark-2026-11-13.md`; 137 fitted and 21
+unfitted notes). 2.12.0: stereo balance 6.62 to 6.43 dB and 6.21 to 6.03;
+attack 7.50 to 7.65 and 7.33 to 7.68, early spectrum 9.00 to 9.07 and
+8.70 to 9.08, noise 9.66 to 9.80 and 8.49 to 8.66, level 4.17 to 4.23 and
+3.07 to 3.15; 58 single-note scores worse, the largest D3's rise (68.4 to
+79.3 ms) and the stereo balance of D7, C3 and D4 (7.2 to 12.3, 3.5 to 8.6
+and 3.1 to 7.4 dB). 2.13.0 after it: tuning 3.36 to 3.43 cents and 3.41
+to 3.55, the bass's 4.77 to 5.22 and 4.02 to 4.12, the bass's partials
+10.62 to 10.80 and 9.98 to 10.30 dB; seven single-note scores worse, all
+in the bass (C1's tuning 8.09 to 9.06 and partials 11.74 to 12.62, D♯1's
+rise 10.6 to 19.4 ms, tuning 6.73 to 7.65 and decay 7.98 to 9.18, C2's
+partials 11.72 to 12.50 and tuning 3.74 to 4.32). The recordings are a
+coincident ribbon pair and say nothing of a spaced pair's image.
 
 **What is the owner's to hear.** The bass tuning is audible, most on the
 baby grand and the upright (A0 11 cents lower than 2.12.0's). It rests on
