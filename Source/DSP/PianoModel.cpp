@@ -748,7 +748,16 @@ void designBoard(Tables& t,int body){
     const auto radiated=[&](double hertz){
     return hertz*hertz/(hertz*hertz+d.dipoleHertz*d.dipoleHertz)/(1+hertz*hertz/(radiationCorner*radiationCorner));};
   constexpr int bins=360,octave=48;      // from 20 Hz
-  const auto binHertz=[](int bin){return 20*std::pow(2.,bin/static_cast<double>(octave));};
+  // Each bin's frequency and the smoothing's weights, taken once. `response`
+  // asked pow and exp for them 130 000 times a call, half of the half
+  // second the five pianos take to design here, and more where the library's
+  // pow and exp are slower, as the Rack's are. The same expressions as
+  // before, so the same bits.
+  double hertzAt[bins],smoothing[bins];
+  for(int bin=0;bin<bins;++bin){
+    hertzAt[bin]=20*std::pow(2.,bin/static_cast<double>(octave));
+    const double octaves=bin/static_cast<double>(octave);smoothing[bin]=std::exp(-octaves*octaves/(2*.3*.3));}
+  const auto binHertz=[&](int bin){return hertzAt[bin];};
   double anchor[micCount]{};
   // On the heap, and each call's own: pianos are prepared on any thread.
   const std::unique_ptr<std::complex<double>[][maxModes]> answer(new std::complex<double>[bins][maxModes]);
@@ -770,7 +779,7 @@ void designBoard(Tables& t,int body){
     double sum=0;int count=0;
     for(int bin=0;bin<bins;++bin){double total=0,weight=0;
       for(int other=0;other<bins&&binHertz(other)<.9*t.crossover;++other){
-        const double octaves=(other-bin)/static_cast<double>(octave),w=std::exp(-octaves*octaves/(2*.3*.3));total+=w*raw[other];weight+=w;}
+        const double w=smoothing[other>bin?other-bin:bin-other];total+=w*raw[other];weight+=w;}
       level[bin]=total/std::max(weight,1e-9);
       if(binHertz(bin)>200&&binHertz(bin)<800){sum+=std::log(level[bin]/radiated(binHertz(bin)));++count;}}
     return std::exp(sum/count);
@@ -781,14 +790,16 @@ void designBoard(Tables& t,int body){
   for(int k=0;k<t.modes;++k){const BoardMode& mode=all[k];
     const int nx=std::min(64,3*mode.m/2+2),ny=std::min(64,3*mode.n/2+2);
     const double wave=2*pi*mode.hertz/soundSpeed;
+    for(int a=0;a<nx;++a)sx[a]=std::sin(mode.m*pi*(a+.5)/nx);
+    for(int b=0;b<ny;++b)sy[b]=std::sin(mode.n*pi*(b+.5)/ny);
     double total=0;
     constexpr int directions=48;
     for(int i=0;i<directions;++i){
       const double z=(i+.5)/directions,rho=std::sqrt(1-z*z),turn=i*2.39996323;
       const double ux=wave*rho*std::cos(turn),uy=wave*rho*std::sin(turn);
       std::complex<double> across=0,along=0;
-      for(int a=0;a<nx;++a)across+=turned(std::sin(mode.m*pi*(a+.5)/nx),ux*d.boardX*(a+.5)/nx);
-      for(int b=0;b<ny;++b)along+=turned(std::sin(mode.n*pi*(b+.5)/ny),uy*d.boardY*(b+.5)/ny);
+      for(int a=0;a<nx;++a)across+=turned(sx[a],ux*d.boardX*(a+.5)/nx);
+      for(int b=0;b<ny;++b)along+=turned(sy[b],uy*d.boardY*(b+.5)/ny);
       total+=std::norm(across*along)/directions;}
     const double w=2*pi*mode.hertz;
     power[k]=total*std::pow(w*w*d.boardX*d.boardY/(nx*ny)*mode.hertz,2)/(mode.hertz*mode.hertz+d.dipoleHertz*d.dipoleHertz);

@@ -85,6 +85,10 @@ level table is written again and each piano's output scale pinned to it
   builds (no vectoriser, no builtins), the same phrase costs 73 % of a core
   before and 33 % after, a melody 14 % and 8 %. Those are 30 s renders on a
   development machine (an Intel Xeon at 2.1 GHz), not Reason's meter.
+- **A new instance is ready sooner.** Designing the five pianos took half a
+  second there, half of it asking the library for the same powers and
+  exponentials again and again; they are taken once, the tables come out
+  the same to the bit, and it takes a fifth of a second.
 - **Nothing on the heap asks for more than a double's alignment.** The
   Rack's allocator promises 8 bytes, and code that trusts 16 or 32 faults
   on x86 there. The engine's members no longer ask.
@@ -1063,8 +1067,9 @@ is written independently of it.
   there, its heaviest blocks as unsteady (0.2 to 1.6 of the block); built
   the way Reason's compiler builds, a dense pedalled phrase takes 33 % of
   one core, above the portfolio's 10 %. Designing the five pianos when the
-  engine is made takes about half a second. There is no Quality setting to
-  lighten it.
+  engine is made takes about a fifth of a second there; how long Reason's
+  own maths library takes over it is not measured. There is no Quality
+  setting to lighten it.
 - **Typical dimensions.** The five pianos are typical of their kinds, not
   one maker's instruments, and they share one board, bridge and strike
   point. Their soundboards are a smeared plate under a bridge beam, with
