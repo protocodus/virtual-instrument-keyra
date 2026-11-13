@@ -73,6 +73,18 @@ dB higher).
 - **The baby grand is not changed.** Its bass strings are as stiff as the
   model's upright's, and no small grand is among the recordings to say how
   one is tuned, so it keeps the grands' ladder (Known gaps).
+- **Against the Helsinki recordings**
+  ([against 2.13.0](Docs/validation/upright-bass-octaves-benchmark-2026-11-13.md),
+  [2.12.0](Docs/validation/upright-bass-octaves-since-2-12-0-benchmark-2026-11-13.md)
+  and [the shipping 2.11.0](Docs/validation/upright-bass-octaves-since-shipping-benchmark-2026-11-13.md)):
+  beside 2.13.0 no single-note score is worse and nine are better, all at
+  C1, D♯1, C2 and D♯2. The bass's tuning goes from 5.22 to 4.74 cents on
+  the notes 1.0.0 fitted and 4.12 to 3.34 on the others, and its partials
+  from 10.80 to 10.07 dB and 10.30 to 9.22; both stand under 2.12.0's
+  too (4.77 and 4.02 cents, 10.62 and 9.98 dB). Beside 2.12.0 one score
+  is worse: G♯3's tuning on the unfitted notes, 0.89 to 1.41 cents, the
+  key under A3 that 2.12.0 tuned 6:3. Beside 2.11.0 it carries 2.12.0's
+  changes to the image: 55 single-note scores worse and 60 better.
 
 ### 2.13.0 — 2026-11-13 — the bass tuned as a tuner tunes it, and half the cost in Reason
 
@@ -989,7 +1001,11 @@ is written independently of it.
   0.2 to 0.3 dB further off
   ([2.13.0](Docs/validation/upright-tuner-ladder-benchmark-2026-11-13.md);
   [both against 2.11.0](Docs/validation/upright-since-shipping-benchmark-2026-11-13.md),
-  62 single-note scores worse).
+  62 single-note scores worse); 2.13.1 took that back and 0.5 to 0.8
+  cents and 0.7 to 1.1 dB more off them
+  ([2.13.1](Docs/validation/upright-bass-octaves-benchmark-2026-11-13.md);
+  [against 2.11.0](Docs/validation/upright-bass-octaves-since-shipping-benchmark-2026-11-13.md),
+  55 single-note scores worse).
 - **The bass strings' stiffness.** The concert grand's wound strings are 14
   to 53 % less stiff than the Salamander's, a grand 0.7 m shorter, so in
   the bass the benchmark still looks for upper partials where the model

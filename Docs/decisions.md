@@ -5628,3 +5628,25 @@ baby grand: A the grands' ladder, B 4:2 throughout, C 4:2 at A3 to 6:3 at
 A2 and 6:3 below. The upright stands at B by the measurement unless the
 owner chooses otherwise; the baby grand at A until the owner chooses. No
 verdict yet.
+
+**What the benchmark says of it** (run on the owner's machine,
+`Docs/validation/upright-bass-octaves-benchmark-2026-11-13.md` and its two
+companions; 137 fitted and 21 unfitted notes). Against 2.13.0: tuning
+3.43 to 3.33 cents and 3.55 to 3.39, the bass's 5.22 to 4.74 and 4.12 to
+3.34; the bass's partials 10.80 to 10.07 dB and 10.30 to 9.22, its rise
+8.95 to 7.42 ms on the fitted notes; no single-note score worse, nine
+better (C1's partials 12.62 to 10.76 and tuning 9.06 to 8.16; D♯1's
+partials 10.60 to 10.06, tuning 7.65 to 6.77 and rise 19.4 to 10.3 ms;
+C2's partials 12.50 to 11.48 and tuning 4.32 to 2.81; D♯2's partials
+10.30 to 9.22 and tuning 4.12 to 3.34). Against 2.12.0, whose bass was
+6:3: the bass's tuning 4.77 to 4.74 and 4.02 to 3.34, its partials 10.62
+to 10.07 and 9.98 to 9.22; one single-note score worse, G♯3's tuning on
+the unfitted notes (0.89 to 1.41 cents; 2.12.0 tuned that key 6:3 under
+an A3 tuned 4:2, the step 2.13.0 removed), eight better. Against the
+shipping 2.11.0: 55 single-note scores worse, the largest D3's rise (68.4
+to 79.3 ms) and the stereo balance of D7, C3 and D4, which are 2.12.0's
+image and were reported with it; 60 better. The score is a mean distance
+over thirty partials with no common pitch removed, and here it agrees
+with the tuner's reading. The recording's own middle stands within 4
+cents of A 440 (F♯4 −0.3, G♯4 −3.9, A♯4 −3.8), so its bass's 6 to 15
+cents under is its tuner's stretch and not a flat piano.
