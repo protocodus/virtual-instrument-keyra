@@ -5798,5 +5798,25 @@ trimmed to A's whole-file RMS (+0.16 to +0.85 dB).
 
 **Verdict (owner, 2026-11-14, by ear):** "b is ok". B is chosen over
 2.13.1. That is a choice of direction by ear; it does not make the three
-estimates above measured, and they stay named as estimates. The upright's
-Helsinki benchmark is still to be run and reported before the merge.
+estimates above measured, and they stay named as estimates.
+
+**The upright against the Helsinki recordings**, run after the verdict on
+the owner's machine
+(`Docs/validation/upright-strings-benchmark-2026-11-14.md`, 2.13.1 built
+from `59c8523`, whose `Source/` is `ab0ce4d`'s). Paired, train (137
+notes): partials 7.54 to 7.32 dB, rise 12.81 to 12.05 ms, sustain 10.54 to
+10.45 closer; decay 4.37 to 4.56 dB/s further. Dev (21 notes): envelope
+4.13 to 4.62 dB, tuning 3.39 to 3.57 cents, decay 4.65 to 4.81 dB/s,
+stereo level 5.94 to 6.17 and level 3.19 to 3.38 dB further; partials 7.27
+to 7.18 and early 9.10 to 9.00 dB closer. 29 single-note scores worse,
+the largest the envelope of B3 (2.25 to 4.62, one take) and C5 (4.07 to
+5.78). The recordings do not prefer B on the upright; the owner's choice
+of it there is by ear, and both are recorded as the standing rule asks.
+
+## 2026-11-14 — the Piano list sorted by size
+
+The owner: "sort the pianos in the selector - grands first (by size),
+then uprights". The editor lists Concert, Studio, Parlor and Baby Grand,
+then Upright (`bodyOrder`, KeyraPresets.h). `model::Body` keeps its
+order, so saved sessions, automation and Rack patches recall the same
+piano; a host's own parameter list still shows the stored order.

@@ -209,8 +209,8 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     program.setTooltip("A factory piano: a body, how its hammers and strings are kept and where it is heard from. "
                        "Output, tuning, mechanics, felt mute and the pedals stay.");
     addAndMakeVisible(program);
-    // The attachment selects item index + 1 of the choice, so the items go in first.
-    for (size_t i = 0; i < keyra::bodyNames.size(); ++i) body.addItem(keyra::bodyNames[i], static_cast<int>(i) + 1);
+    // Listed in bodyOrder, each item's id its Body + 1: a ComboBoxAttachment would tie the list's order to the parameter's.
+    for (const auto b : keyra::bodyOrder) body.addItem(keyra::bodyNames[static_cast<size_t>(b)], static_cast<int>(b) + 1);
     body.setColour(juce::ComboBox::backgroundColourId, ivory.withAlpha(.55f));
     body.setColour(juce::ComboBox::textColourId, ink);
     body.setColour(juce::ComboBox::outlineColourId, brass.withAlpha(.35f));
@@ -218,7 +218,10 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
     body.setTooltip("The piano: its string scale, hammers, soundboard and case. A physical model of each kind of "
                     "piano at a typical size, not one maker's instrument.");
     addAndMakeVisible(body);
-    bodyAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processor.parameters, "body", body);
+    bodyAttachment = std::make_unique<juce::ParameterAttachment>(*processor.parameters.getParameter("body"),
+        [this](float value) { body.setSelectedId(juce::roundToInt(value) + 1, juce::dontSendNotification); });
+    body.onChange = [this] { bodyAttachment->setValueAsCompleteGesture(static_cast<float>(body.getSelectedId() - 1)); };
+    bodyAttachment->sendInitialUpdate();
     for (size_t i = 0; i < controls.size(); ++i) {
         auto& slider = controls[i];
         slider.setName(captions[i]);

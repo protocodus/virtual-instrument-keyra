@@ -106,12 +106,24 @@ of `Keyra.CpuBudget`, 7 % less to 19 % more).
   worse, the largest the rise of F♯2 and F♯3 (0.3 and 5.4 ms off to 12
   and 13), which is the pull before the note. The run precedes the
   upright's halved lengthwise pull, which the grand does not take.
-- **The upright is not measured against its recordings.** Beside three
-  reference uprights of another modelled instrument, key by key
+- **The upright against the Helsinki recordings**
+  ([report](Docs/validation/upright-strings-benchmark-2026-11-14.md)):
+  small and mixed. On the notes it was fitted beside, the partials' levels
+  7.54 to 7.32 dB and rise 12.8 to 12.1 ms closer, decay 4.37 to 4.56 dB/s
+  further. On the 21 notes 1.0.0 never fitted, the envelope 4.13 to 4.62
+  dB (B3 and C5 the most, 2.4 and 1.7), tuning 3.39 to 3.57 cents, decay
+  4.65 to 4.81 dB/s, level 3.19 to 3.38 and the stereo level 5.94 to 6.17
+  dB further; partials 7.27 to 7.18 and early 9.10 to 9.00 dB closer. 29
+  single-note scores are worse. Beside three reference uprights of
+  another modelled instrument, key by key
   ([report](Docs/validation/upright-reference-uprights-comparison-2026-11-14.md)),
   its early fall moves from 4.7 to 2.9 dB/s outside their range and the
-  rest holds. They are a comparison, not a recording, and nothing is
+  rest holds; they are a comparison, not a recording, and nothing is
   fitted to them.
+- **The Piano list is sorted:** the grands from the longest (Concert,
+  Studio, Parlor, Baby), then the Upright. Saved sessions and automation
+  keep their piano: only the editor's list changes, and a host's own
+  parameter list keeps the stored order.
 - **Four checks changed with their reasons beside them:** a bass string is
   preceded by its own stretch, 28 dB under the note, so the check that
   nothing precedes it allows that and still excludes a knock; the held C4
