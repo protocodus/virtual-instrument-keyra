@@ -50,7 +50,7 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
-### 2.14.0 — 2026-11-14 — strings that die as recorded ones do (candidate, no verdict yet)
+### 2.14.0 — 2026-11-14 — strings that die as recorded ones do (chosen by ear)
 
 How a held note falls away changes on every piano: the bass and the middle
 lose their first sound faster and ring on after it, a bass note's partials

@@ -5794,5 +5794,9 @@ and a unison's beat against a cubic fall.
 
 **A second listening set for the owner** (not committed): A is 2.13.1, B
 this, the same three phrases on the concert grand and the upright, B
-trimmed to A's whole-file RMS (+0.16 to +0.85 dB). No verdict yet; the
-branch is not merged.
+trimmed to A's whole-file RMS (+0.16 to +0.85 dB).
+
+**Verdict (owner, 2026-11-14, by ear):** "b is ok". B is chosen over
+2.13.1. That is a choice of direction by ear; it does not make the three
+estimates above measured, and they stay named as estimates. The upright's
+Helsinki benchmark is still to be run and reported before the merge.
