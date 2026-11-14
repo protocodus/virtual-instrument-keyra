@@ -5711,3 +5711,88 @@ is not measured: its recordings are on the owner's machine.
 three phrases on the concert grand and the upright, B trimmed to A's
 whole-file RMS (+0.12 to +0.77 dB). No verdict yet; the branch is not
 merged.
+
+## 2026-11-14 — the first set's whistle and mistuning, and the four left out (2.14.0, candidate)
+
+**What the owner heard in the first set.** "bass loud concert grand B: it
+resonates and whistles on some notes! that is wrong", and "Middle, sung,
+upright around 09: there is some mistuning. find systemic issue".
+
+**The whistle.** A longitudinal mode is driven by the sums and differences
+of the partials its number apart; where the mode's own frequency fell on
+one of those tones it rang it up. C2 at 1836 Hz stood 5 dB under the
+note's strongest partial; the Salamander's worst tone between partials is
+22 dB under, its median 39. Each mode is now tuned midway between the
+nearest driving tone below and above it. Sustained, the grand's worst is
+26 dB under and its median 44. The upright also pinged at 884 Hz in A1's
+first third of a second (14.5 dB under); its strings take half the
+lengthwise pull now (`along`), an estimate, and its worst sustained tone
+is 26 dB under, median 40. A variant that chose the widest gap within
+1.5 f0 put modes back on tones and was taken out.
+
+**The mistuning.** `gives`, 1.5, also multiplied the bridge's reactive
+part, which shifts the mode in which a unison's strings move together and
+not the modes in which they move against each other. The note then starts
+at one pitch and ends at another: F4 under the pedal was 3.5 cents under
+2.13.1's. The reactive part is held to 0.4 of an endless plate's above
+the board's lowest mode, and under that mode the bridge gives as before
+(`meets`). First partial's drift across a note on the upright, rms over
+the keyboard: 2.13.1 1.24 cents, the first candidate 1.66 (worst 4.51),
+this 1.30 (worst 2.68).
+
+**What was missed.** The first candidate was checked on decay and
+partial levels only. Nothing looked for one loud tone between partials or
+for pitch moving inside a note. Both are now measured before a set is
+handed over.
+
+**The four left out on 2026-11-13, built on the owner's word**
+("the pitch glide: can you implement it with the value you measured, the
+0.4 cent? others: please build them too").
+
+- Pitch glide: a quarter of the stretch between rigid ends is kept
+  (`stretchKept`), set against the Salamander's hardest layer (0.2 to 0.5
+  cents). It gives 0.34 to 0.43. This constant is set against a
+  recording and says so beside it.
+- A plain string's own stray, 0.45 cents to C5 and none from C6, scaled
+  by Detune; the recorded stray from C3 to B4 is 0.59. Yesterday's entry
+  left it out because a unison at Detune 0 beat; Detune 0 now removes it.
+- Uneven strikes across a unison, up to a tenth: an estimate, with no
+  trace in the measured decay.
+- The felt's width on the string, 8 mm in the bass to 3 mm at the top: an
+  estimate. Yesterday's measurement stands: the recorded strike notches
+  are deeper than the model's, and this does not deepen them.
+
+The last three are estimates the owner asked to hear, not measurements.
+Under the listening tests' limit a preference for B does not make them
+measured; if they stay, they stay as estimates and are named so.
+
+**Benchmark**
+(`Docs/validation/grand-strings-second-round-benchmark-2026-11-14.md`,
+unfitted notes): partials 7.58 to 7.32 dB, tuning 2.32 to 2.28 cents,
+attack 6.34 to 6.13, early 6.02 to 5.88, sustain 7.90 to 7.72, envelope
+4.02 to 3.88; decay 3.31 to 3.40 dB/s, rise 12.0 to 13.0 ms. 55
+single-note scores worse. Run before the upright's `along`, which the
+grand does not take. The upright's Helsinki benchmark is not run: its
+recordings are on the owner's machine, and the candidate does not merge
+without it.
+
+**Beside three reference uprights** the owner supplied (bounces of
+another modelled instrument, 88 keys at three velocities;
+`Tools/compare_reference_keyboard.py`,
+`Docs/validation/upright-reference-uprights-comparison-2026-11-14.md`).
+Mean distance outside their range, 2.13.1 then this: level 2.46 and 2.41
+dB, early fall 4.72 and 2.94 dB/s, decay 2.13 and 2.03 dB/s, rise 6.47
+and 5.84 ms, release 5.20 and 5.27 dB, tuning 2.73 and 2.59 cents. The
+largest gaps left at velocity 80: the rise from C3 to B3 (22.5 ms against
+7), a release 6 to 7 dB deeper than theirs from C2 to B4, and the top
+octave (decay 17.6 dB/s against 1.5, 11 cents sharper, 4 dB louder).
+Nothing is fitted to them: they are another model, not a piano.
+
+**Tests.** Two fixtures changed, each with its reason beside it
+(`engine_tests.cpp`): the soft pedal's darkening is read over five keys,
+and a unison's beat against a cubic fall.
+
+**A second listening set for the owner** (not committed): A is 2.13.1, B
+this, the same three phrases on the concert grand and the upright, B
+trimmed to A's whole-file RMS (+0.16 to +0.85 dB). No verdict yet; the
+branch is not merged.

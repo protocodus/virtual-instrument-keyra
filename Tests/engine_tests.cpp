@@ -287,11 +287,19 @@ int main(){
     // upright's halves the blow.
     for(const auto body:{keyra::model::Body::concertGrand,keyra::model::Body::upright}){
       auto p=strings();p.body=body;
-      b.start(p);e.noteOn(60,.7f);b.run(.5);const double loud=b.take.db(.02,.4),bright=b.take.above(2000,.02,.4);
-      b.start(p);e.controlChange(67,127);e.noteOn(60,.7f);b.run(.5);
-      std::cout<<keyra::bodyNames[static_cast<int>(body)]<<" soft pedal: "<<b.take.db(.02,.4)-loud<<" dB, above 2 kHz "<<b.take.above(2000,.02,.4)-bright<<" dB more\n";
-      check(b.take.db(.02,.4)<loud-1.5&&b.take.db(.02,.4)>loud-15,"the soft pedal plays softer");
-      check(b.take.above(2000,.02,.4)<bright-.5,"the soft pedal plays darker");
+      // Over five keys: each string strays from the stiff string's partials
+      // its own way (2.14.0), so one key's upper partials sum by its own
+      // draw, and on C4 alone the shift off one string hid the softer felt.
+      double softer=0,darker=0;
+      for(const int key:{55,57,60,64,67}){
+        b.start(p);e.noteOn(key,.7f);b.run(.5);const double loud=b.take.db(.02,.4),bright=b.take.above(2000,.02,.4);
+        b.start(p);e.controlChange(67,127);e.noteOn(key,.7f);b.run(.5);
+        softer+=(b.take.db(.02,.4)-loud)/5;darker+=(b.take.above(2000,.02,.4)-bright)/5;
+        std::cout<<keyra::bodyNames[static_cast<int>(body)]<<" soft pedal, MIDI "<<key<<": "<<b.take.db(.02,.4)-loud<<" dB, above 2 kHz "<<b.take.above(2000,.02,.4)-bright<<" dB more\n";
+        e.controlChange(67,0);
+      }
+      check(softer<-1.5&&softer>-15,"the soft pedal plays softer");
+      check(darker<-.5,"the soft pedal plays darker");
     }
   }
   {
@@ -454,11 +462,18 @@ int main(){
      std::cout<<"String age: C3's share above 1.5 kHz falls "<<-f<<" dB over 2.5 s new, "<<-o<<" dB old\n";
      check(o<f-3,"old strings lose their upper partials sooner");}
     {auto p=strings();p.detune=0;const Take pure=note(p,60,.6f,3);p.detune=1;const Take wide=note(p,60,.6f,3);
-     // A unison's beat: how far its 50 ms levels stray from a straight fall.
-     const auto wobble=[](const Take& t){double sx=0,sy=0,sxx=0,sxy=0;const int n=50;std::array<double,50> y{};
-       for(int i=0;i<n;++i){y[i]=t.db(.4+.05*i,.45+.05*i);sx+=i;sy+=y[i];sxx+=i*i;sxy+=i*y[i];}
-       const double slope=(n*sxy-sx*sy)/(n*sxx-sx*sx),mean=(sy-slope*sx)/n;double sum=0;
-       for(int i=0;i<n;++i){const double d=y[i]-mean-slope*i;sum+=d*d;}
+     // A unison's beat: how far its 50 ms levels stray from a smooth fall.
+     // The fall bends once on its own, from the strings moving together to
+     // what is left when they have fallen out of step, and since 2.14.0
+     // bounded how far the bridge's give moves a unison's pitch the bend is
+     // sharper: against a straight line a pure unison read 2.4 dB with no
+     // beat in it. A cubic takes the bend and leaves the beat.
+     const auto wobble=[](const Take& t){const int n=50;std::array<double,50> y{};double m[4][5]{};
+       for(int i=0;i<n;++i){y[i]=t.db(.4+.05*i,.45+.05*i);const double x=2.*i/(n-1)-1,power[4]{1,x,x*x,x*x*x};
+         for(int r=0;r<4;++r){for(int c=0;c<4;++c)m[r][c]+=power[r]*power[c];m[r][4]+=power[r]*y[i];}}
+       for(int c=0;c<4;++c)for(int r=0;r<4;++r)if(r!=c){const double f=m[r][c]/m[c][c];for(int j=c;j<5;++j)m[r][j]-=f*m[c][j];}
+       double sum=0;
+       for(int i=0;i<n;++i){const double x=2.*i/(n-1)-1,d=y[i]-(m[0][4]/m[0][0]+x*m[1][4]/m[1][1]+x*x*m[2][4]/m[2][2]+x*x*x*m[3][4]/m[3][3]);sum+=d*d;}
        return std::sqrt(sum/n);};
      std::cout<<"Detune 0 to 1: C4's level wobbles "<<wobble(pure)<<" to "<<wobble(wide)<<" dB\n";
      check(wobble(wide)>wobble(pure)+.5,"detuned unisons beat");}
