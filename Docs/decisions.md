@@ -5820,3 +5820,12 @@ then uprights". The editor lists Concert, Studio, Parlor and Baby Grand,
 then Upright (`bodyOrder`, KeyraPresets.h). `model::Body` keeps its
 order, so saved sessions, automation and Rack patches recall the same
 piano; a host's own parameter list still shows the stored order.
+
+## 2026-11-14 — the two unheard sets are accepted without a verdict
+
+2.12.0's image and 2.13.x's bass tuning went to `main` with their
+listening sets unheard. The owner, asked about them at the wrap-up: "as
+for listening sets: assume candidate is better go with it". Both
+candidates stand as merged. This is an acceptance on the measurements each
+entry gives, not a choice by ear: nobody listened, and the sets' audio was
+deleted with the owner's confirmation the same day.
