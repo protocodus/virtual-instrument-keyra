@@ -50,6 +50,50 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.14.0 — 2026-11-13 — strings that die as recorded ones do (candidate, unheard)
+
+How a held note falls away changes on every piano: the bass and the middle
+lose their first sound faster and ring on after it, a bass note's partials
+swing as they die, and a loud bass note has more between its partials. The
+panel and the saved state do not change. Every piano's row of the keys'
+level table is written again and its output scale pinned to it. On the
+development machine the demos cost 5 to 17 % more than 2.13.1.
+
+- **The bridge takes more from the strings**, half as much again up to C5.
+  The Salamander's notes from D♯3 to D♯5 fall 20.2 dB/s in their first
+  half second; 2.13.1's fell 15.0, these 20.2. From A0 to A2 the whole note
+  falls 8.4, 4.9 and 3.0 dB/s over its first five seconds; 2.13.1's 7.5,
+  4.4 and 3.1, these 8.9, 5.1 and 3.6.
+- **A wound string's two polarisations are kept apart to its 64th partial**
+  (16 before), each partial a hair apart along the bridge and down into
+  it. The recorded bass partials swing 0.7 to 2 dB about a smooth fall;
+  2.13.1's swung under 0.1, these 0.9 to 1.8.
+- **The strings ring along their length.** Up to six longitudinal modes a
+  string, driven by its stretch, add the tones between a bass note's
+  partials that the uniform stretch alone left 15 to 20 dB short from A2 to
+  D♯3 (now within 5 to 8 dB), and a faint pull on the bridge before the
+  note proper. Their decay, 0.1 s, is a published model's, not a
+  measurement.
+- **Tried and left out:** the pitch glide of a hard blow (the recordings
+  glide 0.2 to 0.5 cents, the derived one 1.2 to 2.7), a wider hammer (the
+  recorded strike notches are deeper than the model's, not shallower),
+  uneven strikes across a unison (no trace in the recorded decay) and a
+  stray of each plain string's own (it matched the recorded 0.6 cents and
+  made a pure unison beat).
+- **Against the Salamander recordings**
+  ([report](Docs/validation/grand-strings-benchmark-2026-11-13.md)), on the
+  notes 1.0.0 never fitted: the partials' levels 7.58 to 7.22 dB, attack
+  6.34 to 6.12, early 6.02 to 5.82 and sustain 7.90 to 7.70 dB closer;
+  tuning 2.32 to 2.37 cents, decay 3.31 to 3.43 dB/s and rise 12.0 to 13.0
+  ms further. 45 single-note scores are worse, the largest the rise of
+  F♯2 and F♯3 (0.3 and 5.4 ms off to 12 and 13), which is the pull before
+  the note. The upright is not yet measured against its recordings.
+- **Two checks changed with their reasons beside them:** a bass string is
+  now preceded by its own stretch, 28 dB under the note, so the check that
+  nothing precedes it allows that and still excludes a knock; and the held
+  C4 of the sostenuto check stands 3.5 dB lower a second on, so its margin
+  is 20 dB where it was 25.
+
 ### 2.13.1 — 2026-11-13 — the upright's bass tuned as an upright's is
 
 The upright's keys below A3 sit higher again: A0 stands 8.9 cents under
@@ -720,10 +764,12 @@ up (2.6 dB under them below it) and within 2 dB of a Disklavier's notes
 **Unisons.** The strings of a key, each in two polarisations, share the
 bridge, whose admittance couples them (Weinreich 1977): that gives the
 prompt sound, the slower aftersound and their beating. The first 48 partials
-of each string are kept apart, the first 16 also across the bridge; above
+of each string are kept apart, the first 16 also across the bridge (a wound
+string's first 64, each a hair off its partial down into the bridge); above
 them the strings move together. From C5 down the strings' stretching as
 they swing pulls the bridge at twice each partial's frequency (Conklin
-1999), the phantom partials of a bass note.
+1999), and up to six longitudinal modes of each string ring with it (Bank
+and Sujbert 2005): the phantom partials of a bass note.
 
 **Soundboard.** The bridge drives the modes of a ribbed plate smeared into
 one orthotropic plate, up to 224 of them under 2.6 kHz, with a point

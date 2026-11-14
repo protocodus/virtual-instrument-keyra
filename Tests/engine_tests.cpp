@@ -251,7 +251,11 @@ int main(){
     e.noteOn(67,.7f);b.run(.3);e.noteOff(67);b.run(.5);
     const double c4=b.take.tone(b.take.pitch(hertz(60),.8,1.1),.8,1.1),g4=b.take.tone(b.take.pitch(hertz(67),.8,1.1),.8,1.1);
     std::cout<<"sostenuto: C4 "<<c4<<" dB, G4 struck after it "<<g4<<" dB\n";
-    check(c4>g4+25,"the sostenuto holds the keys down at its rising edge only");
+    // 26.7 dB apart through 2.13.1 and the limit 25. The held C4 now falls
+    // in its first half second as the Salamander's middle does (20 dB/s,
+    // 15 before, PianoModel.cpp's `gives`) and stands 3.5 dB lower here; the
+    // damped G4 is where it was within 1 dB. 24.1 apart.
+    check(c4>g4+20,"the sostenuto holds the keys down at its rising edge only");
     e.controlChange(66,0);b.run(.5);
     check(b.take.db(1.4,1.6)<c4-25,"the sostenuto lets its dampers fall");
     b.start(strings());e.controlChange(66,127);e.noteOn(60,.7f);b.run(.3);e.noteOff(60);b.run(.5);

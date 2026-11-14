@@ -5656,3 +5656,58 @@ Rack device 2.13.1f1 with them. Both listening sets were still unheard:
 2.12.0's image and this entry's bass tuning. What is on `main` is what
 each entry says the engine does, and a verdict that goes the other way
 is a new version.
+
+## 2026-11-13 — strings that die as recorded ones do (2.14.0, candidate)
+
+**What was asked.** The owner: "sometimes the piano sounds cheap, like
+synth, emulation, harpsichord", mainly the strings, and then "build all" of
+six proposals. Each was measured against the Salamander first
+(concert grand, layer 13 unless said).
+
+**Built.**
+
+- The bridge takes half as much again from the strings up to C5, fading
+  out by C6 (`gives`, PianoModel.cpp). First half second, D♯3 to D♯5:
+  recorded 20.2 dB/s, 2.13.1 15.0, this 20.2. A0 to A2 over three spans:
+  recorded 8.4, 4.9, 3.0; 2.13.1 7.5, 4.4, 3.1; this 8.9, 5.1, 3.6.
+- A wound string's polarisations to its 64th partial with a 0.5 cent
+  stray between them. Bass partials' swing about a smooth fall: recorded
+  0.7 to 2 dB, 2.13.1 under 0.1, this 0.9 to 1.8.
+- Up to six longitudinal modes a string (Bank and Sujbert 2005), decay
+  0.1 s as in the same authors' 2004 model. Between the partials from A2
+  to D♯3: 15 to 20 dB short before, 5 to 8 after.
+
+**Measured and not built.**
+
+- Pitch glide: built from the string's stretch between rigid ends, it gave
+  1.2 to 2.7 cents at the hardest layer where the recordings show 0.2 to
+  0.5. Taken out.
+- Hammer width: the recorded strike notches are deeper than the model's.
+- Uneven strikes across a unison: no change in the measured decay.
+- A plain string's own stray (0.45 cents matched the recorded 0.59 from C3
+  to B4): a unison at Detune 0 then beat and the treble's decay scored 0.5
+  dB/s worse. Taken out; the plain strings stay at 0.27 cents.
+- The wound strings' stiffness partial by partial was 2.11.0's work and
+  holds: 1.57 cents against the recorded 1.54.
+- Twice the bridge under the wound strings, and raising only its loss:
+  both scored worse (the comment beside `gives`).
+
+**Not touched, and the largest gap left.** The middle's upper partials
+still stand 5 to 18 dB under the recordings (the felt's law, 2.13.0's
+entry). None of the six proposals addressed it; the proposal was written
+before this log and the day's report were read again.
+
+**Benchmark** (`Docs/validation/grand-strings-benchmark-2026-11-13.md`,
+unfitted notes): partials 7.58 to 7.22 dB, attack 6.34 to 6.12, early 6.02
+to 5.82, sustain 7.90 to 7.70; tuning 2.32 to 2.37 cents, decay 3.31 to
+3.43 dB/s, rise 12.0 to 13.0 ms. 45 single-note scores worse. The upright
+is not measured: its recordings are on the owner's machine.
+
+**Tests.** Two limits changed, each with its reason beside it
+(`piano_model_tests.cpp`, "no knock precedes a bass string";
+`engine_tests.cpp`, the sostenuto's margin 25 to 20 dB).
+
+**A listening set for the owner** (not committed): A is 2.13.1, B this,
+three phrases on the concert grand and the upright, B trimmed to A's
+whole-file RMS (+0.12 to +0.77 dB). No verdict yet; the branch is not
+merged.
