@@ -43,8 +43,10 @@ constexpr double steelYoung=2.0e11,steelDensity=7850;
 
 constexpr int maxK=160;      // partials of a string
 constexpr int maxKv=48;      // partials whose unison strings are kept apart
-constexpr int maxKh=16;      // partials with a second polarisation
+constexpr int maxKh=64;      // partials with a second polarisation: a wound string's
+constexpr int plainKh=16;    // and a plain string's
 constexpr int maxKl=40;      // partials that drive the longitudinal force
+constexpr int maxLong=6;     // a string's longitudinal modes
 constexpr int planeStart[6]{0,maxK,maxK+maxKv,maxK+2*maxKv,maxK+2*maxKv+maxKh,maxK+2*maxKv+2*maxKh};
 constexpr int planeFloats=maxK+2*maxKv+3*maxKh;
 constexpr int points=8;      // where the bridge drives the board
@@ -332,6 +334,7 @@ struct KeyData {
   float couplingRe[maxK]{},couplingIm[maxK]{}; // 2 f0 Z0 Y(w), 1/s
   float detune[3]{},polarisation[3]{},share[3]{},across[3]{},acrossDrive[3]{};
   float stray[3][maxKv]{};     // each string's partial against the ratio, wound strings only
+  float polar[3][maxKh]{};     // and its partial along the bridge against the one down into it
   float duplexRatio[duplexModes]{};
 };
 struct HfTap {float gain,seconds;};
@@ -475,7 +478,11 @@ void designStrings(Tables& t,int body) noexcept {
     for(int j=0;j<3;++j){
       k.detune[j]=static_cast<float>(r.normal());
       k.polarisation[j]=static_cast<float>(.6+.8*r.uniform())*(r.uniform()<.5?-1.f:1.f);
-      k.share[j]=static_cast<float>(1+.04*r.symmetric());
+      // A hammer's face is not level across its unison, so its strings take
+      // unequal shares of the blow: up to a tenth either way. An estimate,
+      // not a measurement (the owner asked for it built, 2026-11-14); it was
+      // a twenty-fifth through 2.13.1.
+      k.share[j]=static_cast<float>(1+.1*r.symmetric());
       // A string also moves sideways, along the soundboard, which the
       // bridge hardly follows: that motion takes a share of the blow, loses
       // little to the board and is the aftersound left once the first, loud
@@ -507,7 +514,14 @@ void designStrings(Tables& t,int body) noexcept {
       // same for its unison; a wound one strays on its own, below.
       const double shared=r.symmetric();
       k.ratio[count]=static_cast<float>(ratio*(1+(k.wound?0:2e-4)*shared*std::min(1.,n/8.)));
-      k.shape[count]=static_cast<float>(std::sin(n*pi*k.strike));
+      // The felt meets the string over a width, not at a point: a force
+      // spread evenly over it drives mode n by sin(a)/a less, a = n pi
+      // width / (2 L). The width, 8 mm at A0 to 3 mm at C8, is an estimate
+      // from the hammers' size, not a measurement (the owner asked for it
+      // built, 2026-11-14). It takes under 1 dB from any partial below
+      // 10 kHz.
+      const double felt=n*pi*mix(.008,.003,i/87.)/(2*k.length);
+      k.shape[count]=static_cast<float>(std::sin(n*pi*k.strike)*std::sin(felt)/felt);
       ++count;
     }
     k.partials=count;
@@ -519,9 +533,26 @@ void designStrings(Tables& t,int body) noexcept {
     // to its frequency, and a held bass chord swept like a flanger. Set
     // against the Salamander grand's stray from A0 to B2, a median of 1.54
     // cents, where 2.10.0's stood at 0.40 (Tools/measure_partial_stray.py).
+    // A plain string strays less, 0.45 cents, and only as far as Detune
+    // leaves its unison out of tune (tune), so a unison tuned pure stays
+    // pure; above C5 it fades and is gone by C6, where it put the treble's
+    // decay 0.5 dB/s further from the recordings. Set against the
+    // Salamander's partials from C3 to B4, which stand 0.59 cents from the
+    // stiff string's (the concert grand's 0.27 without this, 0.63 with).
+    const double plainStray=.45*(1-clamp((i-51)/12.,0,1));
     for(int j=0;j<3;++j){Rng q=seeded(body,i,57+j);
       k.stray[j][0]=1;
-      for(int n=2;n<=maxKv;++n)k.stray[j][n-1]=static_cast<float>(k.wound?std::pow(2.,1.5*q.normal()/1200):1.);}
+      for(int n=2;n<=maxKv;++n)k.stray[j][n-1]=static_cast<float>(std::pow(2.,(k.wound?1.5:plainStray)*q.normal()/1200));}
+    // Nor does a wound string sit the same on its bridge pins along the
+    // bridge as down into it: each partial's two polarisations stand a hair
+    // apart, 0.5 cents for one deviation, and beat. With one split for all
+    // of a string's partials (tune) the concert grand's partials from A0 to
+    // A2 died as straight lines, within 0.1 dB of a smooth fall from 0.3 to
+    // 5 s where the Salamander's swing 0.7 to 2 dB about theirs
+    // (partials 3 to 40, layer 13); with this 0.9 to 1.8, and with 0.8 and
+    // 1.5 cents, under a bridge that took more, up to 3.6 and 4.0.
+    for(int j=0;j<3;++j){Rng q=seeded(body,i,91+j);
+      for(int n=0;n<maxKh;++n)k.polar[j][n]=static_cast<float>(k.wound?std::pow(2.,.5*q.normal()/1200):1.);}
   }
   // The tuner's stretch: A4 at pitch, the octave under it and every octave
   // above tuned 4:2 (the upper note's second partial on the lower's fourth),
@@ -642,13 +673,43 @@ void designBoard(Tables& t,int body){
     // lowest mode there is nothing to even out: the board is a spring there,
     // the bridge moves with it as one, and a string keeps what it has.
     const bool under=hertz<all[0].hertz;
-    const std::complex<double> board(clamp(c.real(),under?0:.7*unit,1.5*unit),clamp(c.imag(),-unit,unit));
+    // What evens out how much a key loses evens out how far the bridge's
+    // give moves its pitch: a mode that adds A to what the board takes adds
+    // no more than A / 2 either way to its give, so a board kept between 0.7
+    // and 1.5 of the plate gives within 0.4 of it. Through 2.14.0's first
+    // candidate the give kept the whole of the plate's value, and where a
+    // mode lay near, a unison's strings moving together stood up to 3.8
+    // cents from the same strings moving apart or along the bridge (the
+    // upright's A4): the note went out of tune with itself as it rang, and
+    // with its octave.
+    const double give=under?unit:.4*unit;
+    const std::complex<double> board(clamp(c.real(),under?0:.7*unit,1.5*unit),clamp(c.imag(),-give,give));
     // The bridge is a beam between the strings and the board, and a beam's
     // own point impedance, 2 m' c (1 + i) with c its bending waves' speed,
     // stands in the strings' way before the board's does: they meet
     // 1 / (1 / Y + Z beam). It narrows from C5 to the top.
     const double beam=under?0:mix(1,d.bridgeTaper,clamp((i-51)/36.,0,1))*2*d.bridgeMass*bridgeWave*std::sqrt(hertz)/(2*key.hertz*key.impedance);
-    return Met{c,board/(1.+board*std::complex<double>(beam,beam))};
+    // The bridge takes more from the strings than this plate and beam
+    // allow: half as much again up to C5, fading out by C6. Set against how
+    // the Salamander's notes fall (layer 13, median of the keys). From A0
+    // to A2 the whole note falls 8.4 dB/s in its first half second, 4.9
+    // from 0.4 to 2.6 s and 3.0 after: 7.5, 4.4 and 3.1 without this, 8.9,
+    // 5.1 and 3.6 with it. From D#3 to D#5 the first half second falls
+    // 20.2 dB/s: 15.0 without this, 20.2 with it, 25 at twice. From F#5 up
+    // 37, and 34 as it was. Twice under the wound strings brought their
+    // partials' first second closer (4 to 10 dB/s against the recorded 5 to
+    // 9; 2.4 to 10 with this, 3 to 5 without) and scored worse against the
+    // recordings: the bass's tuning 4.59 cents against 3.83 and its decay
+    // 2.63 dB/s against 2.40 (Tools/benchmark_recordings.py, the unfitted
+    // notes). Raising only what the bridge takes, and not how far its give
+    // moves a partial's pitch, brought the tuning no nearer (3.89) and made
+    // a unison at Detune 0 beat (Keyra.PianoModel).
+    // Under the board's lowest mode there is no more to take, and half as
+    // much again of a spring's give only set a bass unison's strings moving
+    // together further from the same strings moving apart (5.2 cents on the
+    // upright's C#2, 3.4 without).
+    const double gives=under?1:key.wound?1.5:mix(1.5,1,clamp((i-51)/12.,0,1));
+    return Met{c,gives*board/(1.+board*std::complex<double>(beam,beam))};
   };
   // What the strings lose to the bridge is what the board is given, and the
   // plate's own modes take less than the evened board: between two of the
@@ -951,6 +1012,11 @@ void designBoard(Tables& t,int body){
 }
 
 // --- what sounds -----------------------------------------------------------
+// The pitch glide (Voice::glidePerEnergy): the share of the swing's stretch
+// the speaking length keeps, the most a blow may raise the pitch (2 cents)
+// and the change that is worth new steps (0.003 cents).
+constexpr double stretchKept=.25;
+constexpr float glideMost=1.2e-3f,glideStep=2e-6f;
 // A key's strings. Plane 0 is the first string's vertical polarisation and,
 // for the partials above maxKv, all the strings' moving together; planes 1
 // and 2 the other strings' vertical motion, 3 to 5 each string's motion
@@ -962,6 +1028,8 @@ struct Voice {
   int point=0;float pointMix=0;
   float damper=0;            // 0 off the strings, 1 on them
   float appliedDamper=-1;
+  float glide=0,appliedGlide=0; // how far the swing's stretch raises the pitch, as a ratio less one
+  float glidePerEnergy=0;
   float u[6]{};              // each plane's hold on the bridge
   float re[planeFloats]{},im[planeFloats]{};
   float turnRe[planeFloats]{},turnIm[planeFloats]{}; // the step: rotation times loss
@@ -971,6 +1039,11 @@ struct Voice {
   float bridge[maxK]{};         // newtons on the bridge per metre
   float open[maxK]{},damped[maxK]{}; // the loss per sample, damper off and on
   float tension[maxK]{};        // the longitudinal force's share
+  float lift[maxK]{};           // radians a sample a partial gains per unit of glide
+  // The string's longitudinal modes: two poles each, and what they hold.
+  int longModes=0;
+  float slope[maxKl]{},longForce=0;
+  float longA1[maxLong]{},longA2[maxLong]{},longGain[maxLong]{},longY1[maxLong]{},longY2[maxLong]{};
   float force[chunk]{};
   float floor2=0;            // the squared bridge force under which a partial is let go
 };
@@ -1109,6 +1182,12 @@ struct Piano::Impl {
     if(plane<3)return plane<v.strings?std::min(v.sounding,v.apart):0;
     return plane-3<v.strings?std::min(v.sounding,v.across):0;
   }
+  // One string's stretch over its swing, as the rise in pitch it gives.
+  static float glideOf(const Voice& v) noexcept {
+    float sum=0;
+    for(int k=0;k<v.sounding;++k)sum+=(k+1)*(k+1)*(v.re[k]*v.re[k]+v.im[k]*v.im[k]);
+    return std::min(glideMost,v.glidePerEnergy*sum);
+  }
   void applyDamper(Voice& v) noexcept {
     const float d=v.damper;
     for(int plane=0;plane<6;++plane){const int n=planeLength(v,plane),o=planeStart[plane];
@@ -1116,8 +1195,9 @@ struct Piano::Impl {
       // down into it, and meets it alone.
       const float own=plane<3?0:v.u[plane]*v.u[plane];
       for(int k=0;k<n;++k){const float g=v.open[k]+(v.damped[k]-v.open[k])*d;
-        v.turnRe[o+k]=v.cosine[o+k]*g-own*v.couplingRe[k];v.turnIm[o+k]=v.sine[o+k]*g-own*v.couplingIm[k];}}
-    v.appliedDamper=d;
+        const float lift=v.glide*v.lift[k];
+        v.turnRe[o+k]=(v.cosine[o+k]-lift*v.sine[o+k])*g-own*v.couplingRe[k];v.turnIm[o+k]=(v.sine[o+k]+lift*v.cosine[o+k])*g-own*v.couplingIm[k];}}
+    v.appliedDamper=d;v.appliedGlide=v.glide;
   }
   // A voice's partials and their frequencies from its key as the controls
   // and the bend stand.
@@ -1134,11 +1214,13 @@ struct Piano::Impl {
     while(count>1&&f0*key.ratio[count-1]>.45*sampleRate)--count;
     v.partials=count;
     v.apart=key.strings>1?std::min(count,maxKv):0;
-    v.across=std::min(count,maxKh);
+    v.across=std::min(count,key.wound?maxKh:plainKh);
     v.longitudinal=index<52?std::min(count,maxKl):0;
     v.point=std::min(points-2,static_cast<int>(key.bridge));v.pointMix=static_cast<float>(key.bridge-v.point);
     // False beats grow with the strings' age.
     const double spread=unisonSpread(key),split=1e-4*(1+7*controls.age);
+    // A plain string's own stray goes with Detune (KeyData::stray).
+    const double strays=key.wound?1:std::min(2.,controls.detune/.3);
     for(int plane=0;plane<6;++plane){
       const int string=plane%3;const bool isAcross=plane>=3;
       const int n=plane==0?count:isAcross?(string<v.strings?v.across:0):(string<v.strings?v.apart:0);
@@ -1148,7 +1230,7 @@ struct Piano::Impl {
       const int o=planeStart[plane];
       for(int k=0;k<n;++k){
         // The partials the strings play together sit at the unison's pitch.
-        const double tuned=plane==0&&k>=v.apart&&v.strings>1?1:apart*(k<maxKv?key.stray[string][k]:1);
+        const double tuned=plane==0&&k>=v.apart&&v.strings>1?1:apart*(k<maxKv?1+strays*(key.stray[string][k]-1):1)*(isAcross?key.polar[string][k]:1);
         turnOf(2*pi*f0*key.ratio[k]*tuned/sampleRate,v.cosine[o+k],v.sine[o+k]);
       }
     }
@@ -1163,6 +1245,9 @@ struct Piano::Impl {
       const double re=key.couplingRe[k]*together/sampleRate,im=key.couplingIm[k]*together/sampleRate;
       v.couplingRe[k]=static_cast<float>(re*v.cosine[k]-im*v.sine[k]);
       v.couplingIm[k]=static_cast<float>(re*v.sine[k]+im*v.cosine[k]);
+      // More tension raises a partial by the share of its frequency the
+      // tension gives, the rest being the string's stiffness.
+      v.lift[k]=static_cast<float>(2*pi*f0*key.ratio[k]/sampleRate/(1+key.inharmonicity*(k+1)*(k+1)));
     }
   }
   // A voice's losses, coupling and pull on the bridge from its key as the
@@ -1172,6 +1257,15 @@ struct Piano::Impl {
     const double f0=key.hertz*tuningRatio(key);
     tune(v,index);
     const int count=v.partials;
+    // The share of the strings' pull along their length that bends the
+    // board (below): a fifth, and a tenth on the upright. With a fifth the
+    // upright's shorter bass strings put a tone between the partials 14.5 dB
+    // under the strongest partial in a hard blow's first third of a second
+    // (884 Hz on A1) and 20 under as the note rang, where the Salamander
+    // grand's stand 20 and 22 under at worst and the concert grand's 27 and
+    // 26. No upright recording here says an upright's are stronger than a
+    // grand's, so the upright is held to the recorded grand's.
+    const double along=table->design.upright?.1:.2;
     for(int k=0;k<count;++k){
       const double w=2*pi*f0*key.ratio[k];
       const double loss=stringLoss(key,w);
@@ -1189,10 +1283,56 @@ struct Piano::Impl {
       // of partials due to nonlinear mixing in a stringed instrument", JASA
       // 105, 1999). About a fifth of it bends the board, by the bridge's
       // height over it.
-      v.tension[k]=k<v.longitudinal?static_cast<float>(-.2*key.strings*key.young*pi*pi/(8*key.length*key.length)*(k+1)*(k+1)):0;
+      v.tension[k]=k<v.longitudinal?static_cast<float>(-along*key.strings*key.young*pi*pi/(8*key.length*key.length)*(k+1)*(k+1)):0;
     }
+    // The same stretch, taken over the swing, also raises the tension while
+    // the string is wide, and every partial's pitch with it: by
+    // E S pi^2 / (8 L^2) * sum of k^2 |y_k|^2 over twice the tension.
+    // Between rigid ends that put the concert grand's first twelve partials
+    // 1.2 to 2.7 cents sharp from 80 to 300 ms after the hardest blow
+    // against 2 to 3 s on, where the Salamander's stand 0.2 to 0.5 cents
+    // sharper than after a soft blow: a piano's string ends give, and the
+    // lengths beyond the bridge and the agraffe share the stretch.
+    // `stretchKept` is the share the speaking length keeps, set against
+    // that recorded glide (the owner's instruction, 2026-11-14), not derived.
+    v.glidePerEnergy=static_cast<float>(stretchKept*key.young*pi*pi/(8*key.length*key.length)/(2*key.tension));
+    // A string also rings along its length, at m sqrt(E S / mu) / (2 L):
+    // where the stretch is uneven along the string it drives those modes,
+    // which pull the bridge with the uniform stretch above. The stretch
+    // 1/2 y'^2 of the partials y_k sin(k pi x / L) has, on cos(m pi x / L),
+    //   a_m = 1/2 sum of c_k c_(k+m) + 1/4 sum over j + k = m of c_j c_k,
+    // c_k = y_k k pi / L, and mode m, eta'' + 2 s eta' + w_m^2 eta =
+    // -w_m^2 a_m, adds E S (-1)^m (a_m + eta_m) to the tension at the
+    // bridge: nothing far under its own frequency, a_m far over it, and a
+    // ring at it, which the sums of two partials an odd number apart cross
+    // (B. Bank and L. Sujbert, "Generation of longitudinal vibrations in
+    // piano strings: from physics to sound synthesis", JASA 117, 2005).
+    // Their decay is the 0.1 s the same authors' model uses ("A piano model
+    // including longitudinal string vibrations", DAFx 2004), not a
+    // measurement of these strings. Modes above 10 kHz are left out.
+    const double longHertz=std::sqrt(key.young/key.density)/(2*key.length);
+    v.longModes=0;v.longForce=static_cast<float>(along*key.strings*key.young);
+    for(int m=1;m<=maxLong&&v.longitudinal>m&&m*longHertz<10000&&m*longHertz<.4*sampleRate;++m){
+      // A maker keeps a string's longitudinal modes off the tones that
+      // drive them, and so does the same authors' model: a mode on one rings
+      // as a whistle (at 1836 Hz on C2 struck hard, 5 dB under the note's
+      // strongest partial, where the Salamander's strongest tone between
+      // the partials of a bass note stands 22 dB under or more, 39 at the
+      // median; with this the concert grand's stand 26 and 43). Mode m is
+      // driven by the sums and differences of the partials m apart and of
+      // those whose numbers add to m; it sits midway between the two of
+      // those nearest its own frequency.
+      double below=0,above=.5*sampleRate;const double own=m*longHertz;
+      const auto mind=[&](double hertz){if(hertz<=own)below=std::max(below,hertz);else above=std::min(above,hertz);};
+      for(int k=0;k+m<v.longitudinal;++k){const double a=f0*key.ratio[k],b=f0*key.ratio[k+m];mind(b+a);mind(b-a);}
+      for(int j=0;j+2<=m;++j){const double a=f0*key.ratio[j],b=f0*key.ratio[m-2-j];mind(a+b);mind(std::abs(a-b));}
+      const double hertz=below>0&&above<.5*sampleRate?.5*(below+above):own;
+      const double r=std::exp(-10/sampleRate),a1=2*r*std::cos(2*pi*hertz/sampleRate),a2=-r*r;
+      v.longA1[m-1]=static_cast<float>(a1);v.longA2[m-1]=static_cast<float>(a2);v.longGain[m-1]=static_cast<float>(1-a1-a2);
+      v.longModes=m;}
+    for(int k=0;k<maxKl;++k)v.slope[k]=static_cast<float>((k+1)*pi/key.length);
     v.floor2=static_cast<float>(3e-6*3e-6);
-    v.appliedDamper=-1;
+    v.appliedDamper=-1;v.glide=0;
   }
   void setDrive(Voice& v,int index,float soft) noexcept {
     const KeyData& key=table->keys[index];
@@ -1315,7 +1455,7 @@ struct Piano::Impl {
   // Four partials at a time (Four.h), the last one to three singly: a lane
   // past a plane's length would wake a partial that was let go.
   void play(Voice& v,float* out,int frames) noexcept {
-    float sumRe[maxK],sumIm[maxK],stretch[maxKl];
+    float sumRe[maxK],sumIm[maxK],stretch[maxKl],slope[maxKl];
     const int n=v.sounding;
     const int lengths[6]{planeLength(v,0),planeLength(v,1),planeLength(v,2),planeLength(v,3),planeLength(v,4),planeLength(v,5)};
     for(int s=0;s<frames;++s){
@@ -1331,7 +1471,18 @@ struct Piano::Impl {
       const int longitudinal=std::min(n,v.longitudinal);
       for(k=0;k+4<=longitudinal;k+=4){const Four re=Four::at(v.re+k),im=Four::at(v.im+k);(re*re-im*im).to(stretch+k);}
       for(;k<longitudinal;++k)stretch[k]=v.re[k]*v.re[k]-v.im[k]*v.im[k];
-      out[s]=pull+dot(v.tension,stretch,longitudinal);
+      float along=dot(v.tension,stretch,longitudinal);
+      if(v.longModes>0){
+        for(k=0;k<longitudinal;++k)slope[k]=v.slope[k]*v.im[k];
+        for(int m=1;m<=v.longModes;++m){
+          float a=.5f*dot(slope,slope+m,longitudinal-m);
+          for(int j=0;j+2<=m&&m-2-j<longitudinal;++j)a+=.25f*slope[j]*slope[m-2-j];
+          const float y=v.longA1[m-1]*v.longY1[m-1]+v.longA2[m-1]*v.longY2[m-1]+v.longGain[m-1]*a;
+          v.longY2[m-1]=v.longY1[m-1];v.longY1[m-1]=y;
+          along+=v.longForce*((m&1)?y-a:a-y);
+        }
+      }
+      out[s]=pull+along;
       // The bridge gives under the strings' sum and takes from each.
       for(k=0;k+4<=n;k+=4){
         const Four cRe=Four::at(v.couplingRe+k),cIm=Four::at(v.couplingIm+k),re=Four::at(sumRe+k),im=Four::at(sumIm+k);
@@ -1368,7 +1519,7 @@ struct Piano::Impl {
       for(int plane=0;plane<6;++plane){if(k>=planeLength(v,plane))continue;const int o=planeStart[plane];v.re[o+k]=v.im[o+k]=0;}
       --v.sounding;
     }
-    if(v.sounding==0)v.active=false;
+    if(v.sounding==0){v.active=false;for(int m=0;m<maxLong;++m)v.longY1[m]=v.longY2[m]=0;}
   }
   // Mute lays felt on every string, held or not, lightly at first.
   float muted() const noexcept {return controls.mute*controls.mute;}
@@ -1578,7 +1729,7 @@ struct Piano::Impl {
     }
   }
   void silence() noexcept {
-    for(auto& v:voices){v.active=false;v.forcing=false;v.sounding=0;v.damper=0;v.appliedDamper=-1;
+    for(auto& v:voices){v.active=false;v.forcing=false;v.sounding=0;v.damper=0;v.appliedDamper=-1;for(int m=0;m<maxLong;++m)v.longY1[m]=v.longY2[m]=0;
       std::memset(v.re,0,sizeof(v.re));std::memset(v.im,0,sizeof(v.im));std::memset(v.force,0,sizeof(v.force));}
     for(auto& c:contacts)c.active=false;
     std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
@@ -1640,7 +1791,8 @@ struct Piano::Impl {
       Voice& v=voices[i];
       if(v.active){
         if(v.damper!=goal){v.damper+=(goal-v.damper)*damperStep;if(std::abs(v.damper-goal)<.002f)v.damper=goal;}
-        if(v.damper!=v.appliedDamper)applyDamper(v);
+        v.glide=glideOf(v);
+        if(v.damper!=v.appliedDamper||std::abs(v.glide-v.appliedGlide)>glideStep)applyDamper(v);
         if(!v.forcing)prune(v);
         sounding=sounding||v.active;
       }

@@ -5,6 +5,11 @@
 namespace keyra {
 // The pianos as the front ends name them, by model::Body.
 inline constexpr std::array<const char*, model::bodyCount> bodyNames {{ "Concert Grand", "Parlor Grand", "Baby Grand", "Upright", "Studio Grand" }};
+// The order a selector shows them in: the grands from the longest, then the
+// upright (owner, 2026-11-14). model::Body keeps its own order, which saved
+// sessions and patches store.
+inline constexpr std::array<model::Body, model::bodyCount> bodyOrder {{ model::Body::concertGrand, model::Body::studioGrand,
+    model::Body::parlorGrand, model::Body::babyGrand, model::Body::upright }};
 // The microphone pairs as the front ends name them, by model::Mic.
 inline constexpr std::array<const char*, model::micCount> micNames {{ "Close", "XY", "Live", "Distant" }};
 // The factory bank: the plug-in's programs and the README demos. A preset is

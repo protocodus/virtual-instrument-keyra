@@ -441,7 +441,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1840,.1519,.1116,.1622,.1703};
+  static constexpr double pascalScale[model::bodyCount]{.1854,.1487,.1092,.1635,.1646};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   double sampleRate=48000,gain=.7,width=.75;
   double smooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;

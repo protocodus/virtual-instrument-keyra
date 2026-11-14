@@ -184,12 +184,17 @@ int main(){
     const double before=b.take.db(0,.004)-b.take.db(.02,.2);
     std::cout<<"under 1.5 kHz in its first 6 ms F#7 holds "<<knock<<" dB re the note; C1's first 4 ms hold "<<before<<" dB re the note\n";
     check(knock>-12,"a top key's blow knocks");
-    // No knock reaches C1 (knockArm is nil below capoFrom), so what these
-    // 4 ms hold is the strings' own modes summed before their wave has
-    // reached the bridge: 50.4 dB under the note in 2.10.0, 49.98 with the
-    // wound strings' stray as drawn and 51.7 under another draw of it. A
-    // knock stands tens of dB higher (F#7's, above, 3 dB under its note).
-    check(before<-48,"nothing precedes a bass string");
+    // No knock reaches C1 (knockArm is nil below capoFrom). What these 4 ms
+    // hold is the string's stretch, which runs along the wire some ten times
+    // as fast as its bend and pulls the bridge before the bend has reached
+    // it: 28 dB under the note. Through 2.13.1, without the string's
+    // longitudinal modes, they held the strings' own modes summed, 50 dB
+    // under, and the limit was -48. The Salamander's bass has that much
+    // before its notes: from A0 to D#1 its loudest layer passes 30 dB under
+    // its peak 12 to 16 ms before it passes 12 under, this model 7 to 12 ms
+    // before and 2.13.1's 3 to 6. A knock stands tens of dB higher (F#7's,
+    // above, 2 dB under its note).
+    check(before<-20,"no knock precedes a bass string");
     // No two catches are alike once a strike carries its chance, and the
     // same chance is the same catch.
     const auto caught=[&](std::uint32_t chance){b.start(c);piano.strike(keyOf(96),.6f,0,chance);b.run(.1);return b.take;};
