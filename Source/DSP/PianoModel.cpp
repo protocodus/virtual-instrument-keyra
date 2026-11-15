@@ -250,6 +250,10 @@ constexpr float caseSound=.6f;
 // Sixteen lines give an impulse back 1.4 dB louder than the eight of 2.6.0
 // did; this keeps the room's level.
 constexpr float roomLevel=.85f;
+// The Room KeyVoicing.h measures the room's return at: the default, which
+// KeyraLevels --write-keys plays.
+constexpr float voicedRoom=.1f;
+static_assert(Controls{}.room==voicedRoom,"KeyVoicing.h measures the return at the default Room");
 constexpr int capoFrom=60;
 // One catch is not the next. Over the sixteen layers of a Salamander key the
 // thump stands 2.7 dB (60 to 110 Hz) and 2.6 dB (110 to 180 Hz) off a line
@@ -1826,13 +1830,19 @@ struct Piano::Impl {
     // without the room, which also keeps the balance above where the modes
     // alone do not.
     const int body=static_cast<int>(controls.body);
+    // The room's return (Room's own level in the mix, 2.16.0) comes in once,
+    // whatever the pairs' levels: KeyVoicing.h measures it at the default
+    // Room, and it scales with Room from there.
+    const double returned=clamp(controls.room,0,1)/voicedRoom;
     for(int i=0;i<keyCount;++i){double got=0,even=0;
-      const float* heard=keyHeard[body][i];
+      const float* heard=keyHeard[body][i];const float* withReturn=keyReturned[body][i];
       // KeyVoicing.h measures the pairs as they are wired, so only Invert
       // signs them here.
       for(int a=0;a<micCount;++a){const double level=levelGoal[a]*t.mic[a].side;
         even+=level*level*keyEven[body][i][a];
+        got+=2*returned*level*withReturn[a];
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*levelGoal[b]*t.mic[b].side**heard++;}
+      got+=returned*returned*withReturn[micCount];even+=returned*returned*keyReturnEven[body][i];
       // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
       // under the even scale (the baby grand's G#5 through the close pair),
       // and one 14 dB over it (the studio grand's G#3 in the four pairs
@@ -2141,17 +2151,27 @@ struct Piano::Impl {
         float* held=spreadLine[k];
         const float old=held[(roomAt-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
         held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
-      float back[roomLines],roomL=0,roomR=0;
+      // What the room gives the microphones (roomL, roomR) and, from the same
+      // lines under orthogonal signs (bit 3 against bit 2: over each side's
+      // eight lines the two sign rows multiply to zero), the return the mix
+      // hears at Room's level below (returnL, returnR). The two hear the same
+      // room and decay alike but do not correlate, so a microphone heard in
+      // the opposite polarity (the upright's live and distant pairs, MicSpec
+      // ::side, or any pair inverted) cannot cancel the return: added as
+      // roomL itself, the upright's distant pair at its default polarity
+      // took the room out of the mix at every Room setting.
+      float back[roomLines],roomL=0,roomR=0,returnL=0,returnR=0;
       for(int k=0;k<roomLines;++k){
         const float x=roomLine[k][(roomAt-roomDelay[k])&roomMask];
         roomState[k]+=roomDamp[k]*(x-roomState[k]);back[k]=roomState[k]*roomGain[k];
-        if(k&1)roomR+=(k&4)?-back[k]:back[k];else roomL+=(k&4)?-back[k]:back[k];}
+        if(k&1){roomR+=(k&4)?-back[k]:back[k];returnR+=(k&8)?-back[k]:back[k];}
+        else{roomL+=(k&4)?-back[k]:back[k];returnL+=(k&8)?-back[k]:back[k];}}
       for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
         const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
       for(int k=0;k<roomLines;++k)
         roomLine[k][roomAt]=.25f*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-.5f:.5f)+knock*(((k^(k>>1))&2)?-.5f:.5f);
       roomAt=(roomAt+1)&roomMask;
-      roomL*=roomLevel;roomR*=roomLevel;
+      roomL*=roomLevel;roomR*=roomLevel;returnL*=roomLevel;returnR*=roomLevel;
       // Each microphone: what it hears and its room, through its circuit;
       // then the mix, each at its level and polarity.
       double l=0,r=0;
@@ -2163,6 +2183,15 @@ struct Piano::Impl {
           if(mics[2*m]){mics[2*m][s]=sign*static_cast<float>(a);loud=std::max(loud,std::abs(mics[2*m][s]));}
           if(mics[2*m+1]){mics[2*m+1][s]=sign*static_cast<float>(b);loud=std::max(loud,std::abs(mics[2*m+1][s]));}}}
       else if(mics){if(mics[2*m])mics[2*m][s]=0;if(mics[2*m+1])mics[2*m+1][s]=0;}
+      // The room as its own level in the mix (the owner's choice by decision
+      // card, 2026-11-15, after "if all mics are down, and only room is max,
+      // i hear nothing"): the room returns to the main mix at the share the
+      // distant pair hears it at, with no microphone's circuit, whatever the
+      // faders are. Each microphone keeps its own share of the room above, and
+      // its own output does not carry this return. The room hears the piano
+      // whether or not any microphone is up (o[roomOut]).
+      const float roomReturn=roomShare[micDistant];
+      l+=roomReturn*returnL;r+=roomReturn*returnR;
       left[s]=static_cast<float>(l);right[s]=static_cast<float>(r);
       loud=std::max(loud,std::max(std::abs(left[s]),std::abs(right[s])));
     }

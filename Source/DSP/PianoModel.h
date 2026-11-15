@@ -49,8 +49,12 @@ struct Controls {
   float mic[micCount]{1,0,0,0,0};
   // Each microphone's polarity inverted, in the mix and on its own output.
   bool invert[micCount]{};
-  // The room's reverberation in the pairs that hear it: 0 none, 1 twice.
-  float room=.5f;
+  // The room's reverberation, 0 none, 1 twice the share below: its own level
+  // in the mix, at the share the distant pair hears, whatever the pairs'
+  // levels (the owner's choice by decision card, 2026-11-15), and in each
+  // pair at that pair's own share. 0.1 by default, a clean sound with a small
+  // hint of room (the owner, 2026-11-15).
+  float room=.1f;
   // A4 in Hz.
   float tuning=440;
   // A practice felt between hammers and strings, 0 off to 1 down.

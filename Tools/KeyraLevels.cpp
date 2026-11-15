@@ -227,26 +227,43 @@ constexpr int products=pairs*(pairs+1)/2;
 struct Voicing {
   std::array<std::array<double,products>,keys> heard{};
   std::array<std::array<double,pairs>,keys> even{};
+  // The room's return with each pair, then with itself; and its even scale.
+  std::array<std::array<double,pairs+1>,keys> returned{};
+  std::array<double,keys> returnEven{};
   Evenness unvoiced[pairs];
 };
 Voicing voice(int body){
   keyra::model::Piano piano;piano.prepare(rate);
   Voicing voicing;
   std::array<KeyLevels,pairs> level{},dry{};
+  // Since 2.16.0 Room returns the room to the mix at its own level, once,
+  // whatever the pairs' levels, where the model's pull adds the pairs as their
+  // levels scale them (PianoModel.cpp, mixMics). So each pair is measured as
+  // the mix adds it, alone less what the mix plays with every pair down, and
+  // the return on its own: with each pair and with itself, and its own even
+  // scale, all at the default Room, which the pull scales them from.
+  constexpr float none[pairs]{};
+  KeyLevels returnLevel{};
   for(int key=0;key<keys;++key){
     std::vector<float> strings[pairs];
+    const auto strike=[&](const float* mix,bool withoutRoom){
+      auto sound=keySound(piano,body,mix,key,1,withoutRoom);
+      const auto knock=keySound(piano,body,mix,key,0,withoutRoom);
+      for(std::size_t i=0;i<knock.size();++i)sound[i]-=knock[i];
+      return sound;};
+    const auto returned=strike(none,false);
     for(int pair=0;pair<pairs;++pair){
-      const auto heard=[&](bool withoutRoom){
-        auto sound=keySound(piano,body,keyMixes[pair],key,1,withoutRoom);
-        const auto knock=keySound(piano,body,keyMixes[pair],key,0,withoutRoom);
-        for(std::size_t i=0;i<knock.size();++i)sound[i]-=knock[i];
-        return sound;};
+      const auto heard=[&](bool withoutRoom){return strike(keyMixes[pair],withoutRoom);};
       strings[pair]=heard(false);
+      for(std::size_t i=0;i<returned.size();++i)strings[pair][i]-=returned[i];
       const auto alone=heard(true);
       dry[static_cast<std::size_t>(pair)][static_cast<std::size_t>(key)]=decibels(meanProduct(alone,alone));
     }
     std::size_t at=0;
     for(int a=0;a<pairs;++a)for(int b=a;b<pairs;++b)voicing.heard[static_cast<std::size_t>(key)][at++]=meanProduct(strings[a],strings[b]);
+    for(int a=0;a<pairs;++a)voicing.returned[static_cast<std::size_t>(key)][static_cast<std::size_t>(a)]=meanProduct(strings[a],returned);
+    voicing.returned[static_cast<std::size_t>(key)][pairs]=meanProduct(returned,returned);
+    returnLevel[static_cast<std::size_t>(key)]=decibels(meanProduct(returned,returned));
     for(int pair=0;pair<pairs;++pair)
       level[static_cast<std::size_t>(pair)][static_cast<std::size_t>(key)]=decibels(meanProduct(strings[pair],strings[pair]));
   }
@@ -262,9 +279,12 @@ Voicing voice(int body){
   double offset[pairs]{};
   for(std::size_t pair=0;pair<pairs;++pair)for(std::size_t key=0;key<keys;++key)
     offset[pair]+=(even[pair][key]+dry[pair][key]-level[pair][key]-even[0][key]-dry[0][key]+level[0][key])/keys;
+  const KeyLevels returnScale=evenScale(returnLevel);
   for(std::size_t key=0;key<keys;++key){
     const double close=std::pow(10.,even[0][key]/10);
     for(double& product:voicing.heard[key])product/=close;
+    for(double& product:voicing.returned[key])product/=close;
+    voicing.returnEven[key]=std::pow(10.,(returnScale[key]-even[0][key])/10);
     for(std::size_t pair=0;pair<pairs;++pair)voicing.even[key][pair]=std::pow(10.,(even[pair][key]-even[0][key]-offset[pair])/10);
   }
   return voicing;
@@ -306,6 +326,27 @@ int writeKeys(const char* path,int jobs){
       std::printf("%-14s %-8s unvoiced: furthest key (MIDI %d) %+.2f dB off the even scale, %.2f dB from key to key\n",
                   keyra::bodyNames[body],pairNames[pair],e.key+21,e.furthest,e.step);
     }
+  }
+  std::fprintf(file,"};\n// [body][key]: what the key's strings give the room's return at the default\n"
+                    "// Room with each pair (close ... tube), then with itself, against the close\n"
+                    "// pair's even scale at the key.\n"
+                    "constexpr float keyReturned[%d][%d][%d]{\n",bodies,keys,pairs+1);
+  for(std::size_t body=0;body<all.size();++body){
+    std::fprintf(file,"  { // %s\n",keyra::bodyNames[body]);
+    for(const auto& key:all[body].returned){
+      std::fprintf(file,"    {");
+      for(double product:key)std::fprintf(file,"%.4g,",product);
+      std::fprintf(file,"},\n");
+    }
+    std::fprintf(file,"  },\n");
+  }
+  std::fprintf(file,"};\n// [body][key]: the return's even scale at the default Room against the\n"
+                    "// close pair's.\n"
+                    "constexpr float keyReturnEven[%d][%d]{\n",bodies,keys);
+  for(std::size_t body=0;body<all.size();++body){
+    std::fprintf(file,"  { // %s\n   ",keyra::bodyNames[body]);
+    for(double scale:all[body].returnEven)std::fprintf(file," %.4g,",scale);
+    std::fprintf(file,"\n  },\n");
   }
   std::fprintf(file,"};\n}}\n");
   return std::fclose(file)==0?0:1;

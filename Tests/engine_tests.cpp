@@ -5,7 +5,8 @@
 //
 // Two settings take the engine's two sources apart: `strings()` plays with
 // Mechanics at 0, so only the model sounds, and `action()` with every
-// microphone pair at 0, so only the action does.
+// microphone pair and Room at 0, so only the action does: since 2.16.0 Room
+// returns the strings to the mix whatever the pairs' levels.
 #include "DSP/KeyraEngine.h"
 #include "DSP/KeyraPresets.h"
 #include <algorithm>
@@ -91,7 +92,7 @@ struct Bench {
   double now() const {return take.audio.size()/2/take.rate;}
 };
 keyra::Parameters strings(){keyra::Parameters p;p.mechanics=0;return p;}
-keyra::Parameters action(){keyra::Parameters p;p.mechanics=1;for(float& level:p.mic)level=0;return p;}
+keyra::Parameters action(){keyra::Parameters p;p.mechanics=1;for(float& level:p.mic)level=0;p.room=0;return p;}
 double hertz(int note,double a4=440){return a4*std::pow(2.,(note-69)/12.);}
 double cents(double f,double reference){return 1200*std::log2(f/reference);}
 }
@@ -246,19 +247,25 @@ int main(){
   }
   {
     // The sostenuto holds the dampers of the keys that are down as it goes
-    // down, and no others.
-    b.start(strings());e.noteOn(60,.7f);b.run(.3);e.controlChange(66,127);e.noteOff(60);
+    // down, and no others. Heard without the room: since 2.16.0 Room returns
+    // the room to the mix at the default 0.1 too, and the damped G4's room
+    // would be read as its strings (17.7 dB apart with it). What stood 24.1 dB
+    // under C4 through 2.15.0 was the close pair's own share of G4's room at
+    // the old default Room 0.5; without the room the damped G4 is at -113 dB.
+    const auto dampers=[]{auto p=strings();p.room=0;return p;};
+    b.start(dampers());e.noteOn(60,.7f);b.run(.3);e.controlChange(66,127);e.noteOff(60);
     e.noteOn(67,.7f);b.run(.3);e.noteOff(67);b.run(.5);
     const double c4=b.take.tone(b.take.pitch(hertz(60),.8,1.1),.8,1.1),g4=b.take.tone(b.take.pitch(hertz(67),.8,1.1),.8,1.1);
     std::cout<<"sostenuto: C4 "<<c4<<" dB, G4 struck after it "<<g4<<" dB\n";
     // 26.7 dB apart through 2.13.1 and the limit 25. The held C4 now falls
     // in its first half second as the Salamander's middle does (20 dB/s,
     // 15 before, PianoModel.cpp's `gives`) and stands 3.5 dB lower here; the
-    // damped G4 is where it was within 1 dB. 24.1 apart.
+    // damped G4 is where it was within 1 dB. 24.1 apart (with the room; see
+    // above).
     check(c4>g4+20,"the sostenuto holds the keys down at its rising edge only");
     e.controlChange(66,0);b.run(.5);
     check(b.take.db(1.4,1.6)<c4-25,"the sostenuto lets its dampers fall");
-    b.start(strings());e.controlChange(66,127);e.noteOn(60,.7f);b.run(.3);e.noteOff(60);b.run(.5);
+    b.start(dampers());e.controlChange(66,127);e.noteOn(60,.7f);b.run(.3);e.noteOff(60);b.run(.5);
     check(b.take.db(.6,.8)<b.take.db(.1,.3)-30,"a sostenuto pressed before the key holds nothing");
   }
   {
@@ -417,11 +424,17 @@ int main(){
      const double under=b.take.db(t,t+.3);
      e.noteOn(96,.7f);b.run(.6);const double u=b.now();e.noteOff(96);b.run(.3);
      check(b.take.db(u,u+.3)>under+20,"only a key without a damper returns aloud under the pedal");}
-    // The action's room follows Room.
-    {auto p=action();p.gain=.07f;p.room=0;b.start(p);e.noteOn(60,.8f);b.run(.6);const double dry=b.take.db(.3,.6);
-     p.room=1;b.start(p);e.noteOn(60,.8f);b.run(.6);
-     std::cout<<"the landing's tail without the room "<<dry<<" dB, with it "<<b.take.db(.3,.6)<<" dB\n";
-     check(b.take.db(.3,.6)>dry+6,"the action sounds in its room");}
+    // The action's room follows Room. Room above 0 also returns the strings
+    // to the mix (2.16.0), so the action is read as what Mechanics adds: the
+    // same steady strike at Mechanics 1, less it at Mechanics 0, 20 dB down
+    // where the output stage is linear.
+    {const auto alone=[&](float room){auto p=action();p.gain=.07f;p.room=room;
+       p.mechanics=0;b.start(p);e.noteOn(60,.8f);b.run(.6);const Take model=b.take;
+       p.mechanics=1;b.start(p);e.noteOn(60,.8f);b.run(.6);
+       Take only=b.take;for(std::size_t i=0;i<only.audio.size();++i)only.audio[i]-=model.audio[i];return only;};
+     const double dry=alone(0).db(.3,.6),wet=alone(1).db(.3,.6);
+     std::cout<<"the landing's tail without the room "<<dry<<" dB, with it "<<wet<<" dB\n";
+     check(wet>dry+6,"the action sounds in its room");}
   }
   {
     // Tuning, the bend and the stretch.
@@ -507,24 +520,44 @@ int main(){
      check(a.audio==note(p,84,.9f,.4).audio,"the upright has no duplex scale");}
     {// The microphone pairs: each alone sounds, about as loud as the close
      // pair, and further off hears more room and a later sound.
-     Take pair[keyra::model::micCount];double dry[keyra::model::micCount];
+     Take pair[keyra::model::micCount],dryTake[keyra::model::micCount];double dry[keyra::model::micCount];
      for(int m=0;m<keyra::model::micCount;++m){auto p=strings();for(int k=0;k<keyra::model::micCount;++k)p.mic[k]=k==m?1.f:0.f;
        b.start(p);for(int n:{48,60,64,67})e.noteOn(n,.7f);b.run(.6);for(int n:{48,60,64,67})e.noteOff(n);b.run(.6);pair[m]=b.take;
-       p.room=0;b.start(p);for(int n:{48,60,64,67})e.noteOn(n,.7f);b.run(.6);dry[m]=b.take.db(0,.6);}
+       p.room=0;b.start(p);for(int n:{48,60,64,67})e.noteOn(n,.7f);b.run(.6);dryTake[m]=b.take;dry[m]=b.take.db(0,.6);}
      for(int m=0;m<keyra::model::micCount;++m){
        std::cout<<keyra::micNames[m]<<": "<<pair[m].db(0,.6)<<" dB (without the room "<<dry[m]<<" dB), tail "<<pair[m].db(.8,1.2)-pair[m].db(0,.6)<<" dB, channels alike "<<pair[m].correlation(0,.6)<<'\n';
        check(std::abs(dry[m]-dry[0])<2,"each pair hears the piano as loud as the close pair does");
        // The least alike the image's law asks two microphones to be is
        // sin x / x at its first trough, -0.217 (PianoModel.cpp, designBoard).
        check(pair[m].correlation(0,.6)>-.217,"no pair sums out of phase");
-       // The tube is one microphone, its two channels alike.
-       if(m==keyra::model::micTube)check(pair[m].correlation(0,.6)>.9999,"the tube is mono");
+       // The tube is one microphone, its two channels alike: heard without the
+       // room, whose return to the mix is stereo whatever pair is up (2.16.0).
+       if(m==keyra::model::micTube)check(dryTake[m].correlation(0,.6)>.9999,"the tube is mono");
        else if(m!=keyra::model::micXY)check(pair[keyra::model::micXY].correlation(0,.6)>pair[m].correlation(0,.6),"the coincident pair's channels are the most alike");
        for(int k=0;k<m;++k)check(pair[m].audio!=pair[k].audio,"each pair hears its own sound");}
-     check(pair[keyra::model::micDistant].db(.8,1.2)-pair[keyra::model::micDistant].db(0,.6)
-           >pair[keyra::model::micClose].db(.8,1.2)-pair[keyra::model::micClose].db(0,.6)+6,"the distant pair hears more of the room");
-     auto p=strings();for(float& level:p.mic)level=0;b.start(p);e.noteOn(60,.8f);b.run(.3);
-     check(b.take.peak(0,.3)==0,"with every pair down the strings are unheard");
+     // Further off hears more of the room: read on each pair's own output,
+     // which holds its own share of the room and not the mix's return (Room's
+     // own level since 2.16.0, alike for every pair), at Room 0.5, where this
+     // check was set when 0.5 was the default.
+     {constexpr int outs=2*keyra::model::micCount;Audio own[outs];
+      auto p=strings();p.room=.5f;b.start(p);
+      const auto play=[&](double seconds){int left=static_cast<int>(std::lround(seconds*48000));
+        float l[128],r[128],buffers[outs][128];float* at[outs];for(int c=0;c<outs;++c)at[c]=buffers[c];
+        while(left>0){const int n=std::min(128,left);e.process(l,r,at,n);
+          for(int c=0;c<outs;++c)own[c].insert(own[c].end(),buffers[c],buffers[c]+n);left-=n;}};
+      for(int n:{48,60,64,67})e.noteOn(n,.7f);play(.6);for(int n:{48,60,64,67})e.noteOff(n);play(.6);
+      const auto heard=[&](int m){Take t;for(std::size_t i=0;i<own[2*m].size();++i){t.audio.push_back(own[2*m][i]);t.audio.push_back(own[2*m+1][i]);}return t;};
+      const Take distant=heard(keyra::model::micDistant),close=heard(keyra::model::micClose);
+      std::cout<<"own outputs' tails: distant "<<distant.db(.8,1.2)-distant.db(0,.6)<<" dB, close "<<close.db(.8,1.2)-close.db(0,.6)<<" dB\n";
+      check(distant.db(.8,1.2)-distant.db(0,.6)>close.db(.8,1.2)-close.db(0,.6)+6,"the distant pair hears more of the room");}
+     // With every pair down only Room's return plays the strings (the owner's
+     // choice by decision card, 2026-11-15, after "if all mics are down, and
+     // only room is max, i hear nothing"): nothing at Room 0, plainly at 1.
+     auto p=strings();for(float& level:p.mic)level=0;p.room=0;b.start(p);e.noteOn(60,.8f);b.run(.3);
+     check(b.take.peak(0,.3)==0,"with every pair and Room down the strings are unheard");
+     p.room=1;b.start(p);e.noteOn(60,.8f);b.run(.3);
+     std::cout<<"every pair down, Room 1: "<<b.take.db(0,.3)<<" dB\n";
+     check(b.take.db(0,.3)>-40,"with every pair down Room alone plays the room");
      p.mic[keyra::model::micLive]=1;p.room=0;
      b.start(p);e.noteOn(60,.8f);b.run(.2);e.noteOff(60);b.run(.5);const double without=b.take.db(.5,.7);
      p.room=1;b.start(p);e.noteOn(60,.8f);b.run(.2);e.noteOff(60);b.run(.5);

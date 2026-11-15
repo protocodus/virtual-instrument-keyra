@@ -25,8 +25,11 @@ struct Parameters {
   float mic[model::micCount]{1.f,0.f,0.f,0.f,0.f};
   // Each microphone's polarity inverted.
   bool invert[model::micCount]{};
-  // The room in the pairs that hear it, and in the action's sound: 0 none.
-  float room=.5f;
+  // The room: its own level in the mix, whatever the pairs' levels, beside
+  // the share of it each pair and the action's sound hear: 0 none, 1 the
+  // most. 0.1 by default, a clean sound with a small hint of room (the
+  // owner, 2026-11-15, when Room became its own level; PianoModel.h).
+  float room=.1f;
   // The stereo image: .75 as the pairs hear it, 0 mono.
   float width=.75f;
   float tuning=440.f;

@@ -60,14 +60,15 @@ inverts it, in the mix and on its own output.
 | Live | A spaced pair of valve omnis in the room beside a grand, or over the player's head at an upright, their top rising a little: the piano with some of its room |
 | Distant | A wide pair of omnis across the room, lifted for the diffuse field: mostly room |
 | Tube | One valve cardioid over the strings, toward the hammers, in mono: a broad presence and a rounded top |
-| Room | How much of the room's reverberation the microphones that hear it take; none at 0 |
+| Room | The room's reverberation: its own level in the mix whatever the microphones' levels (so Room alone plays the room with every microphone down), and the share each microphone hears; none at 0, a small hint at the default 0.1 |
 | Width | The stereo image: the microphones' own at 0.75, mono at 0 |
 
 Each microphone also has its own output, after its circuit, at full level
 and in its polarity, with its share of the room: the pairs stereo, the tube
 mono. In the plug-in they are extra output buses the host turns on; in
 Reason, sockets on the back. The main output's Width, Output and output
-stage, and the action's noises, are in the mix only.
+stage, Room's own level in the mix, and the action's noises are in the mix
+only.
 
 Tuning, in the header of every view, sets concert A from 415 to 466 Hz.
 

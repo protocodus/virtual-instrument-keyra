@@ -51,7 +51,7 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
-### 2.16.0 — 2026-11-15 — each piano's own preset first
+### 2.16.0 — 2026-11-15 — each piano's own preset first, and Room its own level
 
 The factory bank starts with each piano as built, in the selector's order
 (Concert Grand, Studio Grand, Parlor Grand, Baby Grand, Upright), and then
@@ -59,6 +59,38 @@ the special versions, piano by piano. Parlor Grand is new: the parlor grand
 as built, close pair, lid open. A host's program numbers move with the new
 order; a session now saves its program's name, and one saved before 2.16.0
 finds its program by the older order.
+
+- **Room is its own level in the mix** (the owner's choice by decision card,
+  after Room did nothing with every microphone down). The room returns to
+  the main mix at the share the distant pair hears it at, with no
+  microphone's circuit, whatever the microphones' levels; each pair still
+  hears its own share, and a microphone's own output carries no return. The
+  return comes from the room's lines under signs orthogonal to the pairs',
+  so no pair's polarity cancels it (the upright's distant pair, as wired,
+  did). With every microphone down, Room at 1 plays the room at about
+  -14 dB in Keyra.Engine's C4 where it was silent; with only the close pair
+  up, Room from 0 to 1 raises a held C4 by 6.5 dB on the concert grand and
+  5.9 on the upright, and its tail after release by 12.6 and 26 dB (by
+  under 0.2 dB held in 2.15.0).
+- **A small hint of room by default.** Room's default is 0.1 and every
+  factory preset's Room is a fifth of what it was (Concert Grand 0.5 to
+  0.1, Distant Hall 0.8 to 0.16): "clean with a small hint of room", the
+  owner's words after two A–D sets (Docs/decisions.md). The action's own
+  room follows Room as before. Distant Hall's pairs are raised (0, 0.12,
+  0.27, 0.39 to 0, 0.2, 0.44, 0.64) to keep its level: -9.97 VU, where its
+  smaller room left it at -13.3 (-10.25 in 2.15.0).
+- The keys are voiced with the return in the mix: `KeyVoicing.h` also holds
+  what each key gives the return and its even scale, and the model's pull
+  adds the return once, at its Room. The furthest key in Keyra.Levels'
+  mixes stands -0.77 to +1.16 dB off the even scale (-0.82 to +1.14 in
+  2.15.0); each piano's output scale moved by -0.16 to +0.08 dB.
+- Against the Helsinki 1967 upright (each engine at its own default Room,
+  0.5 and 0.1; Docs/validation/upright-room-benchmark-2026-11-15.md), the
+  paired dev means move both ways: the early decay 0.48 dB, the image's
+  level difference 0.76 dB and the attack 0.12 dB nearer the recordings,
+  the partials 0.42 dB and the tuning 0.33 cents further, with 42 single
+  notes worse by more than their tolerance. The grand was not scored: its
+  Salamander recordings are not on the machine this was built on.
 
 ### 2.15.0 — 2026-11-15 — five microphones, each with its own output
 
@@ -972,8 +1004,8 @@ side, so that the board's bass reaches all five alike and a mix of them
 adds rather than cancels (on the upright, the pairs behind the board and
 those in front stood -0.3 to -0.4 alike in the bass before). Each
 microphone's own output is it after its circuit, at full level and in its
-polarity, with its share of the room; Width, Output, the output stage and
-the action's noises are the mix's.
+polarity, with its share of the room; Width, Output, the output stage,
+Room's return and the action's noises are the mix's.
 
 At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
@@ -981,7 +1013,11 @@ feedback delay network of sixteen lines under a Hadamard mix (Jot and
 Chaigne 1991) ringing 0.8 s,
 which hears the piano as the distant pair does and which each pair hears by
 its distance, the close pair too (set against what the Salamander grand's
-treble notes leave after the knock under them); Room sets how much. The
+treble notes leave after the knock under them). The room also returns to
+the mix on its own, at the share the distant pair hears, whatever the
+pairs' levels, from its lines under signs orthogonal to the pairs' so that
+no pair's polarity cancels it (2.16.0). Room sets both, none at 0; its
+default 0.1 is a clean sound with a small hint of room. The
 room also hears the case: the knock the blow gives the frame under the top
 strings goes to it directly, through three allpass sections (Schroeder
 1962), as well as through the board. Width at 0.75 is the pairs' own image and
@@ -1026,7 +1062,7 @@ is what the board and the microphones give it.
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |
 | Close, XY, Live, Distant, Tube | 0 to 1 | Each microphone's level |
 | Ø (each microphone) | off, on | Its polarity, in the mix and on its own output |
-| Room | 0 to 1 | The room in the pairs that hear it |
+| Room | 0 to 1 | The room: its own level in the mix whatever the pairs' levels, and each pair's share of it; 0.1 by default |
 | Width | 0 to 1 | The stereo image |
 | Practice felt | 0 to 1 | A felt strip between hammers and strings: up to three decades softer |
 | Felt mute | 0 to 1 | Felt laid on every sounding string, held or not (the mod wheel) |
@@ -1091,8 +1127,8 @@ meter (the louder channel's RMS over 300 ms, 0 VU at −12 dBFS), playing
 single notes every fourth semitone and eight chords at velocities 70, 90 and
 110 for typical playing. Each piano's output scale puts its default sound's
 typical playing at −9 VU at the default Output; a preset has no level of its
-own, and its microphone levels keep it within 2 dB of that (they read −10.0
-to −7.9 VU). The output stage after it is the portfolio's compressor and
+own, and its microphone levels keep it within 2 dB of that (they read −11.0
+to −8.9 VU). The output stage after it is the portfolio's compressor and
 peak limiter with 1.0.0's half-drive response: nothing passes −1.5 dBFS, and
 its 2.5 ms look-ahead is reported to the host.
 

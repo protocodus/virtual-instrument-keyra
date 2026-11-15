@@ -5876,3 +5876,38 @@ and wrote: "mics sound good". That is a verdict by ear on the five
 microphones as shipped; it does not make the valve cardioid's estimated
 presence peaks measured. The Reason device's sockets wait for the champagne
 back panel (owner's choice, 2026-11-15).
+
+## 2026-11-15 — Room as its own level in the mix, and a small hint of it (2.16.0)
+
+The owner reported: "room knob does not work - it has no impact. if all mics
+are down, and only room is max, i hear nothing". It did as built: each pair
+heard its own share of the room inside its own signal, at its own level, so
+with every pair down nothing was heard, and with only the close pair up Room
+from 0 to 1 moved a held C4 by under 0.2 dB (the room stood about 20 dB
+under the strings there; measured with `room_probe`, the engine alone).
+
+Two ways were put to the owner on a decision card: A, Room as its own level
+in the mix, whatever the pairs' levels; B, each pair's share made to count.
+The owner chose A by decision card, not by ear. The room now returns to the
+main mix at the share the distant pair hears it at, with no microphone's
+circuit, and each pair keeps its own share. A measurement settled one point
+of how: taken as the room the pairs hear, the return cancelled the upright's
+distant pair, which is wired in the opposite polarity (`MicSpec::side`), so
+Room did nothing there again; it is taken from the same sixteen lines under
+orthogonal signs, the same room uncorrelated with what any pair hears.
+
+At the presets' Room (0.5 for most) the return stood about as loud as the
+strings, 3 dB over the shipping level and far wetter. Two A–D sets went to
+the owner, each with A the shipping 2.15.0 preset at Room 0.5 and the others
+the return at three Room values, level-matched on whole-file RMS (B 0.1,
+C 0.5, D 0.25 in one; B 0.3, C 0.15, D 0.5 in the other; Concert Grand and
+Upright; not committed). The owner answered in words, not with a letter:
+"add just a bit of room, so they are clean with a small hint of room". That
+licensed every factory preset's Room at a fifth of what it was (rounded to
+0.01: Concert Grand 0.10, the first set's B, Distant Hall 0.16) and Room's
+default at 0.1, chosen in words after the sets, not as a letter picked by
+ear. Nothing else in the presets was re-voiced; Distant Hall's pairs were
+raised to keep its playing level within the bank's 2 dB of -9 VU, as the
+bank's header says levels are set. The action's own room follows Room as it
+did (2 x Room of its measured room), so at the default it keeps a fifth of
+it.

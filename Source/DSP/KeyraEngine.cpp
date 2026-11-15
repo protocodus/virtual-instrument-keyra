@@ -28,7 +28,9 @@ struct ActionParameters {
   float gain=.7f, width=.75f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
   float mechanics=defaultMechanicsGain;
-  float room=1.f;
+  // Twice Parameters' default Room (setParameters), so an engine that has
+  // not been given parameters plays as one given the defaults.
+  float room=.2f;
   Build build{};
 };
 constexpr double pi=3.14159265358979323846;
@@ -441,7 +443,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1854,.1487,.1092,.1635,.1646};
+  static constexpr double pascalScale[model::bodyCount]{.1850,.1475,.1073,.1608,.1661};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   // Each microphone's own output through a chunk, and held back by the
   // output stage's look-ahead (ForteOutput::maxDelay < 2048) to meet the mix.
@@ -1155,7 +1157,8 @@ void Engine::setParameters(const Parameters& input) noexcept {
   action.gain=set.gain;action.width=set.width;action.mute=set.mute;
   action.sustain=set.sustain;action.sostenuto=set.sostenuto;action.soft=set.soft;action.mechanics=set.mechanics;
   // The action's room is the one its noises were recorded in: as measured at
-  // the Room control's default.
+  // Room 0.5, the default until 2.16.0. At the default 0.1 it keeps a fifth of
+  // it, as the strings keep a small hint of theirs (the owner, 2026-11-15).
   action.room=2*set.room;
   // The action whose noises play: the measured grand's under every grand,
   // the measured upright's under the upright.
