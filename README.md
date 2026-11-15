@@ -51,6 +51,15 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.16.0 — 2026-11-15 — each piano's own preset first
+
+The factory bank starts with each piano as built, in the selector's order
+(Concert Grand, Studio Grand, Parlor Grand, Baby Grand, Upright), and then
+the special versions, piano by piano. Parlor Grand is new: the parlor grand
+as built, close pair, lid open. A host's program numbers move with the new
+order; a session now saves its program's name, and one saved before 2.16.0
+finds its program by the older order.
+
 ### 2.15.0 — 2026-11-15 — five microphones, each with its own output
 
 A mono valve microphone joins the four pairs, and each of the five now has
@@ -1062,7 +1071,8 @@ end of its travel, once each way.
 
 ### Presets, MIDI and saved state
 
-The twelve factory presets in `Source/DSP/KeyraPresets.h` set the piano, its
+The thirteen factory presets in `Source/DSP/KeyraPresets.h`, each piano as
+built first and then the special versions, set the piano, its
 controls from Hammer to Duplex, the four microphone levels, Room, Width and
 the practice felt;
 Output, Tuning, Mechanics, the mod wheel's mute and the pedals keep their

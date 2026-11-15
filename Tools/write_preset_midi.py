@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Write the committed per-preset demo phrases, Docs/audio/midi/<NN>-<slug>.mid.
 
-One phrase for each of eight of the twelve factory presets (README G3a), <NN>
+One phrase for each of eight of the thirteen factory presets (README G3a), <NN>
 its program number, each written for what that preset is for: Concert
 Grand plays a full-range romantic phrase with legato pedalling, Warm Walnut
 jazz voicings with the soft pedal, Felt Nocturne a quiet nocturne whose felt
@@ -10,9 +10,9 @@ dampers raised so the undamped strings ring. Upright plays a song
 accompaniment of broken chords under a tune, and Pop Upright pumping chords
 over octave roots with the pedal up. Baby Grand plays two voices without
 the pedal, each line heard on its own, and Distant Hall a chorale whose
-chords fill the room from the bass to the treble. Studio Grand, Felt
-Upright, Old Parlor and Bar Piano, pianos like those beside them kept or
-heard another way, have none. The phrases are the ones written for the 1.0.0
+chords fill the room from the bass to the treble. Studio Grand, Parlor
+Grand, Felt Upright, Old Parlor and Bar Piano, pianos like those beside them
+kept or heard another way, have none. The phrases are the ones written for the 1.0.0
 bank; Concert Grand's, Upright's, Baby Grand's and Distant Hall's were its
 Kakegawa Grand's, Helsinki Upright's, Hamamatsu Grand's and Three Cities'.
 The .mid files are the committed sources the

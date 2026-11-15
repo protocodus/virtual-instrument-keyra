@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cerrno>
 #include <cstdlib>
+#include <iterator>
 
 namespace {
 // The parameters, the engine's Parameters in the order processBlock reads
@@ -16,6 +17,16 @@ constexpr size_t savedBefore = 8, bodyIndex = 8, micIndex = 18, tubeIndex = 24, 
 // Each microphone's level, by keyra::model::Mic.
 constexpr size_t micId(size_t mic) { return mic == keyra::model::micTube ? tubeIndex : micIndex + mic; }
 constexpr auto& programs = keyra::factoryPresets;
+// The bank's order before 2.16.0, by the program numbers sessions saved then;
+// a session now saves its program's name as well.
+constexpr const char* programsBefore216[] { "Concert Grand", "Studio Grand", "Warm Walnut", "Felt Nocturne", "Open Strings",
+    "Upright", "Felt Upright", "Pop Upright", "Baby Grand", "Distant Hall", "Old Parlor", "Bar Piano" };
+int programNamed(const juce::String& name)
+{
+    for (size_t i = 0; i < programs.size(); ++i)
+        if (name == programs[i].name) return static_cast<int>(i);
+    return -1;
+}
 // A saved value: one finite decimal number and nothing after it.
 bool parse(const juce::String& text, float& value)
 {
@@ -318,6 +329,7 @@ void KeyraAudioProcessor::getStateInformation(juce::MemoryBlock& destination)
     auto state = parameters.copyState();
     state.setProperty("schemaVersion", 2, nullptr);
     state.setProperty("program", getCurrentProgram(), nullptr);
+    state.setProperty("programName", getProgramName(getCurrentProgram()), nullptr);
     if (auto xml = state.createXml()) copyXmlToBinary(*xml, destination);
 }
 
@@ -376,6 +388,11 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
         parameters.replaceState(converted);
         currentProgram.store(program, std::memory_order_relaxed);
         return;
+    }
+    if (state.hasProperty("programName")) {
+        if (const auto named = programNamed(state.getProperty("programName").toString()); named >= 0) program = named;
+    } else if (program < static_cast<int>(std::size(programsBefore216))) {
+        program = programNamed(programsBefore216[program]);
     }
     if (program >= static_cast<int>(programs.size())) return;
     // Reject malformed or future state atomically. Never apply half a preset.

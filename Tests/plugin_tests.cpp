@@ -395,14 +395,27 @@ int main()
             require(raw(chosen, "gain") == .5f && raw(chosen, "tuning") == 443.0f && raw(chosen, "mechanics") == .5f
                 && raw(chosen, "mute") == .2f && raw(chosen, "sustain") == .6f,
                 "a preset moved the output, the tuning, the action, the mute or a pedal");
-            chosen.setCurrentProgram(5);
-            require(raw(chosen, "body") == static_cast<float>(keyra::model::Body::upright), "program 6 is not the upright");
+            chosen.setCurrentProgram(4);
+            require(raw(chosen, "body") == static_cast<float>(keyra::model::Body::upright), "program 5 is not the upright");
             juce::MemoryBlock saved;
             chosen.getStateInformation(saved);
             KeyraAudioProcessor reopened;
             reopened.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
-            require(raw(reopened, "body") == static_cast<float>(keyra::model::Body::upright) && reopened.getCurrentProgram() == 5
+            require(raw(reopened, "body") == static_cast<float>(keyra::model::Body::upright) && reopened.getCurrentProgram() == 4
                 && raw(reopened, "gain") == .5f, "the upright and its program were not restored");
+            {
+                // A session from before 2.16.0 saved only the number, in the
+                // older bank's order, where the upright was program 6.
+                auto xml = juce::AudioProcessor::getXmlFromBinary(saved.getData(), static_cast<int>(saved.getSize()));
+                xml->removeAttribute("programName");
+                xml->setAttribute("program", 5);
+                juce::MemoryBlock older;
+                juce::AudioProcessor::copyXmlToBinary(*xml, older);
+                KeyraAudioProcessor old;
+                old.setStateInformation(older.getData(), static_cast<int>(older.getSize()));
+                require(old.getCurrentProgram() == 4 && raw(old, "body") == static_cast<float>(keyra::model::Body::upright),
+                    "a session from before 2.16.0 did not find its program by the older bank");
+            }
             const auto last = chosen.getNumPrograms() - 1;
             chosen.setCurrentProgram(last);
             chosen.getStateInformation(saved);

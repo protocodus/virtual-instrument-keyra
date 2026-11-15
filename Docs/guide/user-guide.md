@@ -87,23 +87,25 @@ keyboard is playable. Pitch bend spans two semitones each way.
 
 ## Presets
 
-The twelve factory presets set the piano, its controls, the microphones, Room,
+The thirteen factory presets set the piano, its controls, the microphones, Room,
 Width and the practice felt; Output, Tuning, Mechanics, the felt mute and the
-pedals keep their settings. Every preset plays at about the same level.
+pedals keep their settings. Every preset plays at about the same level. The
+five pianos as built come first, then the special versions, piano by piano.
 
 | Preset | What it is |
 | --- | --- |
 | Concert Grand | The concert grand as built, close pair, lid open |
 | Studio Grand | The studio grand with harder hammers, close and XY, a drier room |
-| Warm Walnut | The parlor grand with soft hammers on the short stick, three pairs |
+| Parlor Grand | The parlor grand as built, close pair, lid open |
+| Baby Grand | The baby grand, close and XY |
+| Upright | The upright as kept at home: slightly aged strings, a little more detune |
 | Felt Nocturne | The concert grand under the practice felt |
 | Open Strings | The concert grand with the soundboard, sympathetic strings and duplex scales turned up, mostly from the room |
-| Upright | The upright as kept at home: slightly aged strings, a little more detune |
+| Distant Hall | The concert grand from across the room |
+| Warm Walnut | The parlor grand with soft hammers on the short stick, three pairs |
+| Old Parlor | The parlor grand with old strings and wide unisons |
 | Felt Upright | The upright under the practice felt, top half open |
 | Pop Upright | The upright with hard hammers, close and dry |
-| Baby Grand | The baby grand, close and XY |
-| Distant Hall | The concert grand from across the room |
-| Old Parlor | The parlor grand with old strings and wide unisons |
 | Bar Piano | The upright with old strings, hard hammers and unisons far apart |
 
 ## Pedal keyswitches
