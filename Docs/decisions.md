@@ -5869,3 +5869,10 @@ little toward the hammers and the treble, as a single microphone over a
 grand commonly does. No listening test was run: the microphones are the
 owner's instruction and their responses published figures, not candidates
 the measurements leave open.
+
+The owner listened to the solo, all-five and balanced-mix renders of both
+pianos (the 14 s phrase, rendered through `keyra_render`, not committed)
+and wrote: "mics sound good". That is a verdict by ear on the five
+microphones as shipped; it does not make the valve cardioid's estimated
+presence peaks measured. The Reason device's sockets wait for the champagne
+back panel (owner's choice, 2026-11-15).
