@@ -303,7 +303,13 @@ MicSpec micSpec(const Design& d,int mic) noexcept {
     case micXY: {const Vec at{X+.8,.45*Y,1.3},aim{.5*X,.4*Y,0};
       return {{at,at},{toward(at,aim,-pi/4),toward(at,aim,pi/4)},1,1,.8,-.3,.6,.18,.7};}
     case micLive: return {{{X+2.3,.5*Y-.6,1.6},{X+2.3,.5*Y+.6,1.6}},{{-1,0,0},{-1,0,0}},0,1,.85,-.3,.6,.45,1.2};
-    default: return {{{X+6,.5*Y-1.5,2.5},{X+6,.5*Y+1.5,2.5}},{{-1,0,0},{-1,0,0}},0,1,.9,-.3,.6,1.,2.};
+    case micDistant: return {{{X+6,.5*Y-1.5,2.5},{X+6,.5*Y+1.5,2.5}},{{-1,0,0},{-1,0,0}},0,1,.9,-.3,.6,1.,2.};
+    // One cardioid 0.45 m over the strings, aimed down, a little toward the
+    // treble from the middle and toward the hammers, where a single
+    // microphone is commonly set to take the whole compass. Over the middle
+    // of the board it left a parlor grand's top keys 19 dB under the even
+    // scale, more than voicing pulls (KeyraLevels).
+    default: return {{{.6*X,.3*Y,.45},{.6*X,.3*Y,.45}},{{0,0,-1},{0,0,-1}},1,1,.5,0,.45,.3,.5};
   }
   // An upright: x across, y up, the open back on the z > 0 side.
   switch(mic){
@@ -311,7 +317,10 @@ MicSpec micSpec(const Design& d,int mic) noexcept {
     case micXY: {const Vec at{.5*X,.6*Y,1.};
       return {{at,at},{unit(Vec{-1,0,-1}),unit(Vec{1,0,-1})},1,1,0,.4,0,.18,.7};}
     case micLive: return {{{.25*X,Y+.45,-.45},{.75*X,Y+.45,-.45}},{{0,-1,0},{0,-1,0}},0,-1,.9,0,0,.4,1.};
-    default: return {{{.5*X-1.5,1.3,-4.},{.5*X+1.5,1.3,-4.}},{{0,0,1},{0,0,1}},0,-1,.6,.4,0,1.,2.};
+    case micDistant: return {{{.5*X-1.5,1.3,-4.},{.5*X+1.5,1.3,-4.}},{{0,0,1},{0,0,1}},0,-1,.6,.4,0,1.,2.};
+    // One cardioid 0.3 m over the open top, at the middle, aimed down at the
+    // strings' side.
+    default: return {{{.5*X,Y+.3,-.1},{.5*X,Y+.3,-.1}},{{0,-1,0},{0,-1,0}},1,-1,.3,0,0,.3,.5};
   }
 }
 Plane floorPlane(const Design& d) noexcept {return d.upright?Plane{{0,1,0},-.25}:Plane{{0,0,1},-.7};}
@@ -357,6 +366,9 @@ struct Tables {
   float diffuse[micCount][2][2][maxModes]{};
   // Each pair's level in the mix.
   float micLevel[micCount]{};
+  // Each microphone's mean distance to the board, m: where its pattern's
+  // gradient part lifts the bass (MicCircuit).
+  float micDistance[micCount]{};
   HfTap hfDirect[micCount][2][points]{},hfFloor[micCount][2][points]{},hfLid[lidStops][micCount][2][points]{};
   HfTap hfDiffuse[micCount][2][points][2]{};
   MicSpec mic[micCount]{};
@@ -753,6 +765,9 @@ void designBoard(Tables& t,int body){
   double sx[64],sy[64];
   for(int mic=0;mic<micCount;++mic){
     const MicSpec spec=micSpec(d,mic);t.mic[mic]=spec;
+    {double sum=0;
+      for(int a=0;a<16;++a)for(int b=0;b<16;++b)sum+=norm(spec.position[0]-Vec{d.boardX*(a+.5)/16,d.boardY*(b+.5)/16,0});
+      t.micDistance[mic]=static_cast<float>(sum/256);}
     double nearest=1e9;
     for(int p=0;p<points;++p){double x,y;bridgePoint(d,p,x,y);
       for(int ch=0;ch<2;++ch)nearest=std::min(nearest,norm(spec.position[ch]-Vec{x,y,0}));}
@@ -1060,6 +1075,104 @@ struct Biquad {
   double b0=1,b1=0,b2=0,a1=0,a2=0,z1=0,z2=0;
   double run(double x) noexcept {const double y=b0*x+z1;z1=b1*x-a1*y+z2;z2=b2*x-a2*y;return y;}
 };
+// R. Bristow-Johnson's cookbook sections.
+Biquad cookbook(int kind,double hertz,double q,double decibels,double sampleRate) noexcept {
+  const double w=2*pi*std::min(hertz,.45*sampleRate)/sampleRate,c=std::cos(w),alpha=std::sin(w)/(2*q),A=std::pow(10.,decibels/40);
+  double b0,b1,b2,a0,a1,a2;
+  switch(kind){
+    case 0:b0=(1+c)/2;b1=-(1+c);b2=b0;a0=1+alpha;a1=-2*c;a2=1-alpha;break;                 // high-pass
+    case 1:b0=(1-c)/2;b1=1-c;b2=b0;a0=1+alpha;a1=-2*c;a2=1-alpha;break;                     // low-pass
+    case 2:b0=1+alpha*A;b1=-2*c;b2=1-alpha*A;a0=1+alpha/A;a1=-2*c;a2=1-alpha/A;break;      // peak
+    default:{const double r=2*std::sqrt(A)*alpha;                                           // high shelf
+      b0=A*((A+1)+(A-1)*c+r);b1=-2*A*((A-1)+(A+1)*c);b2=A*((A+1)+(A-1)*c-r);
+      a0=(A+1)-(A-1)*c+r;a1=2*((A-1)-(A+1)*c);a2=(A+1)-(A-1)*c-r;}
+  }
+  Biquad f;f.b0=b0/a0;f.b1=b1/a0;f.b2=b2/a0;f.a1=a1/a0;f.a2=a2/a0;return f;
+}
+// A microphone's own circuit after what its capsule hears, one a channel.
+// The model's radiation is the far field's, and its pairs are levelled flat
+// against the board's radiation (designBoard), so what makes one microphone
+// sound unlike another comes here: the gradient's near-field lift in the bass
+// at the board's mean distance (a point source's 1 + c / (j w r), for the
+// share of the pattern that is gradient), the on-axis response its maker
+// publishes, and its amplifier's curvature, which at a piano's levels stays
+// far under audibility except in the valve omni of the live pair.
+struct MicCircuit {
+  Biquad stage[4];
+  double lift=0,liftPole=0,liftState=0; // the near field's bass, against a leak at 20 Hz
+  double second=0;                      // curvature, per pascal
+  double dcIn=0,dcOut=0;
+  void clear() noexcept {for(auto& b:stage)b.z1=b.z2=0;liftState=dcIn=dcOut=0;}
+  double run(double x,double dcPole) noexcept {
+    liftState=liftPole*liftState+(1-liftPole)*x;x+=lift*liftState;
+    for(auto& b:stage)x=b.run(x);
+    x+=second*x*x;
+    // The curvature leaves a little DC, and nothing under 10 Hz is sound.
+    const double y=dcPole*(dcOut+x-dcIn);dcIn=x;dcOut=y;return y;
+  }
+};
+// `distance` is the microphone's mean distance to the board and
+// `cardioid` its pattern's gradient share, as MicSpec has them; `even` is
+// the gain that brings it to the close pair's level (mixMics), which the
+// curvature takes out, so that it bends at the pressure the microphone
+// stands in. Each
+// position takes the microphone an engineer would choose for it. The
+// sections are fitted (least squares, at 48 kHz) to the on-axis curve its
+// maker publishes, read at the points given, and the curvature gives the
+// distortion its data sheet states, all of it the second harmonic, as a
+// condenser's amplifier gives mostly. These are the makers' typical
+// curves, not measurements of one microphone.
+void designCircuit(MicCircuit& m,int mic,double distance,double cardioid,double even,double sampleRate) noexcept {
+  // A sine of amplitude A gives second * A / 2 of the second harmonic:
+  // `fraction` of it at `decibels` SPL (RMS).
+  const auto evenAt=[](double fraction,double decibels){return 2*fraction/(20e-6*std::pow(10.,decibels/20)*std::sqrt(2.));};
+  const auto stages=[&](Biquad a,Biquad b=Biquad{},Biquad c=Biquad{},Biquad d=Biquad{}){m.stage[0]=a;m.stage[1]=b;m.stage[2]=c;m.stage[3]=d;};
+  const double rate=sampleRate;
+  m.clear();
+  switch(mic){
+    case micClose:
+      // DPA 4006A, a pressure omni, with its free-field grid: flat to 10
+      // kHz and about 1 dB up from there to 20 kHz (the grid's published
+      // response), 20 Hz to 20 kHz within 2 dB; under 1 % THD to 139 dB
+      // SPL peak, 136 RMS. Fitted within 0.2 dB.
+      stages(cookbook(0,8,.73,0,rate),cookbook(3,12934,.84,1.11,rate));
+      m.second=evenAt(.01,136);break;
+    case micXY:
+      // Schoeps CMC 6 MK 4, a cardioid: in the far field -3.2 dB at 50 Hz,
+      // -1.3 at 100, flat from 200 Hz, a 0.5 dB rise at 7.5 kHz (schoeps.de,
+      // MK 4 + CMC 6); THD under 0.5 % to 131 dB SPL. Fitted within 0.3 dB.
+      stages(cookbook(0,27,.42,0,rate),cookbook(2,7494,2.62,.51,rate));
+      m.second=evenAt(.005,131);break;
+    case micLive:
+      // Neumann M 150 Tube, a pressure omni flush in a 40 mm sphere, filter
+      // at LIN: flat to 1 kHz, +3.7 dB at 3.2 kHz, +2.5 at 5, +4.4 at 9, 0
+      // at 16 and -4 at 20 kHz (neumann.com, its frequency diagram); the
+      // valve gives 0.5 % THD at 114 dB SPL and 5 % at 134, which one
+      // second-order term gives both. Fitted within 0.7 dB.
+      stages(cookbook(2,3136,.96,3.39,rate),cookbook(2,8948,1.22,4.07,rate),cookbook(1,19203,.73,0,rate));
+      m.second=evenAt(.005,114);break;
+    case micDistant:
+      // Schoeps CMC 6 MK 2S, an omni with a moderate lift for the diffuse
+      // field at the reverberation radius: flat to 3.7 kHz, +1 dB at 5,
+      // +3 at 10 and +3.9 at 15 to 18 kHz (schoeps.de, MK 2S + CMC 6); THD
+      // under 0.5 % to 131 dB SPL. Fitted within 0.6 dB.
+      stages(cookbook(2,11530,.62,2.13,rate),cookbook(2,20108,.3,3.34,rate));
+      m.second=evenAt(.005,131);break;
+    default:
+      // Telefunken ELA M 251E, the valve cardioid (CK12 capsule, 6072A,
+      // output transformer): its brochure shows a broad rise from 3 to 15
+      // kHz with peaks at 5 and 12 kHz, within its rated 3 dB from 20 Hz
+      // to 20 kHz, and the bass easing below 100 Hz. Those peaks' heights
+      // are not published: they are set at 2.5 and 3 dB, inside the rated
+      // tolerance, and -3 dB at 30 Hz. Under 1 % THD to 138 dB SPL
+      // (Telefunken USA's specification). Fitted within 1 dB.
+      stages(cookbook(0,23,.57,0,rate),cookbook(2,5037,1.22,2.36,rate),cookbook(2,11833,1.93,2.63,rate),cookbook(1,19169,.86,0,rate));
+      m.second=evenAt(.01,138);
+  }
+  m.second/=even;
+  const double leak=2*pi*20,near=cardioid*.5*soundSpeed/std::max(distance,.05);
+  m.liftPole=std::exp(-leak/sampleRate);m.lift=near/leak;
+}
 }
 
 struct Piano::Impl {
@@ -1101,7 +1214,15 @@ struct Piano::Impl {
   int modes=0;
   float boardRe[maxModes]{},boardIm[maxModes]{},boardTurnRe[maxModes]{},boardTurnIm[maxModes]{};
   float boardIn[points][maxModes]{};
-  float outNow[4][2][maxModes]{},outGoal[4][2][maxModes]{}; // left, right, room left, room right
+  // Each microphone's left and right at full level, then what the room
+  // hears (as the distant pair does), left and right.
+  static constexpr int outs=2*micCount+2,roomOut=2*micCount;
+  float outNow[outs][2][maxModes]{},outGoal[outs][2][maxModes]{};
+  // Each microphone's level in the mix, signed by its polarity, gliding as
+  // the mix did; its share of the room; and its circuit.
+  float levelNow[micCount]{},levelGoal[micCount]{},roomShare[micCount]{},polarity[micCount]{1,1,1,1,1};
+  MicCircuit circuit[micCount][2];
+  bool computed[micCount]{};   // what the last chunk computed of each, to clear what stops
   bool outMoving=false;
   // Above the modes: each point's force, high-passed, delayed to each
   // microphone.
@@ -1110,13 +1231,12 @@ struct Piano::Impl {
   static constexpr int lineSize=8192;
   float line[points][lineSize]{};
   int lineAt=0;
-  Tap taps[4][points*hfTapsPerPoint*micCount]{};int tapCount[4]{};
+  Tap taps[outs][points*hfTapsPerPoint]{};int tapCount[outs]{};
   // Beside the modes: each point's force through the board's filter, to
   // each microphone by the direct path, the floor and the lid.
   Biquad besideFilter[points][2];
   float lineBeside[points][lineSize]{};
-  Tap tapsBeside[4][points*4*micCount]{};int tapBesideCount[4]{};
-  float roomSend=0;
+  Tap tapsBeside[outs][points*4]{};int tapBesideCount[outs]{};
   float voicing[keyCount]{};   // each key's pull on the board, evened for the mix
   float pull[keyCount];        // a tool's own pull in its place; negative, none
 
@@ -1136,7 +1256,7 @@ struct Piano::Impl {
   float roomGain[roomLines]{},roomDamp[roomLines]{},roomState[roomLines]{};
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
-  double dcL=0,dcR=0,dcInL=0,dcInR=0,dcPole=0;
+  double dcPole=0;
   float boardRim[points+1][maxModes]{}; // the edge's places, and last all of them alike
   int catchIn[keyCount]{},catches=0;  // samples until a key's hammer is caught (-1: none), and how many wait
   float catchPush[keyCount]{};        // newtons for one sample
@@ -1648,22 +1768,28 @@ struct Piano::Impl {
     const Tables& t=*table;
     const double lid=clamp(controls.lid,0,1);
     const double at=lid*(lidStops-1);const int stop=std::min(lidStops-2,static_cast<int>(at));const double between=at-stop;
-    for(int out=0;out<4;++out){std::memset(outGoal[out],0,sizeof(outGoal[out]));tapCount[out]=tapBesideCount[out]=0;}
-    double send=0;
+    for(int out=0;out<outs;++out){std::memset(outGoal[out],0,sizeof(outGoal[out]));tapCount[out]=tapBesideCount[out]=0;}
     for(int mic=0;mic<micCount;++mic){
       const MicSpec& spec=t.mic[mic];
-      // Every pair hears the piano as loud as the close one at the same
-      // level: a fader is a balance, and the distance is in the sound
-      // already. The room each pair sends to comes on top of that.
-      const double level=clamp(controls.mic[mic],0,2)*std::sqrt(t.micLevel[micClose]/t.micLevel[mic]);
+      // Every microphone hears the piano as loud as the close pair at the
+      // same level: a fader is a balance, and the distance is in the sound
+      // already. The room each one hears comes on top of that. Its level
+      // and polarity apply after its circuit, in the mix.
+      const double even=std::sqrt(t.micLevel[micClose]/t.micLevel[mic]);
       const double shut=spec.shade*std::pow(1-lid,1.5);
-      send+=level*spec.room;
+      // A microphone that hears the board through the case hears it in the
+      // opposite polarity (MicSpec::side), and on an upright the pairs
+      // behind the board and those in front would cancel each other's bass.
+      // Each is wired, as an engineer flips the ones on the far side, so
+      // that the board's bass reaches all of them alike; Invert comes on top.
+      polarity[mic]=static_cast<float>(spec.side*(controls.invert[mic]?-1:1));
+      levelGoal[mic]=static_cast<float>(polarity[mic]*clamp(controls.mic[mic],0,2));
+      roomShare[mic]=static_cast<float>(even*spec.room*2*clamp(controls.room,0,1));
       // The room hears the piano as the distant pair does.
       for(int feed=0;feed<2;++feed){
-        if(feed==0&&level==0)continue;
         if(feed==1&&mic!=micDistant)continue;
-        const double gain=feed?1:level;
-        for(int ch=0;ch<2;++ch){const int out=2*feed+ch;
+        const double gain=feed?1:even;
+        for(int ch=0;ch<2;++ch){const int out=feed?roomOut+ch:2*mic+ch;
           for(int part=0;part<2;++part){
             const float* direct=t.direct[mic][ch][part];const float* floor=t.floor[mic][ch][part];const float* diffuse=t.diffuse[mic][ch][part];
             const float* lidA=t.lid[stop][mic][ch][part];const float* lidB=t.lid[stop+1][mic][ch][part];
@@ -1690,7 +1816,6 @@ struct Piano::Impl {
         }
       }
     }
-    roomSend=static_cast<float>(send*2*clamp(controls.room,0,1));
     // A board answers each frequency in its own way, so a key comes out of
     // the microphones stronger or weaker than its neighbours, as a piano's
     // keys do before it is voiced. KeyVoicing.h holds what each key's strings
@@ -1703,9 +1828,11 @@ struct Piano::Impl {
     const int body=static_cast<int>(controls.body);
     for(int i=0;i<keyCount;++i){double got=0,even=0;
       const float* heard=keyHeard[body][i];
-      for(int a=0;a<micCount;++a){const double level=clamp(controls.mic[a],0,2);
+      // KeyVoicing.h measures the pairs as they are wired, so only Invert
+      // signs them here.
+      for(int a=0;a<micCount;++a){const double level=levelGoal[a]*t.mic[a].side;
         even+=level*level*keyEven[body][i][a];
-        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*clamp(controls.mic[b],0,2)**heard++;}
+        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*levelGoal[b]*t.mic[b].side**heard++;}
       // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
       // under the even scale (the baby grand's G#5 through the close pair),
       // and one 14 dB over it (the studio grand's G#3 in the four pairs
@@ -1713,7 +1840,7 @@ struct Piano::Impl {
       voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1;}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
-    if(quiet)for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
+    if(quiet)snapMix();
   }
   void prepareRoom() noexcept {
     // Line lengths spread over 23 to 97 ms; the room falls 60 dB in 0.8 s,
@@ -1748,17 +1875,22 @@ struct Piano::Impl {
     for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
     lifts=0;
     // Silence takes the microphones' mix at once.
-    for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
-    outMoving=false;
-    dcL=dcR=dcInL=dcInR=0;rest();
+    snapMix();
+    for(auto& pair:circuit)for(auto& c:pair)c.clear();
+    rest();
   }
   void select() noexcept {
     table=&tables[static_cast<int>(controls.body)];
     // The bridge moves at about a third of the plate's point mobility where
     // another key's strings cross it.
     mobility=.3/table->infinite;
-    tuneBoard();tuneBank();mixMics();
-    for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
+    for(int m=0;m<micCount;++m)for(auto& c:circuit[m])
+      designCircuit(c,m,table->micDistance[m],table->mic[m].cardioid,std::sqrt(table->micLevel[micClose]/table->micLevel[m]),sampleRate);
+    tuneBoard();tuneBank();mixMics();snapMix();
+  }
+  void snapMix() noexcept {
+    for(int out=0;out<outs;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
+    std::memcpy(levelNow,levelGoal,sizeof(levelNow));
     outMoving=false;
   }
 
@@ -1819,9 +1951,10 @@ struct Piano::Impl {
     frameRings=std::abs(frameTravel.z1)+std::abs(frameTravel.z2)>still;
     for(const auto& place:frameKnock)for(const auto& f:place)frameRings=frameRings||std::abs(f.z1)+std::abs(f.z2)>still;
     if(outMoving){float furthest=0;
-      for(int out=0;out<4;++out)for(int part=0;part<2;++part)for(int k=0;k<modes;++k){
+      for(int out=0;out<outs;++out)for(int part=0;part<2;++part)for(int k=0;k<modes;++k){
         float& now=outNow[out][part][k];const float step=(outGoal[out][part][k]-now)*.25f;now+=step;furthest=std::max(furthest,std::abs(step));}
-      if(furthest<1e-9f){for(int out=0;out<4;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));outMoving=false;}}
+      for(int m=0;m<micCount;++m){const float step=(levelGoal[m]-levelNow[m])*.25f;levelNow[m]+=step;furthest=std::max(furthest,std::abs(step));}
+      if(furthest<1e-9f)snapMix();}
     for(double& x:travel)if(std::abs(x)<still)x=0;
     for(int k=0;k<modes;++k)if(std::abs(boardRe[k])+std::abs(boardIm[k])<still)boardRe[k]=boardIm[k]=0;
     for(auto& point:highpass)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
@@ -1838,9 +1971,18 @@ struct Piano::Impl {
       for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
       std::memset(lineBeside,0,sizeof(lineBeside));
       for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
-      dcL=dcR=dcInL=dcInR=0;rest();}
+      for(auto& pair:circuit)for(auto& c:pair)c.clear();
+      rest();}
   }
-  void renderChunk(float* left,float* right,int frames) noexcept {
+  // `mics` as Piano::process has it, already at this chunk's first sample.
+  void renderChunk(float* left,float* right,float* const* mics,int frames) noexcept {
+    // A microphone is heard when it is in the mix, or is gliding there, or
+    // its own output is wanted; the tube's two channels are one.
+    bool heard[micCount];
+    for(int m=0;m<micCount;++m){
+      heard[m]=levelNow[m]!=0||levelGoal[m]!=0||(mics&&(mics[2*m]||mics[2*m+1]));
+      if(!heard[m]&&computed[m])for(auto& c:circuit[m])c.clear();
+      computed[m]=heard[m];}
     alignas(32) float struck[points][chunk],answered[points][chunk],each[chunk];
     std::memset(struck,0,sizeof(struck));std::memset(answered,0,sizeof(answered));
     for(auto& c:contacts)if(c.active)runContact(c,frames);
@@ -1983,13 +2125,15 @@ struct Piano::Impl {
         const float re=boardTurnRe[k]*boardRe[k]-boardTurnIm[k]*boardIm[k]+in;
         boardIm[k]=boardTurnIm[k]*boardRe[k]+boardTurnRe[k]*boardIm[k];boardRe[k]=re;
       }
-      float o[4];
-      for(int out=0;out<4;++out){const Tap* tap=taps[out];
+      const auto hear=[&](int out){const Tap* tap=taps[out];
         float sum=dot(outNow[out][0],boardRe,modes)+dot(outNow[out][1],boardIm,modes);
         for(int k=0;k<tapCount[out];++k)sum+=tap[k].gain*line[tap[k].point][(lineAt-tap[k].delay)&mask];
         const Tap* beside=tapsBeside[out];
         for(int k=0;k<tapBesideCount[out];++k)sum+=beside[k].gain*lineBeside[beside[k].point][(lineAt-beside[k].delay)&mask];
-        o[out]=sum;}
+        return sum;};
+      float o[outs]{};
+      for(int m=0;m<micCount;++m)if(heard[m]){o[2*m]=hear(2*m);o[2*m+1]=m==micTube?o[2*m]:hear(2*m+1);}
+      o[roomOut]=hear(roomOut);o[roomOut+1]=hear(roomOut+1);
       lineAt=(lineAt+1)&mask;
       // The room.
       float knock=cased[s];
@@ -2005,13 +2149,21 @@ struct Piano::Impl {
       for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
         const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
       for(int k=0;k<roomLines;++k)
-        roomLine[k][roomAt]=.25f*back[k]+((k&1)?o[3]:o[2])*((k&2)?-.5f:.5f)+knock*(((k^(k>>1))&2)?-.5f:.5f);
+        roomLine[k][roomAt]=.25f*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-.5f:.5f)+knock*(((k^(k>>1))&2)?-.5f:.5f);
       roomAt=(roomAt+1)&roomMask;
       roomL*=roomLevel;roomR*=roomLevel;
-      const double l=o[0]+roomSend*roomL,r=o[1]+roomSend*roomR;
-      // Nothing under 10 Hz is sound.
-      dcL=dcPole*(dcL+l-dcInL);dcInL=l;dcR=dcPole*(dcR+r-dcInR);dcInR=r;
-      left[s]=static_cast<float>(dcL);right[s]=static_cast<float>(dcR);
+      // Each microphone: what it hears and its room, through its circuit;
+      // then the mix, each at its level and polarity.
+      double l=0,r=0;
+      for(int m=0;m<micCount;++m)if(heard[m]){
+        const double a=circuit[m][0].run(o[2*m]+roomShare[m]*roomL,dcPole);
+        const double b=m==micTube?a:circuit[m][1].run(o[2*m+1]+roomShare[m]*roomR,dcPole);
+        l+=levelNow[m]*a;r+=levelNow[m]*b;
+        if(mics){const float sign=polarity[m];
+          if(mics[2*m]){mics[2*m][s]=sign*static_cast<float>(a);loud=std::max(loud,std::abs(mics[2*m][s]));}
+          if(mics[2*m+1]){mics[2*m+1][s]=sign*static_cast<float>(b);loud=std::max(loud,std::abs(mics[2*m+1][s]));}}}
+      else if(mics){if(mics[2*m])mics[2*m][s]=0;if(mics[2*m+1])mics[2*m+1][s]=0;}
+      left[s]=static_cast<float>(l);right[s]=static_cast<float>(r);
       loud=std::max(loud,std::max(std::abs(left[s]),std::abs(right[s])));
     }
   }
@@ -2064,7 +2216,7 @@ void Piano::setControls(const Controls& input) noexcept {
   // What sounds follows the tuner at the next boundary.
   if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.detune!=old.detune)p.retune=!p.quiet;
   bool mics=c.lid!=old.lid||c.room!=old.room;
-  for(int m=0;m<micCount;++m)mics=mics||c.mic[m]!=old.mic[m];
+  for(int m=0;m<micCount;++m)mics=mics||c.mic[m]!=old.mic[m]||c.invert[m]!=old.invert[m];
   if(mics)p.mixMics();
 }
 void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexcept {
@@ -2104,14 +2256,19 @@ void Piano::setBend(float semitones) noexcept {
   p.bend=bend;
   if(p.quiet)p.tuneBank(true);else p.retune=true;
 }
-void Piano::process(float* left,float* right,int frames) noexcept {
+void Piano::process(float* left,float* right,int frames) noexcept {process(left,right,nullptr,frames);}
+void Piano::process(float* left,float* right,float* const* mics,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;
   for(int done=0;done<frames;){
     if(p.phase==0&&!p.quiet)p.boundary();
-    if(p.quiet){std::fill_n(left+done,frames-done,0.f);std::fill_n(right+done,frames-done,0.f);return;}
+    if(p.quiet){std::fill_n(left+done,frames-done,0.f);std::fill_n(right+done,frames-done,0.f);
+      if(mics)for(int c=0;c<2*micCount;++c)if(mics[c])std::fill_n(mics[c]+done,frames-done,0.f);
+      return;}
     const int n=std::min(chunk-p.phase,frames-done);
-    p.renderChunk(left+done,right+done,n);
+    float* at[2*micCount]{};
+    if(mics)for(int c=0;c<2*micCount;++c)at[c]=mics[c]?mics[c]+done:nullptr;
+    p.renderChunk(left+done,right+done,mics?at:nullptr,n);
     done+=n;p.phase=(p.phase+n)%chunk;
   }
 }

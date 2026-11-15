@@ -19,9 +19,12 @@ struct Parameters {
   float lid=1.f, soundboard=.5f, sympathetic=.5f, duplex=.5f;
   // Each microphone pair's level as an amplitude, by model::Mic: the close
   // pair over the hammers (the pop sound), the XY pair at the lid, the live
-  // pair in the room and the distant pair across it. Each hears the piano
-  // as loud as the close pair at the same level; its room comes on top.
-  float mic[model::micCount]{1.f,0.f,0.f,0.f};
+  // pair in the room, the distant pair across it and the tube microphone
+  // over the strings. Each hears the piano as loud as the close pair at the
+  // same level; its room comes on top.
+  float mic[model::micCount]{1.f,0.f,0.f,0.f,0.f};
+  // Each microphone's polarity inverted.
+  bool invert[model::micCount]{};
   // The room in the pairs that hear it, and in the action's sound: 0 none.
   float room=.5f;
   // The stereo image: .75 as the pairs hear it, 0 mono.
@@ -62,6 +65,11 @@ public:
   // Channel0 returns maxima across all channels;1..16 return one channel.
   PedalState pedalState(int channel=0) const noexcept;
   void process(float* left,float* right,int frames) noexcept;
+  // The same, and each microphone on its own (model::Piano::process says
+  // what `mics` holds): at full level, without Width, Volume or the output
+  // stage, in the output's units and as late as the mix, so the two line up.
+  // The action's own sounds are in the mix only.
+  void process(float* left,float* right,float* const* mics,int frames) noexcept;
   // Total look-ahead of the piano output stage at the prepared rate.
   // Front ends report this frame count to the host.
   int outputLatencySamples() const noexcept;

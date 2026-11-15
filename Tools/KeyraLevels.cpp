@@ -164,8 +164,8 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
 constexpr double keySeconds=1,keySkipSeconds=.02,keyWindowDb=2,keySpread=4;
 constexpr float keyVelocity=.5f;
 constexpr int keys=keyra::model::keyCount,pairs=keyra::model::micCount,bodies=keyra::model::bodyCount;
-const char* const pairNames[pairs]{"close","xy","live","distant"};
-constexpr float keyMixes[][pairs]{{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1},{.7f,.7f,.3f,0},{.4f,.4f,.7f,.4f}};
+const char* const pairNames[pairs]{"close","xy","live","distant","tube"};
+constexpr float keyMixes[][pairs]{{1,0,0,0,0},{0,1,0,0,0},{0,0,1,0,0},{0,0,0,1,0},{0,0,0,0,1},{.7f,.7f,.3f,0,0},{.4f,.4f,.7f,.4f,0},{.5f,.4f,.4f,.3f,.5f}};
 constexpr int keyMixCount=static_cast<int>(sizeof(keyMixes)/sizeof(keyMixes[0]));
 using KeyLevels=std::array<double,keys>;
 // A key alone through a mix of the pairs, left then right; `pull` as
@@ -276,9 +276,9 @@ int writeKeys(const char* path,int jobs){
   if(!file){std::fprintf(stderr,"Cannot write %s\n",path);return 1;}
   std::fprintf(file,"// Written by KeyraLevels --write-keys (Tools/KeyraLevels.cpp, which says what\n"
                     "// is measured); never edit by hand.\n#pragma once\nnamespace keyra { namespace model {\n"
-                    "// [body][key]: what the key's strings give the pairs close, xy, live and\n"
-                    "// distant, alone and two together (close-close, close-xy, close-live,\n"
-                    "// close-distant, xy-xy, ... distant-distant), against the close pair's even\n"
+                    "// [body][key]: what the key's strings give the pairs close, xy, live,\n"
+                    "// distant and tube, alone and two together (close-close, close-xy, ...\n"
+                    "// close-tube, xy-xy, ... tube-tube), against the close pair's even\n"
                     "// scale at the key.\n"
                     "constexpr float keyHeard[%d][%d][%d]{\n",bodies,keys,products);
   for(std::size_t body=0;body<all.size();++body){
@@ -391,8 +391,8 @@ int run(int jobs,bool check){
   for(int body=0;body<bodies;++body)for(int mix=0;mix<keyMixCount;++mix){
     const Evenness& e=scales[static_cast<std::size_t>(body*keyMixCount+mix)];
     char what[96];
-    std::snprintf(what,sizeof(what),"%s, pairs %g %g %g %g",keyra::bodyNames[static_cast<std::size_t>(body)],
-                  keyMixes[mix][0],keyMixes[mix][1],keyMixes[mix][2],keyMixes[mix][3]);
+    std::snprintf(what,sizeof(what),"%s, pairs %g %g %g %g %g",keyra::bodyNames[static_cast<std::size_t>(body)],
+                  keyMixes[mix][0],keyMixes[mix][1],keyMixes[mix][2],keyMixes[mix][3],keyMixes[mix][4]);
     std::printf("%-36s furthest key (MIDI %d) %+.2f dB off the even scale, %.2f dB from key to key\n",what,e.key+21,e.furthest,e.step);
     expect(std::abs(e.furthest)<=keyWindowDb,what,"a key is off the even scale; write KeyVoicing.h again (--write-keys)",e.furthest);
   }

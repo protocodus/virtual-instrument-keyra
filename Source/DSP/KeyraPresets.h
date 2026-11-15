@@ -11,7 +11,7 @@ inline constexpr std::array<const char*, model::bodyCount> bodyNames {{ "Concert
 inline constexpr std::array<model::Body, model::bodyCount> bodyOrder {{ model::Body::concertGrand, model::Body::studioGrand,
     model::Body::parlorGrand, model::Body::babyGrand, model::Body::upright }};
 // The microphone pairs as the front ends name them, by model::Mic.
-inline constexpr std::array<const char*, model::micCount> micNames {{ "Close", "XY", "Live", "Distant" }};
+inline constexpr std::array<const char*, model::micCount> micNames {{ "Close", "XY", "Live", "Distant", "Tube" }};
 // The factory bank: the plug-in's programs and the README demos. A preset is
 // a piano, how it is kept and where it is heard from; output, tuning,
 // mechanics, the mod wheel's mute and the pedals keep their values. A preset

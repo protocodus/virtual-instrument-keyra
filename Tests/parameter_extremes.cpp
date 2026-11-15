@@ -54,6 +54,7 @@ const Control controls[] {
     {"mic xy", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micXY]; }, 0, 1, 2},
     {"mic live", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micLive]; }, 0, 1, 2},
     {"mic distant", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micDistant]; }, 0, 1, 2},
+    {"mic tube", [](keyra::Parameters& p) -> float& { return p.mic[keyra::model::micTube]; }, 0, 1, 2},
     {"room", [](keyra::Parameters& p) -> float& { return p.room; }, 0, .5f, 1},
     {"width", [](keyra::Parameters& p) -> float& { return p.width; }, 0, .5f, 1},
     {"tuning", [](keyra::Parameters& p) -> float& { return p.tuning; }, 400, 440, 480},

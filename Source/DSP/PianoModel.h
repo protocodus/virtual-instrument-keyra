@@ -18,8 +18,11 @@ constexpr int bodyCount=5;
 // xy       a coincident cardioid pair at the open lid, a metre off
 // live     a spaced pair in the room at 2.5 m, the player's side of an upright
 // distant  a wide pair across the room
-enum Mic {micClose,micXY,micLive,micDistant};
-constexpr int micCount=4;
+// tube     one valve condenser over the strings, mono (its two channels alike)
+// Each microphone has its own circuit (PianoModel.cpp, MicCircuit) after
+// what it hears; the mix sums them at their levels and polarities.
+enum Mic {micClose,micXY,micLive,micDistant,micTube};
+constexpr int micCount=5;
 
 struct Controls {
   Body body=Body::concertGrand;
@@ -43,7 +46,9 @@ struct Controls {
   // How strongly the open strings and the duplex scales answer.
   float sympathetic=.5f,duplex=.5f;
   // Each microphone pair's level as an amplitude, by Mic.
-  float mic[micCount]{1,0,0,0};
+  float mic[micCount]{1,0,0,0,0};
+  // Each microphone's polarity inverted, in the mix and on its own output.
+  bool invert[micCount]{};
   // The room's reverberation in the pairs that hear it: 0 none, 1 twice.
   float room=.5f;
   // A4 in Hz.
@@ -85,6 +90,11 @@ public:
   void setBend(float semitones) noexcept;
   // Writes the microphones' mix, in pascals.
   void process(float* left,float* right,int frames) noexcept;
+  // The same, and each microphone on its own: `mics` holds 2 * micCount
+  // channels (left and right by Mic; the tube's two are alike), each null
+  // where it is not wanted. A microphone's own output is at full level, in
+  // its polarity and through its circuit, the room it hears included.
+  void process(float* left,float* right,float* const* mics,int frames) noexcept;
   bool silent() const noexcept;
   // Offline diagnostics for Tools/: an impulse on the bridge where `key`'s
   // strings cross it, a key's pull on the board in place of its voicing's
