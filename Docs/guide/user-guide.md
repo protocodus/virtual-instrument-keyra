@@ -44,17 +44,30 @@ them.
 
 ## The microphones
 
-Four pairs hear the piano, each with its own level. At the same level each
-plays the piano as loud as the close pair, so the levels are a balance.
+Four pairs and one valve microphone hear the piano, each with its own level.
+At the same level each plays the piano as loud as the close pair, so the
+levels are a balance. Each is a different kind of microphone, through its
+own circuit: its published response, the lift a cardioid gives in the bass
+close to the piano, and the little distortion its amplifier adds. They are
+wired so that the soundboard's bass reaches all of them in one polarity, so
+any mix of them adds up rather than cancelling. The Ø switch beside each
+inverts it, in the mix and on its own output.
 
 | Control | Behavior |
 | --- | --- |
-| Close | A spaced pair inside the piano over the strings by the hammers (behind an upright's soundboard): the direct, percussive pop sound |
-| XY | A coincident pair at the open lid, about a metre off: a focused, natural image |
-| Live | A spaced pair in the room beside a grand, or over the player's head at an upright: the piano with some of its room |
-| Distant | A wide pair across the room: mostly room |
-| Room | How much of the room's reverberation the pairs that hear it take; none at 0 |
+| Close | A spaced pair of flat pressure omnis inside the piano over the strings by the hammers (behind an upright's soundboard): the direct, percussive pop sound |
+| XY | A coincident pair of small cardioids at the open lid, about a metre off: a focused, natural image |
+| Live | A spaced pair of valve omnis in the room beside a grand, or over the player's head at an upright, their top rising a little: the piano with some of its room |
+| Distant | A wide pair of omnis across the room, lifted for the diffuse field: mostly room |
+| Tube | One valve cardioid over the strings, toward the hammers, in mono: a broad presence and a rounded top |
+| Room | How much of the room's reverberation the microphones that hear it take; none at 0 |
 | Width | The stereo image: the microphones' own at 0.75, mono at 0 |
+
+Each microphone also has its own output, after its circuit, at full level
+and in its polarity, with its share of the room: the pairs stereo, the tube
+mono. In the plug-in they are extra output buses the host turns on; in
+Reason, sockets on the back. The main output's Width, Output and output
+stage, and the action's noises, are in the mix only.
 
 Tuning, in the header of every view, sets concert A from 415 to 466 Hz.
 

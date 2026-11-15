@@ -2,7 +2,8 @@
 
 Keyra is a physically modelled piano that plays no samples: felt hammers
 thrown at stiff strings, the strings of each unison coupled at the bridge, a
-soundboard of plate modes radiating to four microphone pairs, and the open
+soundboard of plate modes radiating to four microphone pairs and a valve
+microphone, each with its own output, and the open
 strings and duplex scales ringing with them. Five pianos are designed, a
 concert grand, a studio grand, a parlor grand, a baby grand and an upright,
 and each is kept
@@ -49,6 +50,38 @@ committed; `Docs/decisions.md` records the verdicts. The
 0.2.0's engine, frozen evidence from that version's review.
 
 ## Version history
+
+### 2.15.0 — 2026-11-15 — five microphones, each with its own output
+
+A mono valve microphone joins the four pairs, and each of the five now has
+a circuit of the kind of microphone an engineer would put there, a polarity
+switch and an output of its own. A session from 2.14 loads as it was: the
+tube is down, no polarity is flipped and the new outputs are off until the
+host enables them. Every piano's row of the keys' level table is written
+again with five microphones; the output scale stays where it was.
+
+- **Five kinds of microphone.** Flat pressure omnis close over the
+  hammers, small cardioids in XY at the lid, valve omnis on spheres for the
+  live pair, diffuse-field omnis for the distant pair, and one valve
+  cardioid over the strings. Each circuit is its maker's published curve and
+  distortion (How it works, Microphones and the room).
+- **The microphones add up.** On the upright the pairs behind the board
+  and those in front stood -0.3 to -0.4 alike in the bass, so all five up
+  together lost 2.9 dB under their power sum below 80 Hz. Each is now
+  wired so the board's bass reaches it in one polarity: every pair stands
+  -0.02 to +0.67 alike with the close pair from 30 to 250 Hz on every
+  piano, and all five together sum 4.9 to 5.8 dB over the power sum below
+  80 Hz and within 0.8 dB of it above 250 Hz.
+- **An output for every microphone.** Four stereo buses and a mono one
+  after the main output, each at full level and in its polarity, delayed to
+  stay in time with the main output.
+- **Against the Salamander** on the default close pair
+  ([2.15.0 against 2.14.0](Docs/validation/microphones-benchmark-2026-11-15.md)),
+  paired: every mean within 0.03 of 2.14.0's but the rise, 14.04 to 13.85
+  ms (train) and 12.98 to 12.75 (dev). One note is worse: the rise of A1,
+  7.4 to 9.9 ms.
+- **CPU.** The close pair alone costs what it did; all five up cost 14 % of
+  real time on the development machine where 2.14.0's four cost 11.6 %.
 
 ### 2.14.0 — 2026-11-14 — strings that die as recorded ones do (chosen by ear)
 
@@ -897,18 +930,39 @@ smaller board. Changing the piano stops what sounds.
 
 Each mode's radiation to each microphone is Rayleigh's integral over the
 plate, with the floor's reflection and, on a grand, the lid's at three
-positions (closed, the short stick at 14°, open at 38°). Four pairs hear the
-piano, each with its own level:
+positions (closed, the short stick at 14°, open at 38°). Four pairs and a
+valve microphone hear the piano, each with its own level, polarity and
+output, and each the microphone an engineer would choose for its place:
 
-- **Close**: a spaced pair inside, 20 cm over the strings by the hammers
-  (behind an upright's board). The pop sound.
-- **XY**: a coincident cardioid pair at the open lid, about a metre off
-  (behind an upright).
-- **Live**: a spaced pair in the room, 2.3 m from a grand's side; over the
-  player's head at an upright.
-- **Distant**: a wide pair across the room, 4 to 6 m off.
+- **Close**: a spaced pair of flat pressure omnis inside, 20 cm over the
+  strings by the hammers (behind an upright's board). The pop sound.
+- **XY**: a coincident pair of small cardioids at the open lid, about a
+  metre off (behind an upright).
+- **Live**: a spaced pair of valve omnis flush in spheres, in the room 2.3 m
+  from a grand's side; over the player's head at an upright.
+- **Distant**: a wide pair of omnis lifted for the diffuse field, across the
+  room, 4 to 6 m off.
+- **Tube**: one valve cardioid 45 cm over a grand's strings, toward the
+  hammers and the treble (30 cm over an upright's open top), in mono.
 
-At the same level every pair plays the piano as loud as the close pair: a
+What makes one kind of microphone sound unlike another is a small circuit
+after what it hears: the lift a cardioid's gradient gives in the bass at
+its distance from the board, the on-axis response its maker publishes
+(fitted in at most four second-order sections, within 0.2 to 1 dB), and
+its amplifier's curvature, set to the distortion its data sheet states and
+acting at the pressure the microphone stands in. That stays far under
+hearing except in the live pair's valves, which reach 0.5 % at 114 dB.
+The sources are cited beside each in `PianoModel.cpp` (`designCircuit`).
+A microphone that hears the board through the case hears it in the
+opposite polarity; each is wired, as an engineer flips the ones on the far
+side, so that the board's bass reaches all five alike and a mix of them
+adds rather than cancels (on the upright, the pairs behind the board and
+those in front stood -0.3 to -0.4 alike in the bass before). Each
+microphone's own output is it after its circuit, at full level and in its
+polarity, with its share of the room; Width, Output, the output stage and
+the action's noises are the mix's.
+
+At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
 feedback delay network of sixteen lines under a Hadamard mix (Jot and
 Chaigne 1991) ringing 0.8 s,
@@ -957,7 +1011,8 @@ is what the board and the microphones give it.
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
 | Soundboard | 0 to 1 | How long the board rings: its loss halves from 0.5 to 1 and doubles to 0 |
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |
-| Close, XY, Live, Distant | 0 to 1 | Each microphone pair's level |
+| Close, XY, Live, Distant, Tube | 0 to 1 | Each microphone's level |
+| Ø (each microphone) | off, on | Its polarity, in the mix and on its own output |
 | Room | 0 to 1 | The room in the pairs that hear it |
 | Width | 0 to 1 | The stereo image |
 | Practice felt | 0 to 1 | A felt strip between hammers and strings: up to three decades softer |
@@ -1219,6 +1274,16 @@ is written independently of it.
   go and holds, under 150 Hz, 25 to 35 dB less than the Salamander's
   pedal-down takes ring there; its level against the notes rests on the
   engine's pedal knock, 2.8.0's, not on a measurement of its own.
+- **The microphones are their makers' typical curves.** Each circuit is
+  fitted to a published on-axis response and data-sheet distortion, not to
+  a measured microphone, and only on axis. The valve cardioid's maker
+  publishes no curve: its two presence peaks (2.5 and 3 dB at 5 and 12 kHz)
+  and its bass corner are set inside its rated ±3 dB from its brochure's
+  description. The action's noises are in the mix only, not on the
+  microphones' own outputs.
+- **The Reason device has five microphones only once its pin advances.**
+  Until then it plays 2.14.0's four pairs, without polarity switches or
+  their own outputs.
 - **The Studio Grand is not fitted further.** Only its bass scale is set
   against the recordings; its microphones, hammers and voicing are the
   other grands' ways at its size, and the benchmark still scores the
