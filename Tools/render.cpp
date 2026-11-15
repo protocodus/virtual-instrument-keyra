@@ -29,7 +29,7 @@ int main(int argc,char** argv){try {
   for(int i=1;i<argc;++i){const std::string option=argv[i];
     auto value=[&](){if(++i>=argc)throw std::runtime_error("missing argument after "+option);return std::string(argv[i]);};
     if(option=="--help"){
-      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--body concert|parlor|baby|upright|studio] [--hammer 0] [--age 0] [--detune .3] [--stretch 1] [--dynamics .5] [--lid 1] [--soundboard .5] [--sympathetic .5] [--duplex .5] [--mics close,xy,live,distant] [--room .5] [--width .75] [--tuning 440] [--felt 0] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mechanics .175] [--gain .7] [--vary]\n"
+      std::cout<<"keyra_render --events score.events --output render.wav [--sample-rate 48000] [--duration 5] [--metrics result.json] [--body concert|parlor|baby|upright|studio] [--hammer 0] [--age 0] [--detune .3] [--stretch 1] [--dynamics .5] [--lid 1] [--soundboard .5] [--sympathetic .5] [--duplex .5] [--mics close,xy,live,distant[,tube]] [--room .5] [--width .75] [--tuning 440] [--felt 0] [--mute 0] [--sustain 0] [--soft 0] [--sostenuto 0] [--mechanics .175] [--gain .7] [--vary]\n"
       <<"Events: seconds on note[0..127] velocity[0..127] [channel]; seconds off note 0 [channel]; seconds pedal value[0..1] (or preserved seconds pedal 0 value); seconds cc controller value[0..127] [channel]; seconds bend semitones [channel]. Keys12/13/14 hold soft/sostenuto/sustain.\n";
       return 0;
     }else if(option=="--events")eventsPath=value();else if(option=="--output")outputPath=value();
@@ -44,9 +44,10 @@ int main(int argc,char** argv){try {
     else if(option=="--mics"){
       std::istringstream in(value());int n=0;
       for(std::string field;std::getline(in,field,',');++n){
-        if(n==keyra::model::micCount)throw std::runtime_error("--mics takes four levels");
+        if(n==keyra::model::micCount)throw std::runtime_error("--mics takes four or five levels");
         parameters.mic[n]=std::stof(field);}
-      if(n<keyra::model::micCount)throw std::runtime_error("--mics takes four levels");}
+      // Four levels leave the tube out, as scores written before it had it.
+      if(n<keyra::model::micCount-1)throw std::runtime_error("--mics takes four or five levels");}
     else if(option=="--room")parameters.room=std::stof(value());else if(option=="--width")parameters.width=std::stof(value());
     else if(option=="--tuning")parameters.tuning=std::stof(value());else if(option=="--felt")parameters.felt=std::stof(value());
     else if(option=="--mute")parameters.mute=std::stof(value());

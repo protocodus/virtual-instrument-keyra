@@ -57,7 +57,8 @@ public:
         const auto heard = [this] (const std::vector<float>& row)
         {
             return value (row, "gain") > 0.0
-                && value (row, "micClose") + value (row, "micXY") + value (row, "micLive") + value (row, "micDistant") > 0.0;
+                && value (row, "micClose") + value (row, "micXY") + value (row, "micLive") + value (row, "micDistant")
+                   + value (row, "micTube") > 0.0;
         };
         limits.soundsWhileHeld = heard (c.values) && heard (c.base)
                               && std::max (value (c.values, "mute"), value (c.base, "mute")) == 0.0;
@@ -116,6 +117,12 @@ public:
         // Keyra.PianoModel turns them up under a sounding C6.
         if (name == "Duplex resonance")
             return { Reach::Exempt, "a sheen over the treble, under the probe's chord; Keyra.PianoModel, Keyra.Engine" };
+        // A polarity flips its microphone in the mix and on its own output;
+        // the default mix has only the close pair up, so the others' flip
+        // nothing there. Keyra.PluginProcessor flips each with it up.
+        if (name == "XY mics polarity" || name == "Live mics polarity" || name == "Distant mics polarity"
+            || name == "Tube mic polarity")
+            return { Reach::Exempt, "it flips a microphone the default mix leaves down; Keyra.PluginProcessor" };
         return {};
     }
 

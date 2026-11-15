@@ -443,6 +443,12 @@ struct Engine::Impl {
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
   static constexpr double pascalScale[model::bodyCount]{.1854,.1487,.1092,.1635,.1646};
   std::array<float,chunk> pianoLeft{},pianoRight{};
+  // Each microphone's own output through a chunk, and held back by the
+  // output stage's look-ahead (ForteOutput::maxDelay < 2048) to meet the mix.
+  std::array<std::array<float,chunk>,2*model::micCount> micChunk{};
+  std::array<std::array<float,2048>,2*model::micCount> micDelay{};
+  int micAt=0;
+  bool micWanted[2*model::micCount]{};
   double sampleRate=48000,gain=.7,width=.75;
   double smooth=0,highpassCoefficient=0,highpassL=0,highpassR=0,previousL=0,previousR=0;
   std::uint64_t serial=0,frame=0;
@@ -832,7 +838,7 @@ struct Engine::Impl {
     model::Controls c;
     c.body=set.body;c.hammer=set.hammer;c.age=set.age;c.detune=set.detune;c.stretch=set.stretch;c.dynamics=set.dynamics;
     c.lid=set.lid;c.soundboard=set.soundboard;c.sympathetic=set.sympathetic;c.duplex=set.duplex;
-    for(int m=0;m<model::micCount;++m)c.mic[m]=set.mic[m];
+    for(int m=0;m<model::micCount;++m){c.mic[m]=set.mic[m];c.invert[m]=set.invert[m];}
     c.room=set.room;c.tuning=set.tuning;c.felt=set.felt;c.mute=std::max(set.mute,wheelMute);
     piano.setControls(c);
   }
@@ -1047,7 +1053,7 @@ struct Engine::Impl {
     pickupGlide-=n;
     if(pickupGlide==0)pickup=pickupTarget;
   }
-  void render(float* left,float* right,int frames) noexcept {
+  void render(float* left,float* right,float* const* mics,int frames) noexcept {
     const V4 zero{};
     for(int i=0;i<frames;++i){mixLeft[i]=zero;mixRight[i]=zero;}
     if(rising){ringBody(onset,frames);ringBody(contactOnset,frames);}
@@ -1073,8 +1079,19 @@ struct Engine::Impl {
       if(!roomHears)std::fill_n(roomInput.begin(),frames,0.);
       roomSounding=true;playRoom(frames);
     }
-    piano.process(pianoLeft.data(),pianoRight.data(),frames);
+    float* own[2*model::micCount]{};
+    // A channel not asked for leaves its delay behind; asked for again, it
+    // starts from silence rather than from what it held then.
+    for(int c=0;c<2*model::micCount;++c){const bool wanted=mics&&mics[c];
+      if(wanted&&!micWanted[c])micDelay[c].fill(0.f);
+      micWanted[c]=wanted;own[c]=wanted?micChunk[c].data():nullptr;}
+    piano.process(pianoLeft.data(),pianoRight.data(),mics?own:nullptr,frames);
     const double scale=pascalScale[static_cast<int>(set.body)];
+    if(mics){const int late=output.DelaySamples();
+      for(int i=0;i<frames;++i){const int at=(micAt+i)&2047,from=(micAt+i-late)&2047;
+        for(int c=0;c<2*model::micCount;++c)if(mics[c]){auto& line=micDelay[c];
+          line[at]=static_cast<float>(scale*micChunk[c][i]);mics[c][i]=line[from];}}}
+    micAt=(micAt+frames)&2047;
     for(int i=0;i<frames;++i){
       width+=smooth*(parameters.width-width);
       gain+=smooth*(parameters.gain-gain);
@@ -1120,7 +1137,7 @@ void Engine::reset() noexcept {
   p.serial=0;p.frame=0;p.clock=0;p.touch=1;p.chance=1;p.gain=p.parameters.gain;p.width=p.parameters.width;
   p.sleeping=true;
   p.highpassL=p.highpassR=p.previousL=p.previousR=0;
-  p.output.Reset();
+  p.output.Reset();for(auto& line:p.micDelay)line.fill(0.f);p.micAt=0;
   for(int ch=0;ch<16;++ch)p.capture(ch);
   p.pedalHeld=false;p.pedalEdge(false);
   p.piano.reset();p.wheelMute=-1;p.syncPiano();
@@ -1195,7 +1212,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
     p.piano.reset();p.piano.setBend(state.bend);
     p.silenceBody();p.silenceNoise();p.silenceRoom();
-    p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();
+    p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();for(auto& line:p.micDelay)line.fill(0.f);p.micAt=0;
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
@@ -1224,12 +1241,14 @@ PedalState Engine::pedalState(int channel) const noexcept {
 }
 int Engine::outputLatencySamples() const noexcept {return impl->output.DelaySamples();}
 void Engine::setSteadyStrikesForMeasurement(bool enabled) noexcept {impl->steady=enabled;}
-void Engine::process(float* left,float* right,int frames) noexcept {
+void Engine::process(float* left,float* right,int frames) noexcept {process(left,right,nullptr,frames);}
+void Engine::process(float* left,float* right,float* const* mics,int frames) noexcept {
   if(!left||!right||frames<=0)return;
   auto& p=*impl;
   p.clock+=static_cast<std::uint64_t>(frames);
   if(p.sleeping){
     std::fill_n(left,frames,0.f);std::fill_n(right,frames,0.f);
+    if(mics)for(int c=0;c<2*model::micCount;++c)if(mics[c])std::fill_n(mics[c],frames,0.f);
     p.gain=p.parameters.gain;p.width=p.parameters.width;p.snapNoiseMixes();
     return;
   }
@@ -1237,7 +1256,9 @@ void Engine::process(float* left,float* right,int frames) noexcept {
   while(done<frames){
     if(p.frame%chunk==0)p.boundary();
     const int n=std::min(frames-done,static_cast<int>(chunk-p.frame%chunk));
-    p.render(left+done,right+done,n);
+    float* at[2*model::micCount]{};
+    if(mics)for(int c=0;c<2*model::micCount;++c)at[c]=mics[c]?mics[c]+done:nullptr;
+    p.render(left+done,right+done,mics?at:nullptr,n);
     done+=n;p.frame+=static_cast<std::uint64_t>(n);
   }
   if(!(p.rising||p.actionRinging||p.hissing||p.roomSounding||!p.piano.silent())
@@ -1249,6 +1270,8 @@ void Engine::process(float* left,float* right,int frames) noexcept {
     p.sleeping=true;p.frame=0;p.highpassL=p.highpassR=p.previousL=p.previousR=0;
     p.silenceNoise();
     p.output.Reset();
+    for(auto& line:p.micDelay)line.fill(0.f);
+    p.micAt=0;
   }
 }
 }

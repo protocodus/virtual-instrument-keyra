@@ -5829,3 +5829,50 @@ for listening sets: assume candidate is better go with it". Both
 candidates stand as merged. This is an acceptance on the measurements each
 entry gives, not a choice by ear: nobody listened, and the sets' audio was
 deleted with the owner's confirmation the same day.
+
+## 2026-11-15 — five microphones, each the one an engineer would choose
+
+The owner asked for an output for every microphone, a mono valve microphone
+beside the four pairs, "a small circuit / mic modelling for all mics we
+have, to make them more distinct and make mixing more interesting and
+realistic", chose on the decision card "Full: 5 mics, 11 outputs", and then:
+"pick the best mic models for each use - what a professional would pick, no
+matter the budget", and "ensure that all mics sounds great together (when we
+mix all of them) and there are no unwanted resonances".
+
+The picks, each in the pattern its position already had: the close pair
+flat pressure omnis (DPA 4006A, free-field grid), the XY pair small
+cardioids (Schoeps CMC 6 MK 4), the live pair valve omnis on a sphere
+(Neumann M 150 Tube), the distant pair omnis lifted for the diffuse field
+(Schoeps CMC 6 MK 2S), and the tube a valve cardioid (Telefunken ELA M
+251E). Each circuit's sections are fitted to the curve its maker publishes
+and its curvature gives the distortion its data sheet states
+(`PianoModel.cpp`, `designCircuit`, which cites each); the 251E's two
+presence peaks are drawn from its brochure's description inside its rated
+±3 dB, as no curve is published. These are the makers' typical figures,
+not measurements of one microphone, and the names stay in the source: the
+panel, the patches and the Shop name the kind of microphone only.
+
+Measured with all five up (bridge knocks at five keys, every piano): the
+upright's pairs behind the board (close, XY) and those in front (live,
+distant, tube) stood -0.3 to -0.4 alike in the bass, the sum 2.9 dB under
+the pairs' power sum below 80 Hz. Each microphone is now wired, as an
+engineer flips the ones on the far side, so that the board's bass reaches
+all of them in one polarity (`MicSpec::side`); every pair now stands -0.02
+to +0.67 alike with the close pair from 30 to 250 Hz on every piano (none
+cancelling), and the mix sums 4.9 to 5.8 dB over the power sum below 80 Hz and within 0.8 dB of
+it above 250 Hz. The key voicing takes the five together as it took four,
+so the keys stay within 1 dB of the even scale in every mix KeyraLevels
+plays. The tube, first over the middle of the board, left a parlor grand's
+top keys 19 dB under the even scale, more than voicing pulls; it stands a
+little toward the hammers and the treble, as a single microphone over a
+grand commonly does. No listening test was run: the microphones are the
+owner's instruction and their responses published figures, not candidates
+the measurements leave open.
+
+The owner listened to the solo, all-five and balanced-mix renders of both
+pianos (the 14 s phrase, rendered through `keyra_render`, not committed)
+and wrote: "mics sound good". That is a verdict by ear on the five
+microphones as shipped; it does not make the valve cardioid's estimated
+presence peaks measured. The Reason device's sockets wait for the champagne
+back panel (owner's choice, 2026-11-15).
