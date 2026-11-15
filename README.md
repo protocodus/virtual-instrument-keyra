@@ -79,7 +79,11 @@ again with five microphones; the output scale stays where it was.
   ([2.15.0 against 2.14.0](Docs/validation/microphones-benchmark-2026-11-15.md)),
   paired: every mean within 0.03 of 2.14.0's but the rise, 14.04 to 13.85
   ms (train) and 12.98 to 12.75 (dev). One note is worse: the rise of A1,
-  7.4 to 9.9 ms.
+  7.4 to 9.9 ms. Against the Helsinki upright
+  ([2.15.0 against 2.14.0](Docs/validation/upright-microphones-benchmark-2026-11-15.md)),
+  paired: every mean within 0.1 of 2.14.0's, the attack closer (7.67 to
+  7.60 dB train, 7.71 to 7.62 dev). Two notes are worse: the rise of D3,
+  68.8 to 72.0 ms, and the noise of C2, 10.65 to 11.54 dB.
 - **CPU.** The close pair alone costs what it did; all five up cost 14 % of
   real time on the development machine where 2.14.0's four cost 11.6 %.
 
