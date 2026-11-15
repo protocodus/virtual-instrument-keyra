@@ -386,7 +386,7 @@ int main()
                     { "detune", preset.detune }, { "stretch", preset.stretch }, { "dynamics", preset.dynamics },
                     { "lid", preset.lid }, { "soundboard", preset.soundboard }, { "sympathetic", preset.sympathetic },
                     { "duplex", preset.duplex }, { "micClose", preset.mic[0] }, { "micXY", preset.mic[1] },
-                    { "micLive", preset.mic[2] }, { "micDistant", preset.mic[3] }, { "room", preset.room },
+                    { "micLive", preset.mic[2] }, { "micDistant", preset.mic[3] }, { "micTube", preset.mic[4] }, { "room", preset.room },
                     { "width", preset.width }, { "felt", preset.felt } };
                 for (const auto& [id, value] : expected)
                     require(std::abs(raw(chosen, id) - value) < 1e-6f, "a preset did not set one of its controls");
@@ -411,6 +411,63 @@ int main()
             chosen.setCurrentProgram(-1);
             chosen.setCurrentProgram(chosen.getNumPrograms());
             require(chosen.getCurrentProgram() == last, "a program that does not exist was taken");
+        }
+        {
+            // A 2.14 session has no tube or polarities: they load at their
+            // defaults, whatever the instance held.
+            KeyraAudioProcessor older, reopened;
+            set(older, "micLive", .7f);
+            juce::MemoryBlock saved;
+            older.getStateInformation(saved);
+            auto xml = juce::AudioProcessor::getXmlFromBinary(saved.getData(), static_cast<int>(saved.getSize()));
+            for (const char* id : { "micTube", "invertClose", "invertXY", "invertLive", "invertDistant", "invertTube" })
+                if (auto* child = xml->getChildByAttribute("id", id)) xml->removeChildElement(child, true);
+            juce::MemoryBlock trimmed;
+            juce::AudioProcessor::copyXmlToBinary(*xml, trimmed);
+            set(reopened, "micTube", .9f);
+            set(reopened, "invertClose", 1.0f);
+            reopened.setStateInformation(trimmed.getData(), static_cast<int>(trimmed.getSize()));
+            require(std::abs(raw(reopened, "micLive") - .7f) < 1e-6f, "a 2.14 session was refused");
+            require(raw(reopened, "micTube") == keyra::Parameters{}.mic[keyra::model::micTube] && raw(reopened, "invertClose") == 0.0f,
+                "a 2.14 session left the tube or a polarity where the instance had it");
+        }
+        {
+            // Each microphone's own output, when the host turns it on: the
+            // pairs stereo, the tube mono, every one sounding at full level
+            // whatever its fader, and the mix as it is without them.
+            const auto play = [](KeyraAudioProcessor& processor, bool buses) {
+                if (buses) {
+                    auto layout = processor.getBusesLayout();
+                    for (int bus = 1; bus < static_cast<int>(layout.outputBuses.size()); ++bus)
+                        layout.outputBuses.getReference(bus) = bus == keyra::model::micCount
+                            ? juce::AudioChannelSet::mono() : juce::AudioChannelSet::stereo();
+                    require(processor.setBusesLayout(layout), "the microphones' outputs were refused");
+                }
+                processor.prepareToPlay(48000, 128);
+                juce::AudioBuffer<float> audio(processor.getTotalNumOutputChannels(), 128);
+                juce::MidiBuffer midi;
+                midi.addEvent(juce::MidiMessage::noteOn(1, 60, .8f), 0);
+                std::vector<std::vector<float>> result(static_cast<size_t>(audio.getNumChannels()));
+                for (int block = 0; block < 40; ++block) {
+                    processor.processBlock(audio, midi);
+                    midi.clear();
+                    for (int channel = 0; channel < audio.getNumChannels(); ++channel)
+                        for (int frame = 0; frame < 128; ++frame) result[static_cast<size_t>(channel)].push_back(audio.getSample(channel, frame));
+                }
+                return result;
+            };
+            KeyraAudioProcessor plain, split;
+            require(!split.isBusesLayoutSupported([&] { auto l = split.getBusesLayout();
+                l.outputBuses.getReference(keyra::model::micCount) = juce::AudioChannelSet::stereo(); return l; }()),
+                "the tube's output took two channels");
+            const auto mix = play(plain, false), all = play(split, true);
+            require(all.size() == 2 + 2 * (keyra::model::micCount - 1) + 1, "the microphones' outputs have the wrong channels");
+            require(all[0] == mix[0] && all[1] == mix[1], "turning the microphones' outputs on changed the mix");
+            for (size_t channel = 2; channel < all.size(); ++channel) {
+                float peak = 0;
+                for (const auto x : all[channel]) peak = std::max(peak, std::abs(x));
+                require(peak > 1e-3f, "a microphone's own output is silent");
+            }
         }
         {
             // A 1.x session played measured pianos this engine does not have.
@@ -479,11 +536,30 @@ int main()
                 { "gain", .3f }, { "width", .2f }, { "tuning", 446.0f }, { "mute", .6f }, { "sustain", 1.0f }, { "soft", 1.0f },
                 { "mechanics", 0.0f }, { "body", 3.0f }, { "hammer", .8f }, { "age", .9f }, { "detune", .9f }, { "stretch", 0.0f },
                 { "dynamics", 1.0f }, { "lid", 0.0f }, { "soundboard", 1.0f }, { "sympathetic", 1.0f }, { "duplex", 1.0f },
-                { "micClose", .4f }, { "micXY", .8f }, { "micLive", .8f }, { "micDistant", .8f }, { "room", 1.0f }, { "felt", .8f } };
+                { "micClose", .4f }, { "micXY", .8f }, { "micLive", .8f }, { "micDistant", .8f }, { "room", 1.0f }, { "felt", .8f },
+                { "micTube", .8f }, { "invertClose", 1.0f } };
             for (const auto& [id, value] : changes) {
                 KeyraAudioProcessor changed;
                 set(changed, id, value);
                 if (play(changed) == reference) throw std::runtime_error(std::string(id) + " did not reach the engine");
+            }
+            // Each polarity flips its microphone, with that microphone up and
+            // the close pair down.
+            constexpr std::array<std::pair<const char*, const char*>, keyra::model::micCount> flips {{
+                { "micClose", "invertClose" }, { "micXY", "invertXY" }, { "micLive", "invertLive" },
+                { "micDistant", "invertDistant" }, { "micTube", "invertTube" } }};
+            for (const auto& [mic, invert] : flips) {
+                KeyraAudioProcessor upright, flipped;
+                for (auto* processor : { &upright, &flipped }) {
+                    set(*processor, "micClose", 0.0f);
+                    set(*processor, "mechanics", 0.0f);
+                    set(*processor, mic, 1.0f);
+                }
+                set(flipped, invert, 1.0f);
+                const auto a = play(upright), b = play(flipped);
+                double same = 0, opposite = 0;
+                for (size_t i = 0; i < a.size(); ++i) { same += std::abs(a[i] - b[i]); opposite += std::abs(a[i] + b[i]); }
+                if (!(opposite < 1e-3 * same)) throw std::runtime_error(std::string(invert) + " did not flip its microphone");
             }
             // A host reads a parameter's text, gives it back and reads again
             // (clap-validator's param-conversions): every value must read the

@@ -61,9 +61,12 @@ private:
     KeyraLookAndFeel look;
     juce::ComboBox program, body;
     std::unique_ptr<juce::ParameterAttachment> bodyAttachment;
-    std::array<juce::Slider, 23> controls;
+    std::array<juce::Slider, 24> controls;
     std::array<KeyraPedal, 3> pedals; // physical order: soft, sostenuto, sustain
-    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 23> attachments;
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 24> attachments;
+    // Each microphone's polarity, beside its caption on the MICS view, by keyra::model::Mic.
+    std::array<juce::TextButton, keyra::model::micCount> polarity;
+    std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>, keyra::model::micCount> polarityAttachments;
     std::array<KeyraTab, 3> tabs {{ KeyraTab { "PIANO" }, KeyraTab { "BODY" }, KeyraTab { "MICS" } }};
     juce::MidiKeyboardState keyboardState;
     juce::MidiKeyboardComponent keyboard { keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard };

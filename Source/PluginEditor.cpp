@@ -5,13 +5,17 @@
 namespace {
 const juce::Colour ink(0xff302c26), ivory(0xffeee8dc), brass(0xffa48448), muted(0xff7c766b), footer(0xffc6ad89);
 constexpr size_t tuningIndex = 2, sustainIndex = 4, softIndex = 6, mechanicsIndex = 7;
-constexpr std::array<const char*, 23> ids {{ "gain", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics",
+constexpr std::array<const char*, 24> ids {{ "gain", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics",
     "hammer", "age", "detune", "stretch", "dynamics", "lid", "soundboard", "sympathetic", "duplex",
-    "micClose", "micXY", "micLive", "micDistant", "room", "felt" }};
-constexpr std::array<const char*, 23> captions {{ "OUTPUT", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS",
+    "micClose", "micXY", "micLive", "micDistant", "room", "felt", "micTube" }};
+constexpr std::array<const char*, 24> captions {{ "OUTPUT", "WIDTH", "A4 TUNING", "FELT MUTE", "SUSTAIN", "SOSTENUTO", "SOFT", "MECHANICS",
     "HAMMER", "STRING AGE", "DETUNE", "STRETCH", "DYNAMICS", "LID", "SOUNDBOARD", "SYMPATHETIC", "DUPLEX",
-    "CLOSE", "XY", "LIVE", "DISTANT", "ROOM", "PRACTICE FELT" }};
-constexpr std::array<const char*, 23> hints {{
+    "CLOSE", "XY", "LIVE", "DISTANT", "ROOM", "PRACTICE FELT", "TUBE" }};
+// Each microphone's level knob, by keyra::model::Mic.
+constexpr std::array<size_t, keyra::model::micCount> micKnobs {{ 17, 18, 19, 20, 23 }};
+constexpr std::array<const char*, keyra::model::micCount> polarityIds {{
+    "invertClose", "invertXY", "invertLive", "invertDistant", "invertTube" }};
+constexpr std::array<const char*, 24> hints {{
     "Output level.",
     "The stereo image: 75% as the microphone pairs hear it, 0% mono.",
     "A4 in Hz.",
@@ -32,20 +36,23 @@ constexpr std::array<const char*, 23> hints {{
     "How long the soundboard rings, from heavily damped to lively.",
     "How strongly the strings whose dampers are off answer the ones struck.",
     "How strongly the lengths of string behind the bridge ring with the treble.",
-    "A spaced pair inside the piano, over the hammers: the pop sound. Behind an upright's soundboard.",
-    "A coincident pair at the open lid, a metre off.",
-    "A spaced pair in the room at 2.5 m; on the upright, the player's side.",
-    "A wide pair across the room.",
+    "A spaced pair of flat pressure omnis inside the piano, over the hammers: the pop sound. "
+    "Behind an upright's soundboard.",
+    "A coincident pair of small cardioids at the open lid, a metre off.",
+    "A spaced pair of valve omnis in the room at 2.5 m, their top rising with distance; on the upright, the player's side.",
+    "A wide pair of omnis across the room, lifted for the diffuse field.",
     "The room's reverberation in the pairs that hear it.",
-    "A practice felt between the hammers and the strings. Applies from the next note."
+    "A practice felt between the hammers and the strings. Applies from the next note.",
+    "One valve cardioid over the strings, mono: a broad presence and a rounded top."
 }};
 // Each view's knobs, left to right.
 constexpr std::array<const char*, 3> viewHints {{
     "The hammers and strings: hardness, age, unison detune, stretch, dynamics, practice felt and felt mute.",
     "The case: lid, soundboard, sympathetic and duplex resonance, mechanics and output.",
-    "Where the piano is heard from: four microphone pairs, the room and the stereo width."
+    "Where the piano is heard from: four microphone pairs, a tube microphone, the room and the stereo width. "
+    "\u00d8 inverts a microphone's polarity."
 }};
-const std::array<std::vector<size_t>, 3> views {{ { 8, 9, 10, 11, 12, 22, 3 }, { 13, 14, 15, 16, 7, 0 }, { 17, 18, 19, 20, 21, 1 } }};
+const std::array<std::vector<size_t>, 3> views {{ { 8, 9, 10, 11, 12, 22, 3 }, { 13, 14, 15, 16, 7, 0 }, { 17, 18, 19, 20, 23, 21, 1 } }};
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds,
     float size, juce::Colour colour, int justification = juce::Justification::centredLeft, bool bold = false)
 {
@@ -270,6 +277,21 @@ KeyraAudioProcessorEditor::KeyraAudioProcessorEditor(KeyraAudioProcessor& p)
         tabs[i].onClick = [this, i] { showView(static_cast<int>(i)); };
         addAndMakeVisible(tabs[i]);
     }
+    for (size_t m = 0; m < polarity.size(); ++m) {
+        auto& button = polarity[m];
+        button.setButtonText(juce::CharPointer_UTF8("\xc3\x98"));
+        button.setClickingTogglesState(true);
+        button.setTooltip(juce::String("Inverts the ") + juce::String(captions[micKnobs[m]]).toLowerCase()
+                          + (m == keyra::model::micTube ? " microphone's" : " pair's") + " polarity, in the mix and on its own output.");
+        button.setColour(juce::TextButton::buttonColourId, ivory.withAlpha(.55f));
+        button.setColour(juce::TextButton::buttonOnColourId, brass);
+        button.setColour(juce::TextButton::textColourOffId, muted);
+        button.setColour(juce::TextButton::textColourOnId, ivory);
+        button.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+        addAndMakeVisible(button);
+        polarityAttachments[m] = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
+            processor.parameters, polarityIds[m], button);
+    }
     showView(processor.editorView);
     constexpr std::array<const char*, 3> pedalNames {{ "Soft pedal", "Sostenuto pedal", "Sustain pedal" }};
     constexpr std::array<const char*, 3> pedalHints {{
@@ -335,6 +357,7 @@ void KeyraAudioProcessorEditor::showView(int view)
         for (const auto knob : views[i])
             controls[knob].setVisible(static_cast<int>(i) == view);
     }
+    for (auto& button : polarity) button.setVisible(view == 2);
     repaint();
 }
 
@@ -343,6 +366,9 @@ void KeyraAudioProcessorEditor::resized()
     for (const auto& view : views)
         for (size_t i = 0; i < view.size(); ++i)
             controls[view[i]].setBounds(74 + static_cast<int>(i) * 120 + static_cast<int>(7 - view.size()) * 60, 170, 112, 126);
+    // A polarity switch at the right of each microphone's caption.
+    for (size_t m = 0; m < polarity.size(); ++m)
+        polarity[m].setBounds(controls[micKnobs[m]].getRight() - 22, 303, 20, 20);
     for (size_t i = 0; i < tabs.size(); ++i)
         tabs[i].setBounds(370 + static_cast<int>(i) * 80, 138, 80, 21);
     controls[tuningIndex].setBounds(794, 100, 112, 28);

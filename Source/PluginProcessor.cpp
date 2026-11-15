@@ -6,11 +6,15 @@
 
 namespace {
 // The parameters, the engine's Parameters in the order processBlock reads
-// them: the eight a 1.x session saved too, then the piano's.
-constexpr std::array<const char*, 24> ids {{ "gain", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics",
+// them: the eight a 1.x session saved too, then the piano's, then 2.15's
+// tube and the microphones' polarities.
+constexpr std::array<const char*, 30> ids {{ "gain", "width", "tuning", "mute", "sustain", "sostenuto", "soft", "mechanics",
     "body", "hammer", "age", "detune", "stretch", "dynamics", "lid", "soundboard", "sympathetic", "duplex",
-    "micClose", "micXY", "micLive", "micDistant", "room", "felt" }};
-constexpr size_t savedBefore = 8, bodyIndex = 8, micIndex = 18;
+    "micClose", "micXY", "micLive", "micDistant", "room", "felt",
+    "micTube", "invertClose", "invertXY", "invertLive", "invertDistant", "invertTube" }};
+constexpr size_t savedBefore = 8, bodyIndex = 8, micIndex = 18, tubeIndex = 24, invertIndex = 25;
+// Each microphone's level, by keyra::model::Mic.
+constexpr size_t micId(size_t mic) { return mic == keyra::model::micTube ? tubeIndex : micIndex + mic; }
 constexpr auto& programs = keyra::factoryPresets;
 // A saved value: one finite decimal number and nothing after it.
 bool parse(const juce::String& text, float& value)
@@ -48,7 +52,7 @@ void KeyraAudioProcessor::setCurrentProgram(int index)
     set("soundboard", preset.soundboard);
     set("sympathetic", preset.sympathetic);
     set("duplex", preset.duplex);
-    for (size_t i = 0; i < keyra::model::micCount; ++i) set(ids[micIndex + i], preset.mic[i]);
+    for (size_t i = 0; i < keyra::model::micCount; ++i) set(ids[micId(i)], preset.mic[i]);
     set("room", preset.room);
     set("width", preset.width);
     set("felt", preset.felt);
@@ -107,11 +111,24 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     add("micDistant", "Distant mics", 0.0f, 1.0f, initial.mic[keyra::model::micDistant]);
     add("room", "Room", 0.0f, 1.0f, initial.room);
     add("felt", "Practice felt", 0.0f, 1.0f, initial.felt);
+    add("micTube", "Tube mic", 0.0f, 1.0f, initial.mic[keyra::model::micTube], 3);
+    constexpr std::array<const char*, keyra::model::micCount> invertNames {{
+        "Close mics polarity", "XY mics polarity", "Live mics polarity", "Distant mics polarity", "Tube mic polarity" }};
+    for (size_t i = 0; i < keyra::model::micCount; ++i)
+        layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { ids[invertIndex + i], 3 },
+            invertNames[i], false, juce::AudioParameterBoolAttributes().withLabel("inverted")));
     return layout;
 }
 
 KeyraAudioProcessor::KeyraAudioProcessor()
-    : AudioProcessor(BusesProperties().withOutput("Piano", juce::AudioChannelSet::stereo(), true)),
+    : AudioProcessor(BusesProperties().withOutput("Piano", juce::AudioChannelSet::stereo(), true)
+                         // Each microphone on its own, after its circuit, at full level and
+                         // in its polarity, off until the host turns it on.
+                         .withOutput("Close mics", juce::AudioChannelSet::stereo(), false)
+                         .withOutput("XY mics", juce::AudioChannelSet::stereo(), false)
+                         .withOutput("Live mics", juce::AudioChannelSet::stereo(), false)
+                         .withOutput("Distant mics", juce::AudioChannelSet::stereo(), false)
+                         .withOutput("Tube mic", juce::AudioChannelSet::mono(), false)),
       parameters(*this, nullptr, "KeyraState", createLayout())
 {
     for (size_t i = 0; i < ids.size(); ++i)
@@ -139,8 +156,16 @@ void KeyraAudioProcessor::reset()
 
 bool KeyraAudioProcessor::isBusesLayoutSupported(const BusesLayout& layout) const
 {
-    return layout.getMainInputChannelSet().isDisabled()
-        && layout.getMainOutputChannelSet() == juce::AudioChannelSet::stereo();
+    if (!layout.getMainInputChannelSet().isDisabled()
+        || layout.getMainOutputChannelSet() != juce::AudioChannelSet::stereo()
+        || layout.outputBuses.size() != 1 + keyra::model::micCount)
+        return false;
+    for (int bus = 1; bus <= keyra::model::micCount; ++bus) {
+        const auto set = layout.getChannelSet(false, bus);
+        const auto own = bus == 1 + keyra::model::micTube ? juce::AudioChannelSet::mono() : juce::AudioChannelSet::stereo();
+        if (!set.isDisabled() && set != own) return false;
+    }
+    return true;
 }
 
 void KeyraAudioProcessor::dispatch(const juce::MidiMessage& message) noexcept
@@ -191,7 +216,10 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
     p.soundboard = value(15);
     p.sympathetic = value(16);
     p.duplex = value(17);
-    for (size_t i = 0; i < keyra::model::micCount; ++i) p.mic[i] = value(micIndex + i);
+    for (size_t i = 0; i < keyra::model::micCount; ++i) {
+        p.mic[i] = value(micId(i));
+        p.invert[i] = value(invertIndex + i) >= .5f;
+    }
     p.room = value(22);
     p.felt = value(23);
     engine.setParameters(p);
@@ -217,16 +245,35 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
         read = (read + 1) % keyboardQueue.size();
     }
     keyboardRead.store(read, std::memory_order_release);
-    auto* left = audio.getWritePointer(0);
-    auto* right = audio.getWritePointer(1);
+    auto main = getBusBuffer(audio, false, 0);
+    auto* left = main.getWritePointer(0);
+    auto* right = main.getWritePointer(1);
     const auto count = audio.getNumSamples();
+    // The microphones' own outputs the host has turned on; the tube's one
+    // channel takes the model's left.
+    std::array<float*, 2 * keyra::model::micCount> mics {};
+    bool anyMic = false;
+    for (int m = 0; m < keyra::model::micCount; ++m) {
+        if (getBusCount(false) <= m + 1 || !getBus(false, m + 1)->isEnabled()) continue;
+        auto bus = getBusBuffer(audio, false, m + 1);
+        for (int ch = 0; ch < juce::jmin(2, bus.getNumChannels()); ++ch) {
+            mics[static_cast<size_t>(2 * m + ch)] = bus.getWritePointer(ch);
+            anyMic = true;
+        }
+    }
+    const auto render = [&](int from, int frames) {
+        if (!anyMic) { engine.process(left + from, right + from, frames); return; }
+        std::array<float*, 2 * keyra::model::micCount> at {};
+        for (size_t c = 0; c < at.size(); ++c) at[c] = mics[c] ? mics[c] + from : nullptr;
+        engine.process(left + from, right + from, at.data(), frames);
+    };
     int cursor = 0;
     // Render up to each event before dispatch. Equal-timestamp MIDI retains
     // source order; a pedal edge at a note boundary therefore has one meaning
     // in offline export and live playback, independent of host block size.
     for (const auto metadata : midi) {
         const auto frame = juce::jlimit(cursor, count, metadata.samplePosition);
-        if (frame > cursor) engine.process(left + cursor, right + cursor, frame - cursor);
+        if (frame > cursor) render(cursor, frame - cursor);
         cursor = frame;
         // Non-channel messages (notably arbitrarily long SysEx) are ignored
         // before constructing MidiMessage, whose long-message path allocates.
@@ -237,7 +284,7 @@ void KeyraAudioProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::Mi
             if (metadata.numBytes == expectedBytes) dispatch(metadata.getMessage());
         }
     }
-    if (cursor < count) engine.process(left + cursor, right + cursor, count - cursor);
+    if (cursor < count) render(cursor, count - cursor);
     float peak = 0;
     for (int i = 0; i < count; ++i)
         peak = juce::jmax(peak, std::abs(left[i]), std::abs(right[i]));
@@ -346,8 +393,17 @@ void KeyraAudioProcessor::setStateInformation(const void* data, int bytes)
             || value > parameter->getNormalisableRange().end) return;
         seen[index] = true;
     }
-    for (const auto present : seen)
-        if (!present) return;
+    // A session from before 2.15 has no tube or polarities: they start at
+    // their defaults, not at what this instance last held.
+    for (size_t i = 0; i < ids.size(); ++i) {
+        if (seen[i]) continue;
+        if (i < tubeIndex) return;
+        auto* parameter = parameters.getParameter(ids[i]);
+        juce::ValueTree child("PARAM");
+        child.setProperty("id", ids[i], nullptr);
+        child.setProperty("value", parameter->convertFrom0to1(parameter->getDefaultValue()), nullptr);
+        state.appendChild(child, nullptr);
+    }
     parameters.replaceState(state);
     currentProgram.store(program, std::memory_order_relaxed);
 }
