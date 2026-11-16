@@ -259,10 +259,71 @@ constexpr float roomLevel=.556f;
 // share of what enters the room, 2/sqrt(lines): the same energy goes in
 // whatever the lines.
 constexpr float roomMix=.17677670f,roomFeed=.35355339f;
-// The Room KeyVoicing.h measures the room's return at: the default, which
+// Room is the room's size (2.18.0, the owner: "one knob to impact size of
+// the room"). In rooms of one shape and one kind of surface the reverberation
+// time grows as the size does (W. C. Sabine: T60 = 0.161 V / (a S), and V / S
+// grows with the length), and so does every path between the walls; so a
+// size scales the lines' lengths and the decay time together, by
+// roomScaleSpan^(2 Room - 1): 0.29 s at Room 0, a small furnished room; 0.8 s
+// at 0.5, the room of 2.17.0; 2.2 s at 1, a concert hall's (L. Beranek's
+// halls stand at 1.8 to 2.2 s occupied). Each line then loses the same over
+// one pass at every size, so a size only moves the lines: a larger room plays
+// the same echoes further apart, longer and sparser, with the same energy. A
+// real room's diffuse level also falls with its volume (Sabine), which this
+// leaves out: Room sizes the room, it does not set its level.
+constexpr double roomMiddleT60=.8,roomScaleSpan=2.75;
+// The lines at the middle size: spread evenly on a log scale over 19 to
+// 97 ms (2.17.0, the owner's D).
+constexpr double roomLineSeconds[roomLines]{
+  .019000,.020026,.021107,.022247,.023448,.024714,.026049,.027455,.028938,.030501,.032147,.033883,.035713,.037641,.039674,.041816,
+  .044074,.046454,.048962,.051606,.054393,.057330,.060425,.063688,.067127,.070752,.074572,.078599,.082843,.087316,.092031,.097000};
+// Each line's ring: a power of two that holds it at the largest size at
+// 192 kHz, with room to read between samples.
+constexpr int roomRingOf(int k){int n=1;const int need=static_cast<int>(roomLineSeconds[k]*roomScaleSpan*192000)+4;while(n<need)n<<=1;return n;}
+constexpr int roomRingTotal=[]{int n=0;for(int k=0;k<roomLines;++k)n+=roomRingOf(k);return n;}();
+constexpr int roomRingLongest=roomRingOf(roomLines-1);
+// The Room KeyVoicing.h measures the microphones at: the default, which
 // KeyraLevels --write-keys plays.
-constexpr float voicedRoom=.1f;
-static_assert(Controls{}.room==voicedRoom,"KeyVoicing.h measures the return at the default Room");
+constexpr float voicedRoom=.6f;
+static_assert(Controls{}.room==voicedRoom,"KeyVoicing.h measures the microphones at the default Room");
+// Each microphone hears the room's lines under its own row of signs, a Walsh
+// row over each side's sixteen lines (left the even lines, right the odd):
+// the rows multiply to zero, so no two microphones' rooms correlate, as
+// microphones apart in a diffuse field do not, and none heard in the
+// opposite polarity (MicSpec::side, or inverted) cancels another's room.
+// The close pair keeps the row 2.17.0's pairs heard; the tube, mono, hears
+// both sides of its row.
+constexpr int roomRow[micCount]{2,1,4,8,15};
+// Each microphone stands in its own place, so the room sounds differently in
+// each (the owner, 2026-11-16: "each mic stands in a differnt place,
+// therefore, the reverb will sound differently in each"). Beside its own row
+// of the lines and its own share by distance (MicSpec::room), each hears:
+//  - the first reflections of the piano off the room's four walls and its
+//    ceiling, from where it stands (the floor and the lid are in what it hears
+//    directly): images of the board's middle in a shoebox around the piano
+//    whose walls grow with the room's size, each arriving after the direct
+//    sound by its longer path, at the direct distance over its own, times the
+//    walls' reflection and the microphone's pattern toward the image;
+//  - its two channels' room as alike as their spacing makes them in a diffuse
+//    field: a coincident pair of cardioids 90 degrees apart 0.75 (G. W. Elko,
+//    "Spatial coherence functions for differential microphones", 2001); a
+//    spaced pair alike under the frequency where kd = 1.9 (sin kd / kd = 0.5)
+//    and apart above it;
+//  - a darker room inside the case: the close pair under the lid and the tube
+//    over the strings hear the room through the case's opening, taken as a
+//    one-pole at 2 and 4 kHz (an estimate, not a measurement).
+// The room at the middle size: walls 3 m behind the keyboard (a grand) or
+// across from the open back (an upright), 9 m beyond the far end, 4.5 m to
+// either side, the ceiling 5 m over the floor. Sabine's absorption for it at
+// 0.8 s is 0.27, so a wall gives back sqrt(0.73) of the sound; the walls grow
+// with Room's size, and stand at least 1.5 m beyond every microphone: a
+// pair set 6 m off needs a room that holds it, and half a metre from three
+// surfaces it heard them 1 to 3 ms late at 0.8 (a comb every 300 Hz).
+constexpr int earlyWalls=5;
+constexpr double wallReflection=.854;
+constexpr float roomSignOf(int row,int line){int bits=row&(line>>1),odd=0;while(bits){odd^=bits&1;bits>>=1;}return odd?-1.f:1.f;}
+struct RoomSigns{float of[micCount][roomLines];};
+constexpr RoomSigns roomSigns=[]{RoomSigns r{};for(int m=0;m<micCount;++m)for(int k=0;k<roomLines;++k)r.of[m][k]=roomSignOf(roomRow[m],k);return r;}();
 constexpr int capoFrom=60;
 // One catch is not the next. Over the sixteen layers of a Salamander key the
 // thump stands 2.7 dB (60 to 110 Hz) and 2.6 dB (110 to 180 Hz) off a line
@@ -1278,9 +1339,27 @@ struct Piano::Impl {
   // in, 679 of the first 50 ms' samples carry an echo where 156 did, and the
   // echoes grow dense in 140 ms where they took 210 (a replica of the
   // network, the lines' losses as 2.16's).
-  static constexpr int roomSize=32768,spreadSize=4096;
-  float roomLine[roomLines][roomSize]{};
-  int roomDelay[roomLines]{},roomAt=0;
+  static constexpr int spreadSize=4096;
+  // Every line's ring, end to end; where each starts and its mask.
+  float roomRing[roomRingTotal]{};
+  int roomStart[roomLines]{},roomMask[roomLines]{},roomAt=0;
+  // Each line's length in samples, and while a size glides (roomGliding
+  // samples more), where it is between samples and its step.
+  int roomDelay[roomLines]{},roomGliding=0;
+  float roomGlideAt[roomLines]{},roomGlideStep[roomLines]{};
+  float roomSized=-1;   // the Room the lines are set for
+  // Each microphone channel's first reflections off the walls (sizeRoom): what
+  // it heard directly, and each wall's delay, its glide and its gain.
+  static constexpr int earlySize=32768;
+  float earlyRing[2*micCount][earlySize]{};
+  float earlyDelay[2*micCount][earlyWalls]{},earlyStep[2*micCount][earlyWalls]{},earlyGain[2*micCount][earlyWalls]{};
+  float earlyTarget[2*micCount][earlyWalls]{};
+  int earlyAt=0;
+  // Each microphone's room as it stands: a coincident pair's mix of its two
+  // sides, a spaced pair's pole under which its sides are alike, the case's
+  // pole over its room, and their states.
+  float roomAlike[micCount]{},roomBond[micCount]{},roomTop[micCount]{};
+  float roomBondState[micCount][3]{},roomTopState[micCount][2]{};
   float roomB0[roomLines]{},roomB1[roomLines]{},roomA1=0,roomIn[roomLines]{},roomState[roomLines]{};
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
@@ -1828,7 +1907,10 @@ struct Piano::Impl {
       // that the board's bass reaches all of them alike; Invert comes on top.
       polarity[mic]=static_cast<float>(spec.side*(controls.invert[mic]?-1:1));
       levelGoal[mic]=static_cast<float>(polarity[mic]*clamp(controls.mic[mic],0,2));
-      roomShare[mic]=static_cast<float>(even*spec.room*2*clamp(controls.room,0,1));
+      // Its share of the room, by where it stands (MicSpec::room), at the
+      // level 2.15.0 gave it at its default Room; the room's size sets how
+      // much and how long it rings (sizeRoom).
+      roomShare[mic]=static_cast<float>(controls.roomHeard?even*spec.room:0);
       // The room hears the piano as the distant pair does.
       for(int feed=0;feed<2;++feed){
         if(feed==1&&mic!=micDistant)continue;
@@ -1870,19 +1952,14 @@ struct Piano::Impl {
     // without the room, which also keeps the balance above where the modes
     // alone do not.
     const int body=static_cast<int>(controls.body);
-    // The room's return (Room's own level in the mix, 2.16.0) comes in once,
-    // whatever the pairs' levels: KeyVoicing.h measures it at the default
-    // Room, and it scales with Room from there.
-    const double returned=clamp(controls.room,0,1)/voicedRoom;
-    // A key's pull for pairs at `level` (each signed as it is wired, so only
-    // Invert signs it) and the return at `ret` of its default.
-    const auto voiceOf=[&](int i,const double* level,double ret){double got=0,even=0;
-      const float* heard=keyHeard[body][i];const float* withReturn=keyReturned[body][i];
+    // A key's pull for pairs at `level`, each signed as it is wired, so only
+    // Invert signs it (KeyVoicing.h measures them so, each with its own room
+    // at the default Room).
+    const auto voiceOf=[&](int i,const double* level){double got=0,even=0;
+      const float* heard=keyHeard[body][i];
       for(int a=0;a<micCount;++a){
         even+=level[a]*level[a]*keyEven[body][i][a];
-        got+=2*ret*level[a]*withReturn[a];
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;}
-      got+=ret*ret*withReturn[micCount];even+=ret*ret*keyReturnEven[body][i];
       // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
       // under the even scale (the baby grand's G#5 through the close pair),
       // and one 14 dB over it (the studio grand's G#3 in the four pairs
@@ -1890,13 +1967,13 @@ struct Piano::Impl {
       return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;};
     double level[micCount],standard[micCount]{};standard[micClose]=1;
     for(int a=0;a<micCount;++a)level[a]=levelGoal[a]*t.mic[a].side;
-    for(int i=0;i<keyCount;++i){voicing[i]=voiceOf(i,level,returned);
+    for(int i=0;i<keyCount;++i){voicing[i]=voiceOf(i,level);
       // What the bridge hands the open strings is the key's pull at the
-      // default mix (the close pair, Room 0.1), whatever the pairs and Room
-      // stand at: the voicing evens what the microphones hear, and taken as
-      // the mix's it let a pair or Room move the open strings' drive by up
-      // to 11 dB on a key.
-      standardVoicing[i]=voiceOf(i,standard,1);}
+      // default mix (the close pair), whatever the pairs stand at: the
+      // voicing evens what the microphones hear, and taken as the mix's it
+      // let a pair or Room move the open strings' drive by up to 11 dB on a
+      // key.
+      standardVoicing[i]=voiceOf(i,standard);}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)snapMix();
@@ -1913,20 +1990,88 @@ struct Piano::Impl {
     // one, on these lines). The shelf is set so the network's mean decay
     // keeps that loss's, within 2 dB/s to 20 kHz (0.79 s at 500 Hz, 0.45 s at
     // 5 kHz, 0.22 s at 20 kHz), now the same in every line.
-    constexpr double shortest=.019,longest=.097,lowRate=60/.8,highRate=283.9,crossover=4476;
+    // That is the middle size; a size scales the lengths and the decay time
+    // together (roomScaleSpan).
     constexpr double spreads[roomSpreads]{.0047,.0073,.0113};
     for(int k=0;k<roomSpreads;++k)spreadDelay[k]=std::min(spreadSize-1,static_cast<int>(spreads[k]*sampleRate)|1);
+    for(int k=0,start=0;k<roomLines;++k){roomStart[k]=start;roomMask[k]=roomRingOf(k)-1;start+=roomRingOf(k);}
+    roomSized=-1;if(table)sizeRoom(false);
+  }
+  // The lines for Room as it is: each the first odd prime at or above its
+  // length at this size, and its loss over that length. Gliding, each line
+  // moves to its new length together over 20 to 150 ms, the longest by no
+  // more than a 32nd of a sample a sample (a pitch 54 cents off while it
+  // moves) where that is soon enough, so that a turn of the knob neither
+  // clicks nor warbles far; a jump across the whole range sweeps the tail's
+  // pitch for 150 ms. Slower, the room took 2.7 s to reach a size, and what
+  // was played a second after a jump still rang in the room it left.
+  void sizeRoom(bool glide) noexcept {
+    const float room=clampf(controls.room,0,1);
+    if(room==roomSized)return;
+    roomSized=room;
+    constexpr double highRate=283.9,crossover=4476;
+    const double scale=roomScale(room),low=60/(roomMiddleT60*scale),high=highRate/scale;
     const auto prime=[](int n){for(int d=2;d*d<=n;++d)if(n%d==0)return false;return n>1;};
     const double w=std::tan(pi*std::min(crossover,.45*sampleRate)/sampleRate),a1=(w-1)/(w+1);
     roomA1=static_cast<float>(a1);
+    int target[roomLines];double furthest=0;
     for(int k=0;k<roomLines;++k){
-      int n=static_cast<int>(shortest*std::pow(longest/shortest,k/(roomLines-1.))*sampleRate)|1;
+      int n=static_cast<int>(roomLineSeconds[k]*scale*sampleRate)|1;
       while(!prime(n))n+=2;
-      roomDelay[k]=std::min(roomSize-1,n);
-      const double pass=roomDelay[k]/sampleRate;
-      const double low=std::pow(10.,-lowRate*pass/20),high=std::pow(10.,-highRate*pass/20);
-      roomB0[k]=static_cast<float>(.5*(low*(1+a1)+high*(1-a1)));roomB1[k]=static_cast<float>(.5*(low*(1+a1)-high*(1-a1)));
+      target[k]=std::min(roomMask[k]-3,n);
+      const double pass=target[k]/sampleRate;
+      const double lowGain=std::pow(10.,-low*pass/20),highGain=std::pow(10.,-high*pass/20);
+      roomB0[k]=static_cast<float>(.5*(lowGain*(1+a1)+highGain*(1-a1)));roomB1[k]=static_cast<float>(.5*(lowGain*(1+a1)-highGain*(1-a1)));
+      const double from=roomGliding>0?roomGlideAt[k]:roomDelay[k];
+      furthest=std::max(furthest,std::abs(target[k]-from));
     }
+    // Each microphone channel's reflections off the walls at this size.
+    float early[2*micCount][earlyWalls]{};
+    {const Design& d=table->design;
+     const Vec up=d.upright?Vec{0,1,0}:Vec{0,0,1};
+     const Vec board{.5*d.boardX,.5*d.boardY,0};
+     // Along the piano and across it, and how far the floor lies under the
+     // board (floorPlane).
+     const Vec along=d.upright?Vec{0,0,-1}:Vec{1,0,0},across=d.upright?Vec{1,0,0}:Vec{0,1,0};
+     const double under=d.upright?.25:.7,length=d.upright?0:d.boardX,width=d.upright?d.boardX:d.boardY;
+     double behind=3*scale,beyond=length+9*scale,side=4.5*scale,ceiling=5*scale-under,lowSide=-side,highSide=width+side;
+     for(int m=0;m<micCount;++m)for(int ch=0;ch<2;++ch){const Vec at=table->mic[m].position[ch];
+       behind=std::max(behind,1.5-dot(at,along));beyond=std::max(beyond,dot(at,along)+1.5);
+       lowSide=std::min(lowSide,dot(at,across)-1.5);highSide=std::max(highSide,dot(at,across)+1.5);ceiling=std::max(ceiling,dot(at,up)+1.5);}
+     const Plane walls[earlyWalls]{{{-along.x,-along.y,-along.z},behind},{along,beyond},
+                                   {{-across.x,-across.y,-across.z},-lowSide},{across,highSide},{up,ceiling}};
+     for(int m=0;m<micCount;++m){const MicSpec& spec=table->mic[m];
+       for(int ch=0;ch<2;++ch){const Vec at=spec.position[ch],aim=spec.axis[ch];
+         const auto pattern=[&](Vec from){return 1-spec.cardioid+spec.cardioid*.5*(1+dot(unit(from-at),aim));};
+         const double direct=norm(board-at),facing=std::max(.05,pattern(board));
+         for(int w=0;w<earlyWalls;++w){const Vec image=mirror(board,walls[w]);const double path=norm(image-at);
+           early[2*m+ch][w]=static_cast<float>(std::min(earlySize-3.,(path-direct)/343*sampleRate));
+           earlyGain[2*m+ch][w]=static_cast<float>(wallReflection*direct/path*pattern(image)/facing);}}
+       // A pair's two sides in a diffuse field.
+       const double apart=norm(spec.position[1]-spec.position[0]);
+       roomAlike[m]=0;roomBond[m]=0;
+       if(m==micTube)continue;
+       if(apart<.05){roomAlike[m]=.4514f;}   // b/a for coherence 0.75, 2ab/(a^2+b^2)
+       else roomBond[m]=static_cast<float>(1-std::exp(-2*pi*std::min(.45*sampleRate,1.9*343/(2*pi*apart))/sampleRate));}
+     roomTop[micClose]=static_cast<float>(1-std::exp(-2*pi*2000/sampleRate));
+     roomTop[micTube]=static_cast<float>(1-std::exp(-2*pi*4000/sampleRate));}
+    const int samples=glide?static_cast<int>(clamp(32*furthest,.02*sampleRate,.15*sampleRate)):0;
+    for(int k=0;k<roomLines;++k){
+      if(samples==0){roomDelay[k]=target[k];continue;}
+      if(roomGliding==0)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
+      roomDelay[k]=target[k];roomGlideStep[k]=(target[k]-roomGlideAt[k])/static_cast<float>(samples);
+    }
+    for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){earlyTarget[c][w]=early[c][w];
+      if(samples==0){earlyDelay[c][w]=early[c][w];earlyStep[c][w]=0;}
+      else earlyStep[c][w]=(early[c][w]-earlyDelay[c][w])/static_cast<float>(samples);}
+    roomGliding=samples;
+  }
+  // A room with nothing in it takes its size at once: what is reset or put
+  // to rest plays as a room set to it from the start.
+  void settleRoom() noexcept {
+    roomGliding=0;
+    for(int k=0;k<roomLines;++k)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
+    std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));
   }
   void silence() noexcept {
     for(auto& v:voices){v.active=false;v.forcing=false;v.sounding=0;v.damper=0;v.appliedDamper=-1;for(int m=0;m<maxLong;++m)v.longY1[m]=v.longY2[m]=0;
@@ -1934,7 +2079,7 @@ struct Piano::Impl {
     for(auto& c:contacts)c.active=false;
     std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
     std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
-    std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
+    std::memset(line,0,sizeof(line));std::memset(roomRing,0,sizeof(roomRing));std::memset(earlyRing,0,sizeof(earlyRing));settleRoom();std::memset(roomBondState,0,sizeof(roomBondState));std::memset(roomTopState,0,sizeof(roomTopState));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
     for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
     std::memset(lineBeside,0,sizeof(lineBeside));
@@ -1960,6 +2105,8 @@ struct Piano::Impl {
     for(int m=0;m<micCount;++m)for(auto& c:circuit[m])
       designCircuit(c,m,table->micDistance[m],table->mic[m].cardioid,std::sqrt(table->micLevel[micClose]/table->micLevel[m]),sampleRate);
     tuneBoard();tuneBank();mixMics();snapMix();
+    // Each piano stands with its microphones in its own place in the room.
+    roomSized=-1;sizeRoom(false);
   }
   void snapMix() noexcept {
     for(int out=0;out<outs;++out)std::memcpy(outNow[out],outGoal[out],sizeof(outNow[out]));
@@ -2039,7 +2186,7 @@ struct Piano::Impl {
     if(quietChunks*chunk>2*sampleRate){
       std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
       std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
-      std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
+      std::memset(line,0,sizeof(line));std::memset(roomRing,0,sizeof(roomRing));std::memset(earlyRing,0,sizeof(earlyRing));settleRoom();std::memset(roomBondState,0,sizeof(roomBondState));std::memset(roomTopState,0,sizeof(roomTopState));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
       for(double& x:travel)x=0;
       for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
       for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
@@ -2173,7 +2320,7 @@ struct Piano::Impl {
       bankEnergy[i]+=energy;
     }
     // The board, and above its modes the bridge's own radiation.
-    const int mask=lineSize-1,roomMask=roomSize-1;
+    const int mask=lineSize-1;
     for(int s=0;s<frames;++s){
       // What pushes the board in this sample: each bridge point's force and
       // each place of the edge, those at rest left out.
@@ -2219,53 +2366,67 @@ struct Piano::Impl {
         float* held=spreadLine[k];
         const float old=held[(roomAt-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
         held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
-      // What the room gives the microphones (roomL, roomR) and, from the same
-      // lines under orthogonal signs (bit 3 against bit 2: over each side's
-      // sixteen lines the two sign rows multiply to zero), the return the mix
-      // hears at Room's level below (returnL, returnR). The two hear the same
-      // room and decay alike but do not correlate, so a microphone heard in
-      // the opposite polarity (the upright's live and distant pairs, MicSpec
-      // ::side, or any pair inverted) cannot cancel the return: added as
-      // roomL itself, the upright's distant pair at its default polarity
-      // took the room out of the mix at every Room setting.
-      float back[roomLines],roomL=0,roomR=0,returnL=0,returnR=0;
+      // The lines, each read at its length, between samples while a size
+      // glides.
+      float back[roomLines];
       for(int k=0;k<roomLines;++k){
-        const float x=roomLine[k][(roomAt-roomDelay[k])&roomMask];
-        const float y=roomB0[k]*x+roomB1[k]*roomIn[k]-roomA1*roomState[k];roomIn[k]=x;roomState[k]=y;back[k]=y;
-        if(k&1){roomR+=(k&4)?-back[k]:back[k];returnR+=(k&8)?-back[k]:back[k];}
-        else{roomL+=(k&4)?-back[k]:back[k];returnL+=(k&8)?-back[k]:back[k];}}
+        const float* ring=roomRing+roomStart[k];const int m=roomMask[k];
+        float x;
+        if(roomGliding>0){const float at=roomGlideAt[k]+=roomGlideStep[k];const int whole=static_cast<int>(at);const float part=at-whole;
+          const float a=ring[(roomAt-whole)&m],b=ring[(roomAt-whole-1)&m];x=a+(b-a)*part;}
+        else x=ring[(roomAt-roomDelay[k])&m];
+        const float y=roomB0[k]*x+roomB1[k]*roomIn[k]-roomA1*roomState[k];roomIn[k]=x;roomState[k]=y;back[k]=y;}
+      const bool gliding=roomGliding>0;
+      if(roomGliding>0&&--roomGliding==0)for(int k=0;k<roomLines;++k)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
+      // What each microphone hears of the room (roomRow).
+      float roomHeard[micCount][2]{};
+      for(int m=0;m<micCount;++m)if(heard[m]&&roomShare[m]!=0)
+        for(int k=0;k<roomLines;++k)roomHeard[m][k&1]+=roomSigns.of[m][k]*back[k];
       for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
         const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
       for(int k=0;k<roomLines;++k)
-        roomLine[k][roomAt]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
-      roomAt=(roomAt+1)&roomMask;
-      roomL*=roomLevel;roomR*=roomLevel;returnL*=roomLevel;returnR*=roomLevel;
+        roomRing[roomStart[k]+(roomAt&roomMask[k])]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
+      roomAt=(roomAt+1)&(roomRingLongest-1);
+      for(auto& pair:roomHeard){pair[0]*=roomLevel;pair[1]*=roomLevel;}
+      roomHeard[micTube][0]=(roomHeard[micTube][0]+roomHeard[micTube][1])*.70710678f;
+      // Each microphone's room as it stands (roomAlike, roomBond, roomTop).
+      for(int m=0;m<micCount;++m)if(heard[m]&&roomShare[m]!=0){
+        float& l=roomHeard[m][0];float& r=roomHeard[m][1];
+        if(roomAlike[m]!=0){const float a=1/std::sqrt(1+roomAlike[m]*roomAlike[m]),b=a*roomAlike[m],x=l,y=r;l=a*x+b*y;r=b*x+a*y;}
+        if(roomBond[m]!=0){float* z=roomBondState[m];const float g=roomBond[m];
+          z[0]+=g*(l-z[0]);z[1]+=g*(r-z[1]);z[2]+=g*((l+r)*.70710678f-z[2]);l+=z[2]-z[0];r+=z[2]-z[1];}
+        if(roomTop[m]!=0){float* z=roomTopState[m];z[0]+=roomTop[m]*(l-z[0]);z[1]+=roomTop[m]*(r-z[1]);l=z[0];r=z[1];}}
+      // What each microphone heard directly, for its reflections off the
+      // walls, which glide with the room's size.
+      const int earlyMask=earlySize-1;
+      for(int c=0;c<2*micCount;++c)earlyRing[c][earlyAt&earlyMask]=o[c];
+      float early[2*micCount]{};
+      if(controls.roomHeard)for(int m=0;m<micCount;++m)if(heard[m])for(int ch=0;ch<(m==micTube?1:2);++ch){const int c=2*m+ch;
+        float sum=0;
+        for(int w=0;w<earlyWalls;++w){if(gliding)earlyDelay[c][w]+=earlyStep[c][w];
+          const float at=earlyDelay[c][w];const int whole=static_cast<int>(at);const float part=at-whole;
+          const float a=earlyRing[c][(earlyAt-whole)&earlyMask],b=earlyRing[c][(earlyAt-whole-1)&earlyMask];
+          sum+=earlyGain[c][w]*(a+(b-a)*part);}
+        early[c]=sum;}
+      earlyAt=(earlyAt+1)&earlyMask;
       // Each microphone: what it hears and its room, through its circuit;
       // then the mix, each at its level and polarity.
       double l=0,r=0;
       for(int m=0;m<micCount;++m)if(heard[m]){
-        const double a=circuit[m][0].run(o[2*m]+roomShare[m]*roomL,dcPole);
-        const double b=m==micTube?a:circuit[m][1].run(o[2*m+1]+roomShare[m]*roomR,dcPole);
+        const double a=circuit[m][0].run(o[2*m]+early[2*m]+roomShare[m]*roomHeard[m][0],dcPole);
+        const double b=m==micTube?a:circuit[m][1].run(o[2*m+1]+early[2*m+1]+roomShare[m]*roomHeard[m][1],dcPole);
         l+=levelNow[m]*a;r+=levelNow[m]*b;
         if(mics){const float sign=polarity[m];
           if(mics[2*m]){mics[2*m][s]=sign*static_cast<float>(a);loud=std::max(loud,std::abs(mics[2*m][s]));}
           if(mics[2*m+1]){mics[2*m+1][s]=sign*static_cast<float>(b);loud=std::max(loud,std::abs(mics[2*m+1][s]));}}}
       else if(mics){if(mics[2*m])mics[2*m][s]=0;if(mics[2*m+1])mics[2*m+1][s]=0;}
-      // The room as its own level in the mix (the owner's choice by decision
-      // card, 2026-11-15, after "if all mics are down, and only room is max,
-      // i hear nothing"): the room returns to the main mix at the share the
-      // distant pair hears it at, with no microphone's circuit, whatever the
-      // faders are. Each microphone keeps its own share of the room above, and
-      // its own output does not carry this return. The room hears the piano
-      // whether or not any microphone is up (o[roomOut]).
-      const float roomReturn=roomShare[micDistant];
-      l+=roomReturn*returnL;r+=roomReturn*returnR;
       left[s]=static_cast<float>(l);right[s]=static_cast<float>(r);
       loud=std::max(loud,std::max(std::abs(left[s]),std::abs(right[s])));
     }
   }
 };
 
+double roomScale(float room) noexcept {return std::pow(roomScaleSpan,2.*clampf(room,0,1)-1);}
 float touched(float velocity,float decibels,float dynamics) noexcept {
   return static_cast<float>((velocity+softest)*std::pow(10.,decibels/(20*dynamicsPower(dynamics)))-softest);
 }
@@ -2313,7 +2474,8 @@ void Piano::setControls(const Controls& input) noexcept {
   if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.age!=old.age||c.detune!=old.detune||c.sympathetic!=old.sympathetic||c.duplex!=old.duplex)p.tuneBank();
   // What sounds follows the tuner at the next boundary.
   if(c.tuning!=old.tuning||c.stretch!=old.stretch||c.detune!=old.detune)p.retune=!p.quiet;
-  bool mics=c.lid!=old.lid||c.room!=old.room;
+  if(c.room!=old.room)p.sizeRoom(!p.quiet);
+  bool mics=c.lid!=old.lid||c.roomHeard!=old.roomHeard;
   for(int m=0;m<micCount;++m)mics=mics||c.mic[m]!=old.mic[m]||c.invert[m]!=old.invert[m];
   if(mics)p.mixMics();
 }

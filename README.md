@@ -51,6 +51,48 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.18.0 — 2026-11-16 — the room in every microphone, and Room its size
+
+The owner asked for the room back inside the microphones ("it makes more
+sense. one knob to impact size of the room. that is more realistic"), and
+for each to hear it from its own place ("each mic stands in a differnt
+place, therefore, the reverb will sound differently in each";
+Docs/decisions.md). A saved session keeps its Room value, which now sizes the
+room.
+
+- **The room is in every microphone again**, each at its own share by its
+  distance, as through 2.15.0; 2.16.0's return to the mix is gone, and with
+  every microphone down nothing sounds.
+- **Room is the room's size.** It scales the room's paths and its decay time
+  together, as rooms of one shape and surface do (Sabine): 0.29 s at 0, a
+  small room; 0.8 s at 0.5, 2.17.0's room; 2.2 s at 1, a hall's (0.16, 0.43
+  and 1.2 s at 5 kHz). A larger room rings longer and sparser, not louder.
+  Turning it while the piano sounds glides the room there without a click.
+- **Each microphone hears its own room.** Its own uncorrelated read of the
+  room's lines, so no microphone in reverse polarity cancels another's room;
+  its own first reflections off four walls and the ceiling, from where it
+  stands; its two channels as alike as their spacing makes them; and a
+  darker room inside the case, for the close pair and the tube.
+- **Presets in rooms of their kind:** Concert Grand in a recital room (1 s,
+  also Room's default), Studio Grand in a studio's live room, Parlor Grand in
+  a parlor, Baby Grand and Upright in a living room, Distant Hall in a large
+  hall (1.8 s). The keys are voiced again with each microphone's room; each
+  piano's output scale moves by -0.12 to +0.11 dB.
+- **CPU:** the microphones' own rooms and reflections cost about 1 %: a 12 s
+  phrase renders in 1.15 s of one core through the close pair (1.14) and
+  1.67 s through all five (1.66), on an Apple M1 Max.
+- **Against the recordings the movement is mixed**
+  ([grand](Docs/validation/grand-room-size-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-room-size-benchmark-2026-11-16.md), against
+  2.17.0, each at its default Room). On the grand the partials, the sustain
+  and the image come nearer (by 0.1 to 0.2 dB), the level between the
+  partials goes further off (0.18 and 0.30 dB) and the onsets of the notes
+  1.0.0 fitted rise 1.3 ms slower; on the upright the tuning and the rise come
+  nearer and the attack, the early decay and the level between the partials
+  go further off (0.1 to 0.35 dB). 89 single scores are worse on the grand and
+  62 on the upright, most of them the level between the partials and the
+  early decay, which the close pair's own reflections and room now fill.
+
 ### 2.17.0 — 2026-11-16 — a denser room (chosen by ear)
 
 The owner asked for a room that is "more dense, higher quality", after felt
@@ -1122,16 +1164,27 @@ Room's return and the action's noises are the mix's.
 At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
 feedback delay network of 32 lines under a Hadamard mix (Jot and Chaigne
-1991), their lengths spread from 19 to 97 ms, each a prime number of
-samples, ringing 0.8 s at 500 Hz and 0.45 s at 5 kHz, with the same decay in
-every line (2.17.0, the owner's choice by ear),
-which hears the piano as the distant pair does and which each pair hears by
-its distance, the close pair too (set against what the Salamander grand's
-treble notes leave after the knock under them). The room also returns to
-the mix on its own, at the share the distant pair hears, whatever the
-pairs' levels, from its lines under signs orthogonal to the pairs' so that
-no pair's polarity cancels it (2.16.0). Room sets both, none at 0; its
-default 0.1 is a clean sound with a small hint of room. The
+1991), each a prime number of samples long and each decaying alike, which
+hears the piano as the distant pair does. Every microphone hears it inside
+its own sound, at its own share by its distance, the close pair least (set
+against what the Salamander grand's treble notes leave after the knock under
+them) and the distant pair most, so with every microphone down nothing
+sounds (2.18.0). Each hears it from where it stands: under its own row of
+signs across the lines, so no two microphones' rooms correlate and none in
+the opposite polarity cancels another's; with its own first reflections off
+the room's four walls and ceiling, timed and weighed from its position and
+its pattern; its two channels as alike as their spacing makes them in a
+diffuse field (0.75 for the coincident cardioids, alike only in the bass for
+a spaced pair); and darker inside the case, for the close pair and the tube
+(an estimate). Room is the room's size, the owner's choice
+(2.18.0): it scales the lines and the walls with the decay time, as rooms of
+one shape and one surface do (Sabine), from a small room ringing 0.29 s at
+Room 0 (0.16 s at 5 kHz) through 0.8 s at 0.5 to a hall's 2.2 s at 1
+(1.2 s at 5 kHz). Each line loses the same over a pass at every size, so a
+larger room plays the same echoes further apart, longer and sparser, with
+the same energy: Room does not set the room's level. A size reached while
+the piano sounds glides there, the lines' lengths with it. The default 0.6
+is a recital room's 1 s, heard in the close pair as a small hint. The
 room also hears the case: the knock the blow gives the frame under the top
 strings goes to it directly, through three allpass sections (Schroeder
 1962), as well as through the board. Width at 0.75 is the pairs' own image and
@@ -1176,7 +1229,7 @@ is what the board and the microphones give it.
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |
 | Close, XY, Live, Distant, Tube | 0 to 1 | Each microphone's level |
 | Ø (each microphone) | off, on | Its polarity, in the mix and on its own output |
-| Room | 0 to 1 | The room: its own level in the mix whatever the pairs' levels, and each pair's share of it; 0.1 by default |
+| Room | 0 to 1 | The size of the room every microphone hears, at its own share: 0.29 s at 0, 0.8 s at 0.5, 2.2 s at 1; 0.6 by default |
 | Width | 0 to 1 | The stereo image |
 | Practice felt | 0 to 1 | A felt strip between hammers and strings: up to three decades softer |
 | Felt mute | 0 to 1 | Felt laid on every sounding string, held or not (the mod wheel) |

@@ -49,12 +49,15 @@ struct Controls {
   float mic[micCount]{1,0,0,0,0};
   // Each microphone's polarity inverted, in the mix and on its own output.
   bool invert[micCount]{};
-  // The room's reverberation, 0 none, 1 twice the share below: its own level
-  // in the mix, at the share the distant pair hears, whatever the pairs'
-  // levels (the owner's choice by decision card, 2026-11-15), and in each
-  // pair at that pair's own share. 0.1 by default, a clean sound with a small
-  // hint of room (the owner, 2026-11-15).
-  float room=.1f;
+  // The size of the room every microphone hears, each at its own share by
+  // where it stands (the owner, 2026-11-16: "one knob to impact size of the
+  // room"): 0 a small room ringing 0.29 s, 0.5 0.8 s, 1 a hall's 2.2 s, its
+  // lengths growing with it. 0.6 by default, a recital room's 1 s, which
+  // the close pair hears as a small hint (PianoModel.cpp, roomScaleSpan).
+  float room=.6f;
+  // Whether the microphones hear the room at all: for the tools' and tests'
+  // dry measures; no front end turns it off.
+  bool roomHeard=true;
   // A4 in Hz.
   float tuning=440;
   // A practice felt between hammers and strings, 0 off to 1 down.
@@ -62,6 +65,10 @@ struct Controls {
   // Felt laid on every string, held or not: 0 off, 1 as a damper rests.
   float mute=0;
 };
+
+// How much longer the room's paths and decay time are at this Room than at
+// 0.5: 0.364 at 0, 2.75 at 1 (PianoModel.cpp, roomScaleSpan).
+double roomScale(float room) noexcept;
 
 // The velocity whose blow is `decibels` harder than `velocity`'s at these
 // Dynamics: a player's uneven touch is so many dB of hammer speed.

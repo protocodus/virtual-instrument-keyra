@@ -5959,3 +5959,50 @@ Docs/validation/*-room-d-benchmark-2026-11-16): the image further from them
 1.25 dB on the upright's), the upright's partials and the grand's onsets
 nearer. It ships as the owner's choice by ear with that movement reported,
 not as a measured improvement.
+
+Verdict on D's level (2026-11-16, by decision card): the owner chose "Keep
+it as heard", D's room about 2.2 dB under 2.16's at the same Room. 2.18.0
+keeps that level for the room each microphone hears (`roomLevel`).
+
+## 2026-11-16 — The room back in every microphone, Room its size, each microphone in its own place (2.18.0)
+
+The owner asked, after 2.17.0: "can we get back to the previous room
+behaviour where we had room in all the mics? it makes more sense. one knob to
+impact size of the room. that is more realistic." And then: "also - each mic
+stands in a differnt place, therefore, the reverb will sound differently in
+each."
+
+That undoes 2.16.0's choice by decision card (Room as its own level in the
+mix, after "if all mics are down, and only room is max, i hear nothing"):
+the room's return to the mix is gone, every microphone hears the room inside
+its own sound at its own share by its distance, as through 2.15.0, and with
+every microphone down nothing sounds again. These are the owner's requests in
+words; nothing here was chosen by ear.
+
+What they licensed, and what measurement or physics set within it:
+
+- **Room is the room's size.** In rooms of one shape and one kind of surface
+  the reverberation time and every path between the walls grow with the size
+  (Sabine), so the lines' lengths and the decay time scale together:
+  0.29 s at Room 0, 0.8 s at 0.5 (2.17.0's room D, unchanged), 2.2 s at 1, a
+  concert hall's (Beranek). The ends are a design choice, not a measurement.
+  Scaled so, each line loses the same over a pass at every size, and a larger
+  room plays the same echoes further apart with the same energy: the knob
+  does not set the room's level, and the keys' voicing holds at every size. A
+  size reached while the piano sounds glides there.
+- **Each microphone hears the room from where it stands.** Its own row of
+  signs across the lines, so that no two microphones' rooms correlate and
+  none in reverse polarity cancels another's (the problem 2.16.0 met on the
+  upright's distant pair); its own first reflections off four walls and the
+  ceiling of a room around the piano that grows with Room, from its position
+  and pattern (images of the board's middle; Sabine's absorption at 0.8 s for
+  a 14 x 10.5 x 5 m room, 0.27); its two channels' room as alike as a
+  diffuse field makes them at its spacing (0.75 for the coincident
+  cardioids); and a darker room inside the case for the close pair and the
+  tube, a one-pole at 2 and 4 kHz that is an estimate.
+- **The presets** each take the size of a room their piano would be played
+  in: a recital room for Concert Grand (1 s, also Room's default), a studio's
+  live room, a parlor, a living room for the baby grand and the upright, a
+  large hall (1.8 s) for Distant Hall. The sizes were picked to the brief
+  that relayed the owner's request ("Concert Grand a hall, Upright a home
+  room"), not by ear; the owner has not heard them yet.

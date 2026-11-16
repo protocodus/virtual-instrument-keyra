@@ -120,7 +120,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout KeyraAudioProcessor::createL
     add("micXY", "XY mics", 0.0f, 1.0f, initial.mic[keyra::model::micXY]);
     add("micLive", "Live mics", 0.0f, 1.0f, initial.mic[keyra::model::micLive]);
     add("micDistant", "Distant mics", 0.0f, 1.0f, initial.mic[keyra::model::micDistant]);
-    add("room", "Room", 0.0f, 1.0f, initial.room);
+    add("room", "Room size", 0.0f, 1.0f, initial.room);
     add("felt", "Practice felt", 0.0f, 1.0f, initial.felt);
     add("micTube", "Tube mic", 0.0f, 1.0f, initial.mic[keyra::model::micTube], 3);
     constexpr std::array<const char*, keyra::model::micCount> invertNames {{

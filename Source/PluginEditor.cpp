@@ -41,7 +41,7 @@ constexpr std::array<const char*, 24> hints {{
     "A coincident pair of small cardioids at the open lid, a metre off.",
     "A spaced pair of valve omnis in the room at 2.5 m, their top rising with distance; on the upright, the player's side.",
     "A wide pair of omnis across the room, lifted for the diffuse field.",
-    "The room's reverberation in the pairs that hear it.",
+    "The size of the room every microphone hears, from a small room (0.3 s) to a hall (2.2 s).",
     "A practice felt between the hammers and the strings. Applies from the next note.",
     "One valve cardioid over the strings, mono: a broad presence and a rounded top."
 }};

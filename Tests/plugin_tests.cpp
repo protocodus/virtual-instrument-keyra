@@ -557,9 +557,8 @@ int main()
                 if (play(changed) == reference) throw std::runtime_error(std::string(id) + " did not reach the engine");
             }
             // Each polarity flips its microphone, with that microphone up and
-            // the close pair down, and Room at 0: since 2.16.0 the room
-            // returns to the mix on its own, which no microphone's polarity
-            // flips.
+            // the close pair down: its room included, which it hears inside
+            // its own signal (2.18.0).
             constexpr std::array<std::pair<const char*, const char*>, keyra::model::micCount> flips {{
                 { "micClose", "invertClose" }, { "micXY", "invertXY" }, { "micLive", "invertLive" },
                 { "micDistant", "invertDistant" }, { "micTube", "invertTube" } }};
@@ -568,7 +567,6 @@ int main()
                 for (auto* processor : { &upright, &flipped }) {
                     set(*processor, "micClose", 0.0f);
                     set(*processor, "mechanics", 0.0f);
-                    set(*processor, "room", 0.0f);
                     set(*processor, mic, 1.0f);
                 }
                 set(flipped, invert, 1.0f);
