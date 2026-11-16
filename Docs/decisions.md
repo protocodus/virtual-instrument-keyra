@@ -6121,6 +6121,10 @@ the model across sample rates (bare strings at 44.1 to 192 kHz within
 
 Levels and tests. `KeyraLevels --check` passes with the keys' table as it
 was; the `unit`, `audio` and `perf` tiers pass and `KeyraDSPCxx17` builds.
-Against the Salamander nothing moves
-(Docs/validation/grand-struck-again-benchmark-2026-11-16.md). The upright's
-recordings were not in the session; its benchmark is still to run.
+Against the recordings nothing moves: no paired regression, every paired
+mean within 0.003 on the Salamander grand
+(Docs/validation/grand-struck-again-benchmark-2026-11-16.md) and 0.001 on
+the Helsinki upright
+(Docs/validation/upright-struck-again-benchmark-2026-11-16.md, run on the
+owner's computer, where the recordings are). On the upright only the notes
+from A1 to A#3 render differently, the glide's count.

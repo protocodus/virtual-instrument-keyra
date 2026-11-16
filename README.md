@@ -82,12 +82,13 @@ was handed over; no verdict is recorded yet
   swing, four times a pair's share and nine times three strings'. It moves
   a hard blow by under 0.02 cents and its sound by 60 dB under the note or
   less.
-- **Against the recordings nothing moves** on the Salamander grand
-  ([report](Docs/validation/grand-struck-again-benchmark-2026-11-16.md)): no
-  paired regression, every paired mean within 0.003. The benchmark plays
-  single notes, which the hammer's change does not reach. The upright's
-  recordings were not in the session: its single notes stand 60 dB or more
-  under 2.18.1's in difference, and its benchmark is still to run.
+- **Against the recordings nothing moves**
+  ([grand](Docs/validation/grand-struck-again-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-struck-again-benchmark-2026-11-16.md)):
+  no paired regression, every paired mean within 0.003 on the Salamander
+  grand and 0.001 on the Helsinki upright. The benchmark plays single notes,
+  which the hammer's change does not reach; what moves is the glide's count,
+  on the wound pairs and the low plain strings.
 - **Found and left as it is:** a stiff string's pull on the bridge leaves
   out its bending, now among the Known gaps with what it scored.
 
