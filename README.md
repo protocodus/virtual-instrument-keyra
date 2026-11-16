@@ -51,6 +51,32 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.16.2 — 2026-11-16 — the phantom partials under una corda
+
+One more correction from the same review, not chosen by ear. The panel, the
+presets and a saved session do not change, and the keys' level table stands
+(`KeyraLevels --check` passes).
+
+- **Each string stretches by its own share of the blow.** The pull the
+  strings' stretching gives the bridge along them (the phantom partials of
+  the keys to C5, and the longitudinal modes they ring) is read off a key's
+  first string and was taken as every string's. Under a full una corda,
+  which strikes a grand's last string at 0.08 of the blow, it stood 2 to
+  6 dB too strong (6 on the bichords, which then sound on one string), and
+  the hammer's uneven face moved it up to 1.8 dB either way by the first
+  string's share alone. It now takes the sum of the strings' squared
+  shares, set at each blow.
+- The benchmark plays no soft pedal, so it scores only the shares. On the
+  Salamander grand
+  ([report](Docs/validation/grand-phantom-shares-benchmark-2026-11-16.md))
+  no note is worse and every paired mean moves by under 0.05 (dB, cents or
+  ms). On the Helsinki 1967 upright
+  ([report](Docs/validation/upright-phantom-shares-benchmark-2026-11-16.md))
+  the means move as little and one note is worse: C2, among the notes 1.0.0
+  fitted, whose level between its partials in the first 300 ms stands
+  0.88 dB further from the recording's. Its phantom partials are 0.5 dB
+  weaker, by its first string's share.
+
 ### 2.16.1 — 2026-11-16 — each string at its own share
 
 Four corrections a review of the model found, none of them chosen by ear.
@@ -923,7 +949,8 @@ of each string are kept apart, the first 16 also across the bridge (a wound
 string's first 64, each a hair off its partial down into the bridge); above
 them the strings move together. From C5 down the strings' stretching as
 they swing pulls the bridge at twice each partial's frequency (Conklin
-1999), and up to six longitudinal modes of each string ring with it (Bank
+1999), each string's by the square of its share of the blow (2.16.2), and
+up to six longitudinal modes of each string ring with it (Bank
 and Sujbert 2005), each tuned midway between the tones that drive it: the
 phantom partials of a bass note. The same stretching raises the string's
 tension, so a hard blow starts up to 0.4 cents sharp and settles as it

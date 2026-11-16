@@ -1064,6 +1064,11 @@ struct Voice {
   // The string's longitudinal modes: two poles each, and what they hold.
   int longModes=0;
   float slope[maxKl]{},longForce=0;
+  // The longitudinal force is read off plane 0's partials below `apart`,
+  // string 0's alone: each string stretches as the square of its own
+  // share of the blow, so the force is string 0's times the sum of the
+  // strings' squared shares over string 0's, set at each blow (setDrive).
+  float longScale=1;
   float longA1[maxLong]{},longA2[maxLong]{},longGain[maxLong]{},longY1[maxLong]{},longY2[maxLong]{};
   float force[chunk]{};
   float floor2=0;            // the squared bridge force under which a partial is let go
@@ -1419,7 +1424,7 @@ struct Piano::Impl {
       // of partials due to nonlinear mixing in a stringed instrument", JASA
       // 105, 1999). About a fifth of it bends the board, by the bridge's
       // height over it.
-      v.tension[k]=k<v.longitudinal?static_cast<float>(-along*key.strings*key.young*pi*pi/(8*key.length*key.length)*(k+1)*(k+1)):0;
+      v.tension[k]=k<v.longitudinal?static_cast<float>(-along*key.young*pi*pi/(8*key.length*key.length)*(k+1)*(k+1)):0;
     }
     // The same stretch, taken over the swing, also raises the tension while
     // the string is wide, and every partial's pitch with it: by
@@ -1447,7 +1452,7 @@ struct Piano::Impl {
     // including longitudinal string vibrations", DAFx 2004), not a
     // measurement of these strings. Modes above 10 kHz are left out.
     const double longHertz=std::sqrt(key.young/key.density)/(2*key.length);
-    v.longModes=0;v.longForce=static_cast<float>(along*key.strings*key.young);
+    v.longModes=0;v.longForce=static_cast<float>(along*key.young);
     for(int m=1;m<=maxLong&&v.longitudinal>m&&m*longHertz<10000&&m*longHertz<.4*sampleRate;++m){
       // A maker keeps a string's longitudinal modes off the tones that
       // drive them, and so does the same authors' model: a mode on one rings
@@ -1479,8 +1484,14 @@ struct Piano::Impl {
     // the blow and the last shifted off under una corda. Taken as string
     // 0's share times the strings, a key's partials from 49 up stood up to
     // 0.8 dB off by string 0's random share alone.
-    double summed=0;
-    for(int j=0;j<v.strings;++j)summed+=key.share[j]*(v.strings>1&&j==v.strings-1?1-.92*shifted:1);
+    double summed=0,squared=0;
+    for(int j=0;j<v.strings;++j){const double s=key.share[j]*(v.strings>1&&j==v.strings-1?1-.92*shifted:1);summed+=s;squared+=s*s;}
+    // Every string's stretch pulls the bridge along it, each as the square
+    // of its share (longScale). Taken as string 0's times the strings, the
+    // phantom partials stood 2 to 6 dB too strong under a full una corda,
+    // which strikes the last string at 0.08 (6 dB on a bichord), and up to
+    // 1.8 dB off by string 0's random share alone.
+    v.longScale=static_cast<float>(squared/(key.share[0]*key.share[0]));
     for(int plane=0;plane<6;++plane){
       const int string=plane%3;const bool isAcross=plane>=3;
       const int n=plane==0?v.partials:isAcross?(string<v.strings?v.across:0):(string<v.strings?v.apart:0);
@@ -1623,7 +1634,7 @@ struct Piano::Impl {
           along+=v.longForce*((m&1)?y-a:a-y);
         }
       }
-      out[s]=pull+along;
+      out[s]=pull+v.longScale*along;
       // The bridge gives under the strings' sum and takes from each.
       for(k=0;k+4<=n;k+=4){
         const Four cRe=Four::at(v.couplingRe+k),cIm=Four::at(v.couplingIm+k),re=Four::at(sumRe+k),im=Four::at(sumIm+k);
