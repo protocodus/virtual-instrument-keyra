@@ -51,10 +51,10 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
-### 2.19.0 — 2026-11-16 — a key struck again meets its moving string
+### 2.19.0 — 2026-11-16 — a key struck again meets its moving string (chosen by ear)
 
-From an audit of the physical model the owner asked for. A listening set
-was handed over; no verdict is recorded yet
+From an audit of the physical model the owner asked for. The owner heard
+the listening set and chose the hammer that meets the moving string
 ([decisions](Docs/decisions.md)).
 
 - **The hammer meets the string as it moves.** A blow was solved against a

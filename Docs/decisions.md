@@ -6045,8 +6045,9 @@ physical model issues"). The model was read whole against its stated
 physics. Its formulas hold; three things did not, and one of them is left.
 
 **The hammer met a string at rest.** Decided on what the model can defend,
-with the candidate taken as the project's rule has it. A listening set was
-rendered and handed over; no listening verdict is recorded yet.
+with the candidate taken as the project's rule has it, and then chosen by
+ear: the owner heard the listening set and chose B ("use B and prepare for
+launch", 2026-11-16).
 
 Since 2.0.0 the felt's force is solved against the motion it gives one
 string, from rest, and added to what rings. The entry of 2026-11-10 left the
@@ -6110,7 +6111,9 @@ upright's. So the formula is the string's, the score does not ask for it
 alone, and it is a Known gap with a listening set beside it (set 2: A is
 2.18.1, B is 2.18.1 with the factor; the difference stands 40 dB under the
 phrase on the grand and 31 dB on the upright). Taking it means fitting the
-bass hammers again with it in.
+bass hammers again with it in. The owner's "use B" named one letter for the
+two sets; it is taken for set 1, which is the branch, and whether it also
+takes set 2's B was asked. Until that is answered the factor stays out.
 
 Checked and found sound: the longitudinal force and its modes, the felt's
 implicit solve, the modal drive, the bridge's coupling and the tuner's
