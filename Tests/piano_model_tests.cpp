@@ -228,6 +228,15 @@ int main(){
     const Take one=caught(1),two=caught(2),oneAgain=caught(1);
     check(one.left==oneAgain.left,"a strike's chance repeats exactly");
     check(one.left!=two.left&&std::abs(one.db(0,.1)-two.db(0,.1))<1.5,"another chance is another catch of the same note");
+    // Nor does the hammer land alike (2.23.0): middle C's third partial
+    // stands 0.07 dB elsewhere against its second (0.0005 dB by the catch
+    // alone, with the hammer's play at none).
+    const auto landed=[&](std::uint32_t chance){b.start(c);piano.strike(keyOf(60),.6f,0,chance);b.run(.5);return b.take;};
+    const Take first=landed(1),second=landed(2);
+    const double c4=261.63;
+    const auto balance=[&](const Take& t){return t.tone(3*c4,.05,.4)-t.tone(2*c4,.05,.4);};
+    const double moved=std::abs(balance(first)-balance(second));
+    check(moved>.01&&moved<1,"another chance is another landing of the same hammer");
     // The top strings, which the bridge holds hardest, only lose energy.
     for(const float soundboard:{0.f,1.f}){Controls d;d.soundboard=soundboard;b.start(d);piano.setPedal(1);
       for(int key=76;key<keyra::model::keyCount;++key)piano.strike(key,1);

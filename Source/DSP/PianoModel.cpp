@@ -76,6 +76,8 @@ Rng seeded(int a,int b,int c=0) noexcept {
 double clamp(double x,double lo,double hi) noexcept {return x<lo?lo:x>hi?hi:x;}
 float clampf(float x,float lo,float hi) noexcept {return x!=x?lo:x<lo?lo:x>hi?hi:x;}
 double mix(double a,double b,double t) noexcept {return a+(b-a)*t;}
+// The width of felt on the string, metres (the keys' shape, below).
+double feltWidth(int key) noexcept {return mix(.008,.003,key/87.);}
 // A signed size turned by an angle. std::polar is undefined for a negative
 // size, and libc++ (macOS) answers it with NaN.
 std::complex<double> turned(double size,double angle) noexcept {return {size*std::cos(angle),size*std::sin(angle)};}
@@ -335,6 +337,18 @@ constexpr int capoFrom=60;
 // in the note's level; these spreads of its strength (dB) and of its time (a
 // factor's logarithm) give 2.5 and 2.2.
 constexpr double catchSpreadDb=2,catchSpreadTime=.2;
+// Nor does the hammer land the same twice: its shank flexes and its centre
+// has play, so the felt's face tilts across the unison (one end string takes
+// more of the blow and the other less), lands a little along the string
+// either way (metres), and meets felt a little softer or harder beside the
+// grooves the strings have cut (decades of stiffness). These spreads are
+// estimates from an action's tolerances, not measurements, chosen by ear
+// (the owner, 2026-11-16, 2.23.0). The recordings only bound them: new
+// second strikes of a key differ in their partials' balance by no more than
+// the measurement's scatter, 2 dB (Docs/research/realism-candidates-2026-11-04.md),
+// and with these middle C's first eight partials spread 0.5 dB from strike
+// to strike.
+constexpr double strikeTiltSpread=.05,strikeShiftSpread=.0003,strikeFeltSpread=.02;
 constexpr double keyboardWidth=1.23;    // m, centred on the board's edge
 // A string struck at an eighth of its length leans seven eighths of the blow
 // on its near end, in the iron frame. That lean moves the iron the strings
@@ -630,7 +644,7 @@ void designStrings(Tables& t,int body) noexcept {
       // from the hammers' size, not a measurement (the owner asked for it
       // built, 2026-11-14). It takes under 1 dB from any partial below
       // 10 kHz.
-      const double felt=n*pi*mix(.008,.003,i/87.)/(2*k.length);
+      const double felt=n*pi*feltWidth(i)/(2*k.length);
       k.shape[count]=static_cast<float>(std::sin(n*pi*k.strike)*std::sin(felt)/felt);
       ++count;
     }
@@ -1311,6 +1325,8 @@ struct Piano::Impl {
   float damperOn[keyCount]{};   // each damper's own weight on its strings, 0 off to 1
   bool bankAwake[keyCount]{};float bankEnergy[keyCount]{};
   bool pedalKnown=false;     // setPedal() has said where the pedal stands since reset()
+  // This strike's share of the hammer's play (strikeTiltSpread).
+  double strikeTilt=0,strikeFelt=0;float strikeShape[maxK]{};
   std::uint32_t lifts=0;     // dampers lifted since silence, which draws each whisper
   int bankPoint[keyCount]{};float bankMix[keyCount]{};
   double travel[points]{};   // the bridge's displacement at each point
@@ -1623,25 +1639,27 @@ struct Piano::Impl {
     // 0's share times the strings, a key's partials from 49 up stood up to
     // 0.8 dB off by string 0's random share alone.
     double summed=0,squared=0;
-    for(int j=0;j<v.strings;++j){const double s=key.share[j]*(v.strings>1&&j==v.strings-1?1-.92*shifted:1);summed+=s;squared+=s*s;}
+    const auto tilted=[&](int j){return key.share[j]*(1+(v.strings>1?strikeTilt*(2.*j/(v.strings-1)-1):0.));};
+    for(int j=0;j<v.strings;++j){const double s=tilted(j)*(v.strings>1&&j==v.strings-1?1-.92*shifted:1);summed+=s;squared+=s*s;}
     // Every string's stretch pulls the bridge along it, each as the square
     // of its share (longScale). Taken as string 0's times the strings, the
     // phantom partials stood 2 to 6 dB too strong under a full una corda,
     // which strikes the last string at 0.08 (6 dB on a bichord), and up to
     // 1.8 dB off by string 0's random share alone.
-    v.longScale=static_cast<float>(squared/(key.share[0]*key.share[0]));
+    const float first=static_cast<float>(tilted(0));
+    v.longScale=static_cast<float>(squared/(first*first));
     for(int plane=0;plane<6;++plane){
       const int string=plane%3;const bool isAcross=plane>=3;
       const int n=plane==0?v.partials:isAcross?(string<v.strings?v.across:0):(string<v.strings?v.apart:0);
       const bool last=v.strings>1&&string==v.strings-1;
-      const double share=key.share[string]*(last?1-.92*shifted:1)*(isAcross?key.acrossDrive[string]:1);
+      const double share=(string<v.strings?tilted(string):key.share[string])*(last?1-.92*shifted:1)*(isAcross?key.acrossDrive[string]:1);
       const int o=planeStart[plane];
       for(int k=0;k<n;++k){
         const double w=2*pi*f0*key.ratio[k];
         const double struckBy=plane==0&&k>=v.apart&&v.strings>1?summed:share;
         // A string's mode k takes 2 / (mu L w) sin(k pi x0 / L) metres per
         // newton-second of the hammer's force.
-        v.drive[o+k]=static_cast<float>(struckBy*2*key.shape[k]/(key.density*key.length*w)/sampleRate);
+        v.drive[o+k]=static_cast<float>(struckBy*2*strikeShape[k]/(key.density*key.length*w)/sampleRate);
       }
     }
   }
@@ -1660,8 +1678,8 @@ struct Piano::Impl {
     for(int k=0;k<c.partials;++k){
       const double w=2*pi*f0*key.ratio[k],loss=std::exp(-stringLoss(key,w)/rate);
       c.turnRe[k]=static_cast<float>(std::cos(w/rate)*loss);c.turnIm[k]=static_cast<float>(std::sin(w/rate)*loss);
-      c.shape[k]=key.shape[k];
-      c.drive[k]=static_cast<float>(2*key.shape[k]/(key.density*key.length*w)/rate);
+      c.shape[k]=strikeShape[k];
+      c.drive[k]=static_cast<float>(2*strikeShape[k]/(key.density*key.length*w)/rate);
       // The hammer meets the string as it moves: the contact starts from the
       // mean of the unison's strings' motion (the planes down into the
       // bridge), so the felt's force is the one that motion and the blow
@@ -1695,7 +1713,7 @@ struct Piano::Impl {
     // forte middle C (velocity 100, its first second; 8 at three decades)
     // and 22 dB from what it holds above 1 kHz, 6 to 9 dB from the notes
     // from C1 to C3 and 16 to 23 from C5 to C7.
-    const double stiffness=key.hammerStiffness*std::pow(10.,.75*controls.hammer-4*controls.felt-(upright?0:.3*soft));
+    const double stiffness=key.hammerStiffness*std::pow(10.,strikeFelt+.75*controls.hammer-4*controls.felt-(upright?0:.3*soft));
     c.exponent=key.hammerExponent;
     c.relaxed=stiffness;
     c.prompt=stiffness*key.hammerSeconds*sampleRate*substeps;
@@ -2561,17 +2579,24 @@ void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexc
   // The key lifts its damper before the hammer arrives.
   v.damper=p.bankDamper[key]=p.muted();
   p.applyDamper(v);
-  p.setDrive(v,key,clampf(soft,0,1));
   // The action catches the hammer a little sooner or later and harder or
   // softer than the last time.
-  double late=1,strength=1;
+  double late=1,strength=1,shift=0;
+  p.strikeTilt=p.strikeFelt=0;
   if(chance){
     chance=chance*747796405u+2891336453u;if(!chance)chance=1;
     const auto draw=[&chance]{ // near enough normal: four uniform draws summed, within 3.5 spreads
       double sum=0;
       for(int k=0;k<4;++k){chance^=chance<<13;chance^=chance>>17;chance^=chance<<5;sum+=chance*(1./4294967296.)-.5;}
       return std::sqrt(3.)*sum;};
-    late=std::exp(catchSpreadTime*draw());strength=std::pow(10.,catchSpreadDb*draw()/20);}
+    late=std::exp(catchSpreadTime*draw());strength=std::pow(10.,catchSpreadDb*draw()/20);
+    p.strikeTilt=strikeTiltSpread*draw();shift=strikeShiftSpread*draw();p.strikeFelt=strikeFeltSpread*draw();}
+  const KeyData& made=p.table->keys[key];
+  for(int n=1;n<=maxK;++n){
+    if(shift==0||made.shape[n-1]==0){p.strikeShape[n-1]=made.shape[n-1];continue;}
+    const double felt=n*pi*feltWidth(key)/(2*made.length); // as the key's own shape is made
+    p.strikeShape[n-1]=static_cast<float>(std::sin(n*pi*(made.strike+shift/made.length))*std::sin(felt)/felt);}
+  p.setDrive(v,key,clampf(soft,0,1));
   p.startContact(key,clampf(velocity,0,1),clampf(soft,0,1),late,strength);
 }
 void Piano::holdDamper(int key,bool held) noexcept {if(key>=0&&key<keyCount)impl->held[key]=held;}

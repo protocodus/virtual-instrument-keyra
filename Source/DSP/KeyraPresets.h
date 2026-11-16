@@ -43,7 +43,7 @@ inline constexpr std::array<Preset, 13> factoryPresets {{
     { "Distant Hall", model::Body::concertGrand, -.1f, 0.f, .3f, 1.f, .55f, 1.f, .6f, .6f, .5f, { 0.f, .2f, .44f, .64f }, .9f, .9f, 0.f },
     { "Warm Walnut", model::Body::parlorGrand, -.5f, .25f, .35f, 1.f, .5f, .5f, .6f, .6f, .4f, { .7f, .7f, .3f, 0.f }, .25f, .7f, 0.f },
     { "Old Parlor", model::Body::parlorGrand, -.2f, .8f, .6f, .8f, .5f, .5f, .5f, .6f, .6f, { .71f, 0.f, .95f, 0.f }, .2f, .7f, 0.f },
-    { "Felt Upright", model::Body::upright, -.4f, .3f, .4f, 1.f, .4f, .5f, .5f, .4f, 0.f, { 1.f, .6f, .5f, 0.f }, .15f, .6f, .7f },
+    { "Felt Upright", model::Body::upright, -.4f, .3f, .4f, 1.f, .4f, .5f, .5f, .4f, 0.f, { 1.f, .8f, .65f, 0.f }, .15f, .6f, .7f },
     { "Pop Upright", model::Body::upright, .6f, .1f, .3f, 1.f, .4f, 1.f, .4f, .3f, 0.f, { .82f, .33f, 0.f, 0.f }, .1f, .55f, 0.f },
     { "Bar Piano", model::Body::upright, .5f, .7f, 1.f, .6f, .45f, 1.f, .5f, .5f, 0.f, { .72f, 0.f, .96f, 0.f }, .35f, .7f, 0.f }
 }};

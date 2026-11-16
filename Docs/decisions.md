@@ -6306,3 +6306,53 @@ at the bass's two hardest layers reads 14.8 dB where it read 16.6 (2.20.0:
 13.3); the partials are within 0.03 dB; the levels stand 0.11 and 0.02 dB
 further off. The comparison lists one regression, C1's level by 0.54 dB.
 Both reports were given to the owner with the build.
+
+## 2026-11-16 — 2.23.0: no two strikes alike, chosen by ear
+
+The owner asked: "can we somehow increate variety and randomness and accident
+for each note somehow, so no two hits sound the same?", and then: "but stay
+within reality and physical justification". Through 2.22.0 a strike already
+drew its own level (1.085 dB, the spread of the upright library's twelve
+genuine second strikes), the action's catch drew its time and strength, and a
+key struck again met its moving string. The blow on a resting string was
+otherwise the same each time.
+
+What the recordings say was put to the owner first. The genuine second
+strikes (twelve on the Helsinki upright, six on the Hamburg grand) differ from
+their first as a small velocity change does, and in the balance of their
+partials by no more than the measurement's own scatter, about 2 dB
+(`Docs/research/realism-candidates-2026-11-04.md`). So the player's
+unevenness is measured, and the hammer's play has a ceiling and no size.
+
+Listening set 7 (not committed): middle C, C2 and C6 five times each at
+velocity 80 and a C major chord four times at 90, concert grand, default
+controls, 48 kHz, through the engine with its strike variation on and the
+same draws in every letter, each file matched to A on whole-file RMS (trims
+0, −0.89, −0.01, −0.02 and −0.89 dB).
+
+- A: 2.22.0.
+- B: the player's spread doubled, 2.17 dB.
+- C: the hammer's play, modest: a tilt across the unison of spread 5 %,
+  0.3 mm along the string, felt 0.02 decades (5 %) softer or harder.
+- D: the hammer's play, larger: 12 %, 0.8 mm, 0.05 decades.
+- E: B and C together.
+
+Middle C's first eight partials spread from strike to strike, level removed,
+by 0.36 dB in A, 0.81 in B, 0.51 in C, 0.80 in D and 0.92 in E, all under
+the ceiling. The owner chose **E** ("les go e"). That licensed 2.23.0: the
+doubled spread and C's three sizes. It is a choice by ear. The doubled spread
+is not a measurement of a player, and the hammer's sizes are estimates from
+an action's tolerances; the README's Known gaps say so.
+
+A strike played exactly is unchanged, so the keys' voicing stands. The
+levels are read with the strike variation, and under the wider spread the
+default sounds read up to 0.66 dB lower (the Parlor Grand 0.04 dB higher), so `pascalScale` was pinned again
+to −9.00 VU each. Felt Upright read −11.6 VU, outside the presets' 2 dB
+window; its XY and Live pairs were raised (0.6 to 0.8, 0.5 to 0.65) and it
+reads −10.1 VU.
+
+Against the recorded grand, which the benchmark strikes exactly, every
+measure stands within 0.01 of 2.22.0's and the comparison lists no regression
+(`Docs/validation/grand-strike-variety-benchmark-2026-11-16.md`). The upright
+benchmark was not run again: struck exactly, 2.23.0's upright is 2.22.0's
+samples 0.10 dB louder.

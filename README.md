@@ -51,6 +51,40 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.23.0 — 2026-11-16 — no two strikes alike (the owner's choice)
+
+The owner asked for more variety and accident in each note, within what a
+piano does, and chose by ear among five renders of repeated notes and chords
+([decisions](Docs/decisions.md)).
+
+- **A player's strikes spread twice as far**: each blow's level moves by a
+  draw of 2.2 dB (1.1 before, the spread of the upright library's genuine
+  second strikes). Twice that is a less even player, the owner's choice, not
+  a measurement.
+- **The hammer does not land the same twice.** Its shank flexes and its
+  centre has play, so on each strike the felt tilts across the unison (one
+  end string takes up to a twentieth more of the blow and the other less,
+  one spread), lands 0.3 mm along the string either way and meets felt 5 %
+  softer or harder beside its grooves. These sizes are estimates from an
+  action's tolerances, not measurements: the recordings' genuine second
+  strikes differ in their partials' balance by no more than the
+  measurement's scatter, about 2 dB, which bounds them. With both changes
+  middle C's first eight partials spread 0.9 dB from strike to strike, level
+  removed (0.4 before; 0.5 with the hammer's play alone).
+  The beginning of a note's aftersound and beating changes most.
+- A strike played exactly (`keyra_render` without `--vary`, and so every
+  benchmark and the keys' voicing) is the same samples as in 2.22.0 before
+  the level is pinned.
+- **Each piano's level is pinned again** for the wider spread, 0.10 to
+  0.66 dB up (the Parlor Grand 0.04 dB down); every default sound reads
+  −9.00 VU. Felt Upright's XY and Live pairs come up (0.6 to 0.8 and 0.5 to
+  0.65), which keeps it within 2 dB of the others: it reads −10.1 VU.
+- **Against the Salamander grand**
+  ([report](Docs/validation/grand-strike-variety-benchmark-2026-11-16.md)),
+  which is struck exactly: every measure within 0.01 of 2.22.0's and no
+  regression. The upright was not run again: its strikes are the same
+  samples 0.10 dB louder.
+
 ### 2.22.0 — 2026-11-16 — the bass keeps a softer fortissimo (the owner's choice)
 
 The owner asked for a more real fortissimo and chose by ear, against the
@@ -1219,6 +1253,15 @@ A0 (5.7 m/s at C2, 5.0 at A0), which the owner chose by ear against the
 recorded bass (2.22.0). That fortissimo is the owner's choice by ear and
 harder than the recorded grand's hardest layer (Known gaps).
 
+**No two strikes alike.** Each strike draws its own level, by a spread of
+2.2 dB (the upright library's genuine second strikes spread 1.1 dB; twice
+that is the owner's choice by ear, 2.23.0), and the hammer its own landing:
+a tilt across the unison's strings, 0.3 mm along the string and felt 5 %
+softer or harder, which are estimates from an action's tolerances that the
+recordings only bound (Known gaps). The action catches the hammer sooner or
+later and harder or softer, and a key struck again meets its string as it
+moves. The draws restart with the engine, so a render repeats exactly.
+
 **Unisons.** The strings of a key, each in two polarisations, share the
 bridge, whose admittance couples them (Weinreich 1977): that gives the
 prompt sound, the slower aftersound and their beating. The first 48 partials
@@ -1701,6 +1744,13 @@ is written independently of it.
   string that moves as the mean of the unison's strings, each then taking
   its share of the force: a hammer does not meet three strings that stand
   apart each on its own.
+- **How unlike two strikes are is chosen by ear.** A strike's level spreads
+  2.2 dB, twice what the upright library's twelve genuine second strikes
+  give, and the hammer's play (its tilt across the unison, where it lands
+  and the felt it meets) has no measurement of its size: the recordings'
+  second strikes differ in their partials' balance by no more than the
+  measurement's own scatter, which gives a ceiling of about 2 dB and no
+  more (2.23.0, the owner's choice among five renders).
 - **The fortissimo is harder than the recorded grand's.** Velocity 127
   throws the hammer at 6.75 m/s by the owner's choice by ear (2.21.0); a
   top of 6.0 m/s met the Salamander grand's step from its eighth layer to
