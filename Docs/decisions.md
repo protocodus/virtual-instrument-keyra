@@ -6234,3 +6234,19 @@ Duplex and Sympathetic stay as shipped: Duplex at full remains a difference
 36 dB under the phrase, by the owner's choice, and is a Known gap as a
 control. The engine test of the strip pinned three decades' figures and is
 set to four's, with the reason beside it.
+
+Against the recordings (the default sound has neither String age nor the
+strip, so only the fortissimo moves): on the Salamander grand the partials
+stand 0.11 and 0.09 dB closer and the noise between the partials 0.36 and
+0.48 dB worse in the paired means, on ten bass notes from A0 to D#3 by 0.8
+to 1.6 dB (Docs/validation/grand-fortissimo-benchmark-2026-11-16.md). The
+upright was measured after the choice, on the owner's computer
+(Docs/validation/upright-fortissimo-benchmark-2026-11-16.md): its levels
+stand 0.38 and 0.52 dB closer, its partials within 0.03 dB on the fitted
+notes and 0.17 worse on the others (E6), and the noise between the partials
+0.52 and 0.49 dB worse, on twelve notes from D#1 to C4 by 0.6 to 2.0 dB. The
+owner chose the fortissimo with the grand's level step beside the letters
+and these reports not yet taken; they were reported with the candidate.
+
+Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
+`KeyraLevels --check` passes with the new table.

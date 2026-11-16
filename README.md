@@ -90,6 +90,16 @@ heard five listening sets and chose by ear
   the paired means, on ten bass notes from A0 to D#3 by 0.8 to 1.6 dB; at
   the bass's two hardest layers it reads 13.8 dB where it read 8.6. The
   level of C4, A6 and C8 is 0.5 to 0.9 dB further off and A4's rise 1 ms.
+- **Against the Helsinki upright**
+  ([report](Docs/validation/upright-fortissimo-benchmark-2026-11-16.md)),
+  measured on the owner's computer: the notes' levels stand closer, by 0.38
+  dB on the fitted notes (4.31 to 3.93) and 0.52 on the others (3.25 to
+  2.74). The partials stand within 0.03 dB on the fitted notes (7.30 to
+  7.27) and 0.17 worse on the others (7.19 to 7.36), all of it on E6. The
+  noise between the partials is 0.52 and 0.49 dB worse in the paired means,
+  on twelve notes from D#1 to C4 by 0.6 to 2.0 dB; at the bass's two hardest
+  layers it reads 16.6 dB where it read 13.3, and the third-octave levels of
+  those notes' first half second 0.5 dB further off.
 
 ### 2.20.0 — 2026-11-16 — a stiff string's bending in its pull on the bridge (the owner's choice)
 
@@ -1662,7 +1672,9 @@ is written independently of it.
   ones: from A0 to A2 the step stands 1.6 dB from the recording's on
   average, and the noise between the partials of the bass's two hardest
   layers reads 13.8 dB where 2.20.0 read 8.6
-  ([report](Docs/validation/grand-fortissimo-benchmark-2026-11-16.md)).
+  ([report](Docs/validation/grand-fortissimo-benchmark-2026-11-16.md)); on
+  the Helsinki upright's two hardest it reads 16.6 where it read 13.3
+  ([report](Docs/validation/upright-fortissimo-benchmark-2026-11-16.md)).
   Loud middle notes still hold 3 to 4 dB less than the recording in the
   octave about 4 kHz in their first 100 ms, which is the felt's fit on
   every layer, and from C6 up the hardest notes hold 12 to 16 dB less
