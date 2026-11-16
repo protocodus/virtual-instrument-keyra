@@ -60,15 +60,14 @@ inverts it, in the mix and on its own output.
 | Live | A spaced pair of valve omnis in the room beside a grand, or over the player's head at an upright, their top rising a little: the piano with some of its room |
 | Distant | A wide pair of omnis across the room, lifted for the diffuse field: mostly room |
 | Tube | One valve cardioid over the strings, toward the hammers, in mono: a broad presence and a rounded top |
-| Room | The room's reverberation: its own level in the mix whatever the microphones' levels (so Room alone plays the room with every microphone down), and the share each microphone hears; none at 0, a small hint at the default 0.1 |
+| Room | The size of the room every microphone hears, each from where it stands and at its own share by its distance: a small room ringing 0.3 s at 0, 0.8 s at 0.5, a hall's 2.2 s at 1. A larger room rings longer, not louder. 0.6 by default, a recital room's 1 s |
 | Width | The stereo image: the microphones' own at 0.75, mono at 0 |
 
 Each microphone also has its own output, after its circuit, at full level
-and in its polarity, with its share of the room: the pairs stereo, the tube
-mono. In the plug-in they are extra output buses the host turns on; in
+and in its polarity, with the room as it hears it: the pairs stereo, the
+tube mono. In the plug-in they are extra output buses the host turns on; in
 Reason, sockets on the back. The main output's Width, Output and output
-stage, Room's own level in the mix, and the action's noises are in the mix
-only.
+stage, and the action's noises, are in the mix only.
 
 Tuning, in the header of every view, sets concert A from 415 to 466 Hz.
 
@@ -88,21 +87,22 @@ keyboard is playable. Pitch bend spans two semitones each way.
 
 ## Presets
 
-The thirteen factory presets set the piano, its controls, the microphones, Room,
+The thirteen factory presets set the piano, its controls, the microphones, Room
+(the size of a room that piano would be played in),
 Width and the practice felt; Output, Tuning, Mechanics, the felt mute and the
 pedals keep their settings. Every preset plays at about the same level. The
 five pianos as built come first, then the special versions, piano by piano.
 
 | Preset | What it is |
 | --- | --- |
-| Concert Grand | The concert grand as built, close pair, lid open |
-| Studio Grand | The studio grand with harder hammers, close and XY, a drier room |
-| Parlor Grand | The parlor grand as built, close pair, lid open |
-| Baby Grand | The baby grand, close and XY |
+| Concert Grand | The concert grand as built, close pair, lid open, in a recital room |
+| Studio Grand | The studio grand with harder hammers, close and XY, in a studio's live room |
+| Parlor Grand | The parlor grand as built, close pair, lid open, in a parlor |
+| Baby Grand | The baby grand, close and XY, in a living room |
 | Upright | The upright as kept at home: slightly aged strings, a little more detune |
 | Felt Nocturne | The concert grand under the practice felt |
 | Open Strings | The concert grand with the soundboard, sympathetic strings and duplex scales turned up, mostly from the room |
-| Distant Hall | The concert grand from across the room |
+| Distant Hall | The concert grand from across a large hall |
 | Warm Walnut | The parlor grand with soft hammers on the short stick, three pairs |
 | Old Parlor | The parlor grand with old strings and wide unisons |
 | Felt Upright | The upright under the practice felt, top half open |

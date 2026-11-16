@@ -51,6 +51,180 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.18.1 — 2026-11-16 — Room turns without a click
+
+Fixes from a review of 2.18.0 that the owner asked for ("ok lets fix").
+
+- **Turning Room no longer clicks.** Each wall's reflection now changes its
+  strength over the same glide as its delay; set at once, it clicked on
+  every microphone for a large move and on the distant pair for a small one
+  (the click's highs stood up to 28 dB over the playing's for a large move,
+  and 9.5 dB over for Room 0.6 to 0.65 on the distant pair; now every move
+  measured stays 0.8 to 11 dB under them).
+- **The XY pair hears its own room.** It read the room's lines under the
+  same signs the strings go in by, so it heard the room's first pass back
+  coherently: 6.2 dB short at 20 to 60 Hz and 2.5 dB over below 20 Hz. It
+  now has a row of its own like the other pairs, and the keys are voiced
+  again (each piano's output scale moves by under 0.01 dB). Presets that use
+  the XY pair keep their level within 0.2 dB, with a different room in them.
+- **A bass note's last partials keep their longitudinal pull.** Once a note
+  had been pruned to a few partials, the pairs of partials that drive the
+  longitudinal modes were all left out; now each pair still sounding counts.
+  It reaches only the tails, at least 120 dB under the note in the demos.
+- **Against the recordings nothing moves**
+  ([grand](Docs/validation/grand-review-fixes-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-review-fixes-benchmark-2026-11-16.md)):
+  no paired regression, every paired mean within 0.001. The benchmark plays
+  the close pair at a fixed Room, which neither the click nor the XY pair's
+  room reaches.
+
+### 2.18.0 — 2026-11-16 — the room in every microphone, and Room its size
+
+The owner asked for the room back inside the microphones ("it makes more
+sense. one knob to impact size of the room. that is more realistic"), and
+for each to hear it from its own place ("each mic stands in a differnt
+place, therefore, the reverb will sound differently in each";
+Docs/decisions.md). A saved session keeps its Room value, which now sizes the
+room.
+
+- **The room is in every microphone again**, each at its own share by its
+  distance, as through 2.15.0; 2.16.0's return to the mix is gone, and with
+  every microphone down nothing sounds.
+- **Room is the room's size.** It scales the room's paths and its decay time
+  together, as rooms of one shape and surface do (Sabine): 0.29 s at 0, a
+  small room; 0.8 s at 0.5, 2.17.0's room; 2.2 s at 1, a hall's (0.16, 0.43
+  and 1.2 s at 5 kHz). A larger room rings longer and sparser, not louder.
+  Turning it while the piano sounds glides the room there without a click.
+- **Each microphone hears its own room.** Its own uncorrelated read of the
+  room's lines, so no microphone in reverse polarity cancels another's room;
+  its own first reflections off four walls and the ceiling, from where it
+  stands; its two channels as alike as their spacing makes them; and a
+  darker room inside the case, for the close pair and the tube.
+- **Presets in rooms of their kind:** Concert Grand in a recital room (1 s,
+  also Room's default), Studio Grand in a studio's live room, Parlor Grand in
+  a parlor, Baby Grand and Upright in a living room, Distant Hall in a large
+  hall (1.8 s). The keys are voiced again with each microphone's room; each
+  piano's output scale moves by -0.12 to +0.11 dB.
+- **CPU:** the microphones' own rooms and reflections cost about 1 %: a 12 s
+  phrase renders in 1.15 s of one core through the close pair (1.14) and
+  1.67 s through all five (1.66), on an Apple M1 Max.
+- **Against the recordings the movement is mixed**
+  ([grand](Docs/validation/grand-room-size-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-room-size-benchmark-2026-11-16.md), against
+  2.17.0, each at its default Room). On the grand the partials, the sustain
+  and the image come nearer (by 0.1 to 0.2 dB), the level between the
+  partials goes further off (0.18 and 0.30 dB) and the onsets of the notes
+  1.0.0 fitted rise 1.3 ms slower; on the upright the tuning and the rise come
+  nearer and the attack, the early decay and the level between the partials
+  go further off (0.1 to 0.35 dB). 89 single scores are worse on the grand and
+  62 on the upright, most of them the level between the partials and the
+  early decay, which the close pair's own reflections and room now fill.
+
+### 2.17.0 — 2026-11-16 — a denser room (chosen by ear)
+
+The owner asked for a room that is "more dense, higher quality", after felt
+notes rang in it in a way that did not sound real. Of four rooms heard
+blind, A as shipped and three denser ones, the owner said C or D would do;
+D is taken (Docs/decisions.md). The panel, the presets and a saved session
+do not change.
+
+- **Twice the lines.** The room is 32 delay lines where it was 16, their
+  lengths spread evenly on a log scale over 19 to 97 ms, each the first
+  prime number of samples at or above its length, so that no two lines'
+  echoes fall together. Fed an impulse where the strings go in, 679 of its
+  first 50 ms' samples carry an echo where 156 did, and its echoes grow
+  dense in 140 ms where they took 210: the sparse start a soft felt attack
+  exposed most. The strings go into it as before, with no extra
+  diffusion (the strings through allpass sections cost the upright's bass
+  0.4 dB against its recordings in 2.7.0).
+- **Each line decays as the room does.** Every line took the same 5.2 kHz
+  loss each pass, so a short line's top died twice as fast as a long one's
+  (at 5 kHz in 0.28 s on the 19 ms line, 0.58 s on the 97 ms one). Each
+  line's loss is now a shelf over its own length (Jot and Chaigne 1991), so
+  every line rings 0.79 s at 500 Hz, 0.45 s at 5 kHz and 0.22 s at 20 kHz,
+  the room's mean before.
+- **The room 2.2 dB lower at the same Room**, as the owner heard D. The
+  return averages 2.0 dB lower over the concert grand's keys and 3.0 dB over
+  the upright's; Distant Hall plays at -10.33 VU (-9.97). The keys are
+  voiced again with the new room: the furthest key in Keyra.Levels' mixes
+  stands -1.12 to +1.19 dB off the even scale (-1.18 to +1.16 in 2.16.1),
+  and each piano's output scale moves by -0.03 to +0.23 dB.
+- **CPU.** The 32 lines cost about a tenth more: a 12 s phrase under the
+  sustain pedal renders in 1.14 s of one core where it took 1.02 (an Apple
+  M1 Max, `keyra_render`).
+- **Against the recordings the movement is mixed**
+  ([grand](Docs/validation/grand-room-d-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-room-d-benchmark-2026-11-16.md), against
+  2.16.2 at each piano's default Room, 0.1). The image moves away from them:
+  the level difference between the channels by 0.40 dB on the grand's
+  unfitted notes and 1.25 dB on the upright's (0.19 and 0.23 on the notes
+  1.0.0 fitted). The upright's partials come nearer, by 0.53 dB (0.29), and
+  the grand's onsets by 0.5 to 0.8 ms, while the grand's unfitted partials
+  and sustain stand 0.12 dB further off. 64 single scores are worse on the
+  grand and 47 on the upright, most of them the image. The 32 lines do it,
+  not the lines' new losses: the room as the owner heard it scores within
+  0.06 dB of this one on every mean.
+
+### 2.16.2 — 2026-11-16 — the phantom partials under una corda
+
+One more correction from the same review, not chosen by ear. The panel, the
+presets and a saved session do not change, and the keys' level table stands
+(`KeyraLevels --check` passes).
+
+- **Each string stretches by its own share of the blow.** The pull the
+  strings' stretching gives the bridge along them (the phantom partials of
+  the keys to C5, and the longitudinal modes they ring) is read off a key's
+  first string and was taken as every string's. Under a full una corda,
+  which strikes a grand's last string at 0.08 of the blow, it stood 2 to
+  6 dB too strong (6 on the bichords, which then sound on one string), and
+  the hammer's uneven face moved it up to 1.8 dB either way by the first
+  string's share alone. It now takes the sum of the strings' squared
+  shares, set at each blow.
+- The benchmark plays no soft pedal, so it scores only the shares. On the
+  Salamander grand
+  ([report](Docs/validation/grand-phantom-shares-benchmark-2026-11-16.md))
+  no note is worse and every paired mean moves by under 0.05 (dB, cents or
+  ms). On the Helsinki 1967 upright
+  ([report](Docs/validation/upright-phantom-shares-benchmark-2026-11-16.md))
+  the means move as little and one note is worse: C2, among the notes 1.0.0
+  fitted, whose level between its partials in the first 300 ms stands
+  0.88 dB further from the recording's. Its phantom partials are 0.5 dB
+  weaker, by its first string's share.
+
+### 2.16.1 — 2026-11-16 — each string at its own share
+
+Four corrections a review of the model found, none of them chosen by ear.
+The panel, the presets and a saved session do not change, and the keys'
+level table and output scales stand as 2.16.0 left them (`KeyraLevels
+--check` passes; no piano's scale moves by 0.01 dB).
+
+- **A string across the bridge meets its own share of the coupling.** Above
+  its first 48 partials a unison's coupling is all its strings' at once;
+  each wound string's partials 49 to 64 across the bridge, which 2.14.0
+  added, met all of it, and lost twice their share there.
+- **The partials the strings play together take each string's blow.**
+  Above the first 48 partials the blow drives the strings' sum by each
+  string's own share of it, the last shifted off under una corda, where it
+  took the first string's share as every string's: a key's partials from
+  the 49th up stood up to 0.8 dB off by that one string's share.
+- **The open strings hear the piano, not the mix.** The bridge under the
+  open strings moved with each key's pull as voiced for the microphones
+  that were up, so a pair or Room moved what the sympathetic strings and
+  duplex scales were given by up to 11 dB on a key. They now take each
+  key's pull at the default mix, whatever the mix.
+- **A change of mix glides in 2.3 ms at every rate.** It took a quarter of
+  the way each 32 samples, which at 192 kHz was 0.6 ms.
+- **The hammers described as they are.** How it works and the model's notes
+  said Stulov's measured hammers, and a restrike meeting its string as it
+  moves; the felt is Stulov's in the limit of a short memory, the hammers
+  are fitted to recordings, and a restrike meets its string as if at rest,
+  now among the Known gaps.
+- Against the recordings no paired note is worse: on the Salamander grand
+  ([report](Docs/validation/grand-shares-benchmark-2026-11-16.md)) every
+  paired mean moves by under 0.01 dB or 0.01 cents, and on the Helsinki
+  1967 upright ([report](Docs/validation/upright-shares-benchmark-2026-11-16.md))
+  by under 0.03 dB or 0.01 cents.
+
 ### 2.16.0 — 2026-11-15 — each piano's own preset first, and Room its own level
 
 The factory bank starts with each piano as built, in the selector's order
@@ -861,12 +1035,15 @@ grand's). Every partial loses by the string's own damping, which rises with
 frequency, and by what the bridge takes from it.
 
 **Hammers.** A hammer is a mass on felt that stiffens as it is compressed and
-gives way while it is held: Stulov's hysteretic felt with his measured
-hammers, given at C2, C4 and C7 as Chaigne and Askenfelt's three hammers are
-and carried across the keys. The blow is solved against the string's own
-motion at the strike point, twice a sample at 44.1 and 48 kHz, for as long
-as they touch, so a hard blow is brighter because the felt is stiffer under
-it and a restrike meets a string already moving. The hammers' stiffness and
+gives way while it is held: Stulov's hysteretic felt, in the limit of a
+memory far shorter than the contact, its hammers given at C2, C4 and C7 as
+Chaigne and Askenfelt's three are and carried across the keys (Stulov's own
+measured hammers were tried and left: their soft layers stood 20 dB too
+bright). The blow is solved against the motion it gives the string at the
+strike point, twice a sample at 44.1 and 48 kHz, for as long as they touch,
+so a hard blow is brighter because the felt is stiffer under it. A restrike
+meets its string as if at rest, while what the string still sounds rings on
+(Known gaps). The hammers' stiffness and
 the strings' losses are fitted to notes of one recorded grand (Jon Meyer's
 "Steinway Grand" for Decent Sampler, from the owner's reference set); the
 upright's stiffness to eleven forte notes of a recorded upright (MAPS,
@@ -886,7 +1063,8 @@ of each string are kept apart, the first 16 also across the bridge (a wound
 string's first 64, each a hair off its partial down into the bridge); above
 them the strings move together. From C5 down the strings' stretching as
 they swing pulls the bridge at twice each partial's frequency (Conklin
-1999), and up to six longitudinal modes of each string ring with it (Bank
+1999), each string's by the square of its share of the blow (2.16.2), and
+up to six longitudinal modes of each string ring with it (Bank
 and Sujbert 2005), each tuned midway between the tones that drive it: the
 phantom partials of a bass note. The same stretching raises the string's
 tension, so a hard blow starts up to 0.4 cents sharp and settles as it
@@ -938,7 +1116,10 @@ waves, against a smooth line through the keys, and writes
 brings the key onto that line in the mix that is set, by no more than 15 dB
 either way. Each pair's line is set at the close pair's level without the
 room, averaged over the keys, which keeps the pairs balanced where the
-board's modes alone do not. The table is measured at the default Lid and
+board's modes alone do not. What the bridge hands the open strings is each
+key's pull at the default mix, the close pair and the default Room, whatever the
+mix that is set: the voicing evens what the microphones hear, not what the
+strings do (2.16.1). The table is measured at the default Lid and
 Soundboard and at half velocity; the knocks under a note are not voiced.
 
 **Sympathetic strings and duplex scales.** Every string whose damper is
@@ -1009,15 +1190,29 @@ Room's return and the action's noises are the mix's.
 
 At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
-feedback delay network of sixteen lines under a Hadamard mix (Jot and
-Chaigne 1991) ringing 0.8 s,
-which hears the piano as the distant pair does and which each pair hears by
-its distance, the close pair too (set against what the Salamander grand's
-treble notes leave after the knock under them). The room also returns to
-the mix on its own, at the share the distant pair hears, whatever the
-pairs' levels, from its lines under signs orthogonal to the pairs' so that
-no pair's polarity cancels it (2.16.0). Room sets both, none at 0; its
-default 0.1 is a clean sound with a small hint of room. The
+feedback delay network of 32 lines under a Hadamard mix (Jot and Chaigne
+1991), each a prime number of samples long and each decaying alike, which
+hears the piano as the distant pair does. Every microphone hears it inside
+its own sound, at its own share by its distance, the close pair least (set
+against what the Salamander grand's treble notes leave after the knock under
+them) and the distant pair most, so with every microphone down nothing
+sounds (2.18.0). Each hears it from where it stands: under its own row of
+signs across the lines, so no two microphones' rooms correlate and none in
+the opposite polarity cancels another's; with its own first reflections off
+the room's four walls and ceiling, timed and weighed from its position and
+its pattern; its two channels as alike as their spacing makes them in a
+diffuse field (0.75 for the coincident cardioids, alike only in the bass for
+a spaced pair); and darker inside the case, for the close pair and the tube
+(an estimate). Room is the room's size, the owner's choice
+(2.18.0): it scales the lines and the walls with the decay time, as rooms of
+one shape and one surface do (Sabine), from a small room ringing 0.29 s at
+Room 0 (0.16 s at 5 kHz) through 0.8 s at 0.5 to a hall's 2.2 s at 1
+(1.2 s at 5 kHz). Each line loses the same over a pass at every size, so a
+larger room plays the same echoes further apart, longer and sparser, with
+the same energy: Room does not set the room's level. A size reached while
+the piano sounds glides there, the lines' lengths with it and each wall's
+reflection, its delay and its strength together (2.18.1). The default 0.6
+is a recital room's 1 s, heard in the close pair as a small hint. The
 room also hears the case: the knock the blow gives the frame under the top
 strings goes to it directly, through three allpass sections (Schroeder
 1962), as well as through the board. Width at 0.75 is the pairs' own image and
@@ -1062,7 +1257,7 @@ is what the board and the microphones give it.
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |
 | Close, XY, Live, Distant, Tube | 0 to 1 | Each microphone's level |
 | Ø (each microphone) | off, on | Its polarity, in the mix and on its own output |
-| Room | 0 to 1 | The room: its own level in the mix whatever the pairs' levels, and each pair's share of it; 0.1 by default |
+| Room | 0 to 1 | The size of the room every microphone hears, at its own share: 0.29 s at 0, 0.8 s at 0.5, 2.2 s at 1; 0.6 by default |
 | Width | 0 to 1 | The stereo image |
 | Practice felt | 0 to 1 | A felt strip between hammers and strings: up to three decades softer |
 | Felt mute | 0 to 1 | Felt laid on every sounding string, held or not (the mod wheel) |
@@ -1339,6 +1534,12 @@ is written independently of it.
   other grands' ways at its size, and the benchmark still scores the
   Concert Grand by default (`-- --body studio` scores this one).
 - **Changing the piano cuts what sounds.** A new body starts silent.
+- **A restrike meets a string at rest.** The blow is solved against the
+  motion it gives the string, from rest: a key struck again while it sounds
+  meets no motion of the string under the hammer, while what the string still
+  sounds rings on, and is not turned down (Docs/decisions.md, 2026-11-10).
+  Seeding the contact with the string's own motion is a candidate for a
+  listening test.
 - **CPU.** On a development machine (an Intel Xeon at 2.1 GHz, GCC 13) the
   eight demos take 6 to 14 % of one core and their heaviest 256-frame
   blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to

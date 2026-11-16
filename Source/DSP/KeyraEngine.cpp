@@ -28,9 +28,10 @@ struct ActionParameters {
   float gain=.7f, width=.75f;
   float mute=0.f, sustain=0.f, sostenuto=0.f, soft=0.f;
   float mechanics=defaultMechanicsGain;
-  // Twice Parameters' default Room (setParameters), so an engine that has
-  // not been given parameters plays as one given the defaults.
-  float room=.2f;
+  // The room's size, as Parameters' default (setParameters), and whether it
+  // is heard (Parameters::roomHeard, tests' dry measures only).
+  float room=.6f;
+  bool roomHeard=true;
   Build build{};
 };
 constexpr double pi=3.14159265358979323846;
@@ -443,7 +444,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1850,.1475,.1073,.1608,.1661};
+  static constexpr double pascalScale[model::bodyCount]{.1866,.1494,.1073,.1601,.1669};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   // Each microphone's own output through a chunk, and held back by the
   // output stage's look-ahead (ForteOutput::maxDelay < 2048) to meet the mix.
@@ -698,9 +699,12 @@ struct Engine::Impl {
   void prepareRoom(bool glide=false) noexcept {
     const auto& room=builtRoom;
     const double w=std::tan(pi*std::min(static_cast<double>(room.crossover),.45*sampleRate)/sampleRate),a1=(w-1)/(w+1);
+    // Room's size: the measured decay times at Room 0.5, scaled as the
+    // model's room (model::roomScale).
+    const double scale=model::roomScale(parameters.room);
     for(int j=0;j<roomLines;++j){
       const double pass=roomLength[j]/sampleRate;
-      const double low=std::pow(10.,-room.lowRate*pass/20),high=std::pow(10.,-room.highRate*pass/20);
+      const double low=std::pow(10.,-room.lowRate/scale*pass/20),high=std::pow(10.,-room.highRate/scale*pass/20);
       roomLossTarget[j]={.5*(low*(1+a1)+high*(1-a1)),.5*(low*(1+a1)-high*(1-a1)),a1};
     }
     roomGain=room.gain;
@@ -717,7 +721,7 @@ struct Engine::Impl {
   }
   // The room through a chunk, from roomInput into roomLeft and roomRight.
   void playRoom(int frames) noexcept {
-    const double in=roomGain*parameters.room*.25;
+    const double in=parameters.roomHeard?roomGain*.25:0;
     for(int i=0;i<frames;++i){
       double y[roomLines],energy=0;
       for(int j=0;j<roomLines;++j){
@@ -841,7 +845,7 @@ struct Engine::Impl {
     c.body=set.body;c.hammer=set.hammer;c.age=set.age;c.detune=set.detune;c.stretch=set.stretch;c.dynamics=set.dynamics;
     c.lid=set.lid;c.soundboard=set.soundboard;c.sympathetic=set.sympathetic;c.duplex=set.duplex;
     for(int m=0;m<model::micCount;++m){c.mic[m]=set.mic[m];c.invert[m]=set.invert[m];}
-    c.room=set.room;c.tuning=set.tuning;c.felt=set.felt;c.mute=std::max(set.mute,wheelMute);
+    c.room=set.room;c.roomHeard=set.roomHeard;c.tuning=set.tuning;c.felt=set.felt;c.mute=std::max(set.mute,wheelMute);
     piano.setControls(c);
   }
   float wheelMute=0;
@@ -1067,7 +1071,7 @@ struct Engine::Impl {
     // click's noise does not depend on how long earlier noise sounded.
     else for(int i=0;i<2*frames;++i){seed^=seed<<13;seed^=seed>>17;seed^=seed<<5;}
     // The action's room hears its rings and its noise.
-    const bool roomHears=(rising||actionRinging||hissing)&&roomGain*parameters.room>0;
+    const bool roomHears=(rising||actionRinging||hissing)&&roomGain>0&&parameters.roomHeard;
     for(int i=0;i<frames;++i){
       const V4 l4=mixLeft[i],r4=mixRight[i];
       double l=static_cast<double>(lane(l4,0))+lane(l4,1)+lane(l4,2)+lane(l4,3);
@@ -1156,10 +1160,11 @@ void Engine::setParameters(const Parameters& input) noexcept {
   auto& action=p.parameters;
   action.gain=set.gain;action.width=set.width;action.mute=set.mute;
   action.sustain=set.sustain;action.sostenuto=set.sostenuto;action.soft=set.soft;action.mechanics=set.mechanics;
-  // The action's room is the one its noises were recorded in: as measured at
-  // Room 0.5, the default until 2.16.0. At the default 0.1 it keeps a fifth of
-  // it, as the strings keep a small hint of theirs (the owner, 2026-11-15).
-  action.room=2*set.room;
+  // The action's room is the one its noises were recorded in, at the level
+  // it was measured at; Room sizes it as it sizes the strings' (2.18.0): its
+  // decay times scale as the model's, the measured ones at Room 0.5.
+  const bool resized=action.room!=set.room;
+  action.room=set.room;action.roomHeard=set.roomHeard;
   // The action whose noises play: the measured grand's under every grand,
   // the measured upright's under the upright.
   const Build build=measuredBuild(set.body==model::Body::upright?Piano::upright:Piano::grand);
@@ -1167,6 +1172,7 @@ void Engine::setParameters(const Parameters& input) noexcept {
     action.build=build;
     p.share={sharesOf(build.soundboard),sharesOf(build.action)};
     p.assemble();p.prepareBody(p.rising||p.actionRinging);p.prepareNoise();p.prepareRoom(true);}
+  else if(resized)p.prepareRoom(true);
   for(int ch=0;ch<16;++ch)p.capture(ch);
   if(p.sleeping)p.snapNoiseMixes();
   p.applyControls();

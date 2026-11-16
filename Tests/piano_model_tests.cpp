@@ -309,6 +309,21 @@ int main(){
     std::cout<<"turned up at 0.5 s: the open strings "<<apart(plain,open)<<" dB of C3, the duplex scales "<<apart(high,sheen)<<" dB of C6\n";
     check(apart(plain,open)>-21,"Sympathetic reaches a sounding note");
     check(apart(high,sheen)>-34,"Duplex reaches a sounding note");
+    // Room turned while a chord rings glides there without a click: the
+    // high band (a second difference) in the 3 ms after the move stays under
+    // its peak in the half second of playing before. 2.18.0 set each wall's
+    // reflection at once: through the distant pair 21.4 dB over for 1 to 0
+    // and 3.8 dB over for 0.6 to 0.65, where 2.18.1 is 0.9 and 10.3 dB under.
+    const auto click=[&](float from,float to){Controls c;for(auto& m:c.mic)m=0;c.mic[keyra::model::micDistant]=1;c.room=from;
+      b.start(c);piano.setPedal(1);for(const int midi:{48,52,55,72})piano.strike(keyOf(midi),.8f);b.run(1);
+      c.room=to;piano.setControls(c);b.run(.1);
+      const auto high=[&](double from,double to){double peak=0;
+        for(std::size_t i=std::max<std::size_t>(2,b.take.at(from));i<b.take.at(to);++i)
+          peak=std::max(peak,std::abs(static_cast<double>(b.take.left[i])-2.*b.take.left[i-1]+b.take.left[i-2]));return peak;};
+      return 20*std::log10(high(1,1.003)/high(.5,1));};
+    for(const auto& move:{std::pair<float,float>{.3f,.9f},{.6f,.65f},{1,0}}){const double over=click(move.first,move.second);
+      std::cout<<"Room "<<move.first<<" to "<<move.second<<" on the distant pair: "<<over<<" dB of high band over the playing's\n";
+      check(over<2,"Room glides without a click");}
     // Another sample rate is the same piano.
     piano.prepare(96000);
     Controls d=bare();piano.setControls(d);piano.reset();piano.holdDamper(keyOf(69),true);piano.strike(keyOf(69),.6f);

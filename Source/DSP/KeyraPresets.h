@@ -17,9 +17,13 @@ inline constexpr std::array<const char*, model::micCount> micNames {{ "Close", "
 // mechanics, the mod wheel's mute and the pedals keep their values. A preset
 // has no level of its own: its microphone pairs' levels are set so that its
 // typical playing reads -9 VU, as every piano's default sound does
-// (Tools/KeyraLevels.cpp, which checks it). Each piano's default comes first,
-// in bodyOrder, then the special versions, piano by piano (owner,
-// 2026-11-15); a session finds its program by name (PluginProcessor.cpp).
+// (Tools/KeyraLevels.cpp, which checks it). Its Room is the size of a room
+// that piano would be played in (2.18.0): a recital room for the concert
+// grand (1 s), a studio's live room, a parlor, a living room for the baby
+// grand and the upright, a large hall for Distant Hall (1.8 s). Each piano's
+// default comes first, in bodyOrder, then the special versions, piano by
+// piano (owner, 2026-11-15); a session finds its program by name
+// (PluginProcessor.cpp).
 struct Preset {
   const char* name;
   model::Body body;
@@ -29,19 +33,19 @@ struct Preset {
   float room, width, felt;
 };
 inline constexpr std::array<Preset, 13> factoryPresets {{
-    { "Concert Grand", model::Body::concertGrand, 0.f, 0.f, .3f, 1.f, .5f, 1.f, .5f, .5f, .5f, { 1.f, 0.f, 0.f, 0.f }, .1f, .75f, 0.f },
-    { "Studio Grand", model::Body::studioGrand, .3f, 0.f, .25f, 1.f, .45f, 1.f, .4f, .35f, .5f, { .9f, .45f, 0.f, 0.f }, .06f, .6f, 0.f },
-    { "Parlor Grand", model::Body::parlorGrand, 0.f, 0.f, .3f, 1.f, .5f, 1.f, .5f, .5f, .5f, { 1.f, 0.f, 0.f, 0.f }, .1f, .75f, 0.f },
-    { "Baby Grand", model::Body::babyGrand, .1f, .15f, .35f, 1.f, .5f, 1.f, .5f, .5f, .5f, { .72f, .54f, 0.f, 0.f }, .08f, .75f, 0.f },
-    { "Upright", model::Body::upright, 0.f, .2f, .4f, 1.f, .5f, 1.f, .5f, .5f, 0.f, { 1.f, 0.f, 0.f, 0.f }, .1f, .75f, 0.f },
-    { "Felt Nocturne", model::Body::concertGrand, -.3f, .1f, .3f, 1.f, .4f, .5f, .55f, .5f, .3f, { 1.f, .75f, 0.f, 0.f }, .1f, .65f, .6f },
-    { "Open Strings", model::Body::concertGrand, 0.f, 0.f, .35f, 1.f, .55f, 1.f, .7f, 1.f, 1.f, { .42f, .42f, .67f, 0.f }, .12f, .9f, 0.f },
-    { "Distant Hall", model::Body::concertGrand, -.1f, 0.f, .3f, 1.f, .55f, 1.f, .6f, .6f, .5f, { 0.f, .2f, .44f, .64f }, .16f, .9f, 0.f },
-    { "Warm Walnut", model::Body::parlorGrand, -.5f, .25f, .35f, 1.f, .5f, .5f, .6f, .6f, .4f, { .7f, .7f, .3f, 0.f }, .1f, .7f, 0.f },
-    { "Old Parlor", model::Body::parlorGrand, -.2f, .8f, .6f, .8f, .5f, .5f, .5f, .6f, .6f, { .71f, 0.f, .95f, 0.f }, .1f, .7f, 0.f },
-    { "Felt Upright", model::Body::upright, -.4f, .3f, .4f, 1.f, .4f, .5f, .5f, .4f, 0.f, { 1.f, .6f, .5f, 0.f }, .08f, .6f, .7f },
-    { "Pop Upright", model::Body::upright, .6f, .1f, .3f, 1.f, .4f, 1.f, .4f, .3f, 0.f, { .82f, .33f, 0.f, 0.f }, .05f, .55f, 0.f },
-    { "Bar Piano", model::Body::upright, .5f, .7f, 1.f, .6f, .45f, 1.f, .5f, .5f, 0.f, { .72f, 0.f, .96f, 0.f }, .1f, .7f, 0.f }
+    { "Concert Grand", model::Body::concertGrand, 0.f, 0.f, .3f, 1.f, .5f, 1.f, .5f, .5f, .5f, { 1.f, 0.f, 0.f, 0.f }, .6f, .75f, 0.f },
+    { "Studio Grand", model::Body::studioGrand, .3f, 0.f, .25f, 1.f, .45f, 1.f, .4f, .35f, .5f, { .9f, .45f, 0.f, 0.f }, .3f, .6f, 0.f },
+    { "Parlor Grand", model::Body::parlorGrand, 0.f, 0.f, .3f, 1.f, .5f, 1.f, .5f, .5f, .5f, { 1.f, 0.f, 0.f, 0.f }, .2f, .75f, 0.f },
+    { "Baby Grand", model::Body::babyGrand, .1f, .15f, .35f, 1.f, .5f, 1.f, .5f, .5f, .5f, { .72f, .54f, 0.f, 0.f }, .15f, .75f, 0.f },
+    { "Upright", model::Body::upright, 0.f, .2f, .4f, 1.f, .5f, 1.f, .5f, .5f, 0.f, { 1.f, 0.f, 0.f, 0.f }, .15f, .75f, 0.f },
+    { "Felt Nocturne", model::Body::concertGrand, -.3f, .1f, .3f, 1.f, .4f, .5f, .55f, .5f, .3f, { 1.f, .75f, 0.f, 0.f }, .35f, .65f, .6f },
+    { "Open Strings", model::Body::concertGrand, 0.f, 0.f, .35f, 1.f, .55f, 1.f, .7f, 1.f, 1.f, { .42f, .42f, .67f, 0.f }, .7f, .9f, 0.f },
+    { "Distant Hall", model::Body::concertGrand, -.1f, 0.f, .3f, 1.f, .55f, 1.f, .6f, .6f, .5f, { 0.f, .2f, .44f, .64f }, .9f, .9f, 0.f },
+    { "Warm Walnut", model::Body::parlorGrand, -.5f, .25f, .35f, 1.f, .5f, .5f, .6f, .6f, .4f, { .7f, .7f, .3f, 0.f }, .25f, .7f, 0.f },
+    { "Old Parlor", model::Body::parlorGrand, -.2f, .8f, .6f, .8f, .5f, .5f, .5f, .6f, .6f, { .71f, 0.f, .95f, 0.f }, .2f, .7f, 0.f },
+    { "Felt Upright", model::Body::upright, -.4f, .3f, .4f, 1.f, .4f, .5f, .5f, .4f, 0.f, { 1.f, .6f, .5f, 0.f }, .15f, .6f, .7f },
+    { "Pop Upright", model::Body::upright, .6f, .1f, .3f, 1.f, .4f, 1.f, .4f, .3f, 0.f, { .82f, .33f, 0.f, 0.f }, .1f, .55f, 0.f },
+    { "Bar Piano", model::Body::upright, .5f, .7f, 1.f, .6f, .45f, 1.f, .5f, .5f, 0.f, { .72f, 0.f, .96f, 0.f }, .35f, .7f, 0.f }
 }};
 
 inline Parameters withPreset(Parameters parameters, const Preset& preset) noexcept {
