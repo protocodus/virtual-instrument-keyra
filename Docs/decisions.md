@@ -5911,3 +5911,51 @@ raised to keep its playing level within the bank's 2 dB of -9 VU, as the
 bank's header says levels are set. The action's own room follows Room as it
 did (2 x Room of its measured room), so at the default it keeps a fifth of
 it.
+
+## 2026-11-16 — A denser room: D, chosen by ear (2.17.0)
+
+The owner asked: "fix room - make it more dense, higher quality, e.g. felt is
+doing a lot of reverb in a room which doees not sound very realistic". Three
+denser rooms were each defensible on their own terms, and no measurement
+here says which a listener hears as more real, so they went to the owner as
+a blind A–D set: A the shipping 2.16.0 room (16 lines), B the strings fed
+into it through three allpass diffusers, as the case's knock already is,
+C both the diffused strings and 32 lines on prime, log-spread delays, and D
+the 32 prime lines with the strings fed in as shipped. Two takes, Concert
+Grand (close pair) and a felt setting (Felt 0.6, close and XY pairs), both
+at Room 0.5 so the room was clearly heard; identical phrase, rate and block
+size; every file level-matched to A on whole-file RMS of both channels
+(trims B +0.08 and +0.52 dB, C +1.03 and +0.83, D +1.25 and +0.54; not
+committed). The key stayed unread until the answer.
+
+The owner answered: "ad room: any is fine C or D". D was taken: it is the
+simpler of the two, and it leaves the strings' feed as shipped, where
+feeding them through allpass sections cost the upright's bass partials
+0.4 dB against its recordings when it was tried for 2.7.0. That choice
+between C and D was made for simplicity and that earlier benchmark, not by
+ear and not by a new measurement.
+
+What the choice licensed: 32 lines on log-spread prime lengths from 19 to
+97 ms, and the room's level as the owner heard D, 2.2 dB under 2.16.0's at
+the same Room. The listening set's D summed its lines' outputs at 1/sqrt 2
+of A's, so its room stood 2.2 dB lower than A's (an impulse's energy, by a
+replica of the network); A's level-matching trims made up for that only in
+the whole file. A and B were heard at the shipping room level, and C and D,
+both on 32 lines, at their outputs' 1/sqrt 2, so the answer may also be
+about how much room there is. The room keeps D's level; one constant (`roomLevel`) restores
+2.16's if the owner wants it back.
+
+Folded in, from the review of the model, not by ear: each line's loss
+became a shelf over its own length (Jot and Chaigne 1991), where every line
+had taken the same 5.2 kHz one-pole loss each pass, so that a short line's
+top died twice as fast as a long one's. The shelf (75 dB/s at DC, 284 dB/s
+at Nyquist, crossing at 4.5 kHz) is set so the network's mean decay keeps
+what D had, within 2 dB/s to 20 kHz; it moved D's impulse energy by +0.7 dB,
+which the room's level takes back.
+
+Against the recordings D moves both ways (README 2.17.0,
+Docs/validation/*-room-d-benchmark-2026-11-16): the image further from them
+(the channels' level difference 0.40 dB on the grand's unfitted notes,
+1.25 dB on the upright's), the upright's partials and the grand's onsets
+nearer. It ships as the owner's choice by ear with that movement reported,
+not as a measured improvement.

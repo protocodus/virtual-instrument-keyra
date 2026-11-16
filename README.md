@@ -51,6 +51,51 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.17.0 — 2026-11-16 — a denser room (chosen by ear)
+
+The owner asked for a room that is "more dense, higher quality", after felt
+notes rang in it in a way that did not sound real. Of four rooms heard
+blind, A as shipped and three denser ones, the owner said C or D would do;
+D is taken (Docs/decisions.md). The panel, the presets and a saved session
+do not change.
+
+- **Twice the lines.** The room is 32 delay lines where it was 16, their
+  lengths spread evenly on a log scale over 19 to 97 ms, each the first
+  prime number of samples at or above its length, so that no two lines'
+  echoes fall together. Fed an impulse where the strings go in, 679 of its
+  first 50 ms' samples carry an echo where 156 did, and its echoes grow
+  dense in 140 ms where they took 210: the sparse start a soft felt attack
+  exposed most. The strings go into it as before, with no extra
+  diffusion (the strings through allpass sections cost the upright's bass
+  0.4 dB against its recordings in 2.7.0).
+- **Each line decays as the room does.** Every line took the same 5.2 kHz
+  loss each pass, so a short line's top died twice as fast as a long one's
+  (at 5 kHz in 0.28 s on the 19 ms line, 0.58 s on the 97 ms one). Each
+  line's loss is now a shelf over its own length (Jot and Chaigne 1991), so
+  every line rings 0.79 s at 500 Hz, 0.45 s at 5 kHz and 0.22 s at 20 kHz,
+  the room's mean before.
+- **The room 2.2 dB lower at the same Room**, as the owner heard D. The
+  return averages 2.0 dB lower over the concert grand's keys and 3.0 dB over
+  the upright's; Distant Hall plays at -10.33 VU (-9.97). The keys are
+  voiced again with the new room: the furthest key in Keyra.Levels' mixes
+  stands -1.12 to +1.19 dB off the even scale (-1.18 to +1.16 in 2.16.1),
+  and each piano's output scale moves by -0.03 to +0.23 dB.
+- **CPU.** The 32 lines cost about a tenth more: a 12 s phrase under the
+  sustain pedal renders in 1.14 s of one core where it took 1.02 (an Apple
+  M1 Max, `keyra_render`).
+- **Against the recordings the movement is mixed**
+  ([grand](Docs/validation/grand-room-d-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-room-d-benchmark-2026-11-16.md), against
+  2.16.2 at each piano's default Room, 0.1). The image moves away from them:
+  the level difference between the channels by 0.40 dB on the grand's
+  unfitted notes and 1.25 dB on the upright's (0.19 and 0.23 on the notes
+  1.0.0 fitted). The upright's partials come nearer, by 0.53 dB (0.29), and
+  the grand's onsets by 0.5 to 0.8 ms, while the grand's unfitted partials
+  and sustain stand 0.12 dB further off. 64 single scores are worse on the
+  grand and 47 on the upright, most of them the image. The 32 lines do it,
+  not the lines' new losses: the room as the owner heard it scores within
+  0.06 dB of this one on every mean.
+
 ### 2.16.2 — 2026-11-16 — the phantom partials under una corda
 
 One more correction from the same review, not chosen by ear. The panel, the
@@ -1076,8 +1121,10 @@ Room's return and the action's noises are the mix's.
 
 At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
-feedback delay network of sixteen lines under a Hadamard mix (Jot and
-Chaigne 1991) ringing 0.8 s,
+feedback delay network of 32 lines under a Hadamard mix (Jot and Chaigne
+1991), their lengths spread from 19 to 97 ms, each a prime number of
+samples, ringing 0.8 s at 500 Hz and 0.45 s at 5 kHz, with the same decay in
+every line (2.17.0, the owner's choice by ear),
 which hears the piano as the distant pair does and which each pair hears by
 its distance, the close pair too (set against what the Salamander grand's
 treble notes leave after the knock under them). The room also returns to

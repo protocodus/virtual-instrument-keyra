@@ -59,7 +59,7 @@ constexpr int bankPartials=10,duplexModes=2,bankSlots=bankPartials+duplexModes;
 constexpr int chunk=32;
 constexpr int maxContacts=24;
 constexpr int hfTapsPerPoint=6;
-constexpr int roomLines=16,roomSpreads=3;
+constexpr int roomLines=32,roomSpreads=3;
 
 struct Rng {
   std::uint32_t s;
@@ -249,9 +249,16 @@ constexpr double whisperTravel=1.9e-6;   // m: see whisper()
 // 200 ms without the room, and with it in the room the bass's partials
 // stood 0.2 to 0.3 dB further from the recording's.
 constexpr float caseSound=.6f;
-// Sixteen lines give an impulse back 1.4 dB louder than the eight of 2.6.0
-// did; this keeps the room's level.
-constexpr float roomLevel=.85f;
+// Sixteen lines gave an impulse back 1.4 dB louder than the eight of 2.6.0
+// did, and .85 kept the room's level. The thirty-two of 2.17.0 keep the
+// level the owner chose them at by ear: the room 2.2 dB under 2.16's at the
+// same Room, as the listening set played it (Docs/decisions.md, 2026-11-16);
+// at .85 they would stand 1.5 dB over it.
+constexpr float roomLevel=.556f;
+// The orthonormal Hadamard matrix's scale, 1/sqrt(lines), and each line's
+// share of what enters the room, 2/sqrt(lines): the same energy goes in
+// whatever the lines.
+constexpr float roomMix=.17677670f,roomFeed=.35355339f;
 // The Room KeyVoicing.h measures the room's return at: the default, which
 // KeyraLevels --write-keys plays.
 constexpr float voicedRoom=.1f;
@@ -1258,18 +1265,23 @@ struct Piano::Impl {
 
   // The room: a feedback delay network (J.-M. Jot and A. Chaigne, "Digital
   // delay networks for designing artificial reverberators", AES 90th
-  // Convention, 1991) of sixteen lines mixed by a Hadamard matrix. Eight
+  // Convention, 1991) of 32 lines mixed by a Hadamard matrix. Eight
   // lines under a Householder reflection, as 2.6.0 had, took 310 ms to grow
   // dense (normalized echo density 0.9, Abel and Huang 2006) and a knock rang
   // in them as in a spring; sixteen take 180 ms, and 130 behind three allpass
   // sections (M. R. Schroeder, "Natural sounding artificial reverberation",
   // JAES 10, 1962). Only the case's knock goes through those: with the board
   // through them too, the upright's bass partials stood 0.4 dB further from
-  // the recorded ones (11.13 against 10.73 dB).
+  // the recorded ones (11.13 against 10.73 dB). 2.17.0 doubles the lines,
+  // on lengths no two of which share a factor, the owner's choice by ear (D
+  // of an A-D set, Docs/decisions.md): fed an impulse where the strings go
+  // in, 679 of the first 50 ms' samples carry an echo where 156 did, and the
+  // echoes grow dense in 140 ms where they took 210 (a replica of the
+  // network, the lines' losses as 2.16's).
   static constexpr int roomSize=32768,spreadSize=4096;
   float roomLine[roomLines][roomSize]{};
   int roomDelay[roomLines]{},roomAt=0;
-  float roomGain[roomLines]{},roomDamp[roomLines]{},roomState[roomLines]{};
+  float roomB0[roomLines]{},roomB1[roomLines]{},roomA1=0,roomIn[roomLines]{},roomState[roomLines]{};
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
   double dcPole=0;
@@ -1890,16 +1902,30 @@ struct Piano::Impl {
     if(quiet)snapMix();
   }
   void prepareRoom() noexcept {
-    // Line lengths spread over 23 to 97 ms; the room falls 60 dB in 0.8 s,
-    // its top in half that.
-    constexpr double seconds[roomLines]{.0229,.0267,.0311,.0353,.0397,.0441,.0487,.0533,
-                                        .0581,.0631,.0683,.0737,.0793,.0851,.0911,.0973};
+    // The lines' lengths spread evenly on a log scale over 19 to 97 ms, each
+    // the first odd prime at or above it in samples at the rate, so that no
+    // two lines' echoes fall together. Each line loses over one pass what
+    // the room loses in that time (Jot and Chaigne 1991): a first-order
+    // shelf from 75 dB/s at DC (60 dB in 0.8 s) to 284 dB/s at Nyquist,
+    // crossing at 4.5 kHz. Through 2.16 every line took the same 5.2 kHz
+    // one-pole loss a pass, so a short line's top died twice as fast as a
+    // long one's (at 5 kHz in 0.28 s on the 19 ms line, 0.58 s on the 97 ms
+    // one, on these lines). The shelf is set so the network's mean decay
+    // keeps that loss's, within 2 dB/s to 20 kHz (0.79 s at 500 Hz, 0.45 s at
+    // 5 kHz, 0.22 s at 20 kHz), now the same in every line.
+    constexpr double shortest=.019,longest=.097,lowRate=60/.8,highRate=283.9,crossover=4476;
     constexpr double spreads[roomSpreads]{.0047,.0073,.0113};
     for(int k=0;k<roomSpreads;++k)spreadDelay[k]=std::min(spreadSize-1,static_cast<int>(spreads[k]*sampleRate)|1);
+    const auto prime=[](int n){for(int d=2;d*d<=n;++d)if(n%d==0)return false;return n>1;};
+    const double w=std::tan(pi*std::min(crossover,.45*sampleRate)/sampleRate),a1=(w-1)/(w+1);
+    roomA1=static_cast<float>(a1);
     for(int k=0;k<roomLines;++k){
-      roomDelay[k]=std::min(roomSize-1,static_cast<int>(seconds[k]*sampleRate)|1);
-      roomGain[k]=static_cast<float>(std::pow(10.,-3*seconds[k]/.8));
-      roomDamp[k]=static_cast<float>(1-std::exp(-2*pi*5200/sampleRate));
+      int n=static_cast<int>(shortest*std::pow(longest/shortest,k/(roomLines-1.))*sampleRate)|1;
+      while(!prime(n))n+=2;
+      roomDelay[k]=std::min(roomSize-1,n);
+      const double pass=roomDelay[k]/sampleRate;
+      const double low=std::pow(10.,-lowRate*pass/20),high=std::pow(10.,-highRate*pass/20);
+      roomB0[k]=static_cast<float>(.5*(low*(1+a1)+high*(1-a1)));roomB1[k]=static_cast<float>(.5*(low*(1+a1)-high*(1-a1)));
     }
   }
   void silence() noexcept {
@@ -1908,7 +1934,7 @@ struct Piano::Impl {
     for(auto& c:contacts)c.active=false;
     std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
     std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
-    std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(spreadLine,0,sizeof(spreadLine));
+    std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
     for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
     for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
     std::memset(lineBeside,0,sizeof(lineBeside));
@@ -2007,12 +2033,13 @@ struct Piano::Impl {
     for(auto& point:highpass)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
     for(auto& point:besideFilter)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
     for(float& x:roomState)if(std::abs(x)<still)x=0;
+    for(float& x:roomIn)if(std::abs(x)<still)x=0;
     quietChunks=sounding||loud>1e-9f?0:quietChunks+1;loud=0;
     // Two seconds of nothing: everything left is put to rest.
     if(quietChunks*chunk>2*sampleRate){
       std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
       std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
-      std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(spreadLine,0,sizeof(spreadLine));
+      std::memset(line,0,sizeof(line));std::memset(roomLine,0,sizeof(roomLine));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
       for(double& x:travel)x=0;
       for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
       for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
@@ -2194,7 +2221,7 @@ struct Piano::Impl {
         held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
       // What the room gives the microphones (roomL, roomR) and, from the same
       // lines under orthogonal signs (bit 3 against bit 2: over each side's
-      // eight lines the two sign rows multiply to zero), the return the mix
+      // sixteen lines the two sign rows multiply to zero), the return the mix
       // hears at Room's level below (returnL, returnR). The two hear the same
       // room and decay alike but do not correlate, so a microphone heard in
       // the opposite polarity (the upright's live and distant pairs, MicSpec
@@ -2204,13 +2231,13 @@ struct Piano::Impl {
       float back[roomLines],roomL=0,roomR=0,returnL=0,returnR=0;
       for(int k=0;k<roomLines;++k){
         const float x=roomLine[k][(roomAt-roomDelay[k])&roomMask];
-        roomState[k]+=roomDamp[k]*(x-roomState[k]);back[k]=roomState[k]*roomGain[k];
+        const float y=roomB0[k]*x+roomB1[k]*roomIn[k]-roomA1*roomState[k];roomIn[k]=x;roomState[k]=y;back[k]=y;
         if(k&1){roomR+=(k&4)?-back[k]:back[k];returnR+=(k&8)?-back[k]:back[k];}
         else{roomL+=(k&4)?-back[k]:back[k];returnL+=(k&8)?-back[k]:back[k];}}
       for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
         const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
       for(int k=0;k<roomLines;++k)
-        roomLine[k][roomAt]=.25f*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-.5f:.5f)+knock*(((k^(k>>1))&2)?-.5f:.5f);
+        roomLine[k][roomAt]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
       roomAt=(roomAt+1)&roomMask;
       roomL*=roomLevel;roomR*=roomLevel;returnL*=roomLevel;returnR*=roomLevel;
       // Each microphone: what it hears and its room, through its circuit;
