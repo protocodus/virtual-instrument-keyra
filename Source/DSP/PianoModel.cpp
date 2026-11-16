@@ -826,7 +826,9 @@ void designBoard(Tables& t,int body){
       for(int k=0;k<t.modes;++k){const double wm=2*pi*all[k].hertz,sm=pi*all[k].hertz*boardLoss;
         Y+=std::complex<double>(0,w)*shape2[k]/(modalMass*std::complex<double>(wm*wm-w*w,2*sm*w));}
       const Met m=meets(i,key,hertz,Y);
-      key.couplingRe[n]=static_cast<float>(m.met.real());key.couplingIm[n]=static_cast<float>(m.met.imag());
+      // The bridge takes from a stiff string as it is pulled by it (build).
+      const double stiff=1+key.inharmonicity*(n+1)*(n+1);
+      key.couplingRe[n]=static_cast<float>(stiff*m.met.real());key.couplingIm[n]=static_cast<float>(stiff*m.met.imag());
     }
     const double unit=2*key.hertz*key.impedance/t.infinite;
     for(int step=0;step<restSteps;++step){const double hertz=restHertz(step);
@@ -1519,17 +1521,17 @@ struct Piano::Impl {
       v.open[k]=static_cast<float>(std::exp(-loss/sampleRate));
       v.damped[k]=static_cast<float>(std::exp(-(loss+key.damper*felt)/sampleRate));
       // The string's pull on the bridge is its tension times its slope
-      // there: T k pi / L per metre of mode k, alternating. A hinged stiff
-      // string's bending adds E I (k pi / L)^3 to it, 1 + B k^2 times this
-      // (and as much to what the bridge takes): 1.4 dB at 1.2 kHz and 6 dB
-      // at 4 kHz on the concert grand's A0, 1 dB at 7 kHz on A4. Tried
-      // (2026-11-16) and left out: the Salamander's partials scored the same
-      // (7.89 to 7.88 dB on the fitted notes, 7.35 to 7.32 on the others) and
-      // seven bass notes' noise between the partials 0.6 to 3.4 dB worse,
-      // several loud bass notes standing over the recording about 8 kHz
-      // already; the hammers and the strings' losses are fitted without it
-      // (README, Known gaps).
-      v.bridge[k]=static_cast<float>(key.tension*(k+1)*pi/key.length*((k&1)?-1:1));
+      // there, T k pi / L per metre of mode k, alternating, and a hinged
+      // stiff string's bending adds E I (k pi / L)^3: 1 + B k^2 times the
+      // slope's (and as much on what the bridge takes, couplingRe), 1.4 dB
+      // at 1.2 kHz and 6 dB at 4 kHz on the concert grand's A0, 1 dB at
+      // 7 kHz on A4. In since 2.20.0, the owner's choice by ear
+      // (2026-11-16). The Salamander's partials score the same with it
+      // (7.89 to 7.88 dB on the fitted notes, 7.35 to 7.32 on the others);
+      // seven bass notes' noise between the partials is 0.5 to 3.4 dB
+      // worse, their hammers and losses being fitted without it (README,
+      // Known gaps).
+      v.bridge[k]=static_cast<float>(key.tension*(k+1)*pi/key.length*(1+key.inharmonicity*(k+1)*(k+1))*((k&1)?-1:1));
       // The longitudinal force: stretching raises the tension by
       // E S pi^2 / (4 L^2) * sum of k^2 y_k^2, whose part at twice each
       // partial pulls the bridge along the string (H. A. Conklin, "Generation
@@ -1870,7 +1872,7 @@ struct Piano::Impl {
           const double split=apart*w/std::max(1e-9,static_cast<double>(key.couplingRe[slot]));
           loss=stringLoss(key,w)+(1+(key.strings-1)*std::sqrt(std::max(0.,1-split*split)))*key.couplingRe[slot];
           damper=key.damper*(.2+.8*std::pow(std::sin((slot+1)*pi*.115),2));
-          pull=key.tension*(slot+1)*pi/key.length*((slot&1)?-1:1);
+          pull=key.tension*(slot+1)*pi/key.length*(1+key.inharmonicity*(slot+1)*(slot+1))*((slot&1)?-1:1);
           drive=2/(key.density*key.length*w)*pull;
           pull*=key.strings;
         }else{
