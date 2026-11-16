@@ -67,6 +67,24 @@ Salamander grand's hardest takes of the same notes
   Soft and medium playing, and everything from middle C up, is as it was.
 - **The keys are voiced again** (`KeyVoicing.h`) and each piano's level is
   pinned again, 0.05 to 0.36 dB up; every default sound reads −9.00 VU.
+- **Against the Salamander grand**
+  ([report](Docs/validation/grand-fortissimo-bass-benchmark-2026-11-16.md)):
+  the noise between the partials stands 0.22 dB closer on the fitted notes
+  (8.17 to 7.95) and 0.27 on the others (7.82 to 7.56), all of it in the
+  bass (9.01 to 8.33 and 8.82 to 7.96); at the bass's two hardest layers it
+  reads 10.1 dB where 2.21.0 read 13.8 and 2.20.0 8.6. The partials are
+  within 0.03 dB (7.77 to 7.79 and 7.23 to 7.26; the bass's two hardest
+  layers 10.0 to 10.3) and the levels within 0.04. A1's rise time is 2 to
+  5 ms further off.
+- **Against the Helsinki upright**
+  ([report](Docs/validation/upright-fortissimo-bass-benchmark-2026-11-16.md)),
+  measured on the owner's computer: the noise between the partials stands
+  0.20 dB closer on the fitted notes (11.20 to 11.00) and 0.19 on the
+  others (9.84 to 9.65), five notes from A1 to A2 by 0.6 to 1.2 dB; at the
+  bass's two hardest layers it reads 14.8 dB where 2.21.0 read 16.6 and
+  2.20.0 13.3. The partials are within 0.03 dB. The levels stand 0.11 dB
+  further off on the fitted notes (3.92 to 4.01) and 0.02 on the others,
+  in the bass, C1's by 0.54 dB.
 
 ### 2.21.0 — 2026-11-16 — String age, the practice felt and the fortissimo go further (the owner's choices)
 
@@ -1686,14 +1704,14 @@ is written independently of it.
 - **The fortissimo is harder than the recorded grand's.** Velocity 127
   throws the hammer at 6.75 m/s by the owner's choice by ear (2.21.0); a
   top of 6.0 m/s met the Salamander grand's step from its eighth layer to
-  its sixteenth in the middle of the keyboard. In the bass the hardest
-  notes are louder and hold more between their partials than the recorded
-  ones: from A0 to A2 the step stands 1.6 dB from the recording's on
-  average, and the noise between the partials of the bass's two hardest
-  layers reads 13.8 dB where 2.20.0 read 8.6
-  ([report](Docs/validation/grand-fortissimo-benchmark-2026-11-16.md)); on
-  the Helsinki upright's two hardest it reads 16.6 where it read 13.3
-  ([report](Docs/validation/upright-fortissimo-benchmark-2026-11-16.md)).
+  its sixteenth in the middle of the keyboard. Below middle C the rise
+  fades to none at A0, also by ear (2.22.0), which is a straight line and
+  no fit of each key: from A0 to A2 the step stands 0.6 dB from the
+  recording's on average, and the noise between the partials of the bass's
+  two hardest layers reads 10.1 dB where 2.20.0, without the rise, read 8.6
+  ([report](Docs/validation/grand-fortissimo-bass-benchmark-2026-11-16.md));
+  on the Helsinki upright's two hardest it reads 14.8 where 2.20.0 read 13.3
+  ([report](Docs/validation/upright-fortissimo-bass-benchmark-2026-11-16.md)).
   Loud middle notes still hold 3 to 4 dB less than the recording in the
   octave about 4 kHz in their first 100 ms, which is the felt's fit on
   every layer, and from C6 up the hardest notes hold 12 to 16 dB less

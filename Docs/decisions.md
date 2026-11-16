@@ -6279,9 +6279,9 @@ matched to A on whole-file RMS.
   voiced and each piano's level pinned again.
 
 The owner chose **B**: "Fortissimo bass B" (2026-11-16). A choice by ear.
-B's line is the simplest that meets the recording's step at both ends, none
-at A0 and the owner's full rise at middle C; the step on those eight keys
-stands 0.6 dB from the recording's on average. It is not a fit of each key.
+B's line runs straight from no rise at A0 to the owner's full rise at
+middle C; with it the step on those eight keys stands 0.6 dB from the
+recording's on average. It is not a fit of each key.
 
 What it licenses: a key's `topRise`, `topRise*clamp(i/39,0,1)`, on every
 piano; `KeyVoicing.h` written again and `pascalScale` pinned again (0.05 to
@@ -6290,3 +6290,19 @@ among the Known gaps: loud middle notes hold 3 to 4 dB less than the
 recording about 4 kHz in their attack, the treble's strike noise is 12 to
 16 dB short in the octaves about 4 and 8 kHz, and the treble's step from C6
 is over the recording's.
+
+Against the Salamander grand
+(Docs/validation/grand-fortissimo-bass-benchmark-2026-11-16.md), 2.22.0
+beside 2.21.0: the noise between the partials stands 0.22 and 0.27 dB
+closer in the paired means, all of it in the bass, and at the bass's two
+hardest layers reads 10.1 dB where it read 13.8 (2.20.0: 8.6); the partials
+are within 0.03 dB and the levels within 0.04. The comparison lists two
+regressions, both A1's rise time (2.1 and 5.4 ms).
+
+Against the Helsinki upright, on the owner's computer
+(Docs/validation/upright-fortissimo-bass-benchmark-2026-11-16.md): the noise
+between the partials stands 0.20 and 0.19 dB closer in the paired means and
+at the bass's two hardest layers reads 14.8 dB where it read 16.6 (2.20.0:
+13.3); the partials are within 0.03 dB; the levels stand 0.11 and 0.02 dB
+further off. The comparison lists one regression, C1's level by 0.54 dB.
+Both reports were given to the owner with the build.
