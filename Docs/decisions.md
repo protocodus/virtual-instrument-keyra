@@ -6037,3 +6037,90 @@ average, 8.0 ms in 2.18.0 and 4.8 ms without the force. Nothing measured
 asks for a smaller precursor, and taking it out would move C1 further from
 the recording.
 
+
+## 2026-11-16 — 2.19.0: a key struck again meets its moving string
+
+The owner asked for an audit of the physical model ("identify and fix any
+physical model issues"). The model was read whole against its stated
+physics. Its formulas hold; three things did not, and one of them is left.
+
+**The hammer met a string at rest.** Decided on what the model can defend,
+with the candidate taken as the project's rule has it. A listening set was
+rendered and handed over; no listening verdict is recorded yet.
+
+Since 2.0.0 the felt's force is solved against the motion it gives one
+string, from rest, and added to what rings. The entry of 2026-11-10 left the
+hammer's meeting with a moving string out because the engine of that day had
+no contact to solve it with and any law would have needed a drawn number.
+2.x has the contact. Starting it from the string's own motion (the mean of
+the unison's strings at the strike point, the hammer where that string
+stands) needs no new constant: the felt's law, the hammer's mass and the
+string are the ones a first strike uses, and the force still adds to what
+rings, which is exact for a linear string given the right force.
+
+- A is 2.18.1. B starts the contact from the string's motion.
+- A first strike on resting strings is the same samples in both (twenty
+  checked: five pianos, four keys), so the benchmarks' single notes stand
+  where they stood.
+- What a soft blow (0.3) adds 0.3 s after a hard one (0.9), against the
+  same blow at rest, across one period of the note: within 0.6 dB at every
+  moment in A; −1.0 to +5.0 dB on A1 and +1.2 to +7.6 dB on C4 in B. A hard
+  blow after a soft one stays within 0.3 dB (A1) and 1.6 dB (C4) of the blow
+  at rest in B. `Keyra.PianoModel` holds both.
+- As the plug-in plays, pedal down, six strikes at 0.25 s, velocity 80, each
+  strike's first 100 ms against the first: the README's table. The bass
+  builds less (the grand's C2 reaches +3.6 dB where A reaches +6.0, the
+  upright's +0.6 where A reaches +3.7) and the middle more (C4 +4.0 against
+  +2.1, the upright's +2.5 against −0.1).
+- The listening set (set 1: C4 six times, a chord four times, G5 ten times,
+  C2 three times, A3 once hard and four times soft, pedal held; the grand
+  and the upright) is matched on whole-file RMS, B trimmed −0.28 dB on the
+  grand and +0.24 dB on the upright.
+
+What it licenses: the string's motion under the hammer, by the contact the
+model already had. Not a new law for three strings under one felt: the
+hammer still meets one string, their mean (Known gaps).
+
+**The pitch glide counted the unison's sum as one string.** A correction,
+not a choice. Above the 48th partial plane 0 holds the strings' sum, and the
+glide's energy took it as one string's: four times a pair's share, nine
+times three strings'. Counted per string, a velocity-127 blow moves by under
+0.02 cents, and the render stands 60 dB or more under the note in difference
+(G1 to C3 measured, both pianos; C1's one string and C4 and C5 render the
+same samples).
+`stretchKept` was set against the Salamander's glide with the miscount in
+it and stays: the change is far inside what that fit resolves.
+
+**A stiff string's pull on the bridge leaves out its bending. Left as it
+is.** A hinged stiff string pulls its support with T k pi / L (1 + B k^2)
+per metre of partial k, and loses to the bridge in the same measure; the
+model has T k pi / L. With the factor, the Salamander benchmark's paired
+means stand within 0.06 of 2.18.1's on every metric but the noise between
+the partials, which is 0.44 dB (fitted notes) and 0.29 dB (the others)
+worse, all of it in the bass: seven notes from A0 to F#2 by 0.6 to 3.4 dB
+(Docs/validation/grand-stiff-pull-benchmark-2026-11-16.md). In octave bands
+against the recordings (0.1 to 0.6 s, twenty-four notes) the factor closes
+part of the model's shortfall in the 8 kHz octave from C3 to C6 (by 0.4 to
+1.6 dB of 4 to 17) and adds to an excess several loud bass notes already
+have there (A0 at velocity 117 from +3 to +11 dB, C1 from +6 to +14, F#2
+from +12 to +14). The hammers' stiffness
+and the strings' losses were fitted to recordings without the factor, and
+the recordings they were fitted to are not in this session, nor the
+upright's. So the formula is the string's, the score does not ask for it
+alone, and it is a Known gap with a listening set beside it (set 2: A is
+2.18.1, B is 2.18.1 with the factor; the difference stands 40 dB under the
+phrase on the grand and 31 dB on the upright). Taking it means fitting the
+bass hammers again with it in.
+
+Checked and found sound: the longitudinal force and its modes, the felt's
+implicit solve, the modal drive, the bridge's coupling and the tuner's
+compensation for it, the board's admittance, the bridge's beam in series,
+the radiation integral, the open strings' drive by the moving bridge, and
+the model across sample rates (bare strings at 44.1 to 192 kHz within
+0.1 dB in level and 0.5 dB a third-octave under 4 kHz).
+
+Levels and tests. `KeyraLevels --check` passes with the keys' table as it
+was; the `unit`, `audio` and `perf` tiers pass and `KeyraDSPCxx17` builds.
+Against the Salamander nothing moves
+(Docs/validation/grand-struck-again-benchmark-2026-11-16.md). The upright's
+recordings were not in the session; its benchmark is still to run.

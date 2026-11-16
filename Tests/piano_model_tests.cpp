@@ -156,6 +156,33 @@ int main(){
     b.start(c);piano.holdDamper(keyOf(48),true);
     for(int k=0;k<12;++k){piano.strike(keyOf(48),.9f);b.run(.08);}
     check(b.take.finite()&&b.take.db(.88,.96)<b.take.db(0,.08)+12,"a repeated key stays a piano's");
+    // The hammer meets the string as it moves. What a second blow adds is the
+    // take with it less the take without, against the same blow on strings at
+    // rest, at eight moments across one period of the note. After a hard
+    // blow a soft one lands on a string that comes at the felt or runs from
+    // it faster than the hammer flies, and adds more or less by where it is
+    // met; a hard blow after a soft one meets a string that hardly moves, and
+    // adds what it adds at rest. (Solved from rest, as through 2.18.1, the
+    // first read within 0.6 dB of the blow at rest at every moment.)
+    for(const int midi:{33,60}){
+      const int key=keyOf(midi);const double period=1/(440*std::pow(2.,(midi-69)/12.));
+      const auto played=[&](float first,double wait,float second){
+        b.start(c);piano.holdDamper(key,true);if(first>0)piano.strike(key,first);b.run(wait);
+        if(second>0)piano.strike(key,second);b.run(.25);return b.take;};
+      const auto added=[&](float first,float second,double& least,double& most){
+        least=400;most=-400;
+        for(int i=0;i<8;++i){const double wait=.3+i*period/8;
+          Take two=played(first,wait,second);const Take one=played(first,wait,0),alone=played(0,wait,second);
+          for(std::size_t n=0;n<two.left.size();++n){two.left[n]-=one.left[n];two.right[n]-=one.right[n];}
+          const double level=two.db(wait,wait+.25)-alone.db(wait,wait+.25);
+          least=std::min(least,level);most=std::max(most,level);}};
+      double softLeast,softMost,hardLeast,hardMost;
+      added(.9f,.3f,softLeast,softMost);added(.3f,.9f,hardLeast,hardMost);
+      std::cout<<"MIDI "<<midi<<" struck again, against the blow at rest: soft after hard "<<softLeast<<" to "<<softMost
+               <<" dB, hard after soft "<<hardLeast<<" to "<<hardMost<<" dB\n";
+      check(softMost-softLeast>2&&softLeast>-12&&softMost<12,"a soft blow on a ringing string adds by where the string is met");
+      check(hardLeast>-2.5&&hardMost<2.5,"a hard blow on a string that hardly moves is the blow at rest");
+    }
   }
   {
     // The two knocks under a note. What a span holds under `hz`, dB re 1 Pa.

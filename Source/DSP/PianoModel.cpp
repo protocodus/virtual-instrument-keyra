@@ -1151,6 +1151,7 @@ struct Contact {
   bool active=false;
   int key=0,partials=0,age=0;
   double position=0,velocity=0,mass=0,relaxed=0,prompt=0,exponent=0,previous=0,deepest=0;
+  double start=0;            // where the hammer met the string, m
   double give=0;             // the string's yielding at the hammer within a step, m/N
   double late=1,strength=1;  // this blow's catch against the middle one's: its time and its push
   float re[maxK]{},im[maxK]{},turnRe[maxK]{},turnIm[maxK]{},drive[maxK]{},shape[maxK]{};
@@ -1417,9 +1418,14 @@ struct Piano::Impl {
   }
   // One string's stretch over its swing, as the rise in pitch it gives.
   static float glideOf(const Voice& v) noexcept {
-    float sum=0;
-    for(int k=0;k<v.sounding;++k)sum+=(k+1)*(k+1)*(v.re[k]*v.re[k]+v.im[k]*v.im[k]);
-    return std::min(glideMost,v.glidePerEnergy*sum);
+    float sum=0,together=0;
+    const int own=v.strings>1?std::min(v.sounding,v.apart):v.sounding;
+    for(int k=0;k<own;++k)sum+=(k+1)*(k+1)*(v.re[k]*v.re[k]+v.im[k]*v.im[k]);
+    // Above `apart` plane 0 is the strings' sum: one string swings a
+    // strings' share of it. Taken whole, those partials counted four times
+    // on a pair and nine times on three strings.
+    for(int k=own;k<v.sounding;++k)together+=(k+1)*(k+1)*(v.re[k]*v.re[k]+v.im[k]*v.im[k]);
+    return std::min(glideMost,v.glidePerEnergy*(sum+together/(v.strings*v.strings)));
   }
   void applyDamper(Voice& v) noexcept {
     const float d=v.damper;
@@ -1513,7 +1519,16 @@ struct Piano::Impl {
       v.open[k]=static_cast<float>(std::exp(-loss/sampleRate));
       v.damped[k]=static_cast<float>(std::exp(-(loss+key.damper*felt)/sampleRate));
       // The string's pull on the bridge is its tension times its slope
-      // there: T k pi / L per metre of mode k, alternating.
+      // there: T k pi / L per metre of mode k, alternating. A hinged stiff
+      // string's bending adds E I (k pi / L)^3 to it, 1 + B k^2 times this
+      // (and as much to what the bridge takes): 1.4 dB at 1.2 kHz and 6 dB
+      // at 4 kHz on the concert grand's A0, 1 dB at 7 kHz on A4. Tried
+      // (2026-11-16) and left out: the Salamander's partials scored the same
+      // (7.89 to 7.88 dB on the fitted notes, 7.35 to 7.32 on the others) and
+      // seven bass notes' noise between the partials 0.6 to 3.4 dB worse,
+      // several loud bass notes standing over the recording about 8 kHz
+      // already; the hammers and the strings' losses are fitted without it
+      // (README, Known gaps).
       v.bridge[k]=static_cast<float>(key.tension*(k+1)*pi/key.length*((k&1)?-1:1));
       // The longitudinal force: stretching raises the tension by
       // E S pi^2 / (4 L^2) * sum of k^2 y_k^2, whose part at twice each
@@ -1615,19 +1630,30 @@ struct Piano::Impl {
     const Voice& v=voices[index];
     const double f0=key.hertz*tuningRatio(key),rate=sampleRate*substeps;
     c.active=true;c.key=index;c.age=0;c.partials=v.partials;c.give=0;c.late=late;c.strength=strength;
+    double met=0; // where the string stands under the hammer, m
     for(int k=0;k<c.partials;++k){
       const double w=2*pi*f0*key.ratio[k],loss=std::exp(-stringLoss(key,w)/rate);
       c.turnRe[k]=static_cast<float>(std::cos(w/rate)*loss);c.turnIm[k]=static_cast<float>(std::sin(w/rate)*loss);
       c.shape[k]=key.shape[k];
       c.drive[k]=static_cast<float>(2*key.shape[k]/(key.density*key.length*w)/rate);
-      c.re[k]=c.im[k]=0;
+      // The hammer meets the string as it moves: the contact starts from the
+      // mean of the unison's strings' motion (the planes down into the
+      // bridge), so the felt's force is the one that motion and the blow
+      // make together. The force then adds to what rings, which is exact
+      // for a linear string given its true force. One felt on three strings
+      // that stand apart is not solved (README, Known gaps).
+      float re=v.re[k],im=v.im[k];
+      if(k<v.apart)for(int j=1;j<v.strings;++j){re+=v.re[planeStart[j]+k];im+=v.im[planeStart[j]+k];}
+      c.re[k]=re/v.strings;c.im[k]=im/v.strings;
       c.give+=static_cast<double>(c.shape[k])*c.turnIm[k]*c.drive[k];
+      met+=static_cast<double>(c.shape[k])*c.im[k];
     }
     const bool upright=table->design.upright;
     // An upright's soft pedal halves the hammers' run, so they arrive
     // sqrt(1/2) as fast.
     c.velocity=hammerSpeed(velocity,controls.dynamics)*(upright?std::sqrt(1-.5*soft):1);
-    c.position=0;c.previous=0;c.deepest=0;
+    // The blow arrives as the felt touches the string, wherever it stands.
+    c.position=c.start=met;c.previous=0;c.deepest=0;
     c.mass=key.hammerMass;
     // Hammer: a decade and a half of stiffness between soft and hard felt.
     // The felt strip softens the blow by up to three decades; shifted, a
@@ -1692,7 +1718,7 @@ struct Piano::Impl {
       v.force[s]+=static_cast<float>(total/substeps);
       ++c.age;
       // The hammer has left once it is falling back clear of the string.
-      if((c.velocity<0&&c.position<-2*c.deepest-1e-5)||c.age>sampleRate*.08){c.active=false;
+      if((c.velocity<0&&c.position-c.start<-2*c.deepest-1e-5)||c.age>sampleRate*.08){c.active=false;
         // The action catches the hammer with the momentum it comes back with.
         if(c.velocity<0){const Design& d=table->design;const double back=-c.velocity;
           if(catchIn[c.key]<0&&catchAt[c.key][0]==0&&catchAt[c.key][1]==0)++catches;

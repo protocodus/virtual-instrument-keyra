@@ -51,6 +51,46 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.19.0 — 2026-11-16 — a key struck again meets its moving string
+
+From an audit of the physical model the owner asked for. A listening set
+was handed over; no verdict is recorded yet
+([decisions](Docs/decisions.md)).
+
+- **The hammer meets the string as it moves.** A blow was solved against a
+  string at rest and added to what rang, whatever the string was doing under
+  the felt. The contact now starts from the unison's own motion at the
+  strike point: a string coming at the hammer is struck harder, one running
+  from it softer, and a soft blow on a loud string takes some of its ring
+  away. A first strike on resting strings is the same samples as in 2.18.1.
+  Pedal down, velocity 80, each strike's first 100 ms against the first
+  strike's, six strikes at 0.25 s:
+
+  | | 2nd | 3rd | 4th | 5th | 6th |
+  | --- | --- | --- | --- | --- | --- |
+  | grand C4, 2.18.1 | +1.9 | +2.5 | +2.6 | +2.5 | +2.1 |
+  | grand C4, 2.19.0 | +1.8 | +3.3 | +3.8 | +4.0 | +4.0 |
+  | grand C2, 2.18.1 | +1.6 | +2.5 | +4.5 | +5.4 | +6.0 |
+  | grand C2, 2.19.0 | +1.6 | +2.6 | +3.1 | +3.4 | +3.6 |
+  | upright C4, 2.18.1 | +0.3 | −0.2 | −0.0 | −0.4 | −0.1 |
+  | upright C4, 2.19.0 | +1.4 | +2.4 | +2.5 | +2.5 | +2.5 |
+  | upright C2, 2.18.1 | +1.3 | +2.5 | +3.2 | +3.6 | +3.7 |
+  | upright C2, 2.19.0 | +1.0 | +1.1 | +0.6 | +0.6 | +0.6 |
+
+- **The pitch glide counts one string.** Above a unison's 48th partial the
+  strings are kept as their sum, and the glide read that sum as one string's
+  swing, four times a pair's share and nine times three strings'. It moves
+  a hard blow by under 0.02 cents and its sound by 60 dB under the note or
+  less.
+- **Against the recordings nothing moves** on the Salamander grand
+  ([report](Docs/validation/grand-struck-again-benchmark-2026-11-16.md)): no
+  paired regression, every paired mean within 0.003. The benchmark plays
+  single notes, which the hammer's change does not reach. The upright's
+  recordings were not in the session: its single notes stand 60 dB or more
+  under 2.18.1's in difference, and its benchmark is still to run.
+- **Found and left as it is:** a stiff string's pull on the bridge leaves
+  out its bending, now among the Known gaps with what it scored.
+
 ### 2.18.1 — 2026-11-16 — Room turns without a click
 
 Fixes from a review of 2.18.0 that the owner asked for ("ok lets fix").
@@ -1041,9 +1081,10 @@ Chaigne and Askenfelt's three are and carried across the keys (Stulov's own
 measured hammers were tried and left: their soft layers stood 20 dB too
 bright). The blow is solved against the motion it gives the string at the
 strike point, twice a sample at 44.1 and 48 kHz, for as long as they touch,
-so a hard blow is brighter because the felt is stiffer under it. A restrike
-meets its string as if at rest, while what the string still sounds rings on
-(Known gaps). The hammers' stiffness and
+so a hard blow is brighter because the felt is stiffer under it. A key
+struck again meets its string as it moves: the contact starts from the mean
+of the unison's motion at the strike point, and the felt's force is added to
+what rings. The hammers' stiffness and
 the strings' losses are fitted to notes of one recorded grand (Jon Meyer's
 "Steinway Grand" for Decent Sampler, from the owner's reference set); the
 upright's stiffness to eleven forte notes of a recorded upright (MAPS,
@@ -1534,12 +1575,21 @@ is written independently of it.
   other grands' ways at its size, and the benchmark still scores the
   Concert Grand by default (`-- --body studio` scores this one).
 - **Changing the piano cuts what sounds.** A new body starts silent.
-- **A restrike meets a string at rest.** The blow is solved against the
-  motion it gives the string, from rest: a key struck again while it sounds
-  meets no motion of the string under the hammer, while what the string still
-  sounds rings on, and is not turned down (Docs/decisions.md, 2026-11-10).
-  Seeding the contact with the string's own motion is a candidate for a
-  listening test.
+- **One hammer for a unison's strings.** The blow is solved against one
+  string that moves as the mean of the unison's strings, each then taking
+  its share of the force: a hammer does not meet three strings that stand
+  apart each on its own.
+- **A stiff string's pull on the bridge leaves out its bending.** The pull
+  is the tension times the slope, T k pi / L per metre of partial k; a
+  hinged stiff string's is 1 + B k^2 times that, 1.4 dB more at 1.2 kHz and
+  6 dB at 4 kHz on the concert grand's A0, and 1 dB at 7 kHz on A4. Tried
+  (2026-11-16), it scored the Salamander's partials the same and seven bass
+  notes' noise between the partials 0.6 to 3.4 dB worse
+  ([report](Docs/validation/grand-stiff-pull-benchmark-2026-11-16.md)):
+  several loud bass notes already stand over the recording in the octave
+  about 8 kHz (A0, C1 and F#2 by 3 to 14 dB), and the hammers and the
+  strings' losses were fitted without it. A listening set
+  was handed over; the upright was not measured.
 - **CPU.** On a development machine (an Intel Xeon at 2.1 GHz, GCC 13) the
   eight demos take 6 to 14 % of one core and their heaviest 256-frame
   blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to
