@@ -51,6 +51,44 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.24.0 — 2026-11-16 — the keyboard's two ends against the recording (the owner's choice)
+
+The owner asked for Keyra to be set closer to Arturia's Piano V3 and gave
+bounces of its three grands and two uprights. What Piano V3 and the recorded
+Salamander grand both say was put to the owner as a listening set with the
+recording as reference; the owner chose by ear
+([decisions](Docs/decisions.md)).
+
+- **The lowest octave is louder**: 3.5 dB from A0 to D♯1, to nothing at A1.
+  Against the curve of level through the Salamander's 30 recorded keys it
+  stood 3.5 to 4.4 dB low at medium velocity and 1.1 to 3.1 dB low at full.
+- **The top is softer, most at fortissimo**: 2 dB down from D♯7 (from
+  nothing at C7), and the top velocities' extra hammer speed fades from A6
+  to none at C8. From D♯7 to C8 the model stood up to 3.1 dB over the
+  recording's curve at medium velocity and 4.6 to 8.4 dB over it at full,
+  and now 0.2 to 1.7 dB.
+- Over the 30 keys the curve's error goes from 2.26 to 1.63 dB at medium
+  velocity and 3.31 to 2.37 dB at full. Piano V3's grands stand as the
+  recording does on both points at full velocity, and its uprights against
+  the Upright; every piano takes the same trim.
+- **Each piano's level is pinned again**, 0.34 to 1.17 dB down, as typical
+  playing reads louder with the bass up; every default sound reads
+  −9.00 VU.
+- Against the Salamander recordings the level error falls from 2.56 to
+  2.11 dB (train) and 2.81 to 2.03 dB (dev), in the bass from 2.02 to 1.03
+  and 2.79 to 0.91, in the treble from 3.72 to 3.09 and 3.82 to 2.56; the
+  treble's attack, early and noise errors fall 0.3 to 0.7 dB and nothing
+  else moves by more than 0.1. The comparison lists 12 note regressions, all
+  level, 0.57 to 0.75 dB, on keys the trim does not touch (A1 to F#5): that
+  is the concert grand's re-pin, 0.75 dB down, read at the earlier gain
+  ([report](Docs/validation/grand-keyboard-levels-benchmark-2026-11-16.md)).
+  The Upright's Helsinki benchmark is run with the build.
+- Left alone: Piano V3's bass is 10 to 14 dB brighter than Keyra's at
+  fortissimo and its treble dies twice as fast, but the recording stands
+  with Keyra on the first and rings longer than Keyra on the second. From
+  A2 to middle C both references have more bite at fortissimo than Keyra
+  (Known gaps).
+
 ### 2.23.0 — 2026-11-16 — no two strikes alike (the owner's choice)
 
 The owner asked for more variety and accident in each note, within what a
@@ -1744,6 +1782,17 @@ is written independently of it.
   string that moves as the mean of the unison's strings, each then taking
   its share of the force: a hammer does not meet three strings that stand
   apart each on its own.
+- **The scale's two ends are trimmed, not explained.** The lowest octave is
+  raised 3.5 dB and the keys from D♯7 lowered 2 dB to meet the recorded
+  grand's curve of level across the keyboard (2.24.0, the owner's choice by
+  ear). That is a voicing of the keys' levels, the same for every piano and
+  microphone; what in the strings, the board or the microphones leaves the
+  model's bottom octave low and its top high is not found.
+- **The tenor lacks bite at fortissimo.** From A2 to middle C the hardest
+  blows hold 6 to 12 dB less from 2 to 4 kHz in their first half second than
+  the Salamander's sixteenth layer, and 3 to 12 dB less strike noise;
+  Arturia's Piano V3 is brighter still. It is so with and without the
+  fortissimo's rise, so it is the hammers' fit, which is not done again.
 - **How unlike two strikes are is chosen by ear.** A strike's level spreads
   2.2 dB, twice what the upright library's twelve genuine second strikes
   give, and the hammer's play (its tilt across the unison, where it lands

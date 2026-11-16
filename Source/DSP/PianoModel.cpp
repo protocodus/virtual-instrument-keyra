@@ -337,6 +337,19 @@ constexpr int capoFrom=60;
 // in the note's level; these spreads of its strength (dB) and of its time (a
 // factor's logarithm) give 2.5 and 2.2.
 constexpr double catchSpreadDb=2,catchSpreadTime=.2;
+// The scale's two ends, voiced against the recording (2.24.0, the owner's
+// choice by ear, set 8): the lowest octave up 3.5 dB from A0 to D#1, to
+// nothing at A1, and the top down 2 dB from D#7, from nothing at C7. Against
+// the curve of level through the Salamander's 30 recorded keys (each key's
+// first second, both channels, about the median key) the model's lowest
+// octave stood 3.5 to 4.4 dB low at the eighth layer and 1.1 to 3.1 at the
+// sixteenth, and its keys from D#7 up to 3.1 dB high at the eighth; three
+// grands of another maker's model (Arturia Piano V3) stand the same way at
+// full velocity. With these the curve's error over the 30 keys goes from
+// 2.26 to 1.63 dB at the eighth layer and 3.31 to 2.37 at the sixteenth. A
+// trim of the keys' levels, as a technician's voicing is, not a cause found
+// in the strings or the board (README, Known gaps).
+double scaleTrimDb(int key) noexcept {return 3.5*clamp((12-key)/6.,0,1)-2*clamp((key-75)/3.,0,1);}
 // Nor does the hammer land the same twice: its shank flexes and its centre
 // has play, so the felt's face tilts across the unison (one end string takes
 // more of the blow and the other less), lands a little along the string
@@ -580,7 +593,12 @@ void designStrings(Tables& t,int body) noexcept {
       *std::pow(10.,.75*clamp((i-51)/36.,0,1));
     k.hammerSeconds=65e-6*std::exp((fromMiddle>0?-.066:-.0141)*fromMiddle);
     k.strike=clamp(throughThree(i,d.strike,d.strike,.0625),.05,.125);
-    k.topRise=topRise*clamp(i/39.,0,1);
+    // Nor does the top keep it: from A6 the rise fades to none at C8 (2.24.0,
+    // the owner's choice by ear against the recording). With the whole rise
+    // the Salamander's sixteenth layer stood 4.6 to 8.4 dB under this model
+    // from D#7 to C8, against the level of its 30 recorded keys; with the
+    // fade and the scale's trim (scaleTrimDb) 0.2 to 1.7 dB.
+    k.topRise=topRise*clamp(i/39.,0,1)*clamp((87-i)/15.,0,1);
     // The string's own losses, without the bridge's: the fundamental's,
     // slow at the bottom and faster up the keyboard; what each kHz above the
     // fundamental adds, hardly anything in the long bass strings; and a
@@ -2049,7 +2067,7 @@ struct Piano::Impl {
       return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;};
     double level[micCount],standard[micCount]{};standard[micClose]=1;
     for(int a=0;a<micCount;++a)level[a]=levelGoal[a]*t.mic[a].side;
-    for(int i=0;i<keyCount;++i){voicing[i]=voiceOf(i,level);
+    for(int i=0;i<keyCount;++i){voicing[i]=voiceOf(i,level)*static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
       // What the bridge hands the open strings is the key's pull at the
       // default mix (the close pair), whatever the pairs stand at: the
       // voicing evens what the microphones hear, and taken as the mix's it

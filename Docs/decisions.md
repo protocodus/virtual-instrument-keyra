@@ -6356,3 +6356,61 @@ measure stands within 0.01 of 2.22.0's and the comparison lists no regression
 (`Docs/validation/grand-strike-variety-benchmark-2026-11-16.md`). The upright
 benchmark was not run again: struck exactly, 2.23.0's upright is 2.22.0's
 samples 0.10 dB louder.
+
+
+## 2026-11-16 — 2.24.0: the keyboard's two ends, chosen by ear against the recording
+
+The owner bounced Arturia's Piano V3 (American, German and Japanese grands,
+Classical and Jazz uprights) through a fortissimo score written for it (30
+keys every minor third at velocity 127, repeated strikes, chords) and asked:
+"can you calibrate keyra using the piano v3? it is a model, but it is an
+industry standard, and it is probably well calibrated. we do not have to do
+1:1 similarity, but getting closer might be good". Piano V3 is a model, its
+presets and microphones unknown, so it was not fitted to. The Salamander's
+sixteenth layer holds the same 30 keys, and the two references were set
+beside Keyra 2.23.0:
+
+- Both have a louder lowest octave and a softer top than Keyra, most at full
+  velocity. Against the recording's curve of level (each key's first second,
+  both channels, about the median key) Keyra's A0 to F#1 stood 3.5 to 4.4 dB
+  low at the eighth layer and 1.1 to 3.1 at the sixteenth, its D#7 to C8 up
+  to 3.1 dB high at the eighth and 4.6 to 8.4 at the sixteenth; Piano V3's
+  grands stand 3 to 4 dB over Keyra in the lowest octave and 5 to 12 dB under
+  it at C8.
+- Both have more from 2 to 4 kHz and more strike noise from A2 to middle C at
+  fortissimo. 2.21.0, with the whole rise, is short by the same, so it is the
+  hammers' fit. Not taken up here; a Known gap.
+- They disagree on the bass's brightness (Piano V3 10 to 14 dB over Keyra at
+  4 and 8 kHz, the recording within 1.5 dB of Keyra) and on the treble's ring
+  (Piano V3 21 to 26 dB/s, Keyra 13 to 15, the recording 9). Left alone.
+
+Listening set 8 (not committed): A0, C1, D#1, F#1, A1, C2, then C4, D#4, F#4,
+then A6, C7, D#7, F#7, A7, C8, each held 1 s, at velocity 60 and then 127,
+concert grand, default controls, 48 kHz, strikes played exactly, not
+level-matched because level across the keyboard was the question;
+`reference.wav` the Salamander's takes of the same keys and layers, brought to
+A's level on the three middle notes (−3.71 dB).
+
+- A: 2.23.0.
+- B: the lowest octave up 3.5 dB from A0 to D#1, to nothing at A1.
+- C: the top down 2 dB from D#7 (from nothing at C7) and the top velocities'
+  rise fading from A6 to none at C8.
+- D: B and C.
+
+The owner chose **D** ("d is good"). That licensed 2.24.0: `scaleTrimDb` and
+the rise's fade in the top. It is a choice by ear against the recording, with
+Piano V3 as a second witness, not a fit; the trim is a voicing of levels and
+its cause in the model is not found (README, Known gaps). Every piano takes
+it, on the Salamander's and Piano V3's grands and Piano V3's uprights, which
+stand the same way against the Upright (its lowest octave 3.3 dB lower, its C8
+13 dB higher). `pascalScale` was pinned again, 0.34 to 1.17 dB down.
+
+Measured, grand on the Salamander (2.24.0 against 2.23.0,
+`Docs/validation/grand-keyboard-levels-benchmark-2026-11-16.md`): level error
+2.56 to 2.11 dB on train and 2.81 to 2.03 on dev (bass 2.02 to 1.03 and 2.79
+to 0.91, treble 3.72 to 3.09 and 3.82 to 2.56), the treble's attack, early and
+noise errors down 0.3 to 0.7 dB, nothing else by more than 0.1. Twelve paired
+note regressions, all `level_db`, 0.57 to 0.75 dB, on notes 33 to 78, which the
+trim does not touch: they are the concert grand's re-pin (0.75 dB down) read
+at the baseline's gain, reported as the tool lists them. The Upright's
+Helsinki benchmark is run on the owner's machine with the build.
