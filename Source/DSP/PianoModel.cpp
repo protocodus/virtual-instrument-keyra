@@ -367,14 +367,19 @@ constexpr double frameGive=1.2e-7,frameCorner=500;
 // the recording rises 8.2, and held 3 to 5 dB less than it from 1.4 to
 // 11 kHz at the sixteenth; with it 9.0 dB, and 0.5 to 3.5 dB less. A rise
 // of 0.2 met the recording's step (8.1 dB); the owner chose the harder
-// top. It is over the recording in the bass, 7.8 dB against 6.2 (5.6
-// before), and in the treble from C6, 13.9 against 9.7 (10.5 before):
-// README, Known gaps.
+// top. That put the bass over the recording, 7.8 dB against 6.2 (5.6
+// before), so below middle C the rise fades with the key to none at A0
+// (2.22.0, the owner's choice by ear against the Salamander's hardest
+// takes; a key's `topRise`): 5.0 m/s at A0, 5.7 at C2, 6.75 from middle C
+// up. On the eight recorded keys from A0 to A2 the step from the eighth
+// layer to the sixteenth then stands 0.6 dB from the recording's on
+// average where it stood 1.6. The treble from C6 stays over it, 13.9 dB
+// against 9.7 (10.5 before): README, Known gaps.
 constexpr double softest=.05,topRise=.35;
 double dynamicsPower(double dynamics) noexcept {return .4+1.2*dynamics;}
-double hammerSpeed(double velocity,double dynamics) noexcept {
+double hammerSpeed(double velocity,double dynamics,double rise) noexcept {
   const double u=(velocity+softest)/(1+softest),u2=u*u,u4=u2*u2;
-  return 5*std::pow(u,dynamicsPower(dynamics))*(1+topRise*u4*u4);
+  return 5*std::pow(u,dynamicsPower(dynamics))*(1+rise*u4*u4);
 }
 
 MicSpec micSpec(const Design& d,int mic) noexcept {
@@ -425,6 +430,7 @@ struct KeyData {
   bool wound=false;
   double hertz=0,length=0,tension=0,density=0,inharmonicity=0,impedance=0,strike=0;
   double hammerMass=0,hammerStiffness=0,hammerExponent=0,hammerSeconds=0;
+  double topRise=0;            // the top velocities' extra speed on this key (hammerSpeed)
   double stretchCents=0;
   double loss1=0,loss2=0,loss3=0; // the string's own losses: loss1 + loss2 f/kHz + loss3 w^2, 1/s
   double damper=0;             // the damper's loss on the strings, 1/s
@@ -560,6 +566,7 @@ void designStrings(Tables& t,int body) noexcept {
       *std::pow(10.,.75*clamp((i-51)/36.,0,1));
     k.hammerSeconds=65e-6*std::exp((fromMiddle>0?-.066:-.0141)*fromMiddle);
     k.strike=clamp(throughThree(i,d.strike,d.strike,.0625),.05,.125);
+    k.topRise=topRise*clamp(i/39.,0,1);
     // The string's own losses, without the bridge's: the fundamental's,
     // slow at the bottom and faster up the keyboard; what each kHz above the
     // fundamental adds, hardly anything in the long bass strings; and a
@@ -1670,7 +1677,7 @@ struct Piano::Impl {
     const bool upright=table->design.upright;
     // An upright's soft pedal halves the hammers' run, so they arrive
     // sqrt(1/2) as fast.
-    c.velocity=hammerSpeed(velocity,controls.dynamics)*(upright?std::sqrt(1-.5*soft):1);
+    c.velocity=hammerSpeed(velocity,controls.dynamics,key.topRise)*(upright?std::sqrt(1-.5*soft):1);
     // The blow arrives as the felt touches the string, wherever it stands.
     c.position=c.start=met;c.previous=0;c.deepest=0;
     c.mass=key.hammerMass;

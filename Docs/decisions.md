@@ -6250,3 +6250,43 @@ and these reports not yet taken; they were reported with the candidate.
 
 Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
 `KeyraLevels --check` passes with the new table.
+
+## 2026-11-16 — 2.22.0: the fortissimo in the bass, chosen by ear against the recording
+
+After 2.21.0's fortissimo the owner asked: "try to increase the realism of FF
+(fortissimo) if there is a way". The hardest recorded layer was set beside
+the model. From the middle up the faster top had brought the partials closer.
+In the bass it had gone past the recording: on the eight recorded keys from
+A0 to A2 the Salamander's sixteenth layer stands 5.2 to 8.3 dB over its
+eighth, where 2.21.0 gave 7.0 to 8.2 dB whatever the key, 1.6 dB from the
+recording's step on average. The measurements did not agree on what to do
+about it: the benchmark's noise between the partials of the bass's two
+hardest layers read 8.6 dB on 2.20.0 and 13.8 on 2.21.0, while the octave
+bands and the share above 4 kHz did not show 2.21.0's bass over-bright. So
+it went to the ear, with the recording as the reference.
+
+What was being decided: how hard the bass hammers fly at the top velocities.
+Set 6, the Concert Grand through the close pair, velocity 127 octaves and
+single notes from A0 to A2 and two chords, not committed. A and B were not
+level matched, level being part of what the speed changes (B 0.9 dB under A
+over the file, 1.4 to 1.9 dB on the lowest notes); `reference.wav` was the
+Salamander's hardest takes of the same notes (Alexander Holm, CC BY 3.0),
+matched to A on whole-file RMS.
+
+- **A**: 2.21.0, every hammer at 6.75 m/s at velocity 127.
+- **B**: the same from middle C up; below it the rise fades in a straight
+  line with the key to none at A0 (5.0 m/s at A0, 5.7 at C2), the keys
+  voiced and each piano's level pinned again.
+
+The owner chose **B**: "Fortissimo bass B" (2026-11-16). A choice by ear.
+B's line is the simplest that meets the recording's step at both ends, none
+at A0 and the owner's full rise at middle C; the step on those eight keys
+stands 0.6 dB from the recording's on average. It is not a fit of each key.
+
+What it licenses: a key's `topRise`, `topRise*clamp(i/39,0,1)`, on every
+piano; `KeyVoicing.h` written again and `pascalScale` pinned again (0.05 to
+0.36 dB up; every default sound at −9.00 VU). Left as they were and named
+among the Known gaps: loud middle notes hold 3 to 4 dB less than the
+recording about 4 kHz in their attack, the treble's strike noise is 12 to
+16 dB short in the octaves about 4 and 8 kHz, and the treble's step from C6
+is over the recording's.

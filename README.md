@@ -51,6 +51,23 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.22.0 — 2026-11-16 — the bass keeps a softer fortissimo (the owner's choice)
+
+The owner asked for a more real fortissimo and chose by ear, against the
+Salamander grand's hardest takes of the same notes
+([decisions](Docs/decisions.md)).
+
+- **Below middle C the top velocities' extra speed fades with the key**, to
+  none at A0: velocity 127 throws the hammer at 5.0 m/s at A0, 5.7 at C2 and
+  2.21.0's 6.75 from middle C up. 2.21.0 threw every hammer at 6.75 and its
+  hardest bass notes stood over the recorded ones: on the eight recorded
+  keys from A0 to A2 the step from the eighth layer to the sixteenth stood
+  1.6 dB from the recording's on average and now stands 0.6. The loudest
+  bass notes are 1.4 to 1.9 dB softer and hold 2 to 5 dB less above 4 kHz.
+  Soft and medium playing, and everything from middle C up, is as it was.
+- **The keys are voiced again** (`KeyVoicing.h`) and each piano's level is
+  pinned again, 0.05 to 0.36 dB up; every default sound reads −9.00 VU.
+
 ### 2.21.0 — 2026-11-16 — String age, the practice felt and the fortissimo go further (the owner's choices)
 
 The owner asked that every control be audible before the first release,
@@ -1179,8 +1196,10 @@ the Salamander's layers from velocity 31 up (2.6 dB under them below it) and
 within 2 dB of a Disklavier's notes (MAPS, ENSTDkCl). The softest key still
 strikes, at 0.28 m/s. The top velocities fly faster than that, by the eighth
 power of the velocity: 4 % at 96, 13 % at 112 and 35 % at 127, a blow of
-6.75 m/s. That fortissimo is the owner's choice by ear and harder than the
-recorded grand's hardest layer (Known gaps).
+6.75 m/s, from middle C up; below it the rise fades with the key to none at
+A0 (5.7 m/s at C2, 5.0 at A0), which the owner chose by ear against the
+recorded bass (2.22.0). That fortissimo is the owner's choice by ear and
+harder than the recorded grand's hardest layer (Known gaps).
 
 **Unisons.** The strings of a key, each in two polarisations, share the
 bridge, whose admittance couples them (Weinreich 1977): that gives the
@@ -1377,7 +1396,7 @@ is what the board and the microphones give it.
 | String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves: at 1 the partials' loss is 60 times a new plain string's and 120 times a new wound one's |
 | Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano (on a grand, half that from C5 up). 0.3 by default |
 | Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 from A3 up; down a grand's bass 6:3 by A2 and 8:4 from A1, the upright's 4:2 throughout; Railsback's curve); 0 is equal temperament |
-| Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow, 6.75 m/s at full velocity: 13 dB at 0, 28 dB at 0.5, where the speed follows the velocity up to the top velocities' rise, and 43 dB at 1 |
+| Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow, 6.75 m/s at full velocity from middle C up (5.0 at A0): 13 dB at 0, 28 dB at 0.5, where the speed follows the velocity up to the top velocities' rise, and 43 dB at 1 |
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
 | Soundboard | 0 to 1 | How long the board rings: its loss halves from 0.5 to 1 and doubles to 0 |
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |

@@ -444,7 +444,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1698,.1318,.0994,.1518,.1546};
+  static constexpr double pascalScale[model::bodyCount]{.1720,.1373,.1019,.1570,.1555};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   // Each microphone's own output through a chunk, and held back by the
   // output stage's look-ahead (ForteOutput::maxDelay < 2048) to meet the mix.
