@@ -74,7 +74,13 @@ and chose to take it before the first release
   The noise between the partials is 0.44 dB (fitted notes) and 0.29 dB (the
   others) worse, all of it on seven bass notes, A0 to F#2, by 0.5 to 3.4 dB:
   their hammers and losses were fitted without the bending (Known gaps).
-  The Helsinki upright's report follows from the owner's computer.
+- **Against the Helsinki upright**
+  ([report](Docs/validation/upright-bending-pull-benchmark-2026-11-16.md))
+  the same: the partials stand within 0.06 dB (7.28 to 7.30 on the fitted
+  notes, 7.24 to 7.19 on the others) and the noise between the partials is
+  0.53 and 0.62 dB worse in the paired means, on nine notes from C1 to E3
+  by 0.7 to 2.3 dB. Three of them, C1, D#1 and A1, also score 0.5 to 1.0 dB
+  worse on the third-octave levels of the first half second.
 
 ### 2.19.0 — 2026-11-16 — a key struck again meets its moving string (chosen by ear)
 
@@ -1610,7 +1616,11 @@ is written independently of it.
   slope. The hammers' felt and the strings' losses were fitted before it,
   and with it seven bass notes of the Salamander grand, A0 to F#2, score
   0.5 to 3.4 dB worse on the noise between their partials
-  ([report](Docs/validation/grand-bending-pull-benchmark-2026-11-16.md)).
+  ([report](Docs/validation/grand-bending-pull-benchmark-2026-11-16.md)),
+  and nine notes of the Helsinki upright, C1 to E3, 0.7 to 2.3 dB worse on
+  it, three of them 0.5 to 1.0 dB worse on the third-octave levels of the
+  first half second as well
+  ([report](Docs/validation/upright-bending-pull-benchmark-2026-11-16.md)).
   Tried on 2.18.1, the bending added to what several loud bass notes
   already had over the recording in the octave about 8 kHz (A0 at velocity
   117 from 3 to 11 dB over, C1 from 6 to 14, F#2 from 12 to 14) while it

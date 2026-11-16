@@ -6167,5 +6167,15 @@ default sound at −9.00 VU). Not a refit of the bass hammers, which is open,
 and not the term on the lengths behind the bridge, which stay ideal strings
 as the set the owner heard had them.
 
+The upright was measured after the choice, on the owner's computer, where
+its recordings are
+(Docs/validation/upright-bending-pull-benchmark-2026-11-16.md). It reads as
+the grand does: the partials within 0.06 dB, the noise between the partials
+0.53 dB (fitted notes) and 0.62 dB (the others) worse in the paired means,
+on nine notes from C1 to E3 by 0.7 to 2.3 dB, and C1, D#1 and A1 also 0.5 to
+1.0 dB worse on the third-octave levels of the first half second. The owner
+chose with the grand's figures beside the options and the upright's not yet
+taken; they were reported with the candidate.
+
 Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
 `KeyraLevels --check` passes with the new table.
