@@ -292,8 +292,13 @@ static_assert(Controls{}.room==voicedRoom,"KeyVoicing.h measures the microphones
 // microphones apart in a diffuse field do not, and none heard in the
 // opposite polarity (MicSpec::side, or inverted) cancels another's room.
 // The close pair keeps the row 2.17.0's pairs heard; the tube, mono, hears
-// both sides of its row.
-constexpr int roomRow[micCount]{2,1,4,8,15};
+// both sides of its row. No microphone takes row 1, under which the strings
+// go into the lines ((k&2) in Impl's room), or row 3, the knock's: a
+// microphone on one hears the first pass of what was sent coherently, which
+// in that pass took the XY pair of 2.18.0 6.2 dB under a row of its own at
+// 20-60 Hz and 2.5 dB over it below 20 Hz.
+constexpr int roomRow[micCount]{2,6,4,8,15};
+static_assert([]{for(int r:roomRow)if(r==1||r==3)return false;return true;}(),"no microphone on the strings' or the knock's row");
 // Each microphone stands in its own place, so the room sounds differently in
 // each (the owner, 2026-11-16: "each mic stands in a differnt place,
 // therefore, the reverb will sound differently in each"). Beside its own row
@@ -1349,11 +1354,12 @@ struct Piano::Impl {
   float roomGlideAt[roomLines]{},roomGlideStep[roomLines]{};
   float roomSized=-1;   // the Room the lines are set for
   // Each microphone channel's first reflections off the walls (sizeRoom): what
-  // it heard directly, and each wall's delay, its glide and its gain.
+  // it heard directly, and each wall's delay and gain, each gliding to its
+  // target with the lines.
   static constexpr int earlySize=32768;
   float earlyRing[2*micCount][earlySize]{};
   float earlyDelay[2*micCount][earlyWalls]{},earlyStep[2*micCount][earlyWalls]{},earlyGain[2*micCount][earlyWalls]{};
-  float earlyTarget[2*micCount][earlyWalls]{};
+  float earlyTarget[2*micCount][earlyWalls]{},earlyGainStep[2*micCount][earlyWalls]{},earlyGainTarget[2*micCount][earlyWalls]{};
   int earlyAt=0;
   // Each microphone's room as it stands: a coincident pair's mix of its two
   // sides, a spaced pair's pole under which its sides are alike, the case's
@@ -1719,7 +1725,10 @@ struct Piano::Impl {
         for(k=0;k<longitudinal;++k)slope[k]=v.slope[k]*v.im[k];
         for(int m=1;m<=v.longModes;++m){
           float a=.5f*dot(slope,slope+m,longitudinal-m);
-          for(int j=0;j+2<=m&&m-2-j<longitudinal;++j)a+=.25f*slope[j]*slope[m-2-j];
+          // Both slopes within the partials still sounding: j and m-2-j
+          // under `longitudinal`. Stopping at the first pair out of range
+          // left every pair out once the partials were pruned under m-1.
+          for(int j=std::max(0,m-1-longitudinal),last=std::min(m-2,longitudinal-1);j<=last;++j)a+=.25f*slope[j]*slope[m-2-j];
           const float y=v.longA1[m-1]*v.longY1[m-1]+v.longA2[m-1]*v.longY2[m-1]+v.longGain[m-1]*a;
           v.longY2[m-1]=v.longY1[m-1];v.longY1[m-1]=y;
           along+=v.longForce*((m&1)?y-a:a-y);
@@ -2026,7 +2035,7 @@ struct Piano::Impl {
       furthest=std::max(furthest,std::abs(target[k]-from));
     }
     // Each microphone channel's reflections off the walls at this size.
-    float early[2*micCount][earlyWalls]{};
+    float early[2*micCount][earlyWalls]{},gain[2*micCount][earlyWalls]{};
     {const Design& d=table->design;
      const Vec up=d.upright?Vec{0,1,0}:Vec{0,0,1};
      const Vec board{.5*d.boardX,.5*d.boardY,0};
@@ -2046,7 +2055,7 @@ struct Piano::Impl {
          const double direct=norm(board-at),facing=std::max(.05,pattern(board));
          for(int w=0;w<earlyWalls;++w){const Vec image=mirror(board,walls[w]);const double path=norm(image-at);
            early[2*m+ch][w]=static_cast<float>(std::min(earlySize-3.,(path-direct)/343*sampleRate));
-           earlyGain[2*m+ch][w]=static_cast<float>(wallReflection*direct/path*pattern(image)/facing);}}
+           gain[2*m+ch][w]=static_cast<float>(wallReflection*direct/path*pattern(image)/facing);}}
        // A pair's two sides in a diffuse field.
        const double apart=norm(spec.position[1]-spec.position[0]);
        roomAlike[m]=0;roomBond[m]=0;
@@ -2061,9 +2070,12 @@ struct Piano::Impl {
       if(roomGliding==0)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
       roomDelay[k]=target[k];roomGlideStep[k]=(target[k]-roomGlideAt[k])/static_cast<float>(samples);
     }
-    for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){earlyTarget[c][w]=early[c][w];
-      if(samples==0){earlyDelay[c][w]=early[c][w];earlyStep[c][w]=0;}
-      else earlyStep[c][w]=(early[c][w]-earlyDelay[c][w])/static_cast<float>(samples);}
+    // A wall's gain glides with its delay: set at once while the delays
+    // glided, a move of Room clicked (2.18.0: +21 dB of high band over the
+    // playing on Live for 0 to 1, +9.5 dB on Distant for 0.6 to 0.65).
+    for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){earlyTarget[c][w]=early[c][w];earlyGainTarget[c][w]=gain[c][w];
+      if(samples==0){earlyDelay[c][w]=early[c][w];earlyStep[c][w]=0;earlyGain[c][w]=gain[c][w];earlyGainStep[c][w]=0;}
+      else{earlyStep[c][w]=(early[c][w]-earlyDelay[c][w])/static_cast<float>(samples);earlyGainStep[c][w]=(gain[c][w]-earlyGain[c][w])/static_cast<float>(samples);}}
     roomGliding=samples;
   }
   // A room with nothing in it takes its size at once: what is reset or put
@@ -2071,7 +2083,7 @@ struct Piano::Impl {
   void settleRoom() noexcept {
     roomGliding=0;
     for(int k=0;k<roomLines;++k)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
-    std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));
+    std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));std::memcpy(earlyGain,earlyGainTarget,sizeof(earlyGain));
   }
   void silence() noexcept {
     for(auto& v:voices){v.active=false;v.forcing=false;v.sounding=0;v.damper=0;v.appliedDamper=-1;for(int m=0;m<maxLong;++m)v.longY1[m]=v.longY2[m]=0;
@@ -2400,15 +2412,20 @@ struct Piano::Impl {
       // walls, which glide with the room's size.
       const int earlyMask=earlySize-1;
       for(int c=0;c<2*micCount;++c)earlyRing[c][earlyAt&earlyMask]=o[c];
+      // Every channel steps while a size glides, heard or not, so one heard
+      // again mid-glide stands where the others do.
+      if(gliding)for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){earlyDelay[c][w]+=earlyStep[c][w];earlyGain[c][w]+=earlyGainStep[c][w];}
       float early[2*micCount]{};
       if(controls.roomHeard)for(int m=0;m<micCount;++m)if(heard[m])for(int ch=0;ch<(m==micTube?1:2);++ch){const int c=2*m+ch;
         float sum=0;
-        for(int w=0;w<earlyWalls;++w){if(gliding)earlyDelay[c][w]+=earlyStep[c][w];
+        for(int w=0;w<earlyWalls;++w){
           const float at=earlyDelay[c][w];const int whole=static_cast<int>(at);const float part=at-whole;
           const float a=earlyRing[c][(earlyAt-whole)&earlyMask],b=earlyRing[c][(earlyAt-whole-1)&earlyMask];
           sum+=earlyGain[c][w]*(a+(b-a)*part);}
         early[c]=sum;}
       earlyAt=(earlyAt+1)&earlyMask;
+      // A glide ends on its exact targets, not on the steps' rounding.
+      if(gliding&&roomGliding==0){std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));std::memcpy(earlyGain,earlyGainTarget,sizeof(earlyGain));}
       // Each microphone: what it hears and its room, through its circuit;
       // then the mix, each at its level and polarity.
       double l=0,r=0;

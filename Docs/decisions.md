@@ -6006,3 +6006,19 @@ What they licensed, and what measurement or physics set within it:
   large hall (1.8 s) for Distant Hall. The sizes were picked to the brief
   that relayed the owner's request ("Concert Grand a hall, Upright a home
   room"), not by ear; the owner has not heard them yet.
+
+## 2026-11-16 — 2.18.1: the review's fixes the owner asked for
+
+A review of 2.18.0 listed issues that a verification checked against the
+source and by measurement (the report is outside the repository). The owner
+answered "ok lets fix" to the proposed order: the Room click first, then the
+longitudinal pairs' loop bound, then the XY pair's room row, with the bass
+onset (I3a) to wait for a check against the Salamander C1.
+
+These are corrections, not choices by ear: the click is measured (up to 28 dB
+of high band over the playing for large moves, gone with each
+wall's gain gliding with its delay); the loop left out pairs the force's own
+formula includes; and the XY pair's row was the strings' own input row,
+which no microphone in a diffuse field shares. The XY change gives the
+presets that use the pair a different room at the same level; the owner has
+not heard it yet. Nothing here licenses a new constant.

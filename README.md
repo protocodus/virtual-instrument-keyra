@@ -51,6 +51,27 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.18.1 — 2026-11-16 — Room turns without a click
+
+Fixes from a review of 2.18.0 that the owner asked for ("ok lets fix").
+
+- **Turning Room no longer clicks.** Each wall's reflection now changes its
+  strength over the same glide as its delay; set at once, it clicked on
+  every microphone for a large move and on the distant pair for a small one
+  (the click's highs stood up to 28 dB over the playing's for a large move,
+  and 9.5 dB over for Room 0.6 to 0.65 on the distant pair; now every move
+  measured stays 0.8 to 11 dB under them).
+- **The XY pair hears its own room.** It read the room's lines under the
+  same signs the strings go in by, so it heard the room's first pass back
+  coherently: 6.2 dB short at 20 to 60 Hz and 2.5 dB over below 20 Hz. It
+  now has a row of its own like the other pairs, and the keys are voiced
+  again (each piano's output scale moves by under 0.01 dB). Presets that use
+  the XY pair keep their level within 0.2 dB, with a different room in them.
+- **A bass note's last partials keep their longitudinal pull.** Once a note
+  had been pruned to a few partials, the pairs of partials that drive the
+  longitudinal modes were all left out; now each pair still sounding counts.
+  It reaches only the tails, at least 120 dB under the note in the demos.
+
 ### 2.18.0 — 2026-11-16 — the room in every microphone, and Room its size
 
 The owner asked for the room back inside the microphones ("it makes more
@@ -1090,7 +1111,7 @@ brings the key onto that line in the mix that is set, by no more than 15 dB
 either way. Each pair's line is set at the close pair's level without the
 room, averaged over the keys, which keeps the pairs balanced where the
 board's modes alone do not. What the bridge hands the open strings is each
-key's pull at the default mix, the close pair and Room 0.1, whatever the
+key's pull at the default mix, the close pair and the default Room, whatever the
 mix that is set: the voicing evens what the microphones hear, not what the
 strings do (2.16.1). The table is measured at the default Lid and
 Soundboard and at half velocity; the knocks under a note are not voiced.
@@ -1183,7 +1204,8 @@ Room 0 (0.16 s at 5 kHz) through 0.8 s at 0.5 to a hall's 2.2 s at 1
 (1.2 s at 5 kHz). Each line loses the same over a pass at every size, so a
 larger room plays the same echoes further apart, longer and sparser, with
 the same energy: Room does not set the room's level. A size reached while
-the piano sounds glides there, the lines' lengths with it. The default 0.6
+the piano sounds glides there, the lines' lengths with it and each wall's
+reflection, its delay and its strength together (2.18.1). The default 0.6
 is a recital room's 1 s, heard in the close pair as a small hint. The
 room also hears the case: the knock the blow gives the frame under the top
 strings goes to it directly, through three allpass sections (Schroeder
