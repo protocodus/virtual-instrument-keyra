@@ -6179,3 +6179,58 @@ taken; they were reported with the candidate.
 
 Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
 `KeyraLevels --check` passes with the new table.
+
+## 2026-11-16 — 2.21.0: String age, the practice felt and the fortissimo, chosen by ear
+
+The owner asked, before the first release, that every control be audible
+("ensure all controls have audible effects. i think string age etc are
+unhearable"), then "isnt felt too loud?" and "i also think that 127 velocity
+sohuld resuilt in fortissimo, very loud and aggresive tone". Each control was
+measured across its range on 2.20.0 first. Most are plainly audible; these
+were not, or were in question:
+
+- String age at full changed a note's first quarter second by 0.2 dB, and by
+  2 dB at 2 kHz.
+- Duplex from 0 to 1 changed a treble phrase by a difference 36 dB under it,
+  and Sympathetic a pedalled phrase by one 17 dB under it.
+- The practice felt at full left a phrase 5 dB under the open piano (10 dB
+  A-weighted) and its bass notes 1 to 2.4 dB under.
+- Velocity 127 stood 3 to 5 dB under the Salamander grand's hardest layer
+  from 2 to 8 kHz in the bass and the middle, and the middle of the keyboard
+  rose 6.6 dB from its eighth layer to its sixteenth where the recording
+  rises 8.2.
+
+What was being decided: how far each of the five goes. Five sets, the
+Concert Grand through the close pair, A always 2.20.0, not committed:
+
+- **String age at full** (set 1, not level matched): A loses the upper
+  partials 6 times (plain strings) and 11 times (wound) as fast as new
+  strings; B 20 and 40 times; C 60 and 120 times. The owner chose **C**.
+- **Duplex at full** (set 2, matched on whole-file RMS): A twice what the
+  lengths behind the bridge take as built; B 16 times; C 32 times. The owner
+  chose **A**.
+- **Sympathetic at full** (set 3, matched on whole-file RMS): A twice the
+  open strings' drive as built; B 4 times; C 8 times. The owner chose **A**.
+- **The practice felt at full** (set 4, not level matched, level being what
+  was judged): A softens the felt by three decades; B by four; C by three
+  with the blow 6 dB slower through the strip. The owner chose **B**.
+- **Velocity 127** (set 5, not level matched): A 5.0 m/s; B 6.0 m/s, a rise
+  of 0.2 by the eighth power of the velocity, fitted to the recording's
+  step in the middle of the keyboard (8.1 dB against its 8.2); C 6.75 m/s, a
+  rise of 0.35. The owner chose **C**.
+
+The owner's words: "Age C, Duplex A, Sympathetic A, Felt B, Fortissimo C"
+(2026-11-16). These are choices by ear. No measurement set them: no figure
+for how lossy an old string is or how much a practice felt takes was found,
+so Age's and Felt's ranges are voiced ranges and are said to be; the
+fortissimo is harder than the recording's level step supports, and that is
+recorded as the owner's choice against the fitted B, not as a fit.
+
+What it licenses: `stringLoss`'s 60 and 120 at full Age, four decades under
+the strip, `topRise` 0.35, the keys voiced again and each piano's level
+pinned again (`pascalScale` 0.45 to 1.03 dB down, since ordinary playing
+reaches the velocities the rise lifts; every default sound at −9.00 VU).
+Duplex and Sympathetic stay as shipped: Duplex at full remains a difference
+36 dB under the phrase, by the owner's choice, and is a Known gap as a
+control. The engine test of the strip pinned three decades' figures and is
+set to four's, with the reason beside it.

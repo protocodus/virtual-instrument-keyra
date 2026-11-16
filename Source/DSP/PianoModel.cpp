@@ -351,18 +351,30 @@ constexpr double keyboardWidth=1.23;    // m, centred on the board's edge
 // 6 to 8 dB short and the second within 3 dB.
 constexpr double frameGive=1.2e-7,frameCorner=500;
 
-// The blow: 5 m/s at full velocity, and under it the velocity to a power:
-// 1 at Dynamics 0.5, where the notes' levels stand within 2 dB of the
-// Salamander grand's sixteen layers from velocity 31 up and 2.6 dB under
-// them below it (2.0.0's speeds, even in dB, were 2.5 dB under in the soft
+// The blow: 5 m/s at full velocity before the top's rise below, and under
+// it the velocity to a power: 1 at Dynamics 0.5, where the notes' levels
+// stand within 2 dB of the Salamander grand's sixteen layers from velocity
+// 31 up and 2.6 dB under them below it (2.0.0's speeds, even in dB, were 2.5 dB under in the soft
 // and medium layers and 4.4 dB over at the hardest) and within 2 dB of a
 // Disklavier's notes (MAPS, ENSTDkCl), and 0.4 to 1.6 from Dynamics 0 to 1:
 // 10, 25 and 40 dB between the softest and the hardest blow. `softest`
 // keeps the lowest velocity a blow, 0.28 m/s at Dynamics 0.5.
-constexpr double softest=.05;
+// The top velocities fly faster than that power, to 6.75 m/s at 127
+// (2.21.0, the owner's choice by ear of a fortissimo, 2026-11-16):
+// `topRise` more by the eighth power of the velocity, 4 % at 96 and 13 % at
+// 112. Without it the middle of the keyboard (C3 to B5) rose 6.6 dB from
+// the Salamander's eighth layer (velocity 61) to its sixteenth (124) where
+// the recording rises 8.2, and held 3 to 5 dB less than it from 1.4 to
+// 11 kHz at the sixteenth; with it 9.0 dB, and 0.5 to 3.5 dB less. A rise
+// of 0.2 met the recording's step (8.1 dB); the owner chose the harder
+// top. It is over the recording in the bass, 7.8 dB against 6.2 (5.6
+// before), and in the treble from C6, 13.9 against 9.7 (10.5 before):
+// README, Known gaps.
+constexpr double softest=.05,topRise=.35;
 double dynamicsPower(double dynamics) noexcept {return .4+1.2*dynamics;}
 double hammerSpeed(double velocity,double dynamics) noexcept {
-  return 5*std::pow((velocity+softest)/(1+softest),dynamicsPower(dynamics));
+  const double u=(velocity+softest)/(1+softest),u2=u*u,u4=u2*u2;
+  return 5*std::pow(u,dynamicsPower(dynamics))*(1+topRise*u4*u4);
 }
 
 MicSpec micSpec(const Design& d,int mic) noexcept {
@@ -1407,11 +1419,16 @@ struct Piano::Impl {
     return (6*controls.detune*controls.detune+.15)*(table->design.upright?1:clamp(250/key.hertz,.5,1));
   }
   // The strings' own loss for a partial at w rad/s, 1/s. Old strings lose
-  // their upper partials, wound ones most.
+  // their upper partials, wound ones most: at full Age the loss that grows
+  // with frequency is 60 times a new plain string's and 120 times a new
+  // wound one's, a voiced range and no measurement (2.21.0, the owner's
+  // choice by ear, 2026-11-16). At 6 and 11 times (to 2.20.0) a note's first
+  // quarter second lost 2 dB at 2 kHz and the control was heard only on
+  // notes held longer; now it loses 6 to 19 dB there.
   double stringLoss(const KeyData& key,double w) const noexcept {
     const double age=controls.age;
     const double over=std::max(0.,w/(2000*pi)-key.hertz/1000);
-    return key.loss1*(1+.8*age)+(key.loss2*over+key.loss3*w*w)*(1+(key.wound?10:5)*age);
+    return key.loss1*(1+.8*age)+(key.loss2*over+key.loss3*w*w)*std::pow(key.wound?120.:60.,age);
   }
   static int planeLength(const Voice& v,int plane) noexcept {
     if(plane==0)return v.sounding;
@@ -1658,17 +1675,20 @@ struct Piano::Impl {
     c.position=c.start=met;c.previous=0;c.deepest=0;
     c.mass=key.hammerMass;
     // Hammer: a decade and a half of stiffness between soft and hard felt.
-    // The felt strip softens the blow by up to three decades; shifted, a
+    // The felt strip softens the blow by up to four decades (2.21.0, the
+    // owner's choice by ear, 2026-11-16; three before); shifted, a
     // grand's hammer strikes with felt the strings have not packed. The
     // exponent stays the key's: the stiffness is in newtons per metre to
     // that power, so a change of exponent is a far larger change of
     // stiffness the other way at the few tenths of a millimetre a blow
     // compresses the felt. Under the steeper felt a factor on the stiffness
     // moves the tone less, so these are half as many decades again as
-    // 2.0.0's, which keeps what each does to middle C: Hammer -1 takes
-    // 8 dB from what it holds above 2 kHz, and the strip 8 dB from its
-    // level and 30 dB from what it holds above 1 kHz.
-    const double stiffness=key.hammerStiffness*std::pow(10.,.75*controls.hammer-3*controls.felt-(upright?0:.3*soft));
+    // 2.0.0's, which keeps what Hammer does to middle C: -1 takes 8 dB
+    // from what it holds above 2 kHz. The strip at full takes 14 dB from a
+    // forte middle C (velocity 100, its first second; 8 at three decades)
+    // and 22 dB from what it holds above 1 kHz, 6 to 9 dB from the notes
+    // from C1 to C3 and 16 to 23 from C5 to C7.
+    const double stiffness=key.hammerStiffness*std::pow(10.,.75*controls.hammer-4*controls.felt-(upright?0:.3*soft));
     c.exponent=key.hammerExponent;
     c.relaxed=stiffness;
     c.prompt=stiffness*key.hammerSeconds*sampleRate*substeps;

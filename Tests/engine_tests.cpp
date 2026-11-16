@@ -572,7 +572,13 @@ int main(){
      check(wide.correlation(0,.3)<pairs.correlation(0,.3),"Width widens the image");}
     {auto p=strings();const Take bare=note(p,60,.8f,.5);p.felt=1;const Take felted=note(p,60,.8f,.5);
      std::cout<<"Practice felt: "<<felted.db(.02,.4)-bare.db(.02,.4)<<" dB, above 1 kHz "<<felted.above(1000,.02,.4)-bare.above(1000,.02,.4)<<" dB more\n";
-     check(felted.db(.02,.4)<bare.db(.02,.4)-3&&felted.above(1000,.02,.4)<bare.above(1000,.02,.4)-10,"the practice felt plays softer and darker");}
+     // At four decades (2.21.0, the owner's choice by ear) the strip takes
+     // 14 dB from this C4 where three decades took 8, and the fundamental
+     // falls with the rest, the felt lying on the string: what the note holds
+     // above 1 kHz falls 7 dB further than its level, where it fell 12
+     // further. So the limits are 10 dB softer and 5 dB darker than that,
+     // where they were 3 and 10.
+     check(felted.db(.02,.4)<bare.db(.02,.4)-10&&felted.above(1000,.02,.4)<bare.above(1000,.02,.4)-5,"the practice felt plays softer and darker");}
     {auto p=strings();p.gain=.35f;const Take half=note(p,60,.5f,.3);p.gain=.7f;
      check(std::abs(note(p,60,.5f,.3).db(.02,.3)-half.db(.02,.3)-6.02)<.5,"Output is the level");}
     // Each piano is its own instrument.

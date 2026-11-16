@@ -51,6 +51,46 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.21.0 — 2026-11-16 — String age, the practice felt and the fortissimo go further (the owner's choices)
+
+The owner asked that every control be audible before the first release,
+heard five listening sets and chose by ear
+([decisions](Docs/decisions.md)).
+
+- **String age reaches further.** At full it took 0.2 dB from a note's
+  first quarter second, and 2 dB at 2 kHz. Old strings now lose their upper
+  partials 60 times as fast as new plain ones at full and 120 times as fast
+  as new wound ones (6 and 11 before), growing as a power of the control: a
+  note loses 6 to 19 dB at 2 kHz in its first quarter second. A voiced
+  range, not a measurement. Every sound that sets String age is older for
+  it, Old Parlor and Bar Piano most.
+- **The practice felt is softer.** Four decades of softness at full where
+  there were three: a forte middle C stands 14 dB under the open piano where
+  it stood 8, the notes from C5 to C7 16 to 23 dB and those from C1 to C3
+  6 to 9. A voiced range too. Felt Nocturne and Felt Upright play softer
+  under it.
+- **Velocity 127 is a fortissimo.** The top velocities throw the hammer
+  faster than the velocity alone gives: 6.75 m/s at 127 where it was 5.0,
+  13 % more at 112, 4 % at 96 and next to nothing below. The middle of the
+  keyboard now rises 9.0 dB from the recorded grand's eighth layer to its
+  sixteenth (6.6 before; the recording 8.2). The owner chose this top over
+  one fitted to the recording's step, so it is harder than the recording
+  (Known gaps).
+- **Duplex and Sympathetic stay as they were**, by the same listening.
+- **The keys are voiced again** (`KeyVoicing.h`) and each piano's level is
+  pinned again, 0.45 to 1.03 dB down, since ordinary playing reaches the
+  velocities the rise lifts; every default sound reads −9.00 VU.
+- **Against the Salamander grand**
+  ([report](Docs/validation/grand-fortissimo-benchmark-2026-11-16.md)),
+  whose default sound has neither String age nor the strip, so only the top
+  velocities move: the partials stand 0.11 dB closer on the fitted notes
+  (7.88 to 7.77) and 0.09 on the others (7.32 to 7.23), most at the two
+  hardest layers (the bass 10.5 to 10.0, the middle 8.1 to 7.6, the treble
+  7.1 to 6.1). The noise between the partials is 0.36 and 0.48 dB worse in
+  the paired means, on ten bass notes from A0 to D#3 by 0.8 to 1.6 dB; at
+  the bass's two hardest layers it reads 13.8 dB where it read 8.6. The
+  level of C4, A6 and C8 is 0.5 to 0.9 dB further off and A4's rise 1 ms.
+
 ### 2.20.0 — 2026-11-16 — a stiff string's bending in its pull on the bridge (the owner's choice)
 
 2.19.0's audit found it and left it out; the owner heard the listening sets
@@ -1123,11 +1163,14 @@ upright's stiffness to eleven forte notes of a recorded upright (MAPS,
 ENSTDkCl). How steeply the felt stiffens is fitted to the Salamander grand's
 sixteen velocity layers, with the force kept where the felt is 1 mm in.
 
-**Velocity.** Full velocity is a blow of 5 m/s, and under it the hammer's
-speed is the velocity to a power that Dynamics sets: 1 at 0.5, where the
-notes' levels stand within 2 dB of the Salamander's layers from velocity 31
-up (2.6 dB under them below it) and within 2 dB of a Disklavier's notes
-(MAPS, ENSTDkCl). The softest key still strikes, at 0.28 m/s.
+**Velocity.** The hammer's speed is 5 m/s times the velocity to a power
+that Dynamics sets: 1 at 0.5, where the notes' levels stand within 2 dB of
+the Salamander's layers from velocity 31 up (2.6 dB under them below it) and
+within 2 dB of a Disklavier's notes (MAPS, ENSTDkCl). The softest key still
+strikes, at 0.28 m/s. The top velocities fly faster than that, by the eighth
+power of the velocity: 4 % at 96, 13 % at 112 and 35 % at 127, a blow of
+6.75 m/s. That fortissimo is the owner's choice by ear and harder than the
+recorded grand's hardest layer (Known gaps).
 
 **Unisons.** The strings of a key, each in two polarisations, share the
 bridge, whose admittance couples them (Weinreich 1977): that gives the
@@ -1321,10 +1364,10 @@ is what the board and the microphones give it.
 | --- | --- | --- |
 | Piano | five | The piano that plays (above) |
 | Hammer | −1 to 1 | The felt's stiffness, a decade and a half from soft and worn-in to hard: ×10^(0.75 Hammer) |
-| String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves |
+| String age | 0 to 1 | Old strings lose their upper partials' sustain, wound ones most, and beat against themselves: at 1 the partials' loss is 60 times a new plain string's and 120 times a new wound one's |
 | Detune | 0 to 1 | How far apart a unison's strings are tuned: pure at 0, 6 cents of spread at 1, a bar piano (on a grand, half that from C5 up). 0.3 by default |
 | Stretch | 0 to 2 | The tuner's stretch. At 1, octaves are tuned on the strings' own partials (4:2 from A3 up; down a grand's bass 6:3 by A2 and 8:4 from A1, the upright's 4:2 throughout; Railsback's curve); 0 is equal temperament |
-| Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow under 5 m/s at full velocity: 10 dB at 0, 25 dB at 0.5, where the speed follows the velocity, and 40 dB at 1 |
+| Dynamics | 0 to 1 | The span of hammer speeds from the softest to the hardest blow, 6.75 m/s at full velocity: 13 dB at 0, 28 dB at 0.5, where the speed follows the velocity up to the top velocities' rise, and 43 dB at 1 |
 | Lid | 0 to 1 | Closed, the short stick at 0.5, open; an upright's top |
 | Soundboard | 0 to 1 | How long the board rings: its loss halves from 0.5 to 1 and doubles to 0 |
 | Sympathetic, Duplex | 0 to 1 | How strongly the open strings and the duplex scales answer |
@@ -1332,7 +1375,7 @@ is what the board and the microphones give it.
 | Ø (each microphone) | off, on | Its polarity, in the mix and on its own output |
 | Room | 0 to 1 | The size of the room every microphone hears, at its own share: 0.29 s at 0, 0.8 s at 0.5, 2.2 s at 1; 0.6 by default |
 | Width | 0 to 1 | The stereo image |
-| Practice felt | 0 to 1 | A felt strip between hammers and strings: up to three decades softer |
+| Practice felt | 0 to 1 | A felt strip between hammers and strings: up to four decades softer |
 | Felt mute | 0 to 1 | Felt laid on every sounding string, held or not (the mod wheel) |
 | A4 tuning | 415 to 466 Hz | Concert pitch |
 | Mechanics | 0 to 2 | How loud the action plays |
@@ -1611,6 +1654,28 @@ is written independently of it.
   string that moves as the mean of the unison's strings, each then taking
   its share of the force: a hammer does not meet three strings that stand
   apart each on its own.
+- **The fortissimo is harder than the recorded grand's.** Velocity 127
+  throws the hammer at 6.75 m/s by the owner's choice by ear (2.21.0); a
+  top of 6.0 m/s met the Salamander grand's step from its eighth layer to
+  its sixteenth in the middle of the keyboard. In the bass the hardest
+  notes are louder and hold more between their partials than the recorded
+  ones: from A0 to A2 the step stands 1.6 dB from the recording's on
+  average, and the noise between the partials of the bass's two hardest
+  layers reads 13.8 dB where 2.20.0 read 8.6
+  ([report](Docs/validation/grand-fortissimo-benchmark-2026-11-16.md)).
+  Loud middle notes still hold 3 to 4 dB less than the recording in the
+  octave about 4 kHz in their first 100 ms, which is the felt's fit on
+  every layer, and from C6 up the hardest notes hold 12 to 16 dB less
+  between their partials in the octaves about 4 and 8 kHz in their first
+  50 ms than the recording does: the strike's own noise there is not
+  modelled.
+- **String age's and the practice felt's ranges are voiced.** No
+  measurement of how fast an old string's partials die or of what a
+  practice strip takes was found; both ranges are the owner's choices by
+  ear (2.21.0).
+- **Duplex is hard to hear.** From 0 to 1 it changes a treble phrase by a
+  difference 36 dB under the phrase. Stronger settings were heard and the
+  owner kept this one (2.21.0).
 - **The bass hammers are fitted without the strings' bending.** Since
   2.20.0 a stiff string pulls the bridge by its bending as well as its
   slope. The hammers' felt and the strings' losses were fitted before it,
