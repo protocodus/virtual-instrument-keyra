@@ -6022,3 +6022,18 @@ formula includes; and the XY pair's row was the strings' own input row,
 which no microphone in a diffuse field shares. The XY change gives the
 presets that use the pair a different room at the same level; the owner has
 not heard it yet. Nothing here licenses a new constant.
+
+The bass onset (I3a) was checked against the Salamander C1 and is left as
+it is: a measurement settles it. 2.18.0's longitudinal force sounds 20 to
+30 dB over the strings' silence in the 6 ms before the transverse wave
+arrives, which the review read as too strong an onset. Every one of the 16
+layers was rendered as the benchmark renders them, with and without the
+force. In the loud layers the recording has a quiet start of its own, 22 to
+26 dB under the peak for several milliseconds before the main rise (layer
+16), where 2.18.0's sits 24 to 29 dB under; in the soft layers the
+recording's is under its noise floor (about 42 dB under the peak). From
+30 dB to 6 dB under the peak, C1 rises in 16.5 ms in the recording on
+average, 8.0 ms in 2.18.0 and 4.8 ms without the force. Nothing measured
+asks for a smaller precursor, and taking it out would move C1 further from
+the recording.
+

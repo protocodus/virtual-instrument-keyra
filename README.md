@@ -71,6 +71,12 @@ Fixes from a review of 2.18.0 that the owner asked for ("ok lets fix").
   had been pruned to a few partials, the pairs of partials that drive the
   longitudinal modes were all left out; now each pair still sounding counts.
   It reaches only the tails, at least 120 dB under the note in the demos.
+- **Against the recordings nothing moves**
+  ([grand](Docs/validation/grand-review-fixes-benchmark-2026-11-16.md),
+  [upright](Docs/validation/upright-review-fixes-benchmark-2026-11-16.md)):
+  no paired regression, every paired mean within 0.001. The benchmark plays
+  the close pair at a fixed Room, which neither the click nor the XY pair's
+  room reaches.
 
 ### 2.18.0 — 2026-11-16 — the room in every microphone, and Room its size
 
