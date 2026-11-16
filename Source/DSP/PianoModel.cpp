@@ -17,12 +17,14 @@
 //           S. Zambon and F. Fontana, "A modal-based real-time piano
 //           synthesizer", IEEE TASLP 18(4), 2010).
 // Hammer    A mass on felt that stiffens as it is compressed and gives way
-//           while it is held: F = F0 (x^p - e/t0 * integral of x^p
-//           exp(-(t - s)/t0) ds), A. Stulov's hysteretic felt ("Hysteretic
-//           model of the grand piano hammer felt", JASA 97, 1995) with his
-//           measured hammers, solved against the string's own motion at the
-//           strike point while they touch (A. Chaigne and A. Askenfelt,
-//           "Numerical simulations of piano strings", JASA 95, 1994).
+//           while it is held: F = K (x^p + t0 d(x^p)/dt), A. Stulov's
+//           hysteretic felt ("Hysteretic model of the grand piano hammer
+//           felt", JASA 97, 1995) in the limit of a memory far shorter than
+//           the contact, with hammers fitted to recordings (designStrings;
+//           his own measured hammers were tried and left), solved against
+//           the motion the blow gives its string at the strike point while
+//           they touch (A. Chaigne and A. Askenfelt, "Numerical simulations
+//           of piano strings", JASA 95, 1994).
 // Unisons   The strings of a key, each in two polarisations, share the
 //           bridge: its admittance couples them, which gives the prompt
 //           sound, the aftersound and their beating (G. Weinreich, "Coupled
@@ -1228,6 +1230,10 @@ struct Piano::Impl {
   MicCircuit circuit[micCount][2];
   bool computed[micCount]{};   // what the last chunk computed of each, to clear what stops
   bool outMoving=false;
+  // How far the mix glides to its goal in a chunk: a quarter at 48 kHz, the
+  // same 2.3 ms at every rate (it took a quarter a chunk at any rate, four
+  // times as fast at 192 kHz).
+  float slew=.25f;
   // Above the modes: each point's force, high-passed, delayed to each
   // microphone.
   struct Tap {int point,delay;float gain;};
@@ -1242,6 +1248,7 @@ struct Piano::Impl {
   float lineBeside[points][lineSize]{};
   Tap tapsBeside[outs][points*4]{};int tapBesideCount[outs]{};
   float voicing[keyCount]{};   // each key's pull on the board, evened for the mix
+  float standardVoicing[keyCount]{};  // the same at the default mix, for the open strings' drive
   float pull[keyCount];        // a tool's own pull in its place; negative, none
 
   // The room: a feedback delay network (J.-M. Jot and A. Chaigne, "Digital
@@ -1318,9 +1325,14 @@ struct Piano::Impl {
       // Across the bridge a string meets u^2 of the admittance it meets
       // down into it, and meets it alone.
       const float own=plane<3?0:v.u[plane]*v.u[plane];
+      // Above `apart` the coupling is the unison's, every string's at once
+      // (tune()); a string across the bridge meets its own share of it.
+      // Taken whole, the wound pairs' partials 49 to 64 lost twice their
+      // share there, since 2.14.0 carried them to 64 across.
+      const float alone=plane>=3&&v.strings>1?1.f/v.strings:1.f;
       for(int k=0;k<n;++k){const float g=v.open[k]+(v.damped[k]-v.open[k])*d;
-        const float lift=v.glide*v.lift[k];
-        v.turnRe[o+k]=(v.cosine[o+k]-lift*v.sine[o+k])*g-own*v.couplingRe[k];v.turnIm[o+k]=(v.sine[o+k]+lift*v.cosine[o+k])*g-own*v.couplingIm[k];}}
+        const float lift=v.glide*v.lift[k];const float self=own*(k>=v.apart?alone:1.f);
+        v.turnRe[o+k]=(v.cosine[o+k]-lift*v.sine[o+k])*g-self*v.couplingRe[k];v.turnIm[o+k]=(v.sine[o+k]+lift*v.cosine[o+k])*g-self*v.couplingIm[k];}}
     v.appliedDamper=d;v.appliedGlide=v.glide;
   }
   // A voice's partials and their frequencies from its key as the controls
@@ -1463,6 +1475,12 @@ struct Piano::Impl {
     const double f0=key.hertz*tuningRatio(key);
     // Una corda: a grand's hammers shift off each unison's last string.
     const double shifted=table->design.upright?0:soft;
+    // Above `apart` plane 0 is the strings' sum, each at its own share of
+    // the blow and the last shifted off under una corda. Taken as string
+    // 0's share times the strings, a key's partials from 49 up stood up to
+    // 0.8 dB off by string 0's random share alone.
+    double summed=0;
+    for(int j=0;j<v.strings;++j)summed+=key.share[j]*(v.strings>1&&j==v.strings-1?1-.92*shifted:1);
     for(int plane=0;plane<6;++plane){
       const int string=plane%3;const bool isAcross=plane>=3;
       const int n=plane==0?v.partials:isAcross?(string<v.strings?v.across:0):(string<v.strings?v.apart:0);
@@ -1471,11 +1489,10 @@ struct Piano::Impl {
       const int o=planeStart[plane];
       for(int k=0;k<n;++k){
         const double w=2*pi*f0*key.ratio[k];
-        double together=1;
-        if(plane==0&&k>=v.apart&&v.strings>1)together=v.strings-.92*shifted;
+        const double struckBy=plane==0&&k>=v.apart&&v.strings>1?summed:share;
         // A string's mode k takes 2 / (mu L w) sin(k pi x0 / L) metres per
         // newton-second of the hammer's force.
-        v.drive[o+k]=static_cast<float>(share*together*2*key.shape[k]/(key.density*key.length*w)/sampleRate);
+        v.drive[o+k]=static_cast<float>(struckBy*2*key.shape[k]/(key.density*key.length*w)/sampleRate);
       }
     }
   }
@@ -1834,20 +1851,29 @@ struct Piano::Impl {
     // whatever the pairs' levels: KeyVoicing.h measures it at the default
     // Room, and it scales with Room from there.
     const double returned=clamp(controls.room,0,1)/voicedRoom;
-    for(int i=0;i<keyCount;++i){double got=0,even=0;
+    // A key's pull for pairs at `level` (each signed as it is wired, so only
+    // Invert signs it) and the return at `ret` of its default.
+    const auto voiceOf=[&](int i,const double* level,double ret){double got=0,even=0;
       const float* heard=keyHeard[body][i];const float* withReturn=keyReturned[body][i];
-      // KeyVoicing.h measures the pairs as they are wired, so only Invert
-      // signs them here.
-      for(int a=0;a<micCount;++a){const double level=levelGoal[a]*t.mic[a].side;
-        even+=level*level*keyEven[body][i][a];
-        got+=2*returned*level*withReturn[a];
-        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level*levelGoal[b]*t.mic[b].side**heard++;}
-      got+=returned*returned*withReturn[micCount];even+=returned*returned*keyReturnEven[body][i];
+      for(int a=0;a<micCount;++a){
+        even+=level[a]*level[a]*keyEven[body][i][a];
+        got+=2*ret*level[a]*withReturn[a];
+        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;}
+      got+=ret*ret*withReturn[micCount];even+=ret*ret*keyReturnEven[body][i];
       // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
       // under the even scale (the baby grand's G#5 through the close pair),
       // and one 14 dB over it (the studio grand's G#3 in the four pairs
       // Keyra.Levels mixes).
-      voicing[i]=even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1;}
+      return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;};
+    double level[micCount],standard[micCount]{};standard[micClose]=1;
+    for(int a=0;a<micCount;++a)level[a]=levelGoal[a]*t.mic[a].side;
+    for(int i=0;i<keyCount;++i){voicing[i]=voiceOf(i,level,returned);
+      // What the bridge hands the open strings is the key's pull at the
+      // default mix (the close pair, Room 0.1), whatever the pairs and Room
+      // stand at: the voicing evens what the microphones hear, and taken as
+      // the mix's it let a pair or Room move the open strings' drive by up
+      // to 11 dB on a key.
+      standardVoicing[i]=voiceOf(i,standard,1);}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)snapMix();
@@ -1962,8 +1988,8 @@ struct Piano::Impl {
     for(const auto& place:frameKnock)for(const auto& f:place)frameRings=frameRings||std::abs(f.z1)+std::abs(f.z2)>still;
     if(outMoving){float furthest=0;
       for(int out=0;out<outs;++out)for(int part=0;part<2;++part)for(int k=0;k<modes;++k){
-        float& now=outNow[out][part][k];const float step=(outGoal[out][part][k]-now)*.25f;now+=step;furthest=std::max(furthest,std::abs(step));}
-      for(int m=0;m<micCount;++m){const float step=(levelGoal[m]-levelNow[m])*.25f;levelNow[m]+=step;furthest=std::max(furthest,std::abs(step));}
+        float& now=outNow[out][part][k];const float step=(outGoal[out][part][k]-now)*slew;now+=step;furthest=std::max(furthest,std::abs(step));}
+      for(int m=0;m<micCount;++m){const float step=(levelGoal[m]-levelNow[m])*slew;levelNow[m]+=step;furthest=std::max(furthest,std::abs(step));}
       if(furthest<1e-9f)snapMix();}
     for(double& x:travel)if(std::abs(x)<still)x=0;
     for(int k=0;k<modes;++k)if(std::abs(boardRe[k])+std::abs(boardIm[k])<still)boardRe[k]=boardIm[k]=0;
@@ -1993,10 +2019,12 @@ struct Piano::Impl {
       heard[m]=levelNow[m]!=0||levelGoal[m]!=0||(mics&&(mics[2*m]||mics[2*m+1]));
       if(!heard[m]&&computed[m])for(auto& c:circuit[m])c.clear();
       computed[m]=heard[m];}
-    alignas(32) float struck[points][chunk],answered[points][chunk],each[chunk];
-    std::memset(struck,0,sizeof(struck));std::memset(answered,0,sizeof(answered));
+    // `bridged` is `struck` with each key at its pull at the default mix: what
+    // moves the bridge under the open strings (mixMics, standardVoicing).
+    alignas(32) float struck[points][chunk],bridged[points][chunk],answered[points][chunk],each[chunk];
+    std::memset(struck,0,sizeof(struck));std::memset(bridged,0,sizeof(bridged));std::memset(answered,0,sizeof(answered));
     for(auto& c:contacts)if(c.active)runContact(c,frames);
-    for(int p=0;p<points;++p){struck[p][0]=knocks[p];knocks[p]=0;}
+    for(int p=0;p<points;++p){struck[p][0]=bridged[p][0]=knocks[p];knocks[p]=0;}
     alignas(32) float blow[chunk]{};
     // What reaches the board's edge at each of its places, and last at all
     // of them alike: the blows' lean on the capo bar and the caught hammers.
@@ -2016,6 +2044,8 @@ struct Piano::Impl {
       play(v,each,frames);
       const float pulled=pull[i]<0?voicing[i]:pull[i],b=v.pointMix*pulled,a=pulled-b;
       for(int s=0;s<frames;++s){struck[v.point][s]+=a*each[s];struck[v.point+1][s]+=b*each[s];}
+      const float standing=pull[i]<0?standardVoicing[i]:pull[i],bs=v.pointMix*standing,as=standing-bs;
+      for(int s=0;s<frames;++s){bridged[v.point][s]+=as*each[s];bridged[v.point+1][s]+=bs*each[s];}
       if(v.forcing){bool still=false;for(const auto& c:contacts)still=still||(c.active&&c.key==i);
         std::memset(v.force,0,sizeof(v.force));v.forcing=still;}
     }
@@ -2050,7 +2080,7 @@ struct Piano::Impl {
     // string whose damper is off it.
     alignas(32) float moved[points][chunk];
     for(int p=0;p<points;++p){double x=travel[p];
-      for(int s=0;s<frames;++s){x=x*travelLeak+mobility*struck[p][s]/sampleRate;moved[p][s]=static_cast<float>(x);}
+      for(int s=0;s<frames;++s){x=x*travelLeak+mobility*bridged[p][s]/sampleRate;moved[p][s]=static_cast<float>(x);}
       travel[p]=x;}
     for(int i=0;i<keyCount;++i){
       const int o=i*bankSlots;
@@ -2212,6 +2242,7 @@ void Piano::prepare(double sampleRate){
     for(int b=0;b<bodyCount;++b){Tables& t=p.tables[b];t.design=designs[b];designStrings(t,b);designBoard(t,b);}
   }
   p.substeps=p.sampleRate<70000?2:1;
+  p.slew=static_cast<float>(1-std::pow(.75,48000./p.sampleRate));
   p.travelLeak=std::exp(-2*pi*8/p.sampleRate);
   p.dcPole=std::exp(-2*pi*10/p.sampleRate);
   {const double w=2*pi*frameCorner/p.sampleRate,alpha=std::sin(w)/std::sqrt(2.),c=std::cos(w),a0=1+alpha;

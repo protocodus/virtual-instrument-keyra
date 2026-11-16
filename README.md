@@ -51,6 +51,40 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.16.1 — 2026-11-16 — each string at its own share
+
+Four corrections a review of the model found, none of them chosen by ear.
+The panel, the presets and a saved session do not change, and the keys'
+level table and output scales stand as 2.16.0 left them (`KeyraLevels
+--check` passes; no piano's scale moves by 0.01 dB).
+
+- **A string across the bridge meets its own share of the coupling.** Above
+  its first 48 partials a unison's coupling is all its strings' at once;
+  each wound string's partials 49 to 64 across the bridge, which 2.14.0
+  added, met all of it, and lost twice their share there.
+- **The partials the strings play together take each string's blow.**
+  Above the first 48 partials the blow drives the strings' sum by each
+  string's own share of it, the last shifted off under una corda, where it
+  took the first string's share as every string's: a key's partials from
+  the 49th up stood up to 0.8 dB off by that one string's share.
+- **The open strings hear the piano, not the mix.** The bridge under the
+  open strings moved with each key's pull as voiced for the microphones
+  that were up, so a pair or Room moved what the sympathetic strings and
+  duplex scales were given by up to 11 dB on a key. They now take each
+  key's pull at the default mix, whatever the mix.
+- **A change of mix glides in 2.3 ms at every rate.** It took a quarter of
+  the way each 32 samples, which at 192 kHz was 0.6 ms.
+- **The hammers described as they are.** How it works and the model's notes
+  said Stulov's measured hammers, and a restrike meeting its string as it
+  moves; the felt is Stulov's in the limit of a short memory, the hammers
+  are fitted to recordings, and a restrike meets its string as if at rest,
+  now among the Known gaps.
+- Against the recordings no paired note is worse: on the Salamander grand
+  ([report](Docs/validation/grand-shares-benchmark-2026-11-16.md)) every
+  paired mean moves by under 0.01 dB or 0.01 cents, and on the Helsinki
+  1967 upright ([report](Docs/validation/upright-shares-benchmark-2026-11-16.md))
+  by under 0.03 dB or 0.01 cents.
+
 ### 2.16.0 — 2026-11-15 — each piano's own preset first, and Room its own level
 
 The factory bank starts with each piano as built, in the selector's order
@@ -861,12 +895,15 @@ grand's). Every partial loses by the string's own damping, which rises with
 frequency, and by what the bridge takes from it.
 
 **Hammers.** A hammer is a mass on felt that stiffens as it is compressed and
-gives way while it is held: Stulov's hysteretic felt with his measured
-hammers, given at C2, C4 and C7 as Chaigne and Askenfelt's three hammers are
-and carried across the keys. The blow is solved against the string's own
-motion at the strike point, twice a sample at 44.1 and 48 kHz, for as long
-as they touch, so a hard blow is brighter because the felt is stiffer under
-it and a restrike meets a string already moving. The hammers' stiffness and
+gives way while it is held: Stulov's hysteretic felt, in the limit of a
+memory far shorter than the contact, its hammers given at C2, C4 and C7 as
+Chaigne and Askenfelt's three are and carried across the keys (Stulov's own
+measured hammers were tried and left: their soft layers stood 20 dB too
+bright). The blow is solved against the motion it gives the string at the
+strike point, twice a sample at 44.1 and 48 kHz, for as long as they touch,
+so a hard blow is brighter because the felt is stiffer under it. A restrike
+meets its string as if at rest, while what the string still sounds rings on
+(Known gaps). The hammers' stiffness and
 the strings' losses are fitted to notes of one recorded grand (Jon Meyer's
 "Steinway Grand" for Decent Sampler, from the owner's reference set); the
 upright's stiffness to eleven forte notes of a recorded upright (MAPS,
@@ -938,7 +975,10 @@ waves, against a smooth line through the keys, and writes
 brings the key onto that line in the mix that is set, by no more than 15 dB
 either way. Each pair's line is set at the close pair's level without the
 room, averaged over the keys, which keeps the pairs balanced where the
-board's modes alone do not. The table is measured at the default Lid and
+board's modes alone do not. What the bridge hands the open strings is each
+key's pull at the default mix, the close pair and Room 0.1, whatever the
+mix that is set: the voicing evens what the microphones hear, not what the
+strings do (2.16.1). The table is measured at the default Lid and
 Soundboard and at half velocity; the knocks under a note are not voiced.
 
 **Sympathetic strings and duplex scales.** Every string whose damper is
@@ -1339,6 +1379,12 @@ is written independently of it.
   other grands' ways at its size, and the benchmark still scores the
   Concert Grand by default (`-- --body studio` scores this one).
 - **Changing the piano cuts what sounds.** A new body starts silent.
+- **A restrike meets a string at rest.** The blow is solved against the
+  motion it gives the string, from rest: a key struck again while it sounds
+  meets no motion of the string under the hammer, while what the string still
+  sounds rings on, and is not turned down (Docs/decisions.md, 2026-11-10).
+  Seeding the contact with the string's own motion is a candidate for a
+  listening test.
 - **CPU.** On a development machine (an Intel Xeon at 2.1 GHz, GCC 13) the
   eight demos take 6 to 14 % of one core and their heaviest 256-frame
   blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to
