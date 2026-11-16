@@ -6112,8 +6112,8 @@ alone, and it is a Known gap with a listening set beside it (set 2: A is
 2.18.1, B is 2.18.1 with the factor; the difference stands 40 dB under the
 phrase on the grand and 31 dB on the upright). Taking it means fitting the
 bass hammers again with it in. The owner's "use B" named one letter for the
-two sets; it is taken for set 1, which is the branch, and whether it also
-takes set 2's B was asked. Until that is answered the factor stays out.
+two sets; it was taken for set 1, which is the branch, and whether it also
+takes set 2's B was asked. The answer is the next entry: it does.
 
 Checked and found sound: the longitudinal force and its modes, the felt's
 implicit solve, the modal drive, the bridge's coupling and the tuner's
@@ -6131,3 +6131,41 @@ the Helsinki upright
 (Docs/validation/upright-struck-again-benchmark-2026-11-16.md, run on the
 owner's computer, where the recordings are). On the upright only the notes
 from A1 to A#3 render differently, the glide's count.
+
+## 2026-11-16 — 2.20.0: a stiff string's bending in its pull on the bridge
+
+What was being decided: whether the bending term of a stiff string's pull
+on the bridge, found by the 2.19.0 audit and left out there, goes into the
+first release.
+
+- A is 2.18.1. B is 2.18.1 with the pull and the bridge's coupling
+  multiplied by 1 + B k^2 (set 2: six bass notes from A0 to A2 soft to
+  hard, seven notes from C3 to G7 and a held chord, no pedal, the grand and
+  the upright, matched on whole-file RMS, B trimmed −0.02 dB on the grand
+  and −0.08 dB on the upright; B's keys were not voiced again).
+- The owner's words on the two sets were "use B and prepare for launch"
+  (2026-11-16). Asked whether that takes set 2's B into the launch build
+  too, with the bass regression and the work it means named beside the
+  options, the owner chose "Yes, add it before launch" over "No, launch
+  with set 1's B only" and "Later, with a bass hammer refit".
+
+Both candidates were defensible on the string's physics: the slope's term
+alone is the ideal string's pull, and the bending's is the hinged stiff
+string's, with no new constant (B is each string's own inharmonicity). The
+choice between them is the owner's, by ear and by decision; the recordings
+do not make it. They score the partials the same and seven bass notes' noise
+between the partials 0.5 to 3.4 dB worse with the term
+(Docs/validation/grand-bending-pull-benchmark-2026-11-16.md, 2.20.0 against
+2.19.0 with the keys voiced again), because the bass hammers and the
+strings' losses were fitted without it. That is a Known gap now, not a
+reason the term is wrong.
+
+What it licenses: the term on each voice's pull, on what the bridge takes
+from each partial and on the open strings' bank; the keys voiced again and
+each piano's level pinned again (`pascalScale` by 0.01 to 0.16 dB, every
+default sound at −9.00 VU). Not a refit of the bass hammers, which is open,
+and not the term on the lengths behind the bridge, which stay ideal strings
+as the set the owner heard had them.
+
+Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
+`KeyraLevels --check` passes with the new table.

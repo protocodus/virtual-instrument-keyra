@@ -51,6 +51,31 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.20.0 — 2026-11-16 — a stiff string's bending in its pull on the bridge (the owner's choice)
+
+2.19.0's audit found it and left it out; the owner heard the listening sets
+and chose to take it before the first release
+([decisions](Docs/decisions.md)).
+
+- **A stiff string pulls the bridge by its bending too.** The pull was the
+  tension times the string's slope at the bridge, T k pi / L per metre of
+  partial k. A hinged stiff string's is 1 + B k^2 times that, and it loses
+  to the bridge in the same measure: 1.4 dB more at 1.2 kHz and 6 dB at
+  4 kHz on the concert grand's A0, 1 dB at 7 kHz on A4. Notes are a little
+  brighter the stiffer their strings, most in the low bass; a phrase differs
+  from 2.19.0's by 40 dB under it on the grand and 31 dB on the upright
+  (measured on the listening set, before the keys were voiced again).
+- **The keys are voiced again** (`KeyVoicing.h`) and each piano's level is
+  pinned again, by 0.01 to 0.16 dB; every default sound reads −9.00 VU.
+- **Against the Salamander grand**
+  ([report](Docs/validation/grand-bending-pull-benchmark-2026-11-16.md))
+  the partials score the same, 7.89 to 7.88 dB on the fitted notes and 7.35
+  to 7.32 on the others, and every paired mean but one stands within 0.06.
+  The noise between the partials is 0.44 dB (fitted notes) and 0.29 dB (the
+  others) worse, all of it on seven bass notes, A0 to F#2, by 0.5 to 3.4 dB:
+  their hammers and losses were fitted without the bending (Known gaps).
+  The Helsinki upright's report follows from the owner's computer.
+
 ### 2.19.0 — 2026-11-16 — a key struck again meets its moving string (chosen by ear)
 
 From an audit of the physical model the owner asked for. The owner heard
@@ -90,7 +115,7 @@ the listening set and chose the hammer that meets the moving string
   which the hammer's change does not reach; what moves is the glide's count,
   on the wound pairs and the low plain strings.
 - **Found and left as it is:** a stiff string's pull on the bridge leaves
-  out its bending, now among the Known gaps with what it scored.
+  out its bending (taken in 2.20.0).
 
 ### 2.18.1 — 2026-11-16 — Room turns without a click
 
@@ -1580,17 +1605,18 @@ is written independently of it.
   string that moves as the mean of the unison's strings, each then taking
   its share of the force: a hammer does not meet three strings that stand
   apart each on its own.
-- **A stiff string's pull on the bridge leaves out its bending.** The pull
-  is the tension times the slope, T k pi / L per metre of partial k; a
-  hinged stiff string's is 1 + B k^2 times that, 1.4 dB more at 1.2 kHz and
-  6 dB at 4 kHz on the concert grand's A0, and 1 dB at 7 kHz on A4. Tried
-  (2026-11-16), it scored the Salamander's partials the same and seven bass
-  notes' noise between the partials 0.6 to 3.4 dB worse
-  ([report](Docs/validation/grand-stiff-pull-benchmark-2026-11-16.md)):
-  several loud bass notes already stand over the recording in the octave
-  about 8 kHz (A0, C1 and F#2 by 3 to 14 dB), and the hammers and the
-  strings' losses were fitted without it. A listening set
-  was handed over; the upright was not measured.
+- **The bass hammers are fitted without the strings' bending.** Since
+  2.20.0 a stiff string pulls the bridge by its bending as well as its
+  slope. The hammers' felt and the strings' losses were fitted before it,
+  and with it seven bass notes of the Salamander grand, A0 to F#2, score
+  0.5 to 3.4 dB worse on the noise between their partials
+  ([report](Docs/validation/grand-bending-pull-benchmark-2026-11-16.md)).
+  Tried on 2.18.1, the bending added to what several loud bass notes
+  already had over the recording in the octave about 8 kHz (A0 at velocity
+  117 from 3 to 11 dB over, C1 from 6 to 14, F#2 from 12 to 14) while it
+  closed 0.4 to 1.6 dB of the model's shortfall there from C3 to C6. The
+  bass hammers have not been fitted again with it in. The lengths behind
+  the bridge (the duplex scales) are still ideal strings.
 - **CPU.** On a development machine (an Intel Xeon at 2.1 GHz, GCC 13) the
   eight demos take 6 to 14 % of one core and their heaviest 256-frame
   blocks 35 to 62 % of the block's time. 2.3.0 read 6 to 13 % and 20 to
