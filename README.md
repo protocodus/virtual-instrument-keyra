@@ -28,13 +28,13 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 4 | Baby Grand | [04-baby-grand.wav](Docs/audio/04-baby-grand.wav) | 9.7 s | -7.6 dBFS |
-| 5 | Upright | [05-upright.wav](Docs/audio/05-upright.wav) | 11.6 s | -3.3 dBFS |
-| 6 | Felt Nocturne | [06-felt-nocturne.wav](Docs/audio/06-felt-nocturne.wav) | 10.7 s | -10.4 dBFS |
-| 7 | Open Strings | [07-open-strings.wav](Docs/audio/07-open-strings.wav) | 11.7 s | -4.9 dBFS |
-| 8 | Distant Hall | [08-distant-hall.wav](Docs/audio/08-distant-hall.wav) | 10.8 s | -5.4 dBFS |
-| 9 | Warm Walnut | [09-warm-walnut.wav](Docs/audio/09-warm-walnut.wav) | 11.1 s | -5.2 dBFS |
-| 12 | Pop Upright | [12-pop-upright.wav](Docs/audio/12-pop-upright.wav) | 11.6 s | -2.9 dBFS |
+| 4 | Baby Grand | [04-baby-grand.wav](Docs/audio/04-baby-grand.wav) | 9.7 s | -5.8 dBFS |
+| 5 | Upright | [05-upright.wav](Docs/audio/05-upright.wav) | 11.6 s | -1.6 dBFS |
+| 6 | Felt Nocturne | [06-felt-nocturne.wav](Docs/audio/06-felt-nocturne.wav) | 10.7 s | -10.6 dBFS |
+| 7 | Open Strings | [07-open-strings.wav](Docs/audio/07-open-strings.wav) | 11.7 s | -5.2 dBFS |
+| 8 | Distant Hall | [08-distant-hall.wav](Docs/audio/08-distant-hall.wav) | 10.8 s | -4.8 dBFS |
+| 9 | Warm Walnut | [09-warm-walnut.wav](Docs/audio/09-warm-walnut.wav) | 11.1 s | -5.5 dBFS |
+| 12 | Pop Upright | [12-pop-upright.wav](Docs/audio/12-pop-upright.wav) | 11.6 s | -1.5 dBFS |
 
 <!-- audio-demos-end -->
 
@@ -1235,7 +1235,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 139](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/43789241279/artifacts/14192321943)**, built from [`1bc898295a04`](https://github.com/protocodus/virtual-instrument-keyra/commit/1bc898295a04a2f7ecddac92f367aa1573c4b3cc). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 143](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/44031035673/artifacts/14306741524)**, built from [`51a176a8c055`](https://github.com/protocodus/virtual-instrument-keyra/commit/51a176a8c0554194da4845fd8991237dca26b29a). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
