@@ -159,8 +159,10 @@ constexpr float pedalLift=.695f;
 // in velocity units instead would follow each layer's level slope, which at
 // the upright's loudest layers is twice the measured layers', and so double
 // it there. Their pitches differ by a median 0.02 cents, so a strike keeps
-// its tuning.
-constexpr double touchSpreadDb=1.085;
+// its tuning. From 2.23.0 a strike spreads twice that, a less even player
+// than the library's: the owner's choice by ear (2026-11-16), not a
+// measurement.
+constexpr double touchSpreadDb=2*1.085;
 // Nor do two knocks of the action sound alike. The Salamander grand's key
 // returns, each key's recorded once, stand 1.5 dB from their neighbours' in
 // level (1.6, 2.1, 3.4 and 3.8 dB in the bands from 50 Hz, 200 Hz, 800 Hz and
@@ -444,7 +446,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1866,.1494,.1073,.1601,.1669};
+  static constexpr double pascalScale[model::bodyCount]{.1658,.1314,.0987,.1520,.1466};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   // Each microphone's own output through a chunk, and held back by the
   // output stage's look-ahead (ForteOutput::maxDelay < 2048) to meet the mix.

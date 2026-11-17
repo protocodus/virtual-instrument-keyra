@@ -6037,3 +6037,380 @@ average, 8.0 ms in 2.18.0 and 4.8 ms without the force. Nothing measured
 asks for a smaller precursor, and taking it out would move C1 further from
 the recording.
 
+
+## 2026-11-16 — 2.19.0: a key struck again meets its moving string
+
+The owner asked for an audit of the physical model ("identify and fix any
+physical model issues"). The model was read whole against its stated
+physics. Its formulas hold; three things did not, and one of them is left.
+
+**The hammer met a string at rest.** Decided on what the model can defend,
+with the candidate taken as the project's rule has it, and then chosen by
+ear: the owner heard the listening set and chose B ("use B and prepare for
+launch", 2026-11-16).
+
+Since 2.0.0 the felt's force is solved against the motion it gives one
+string, from rest, and added to what rings. The entry of 2026-11-10 left the
+hammer's meeting with a moving string out because the engine of that day had
+no contact to solve it with and any law would have needed a drawn number.
+2.x has the contact. Starting it from the string's own motion (the mean of
+the unison's strings at the strike point, the hammer where that string
+stands) needs no new constant: the felt's law, the hammer's mass and the
+string are the ones a first strike uses, and the force still adds to what
+rings, which is exact for a linear string given the right force.
+
+- A is 2.18.1. B starts the contact from the string's motion.
+- A first strike on resting strings is the same samples in both (twenty
+  checked: five pianos, four keys), so the benchmarks' single notes stand
+  where they stood.
+- What a soft blow (0.3) adds 0.3 s after a hard one (0.9), against the
+  same blow at rest, across one period of the note: within 0.6 dB at every
+  moment in A; −1.0 to +5.0 dB on A1 and +1.2 to +7.6 dB on C4 in B. A hard
+  blow after a soft one stays within 0.3 dB (A1) and 1.6 dB (C4) of the blow
+  at rest in B. `Keyra.PianoModel` holds both.
+- As the plug-in plays, pedal down, six strikes at 0.25 s, velocity 80, each
+  strike's first 100 ms against the first: the README's table. The bass
+  builds less (the grand's C2 reaches +3.6 dB where A reaches +6.0, the
+  upright's +0.6 where A reaches +3.7) and the middle more (C4 +4.0 against
+  +2.1, the upright's +2.5 against −0.1).
+- The listening set (set 1: C4 six times, a chord four times, G5 ten times,
+  C2 three times, A3 once hard and four times soft, pedal held; the grand
+  and the upright) is matched on whole-file RMS, B trimmed −0.28 dB on the
+  grand and +0.24 dB on the upright.
+
+What it licenses: the string's motion under the hammer, by the contact the
+model already had. Not a new law for three strings under one felt: the
+hammer still meets one string, their mean (Known gaps).
+
+**The pitch glide counted the unison's sum as one string.** A correction,
+not a choice. Above the 48th partial plane 0 holds the strings' sum, and the
+glide's energy took it as one string's: four times a pair's share, nine
+times three strings'. Counted per string, a velocity-127 blow moves by under
+0.02 cents, and the render stands 60 dB or more under the note in difference
+(G1 to C3 measured, both pianos; C1's one string and C4 and C5 render the
+same samples).
+`stretchKept` was set against the Salamander's glide with the miscount in
+it and stays: the change is far inside what that fit resolves.
+
+**A stiff string's pull on the bridge leaves out its bending. Left as it
+is.** A hinged stiff string pulls its support with T k pi / L (1 + B k^2)
+per metre of partial k, and loses to the bridge in the same measure; the
+model has T k pi / L. With the factor, the Salamander benchmark's paired
+means stand within 0.06 of 2.18.1's on every metric but the noise between
+the partials, which is 0.44 dB (fitted notes) and 0.29 dB (the others)
+worse, all of it in the bass: seven notes from A0 to F#2 by 0.6 to 3.4 dB
+(Docs/validation/grand-stiff-pull-benchmark-2026-11-16.md). In octave bands
+against the recordings (0.1 to 0.6 s, twenty-four notes) the factor closes
+part of the model's shortfall in the 8 kHz octave from C3 to C6 (by 0.4 to
+1.6 dB of 4 to 17) and adds to an excess several loud bass notes already
+have there (A0 at velocity 117 from +3 to +11 dB, C1 from +6 to +14, F#2
+from +12 to +14). The hammers' stiffness
+and the strings' losses were fitted to recordings without the factor, and
+the recordings they were fitted to are not in this session, nor the
+upright's. So the formula is the string's, the score does not ask for it
+alone, and it is a Known gap with a listening set beside it (set 2: A is
+2.18.1, B is 2.18.1 with the factor; the difference stands 40 dB under the
+phrase on the grand and 31 dB on the upright). Taking it means fitting the
+bass hammers again with it in. The owner's "use B" named one letter for the
+two sets; it was taken for set 1, which is the branch, and whether it also
+takes set 2's B was asked. The answer is the next entry: it does.
+
+Checked and found sound: the longitudinal force and its modes, the felt's
+implicit solve, the modal drive, the bridge's coupling and the tuner's
+compensation for it, the board's admittance, the bridge's beam in series,
+the radiation integral, the open strings' drive by the moving bridge, and
+the model across sample rates (bare strings at 44.1 to 192 kHz within
+0.1 dB in level and 0.5 dB a third-octave under 4 kHz).
+
+Levels and tests. `KeyraLevels --check` passes with the keys' table as it
+was; the `unit`, `audio` and `perf` tiers pass and `KeyraDSPCxx17` builds.
+Against the recordings nothing moves: no paired regression, every paired
+mean within 0.003 on the Salamander grand
+(Docs/validation/grand-struck-again-benchmark-2026-11-16.md) and 0.001 on
+the Helsinki upright
+(Docs/validation/upright-struck-again-benchmark-2026-11-16.md, run on the
+owner's computer, where the recordings are). On the upright only the notes
+from A1 to A#3 render differently, the glide's count.
+
+## 2026-11-16 — 2.20.0: a stiff string's bending in its pull on the bridge
+
+What was being decided: whether the bending term of a stiff string's pull
+on the bridge, found by the 2.19.0 audit and left out there, goes into the
+first release.
+
+- A is 2.18.1. B is 2.18.1 with the pull and the bridge's coupling
+  multiplied by 1 + B k^2 (set 2: six bass notes from A0 to A2 soft to
+  hard, seven notes from C3 to G7 and a held chord, no pedal, the grand and
+  the upright, matched on whole-file RMS, B trimmed −0.02 dB on the grand
+  and −0.08 dB on the upright; B's keys were not voiced again).
+- The owner's words on the two sets were "use B and prepare for launch"
+  (2026-11-16). Asked whether that takes set 2's B into the launch build
+  too, with the bass regression and the work it means named beside the
+  options, the owner chose "Yes, add it before launch" over "No, launch
+  with set 1's B only" and "Later, with a bass hammer refit".
+
+Both candidates were defensible on the string's physics: the slope's term
+alone is the ideal string's pull, and the bending's is the hinged stiff
+string's, with no new constant (B is each string's own inharmonicity). The
+choice between them is the owner's, by ear and by decision; the recordings
+do not make it. They score the partials the same and seven bass notes' noise
+between the partials 0.5 to 3.4 dB worse with the term
+(Docs/validation/grand-bending-pull-benchmark-2026-11-16.md, 2.20.0 against
+2.19.0 with the keys voiced again), because the bass hammers and the
+strings' losses were fitted without it. That is a Known gap now, not a
+reason the term is wrong.
+
+What it licenses: the term on each voice's pull, on what the bridge takes
+from each partial and on the open strings' bank; the keys voiced again and
+each piano's level pinned again (`pascalScale` by 0.01 to 0.16 dB, every
+default sound at −9.00 VU). Not a refit of the bass hammers, which is open,
+and not the term on the lengths behind the bridge, which stay ideal strings
+as the set the owner heard had them.
+
+The upright was measured after the choice, on the owner's computer, where
+its recordings are
+(Docs/validation/upright-bending-pull-benchmark-2026-11-16.md). It reads as
+the grand does: the partials within 0.06 dB, the noise between the partials
+0.53 dB (fitted notes) and 0.62 dB (the others) worse in the paired means,
+on nine notes from C1 to E3 by 0.7 to 2.3 dB, and C1, D#1 and A1 also 0.5 to
+1.0 dB worse on the third-octave levels of the first half second. The owner
+chose with the grand's figures beside the options and the upright's not yet
+taken; they were reported with the candidate.
+
+Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
+`KeyraLevels --check` passes with the new table.
+
+## 2026-11-16 — 2.21.0: String age, the practice felt and the fortissimo, chosen by ear
+
+The owner asked, before the first release, that every control be audible
+("ensure all controls have audible effects. i think string age etc are
+unhearable"), then "isnt felt too loud?" and "i also think that 127 velocity
+sohuld resuilt in fortissimo, very loud and aggresive tone". Each control was
+measured across its range on 2.20.0 first. Most are plainly audible; these
+were not, or were in question:
+
+- String age at full changed a note's first quarter second by 0.2 dB, and by
+  2 dB at 2 kHz.
+- Duplex from 0 to 1 changed a treble phrase by a difference 36 dB under it,
+  and Sympathetic a pedalled phrase by one 17 dB under it.
+- The practice felt at full left a phrase 5 dB under the open piano (10 dB
+  A-weighted) and its bass notes 1 to 2.4 dB under.
+- Velocity 127 stood 3 to 5 dB under the Salamander grand's hardest layer
+  from 2 to 8 kHz in the bass and the middle, and the middle of the keyboard
+  rose 6.6 dB from its eighth layer to its sixteenth where the recording
+  rises 8.2.
+
+What was being decided: how far each of the five goes. Five sets, the
+Concert Grand through the close pair, A always 2.20.0, not committed:
+
+- **String age at full** (set 1, not level matched): A loses the upper
+  partials 6 times (plain strings) and 11 times (wound) as fast as new
+  strings; B 20 and 40 times; C 60 and 120 times. The owner chose **C**.
+- **Duplex at full** (set 2, matched on whole-file RMS): A twice what the
+  lengths behind the bridge take as built; B 16 times; C 32 times. The owner
+  chose **A**.
+- **Sympathetic at full** (set 3, matched on whole-file RMS): A twice the
+  open strings' drive as built; B 4 times; C 8 times. The owner chose **A**.
+- **The practice felt at full** (set 4, not level matched, level being what
+  was judged): A softens the felt by three decades; B by four; C by three
+  with the blow 6 dB slower through the strip. The owner chose **B**.
+- **Velocity 127** (set 5, not level matched): A 5.0 m/s; B 6.0 m/s, a rise
+  of 0.2 by the eighth power of the velocity, fitted to the recording's
+  step in the middle of the keyboard (8.1 dB against its 8.2); C 6.75 m/s, a
+  rise of 0.35. The owner chose **C**.
+
+The owner's words: "Age C, Duplex A, Sympathetic A, Felt B, Fortissimo C"
+(2026-11-16). These are choices by ear. No measurement set them: no figure
+for how lossy an old string is or how much a practice felt takes was found,
+so Age's and Felt's ranges are voiced ranges and are said to be; the
+fortissimo is harder than the recording's level step supports, and that is
+recorded as the owner's choice against the fitted B, not as a fit.
+
+What it licenses: `stringLoss`'s 60 and 120 at full Age, four decades under
+the strip, `topRise` 0.35, the keys voiced again and each piano's level
+pinned again (`pascalScale` 0.45 to 1.03 dB down, since ordinary playing
+reaches the velocities the rise lifts; every default sound at −9.00 VU).
+Duplex and Sympathetic stay as shipped: Duplex at full remains a difference
+36 dB under the phrase, by the owner's choice, and is a Known gap as a
+control. The engine test of the strip pinned three decades' figures and is
+set to four's, with the reason beside it.
+
+Against the recordings (the default sound has neither String age nor the
+strip, so only the fortissimo moves): on the Salamander grand the partials
+stand 0.11 and 0.09 dB closer and the noise between the partials 0.36 and
+0.48 dB worse in the paired means, on ten bass notes from A0 to D#3 by 0.8
+to 1.6 dB (Docs/validation/grand-fortissimo-benchmark-2026-11-16.md). The
+upright was measured after the choice, on the owner's computer
+(Docs/validation/upright-fortissimo-benchmark-2026-11-16.md): its levels
+stand 0.38 and 0.52 dB closer, its partials within 0.03 dB on the fitted
+notes and 0.17 worse on the others (E6), and the noise between the partials
+0.52 and 0.49 dB worse, on twelve notes from D#1 to C4 by 0.6 to 2.0 dB. The
+owner chose the fortissimo with the grand's level step beside the letters
+and these reports not yet taken; they were reported with the candidate.
+
+Tests: the `unit`, `audio` and `perf` tiers pass, `KeyraDSPCxx17` builds and
+`KeyraLevels --check` passes with the new table.
+
+## 2026-11-16 — 2.22.0: the fortissimo in the bass, chosen by ear against the recording
+
+After 2.21.0's fortissimo the owner asked: "try to increase the realism of FF
+(fortissimo) if there is a way". The hardest recorded layer was set beside
+the model. From the middle up the faster top had brought the partials closer.
+In the bass it had gone past the recording: on the eight recorded keys from
+A0 to A2 the Salamander's sixteenth layer stands 5.2 to 8.3 dB over its
+eighth, where 2.21.0 gave 7.0 to 8.2 dB whatever the key, 1.6 dB from the
+recording's step on average. The measurements did not agree on what to do
+about it: the benchmark's noise between the partials of the bass's two
+hardest layers read 8.6 dB on 2.20.0 and 13.8 on 2.21.0, while the octave
+bands and the share above 4 kHz did not show 2.21.0's bass over-bright. So
+it went to the ear, with the recording as the reference.
+
+What was being decided: how hard the bass hammers fly at the top velocities.
+Set 6, the Concert Grand through the close pair, velocity 127 octaves and
+single notes from A0 to A2 and two chords, not committed. A and B were not
+level matched, level being part of what the speed changes (B 0.9 dB under A
+over the file, 1.4 to 1.9 dB on the lowest notes); `reference.wav` was the
+Salamander's hardest takes of the same notes (Alexander Holm, CC BY 3.0),
+matched to A on whole-file RMS.
+
+- **A**: 2.21.0, every hammer at 6.75 m/s at velocity 127.
+- **B**: the same from middle C up; below it the rise fades in a straight
+  line with the key to none at A0 (5.0 m/s at A0, 5.7 at C2), the keys
+  voiced and each piano's level pinned again.
+
+The owner chose **B**: "Fortissimo bass B" (2026-11-16). A choice by ear.
+B's line runs straight from no rise at A0 to the owner's full rise at
+middle C; with it the step on those eight keys stands 0.6 dB from the
+recording's on average. It is not a fit of each key.
+
+What it licenses: a key's `topRise`, `topRise*clamp(i/39,0,1)`, on every
+piano; `KeyVoicing.h` written again and `pascalScale` pinned again (0.05 to
+0.36 dB up; every default sound at −9.00 VU). Left as they were and named
+among the Known gaps: loud middle notes hold 3 to 4 dB less than the
+recording about 4 kHz in their attack, the treble's strike noise is 12 to
+16 dB short in the octaves about 4 and 8 kHz, and the treble's step from C6
+is over the recording's.
+
+Against the Salamander grand
+(Docs/validation/grand-fortissimo-bass-benchmark-2026-11-16.md), 2.22.0
+beside 2.21.0: the noise between the partials stands 0.22 and 0.27 dB
+closer in the paired means, all of it in the bass, and at the bass's two
+hardest layers reads 10.1 dB where it read 13.8 (2.20.0: 8.6); the partials
+are within 0.03 dB and the levels within 0.04. The comparison lists two
+regressions, both A1's rise time (2.1 and 5.4 ms).
+
+Against the Helsinki upright, on the owner's computer
+(Docs/validation/upright-fortissimo-bass-benchmark-2026-11-16.md): the noise
+between the partials stands 0.20 and 0.19 dB closer in the paired means and
+at the bass's two hardest layers reads 14.8 dB where it read 16.6 (2.20.0:
+13.3); the partials are within 0.03 dB; the levels stand 0.11 and 0.02 dB
+further off. The comparison lists one regression, C1's level by 0.54 dB.
+Both reports were given to the owner with the build.
+
+## 2026-11-16 — 2.23.0: no two strikes alike, chosen by ear
+
+The owner asked: "can we somehow increate variety and randomness and accident
+for each note somehow, so no two hits sound the same?", and then: "but stay
+within reality and physical justification". Through 2.22.0 a strike already
+drew its own level (1.085 dB, the spread of the upright library's twelve
+genuine second strikes), the action's catch drew its time and strength, and a
+key struck again met its moving string. The blow on a resting string was
+otherwise the same each time.
+
+What the recordings say was put to the owner first. The genuine second
+strikes (twelve on the Helsinki upright, six on the Hamburg grand) differ from
+their first as a small velocity change does, and in the balance of their
+partials by no more than the measurement's own scatter, about 2 dB
+(`Docs/research/realism-candidates-2026-11-04.md`). So the player's
+unevenness is measured, and the hammer's play has a ceiling and no size.
+
+Listening set 7 (not committed): middle C, C2 and C6 five times each at
+velocity 80 and a C major chord four times at 90, concert grand, default
+controls, 48 kHz, through the engine with its strike variation on and the
+same draws in every letter, each file matched to A on whole-file RMS (trims
+0, −0.89, −0.01, −0.02 and −0.89 dB).
+
+- A: 2.22.0.
+- B: the player's spread doubled, 2.17 dB.
+- C: the hammer's play, modest: a tilt across the unison of spread 5 %,
+  0.3 mm along the string, felt 0.02 decades (5 %) softer or harder.
+- D: the hammer's play, larger: 12 %, 0.8 mm, 0.05 decades.
+- E: B and C together.
+
+Middle C's first eight partials spread from strike to strike, level removed,
+by 0.36 dB in A, 0.81 in B, 0.51 in C, 0.80 in D and 0.92 in E, all under
+the ceiling. The owner chose **E** ("les go e"). That licensed 2.23.0: the
+doubled spread and C's three sizes. It is a choice by ear. The doubled spread
+is not a measurement of a player, and the hammer's sizes are estimates from
+an action's tolerances; the README's Known gaps say so.
+
+A strike played exactly is unchanged, so the keys' voicing stands. The
+levels are read with the strike variation, and under the wider spread the
+default sounds read up to 0.66 dB lower (the Parlor Grand 0.04 dB higher), so `pascalScale` was pinned again
+to −9.00 VU each. Felt Upright read −11.6 VU, outside the presets' 2 dB
+window; its XY and Live pairs were raised (0.6 to 0.8, 0.5 to 0.65) and it
+reads −10.1 VU.
+
+Against the recorded grand, which the benchmark strikes exactly, every
+measure stands within 0.01 of 2.22.0's and the comparison lists no regression
+(`Docs/validation/grand-strike-variety-benchmark-2026-11-16.md`). The upright
+benchmark was not run again: struck exactly, 2.23.0's upright is 2.22.0's
+samples 0.10 dB louder.
+
+
+## 2026-11-16 — 2.24.0: the keyboard's two ends, chosen by ear against the recording
+
+The owner bounced Arturia's Piano V3 (American, German and Japanese grands,
+Classical and Jazz uprights) through a fortissimo score written for it (30
+keys every minor third at velocity 127, repeated strikes, chords) and asked:
+"can you calibrate keyra using the piano v3? it is a model, but it is an
+industry standard, and it is probably well calibrated. we do not have to do
+1:1 similarity, but getting closer might be good". Piano V3 is a model, its
+presets and microphones unknown, so it was not fitted to. The Salamander's
+sixteenth layer holds the same 30 keys, and the two references were set
+beside Keyra 2.23.0:
+
+- Both have a louder lowest octave and a softer top than Keyra, most at full
+  velocity. Against the recording's curve of level (each key's first second,
+  both channels, about the median key) Keyra's A0 to F#1 stood 3.5 to 4.4 dB
+  low at the eighth layer and 1.1 to 3.1 at the sixteenth, its D#7 to C8 up
+  to 3.1 dB high at the eighth and 4.6 to 8.4 at the sixteenth; Piano V3's
+  grands stand 3 to 4 dB over Keyra in the lowest octave and 5 to 12 dB under
+  it at C8.
+- Both have more from 2 to 4 kHz and more strike noise from A2 to middle C at
+  fortissimo. 2.21.0, with the whole rise, is short by the same, so it is the
+  hammers' fit. Not taken up here; a Known gap.
+- They disagree on the bass's brightness (Piano V3 10 to 14 dB over Keyra at
+  4 and 8 kHz, the recording within 1.5 dB of Keyra) and on the treble's ring
+  (Piano V3 21 to 26 dB/s, Keyra 13 to 15, the recording 9). Left alone.
+
+Listening set 8 (not committed): A0, C1, D#1, F#1, A1, C2, then C4, D#4, F#4,
+then A6, C7, D#7, F#7, A7, C8, each held 1 s, at velocity 60 and then 127,
+concert grand, default controls, 48 kHz, strikes played exactly, not
+level-matched because level across the keyboard was the question;
+`reference.wav` the Salamander's takes of the same keys and layers, brought to
+A's level on the three middle notes (−3.71 dB).
+
+- A: 2.23.0.
+- B: the lowest octave up 3.5 dB from A0 to D#1, to nothing at A1.
+- C: the top down 2 dB from D#7 (from nothing at C7) and the top velocities'
+  rise fading from A6 to none at C8.
+- D: B and C.
+
+The owner chose **D** ("d is good"). That licensed 2.24.0: `scaleTrimDb` and
+the rise's fade in the top. It is a choice by ear against the recording, with
+Piano V3 as a second witness, not a fit; the trim is a voicing of levels and
+its cause in the model is not found (README, Known gaps). Every piano takes
+it, on the Salamander's and Piano V3's grands and Piano V3's uprights, which
+stand the same way against the Upright (its lowest octave 3.3 dB lower, its C8
+13 dB higher). `pascalScale` was pinned again, 0.34 to 1.17 dB down.
+
+Measured, grand on the Salamander (2.24.0 against 2.23.0,
+`Docs/validation/grand-keyboard-levels-benchmark-2026-11-16.md`): level error
+2.56 to 2.11 dB on train and 2.81 to 2.03 on dev (bass 2.02 to 1.03 and 2.79
+to 0.91, treble 3.72 to 3.09 and 3.82 to 2.56), the treble's attack, early and
+noise errors down 0.3 to 0.7 dB, nothing else by more than 0.1. Twelve paired
+note regressions, all `level_db`, 0.57 to 0.75 dB, on notes 33 to 78, which the
+trim does not touch: they are the concert grand's re-pin (0.75 dB down) read
+at the baseline's gain, reported as the tool lists them. The Upright's
+Helsinki benchmark is run on the owner's machine with the build.
