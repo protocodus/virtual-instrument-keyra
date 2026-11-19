@@ -28,8 +28,8 @@ rendered from `Docs/audio/midi/` through the shipping engine.
 | # | Preset | Demo | Length | Peak |
 | --- | --- | --- | --- | --- |
 | 1 | Concert Grand | [01-concert-grand.wav](Docs/audio/01-concert-grand.wav) | 11.2 s | -1.5 dBFS |
-| 4 | Baby Grand | [04-baby-grand.wav](Docs/audio/04-baby-grand.wav) | 9.7 s | -5.8 dBFS |
-| 5 | Upright | [05-upright.wav](Docs/audio/05-upright.wav) | 11.6 s | -1.6 dBFS |
+| 4 | Baby Grand | [04-baby-grand.wav](Docs/audio/04-baby-grand.wav) | 9.7 s | -5.7 dBFS |
+| 5 | Upright | [05-upright.wav](Docs/audio/05-upright.wav) | 11.6 s | -1.5 dBFS |
 | 6 | Felt Nocturne | [06-felt-nocturne.wav](Docs/audio/06-felt-nocturne.wav) | 10.7 s | -10.6 dBFS |
 | 7 | Open Strings | [07-open-strings.wav](Docs/audio/07-open-strings.wav) | 11.7 s | -5.2 dBFS |
 | 8 | Distant Hall | [08-distant-hall.wav](Docs/audio/08-distant-hall.wav) | 10.8 s | -4.8 dBFS |
@@ -1249,7 +1249,7 @@ it.
 ## Downloads
 
 <!-- build-download-begin -->
-**[Download main build 146](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/44510522999/artifacts/14529129100)**, built from [`195cd4eb0863`](https://github.com/protocodus/virtual-instrument-keyra/commit/195cd4eb08632b85c74b2a92eb8a60540c5cfba3). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
+**[Download main build 148](https://github.com/protocodus/virtual-instrument-keyra/actions/runs/44591479727/artifacts/14568153322)**, built from [`36c68dd8b579`](https://github.com/protocodus/virtual-instrument-keyra/commit/36c68dd8b579ffa309e71d4c1ada416b7ec50c09). It holds the macOS, Windows and Linux packages, `SHA256SUMS` and `BUILD.txt`.
 <!-- build-download-end -->
 
 ---
