@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 2.24.1 LANGUAGES C CXX)
+project(Keyra VERSION 2.24.2 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -275,7 +275,8 @@ if(BUILD_TESTING)
     add_test(NAME Keyra.NoteLifecycle COMMAND KeyraNoteLifecycleTests)
 
     add_executable(KeyraMicFieldTests Tests/mic_field_tests.cpp)
-    target_link_libraries(KeyraMicFieldTests PRIVATE KeyraDSP)
+    target_include_directories(KeyraMicFieldTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+    target_compile_features(KeyraMicFieldTests PRIVATE cxx_std_17)
     add_test(NAME Keyra.MicField COMMAND KeyraMicFieldTests)
 
     add_executable(KeyraForteOutputTests Tests/forte_output_tests.cpp)

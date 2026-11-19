@@ -1,5 +1,7 @@
-// Late diffuse coherence of each XY pair, through the actual room and capsules.
-#include "DSP/PianoModel.h"
+// Include the board designer to inspect its calibration before the mono
+// output is duplicated. The public render alone cannot expose a phantom
+// second capsule inside a calibration that averages both channels.
+#include "DSP/PianoModel.cpp"
 #include <array>
 #include <cmath>
 #include <iostream>
@@ -12,6 +14,27 @@ using keyra::model::Piano;
 
 constexpr int rate = 48000;
 using Stereo = std::array<std::vector<float>, 2>;
+
+bool tubeHasOneCapsule() {
+    using namespace keyra::model;
+    for (int body = 0; body < bodyCount; ++body) {
+        auto table = std::make_unique<Tables>();
+        table->design = designs[body];
+        designStrings(*table, body);
+        designBoard(*table, body);
+        for (int part = 0; part < 2; ++part)
+            for (int k = 0; k < table->modes; ++k)
+                if (table->diffuse[micTube][0][part][k] != table->diffuse[micTube][1][part][k])
+                    return false;
+        for (int p = 0; p < points; ++p)
+            for (int e = 0; e < 2; ++e) {
+                const auto left = table->hfDiffuse[micTube][0][p][e];
+                const auto right = table->hfDiffuse[micTube][1][p][e];
+                if (left.seconds != right.seconds || left.gain != right.gain) return false;
+            }
+    }
+    return true;
+}
 
 Stereo bridgeImpulse(Piano& piano, Controls controls, int key, bool room) {
     controls.roomHeard = room;
@@ -48,6 +71,10 @@ double lateCoherence(Piano& piano, Body body) {
 }
 
 int main() {
+    if (!tubeHasOneCapsule()) {
+        std::cerr << "The mono tube was calibrated using two different capsule responses.\n";
+        return 1;
+    }
     Piano piano;
     const double grand = lateCoherence(piano, Body::concertGrand);
     const double upright = lateCoherence(piano, Body::upright);

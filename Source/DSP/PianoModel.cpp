@@ -287,11 +287,24 @@ constexpr double roomMiddleT60=.8,roomScaleSpan=2.75;
 constexpr double roomLineSeconds[roomLines]{
   .019000,.020026,.021107,.022247,.023448,.024714,.026049,.027455,.028938,.030501,.032147,.033883,.035713,.037641,.039674,.041816,
   .044074,.046454,.048962,.051606,.054393,.057330,.060425,.063688,.067127,.070752,.074572,.078599,.082843,.087316,.092031,.097000};
-// Each line's ring: a power of two that holds it at the largest size at
-// 192 kHz, with room to read between samples.
-constexpr int roomRingOf(int k){int n=1;const int need=static_cast<int>(roomLineSeconds[k]*roomScaleSpan*192000)+4;while(n<need)n<<=1;return n;}
-constexpr int roomRingTotal=[]{int n=0;for(int k=0;k<roomLines;++k)n+=roomRingOf(k);return n;}();
-constexpr int roomRingLongest=roomRingOf(roomLines-1);
+// The FDN uses odd prime delays. Size each ring for the longest prime it
+// will read at this sample rate, including interpolation headroom.
+constexpr bool isPrime(int n){
+  for(int d=2;d*d<=n;++d)if(n%d==0)return false;
+  return n>1;
+}
+constexpr int roomLineLength(int line,double samplesPerSecond){
+  int n=static_cast<int>(roomLineSeconds[line]*samplesPerSecond)|1;
+  while(!isPrime(n))n+=2;
+  return n;
+}
+constexpr int roomRingOf(int line,double sampleRate){
+  int size=1;
+  const int need=roomLineLength(line,roomScaleSpan*sampleRate)+4;
+  while(size<need)size<<=1;
+  return size;
+}
+constexpr int roomRingLongest=roomRingOf(roomLines-1,192000);
 // The Room KeyVoicing.h measures the microphones at: the default, which
 // KeyraLevels --write-keys plays.
 constexpr float voicedRoom=.6f;
@@ -743,6 +756,27 @@ void designStrings(Tables& t,int body) noexcept {
 
 // --- the soundboard --------------------------------------------------------
 struct BoardMode {double hertz;int m,n;};
+// A board mode has halfWaves/2 spatial cycles along one axis. The sound
+// travelling from that axis to a microphone can add up to length*hertz/c
+// more: a far microphone aimed along it sees the full sum. Sampling only
+// the bending wave gave the concert grand's distant pair a false lobe
+// 62 dB above the converged direct pressure at 2192 Hz (mode 1,15).
+constexpr int maxRadiationSamples=128;
+int radiationSamples(int halfWaves,double length,double hertz) noexcept {
+  const double cycles=halfWaves*.5+length*hertz/soundSpeed;
+  return std::min(maxRadiationSamples,static_cast<int>(std::ceil(3*cycles))+2);
+}
+// Magnitude squared of the normalized integral of sin(k*x)*exp(i*t*x)
+// over the unit interval, where k is the mode's half-wave count times pi.
+// This form stays finite at t=k, where the wave radiates broadside to its
+// wavefront. The rectangle's far field separates into the two such factors.
+double farFieldPower(double k,double t) noexcept {
+  t=std::abs(t);
+  const double x=(t-k)*.5;
+  const double sinc=std::abs(x)<1e-6?1-x*x/6:std::sin(x)/x;
+  const double amplitude=k/(k+t)*sinc;
+  return amplitude*amplitude;
+}
 double shapeAt(const Design& d,const BoardMode& mode,double x,double y) noexcept {
   return std::sin(mode.m*pi*x/d.boardX)*std::sin(mode.n*pi*y/d.boardY);
 }
@@ -902,7 +936,7 @@ void designBoard(Tables& t,int body){
   // three points to the wavelength, with each pair's nearest path taken out
   // of the delay. Under dipoleHertz the board's two faces cancel.
   const Plane ground=floorPlane(d);
-  double sx[64],sy[64];
+  double sx[maxRadiationSamples],sy[maxRadiationSamples];
   for(int mic=0;mic<micCount;++mic){
     const MicSpec spec=micSpec(d,mic);t.mic[mic]=spec;
     {double sum=0;
@@ -923,7 +957,7 @@ void designBoard(Tables& t,int body){
         receivers[ch][2+stop]={mirror(spec.position[ch],lid),mirrorDirection(spec.axis[ch],lid),under};}
     }
     for(int k=0;k<t.modes;++k){const BoardMode& mode=all[k];
-      const int nx=std::min(64,3*mode.m/2+2),ny=std::min(64,3*mode.n/2+2);
+      const int nx=radiationSamples(mode.m,d.boardX,mode.hertz),ny=radiationSamples(mode.n,d.boardY,mode.hertz);
       for(int a=0;a<nx;++a)sx[a]=std::sin(mode.m*pi*(a+.5)/nx);
       for(int b=0;b<ny;++b)sy[b]=std::sin(mode.n*pi*(b+.5)/ny);
       const double wave=2*pi*mode.hertz/soundSpeed;
@@ -957,9 +991,10 @@ void designBoard(Tables& t,int body){
       t.hfFloor[mic][ch][p]=tap(receivers[ch][1]);
       for(int stop=0;stop<lidStops;++stop)t.hfLid[stop][mic][ch][p]=tap(receivers[ch][2+stop]);
       // The ribs and the case scatter what the patch radiates: two later,
-      // weaker arrivals, each microphone its own.
+      // weaker arrivals per capsule. The tube feeds both channels from one.
       for(int e=0;e<2;++e){const HfTap first=t.hfDirect[mic][ch][p];
-        t.hfDiffuse[mic][ch][p][e]={first.gain*static_cast<float>((e?.3:.45)*(taps.uniform()<.5?-1:1)),
+        if(mic==micTube&&ch==1)t.hfDiffuse[mic][ch][p][e]=t.hfDiffuse[mic][0][p][e];
+        else t.hfDiffuse[mic][ch][p][e]={first.gain*static_cast<float>((e?.3:.45)*(taps.uniform()<.5?-1:1)),
                                     first.seconds+static_cast<float>(.0004+.0035*taps.uniform())};}
     }
   }
@@ -1012,23 +1047,24 @@ void designBoard(Tables& t,int body){
   };
   // What each mode radiates in all: its far field's mean square over the
   // half space, the plate's two directions apart.
+  // A large board at short wavelengths radiates in narrow lobes. Across
+  // all five boards 512 directions resolve their integrated power within
+  // 0.52 dB of 4096; 48 missed some by over 11 dB.
+  constexpr int directions=512;
+  double directionX[directions],directionY[directions];
+  for(int i=0;i<directions;++i){
+    const double z=(i+.5)/directions,rho=std::sqrt(1-z*z),turn=i*2.39996323;
+    directionX[i]=rho*std::cos(turn);directionY[i]=rho*std::sin(turn);
+  }
   double power[maxModes];
   for(int k=0;k<t.modes;++k){const BoardMode& mode=all[k];
-    const int nx=std::min(64,3*mode.m/2+2),ny=std::min(64,3*mode.n/2+2);
     const double wave=2*pi*mode.hertz/soundSpeed;
-    for(int a=0;a<nx;++a)sx[a]=std::sin(mode.m*pi*(a+.5)/nx);
-    for(int b=0;b<ny;++b)sy[b]=std::sin(mode.n*pi*(b+.5)/ny);
     double total=0;
-    constexpr int directions=48;
     for(int i=0;i<directions;++i){
-      const double z=(i+.5)/directions,rho=std::sqrt(1-z*z),turn=i*2.39996323;
-      const double ux=wave*rho*std::cos(turn),uy=wave*rho*std::sin(turn);
-      std::complex<double> across=0,along=0;
-      for(int a=0;a<nx;++a)across+=turned(sx[a],ux*d.boardX*(a+.5)/nx);
-      for(int b=0;b<ny;++b)along+=turned(sy[b],uy*d.boardY*(b+.5)/ny);
-      total+=std::norm(across*along)/directions;}
+      total+=farFieldPower(mode.m*pi,wave*d.boardX*directionX[i])
+            *farFieldPower(mode.n*pi,wave*d.boardY*directionY[i])/directions;}
     const double w=2*pi*mode.hertz;
-    power[k]=total*std::pow(w*w*d.boardX*d.boardY/(nx*ny)*mode.hertz,2)/(mode.hertz*mode.hertz+d.dipoleHertz*d.dipoleHertz);
+    power[k]=total*std::pow(w*w*d.boardX*d.boardY*mode.hertz,2)/(mode.hertz*mode.hertz+d.dipoleHertz*d.dipoleHertz);
   }
   // What each pair hears of the patch, over the bridge's points.
   double patchMean[micCount]{};
@@ -1046,8 +1082,15 @@ void designBoard(Tables& t,int body){
     for(int ch=0;ch<2;++ch)for(int k=0;k<t.modes;++k){
       for(int part=0;part<2;++part)direct[ch][part][k]=t.direct[mic][ch][part][k]+spec.floor*t.floor[mic][ch][part][k]
                                                        +spec.lid*t.lid[lidStops-1][mic][ch][part][k];
-      const double phase=2*pi*room.uniform(),size=std::sqrt(power[k]);
-      heard[ch][0][k]=size*std::cos(phase);heard[ch][1][k]=size*std::sin(phase);}
+      // Both entries used to calibrate and phase-align the tube must hear
+      // its one capsule. An independent draw here changed the audible
+      // channel through the other entry's contribution to both operations.
+      if(mic==micTube&&ch==1){
+        heard[ch][0][k]=heard[0][0][k];heard[ch][1][k]=heard[0][1][k];
+      }else{
+        const double phase=2*pi*room.uniform(),size=std::sqrt(power[k]);
+        heard[ch][0][k]=size*std::cos(phase);heard[ch][1][k]=size*std::sin(phase);
+      }}
     anchor[mic]=response(direct,level);
     const double diffuse=spec.diffuse*std::sqrt(anchor[mic]/response(heard,level));
     for(int ch=0;ch<2;++ch)for(int part=0;part<2;++part)for(int k=0;k<t.modes;++k){
@@ -1434,19 +1477,22 @@ struct Piano::Impl {
   // Each receiver path needs its own history: piano voicing precedes the
   // board, its radiation and reflections, and each microphone's nonlinear
   // circuit. The hammer, strings, sympathetic bank and case are shared.
+  using EarlyHistory=float[2*micCount][earlySize];
+  EarlyHistory mixEarly{},stemEarly{};
+  int roomRingSize=0;
   struct Radiation {
     float boardRe[maxModes]{},boardIm[maxModes]{};
     Biquad highpass[points][3],besideFilter[points][2];
     float line[points][lineSize]{},lineBeside[points][lineSize]{};
-    float roomRing[roomRingTotal]{},earlyRing[2*micCount][earlySize]{};
+    std::unique_ptr<float[]> roomRing;
     float roomIn[roomLines]{},roomState[roomLines]{};
     float roomBondState[micCount][3]{},roomTopState[micCount][2]{};
     MicCircuit circuit[micCount][2];
     bool computed[micCount]{};
-    void clear() noexcept {
+    void clear(int ringSize) noexcept {
       std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
       std::memset(line,0,sizeof(line));std::memset(lineBeside,0,sizeof(lineBeside));
-      std::memset(roomRing,0,sizeof(roomRing));std::memset(earlyRing,0,sizeof(earlyRing));
+      std::fill_n(roomRing.get(),ringSize,0.f);
       std::memset(roomBondState,0,sizeof(roomBondState));std::memset(roomTopState,0,sizeof(roomTopState));
       std::memset(roomIn,0,sizeof(roomIn));std::memset(roomState,0,sizeof(roomState));
       for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
@@ -1461,9 +1507,12 @@ struct Piano::Impl {
       for(float& x:roomState)if(std::abs(x)<still)x=0;
       for(float& x:roomIn)if(std::abs(x)<still)x=0;
     }
-  } mixRadiation,stemRadiation;
-  bool stemsStarted=false;
-  float stemVoicing[keyCount]{};
+  };
+  // Each direct pair has its own solo-calibrated force, board and room.
+  // Only receivers that have been connected since silence need advancing.
+  static constexpr int mainReceiver=micCount;
+  Radiation radiation[micCount+1];
+  float stemVoicing[micCount][keyCount]{};
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
   double dcPole=0;
@@ -2079,20 +2128,20 @@ struct Piano::Impl {
       double all=0;
       for(int p=0;p<points;++p)all+=t.modeEdge[p][k];
       boardRim[points][k]=static_cast<float>((all/points+rimHeave*t.modeHeave[k])/sampleRate);}
-    for(Radiation* path:{&mixRadiation,&stemRadiation})for(int p=0;p<points;++p){for(int stage=0;stage<2;++stage){
+    for(Radiation& path:radiation)for(int p=0;p<points;++p){for(int stage=0;stage<2;++stage){
       // A fourth-order high-pass at the modes' top.
       const double q=stage?1.3066:.5412,w0=2*pi*t.crossover/sampleRate,alpha=std::sin(w0)/(2*q),c=std::cos(w0),a0=1+alpha;
-      Biquad& b=path->highpass[p][stage];
+      Biquad& b=path.highpass[p][stage];
       b.b0=(1+c)/2/a0;b.b1=-(1+c)/a0;b.b2=(1+c)/2/a0;b.a1=-2*c/a0;b.a2=(1-alpha)/a0;
     }
       const double pole=std::exp(-2*pi*std::min(.45*sampleRate,radiationCorner)/sampleRate);
-      Biquad& fall=path->highpass[p][2];fall.b0=1-pole;fall.b1=fall.b2=fall.a2=0;fall.a1=-pole;
+      Biquad& fall=path.highpass[p][2];fall.b0=1-pole;fall.b1=fall.b2=fall.a2=0;fall.a1=-pole;
       // Beside the modes: a second-order high-pass at the board's lowest
       // mode, and one pole above.
       {const double w0=2*pi*t.besideLow/sampleRate,alpha=std::sin(w0)/std::sqrt(2.),c=std::cos(w0),a0=1+alpha;
-        Biquad& low=path->besideFilter[p][0];low.b0=(1+c)/2/a0;low.b1=-(1+c)/a0;low.b2=(1+c)/2/a0;low.a1=-2*c/a0;low.a2=(1-alpha)/a0;
+        Biquad& low=path.besideFilter[p][0];low.b0=(1+c)/2/a0;low.b1=-(1+c)/a0;low.b2=(1+c)/2/a0;low.a1=-2*c/a0;low.a2=(1-alpha)/a0;
         const double top=std::exp(-2*pi*std::min(.45*sampleRate,t.besideHigh)/sampleRate);
-        Biquad& high=path->besideFilter[p][1];high.b0=t.besideGain*(1-top);high.b1=high.b2=high.a2=0;high.a1=-top;}}
+        Biquad& high=path.besideFilter[p][1];high.b0=t.besideGain*(1-top);high.b1=high.b2=high.a2=0;high.a1=-top;}}
   }
   // Each microphone's share of every mode and of the bridge's direct sound,
   // for the lid and the levels as they are.
@@ -2164,32 +2213,33 @@ struct Piano::Impl {
     // A key's pull for pairs at `level`, each signed as it is wired, so only
     // Invert signs it (KeyVoicing.h measures them so, each with its own room
     // at the default Room).
-    const auto voiceOf=[&](int i,const double* level){double got=0,even=0;
-      const float* heard=keyHeard[body][i];
-      for(int a=0;a<micCount;++a){
-        even+=level[a]*level[a]*keyEven[body][i][a];
-        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;}
-      // A key is pulled at most 15 dB: the furthest unvoiced key stands 14 dB
-      // under the even scale (the baby grand's G#5 through the close pair),
-      // and one 14 dB over it (the studio grand's G#3 in the four pairs
-      // Keyra.Levels mixes).
-      return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;};
-    double level[micCount],standard[micCount]{};standard[micClose]=1;
+    const auto keyPull=[](double even,double got){
+      return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;
+    };
+    double level[micCount];
     for(int a=0;a<micCount;++a)level[a]=levelGoal[a]*t.mic[a].side;
-    for(int i=0;i<keyCount;++i){const float trim=static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
-      voicing[i]=voiceOf(i,level)*trim;
-      // What the bridge hands the open strings is the key's pull at the
-      // default mix (the close pair), whatever the pairs stand at: the
-      // voicing evens what the microphones hear, and taken as the mix's it
-      // let a pair or Room move the open strings' drive by up to 11 dB on a
-      // key.
-      standardVoicing[i]=voiceOf(i,standard);
-      stemVoicing[i]=standardVoicing[i]*trim;}
+    for(int i=0;i<keyCount;++i){
+      const float trim=static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
+      const float* heard=keyHeard[body][i];
+      double got=0,even=0;
+      for(int a=0;a<micCount;++a){
+        // The diagonal is this microphone heard alone. Read it before
+        // accumulating cross-products for the main mix.
+        const float solo=keyPull(keyEven[body][i][a],*heard);
+        stemVoicing[a][i]=solo*trim;
+        // The close reference drives the physical sympathetic bank even
+        // when none of the microphones is connected.
+        if(a==micClose)standardVoicing[i]=solo;
+        even+=level[a]*level[a]*keyEven[body][i][a];
+        for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;
+      }
+      voicing[i]=keyPull(even,got)*trim;
+    }
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)snapMix();
   }
-  void prepareRoom() noexcept {
+  void prepareRoom() {
     // The lines' lengths spread evenly on a log scale over 19 to 97 ms, each
     // the first odd prime at or above it in samples at the rate, so that no
     // two lines' echoes fall together. Each line loses over one pass what
@@ -2205,7 +2255,14 @@ struct Piano::Impl {
     // together (roomScaleSpan).
     constexpr double spreads[roomSpreads]{.0047,.0073,.0113};
     for(int k=0;k<roomSpreads;++k)spreadDelay[k]=std::min(spreadSize-1,static_cast<int>(spreads[k]*sampleRate)|1);
-    for(int k=0,start=0;k<roomLines;++k){roomStart[k]=start;roomMask[k]=roomRingOf(k)-1;start+=roomRingOf(k);}
+    int size=0;
+    for(int k=0;k<roomLines;++k){
+      roomStart[k]=size;roomMask[k]=roomRingOf(k,sampleRate)-1;size+=roomMask[k]+1;
+    }
+    if(size!=roomRingSize){
+      for(auto& path:radiation)path.roomRing.reset(new float[size]{});
+      roomRingSize=size;
+    }
     roomSized=-1;if(table)sizeRoom(false);
   }
   // The lines for Room as it is: each the first odd prime at or above its
@@ -2222,14 +2279,11 @@ struct Piano::Impl {
     roomSized=room;
     constexpr double highRate=283.9,crossover=4476;
     const double scale=roomScale(room),low=60/(roomMiddleT60*scale),high=highRate/scale;
-    const auto prime=[](int n){for(int d=2;d*d<=n;++d)if(n%d==0)return false;return n>1;};
     const double w=std::tan(pi*std::min(crossover,.45*sampleRate)/sampleRate),a1=(w-1)/(w+1);
     roomA1=static_cast<float>(a1);
     int target[roomLines];double furthest=0;
     for(int k=0;k<roomLines;++k){
-      int n=static_cast<int>(roomLineSeconds[k]*scale*sampleRate)|1;
-      while(!prime(n))n+=2;
-      target[k]=std::min(roomMask[k]-3,n);
+      target[k]=roomLineLength(k,scale*sampleRate);
       const double pass=target[k]/sampleRate;
       const double lowGain=std::pow(10.,-low*pass/20),highGain=std::pow(10.,-high*pass/20);
       roomB0[k]=static_cast<float>(.5*(lowGain*(1+a1)+highGain*(1-a1)));roomB1[k]=static_cast<float>(.5*(lowGain*(1+a1)-highGain*(1-a1)));
@@ -2294,9 +2348,12 @@ struct Piano::Impl {
     std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));std::memcpy(earlyGain,earlyGainTarget,sizeof(earlyGain));
   }
   void clearRadiation() noexcept {
-    mixRadiation.clear();
-    if(stemsStarted)stemRadiation.clear();
-    stemsStarted=false;
+    radiation[mainReceiver].clear(roomRingSize);
+    std::memset(mixEarly,0,sizeof(mixEarly));
+    for(int m=0;m<micCount;++m)if(radiation[m].computed[m]){
+      radiation[m].clear(roomRingSize);
+      std::memset(&stemEarly[2*m],0,2*sizeof(stemEarly[0]));
+    }
     settleRoom();std::memset(spreadLine,0,sizeof(spreadLine));
   }
   void silence() noexcept {
@@ -2323,7 +2380,7 @@ struct Piano::Impl {
     // The bridge moves at about a third of the plate's point mobility where
     // another key's strings cross it.
     mobility=.3/table->infinite;
-    for(Radiation* path:{&mixRadiation,&stemRadiation})for(int m=0;m<micCount;++m)for(auto& c:path->circuit[m])
+    for(Radiation& path:radiation)for(int m=0;m<micCount;++m)for(auto& c:path.circuit[m])
       designCircuit(c,m,table->micDistance[m],table->mic[m].cardioid,std::sqrt(table->micLevel[micClose]/table->micLevel[m]),sampleRate);
     tuneBoard();tuneBank();mixMics();snapMix();
     // Each piano stands with its microphones in its own place in the room.
@@ -2406,8 +2463,8 @@ struct Piano::Impl {
       for(int m=0;m<micCount;++m){const float step=(levelGoal[m]-levelNow[m])*slew;levelNow[m]+=step;furthest=std::max(furthest,std::abs(step));}
       if(furthest<1e-9f)snapMix();}
     for(double& x:travel)if(std::abs(x)<still)x=0;
-    mixRadiation.flushTiny(modes,still);
-    if(stemsStarted)stemRadiation.flushTiny(modes,still);
+    radiation[mainReceiver].flushTiny(modes,still);
+    for(int m=0;m<micCount;++m)if(radiation[m].computed[m])radiation[m].flushTiny(modes,still);
     quietChunks=sounding||loud>1e-9f?0:quietChunks+1;loud=0;
     // Two seconds of nothing: everything left is put to rest.
     if(quietChunks*chunk>2*sampleRate){
@@ -2419,21 +2476,24 @@ struct Piano::Impl {
   }
   // `mics` as Piano::process has it, already at this chunk's first sample.
   void renderChunk(float* left,float* right,float* const* mics,int frames) noexcept {
+    auto& mixRadiation=radiation[mainReceiver];
     bool mixHeard[micCount],stemHeard[micCount];
+    int activeStems[micCount],stemCount=0;
     for(int m=0;m<micCount;++m){
       mixHeard[m]=levelNow[m]!=0||levelGoal[m]!=0;
       // Once a stem has been heard, keep its early reflections and circuit
       // warm until silence. Reconnecting it resumes the ongoing room after
       // the output look-ahead has filled. A first connection starts from
       // the sounding strings with an empty receiver history.
-      stemHeard[m]=stemRadiation.computed[m]||(mics&&(mics[2*m]||mics[2*m+1]));
-      stemsStarted=stemsStarted||stemHeard[m];
+      auto& stem=radiation[m];
+      stemHeard[m]=stem.computed[m]||(mics&&(mics[2*m]||mics[2*m+1]));
+      if(stemHeard[m])activeStems[stemCount++]=m;
       if(mixRadiation.computed[m]&&!mixHeard[m])for(auto& c:mixRadiation.circuit[m])c.clear();
-      mixRadiation.computed[m]=mixHeard[m];stemRadiation.computed[m]=stemHeard[m];
+      mixRadiation.computed[m]=mixHeard[m];stem.computed[m]=stemHeard[m];
     }
     // `bridged` is `struck` with each key at its pull at the default mix: what
     // moves the bridge under the open strings (mixMics, standardVoicing).
-    alignas(32) float stemStruck[points][chunk]{},struck[points][chunk],bridged[points][chunk],answered[points][chunk],each[chunk];
+    alignas(32) float stemStruck[micCount][points][chunk],struck[points][chunk],bridged[points][chunk],answered[points][chunk],each[chunk];
     std::memset(struck,0,sizeof(struck));std::memset(bridged,0,sizeof(bridged));std::memset(answered,0,sizeof(answered));
     bool contactRemains[keyCount]{};
     for(int i=0;i<contactSpan;++i){
@@ -2441,7 +2501,8 @@ struct Piano::Impl {
       if(c.active){runContact(c,frames);if(c.active)contactRemains[c.key]=true;}
     }
     while(contactSpan>0&&!contacts[contactSpan-1].active)--contactSpan;
-    for(int p=0;p<points;++p){stemStruck[p][0]=struck[p][0]=bridged[p][0]=knocks[p];knocks[p]=0;}
+    for(int p=0;p<points;++p){struck[p][0]=bridged[p][0]=knocks[p];knocks[p]=0;}
+    for(int j=0;j<stemCount;++j)std::memcpy(stemStruck[activeStems[j]],struck,sizeof(struck));
     alignas(32) float blow[chunk]{};
     // What reaches the board's edge at each of its places, and last at all
     // of them alike: the blows' lean on the capo bar and the caught hammers.
@@ -2472,9 +2533,12 @@ struct Piano::Impl {
       if(v.forcing)playKey(std::true_type{});else playKey(std::false_type{});
       const float pulled=pull[i]<0?voicing[i]:pull[i],b=v.pointMix*pulled,a=pulled-b;
       for(int s=0;s<frames;++s){struck[v.point][s]+=a*each[s];struck[v.point+1][s]+=b*each[s];}
-      if(stemsStarted){
-        const float fixed=pull[i]<0?stemVoicing[i]:pull[i],high=v.pointMix*fixed,low=fixed-high;
-        for(int s=0;s<frames;++s){stemStruck[v.point][s]+=low*each[s];stemStruck[v.point+1][s]+=high*each[s];}}
+      for(int j=0;j<stemCount;++j){
+        const int mic=activeStems[j];
+        const float fixed=pull[i]<0?stemVoicing[mic][i]:pull[i],high=v.pointMix*fixed,low=fixed-high;
+        auto& force=stemStruck[mic];
+        for(int s=0;s<frames;++s){force[v.point][s]+=low*each[s];force[v.point+1][s]+=high*each[s];}
+      }
       const float standing=pull[i]<0?standardVoicing[i]:pull[i],bs=v.pointMix*standing,as=standing-bs;
       for(int s=0;s<frames;++s){
         const float first=as*each[s],second=bs*each[s];
@@ -2587,16 +2651,19 @@ struct Piano::Impl {
         for(int k=0;k<roomLines;++k)roomGlideAt[k]+=roomGlideStep[k];
         for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){
           earlyDelay[c][w]+=earlyStep[c][w];earlyGain[c][w]+=earlyGainStep[c][w];}}
-      radiate(mixRadiation,struck,answered,rim,rimmed,knock,mixHeard,left,right,nullptr,s);
-      if(stemsStarted)radiate(stemRadiation,stemStruck,answered,rim,rimmed,knock,stemHeard,nullptr,nullptr,mics,s);
+      radiate(mixRadiation,mixEarly,0,micCount,struck,answered,rim,rimmed,knock,mixHeard,left,right,nullptr,s);
+      for(int j=0;j<stemCount;++j){
+        const int m=activeStems[j];
+        radiate(radiation[m],stemEarly,m,m+1,stemStruck[m],answered,rim,rimmed,knock,stemHeard,nullptr,nullptr,mics,s);
+      }
       lineAt=(lineAt+1)&(lineSize-1);roomAt=(roomAt+1)&(roomRingLongest-1);earlyAt=(earlyAt+1)&(earlySize-1);
       if(gliding&&--roomGliding==0)settleRoom();
     }
   }
   // Render the board and microphones from one set of per-key bridge forces.
   // The main bus keeps its calibrated mix-specific voicing; a direct bus
-  // hears the piano voiced at the fixed close-pair reference.
-  void radiate(Radiation& path,const float (&struck)[points][chunk],const float (&answered)[points][chunk],
+  // hears the same key forces as that microphone soloed on the main bus.
+  void radiate(Radiation& path,EarlyHistory& earlyHistory,int firstMic,int endMic,const float (&struck)[points][chunk],const float (&answered)[points][chunk],
                const float (&rim)[points+1][chunk],bool rimmed,float knock,const bool (&heard)[micCount],
                float* left,float* right,float* const* mics,int s) noexcept {
       constexpr int mask=lineSize-1;
@@ -2635,13 +2702,13 @@ struct Piano::Impl {
         for(int k=0;k<tapBesideCount[out];++k)sum+=beside[k].gain*path.lineBeside[beside[k].point][(lineAt-beside[k].delay)&mask];
         return sum;};
       float o[outs]{};
-      for(int m=0;m<micCount;++m)if(heard[m]){o[2*m]=hear(2*m);o[2*m+1]=m==micTube?o[2*m]:hear(2*m+1);}
+      for(int m=firstMic;m<endMic;++m)if(heard[m]){o[2*m]=hear(2*m);o[2*m+1]=m==micTube?o[2*m]:hear(2*m+1);}
       o[roomOut]=hear(roomOut);o[roomOut+1]=hear(roomOut+1);
       // The lines, each read at its length, between samples while a size
       // glides.
       float back[roomLines];
       for(int k=0;k<roomLines;++k){
-        const float* ring=path.roomRing+roomStart[k];const int m=roomMask[k];
+        const float* ring=path.roomRing.get()+roomStart[k];const int m=roomMask[k];
         float x;
         if(roomGliding>0){const float at=roomGlideAt[k];const int whole=static_cast<int>(at);const float part=at-whole;
           const float a=ring[(roomAt-whole)&m],b=ring[(roomAt-whole-1)&m];x=a+(b-a)*part;}
@@ -2649,7 +2716,7 @@ struct Piano::Impl {
         const float y=roomB0[k]*x+roomB1[k]*path.roomIn[k]-roomA1*path.roomState[k];path.roomIn[k]=x;path.roomState[k]=y;back[k]=y;}
       // What each microphone hears of the room (roomRow).
       float roomHeard[micCount][2]{};
-      for(int m=0;m<micCount;++m)if(heard[m]&&roomShare[m]!=0)
+      for(int m=firstMic;m<endMic;++m)if(heard[m]&&roomShare[m]!=0)
         for(int k=0;k<roomLines;++k)roomHeard[m][k&1]+=roomSigns.of[m][k]*back[k];
       for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
         const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
@@ -2658,7 +2725,7 @@ struct Piano::Impl {
       for(auto& pair:roomHeard){pair[0]*=roomLevel;pair[1]*=roomLevel;}
       roomHeard[micTube][0]=(roomHeard[micTube][0]+roomHeard[micTube][1])*.70710678f;
       // Each microphone's room as it stands (roomCross, roomBond, roomTop).
-      for(int m=0;m<micCount;++m)if(heard[m]&&roomShare[m]!=0){
+      for(int m=firstMic;m<endMic;++m)if(heard[m]&&roomShare[m]!=0){
         float& l=roomHeard[m][0];float& r=roomHeard[m][1];
         if(roomCross[m]!=0){const float a=roomOwn[m],b=roomCross[m],x=l,y=r;l=a*x+b*y;r=b*x+a*y;}
         if(roomBond[m]!=0){float* z=path.roomBondState[m];const float g=roomBond[m];
@@ -2667,19 +2734,19 @@ struct Piano::Impl {
       // What each microphone heard directly, for its reflections off the
       // walls, which glide with the room's size.
       const int earlyMask=earlySize-1;
-      for(int c=0;c<2*micCount;++c)path.earlyRing[c][earlyAt&earlyMask]=o[c];
+      for(int c=2*firstMic;c<2*endMic;++c)earlyHistory[c][earlyAt&earlyMask]=o[c];
       float early[2*micCount]{};
-      if(controls.roomHeard)for(int m=0;m<micCount;++m)if(heard[m])for(int ch=0;ch<(m==micTube?1:2);++ch){const int c=2*m+ch;
+      if(controls.roomHeard)for(int m=firstMic;m<endMic;++m)if(heard[m])for(int ch=0;ch<(m==micTube?1:2);++ch){const int c=2*m+ch;
         float sum=0;
         for(int w=0;w<earlyWalls;++w){
           const float at=earlyDelay[c][w];const int whole=static_cast<int>(at);const float part=at-whole;
-          const float a=path.earlyRing[c][(earlyAt-whole)&earlyMask],b=path.earlyRing[c][(earlyAt-whole-1)&earlyMask];
+          const float a=earlyHistory[c][(earlyAt-whole)&earlyMask],b=earlyHistory[c][(earlyAt-whole-1)&earlyMask];
           sum+=earlyGain[c][w]*(a+(b-a)*part);}
         early[c]=sum;}
       // Each microphone: what it hears and its room, through its circuit;
       // then the mix, each at its level and polarity.
       double l=0,r=0;
-      for(int m=0;m<micCount;++m)if(heard[m]){
+      for(int m=firstMic;m<endMic;++m)if(heard[m]){
         const double a=path.circuit[m][0].run(o[2*m]+early[2*m]+roomShare[m]*roomHeard[m][0],dcPole);
         const double b=m==micTube?a:path.circuit[m][1].run(o[2*m+1]+early[2*m+1]+roomShare[m]*roomHeard[m][1],dcPole);
         if(left){l+=levelNow[m]*a;r+=levelNow[m]*b;}

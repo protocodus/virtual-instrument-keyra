@@ -51,6 +51,10 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.24.2 — 2026-11-20 — soundboard radiation and microphone output evenness
+
+Dedicated microphone outputs now use the same per-key voicing as the corresponding solo microphone. This fixes sudden level jumps between neighbouring keys, especially on the Baby Grand’s Distant and Parlor Grand’s XY outputs. The soundboard calculation resolves acoustic propagation across the plate at high frequencies. The Tube uses one capsule for its direct and reflected sound.
+
 ### 2.24.1 — 2026-11-19 — physical-model fixes, listening candidate
 
 A struck key carries its existing sympathetic motion into the next hammer
@@ -1447,7 +1451,7 @@ side, so that the board's bass reaches all five alike and a mix of them
 adds rather than cancels (on the upright, the pairs behind the board and
 those in front stood -0.3 to -0.4 alike in the bass before). Each
 microphone's own output is it after its circuit, at full level and in its
-polarity, with its share of the room. Its recording keeps the close-pair reference voicing
+polarity, with its share of the room. Each dedicated output keeps its microphone's solo voicing
 as the main faders move. Width, Output and the action's noises apply to the
 main mix. Connecting a direct output during a phrase starts its microphone
 history at that point.

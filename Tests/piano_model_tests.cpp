@@ -77,6 +77,30 @@ int keyOf(int midi){return midi-21;}
 int main(){
   auto bench=std::make_unique<Bench>();auto& b=*bench;auto& piano=b.piano;
   {
+    // A dedicated recording uses its own pair's voicing before voices sum
+    // and the room rings. A close-only correction formerly made the baby
+    // grand's distant G4 over twenty dB louder than its neighbour.
+    for(int body=0;body<keyra::model::bodyCount;++body){
+      for(int mic=0;mic<keyra::model::micCount;++mic){
+        Controls c;c.body=static_cast<Body>(body);
+        std::fill_n(c.mic,keyra::model::micCount,0.f);c.mic[mic]=1;
+        b.start(c);
+        for(int midi:{66,67,71}){piano.holdDamper(keyOf(midi),true);piano.strike(keyOf(midi),.62f);}
+        bool matches=true,audible=false;
+        for(int block=0;block<144;++block){
+          if(block==72)for(int midi:{66,67,71})piano.holdDamper(keyOf(midi),false);
+          std::array<float,128> l{},r{},directL{},directR{};
+          float* stems[2*keyra::model::micCount]{};
+          stems[2*mic]=directL.data();stems[2*mic+1]=directR.data();
+          piano.process(l.data(),r.data(),stems,128);
+          matches=matches&&l==directL&&r==directR;
+          audible=audible||std::any_of(l.begin(),l.end(),[](float x){return std::abs(x)>1.e-5f;});
+        }
+        check(audible&&matches,"each full-level microphone socket matches its solo through attack and release");
+      }
+    }
+  }
+  {
     // What each piano's keys are built as.
     for(int body=0;body<keyra::model::bodyCount;++body){
       bool ordered=true,built=true;
@@ -383,6 +407,29 @@ int main(){
     const double t=b.now();b.run(.1);
     bool nothing=true;for(std::size_t i=b.take.at(t);i<b.take.left.size();++i)nothing=nothing&&b.take.left[i]==0&&b.take.right[i]==0;
     check(nothing,"asleep, it writes exact silence");
+  }
+  {
+    // A known force on the bridge, with the strings and room silent, isolates
+    // soundboard radiation. Read the left capsule from 8 to 48 ms after the
+    // impulse. References use twice the production grid density and 4096
+    // far-field directions. The structural grid alone put these resonances
+    // 16 to 22 dB above that integral in the actual microphone output.
+    struct ModeProbe {Body body;int key,mic;double hertz,referenceDb;};
+    const ModeProbe probes[]{
+      {Body::concertGrand,65,keyra::model::micClose,1553.47,-64.19},
+      {Body::parlorGrand,65,keyra::model::micLive,1872.41,-56.82},
+      {Body::babyGrand,45,keyra::model::micXY,1807.87,-68.26},
+      {Body::upright,45,keyra::model::micDistant,1027.95,-60.91},
+      {Body::studioGrand,25,keyra::model::micDistant,2172.32,-58.04}
+    };
+    for(const ModeProbe& probe:probes){
+      Controls c=bare();c.roomHeard=false;c.body=probe.body;c.soundboard=1;
+      std::fill_n(c.mic,keyra::model::micCount,0.f);c.mic[probe.mic]=1;
+      b.start(c);piano.knockBridge(probe.key,.005f);b.run(.05);
+      const double level=b.take.tone(probe.hertz,.008,.048);
+      std::cout<<"bridge mode "<<probe.hertz<<" Hz: "<<level<<" dB, reference "<<probe.referenceDb<<" dB\n";
+      check(std::abs(level-probe.referenceDb)<2,"the microphone resolves the board's radiating mode");
+    }
   }
   {
     // Every key at once, again and again: more than the voices there are.
