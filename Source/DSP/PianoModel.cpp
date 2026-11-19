@@ -2688,12 +2688,28 @@ struct Piano::Impl {
         if(push==0)continue;
         pushing[pushCount]=boardRim[p];pushes[pushCount++]=push;
       }
+      const auto advanceBoard=[&](int k,Four in){
+        const Four re=Four::at(path.boardRe+k),im=Four::at(path.boardIm+k);
+        const Four turnRe=Four::at(boardTurnRe+k),turnIm=Four::at(boardTurnIm+k);
+        (turnRe*re-turnIm*im+in).to(path.boardRe+k);
+        (turnIm*re+turnRe*im).to(path.boardIm+k);
+      };
       int k=0;
+      // Reuse each force and its address across sixteen modes. Each mode
+      // still accumulates the bridge and edge forces in the same order.
+      for(;k+16<=modes;k+=16){
+        Four in[4]{};
+        for(int j=0;j<pushCount;++j){
+          const float* at=pushing[j]+k;
+          const Four force=Four::all(pushes[j]);
+          for(int v=0;v<4;++v)in[v]+=Four::at(at+4*v)*force;
+        }
+        for(int v=0;v<4;++v)advanceBoard(k+4*v,in[v]);
+      }
       for(;k+4<=modes;k+=4){
         Four in=Four::all(0);
         for(int j=0;j<pushCount;++j)in+=Four::at(pushing[j]+k)*Four::all(pushes[j]);
-        const Four re=Four::at(path.boardRe+k),im=Four::at(path.boardIm+k),turnRe=Four::at(boardTurnRe+k),turnIm=Four::at(boardTurnIm+k);
-        (turnRe*re-turnIm*im+in).to(path.boardRe+k);(turnIm*re+turnRe*im).to(path.boardIm+k);
+        advanceBoard(k,in);
       }
       for(;k<modes;++k){
         float in=0;
@@ -2724,8 +2740,17 @@ struct Piano::Impl {
       float roomHeard[micCount][2]{};
       for(int m=firstMic;m<endMic;++m)if(heard[m]&&roomShare[m]!=0)
         for(int k=0;k<roomLines;++k)roomHeard[m][k&1]+=roomSigns.of[m][k]*back[k];
-      for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
-        const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
+      // The first two Hadamard stages work inside four lanes. In the
+      // remaining stages four adjacent butterflies are independent.
+      for(int i=0;i<roomLines;i+=4){
+        const float a=back[i]+back[i+1],b=back[i]-back[i+1];
+        const float c=back[i+2]+back[i+3],d=back[i+2]-back[i+3];
+        back[i]=a+c;back[i+1]=b+d;back[i+2]=a-c;back[i+3]=b-d;
+      }
+      for(int span=4;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;j+=4){
+        const Four a=Four::at(back+j),b=Four::at(back+j+span);
+        (a+b).to(back+j);(a-b).to(back+j+span);
+      }
       for(int k=0;k<roomLines;++k)
         path.roomRing[roomStart[k]+(roomAt&roomMask[k])]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
       for(auto& pair:roomHeard){pair[0]*=roomLevel;pair[1]*=roomLevel;}
