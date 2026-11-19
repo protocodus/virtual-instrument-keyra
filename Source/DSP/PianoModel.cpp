@@ -2205,35 +2205,41 @@ struct Piano::Impl {
     // keys do before it is voiced. KeyVoicing.h holds what each key's strings
     // alone give every pair, and every two pairs together, since pairs in a
     // mix add as waves, against the even scale through the keys: each key
-    // pulls on the board by what brings it there in this mix, no more than
-    // 15 dB either way. Each pair's scale is set at the close pair's level
+    // pulls on the board by what brings it there in this mix. Each pair's
+    // scale is set at the close pair's level
     // without the room, which also keeps the balance above where the modes
     // alone do not.
     const int body=static_cast<int>(controls.body);
     // A key's pull for pairs at `level`, each signed as it is wired, so only
     // Invert signs it (KeyVoicing.h measures them so, each with its own room
     // at the default Room).
-    const auto keyPull=[](double even,double got){
-      return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;
-    };
     double level[micCount];
     for(int a=0;a<micCount;++a)level[a]=levelGoal[a]*t.mic[a].side;
     for(int i=0;i<keyCount;++i){
       const float trim=static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
       const float* heard=keyHeard[body][i];
-      double got=0,even=0;
+      double got=0,even=0,individualPower=0;
       for(int a=0;a<micCount;++a){
         // The diagonal is this microphone heard alone. Read it before
         // accumulating cross-products for the main mix.
-        const float solo=keyPull(keyEven[body][i][a],*heard);
+        const double target=keyEven[body][i][a],measured=*heard;
+        const float solo=static_cast<float>(std::sqrt(target/measured));
         stemVoicing[a][i]=solo*trim;
         // The close reference drives the physical sympathetic bank even
         // when none of the microphones is connected.
         if(a==micClose)standardVoicing[i]=solo;
-        even+=level[a]*level[a]*keyEven[body][i][a];
+        even+=level[a]*level[a]*target;
+        individualPower+=level[a]*level[a]*measured;
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;
       }
-      voicing[i]=keyPull(even,got)*trim;
+      // Keep the established 15 dB guard against cancellation between
+      // faders. A measured solo pickup has no such cancellation: the
+      // upright Tube at C7 legitimately needs 16.6 dB. Let the individual
+      // powers justify that range without amplifying a near-null blend.
+      constexpr double limitPower=5.6*5.6;
+      const double low=std::min(even/limitPower,individualPower);
+      const double high=std::max(even*limitPower,individualPower);
+      voicing[i]=even>0?static_cast<float>(std::sqrt(even/clamp(got,low,high)))*trim:trim;
     }
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
