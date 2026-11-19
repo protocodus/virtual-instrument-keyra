@@ -53,7 +53,7 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ### 2.24.2 — 2026-11-20 — soundboard radiation and microphone output evenness
 
-Dedicated microphone outputs now use the same per-key voicing as the corresponding solo microphone. This fixes sudden level jumps between neighbouring keys, especially on the Baby Grand’s Distant and Parlor Grand’s XY outputs. The soundboard calculation resolves acoustic propagation across the plate at high frequencies. The Tube uses one capsule for its direct and reflected sound.
+Dedicated microphone outputs now use the same per-key voicing as the corresponding solo microphone. This fixes sudden level jumps between neighbouring keys, especially on the Baby Grand’s Distant and Parlor Grand’s XY outputs. The soundboard calculation resolves acoustic propagation across the plate at high frequencies. The Tube uses one capsule for its direct and reflected sound. On keys where the microphone hears a strong initial strike and a weak sustain, the engine now voices the hammer arrival separately. [Keyboard and resonance measurements](Docs/validation/microphone-consistency-2026-11-20.md)
 
 ### 2.24.1 — 2026-11-19 — physical-model fixes, listening candidate
 
