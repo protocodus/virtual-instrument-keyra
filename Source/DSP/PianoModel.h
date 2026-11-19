@@ -66,6 +66,9 @@ struct Controls {
   float mute=0;
 };
 
+// The technician's voicing trim at each end of the scale, in dB.
+double scaleTrimDb(int key) noexcept;
+
 // How much longer the room's paths and decay time are at this Room than at
 // 0.5: 0.364 at 0, 2.75 at 1 (PianoModel.cpp, roomScaleSpan).
 double roomScale(float room) noexcept;

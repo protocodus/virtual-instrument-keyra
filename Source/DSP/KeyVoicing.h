@@ -1,6 +1,7 @@
 // Written by KeyraLevels --write-keys (Tools/KeyraLevels.cpp, which says what
 // is measured); never edit by hand.
 #pragma once
+#include <array>
 namespace keyra { namespace model {
 // [body][key]: what the key's strings give the pairs close, xy, live,
 // distant and tube, alone and two together (close-close, close-xy, ...
@@ -912,4 +913,37 @@ constexpr float keyEven[5][88][5]{
     {1,1.418,2.003,3.887,1.072,},
   },
 };
+// On the first arrival only, this fraction of the settled microphone pull.
+struct KeyAttackPullRatio { int body,key,mic; float ratio; };
+constexpr std::array<KeyAttackPullRatio,29> keyAttackPullRatios{{
+  {0,41,2,0.49438737f},
+  {0,43,3,0.50064915f},
+  {0,54,1,0.32152462f},
+  {0,57,3,0.37706075f},
+  {0,60,4,0.34587311f},
+  {0,64,3,0.38469338f},
+  {1,54,2,0.41576253f},
+  {1,57,3,0.49308740f},
+  {1,58,3,0.46046454f},
+  {1,63,1,0.29104723f},
+  {2,37,1,0.40814254f},
+  {2,37,2,0.37720048f},
+  {2,37,3,0.45926886f},
+  {2,41,3,0.42834687f},
+  {2,44,1,0.39608474f},
+  {2,59,3,0.40544119f},
+  {2,60,3,0.40687937f},
+  {2,63,1,0.41931033f},
+  {3,36,3,0.47684808f},
+  {3,68,4,0.36492360f},
+  {3,75,2,0.17082563f},
+  {3,75,4,0.11108349f},
+  {3,79,0,0.32096432f},
+  {4,52,1,0.47639507f},
+  {4,57,4,0.34724102f},
+  {4,58,4,0.49858597f},
+  {4,60,1,0.33352621f},
+  {4,66,4,0.24130529f},
+  {4,73,2,0.32619270f},
+}};
 }}

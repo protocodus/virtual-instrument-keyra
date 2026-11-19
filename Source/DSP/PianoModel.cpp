@@ -358,19 +358,6 @@ constexpr int capoFrom=60;
 // in the note's level; these spreads of its strength (dB) and of its time (a
 // factor's logarithm) give 2.5 and 2.2.
 constexpr double catchSpreadDb=2,catchSpreadTime=.2;
-// The scale's two ends, voiced against the recording (2.24.0, the owner's
-// choice by ear, set 8): the lowest octave up 3.5 dB from A0 to D#1, to
-// nothing at A1, and the top down 2 dB from D#7, from nothing at C7. Against
-// the curve of level through the Salamander's 30 recorded keys (each key's
-// first second, both channels, about the median key) the model's lowest
-// octave stood 3.5 to 4.4 dB low at the eighth layer and 1.1 to 3.1 at the
-// sixteenth, and its keys from D#7 up to 3.1 dB high at the eighth; three
-// grands of another maker's model (Arturia Piano V3) stand the same way at
-// full velocity. With these the curve's error over the 30 keys goes from
-// 2.26 to 1.63 dB at the eighth layer and 3.31 to 2.37 at the sixteenth. A
-// trim of the keys' levels, as a technician's voicing is, not a cause found
-// in the strings or the board (README, Known gaps).
-double scaleTrimDb(int key) noexcept {return 3.5*clamp((12-key)/6.,0,1)-2*clamp((key-75)/3.,0,1);}
 // Nor does the hammer land the same twice: its shank flexes and its centre
 // has play, so the felt's face tilts across the unison (one end string takes
 // more of the blow and the other less), lands a little along the string
@@ -1219,7 +1206,11 @@ constexpr float glideMost=1.2e-3f,glideStep=2e-6f;
 // and 2 the other strings' vertical motion, 3 to 5 each string's motion
 // along the bridge. Every mode is a complex number z turning by its
 // frequency and loss each sample; the string's displacement is Im z.
-struct Voice {
+struct StringMotion {
+  float re[planeFloats]{},im[planeFloats]{};
+  float longY1[maxLong]{},longY2[maxLong]{};
+};
+struct Voice : StringMotion {
   bool active=false,forcing=false;
   int strings=1,partials=0,sounding=0,apart=0,across=0,longitudinal=0;
   int point=0;float pointMix=0;
@@ -1228,7 +1219,6 @@ struct Voice {
   float glide=0,appliedGlide=0; // how far the swing's stretch raises the pitch, as a ratio less one
   float glidePerEnergy=0;
   float u[6]{};              // each plane's hold on the bridge
-  float re[planeFloats]{},im[planeFloats]{};
   float turnRe[planeFloats]{},turnIm[planeFloats]{}; // the step: rotation times loss
   float cosine[planeFloats]{},sine[planeFloats]{};
   float drive[planeFloats]{};   // displacement per newton of hammer force, per sample
@@ -1245,13 +1235,19 @@ struct Voice {
   // share of the blow, so the force is string 0's times the sum of the
   // strings' squared shares over string 0's, set at each blow (setDrive).
   float longScale=1;
-  float longA1[maxLong]{},longA2[maxLong]{},longGain[maxLong]{},longY1[maxLong]{},longY2[maxLong]{};
+  float longA1[maxLong]{},longA2[maxLong]{},longGain[maxLong]{};
   float force[chunk]{};
   float floor2=0;            // the squared bridge force under which a partial is let go
 };
 // A hammer against its string, from contact until it has left.
 struct Contact {
   bool active=false;
+  // A separately calibrated first arrival uses just this blow's motion.
+  // Repeated blows keep the earlier motion and its phase.
+  int attackLeft=0;
+  bool attackDriven=false;
+  StringMotion attack;
+  float attackForce[chunk]{};
   int key=0,partials=0,age=0;
   double position=0,velocity=0,mass=0,relaxed=0,prompt=0,exponent=0,previous=0,deepest=0;
   double start=0;            // where the hammer met the string, m
@@ -1513,6 +1509,9 @@ struct Piano::Impl {
   static constexpr int mainReceiver=micCount;
   Radiation radiation[micCount+1];
   float stemVoicing[micCount][keyCount]{};
+  float attackRatioChange[micCount][keyCount]{},mixAttackChange[keyCount]{};
+  bool hasAttack[keyCount]{};
+  int attackFrames=0;
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
   double dcPole=0;
@@ -1593,6 +1592,20 @@ struct Piano::Impl {
         v.turnRe[o+k]=(v.cosine[o+k]-lift*v.sine[o+k])*g-self*v.couplingRe[k];v.turnIm[o+k]=(v.sine[o+k]+lift*v.cosine[o+k])*g-self*v.couplingIm[k];}}
     v.appliedDamper=d;v.appliedGlide=v.glide;
   }
+  // The corresponding transient must give up a partial whenever its
+  // parent voice does, including during a bend out of the playable band.
+  void retireAttackPartials(int key,int first) noexcept {
+    if(!hasAttack[key])return;
+    for(int j=0;j<contactSpan;++j){auto& contact=contacts[j];
+      if(contact.key!=key||!contact.attackLeft)continue;
+      if(first==0){contact.attackLeft=0;continue;}
+      for(int plane=0;plane<6;++plane){const int begin=planeStart[plane]+first,end=plane<5?planeStart[plane+1]:planeFloats;
+        if(begin>=end)continue;
+        std::fill(contact.attack.re+begin,contact.attack.re+end,0.f);
+        std::fill(contact.attack.im+begin,contact.attack.im+end,0.f);
+      }
+    }
+  }
   // A voice's partials and their frequencies from its key as the controls
   // and the bend stand.
   void tune(Voice& v,int index) noexcept {
@@ -1608,6 +1621,7 @@ struct Piano::Impl {
     // Once a mode leaves the playable band it no longer advances. Retire its
     // displacement and velocity before changing the lengths of these planes,
     // so another strike cannot bring a frozen partial back into the room.
+    if(count<v.sounding)retireAttackPartials(index,count);
     if(count<v.sounding)for(int plane=0;plane<6;++plane){
       const int end=planeLength(v,plane),o=planeStart[plane];
       if(end>count){
@@ -1782,8 +1796,13 @@ struct Piano::Impl {
     }
   }
   Contact& claimContact(int key) noexcept {
-    for(int i=0;i<contactSpan;++i)if(!contacts[i].active)return contacts[i];
+    for(int i=0;i<contactSpan;++i)if(!contacts[i].active&&!contacts[i].attackLeft)return contacts[i];
     if(contactSpan<keyCount)return contacts[contactSpan++];
+    // A departed hammer can always make room for a real contact. Prefer
+    // the shortest remaining calibration window, whose weight tends to zero.
+    Contact* departed=nullptr;
+    for(auto& contact:contacts)if(!contact.active&&(!departed||contact.attackLeft<departed->attackLeft))departed=&contact;
+    if(departed)return *departed;
     // All 88 slots are in flight. Replace the oldest overlapping blow, or
     // the incoming key's own: every other key must retain its last hammer.
     // If the incoming key is absent, at least one other key has two slots.
@@ -1800,6 +1819,8 @@ struct Piano::Impl {
     Contact& c=claimContact(index);
     const Voice& v=voices[index];
     const double f0=key.hertz*tuningRatio(key),rate=sampleRate*substeps;
+    c.attackLeft=hasAttack[index]&&pull[index]<0?attackFrames:0;
+    if(c.attackLeft)c.attack={};
     c.active=true;c.key=index;c.age=0;c.partials=v.partials;c.give=0;c.late=late;c.strength=strength;
     double met=0; // where the string stands under the hammer, m
     for(int k=0;k<c.partials;++k){
@@ -1897,7 +1918,9 @@ struct Piano::Impl {
         if(f>0)for(int k=0;k<n;++k){c.re[k]+=c.turnRe[k]*c.drive[k]*f;c.im[k]+=c.turnIm[k]*c.drive[k]*f;}
         total+=force;
       }
-      v.force[s]+=static_cast<float>(total/substeps);
+      const float average=static_cast<float>(total/substeps);
+      v.force[s]+=average;
+      if(c.attackLeft)c.attackForce[s]=average;
       ++c.age;
       // The hammer has left once it is falling back clear of the string.
       const bool departed=c.velocity<0&&c.position-c.start<-2*c.deepest-1e-5;
@@ -1922,26 +1945,26 @@ struct Piano::Impl {
   // past a plane's length would wake a partial that was let go. The unison's
   // size and the hammer contact stay fixed for this chunk. Specialize them
   // here so a ringing plane never has to read a zero force or unused states.
-  template<bool forcing,int strings> void play(Voice& v,float* out,int frames) noexcept {
+  template<bool forcing,int strings> void play(const Voice& v,StringMotion& motion,const float* forceIn,float* out,int frames) noexcept {
     float sumRe[maxK],sumIm[maxK],stretch[maxKl],slope[maxKl];
     const int n=v.sounding;
     const int lengths[6]{planeLength(v,0),planeLength(v,1),planeLength(v,2),planeLength(v,3),planeLength(v,4),planeLength(v,5)};
     for(int s=0;s<frames;++s){
-      const float force=forcing?v.force[s]:0;
+      const float force=forcing?forceIn[s]:0;
       int k=0;
       // Form a unison's sum once at each partial, in string order.
       const auto together=[&](auto unisons,int end){
         constexpr int count=decltype(unisons)::value;
         for(;k+4<=end;k+=4){
-          Four re=Four::at(v.re+k),im=Four::at(v.im+k);
-          if constexpr(count>=2){re+=Four::at(v.re+planeStart[1]+k);im+=Four::at(v.im+planeStart[1]+k);}
-          if constexpr(count>=3){re+=Four::at(v.re+planeStart[2]+k);im+=Four::at(v.im+planeStart[2]+k);}
+          Four re=Four::at(motion.re+k),im=Four::at(motion.im+k);
+          if constexpr(count>=2){re+=Four::at(motion.re+planeStart[1]+k);im+=Four::at(motion.im+planeStart[1]+k);}
+          if constexpr(count>=3){re+=Four::at(motion.re+planeStart[2]+k);im+=Four::at(motion.im+planeStart[2]+k);}
           re.to(sumRe+k);im.to(sumIm+k);
         }
         for(;k<end;++k){
-          float re=v.re[k],im=v.im[k];
-          if constexpr(count>=2){re+=v.re[planeStart[1]+k];im+=v.im[planeStart[1]+k];}
-          if constexpr(count>=3){re+=v.re[planeStart[2]+k];im+=v.im[planeStart[2]+k];}
+          float re=motion.re[k],im=motion.im[k];
+          if constexpr(count>=2){re+=motion.re[planeStart[1]+k];im+=motion.im[planeStart[1]+k];}
+          if constexpr(count>=3){re+=motion.re[planeStart[2]+k];im+=motion.im[planeStart[2]+k];}
           sumRe[k]=re;sumIm[k]=im;
         }
       };
@@ -1949,21 +1972,21 @@ struct Piano::Impl {
       else if constexpr(strings==2)together(std::integral_constant<int,2>{},lengths[1]);
       together(std::integral_constant<int,1>{},n);
       float pull=dot(v.bridge,sumIm,n);
-      for(int plane=3;plane<3+strings;++plane)pull+=v.u[plane]*dot(v.bridge,v.im+planeStart[plane],lengths[plane]);
+      for(int plane=3;plane<3+strings;++plane)pull+=v.u[plane]*dot(v.bridge,motion.im+planeStart[plane],lengths[plane]);
       const int longitudinal=std::min(n,v.longitudinal);
-      for(k=0;k+4<=longitudinal;k+=4){const Four re=Four::at(v.re+k),im=Four::at(v.im+k);(re*re-im*im).to(stretch+k);}
-      for(;k<longitudinal;++k)stretch[k]=v.re[k]*v.re[k]-v.im[k]*v.im[k];
+      for(k=0;k+4<=longitudinal;k+=4){const Four re=Four::at(motion.re+k),im=Four::at(motion.im+k);(re*re-im*im).to(stretch+k);}
+      for(;k<longitudinal;++k)stretch[k]=motion.re[k]*motion.re[k]-motion.im[k]*motion.im[k];
       float along=dot(v.tension,stretch,longitudinal);
       if(v.longModes>0){
-        for(k=0;k<longitudinal;++k)slope[k]=v.slope[k]*v.im[k];
+        for(k=0;k<longitudinal;++k)slope[k]=v.slope[k]*motion.im[k];
         for(int m=1;m<=v.longModes;++m){
           float a=.5f*dot(slope,slope+m,longitudinal-m);
           // Both slopes within the partials still sounding: j and m-2-j
           // under `longitudinal`. Stopping at the first pair out of range
           // left every pair out once the partials were pruned under m-1.
           for(int j=std::max(0,m-1-longitudinal),last=std::min(m-2,longitudinal-1);j<=last;++j)a+=.25f*slope[j]*slope[m-2-j];
-          const float y=v.longA1[m-1]*v.longY1[m-1]+v.longA2[m-1]*v.longY2[m-1]+v.longGain[m-1]*a;
-          v.longY2[m-1]=v.longY1[m-1];v.longY1[m-1]=y;
+          const float y=v.longA1[m-1]*motion.longY1[m-1]+v.longA2[m-1]*motion.longY2[m-1]+v.longGain[m-1]*a;
+          motion.longY2[m-1]=motion.longY1[m-1];motion.longY1[m-1]=y;
           along+=v.longForce*((m&1)?y-a:a-y);
         }
       }
@@ -1982,7 +2005,7 @@ struct Piano::Impl {
       const auto advance=[&](int plane,auto coupling){
         constexpr bool coupled=decltype(coupling)::value;
         const int len=lengths[plane],o=planeStart[plane];
-        float* re=v.re+o;float* im=v.im+o;const float* tr=v.turnRe+o;const float* ti=v.turnIm+o;const float* drive=v.drive+o;
+        float* re=motion.re+o;float* im=motion.im+o;const float* tr=v.turnRe+o;const float* ti=v.turnIm+o;const float* drive=v.drive+o;
         for(k=0;k+4<=len;k+=4){
           const Four r=Four::at(re+k),i=Four::at(im+k),turnRe=Four::at(tr+k),turnIm=Four::at(ti+k);
           Four nr=turnRe*r-turnIm*i,ni=turnIm*r+turnRe*i;
@@ -2001,8 +2024,14 @@ struct Piano::Impl {
       for(int plane=3;plane<3+strings;++plane)advance(plane,std::false_type{});
     }
   }
+  template<bool forced> void playUnison(const Voice& v,StringMotion& motion,const float* force,float* out,int frames) noexcept {
+    if(v.strings==3)play<forced,3>(v,motion,force,out,frames);
+    else if(v.strings==2)play<forced,2>(v,motion,force,out,frames);
+    else play<forced,1>(v,motion,force,out,frames);
+  }
   // Lets go of the highest partials once the bridge no longer feels them.
-  void prune(Voice& v) noexcept {
+  void prune(Voice& v,int key) noexcept {
+    const int before=v.sounding;
     for(int tries=0;tries<6&&v.sounding>0;++tries){
       const int k=v.sounding-1;
       float energy=0;
@@ -2012,6 +2041,7 @@ struct Piano::Impl {
       for(int plane=0;plane<6;++plane){if(k>=planeLength(v,plane))continue;const int o=planeStart[plane];v.re[o+k]=v.im[o+k]=0;}
       --v.sounding;
     }
+    if(v.sounding<before)retireAttackPartials(key,v.sounding);
     if(v.sounding==0){v.active=false;for(int m=0;m<maxLong;++m)v.longY1[m]=v.longY2[m]=0;}
   }
   // Mute lays felt on every string, held or not, lightly at first.
@@ -2218,7 +2248,7 @@ struct Piano::Impl {
     for(int i=0;i<keyCount;++i){
       const float trim=static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
       const float* heard=keyHeard[body][i];
-      double got=0,even=0,individualPower=0;
+      double got=0,even=0,individualPower=0,attackPowerChange=0;
       for(int a=0;a<micCount;++a){
         // The diagonal is this microphone heard alone. Read it before
         // accumulating cross-products for the main mix.
@@ -2229,7 +2259,9 @@ struct Piano::Impl {
         // when none of the microphones is connected.
         if(a==micClose)standardVoicing[i]=solo;
         even+=level[a]*level[a]*target;
-        individualPower+=level[a]*level[a]*measured;
+        const double power=level[a]*level[a]*measured;
+        individualPower+=power;
+        attackPowerChange+=power*attackRatioChange[a][i];
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;
       }
       // Keep the established 15 dB guard against cancellation between
@@ -2240,6 +2272,9 @@ struct Piano::Impl {
       const double low=std::min(even/limitPower,individualPower);
       const double high=std::max(even*limitPower,individualPower);
       voicing[i]=even>0?static_cast<float>(std::sqrt(even/clamp(got,low,high)))*trim:trim;
+      // Weight each receiver by the power it contributes. A quiet solo
+      // with a deep null must not attenuate louder microphones in a blend.
+      mixAttackChange[i]=individualPower>0?static_cast<float>(attackPowerChange/individualPower):0;
     }
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
@@ -2383,6 +2418,12 @@ struct Piano::Impl {
   }
   void select() noexcept {
     table=&tables[static_cast<int>(controls.body)];
+    std::memset(attackRatioChange,0,sizeof(attackRatioChange));
+    std::fill_n(hasAttack,keyCount,false);
+    for(const auto& entry:keyAttackPullRatios)if(entry.body==static_cast<int>(controls.body)){
+      attackRatioChange[entry.mic][entry.key]=entry.ratio-1;
+      hasAttack[entry.key]=true;
+    }
     // The bridge moves at about a third of the plate's point mobility where
     // another key's strings cross it.
     mobility=.3/table->infinite;
@@ -2432,7 +2473,7 @@ struct Piano::Impl {
         if(v.damper!=goal){v.damper+=(goal-v.damper)*damperStep;if(std::abs(v.damper-goal)<.002f)v.damper=goal;}
         v.glide=glideOf(v);
         if(v.damper!=v.appliedDamper||std::abs(v.glide-v.appliedGlide)>glideStep)applyDamper(v);
-        if(!v.forcing)prune(v);
+        if(!v.forcing)prune(v,i);
         sounding=sounding||v.active;
       }
       if(bankDamper[i]!=goal){bankDamper[i]+=(goal-bankDamper[i])*damperStep;if(std::abs(bankDamper[i]-goal)<.002f)bankDamper[i]=goal;}
@@ -2504,9 +2545,11 @@ struct Piano::Impl {
     bool contactRemains[keyCount]{};
     for(int i=0;i<contactSpan;++i){
       auto& c=contacts[i];
+      c.attackDriven=c.attackLeft&&c.active;
+      if(c.attackDriven)std::fill_n(c.attackForce,frames,0.f);
       if(c.active){runContact(c,frames);if(c.active)contactRemains[c.key]=true;}
     }
-    while(contactSpan>0&&!contacts[contactSpan-1].active)--contactSpan;
+    while(contactSpan>0&&!contacts[contactSpan-1].active&&!contacts[contactSpan-1].attackLeft)--contactSpan;
     for(int p=0;p<points;++p){struck[p][0]=bridged[p][0]=knocks[p];knocks[p]=0;}
     for(int j=0;j<stemCount;++j)std::memcpy(stemStruck[activeStems[j]],struck,sizeof(struck));
     alignas(32) float blow[chunk]{};
@@ -2530,13 +2573,8 @@ struct Piano::Impl {
       else if(own.frame.z1!=0||own.frame.z2!=0){
         for(int s=0;s<frames;++s)own.nearEnd[s]=static_cast<float>(own.frame.run(0));
       }else std::fill_n(own.nearEnd,frames,0.f);
-      const auto playKey=[&](auto contact){
-        constexpr bool forced=decltype(contact)::value;
-        if(v.strings==3)play<forced,3>(v,each,frames);
-        else if(v.strings==2)play<forced,2>(v,each,frames);
-        else play<forced,1>(v,each,frames);
-      };
-      if(v.forcing)playKey(std::true_type{});else playKey(std::false_type{});
+      if(v.forcing)playUnison<true>(v,v,v.force,each,frames);
+      else playUnison<false>(v,v,nullptr,each,frames);
       const float pulled=pull[i]<0?voicing[i]:pull[i],b=v.pointMix*pulled,a=pulled-b;
       for(int s=0;s<frames;++s){struck[v.point][s]+=a*each[s];struck[v.point+1][s]+=b*each[s];}
       for(int j=0;j<stemCount;++j){
@@ -2554,6 +2592,32 @@ struct Piano::Impl {
         own.bridge[s]=(1-v.pointMix)*static_cast<float>(own.travel[0])+v.pointMix*static_cast<float>(own.travel[1]);
       }
       if(v.forcing){std::memset(v.force,0,sizeof(v.force));v.forcing=contactRemains[i];}
+    }
+    // The calibration measures the first 20 ms and the body separately.
+    // Their pulls meet smoothly over the first 40 ms. Project only this
+    // hammer's contribution into the pickup correction. The older strings,
+    // bridge feedback, frame and case keep the pressures they already had.
+    for(int i=0;i<contactSpan;++i){auto& c=contacts[i];
+      if(c.attackLeft==0)continue;
+      const Voice& v=voices[c.key];
+      if(!v.active||pull[c.key]>=0){c.attackLeft=0;continue;}
+      const int count=std::min(frames,c.attackLeft);
+      if(c.attackDriven)playUnison<true>(v,c.attack,c.attackForce,each,count);
+      else playUnison<false>(v,c.attack,nullptr,each,count);
+      for(int s=0;s<count;++s){
+        const float left=static_cast<float>(c.attackLeft-s)/attackFrames;
+        each[s]*=left*left*(3-2*left);
+      }
+      c.attackLeft-=count;
+      const auto add=[&](float (&force)[points][chunk],float change){
+        if(change==0)return;
+        const float high=v.pointMix*change,low=change-high;
+        for(int s=0;s<count;++s){force[v.point][s]+=low*each[s];force[v.point+1][s]+=high*each[s];}
+      };
+      add(struck,voicing[c.key]*mixAttackChange[c.key]);
+      for(int j=0;j<stemCount;++j){const int mic=activeStems[j];
+        add(stemStruck[mic],stemVoicing[mic][c.key]*attackRatioChange[mic][c.key]);
+      }
     }
     if(frameRings){std::memset(rim,0,sizeof(rim));rimmed=true;
       if(!leaned)std::memset(leans,0,sizeof(leans));
@@ -2795,6 +2859,19 @@ struct Piano::Impl {
   }
 };
 
+// The scale's two ends, voiced against the recording (2.24.0, the owner's
+// choice by ear, set 8): the lowest octave up 3.5 dB from A0 to D#1, to
+// nothing at A1, and the top down 2 dB from D#7, from nothing at C7. Against
+// the curve of level through the Salamander's 30 recorded keys (each key's
+// first second, both channels, about the median key) the model's lowest
+// octave stood 3.5 to 4.4 dB low at the eighth layer and 1.1 to 3.1 at the
+// sixteenth, and its keys from D#7 up to 3.1 dB high at the eighth; three
+// grands of another maker's model (Arturia Piano V3) stand the same way at
+// full velocity. With these the curve's error over the 30 keys goes from
+// 2.26 to 1.63 dB at the eighth layer and 3.31 to 2.37 at the sixteenth. A
+// trim of the keys' levels, as a technician's voicing is, not a cause found
+// in the strings or the board (README, Known gaps).
+double scaleTrimDb(int key) noexcept {return 3.5*clamp((12-key)/6.,0,1)-2*clamp((key-75)/3.,0,1);}
 double roomScale(float room) noexcept {return std::pow(roomScaleSpan,2.*clampf(room,0,1)-1);}
 float touched(float velocity,float decibels,float dynamics) noexcept {
   return static_cast<float>((velocity+softest)*std::pow(10.,decibels/(20*dynamicsPower(dynamics)))-softest);
@@ -2810,6 +2887,7 @@ void Piano::prepare(double sampleRate){
     for(int b=0;b<bodyCount;++b){Tables& t=p.tables[b];t.design=designs[b];designStrings(t,b);designBoard(t,b);}
   }
   p.substeps=p.sampleRate<70000?2:1;
+  p.attackFrames=static_cast<int>(std::lround(.040*p.sampleRate));
   p.slew=static_cast<float>(1-std::pow(.75,48000./p.sampleRate));
   p.travelLeak=std::exp(-2*pi*8/p.sampleRate);
   p.dcPole=std::exp(-2*pi*10/p.sampleRate);

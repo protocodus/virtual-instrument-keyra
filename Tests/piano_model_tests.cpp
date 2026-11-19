@@ -102,22 +102,32 @@ int main(){
     }
   }
   {
-    // C7 on the upright Tube needs more than the guard for cancellation
-    // between faders. Reproduce the model's measured solo power ratio
-    // directly. C7 has zero player-requested register trim.
+    // At C7 the upright's single tube capsule has a settled frequency-response
+    // null. Compare its first arrival and held note with the full steady pull.
     using namespace keyra::model;
     Controls c;c.body=Body::upright;c.mic[micClose]=0;c.mic[micTube]=1;
     c.sympathetic=c.duplex=0;
     constexpr int key=96-21,body=static_cast<int>(Body::upright);
     const auto& products=keyHeard[body][key];
     const double tubePower=products[sizeof(products)/sizeof(products[0])-1];
-    const auto play=[&](float pull){
-      b.start(c);piano.pullKey(key,pull);piano.holdDamper(key,true);
-      piano.strike(key,.5f);b.run(.4);return b.take;
+    const auto play=[&](float pull,bool restrike=false){
+      b.start(c);piano.pullKey(key,pull);piano.setPedal(.8f);piano.holdDamper(key,true);
+      piano.strike(key,112/127.f);b.run(.19);
+      if(restrike)piano.strike(key,1/127.f);
+      b.run(.21);return b.take;
     };
-    const Take ordinary=play(-1);
-    const Take measured=play(static_cast<float>(std::sqrt(keyEven[body][key][micTube]/tubePower)));
-    check(ordinary.left==measured.left,"a solo capsule uses its measured correction at a pickup null");
+    const auto peak=[](const Take& take){
+      double loud=0;
+      for(std::size_t i=0;i<take.at(.04);++i)loud=std::max(loud,std::abs(double(take.left[i])));
+      return loud;
+    };
+    const Take corrected=play(-1);
+    const Take steady=play(static_cast<float>(std::sqrt(keyEven[body][key][micTube]/tubePower)));
+    check(peak(corrected)<.5*peak(steady),"the tube's first arrival avoids its settled pickup-null boost");
+    check(std::abs(corrected.db(.06,.4)-steady.db(.06,.4))<1,"the tube keeps its measured held-note voicing");
+    const Take repeated=play(-1,true);
+    check(std::abs(corrected.db(.19,.195)-repeated.db(.19,.195))<2,
+          "a very soft restrike leaves the older ringing stroke at its own level");
     piano.pullKey(key,-1);
   }
   {

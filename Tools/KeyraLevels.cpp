@@ -59,6 +59,10 @@
 // furthest key is 1.1 dB off, the concert grand's C8 through the close pair,
 // where the knock is a good part of a key's sound; the others lie within
 // 1.0 dB. A stale table leaves keys 3 dB and more off.
+// A sustained pickup null can need a large pull even though the first arrival
+// is already strong. Measure the part of the blow before the settled window
+// separately, and use the smaller pull there only when the settled gain
+// introduces an outlying attack.
 #include "DSP/KeyraEngine.h"
 #include "DSP/KeyraPresets.h"
 #include "DSP/KeyVoicing.h"
@@ -162,6 +166,9 @@ void parallel(std::size_t count,int jobs,const std::function<void(std::size_t)>&
 }
 
 constexpr double keySeconds=1,keySkipSeconds=.02,keyWindowDb=2,keySpread=4;
+// A boosted first arrival more than twice its neighbourhood's pressure is
+// an outlier. Its two measured components are summed with their signs.
+constexpr double attackOutlierDb=6;
 constexpr float keyVelocity=.5f;
 constexpr int keys=keyra::model::keyCount,pairs=keyra::model::micCount,bodies=keyra::model::bodyCount;
 const char* const pairNames[pairs]{"close","xy","live","distant","tube"};
@@ -170,7 +177,8 @@ constexpr int keyMixCount=static_cast<int>(sizeof(keyMixes)/sizeof(keyMixes[0]))
 using KeyLevels=std::array<double,keys>;
 // A key alone through a mix of the pairs, left then right; `pull` as
 // Piano::pullKey takes it, and the room as the controls give it unless `dry`.
-std::vector<float> keySound(keyra::model::Piano& piano,int body,const float* mix,int key,float pull,bool dry=false){
+std::vector<float> keySound(keyra::model::Piano& piano,int body,const float* mix,int key,float pull,bool dry=false,
+                            std::vector<float>* firstArrival=nullptr){
   keyra::model::Controls controls;controls.body=static_cast<keyra::model::Body>(body);
   std::copy(mix,mix+pairs,controls.mic);
   if(dry)controls.roomHeard=false;
@@ -180,6 +188,10 @@ std::vector<float> keySound(keyra::model::Piano& piano,int body,const float* mix
   piano.holdDamper(key,true);piano.strike(key,keyVelocity);
   for(int done=0;done<frames;done+=block)piano.process(left.data()+done,right.data()+done,std::min(block,frames-done));
   piano.pullKey(key,-1);
+  if(firstArrival){
+    firstArrival->assign(left.begin(),left.begin()+skip);
+    firstArrival->insert(firstArrival->end(),right.begin(),right.begin()+skip);
+  }
   left.erase(left.begin(),left.begin()+skip);
   left.insert(left.end(),right.begin()+skip,right.end());
   return left;
@@ -227,26 +239,66 @@ constexpr int products=pairs*(pairs+1)/2;
 struct Voicing {
   std::array<std::array<double,products>,keys> heard{};
   std::array<std::array<double,pairs>,keys> even{};
+  std::array<KeyLevels,pairs> attackRatio{};
   Evenness unvoiced[pairs];
+};
+struct FirstArrival {
+  std::vector<float> strings,knock;
+  double peak(double pull) const {
+    double result=0;
+    for(std::size_t i=0;i<strings.size();++i)
+      result=std::max(result,std::abs(pull*strings[i]+knock[i]));
+    return result;
+  }
+  // Every sample in either channel bounds the pulls for which
+  // -pressure <= pull * strings + knock <= pressure. Intersect the
+  // intervals and choose the pull closest to the settled voicing.
+  double largestPull(double pressure,double settled) const {
+    double low=0,high=settled;
+    for(std::size_t i=0;i<strings.size();++i){
+      const double s=strings[i],k=knock[i];
+      if(s==0){if(std::abs(k)>pressure)return -1;continue;}
+      const double a=(-pressure-k)/s,b=(pressure-k)/s;
+      low=std::max(low,std::min(a,b));high=std::min(high,std::max(a,b));
+      if(low>high)return -1;
+    }
+    return high;
+  }
+  double pullAt(double target,double settled,double peakAtSettled) const {
+    double best=largestPull(target,settled);
+    if(best>=0)return best;
+    // A knock cannot be scaled with the strings. If the target is
+    // unreachable, find the quietest attainable peak, keeping the
+    // settled pull wherever several pulls give that peak.
+    double low=target,high=peakAtSettled;
+    best=settled;
+    for(int i=0;i<28;++i){
+      const double mid=.5*(low+high),pull=largestPull(mid,settled);
+      if(pull<0)low=mid;else{high=mid;best=pull;}
+    }
+    return best;
+  }
 };
 Voicing voice(int body){
   keyra::model::Piano piano;piano.prepare(rate);
   Voicing voicing;
   std::array<KeyLevels,pairs> level{},dry{};
+  std::array<std::array<FirstArrival,keys>,pairs> first;
   // Each pair is measured as it is heard, with its own room at the default
   // Room (2.18.0; the room's return of 2.16.0 and 2.17.0 is gone), and dry for
   // its scale's offset.
   for(int key=0;key<keys;++key){
     std::vector<float> strings[pairs];
-    const auto strike=[&](const float* mix,bool withoutRoom){
-      auto sound=keySound(piano,body,mix,key,1,withoutRoom);
-      const auto knock=keySound(piano,body,mix,key,0,withoutRoom);
+    const auto strike=[&](int pair,bool withoutRoom){
+      FirstArrival& arrival=first[pair][key];
+      auto sound=keySound(piano,body,keyMixes[pair],key,1,withoutRoom,withoutRoom?nullptr:&arrival.strings);
+      const auto knock=keySound(piano,body,keyMixes[pair],key,0,withoutRoom,withoutRoom?nullptr:&arrival.knock);
+      if(!withoutRoom)for(std::size_t i=0;i<arrival.strings.size();++i)arrival.strings[i]-=arrival.knock[i];
       for(std::size_t i=0;i<knock.size();++i)sound[i]-=knock[i];
       return sound;};
     for(int pair=0;pair<pairs;++pair){
-      const auto heard=[&](bool withoutRoom){return strike(keyMixes[pair],withoutRoom);};
-      strings[pair]=heard(false);
-      const auto alone=heard(true);
+      strings[pair]=strike(pair,false);
+      const auto alone=strike(pair,true);
       dry[static_cast<std::size_t>(pair)][static_cast<std::size_t>(key)]=decibels(meanProduct(alone,alone));
     }
     std::size_t at=0;
@@ -271,6 +323,24 @@ Voicing voice(int body){
     for(double& product:voicing.heard[key])product/=close;
     for(std::size_t pair=0;pair<pairs;++pair)voicing.even[key][pair]=std::pow(10.,(even[pair][key]-even[0][key]-offset[pair])/10);
   }
+  for(int pair=0;pair<pairs;++pair){
+    KeyLevels pull{},peak{},arrivals{};
+    for(int key=0;key<keys;++key){
+      const double gain=even[pair][key]-offset[pair]-level[pair][key]+keyra::model::scaleTrimDb(key);
+      pull[key]=std::pow(10.,gain/20);
+      peak[key]=first[pair][key].peak(pull[key]);
+      arrivals[key]=decibels(peak[key]*peak[key]);
+    }
+    const KeyLevels target=evenScale(arrivals);
+    for(int key=0;key<keys;++key){
+      const double excess=arrivals[key]-target[key];
+      voicing.attackRatio[pair][key]=1;
+      if(pull[key]>1&&excess>attackOutlierDb){
+        const double pressure=std::pow(10.,target[key]/20);
+        voicing.attackRatio[pair][key]=first[pair][key].pullAt(pressure,pull[key],peak[key])/pull[key];
+      }
+    }
+  }
   return voicing;
 }
 int writeKeys(const char* path,int jobs){
@@ -279,7 +349,7 @@ int writeKeys(const char* path,int jobs){
   std::FILE* file=std::fopen(path,"w");
   if(!file){std::fprintf(stderr,"Cannot write %s\n",path);return 1;}
   std::fprintf(file,"// Written by KeyraLevels --write-keys (Tools/KeyraLevels.cpp, which says what\n"
-                    "// is measured); never edit by hand.\n#pragma once\nnamespace keyra { namespace model {\n"
+                    "// is measured); never edit by hand.\n#pragma once\n#include <array>\nnamespace keyra { namespace model {\n"
                     "// [body][key]: what the key's strings give the pairs close, xy, live,\n"
                     "// distant and tube, alone and two together (close-close, close-xy, ...\n"
                     "// close-tube, xy-xy, ... tube-tube), against the close pair's even\n"
@@ -311,7 +381,17 @@ int writeKeys(const char* path,int jobs){
                   keyra::bodyNames[body],pairNames[pair],e.key+21,e.furthest,e.step);
     }
   }
-  std::fprintf(file,"};\n}}\n");
+  std::size_t corrections=0;
+  for(const auto& body:all)for(const auto& pair:body.attackRatio)
+    corrections+=static_cast<std::size_t>(std::count_if(pair.begin(),pair.end(),[](double ratio){return ratio<1;}));
+  std::fprintf(file,"};\n// On the first arrival only, this fraction of the settled microphone pull.\n"
+                    "struct KeyAttackPullRatio { int body,key,mic; float ratio; };\n"
+                    "constexpr std::array<KeyAttackPullRatio,%zu> keyAttackPullRatios{{\n",corrections);
+  for(int body=0;body<bodies;++body)for(int key=0;key<keys;++key)for(int pair=0;pair<pairs;++pair){
+    const double ratio=all[body].attackRatio[pair][key];
+    if(ratio<1)std::fprintf(file,"  {%d,%d,%d,%#.8gf},\n",body,key,pair,ratio);
+  }
+  std::fprintf(file,"}};\n}}\n");
   return std::fclose(file)==0?0:1;
 }
 // Every key of every piano, voiced, through each of keyMixes.
