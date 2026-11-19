@@ -120,6 +120,9 @@ public:
   // and what a key is built as.
   void knockBridge(int key,float newtonSeconds) noexcept;
   void pullKey(int key,float gain) noexcept;
+  // Measure the same new-strike transition as the voiced instrument, with
+  // explicit first and settled pulls independent of the installed voicing.
+  void pullKey(int key,float gain,float onsetRatio) noexcept;
   struct KeyReport {int strings,partials;double hertz,length,tension,inharmonicity,stretchCents,hammerMass;};
   KeyReport report(Body body,int key) const noexcept;
 private:

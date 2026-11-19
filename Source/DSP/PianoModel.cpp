@@ -1434,6 +1434,7 @@ struct Piano::Impl {
   float voicing[keyCount]{};   // each key's pull on the board, evened for the mix
   float standardVoicing[keyCount]{};  // the same at the default mix, for the open strings' drive
   float pull[keyCount];        // a tool's own pull in its place; negative, none
+  float pullAttackChange[keyCount]{}; // explicit first pull less the tool's settled pull
 
   // The room: a feedback delay network (J.-M. Jot and A. Chaigne, "Digital
   // delay networks for designing artificial reverberators", AES 90th
@@ -1509,7 +1510,9 @@ struct Piano::Impl {
   static constexpr int mainReceiver=micCount;
   Radiation radiation[micCount+1];
   float stemVoicing[micCount][keyCount]{};
-  float attackRatioChange[micCount][keyCount]{},mixAttackChange[keyCount]{};
+  struct AttackCalibration {float change,unshapedPower;};
+  AttackCalibration attackVoicing[micCount][keyCount]{};
+  float mixAttackChange[keyCount]{};
   bool hasAttack[keyCount]{};
   int attackFrames=0;
   float spreadLine[roomSpreads][spreadSize]{};
@@ -1595,7 +1598,7 @@ struct Piano::Impl {
   // The corresponding transient must give up a partial whenever its
   // parent voice does, including during a bend out of the playable band.
   void retireAttackPartials(int key,int first) noexcept {
-    if(!hasAttack[key])return;
+    if(!hasAttack[key]&&pullAttackChange[key]==0)return;
     for(int j=0;j<contactSpan;++j){auto& contact=contacts[j];
       if(contact.key!=key||!contact.attackLeft)continue;
       if(first==0){contact.attackLeft=0;continue;}
@@ -1819,7 +1822,8 @@ struct Piano::Impl {
     Contact& c=claimContact(index);
     const Voice& v=voices[index];
     const double f0=key.hertz*tuningRatio(key),rate=sampleRate*substeps;
-    c.attackLeft=hasAttack[index]&&pull[index]<0?attackFrames:0;
+    const bool shapeStrike=pull[index]<0?hasAttack[index]:pullAttackChange[index]!=0;
+    c.attackLeft=shapeStrike?attackFrames:0;
     if(c.attackLeft)c.attack={};
     c.active=true;c.key=index;c.age=0;c.partials=v.partials;c.give=0;c.late=late;c.strength=strength;
     double met=0; // where the string stands under the hammer, m
@@ -2248,20 +2252,24 @@ struct Piano::Impl {
     for(int i=0;i<keyCount;++i){
       const float trim=static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
       const float* heard=keyHeard[body][i];
-      double got=0,even=0,individualPower=0,attackPowerChange=0;
+      double got=0,even=0,individualPower=0,attackPowerChange=0,unshapedPower=0;
       for(int a=0;a<micCount;++a){
         // The diagonal is this microphone heard alone. Read it before
         // accumulating cross-products for the main mix.
         const double target=keyEven[body][i][a],measured=*heard;
         const float solo=static_cast<float>(std::sqrt(target/measured));
         stemVoicing[a][i]=solo*trim;
-        // The close reference drives the physical sympathetic bank even
-        // when none of the microphones is connected.
-        if(a==micClose)standardVoicing[i]=solo;
+        const auto& attack=attackVoicing[a][i];
+        const double unshaped=attack.unshapedPower>0?attack.unshapedPower:measured;
+        // The physical sympathetic strings keep their original close reference
+        // when a microphone receives separate first and settled calibration.
+        if(a==micClose)standardVoicing[i]=attack.unshapedPower>0?static_cast<float>(std::sqrt(target/unshaped)):solo;
         even+=level[a]*level[a]*target;
         const double power=level[a]*level[a]*measured;
         individualPower+=power;
-        attackPowerChange+=power*attackRatioChange[a][i];
+        const double contribution=level[a]*level[a]*unshaped;
+        unshapedPower+=contribution;
+        attackPowerChange+=contribution*attack.change;
         for(int b=a;b<micCount;++b)got+=(a==b?1:2)*level[a]*level[b]**heard++;
       }
       // Keep the established 15 dB guard against cancellation between
@@ -2274,7 +2282,7 @@ struct Piano::Impl {
       voicing[i]=even>0?static_cast<float>(std::sqrt(even/clamp(got,low,high)))*trim:trim;
       // Weight each receiver by the power it contributes. A quiet solo
       // with a deep null must not attenuate louder microphones in a blend.
-      mixAttackChange[i]=individualPower>0?static_cast<float>(attackPowerChange/individualPower):0;
+      mixAttackChange[i]=unshapedPower>0?static_cast<float>(attackPowerChange/unshapedPower):0;
     }
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
@@ -2418,10 +2426,10 @@ struct Piano::Impl {
   }
   void select() noexcept {
     table=&tables[static_cast<int>(controls.body)];
-    std::memset(attackRatioChange,0,sizeof(attackRatioChange));
+    std::memset(attackVoicing,0,sizeof(attackVoicing));
     std::fill_n(hasAttack,keyCount,false);
     for(const auto& entry:keyAttackPullRatios)if(entry.body==static_cast<int>(controls.body)){
-      attackRatioChange[entry.mic][entry.key]=entry.ratio-1;
+      attackVoicing[entry.mic][entry.key]={entry.ratio-1,entry.unshapedPower};
       hasAttack[entry.key]=true;
     }
     // The bridge moves at about a third of the plate's point mobility where
@@ -2600,7 +2608,8 @@ struct Piano::Impl {
     for(int i=0;i<contactSpan;++i){auto& c=contacts[i];
       if(c.attackLeft==0)continue;
       const Voice& v=voices[c.key];
-      if(!v.active||pull[c.key]>=0){c.attackLeft=0;continue;}
+      const bool measured=pull[c.key]>=0;
+      if(!v.active||(measured&&pullAttackChange[c.key]==0)){c.attackLeft=0;continue;}
       const int count=std::min(frames,c.attackLeft);
       if(c.attackDriven)playUnison<true>(v,c.attack,c.attackForce,each,count);
       else playUnison<false>(v,c.attack,nullptr,each,count);
@@ -2614,9 +2623,9 @@ struct Piano::Impl {
         const float high=v.pointMix*change,low=change-high;
         for(int s=0;s<count;++s){force[v.point][s]+=low*each[s];force[v.point+1][s]+=high*each[s];}
       };
-      add(struck,voicing[c.key]*mixAttackChange[c.key]);
+      add(struck,measured?pullAttackChange[c.key]:voicing[c.key]*mixAttackChange[c.key]);
       for(int j=0;j<stemCount;++j){const int mic=activeStems[j];
-        add(stemStruck[mic],stemVoicing[mic][c.key]*attackRatioChange[mic][c.key]);
+        add(stemStruck[mic],measured?pullAttackChange[c.key]:stemVoicing[mic][c.key]*attackVoicing[mic][c.key].change);
       }
     }
     if(frameRings){std::memset(rim,0,sizeof(rim));rimmed=true;
@@ -3002,7 +3011,12 @@ void Piano::knockBridge(int key,float newtonSeconds) noexcept {
   const float impulse=static_cast<float>(newtonSeconds*p.sampleRate),b=static_cast<float>(at-point);
   p.knocks[point]+=(1-b)*impulse;p.knocks[point+1]+=b*impulse;p.wake();
 }
-void Piano::pullKey(int key,float gain) noexcept {if(key>=0&&key<keyCount)impl->pull[key]=gain;}
+void Piano::pullKey(int key,float gain) noexcept {pullKey(key,gain,1);}
+void Piano::pullKey(int key,float gain,float onsetRatio) noexcept {
+  if(key<0||key>=keyCount)return;
+  impl->pull[key]=gain;
+  impl->pullAttackChange[key]=gain>=0?gain*(onsetRatio-1):0;
+}
 Piano::KeyReport Piano::report(Body body,int key) const noexcept {
   const KeyData& k=impl->tables[static_cast<int>(body)].keys[std::max(0,std::min(keyCount-1,key))];
   return {k.strings,k.partials,k.hertz,k.length,k.tension,k.inharmonicity,k.stretchCents,k.hammerMass};

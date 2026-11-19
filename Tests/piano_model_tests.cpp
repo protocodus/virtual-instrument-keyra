@@ -131,6 +131,29 @@ int main(){
     piano.pullKey(key,-1);
   }
   {
+    // The calibration generator measures each new strike twice at unit pull.
+    // Their signed difference must reconstruct intermediate first pulls,
+    // whether or not the installed table already voices a key's first arrival.
+    Controls c=bare();c.mic[keyra::model::micClose]=0;c.mic[keyra::model::micDistant]=1;
+    for(int midi:{60,78}){
+      const int key=keyOf(midi);
+      const auto render=[&](float first){
+        b.start(c);piano.pullKey(key,1,first);piano.holdDamper(key,true);
+        piano.strike(key,.5f);b.run(.15);return b.take;
+      };
+      const Take settled=render(0),full=render(1),mixed=render(.4f);
+      double difference=0,error=0;
+      for(std::size_t i=0;i<mixed.left.size();++i){
+        const double first=full.left[i]-settled.left[i];
+        const double residual=mixed.left[i]-(settled.left[i]+.4*first);
+        difference+=first*first;error+=residual*residual;
+      }
+      check(difference>1e-5&&error<difference*1e-5,
+            "explicit first and settled transfers reconstruct the measured pressure independently of installed voicing");
+      piano.pullKey(key,-1);
+    }
+  }
+  {
     // What each piano's keys are built as.
     for(int body=0;body<keyra::model::bodyCount;++body){
       bool ordered=true,built=true;

@@ -178,13 +178,13 @@ using KeyLevels=std::array<double,keys>;
 // A key alone through a mix of the pairs, left then right; `pull` as
 // Piano::pullKey takes it, and the room as the controls give it unless `dry`.
 std::vector<float> keySound(keyra::model::Piano& piano,int body,const float* mix,int key,float pull,bool dry=false,
-                            std::vector<float>* firstArrival=nullptr){
+                            std::vector<float>* firstArrival=nullptr,float onsetRatio=1){
   keyra::model::Controls controls;controls.body=static_cast<keyra::model::Body>(body);
   std::copy(mix,mix+pairs,controls.mic);
   if(dry)controls.roomHeard=false;
   const int skip=static_cast<int>(keySkipSeconds*rate),frames=skip+static_cast<int>(keySeconds*rate);
   std::vector<float> left(static_cast<std::size_t>(frames)),right(left.size());
-  piano.reset();piano.setControls(controls);piano.pullKey(key,pull);
+  piano.reset();piano.setControls(controls);piano.pullKey(key,pull,onsetRatio);
   piano.holdDamper(key,true);piano.strike(key,keyVelocity);
   for(int done=0;done<frames;done+=block)piano.process(left.data()+done,right.data()+done,std::min(block,frames-done));
   piano.pullKey(key,-1);
@@ -239,9 +239,34 @@ constexpr int products=pairs*(pairs+1)/2;
 struct Voicing {
   std::array<std::array<double,products>,keys> heard{};
   std::array<std::array<double,pairs>,keys> even{};
-  std::array<KeyLevels,pairs> attackRatio{};
+  std::array<KeyLevels,pairs> attackRatio{},unshapedPower{};
   Evenness unvoiced[pairs];
 };
+// An arrival reaches the body and room during the 20 ms excluded from
+// the held measurement, then continues to ring inside that measurement.
+// Keep the chosen initial pull, and solve the actual held-window energy
+// for the settled pull. Both components include the same receiver history.
+void matchHeldEnergy(std::vector<float>& strings,const std::vector<float>& knock,
+                     std::vector<float>& settled,double& onsetRatio){
+  double sustainedPower=0,cross=0,initialPower=0,target=0;
+  for(std::size_t i=0;i<strings.size();++i){
+    settled[i]-=knock[i];
+    const double full=strings[i],s=settled[i],arrival=full-s;
+    sustainedPower+=s*s;cross+=s*arrival;initialPower+=arrival*arrival;target+=full*full;
+  }
+  // In units of the original steady pull, find g such that
+  // ||g * settled + onsetRatio * arrival||^2 = ||strings||^2.
+  const double linear=onsetRatio*cross;
+  const double determinant=linear*linear+sustainedPower*(target-onsetRatio*onsetRatio*initialPower);
+  if(sustainedPower>0&&determinant>=0){
+    const double gain=(std::sqrt(determinant)-linear)/sustainedPower;
+    if(gain>0)onsetRatio/=gain;
+  }
+  // This is what a unit settled pull now gives the receiver, including
+  // its taper. Its products with the other pairs determine blended levels.
+  for(std::size_t i=0;i<strings.size();++i)
+    strings[i]=static_cast<float>(settled[i]+onsetRatio*(strings[i]-settled[i]));
+}
 struct FirstArrival {
   std::vector<float> strings,knock;
   double peak(double pull) const {
@@ -341,6 +366,28 @@ Voicing voice(int body){
       }
     }
   }
+  for(int key=0;key<keys;++key){
+    bool affected=false;
+    for(int pair=0;pair<pairs;++pair)affected|=voicing.attackRatio[pair][key]<1;
+    if(!affected)continue;
+    std::array<std::vector<float>,pairs> strings;
+    const double close=std::pow(10.,even[0][key]/10);
+    for(int pair=0;pair<pairs;++pair){
+      auto& full=strings[pair];
+      full=keySound(piano,body,keyMixes[pair],key,1);
+      const auto knock=keySound(piano,body,keyMixes[pair],key,0);
+      for(std::size_t i=0;i<full.size();++i)full[i]-=knock[i];
+      double& ratio=voicing.attackRatio[pair][key];
+      if(ratio<1){
+        voicing.unshapedPower[pair][key]=meanProduct(full,full)/close;
+        auto settled=keySound(piano,body,keyMixes[pair],key,1,false,nullptr,0);
+        matchHeldEnergy(full,knock,settled,ratio);
+      }
+    }
+    std::size_t at=0;
+    for(int a=0;a<pairs;++a)for(int b=a;b<pairs;++b)
+      voicing.heard[key][at++]=meanProduct(strings[a],strings[b])/close;
+  }
   return voicing;
 }
 int writeKeys(const char* path,int jobs){
@@ -385,11 +432,12 @@ int writeKeys(const char* path,int jobs){
   for(const auto& body:all)for(const auto& pair:body.attackRatio)
     corrections+=static_cast<std::size_t>(std::count_if(pair.begin(),pair.end(),[](double ratio){return ratio<1;}));
   std::fprintf(file,"};\n// On the first arrival only, this fraction of the settled microphone pull.\n"
-                    "struct KeyAttackPullRatio { int body,key,mic; float ratio; };\n"
+                    "// The unshaped power keeps the sympathetic bridge reference independent of this correction.\n"
+                    "struct KeyAttackPullRatio { int body,key,mic; float ratio,unshapedPower; };\n"
                     "constexpr std::array<KeyAttackPullRatio,%zu> keyAttackPullRatios{{\n",corrections);
   for(int body=0;body<bodies;++body)for(int key=0;key<keys;++key)for(int pair=0;pair<pairs;++pair){
     const double ratio=all[body].attackRatio[pair][key];
-    if(ratio<1)std::fprintf(file,"  {%d,%d,%d,%#.8gf},\n",body,key,pair,ratio);
+    if(ratio<1)std::fprintf(file,"  {%d,%d,%d,%#.8gf,%#.4gf},\n",body,key,pair,ratio,all[body].unshapedPower[pair][key]);
   }
   std::fprintf(file,"}};\n}}\n");
   return std::fclose(file)==0?0:1;
