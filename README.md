@@ -51,9 +51,13 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.24.3 — 2026-11-20 — held-note pickup calibration
+
+The calibration now measures how each microphone hears the soundboard and room after the initial strike. This restores the held level on keys such as F♯5 on the Concert Grand’s Distant microphone while retaining the measured hammer attack. [Keyboard and resonance measurements](Docs/validation/microphone-consistency-2026-11-20.md)
+
 ### 2.24.2 — 2026-11-20 — soundboard radiation and microphone output evenness
 
-Dedicated microphone outputs now use the same per-key voicing as the corresponding solo microphone. This fixes sudden level jumps between neighbouring keys, especially on the Baby Grand’s Distant and Parlor Grand’s XY outputs. The soundboard calculation resolves acoustic propagation across the plate at high frequencies. The Tube uses one capsule for its direct and reflected sound. On keys where the microphone hears a strong initial strike and a weak sustain, the engine now voices the hammer arrival separately. [Keyboard and resonance measurements](Docs/validation/microphone-consistency-2026-11-20.md)
+Dedicated microphone outputs now use the same per-key voicing as the corresponding solo microphone. This fixes sudden level jumps between neighbouring keys, especially on the Baby Grand’s Distant and Parlor Grand’s XY outputs. The soundboard calculation resolves acoustic propagation across the plate at high frequencies. The Tube uses one capsule for its direct and reflected sound. On keys where the microphone hears a strong initial strike and a weak sustain, the engine now voices the hammer arrival separately.
 
 ### 2.24.1 — 2026-11-19 — physical-model fixes, listening candidate
 
