@@ -4,6 +4,7 @@
 // the bridge. The keys, pedals and controls as a front end meets them are in
 // engine_tests.cpp.
 #include "DSP/PianoModel.h"
+#include "DSP/KeyVoicing.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -99,6 +100,25 @@ int main(){
         check(audible&&matches,"each full-level microphone socket matches its solo through attack and release");
       }
     }
+  }
+  {
+    // C7 on the upright Tube needs more than the guard for cancellation
+    // between faders. Reproduce the model's measured solo power ratio
+    // directly. C7 has zero player-requested register trim.
+    using namespace keyra::model;
+    Controls c;c.body=Body::upright;c.mic[micClose]=0;c.mic[micTube]=1;
+    c.sympathetic=c.duplex=0;
+    constexpr int key=96-21,body=static_cast<int>(Body::upright);
+    const auto& products=keyHeard[body][key];
+    const double tubePower=products[sizeof(products)/sizeof(products[0])-1];
+    const auto play=[&](float pull){
+      b.start(c);piano.pullKey(key,pull);piano.holdDamper(key,true);
+      piano.strike(key,.5f);b.run(.4);return b.take;
+    };
+    const Take ordinary=play(-1);
+    const Take measured=play(static_cast<float>(std::sqrt(keyEven[body][key][micTube]/tubePower)));
+    check(ordinary.left==measured.left,"a solo capsule uses its measured correction at a pickup null");
+    piano.pullKey(key,-1);
   }
   {
     // What each piano's keys are built as.

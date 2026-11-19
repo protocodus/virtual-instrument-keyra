@@ -1375,8 +1375,9 @@ stand 3.7 to 4.5 dB apart and single keys up to 12 dB off.
 microphone pair, and every two pairs together, since pairs in a mix add as
 waves, against a smooth line through the keys, and writes
 `Source/DSP/KeyVoicing.h`. Each key's strings pull on the board by what
-brings the key onto that line in the mix that is set, by no more than 15 dB
-either way. Each pair's line is set at the close pair's level without the
+brings the key onto that line in the mix that is set. A 15 dB guard limits
+compensation when microphones cancel. A single pickup can use its full
+measured correction, including 16.6 dB at C7 on the upright Tube. Each pair's line is set at the close pair's level without the
 room, averaged over the keys, which keeps the pairs balanced where the
 board's modes alone do not. What the bridge hands the open strings is each
 key's pull at the default mix, the close pair and the default Room, whatever the
