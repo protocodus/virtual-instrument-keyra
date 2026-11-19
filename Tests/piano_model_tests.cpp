@@ -302,6 +302,66 @@ int main(){
     check(off<with-20&&more>with+3,"Sympathetic sets how strongly");
   }
   {
+    // The speaking length is damped at the key. The duplex length lies
+    // beyond the bridge, where lifting all the dampers cannot affect it.
+    Controls c=bare();c.roomHeard=false;c.duplex=1;
+    const auto bridgeWithPedal=[&](float pedal){
+      b.start(c);piano.setPedal(pedal);piano.knockBridge(keyOf(84),.005f);b.run(.3);return b.take;};
+    const auto pedalUp=bridgeWithPedal(0),pedalDown=bridgeWithPedal(1);
+    check(pedalUp.left==pedalDown.left&&pedalUp.right==pedalDown.right,
+          "a bridge-driven duplex rings with the speaking damper in either position");
+    // A new impulse is velocity only on its first sample. Stop driving the
+    // duplex before the next 32-sample wake check: it must keep ringing.
+    const auto tailAfterOneSample=[&](float pedal){
+      c.duplex=1;b.start(c);piano.setPedal(pedal);piano.knockBridge(keyOf(84),.005f);b.run(1./rate);
+      c.duplex=0;piano.setControls(c);b.run(.08);return b.take;};
+    const auto closedTail=tailAfterOneSample(0),openTail=tailAfterOneSample(1);
+    check(closedTail.left==openTail.left&&closedTail.right==openTail.right,
+          "turning Duplex off between samples lets the already moving lengths ring");
+    c.duplex=1;
+    const auto response=[&](int key,bool struck,bool knock,double wait,double tail){
+      b.start(c);piano.holdDamper(key,true);if(struck)piano.strike(key,.15f);b.run(wait);
+      if(knock)piano.knockBridge(key,.005f);
+      b.run(tail);return b.take;};
+    // Its own hammer leaves C6's rear duplex connected. An impulse added
+    // after a soft strike must give the same response as on the silent key,
+    // down to the microphone's small nonlinear cross term.
+    const int c6=keyOf(84);
+    const auto active=response(c6,true,true,.15,.3),ring=response(c6,true,false,.15,.3),
+               passive=response(c6,false,true,.15,.3);
+    double residual=0,total=0;
+    for(std::size_t n=active.at(.15);n<active.left.size();++n){
+      const double reference=passive.left[n],diff=(active.left[n]-ring.left[n])-reference;
+      residual+=diff*diff;total+=reference*reference;}
+    check(residual<1e-7*total,"a struck key's own duplex stays connected to its bridge");
+    // A C4 already vibrating from its hammer receives a travel of the
+    // bridge just as a C4 held down silently does. Subtract the first blow.
+    c.duplex=0;c.sympathetic=1;
+    const int key=keyOf(60);
+    const auto received=[&](bool struck){
+      auto hit=response(key,struck,true,.45,.8);const auto alone=response(key,struck,false,.45,.8);
+      for(std::size_t n=0;n<hit.left.size();++n)hit.left[n]-=alone.left[n];
+      return hit.tone(261.6,.9,1.2);};
+    const double silentKey=received(false),struckKey=received(true);
+    check(std::abs(struckKey-silentKey)<1,"a struck and held key receives other motion of its bridge");
+    // Leave C4 ringing in opposite phases with opposite impulses. Turn off
+    // further sympathetic drive before the hammer arrives. Subtract each
+    // pre-existing ring: the new blow itself must change with the motion.
+    const auto meeting=[&](float impulse,bool strike){
+      c.sympathetic=1;b.start(c);piano.holdDamper(key,true);piano.knockBridge(key,impulse);b.run(.19);
+      c.sympathetic=0;piano.setControls(c);if(strike)piano.strike(key,.25f);b.run(.06);return b.take;};
+    auto plus=meeting(.005f,true),minus=meeting(-.005f,true);
+    const auto plusRing=meeting(.005f,false),minusRing=meeting(-.005f,false);
+    double difference=0,power=0;
+    for(std::size_t n=plus.at(.19);n<plus.left.size();++n){
+      const double a=plus.left[n]-plusRing.left[n],z=minus.left[n]-minusRing.left[n];
+      difference+=(a-z)*(a-z);power+=.5*(a*a+z*z);}
+    const double changed=10*std::log10((difference+1e-30)/(power+1e-30));
+    std::cout<<"sympathetic C4: external drive held "<<silentKey<<" dB, struck "<<struckKey
+             <<" dB; reversed motion changes the new blow by "<<changed<<" dB relative\n";
+    check(changed>-85,"the hammer meets motion from the sympathetic strings");
+  }
+  {
     // The bridge and the board: a knock on the bridge is the soundboard's
     // own sound, with no string in it, and it dies in a moment.
     Controls c=bare();b.start(c);

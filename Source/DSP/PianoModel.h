@@ -95,6 +95,10 @@ public:
   void strike(int key,float velocity,float soft=0,std::uint32_t chance=0) noexcept;
   // Whether a key or the sostenuto holds this key's damper off its strings.
   void holdDamper(int key,bool held) noexcept;
+  // The first undamped key of this body, and the target contact weight of
+  // a fitted damper (0 lifted, 1 resting), excluding the independent mute.
+  int firstUndampedKey() const noexcept;
+  float damperWeight(int key) const noexcept;
   // The sustain pedal's travel, 0 up to 1 down.
   void setPedal(float travel) noexcept;
   // Pitch bend of everything sounding, in semitones.

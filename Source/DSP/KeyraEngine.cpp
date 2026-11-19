@@ -333,13 +333,6 @@ void hadamard(double* y) noexcept {
 struct Channel {
   std::array<std::uint16_t,88> presses{};
   std::array<bool,88> captured{};
-  // Each key's latest strike, which sets the noise of its release: where it
-  // played on each piano's layers (0..1).
-  std::array<std::array<float,88>,pianoCount> velocity{};
-  // Captured with the latest strike, including its touch draw. All models
-  // are retained because the action build can change before the key returns.
-  std::array<std::array<float,88>,pianoCount> releaseCapDb{};
-  std::array<std::uint64_t,88> struck{};
   // Momentary C0/C#0/D0 switches have independent ownership from CC/panel.
   std::array<std::uint16_t,3> keySwitches{};
   float sustain=0,sostenuto=0,soft=0,mute=0,bend=0;
@@ -403,6 +396,14 @@ struct Engine::Impl {
   // Each part's shares of the pianos (setParameters), all the grand's until set.
   struct {Shares soundboard=sharesOf({}),action=sharesOf({});} share;
   std::array<Channel,16> channels{};
+  int bendChannel=-1; // the last pitch wheel to set the shared strings
+  // Each key's latest strike, which sets the noise of its release: where it
+  // played on each piano's layers (0..1).
+  std::array<std::array<float,88>,pianoCount> strikeVelocity{};
+  // Captured with the latest strike, including its touch draw. All models
+  // are retained because the action build can change before the key returns.
+  std::array<std::array<float,88>,pianoCount> releaseCapDb{};
+  std::array<std::uint64_t,88> lastStrikeFrame{};
   std::array<double,chunk> dryLeft{},dryRight{};
   std::array<V4,chunk> mixLeft{},mixRight{};
   // The action's knocks (keys landing and let go, the sustain pedal) ring in
@@ -446,7 +447,7 @@ struct Engine::Impl {
   model::Piano piano;
   // Pascals at the microphones to the output's units, for each piano: what
   // puts its typical playing at -9 VU on Reason's meter (Tools/KeyraLevels.cpp).
-  static constexpr double pascalScale[model::bodyCount]{.1658,.1314,.0987,.1520,.1466};
+  static constexpr double pascalScale[model::bodyCount]{.165825,.131160,.098662,.152021,.146411};
   std::array<float,chunk> pianoLeft{},pianoRight{};
   // Each microphone's own output through a chunk, and held back by the
   // output stage's look-ahead (ForteOutput::maxDelay < 2048) to meet the mix.
@@ -808,12 +809,12 @@ struct Engine::Impl {
     ActionSide keys[pianoCount];
     for(int p=0;p<pianoCount;++p){const Model& m=models[p];
       const double v=steady?std::max(1.,127.*hammer):layerAt(m,requestedDb);
-      channel.velocity[p][key]=static_cast<float>(v/127);
-      const double actual=channel.velocity[p][key];
+      strikeVelocity[p][key]=static_cast<float>(v/127);
+      const double actual=strikeVelocity[p][key];
       const double reference=static_cast<float>(layerAt(m,releaseReferenceDb)/127.);
       const double tracking=trackingGain(m.releaseTracking,actual)/trackingGain(m.noteTracking,actual);
       const double referenceTracking=trackingGain(m.releaseTracking,reference)/trackingGain(m.noteTracking,reference);
-      channel.releaseCapDb[p][key]=static_cast<float>(steady?0:
+      releaseCapDb[p][key]=static_cast<float>(steady?0:
         releaseBalanceCapDb(requestedDb,releaseReferenceDb,tracking,referenceTracking));
       const int upper=upperAnchor(m,note);const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
       const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
@@ -822,7 +823,7 @@ struct Engine::Impl {
       keys[p]={m.releaseKnocks+(upper-1)*m.bodyModeCount,m.releaseKnocks+upper*m.bodyModeCount,t,
                m.keyDownDb+levelAt(m,m.layerLevelDb,v)+20*std::log10(m.outputScale),m.bodyModeCount};
     }
-    channel.struck[key]=clock;
+    lastStrikeFrame[key]=clock;
     ++serial;
     actionKnock(keys,true);
     syncPiano();
@@ -923,25 +924,33 @@ struct Engine::Impl {
     }
     if(burst){burst->active=true;burst->serial=serial;hissing=true;wake();}
   }
-  // A key let go: its damper falls back onto the strings unless a pedal holds
-  // it off them, and the key returns. From F6 up there is no damper to fall,
-  // so the key sounds alone; the recordings of those keys are that sound.
-  // Each piano's knock follows where its layers played the strike.
-  void release(int note,int ch) noexcept {
-    const auto& channel=channels[ch];const int key=note-21;
-    if(note<89&&(channel.captured[key]||pedalLevel(parameters.sustain,channel.sustain,channel.keySwitches[2])>=pedalClear))return;
-    const double held=static_cast<double>(clock-channel.struck[key])/sampleRate;
+  // With a lifted damper only the key returns. MIDI 90 is the first
+  // measured key whose return is free of a damper in both action libraries.
+  // Use its recorded shape for lower keys when the damper is lifted. A
+  // partially lowered damper blends toward the same key's ordinary release.
+  void release(int note) noexcept {
+    const int key=note-21;
+    for(const auto& owner:channels)if(owner.presses[key])return;
+    const int keyOnlyNote=std::max(note,90);
+    if(key>=piano.firstUndampedKey()){releaseKnock(note,keyOnlyNote,1);return;}
+    const float contact=piano.damperWeight(key);
+    if(contact<1)releaseKnock(note,keyOnlyNote,1-contact);
+    if(contact>0)releaseKnock(note,note,contact);
+  }
+  void releaseKnock(int note,int recordedNote,float gain) noexcept {
+    const int key=note-21;
+    const double held=static_cast<double>(clock-lastStrikeFrame[key])/sampleRate;
     ActionSide sides[pianoCount];
-    for(int p=0;p<pianoCount;++p){const Model& m=models[p];const double v=channel.velocity[p][key];
-      const int upper=upperAnchor(m,note);
+    for(int p=0;p<pianoCount;++p){const Model& m=models[p];const double v=strikeVelocity[p][key];
+      const int upper=upperAnchor(m,recordedNote);
       const auto& a=m.anchors[upper-1];const auto& b=m.anchors[upper];
       const auto* x=m.releaseKnocks+(upper-1)*m.bodyModeCount;
-      const double t=std::max(0.,std::min(1.,static_cast<double>(note-a.note)/(b.note-a.note)));
-      const double muteScale=1.-std::max(parameters.mute,channel.mute);
+      const double t=std::max(0.,std::min(1.,static_cast<double>(recordedNote-a.note)/(b.note-a.note)));
+      const double muteScale=1.-std::max(parameters.mute,wheelMute);
       const auto* click=m.releaseNoise?m.releaseNoise+(upper-1)*noiseBands:nullptr;
       sides[p]={x,x+m.bodyModeCount,t,
-                m.releaseDb+20*std::log10(trackingGain(m.releaseTracking,v)/trackingGain(m.noteTracking,v))
-                -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale)+channel.releaseCapDb[p][key]
+                m.releaseDb+20*std::log10(gain*trackingGain(m.releaseTracking,v)/trackingGain(m.noteTracking,v))
+                -m.releaseFadeDbPerSecond*held+20*std::log10(m.outputScale)+releaseCapDb[p][key]
                 +muteScale*mix(actionAnchorGainDb[p][upper-1],actionAnchorGainDb[p][upper],t),m.bodyModeCount,
                 click,click?click+noiseBands:nullptr};
     }
@@ -1138,6 +1147,7 @@ void Engine::prepare(double sampleRate){
 void Engine::reset() noexcept {
   auto& p=*impl;
   for(auto& channel:p.channels)channel=Channel{};
+  p.bendChannel=-1;
   p.silenceBody();p.silenceNoise();p.silenceRoom();
   // A hard reset starts the current action afresh, even if a live change had
   // not finished gliding its pickups. Live changes still glide.
@@ -1208,7 +1218,7 @@ void Engine::noteOff(int note,int channel) noexcept {
   }
   if(note<21||note>108)return;
   auto& count=impl->channels[ch].presses[note-21];
-  if(count>0&&--count==0){impl->release(note,ch);impl->syncPiano();}
+  if(count>0&&--count==0){impl->syncPiano();impl->release(note);}
 }
 void Engine::controlChange(int cc,int value,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
@@ -1217,18 +1227,25 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
   else if(cc==64){state.sustain=amount;p.pedalEdge();}
   else if(cc==66){state.sostenuto=amount;p.capture(ch);}
   else if(cc==67)state.soft=amount;
-  else if(cc==123){state.presses.fill(0);state.keySwitches.fill(0);p.capture(ch);p.pedalEdge(false);}
+  else if(cc==123){
+    const auto released=state.presses;
+    state.presses.fill(0);state.keySwitches.fill(0);p.capture(ch);p.pedalEdge(false);
+    p.syncPiano();
+    for(int key=0;key<model::keyCount;++key)if(released[key])p.release(key+21);
+    return;
+  }
   else if(cc==120){
     // The strings are one piano's, whichever channel plays them.
     state.presses.fill(0);state.keySwitches.fill(0);state.captured.fill(false);p.capture(ch);p.pedalEdge(false);
-    p.piano.reset();p.piano.setBend(state.bend);
+    p.piano.reset();
+    if(p.bendChannel>=0)p.piano.setBend(p.channels[p.bendChannel].bend);
     p.silenceBody();p.silenceNoise();p.silenceRoom();
     p.highpassL=p.highpassR=p.previousL=p.previousR=0;p.output.Reset();for(auto& line:p.micDelay)line.fill(0.f);p.micAt=0;
   }else if(cc==121){
     state.sustain=state.sostenuto=state.soft=state.mute=state.bend=0;
     // Resetting MIDI CC sources is not a new edge on a held panel/switch.
     p.capture(ch);p.pedalEdge(false);
-    p.piano.setBend(0);
+    if(p.bendChannel==ch){p.bendChannel=-1;p.piano.setBend(0);}
   }
   else return;
   p.syncPiano();
@@ -1236,6 +1253,7 @@ void Engine::controlChange(int cc,int value,int channel) noexcept {
 void Engine::pitchBend(float semitones,int channel) noexcept {
   const int ch=channelIndex(channel);if(ch<0)return;
   // The strings are one piano's: the latest bend moves them all.
+  impl->bendChannel=ch;
   impl->channels[ch].bend=bounded(semitones,-48,48);impl->piano.setBend(impl->channels[ch].bend);
 }
 PedalState Engine::pedalState(int channel) const noexcept {

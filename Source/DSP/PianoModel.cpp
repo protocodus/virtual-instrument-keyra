@@ -6,6 +6,8 @@
 #include <complex>
 #include <cstdint>
 #include <cstring>
+#include <limits>
+#include <type_traits>
 
 // The model, block by block (README, How it works):
 //
@@ -57,7 +59,6 @@ constexpr int lidStops=3;
 constexpr double lidAngles[lidStops]{0,14*pi/180,38*pi/180};
 constexpr int bankPartials=10,duplexModes=2,bankSlots=bankPartials+duplexModes;
 constexpr int chunk=32;
-constexpr int maxContacts=24;
 constexpr int hfTapsPerPoint=6;
 constexpr int roomLines=32,roomSpreads=3;
 
@@ -127,6 +128,13 @@ struct MicSpec {
   double lid;        // the lid's reflection
   double room;       // how much of the room it hears
   double diffuse;    // the room's first answer against the board's own sound
+
+  // Angular average of the two first-order patterns in an isotropic field,
+  // divided by each capsule's mean-square response.
+  double diffuseCoherence() const noexcept {
+    const double omni=1-cardioid/2,figure=cardioid/2;
+    return (omni*omni+figure*figure*dot(axis[0],axis[1])/3)/(omni*omni+figure*figure/3);
+  }
 };
 // A piano as built. The dimensions are typical of each kind of piano, not
 // one maker's instrument.
@@ -311,8 +319,8 @@ static_assert([]{for(int r:roomRow)if(r==1||r==3)return false;return true;}(),"n
 //    whose walls grow with the room's size, each arriving after the direct
 //    sound by its longer path, at the direct distance over its own, times the
 //    walls' reflection and the microphone's pattern toward the image;
-//  - its two channels' room as alike as their spacing makes them in a diffuse
-//    field: a coincident pair of cardioids 90 degrees apart 0.75 (G. W. Elko,
+//  - its two channels' room as alike as their spacing and axes make them in
+//    a diffuse field: coincident cardioids share (3 + cos(angle)) / 4 (G. W. Elko,
 //    "Spatial coherence functions for differential microphones", 2001); a
 //    spaced pair alike under the frequency where kd = 1.9 (sin kd / kd = 0.5)
 //    and apart above it;
@@ -1077,8 +1085,7 @@ void designBoard(Tables& t,int body){
     double reach=0;
     for(int a=0;a<=16;++a)for(int b=0;b<=16;++b){const Vec source{d.boardX*a/16,d.boardY*b/16,0};
       reach=std::max(reach,std::abs(norm(source-spec.position[0])-norm(source-spec.position[1])));}
-    const double omni=1-spec.cardioid/2,figure=spec.cardioid/2;
-    const double shared=(omni*omni+figure*figure*dot(spec.axis[0],spec.axis[1])/3)/(omni*omni+figure*figure/3);
+    const double shared=spec.diffuseCoherence();
     const auto alike=[](double turns){return turns>1e-6?std::sin(turns)/turns:1.;};
     for(int k=0;k<t.modes;++k){
       const double wave=2*pi*all[k].hertz/soundSpeed;
@@ -1328,7 +1335,8 @@ struct Piano::Impl {
   float knocks[points]{};    // impulses waiting for the bridge, newton-samples
 
   Voice voices[keyCount];
-  Contact contacts[maxContacts];
+  Contact contacts[keyCount];
+  int contactSpan=0; // one past the last occupied slot; zero between blows
   int substeps=2;
 
   // The open strings and duplex scales: bankSlots modes a key.
@@ -1349,10 +1357,19 @@ struct Piano::Impl {
   int bankPoint[keyCount]{};float bankMix[keyCount]{};
   double travel[points]{};   // the bridge's displacement at each point
   double travelLeak=1,mobility=0;
+  // Separate a sounding key's own excitation from the total. Its voice
+  // already takes its own bridge loading; its speaking bank takes only the
+  // other sources. Its duplex takes the whole bridge, including this key.
+  struct OwnMotion {
+    double travel[2]{};
+    Biquad frame;
+    float bridge[chunk]{},nearEnd[chunk]{};
+  };
+  OwnMotion ownMotion[keyCount];
 
   // The soundboard.
   int modes=0;
-  float boardRe[maxModes]{},boardIm[maxModes]{},boardTurnRe[maxModes]{},boardTurnIm[maxModes]{};
+  float boardTurnRe[maxModes]{},boardTurnIm[maxModes]{};
   float boardIn[points][maxModes]{};
   // Each microphone's left and right at full level, then what the room
   // hears (as the distant pair does), left and right.
@@ -1361,8 +1378,6 @@ struct Piano::Impl {
   // Each microphone's level in the mix, signed by its polarity, gliding as
   // the mix did; its share of the room; and its circuit.
   float levelNow[micCount]{},levelGoal[micCount]{},roomShare[micCount]{},polarity[micCount]{1,1,1,1,1};
-  MicCircuit circuit[micCount][2];
-  bool computed[micCount]{};   // what the last chunk computed of each, to clear what stops
   bool outMoving=false;
   // How far the mix glides to its goal in a chunk: a quarter at 48 kHz, the
   // same 2.3 ms at every rate (it took a quarter a chunk at any rate, four
@@ -1371,15 +1386,11 @@ struct Piano::Impl {
   // Above the modes: each point's force, high-passed, delayed to each
   // microphone.
   struct Tap {int point,delay;float gain;};
-  Biquad highpass[points][3];   // two high-pass stages and the radiation's fall
   static constexpr int lineSize=8192;
-  float line[points][lineSize]{};
   int lineAt=0;
   Tap taps[outs][points*hfTapsPerPoint]{};int tapCount[outs]{};
   // Beside the modes: each point's force through the board's filter, to
   // each microphone by the direct path, the floor and the lid.
-  Biquad besideFilter[points][2];
-  float lineBeside[points][lineSize]{};
   Tap tapsBeside[outs][points*4]{};int tapBesideCount[outs]{};
   float voicing[keyCount]{};   // each key's pull on the board, evened for the mix
   float standardVoicing[keyCount]{};  // the same at the default mix, for the open strings' drive
@@ -1402,7 +1413,6 @@ struct Piano::Impl {
   // network, the lines' losses as 2.16's).
   static constexpr int spreadSize=4096;
   // Every line's ring, end to end; where each starts and its mask.
-  float roomRing[roomRingTotal]{};
   int roomStart[roomLines]{},roomMask[roomLines]{},roomAt=0;
   // Each line's length in samples, and while a size glides (roomGliding
   // samples more), where it is between samples and its step.
@@ -1413,16 +1423,47 @@ struct Piano::Impl {
   // it heard directly, and each wall's delay and gain, each gliding to its
   // target with the lines.
   static constexpr int earlySize=32768;
-  float earlyRing[2*micCount][earlySize]{};
   float earlyDelay[2*micCount][earlyWalls]{},earlyStep[2*micCount][earlyWalls]{},earlyGain[2*micCount][earlyWalls]{};
   float earlyTarget[2*micCount][earlyWalls]{},earlyGainStep[2*micCount][earlyWalls]{},earlyGainTarget[2*micCount][earlyWalls]{};
   int earlyAt=0;
   // Each microphone's room as it stands: a coincident pair's mix of its two
   // sides, a spaced pair's pole under which its sides are alike, the case's
   // pole over its room, and their states.
-  float roomAlike[micCount]{},roomBond[micCount]{},roomTop[micCount]{};
-  float roomBondState[micCount][3]{},roomTopState[micCount][2]{};
-  float roomB0[roomLines]{},roomB1[roomLines]{},roomA1=0,roomIn[roomLines]{},roomState[roomLines]{};
+  float roomOwn[micCount]{},roomCross[micCount]{},roomBond[micCount]{},roomTop[micCount]{};
+  float roomB0[roomLines]{},roomB1[roomLines]{},roomA1=0;
+  // Each receiver path needs its own history: piano voicing precedes the
+  // board, its radiation and reflections, and each microphone's nonlinear
+  // circuit. The hammer, strings, sympathetic bank and case are shared.
+  struct Radiation {
+    float boardRe[maxModes]{},boardIm[maxModes]{};
+    Biquad highpass[points][3],besideFilter[points][2];
+    float line[points][lineSize]{},lineBeside[points][lineSize]{};
+    float roomRing[roomRingTotal]{},earlyRing[2*micCount][earlySize]{};
+    float roomIn[roomLines]{},roomState[roomLines]{};
+    float roomBondState[micCount][3]{},roomTopState[micCount][2]{};
+    MicCircuit circuit[micCount][2];
+    bool computed[micCount]{};
+    void clear() noexcept {
+      std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
+      std::memset(line,0,sizeof(line));std::memset(lineBeside,0,sizeof(lineBeside));
+      std::memset(roomRing,0,sizeof(roomRing));std::memset(earlyRing,0,sizeof(earlyRing));
+      std::memset(roomBondState,0,sizeof(roomBondState));std::memset(roomTopState,0,sizeof(roomTopState));
+      std::memset(roomIn,0,sizeof(roomIn));std::memset(roomState,0,sizeof(roomState));
+      for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
+      for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
+      for(auto& pair:circuit)for(auto& c:pair)c.clear();
+      for(bool& was:computed)was=false;
+    }
+    void flushTiny(int modes,float still) noexcept {
+      for(int k=0;k<modes;++k)if(std::abs(boardRe[k])+std::abs(boardIm[k])<still)boardRe[k]=boardIm[k]=0;
+      for(auto& point:highpass)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
+      for(auto& point:besideFilter)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
+      for(float& x:roomState)if(std::abs(x)<still)x=0;
+      for(float& x:roomIn)if(std::abs(x)<still)x=0;
+    }
+  } mixRadiation,stemRadiation;
+  bool stemsStarted=false;
+  float stemVoicing[keyCount]{};
   float spreadLine[roomSpreads][spreadSize]{};
   int spreadDelay[roomSpreads]{};
   double dcPole=0;
@@ -1513,9 +1554,19 @@ struct Piano::Impl {
     // the key's first partial is set where it is heard.
     const double ideal=key.hertz*tuningRatio(key);
     const double f0=ideal/(1-key.strings*key.couplingIm[0]/(2*pi*ideal*key.ratio[0]));
-    v.strings=key.strings;
     int count=key.partials;
     while(count>1&&f0*key.ratio[count-1]>.45*sampleRate)--count;
+    // Once a mode leaves the playable band it no longer advances. Retire its
+    // displacement and velocity before changing the lengths of these planes,
+    // so another strike cannot bring a frozen partial back into the room.
+    if(count<v.sounding)for(int plane=0;plane<6;++plane){
+      const int end=planeLength(v,plane),o=planeStart[plane];
+      if(end>count){
+        std::fill(v.re+o+count,v.re+o+end,0.f);
+        std::fill(v.im+o+count,v.im+o+end,0.f);
+      }
+    }
+    v.strings=key.strings;
     v.partials=count;
     v.apart=key.strings>1?std::min(count,maxKv):0;
     v.across=std::min(count,key.wound?maxKh:plainKh);
@@ -1681,14 +1732,23 @@ struct Piano::Impl {
       }
     }
   }
-  Contact& claimContact() noexcept {
-    Contact* oldest=&contacts[0];
-    for(auto& c:contacts){if(!c.active)return c;if(c.age>oldest->age)oldest=&c;}
+  Contact& claimContact(int key) noexcept {
+    for(int i=0;i<contactSpan;++i)if(!contacts[i].active)return contacts[i];
+    if(contactSpan<keyCount)return contacts[contactSpan++];
+    // All 88 slots are in flight. Replace the oldest overlapping blow, or
+    // the incoming key's own: every other key must retain its last hammer.
+    // If the incoming key is absent, at least one other key has two slots.
+    int count[keyCount]{};
+    for(const auto& contact:contacts)++count[contact.key];
+    Contact* oldest=nullptr;
+    for(auto& contact:contacts)if(contact.key==key||count[contact.key]>1){
+      if(!oldest||contact.age>oldest->age)oldest=&contact;
+    }
     return *oldest;
   }
   void startContact(int index,float velocity,float soft,double late,double strength) noexcept {
     const KeyData& key=table->keys[index];
-    Contact& c=claimContact();
+    Contact& c=claimContact(index);
     const Voice& v=voices[index];
     const double f0=key.hertz*tuningRatio(key),rate=sampleRate*substeps;
     c.active=true;c.key=index;c.age=0;c.partials=v.partials;c.give=0;c.late=late;c.strength=strength;
@@ -1707,6 +1767,14 @@ struct Piano::Impl {
       float re=v.re[k],im=v.im[k];
       if(k<v.apart)for(int j=1;j<v.strings;++j){re+=v.re[planeStart[j]+k];im+=v.im[planeStart[j]+k];}
       c.re[k]=re/v.strings;c.im[k]=im/v.strings;
+      // Each speaking bank mode is the common motion of ONE string (its
+      // bridge pull already counts the unison). The contact predictor meets
+      // both motions. Only its new force reaches the voice; the bank keeps
+      // radiating its old motion once, at its original level and phase.
+      if(k<bankPartials){
+        c.re[k]+=bankRe[index*bankSlots+k];
+        c.im[k]+=bankIm[index*bankSlots+k];
+      }
       c.give+=static_cast<double>(c.shape[k])*c.turnIm[k]*c.drive[k];
       met+=static_cast<double>(c.shape[k])*c.im[k];
     }
@@ -1783,31 +1851,56 @@ struct Piano::Impl {
       v.force[s]+=static_cast<float>(total/substeps);
       ++c.age;
       // The hammer has left once it is falling back clear of the string.
-      if((c.velocity<0&&c.position-c.start<-2*c.deepest-1e-5)||c.age>sampleRate*.08){c.active=false;
-        // The action catches the hammer with the momentum it comes back with.
-        if(c.velocity<0){const Design& d=table->design;const double back=-c.velocity;
-          if(catchIn[c.key]<0&&catchAt[c.key][0]==0&&catchAt[c.key][1]==0)++catches;
-          catchIn[c.key]=s+static_cast<int>(sampleRate*(d.catchSeconds+d.catchRun/back)*c.late);
-          catchPush[c.key]=static_cast<float>(c.mass*back*c.strength*sampleRate);}
-        break;}
+      const bool departed=c.velocity<0&&c.position-c.start<-2*c.deepest-1e-5;
+      if(departed||c.age>sampleRate*.08){
+        c.active=false;
+        // A timeout on very soft felt can leave the hammer near rest against
+        // the string. Only a hammer that left it can reach the backcheck.
+        if(departed){
+          const Design& d=table->design;const double back=-c.velocity;
+          const double delay=sampleRate*(d.catchSeconds+d.catchRun/back)*c.late;
+          if(delay<=std::numeric_limits<int>::max()-s){
+            if(catchIn[c.key]<0&&catchAt[c.key][0]==0&&catchAt[c.key][1]==0)++catches;
+            catchIn[c.key]=s+static_cast<int>(delay);
+            catchPush[c.key]=static_cast<float>(c.mass*back*c.strength*sampleRate);
+          }
+        }
+        break;
+      }
     }
   }
   // Four partials at a time (Four.h), the last one to three singly: a lane
-  // past a plane's length would wake a partial that was let go.
-  void play(Voice& v,float* out,int frames) noexcept {
+  // past a plane's length would wake a partial that was let go. The unison's
+  // size and the hammer contact stay fixed for this chunk. Specialize them
+  // here so a ringing plane never has to read a zero force or unused states.
+  template<bool forcing,int strings> void play(Voice& v,float* out,int frames) noexcept {
     float sumRe[maxK],sumIm[maxK],stretch[maxKl],slope[maxKl];
     const int n=v.sounding;
     const int lengths[6]{planeLength(v,0),planeLength(v,1),planeLength(v,2),planeLength(v,3),planeLength(v,4),planeLength(v,5)};
     for(int s=0;s<frames;++s){
-      const float force=v.forcing?v.force[s]:0;
+      const float force=forcing?v.force[s]:0;
       int k=0;
-      for(;k+4<=n;k+=4){Four::at(v.re+k).to(sumRe+k);Four::at(v.im+k).to(sumIm+k);}
-      for(;k<n;++k){sumRe[k]=v.re[k];sumIm[k]=v.im[k];}
-      for(int plane=1;plane<3;++plane){const int len=lengths[plane],o=planeStart[plane];
-        for(k=0;k+4<=len;k+=4){(Four::at(sumRe+k)+Four::at(v.re+o+k)).to(sumRe+k);(Four::at(sumIm+k)+Four::at(v.im+o+k)).to(sumIm+k);}
-        for(;k<len;++k){sumRe[k]+=v.re[o+k];sumIm[k]+=v.im[o+k];}}
+      // Form a unison's sum once at each partial, in string order.
+      const auto together=[&](auto unisons,int end){
+        constexpr int count=decltype(unisons)::value;
+        for(;k+4<=end;k+=4){
+          Four re=Four::at(v.re+k),im=Four::at(v.im+k);
+          if constexpr(count>=2){re+=Four::at(v.re+planeStart[1]+k);im+=Four::at(v.im+planeStart[1]+k);}
+          if constexpr(count>=3){re+=Four::at(v.re+planeStart[2]+k);im+=Four::at(v.im+planeStart[2]+k);}
+          re.to(sumRe+k);im.to(sumIm+k);
+        }
+        for(;k<end;++k){
+          float re=v.re[k],im=v.im[k];
+          if constexpr(count>=2){re+=v.re[planeStart[1]+k];im+=v.im[planeStart[1]+k];}
+          if constexpr(count>=3){re+=v.re[planeStart[2]+k];im+=v.im[planeStart[2]+k];}
+          sumRe[k]=re;sumIm[k]=im;
+        }
+      };
+      if constexpr(strings==3)together(std::integral_constant<int,3>{},lengths[2]);
+      else if constexpr(strings==2)together(std::integral_constant<int,2>{},lengths[1]);
+      together(std::integral_constant<int,1>{},n);
       float pull=dot(v.bridge,sumIm,n);
-      for(int plane=3;plane<6;++plane)pull+=v.u[plane]*dot(v.bridge,v.im+planeStart[plane],lengths[plane]);
+      for(int plane=3;plane<3+strings;++plane)pull+=v.u[plane]*dot(v.bridge,v.im+planeStart[plane],lengths[plane]);
       const int longitudinal=std::min(n,v.longitudinal);
       for(k=0;k+4<=longitudinal;k+=4){const Four re=Four::at(v.re+k),im=Four::at(v.im+k);(re*re-im*im).to(stretch+k);}
       for(;k<longitudinal;++k)stretch[k]=v.re[k]*v.re[k]-v.im[k]*v.im[k];
@@ -1836,19 +1929,27 @@ struct Piano::Impl {
         sumIm[k]=v.couplingRe[k]*sumIm[k]+v.couplingIm[k]*sumRe[k];sumRe[k]=cr;
       }
       const Four forced=Four::all(force);
-      for(int plane=0;plane<6;++plane){const int len=lengths[plane],o=planeStart[plane];const float u=plane<3?1.f:0.f;
+      // Only vertical planes share the instantaneous coupling term.
+      const auto advance=[&](int plane,auto coupling){
+        constexpr bool coupled=decltype(coupling)::value;
+        const int len=lengths[plane],o=planeStart[plane];
         float* re=v.re+o;float* im=v.im+o;const float* tr=v.turnRe+o;const float* ti=v.turnIm+o;const float* drive=v.drive+o;
-        const Four held=Four::all(u);
         for(k=0;k+4<=len;k+=4){
           const Four r=Four::at(re+k),i=Four::at(im+k),turnRe=Four::at(tr+k),turnIm=Four::at(ti+k);
-          (turnRe*r-turnIm*i-held*Four::at(sumRe+k)+Four::at(drive+k)*forced).to(re+k);
-          (turnIm*r+turnRe*i-held*Four::at(sumIm+k)).to(im+k);
+          Four nr=turnRe*r-turnIm*i,ni=turnIm*r+turnRe*i;
+          if constexpr(coupled){nr=nr-Four::at(sumRe+k);ni=ni-Four::at(sumIm+k);}
+          if constexpr(forcing)nr+=Four::at(drive+k)*forced;
+          nr.to(re+k);ni.to(im+k);
         }
         for(;k<len;++k){
-          const float r=tr[k]*re[k]-ti[k]*im[k]-u*sumRe[k]+drive[k]*force;
-          im[k]=ti[k]*re[k]+tr[k]*im[k]-u*sumIm[k];re[k]=r;
+          float nr=tr[k]*re[k]-ti[k]*im[k],ni=ti[k]*re[k]+tr[k]*im[k];
+          if constexpr(coupled){nr-=sumRe[k];ni-=sumIm[k];}
+          if constexpr(forcing)nr+=drive[k]*force;
+          re[k]=nr;im[k]=ni;
         }
-      }
+      };
+      for(int plane=0;plane<strings;++plane)advance(plane,std::true_type{});
+      for(int plane=3;plane<3+strings;++plane)advance(plane,std::false_type{});
     }
   }
   // Lets go of the highest partials once the bridge no longer feels them.
@@ -1922,7 +2023,7 @@ struct Piano::Impl {
         const bool isDuplex=slot>=bankPartials;
         double hertz,loss,damper,drive,pull;
         if(!isDuplex){
-          if(slot>=key.partials||still*key.ratio[slot]>.45*sampleRate){bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
+          if(slot>=key.partials||still*key.ratio[slot]>.45*sampleRate){bankRe[at]=bankIm[at]=bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
           hertz=still*key.ratio[slot];const double w=2*pi*hertz;
           // One mode for the unison, set going with its strings in step.
           // In tune they stay so and load the bridge once each; further
@@ -1942,7 +2043,7 @@ struct Piano::Impl {
           // The length behind the bridge as a short string of its own.
           const double ratio=key.duplexRatio[slot-bankPartials];
           hertz=still*ratio;
-          if(!table->design.duplex||i<51||hertz>.45*sampleRate){bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
+          if(!table->design.duplex||i<51||hertz>.45*sampleRate){bankRe[at]=bankIm[at]=bankIn[at]=bankOut[at]=0;bankCos[at]=1;bankSin[at]=0;bankOpen[at]=bankDamped[at]=0;continue;}
           const double w=2*pi*hertz,length=key.length/ratio;
           loss=5+stringLoss(key,w);damper=0;
           pull=key.tension*pi/length;
@@ -1953,6 +2054,14 @@ struct Piano::Impl {
         bankOpen[at]=static_cast<float>(std::exp(-loss/sampleRate));
         bankDamped[at]=static_cast<float>(std::exp(-(loss+damper)/sampleRate));
         const double amount=isDuplex?2*controls.duplex:2*controls.sympathetic;
+        if(isDuplex&&amount==0&&bankIn[at]!=0&&(bankRe[at]!=0||bankIm[at]!=0)){
+          // A kick first changes velocity. Stopping its drive before the
+          // next boundary must let it coast even if it has yet to pull on
+          // the board or wake its key. Use both quadratures of bridge force.
+          const float re=bankOut[at]*bankRe[at],im=bankOut[at]*bankIm[at];
+          bankAwake[i]=true;
+          bankEnergy[i]+=chunk*(re*re+im*im);
+        }
         bankIn[at]=static_cast<float>(amount*drive/sampleRate);bankOut[at]=static_cast<float>(pull);
         // The near end moves every mode the same way, where the bridge
         // moves them by turns; the duplex lengths lie beyond the bridge.
@@ -1970,20 +2079,20 @@ struct Piano::Impl {
       double all=0;
       for(int p=0;p<points;++p)all+=t.modeEdge[p][k];
       boardRim[points][k]=static_cast<float>((all/points+rimHeave*t.modeHeave[k])/sampleRate);}
-    for(int p=0;p<points;++p){for(int stage=0;stage<2;++stage){
+    for(Radiation* path:{&mixRadiation,&stemRadiation})for(int p=0;p<points;++p){for(int stage=0;stage<2;++stage){
       // A fourth-order high-pass at the modes' top.
       const double q=stage?1.3066:.5412,w0=2*pi*t.crossover/sampleRate,alpha=std::sin(w0)/(2*q),c=std::cos(w0),a0=1+alpha;
-      Biquad& b=highpass[p][stage];
+      Biquad& b=path->highpass[p][stage];
       b.b0=(1+c)/2/a0;b.b1=-(1+c)/a0;b.b2=(1+c)/2/a0;b.a1=-2*c/a0;b.a2=(1-alpha)/a0;
     }
       const double pole=std::exp(-2*pi*std::min(.45*sampleRate,radiationCorner)/sampleRate);
-      Biquad& fall=highpass[p][2];fall.b0=1-pole;fall.b1=fall.b2=fall.a2=0;fall.a1=-pole;
+      Biquad& fall=path->highpass[p][2];fall.b0=1-pole;fall.b1=fall.b2=fall.a2=0;fall.a1=-pole;
       // Beside the modes: a second-order high-pass at the board's lowest
       // mode, and one pole above.
       {const double w0=2*pi*t.besideLow/sampleRate,alpha=std::sin(w0)/std::sqrt(2.),c=std::cos(w0),a0=1+alpha;
-        Biquad& low=besideFilter[p][0];low.b0=(1+c)/2/a0;low.b1=-(1+c)/a0;low.b2=(1+c)/2/a0;low.a1=-2*c/a0;low.a2=(1-alpha)/a0;
+        Biquad& low=path->besideFilter[p][0];low.b0=(1+c)/2/a0;low.b1=-(1+c)/a0;low.b2=(1+c)/2/a0;low.a1=-2*c/a0;low.a2=(1-alpha)/a0;
         const double top=std::exp(-2*pi*std::min(.45*sampleRate,t.besideHigh)/sampleRate);
-        Biquad& high=besideFilter[p][1];high.b0=t.besideGain*(1-top);high.b1=high.b2=high.a2=0;high.a1=-top;}}
+        Biquad& high=path->besideFilter[p][1];high.b0=t.besideGain*(1-top);high.b1=high.b2=high.a2=0;high.a1=-top;}}
   }
   // Each microphone's share of every mode and of the bridge's direct sound,
   // for the lid and the levels as they are.
@@ -2067,13 +2176,15 @@ struct Piano::Impl {
       return even>0?static_cast<float>(clamp(std::sqrt(even/std::max(got,even/32)),1/5.6,5.6)):1.f;};
     double level[micCount],standard[micCount]{};standard[micClose]=1;
     for(int a=0;a<micCount;++a)level[a]=levelGoal[a]*t.mic[a].side;
-    for(int i=0;i<keyCount;++i){voicing[i]=voiceOf(i,level)*static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
+    for(int i=0;i<keyCount;++i){const float trim=static_cast<float>(std::pow(10.,scaleTrimDb(i)/20));
+      voicing[i]=voiceOf(i,level)*trim;
       // What the bridge hands the open strings is the key's pull at the
       // default mix (the close pair), whatever the pairs stand at: the
       // voicing evens what the microphones hear, and taken as the mix's it
       // let a pair or Room move the open strings' drive by up to 11 dB on a
       // key.
-      standardVoicing[i]=voiceOf(i,standard);}
+      standardVoicing[i]=voiceOf(i,standard);
+      stemVoicing[i]=standardVoicing[i]*trim;}
     // What sounds glides to the new mix; silence takes it at once.
     outMoving=!quiet;
     if(quiet)snapMix();
@@ -2149,10 +2260,16 @@ struct Piano::Impl {
            gain[2*m+ch][w]=static_cast<float>(wallReflection*direct/path*pattern(image)/facing);}}
        // A pair's two sides in a diffuse field.
        const double apart=norm(spec.position[1]-spec.position[0]);
-       roomAlike[m]=0;roomBond[m]=0;
+       roomOwn[m]=1;roomCross[m]=0;roomBond[m]=0;
        if(m==micTube)continue;
-       if(apart<.05){roomAlike[m]=.4514f;}   // b/a for coherence 0.75, 2ab/(a^2+b^2)
-       else roomBond[m]=static_cast<float>(1-std::exp(-2*pi*std::min(.45*sampleRate,1.9*343/(2*pi*apart))/sampleRate));}
+       if(apart<.05){
+         // Mix two diffuse feeds to the same coherence as the early field.
+         // The sum and difference gains also preserve each side's power.
+         const double shared=clamp(spec.diffuseCoherence(),-1,1);
+         const double mid=std::sqrt(1+shared),side=std::sqrt(1-shared);
+         roomOwn[m]=static_cast<float>((mid+side)*.5);
+         roomCross[m]=static_cast<float>((mid-side)*.5);
+       }else roomBond[m]=static_cast<float>(1-std::exp(-2*pi*std::min(.45*sampleRate,1.9*343/(2*pi*apart))/sampleRate));}
      roomTop[micClose]=static_cast<float>(1-std::exp(-2*pi*2000/sampleRate));
      roomTop[micTube]=static_cast<float>(1-std::exp(-2*pi*4000/sampleRate));}
     const int samples=glide?static_cast<int>(clamp(32*furthest,.02*sampleRate,.15*sampleRate)):0;
@@ -2176,16 +2293,18 @@ struct Piano::Impl {
     for(int k=0;k<roomLines;++k)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
     std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));std::memcpy(earlyGain,earlyGainTarget,sizeof(earlyGain));
   }
+  void clearRadiation() noexcept {
+    mixRadiation.clear();
+    if(stemsStarted)stemRadiation.clear();
+    stemsStarted=false;
+    settleRoom();std::memset(spreadLine,0,sizeof(spreadLine));
+  }
   void silence() noexcept {
     for(auto& v:voices){v.active=false;v.forcing=false;v.sounding=0;v.damper=0;v.appliedDamper=-1;for(int m=0;m<maxLong;++m)v.longY1[m]=v.longY2[m]=0;
       std::memset(v.re,0,sizeof(v.re));std::memset(v.im,0,sizeof(v.im));std::memset(v.force,0,sizeof(v.force));}
-    for(auto& c:contacts)c.active=false;
+    contactSpan=0;
     std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
-    std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
-    std::memset(line,0,sizeof(line));std::memset(roomRing,0,sizeof(roomRing));std::memset(earlyRing,0,sizeof(earlyRing));settleRoom();std::memset(roomBondState,0,sizeof(roomBondState));std::memset(roomTopState,0,sizeof(roomTopState));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
-    for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
-    for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
-    std::memset(lineBeside,0,sizeof(lineBeside));
+    clearRadiation();
     for(double& x:travel)x=0;
     for(float& x:knocks)x=0;
     for(auto& state:catchAt)state[0]=state[1]=0;
@@ -2197,7 +2316,6 @@ struct Piano::Impl {
     lifts=0;
     // Silence takes the microphones' mix at once.
     snapMix();
-    for(auto& pair:circuit)for(auto& c:pair)c.clear();
     rest();
   }
   void select() noexcept {
@@ -2205,7 +2323,7 @@ struct Piano::Impl {
     // The bridge moves at about a third of the plate's point mobility where
     // another key's strings cross it.
     mobility=.3/table->infinite;
-    for(int m=0;m<micCount;++m)for(auto& c:circuit[m])
+    for(Radiation* path:{&mixRadiation,&stemRadiation})for(int m=0;m<micCount;++m)for(auto& c:path->circuit[m])
       designCircuit(c,m,table->micDistance[m],table->mic[m].cardioid,std::sqrt(table->micLevel[micClose]/table->micLevel[m]),sampleRate);
     tuneBoard();tuneBank();mixMics();snapMix();
     // Each piano stands with its microphones in its own place in the room.
@@ -2245,6 +2363,9 @@ struct Piano::Impl {
       const float goal=damperGoal(i);
       Voice& v=voices[i];
       if(v.active){
+        auto& own=ownMotion[i];
+        if(std::abs(own.frame.z1)+std::abs(own.frame.z2)<still)own.frame.z1=own.frame.z2=0;
+        for(double& x:own.travel)if(std::abs(x)<still)x=0;
         if(v.damper!=goal){v.damper+=(goal-v.damper)*damperStep;if(std::abs(v.damper-goal)<.002f)v.damper=goal;}
         v.glide=glideOf(v);
         if(v.damper!=v.appliedDamper||std::abs(v.glide-v.appliedGlide)>glideStep)applyDamper(v);
@@ -2261,9 +2382,15 @@ struct Piano::Impl {
         if(before>=leaves&&damperOn[i]<leaves&&muted()<leaves&&!v.active)whisper(i,std::min(1.f,(before-lifted)/leaves));}
       const bool was=bankAwake[i];
       bankAwake[i]=bankEnergy[i]>chunk*1e-14f;bankEnergy[i]=0;
-      if(was&&!bankAwake[i]&&bankDamper[i]>=1)for(int k=0;k<bankSlots;++k)bankRe[i*bankSlots+k]=bankIm[i*bankSlots+k]=0;
+      if(was&&!bankAwake[i]&&bankDamper[i]>=1){
+        const int o=i*bankSlots;
+        // The speaking damper can settle only its own modes. A quiet
+        // duplex still driven by the bridge keeps its phase through a beat.
+        const int end=bankIn[o+bankPartials]!=0||bankIn[o+bankSlots-1]!=0?bankPartials:bankSlots;
+        for(int k=0;k<end;++k)bankRe[o+k]=bankIm[o+k]=0;
+      }
     }
-    for(const auto& c:contacts)sounding=sounding||c.active;
+    sounding=sounding||contactSpan!=0;
     // A catch is over once the case has handed all of it on. Counted here,
     // at the chunk's boundary, so that the host's blocks do not decide when.
     if(catches>0){catches=0;
@@ -2279,40 +2406,42 @@ struct Piano::Impl {
       for(int m=0;m<micCount;++m){const float step=(levelGoal[m]-levelNow[m])*slew;levelNow[m]+=step;furthest=std::max(furthest,std::abs(step));}
       if(furthest<1e-9f)snapMix();}
     for(double& x:travel)if(std::abs(x)<still)x=0;
-    for(int k=0;k<modes;++k)if(std::abs(boardRe[k])+std::abs(boardIm[k])<still)boardRe[k]=boardIm[k]=0;
-    for(auto& point:highpass)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
-    for(auto& point:besideFilter)for(auto& stage:point){if(std::abs(stage.z1)<still)stage.z1=0;if(std::abs(stage.z2)<still)stage.z2=0;}
-    for(float& x:roomState)if(std::abs(x)<still)x=0;
-    for(float& x:roomIn)if(std::abs(x)<still)x=0;
+    mixRadiation.flushTiny(modes,still);
+    if(stemsStarted)stemRadiation.flushTiny(modes,still);
     quietChunks=sounding||loud>1e-9f?0:quietChunks+1;loud=0;
     // Two seconds of nothing: everything left is put to rest.
     if(quietChunks*chunk>2*sampleRate){
-      std::memset(boardRe,0,sizeof(boardRe));std::memset(boardIm,0,sizeof(boardIm));
+      clearRadiation();
       std::memset(bankRe,0,sizeof(bankRe));std::memset(bankIm,0,sizeof(bankIm));
-      std::memset(line,0,sizeof(line));std::memset(roomRing,0,sizeof(roomRing));std::memset(earlyRing,0,sizeof(earlyRing));settleRoom();std::memset(roomBondState,0,sizeof(roomBondState));std::memset(roomTopState,0,sizeof(roomTopState));std::memset(roomState,0,sizeof(roomState));std::memset(roomIn,0,sizeof(roomIn));std::memset(spreadLine,0,sizeof(spreadLine));
       for(double& x:travel)x=0;
-      for(auto& point:highpass)for(auto& stage:point)stage.z1=stage.z2=0;
-      for(auto& point:besideFilter)for(auto& stage:point)stage.z1=stage.z2=0;
-      std::memset(lineBeside,0,sizeof(lineBeside));
       for(int i=0;i<keyCount;++i){bankAwake[i]=false;bankEnergy[i]=0;}
-      for(auto& pair:circuit)for(auto& c:pair)c.clear();
       rest();}
   }
   // `mics` as Piano::process has it, already at this chunk's first sample.
   void renderChunk(float* left,float* right,float* const* mics,int frames) noexcept {
-    // A microphone is heard when it is in the mix, or is gliding there, or
-    // its own output is wanted; the tube's two channels are one.
-    bool heard[micCount];
+    bool mixHeard[micCount],stemHeard[micCount];
     for(int m=0;m<micCount;++m){
-      heard[m]=levelNow[m]!=0||levelGoal[m]!=0||(mics&&(mics[2*m]||mics[2*m+1]));
-      if(!heard[m]&&computed[m])for(auto& c:circuit[m])c.clear();
-      computed[m]=heard[m];}
+      mixHeard[m]=levelNow[m]!=0||levelGoal[m]!=0;
+      // Once a stem has been heard, keep its early reflections and circuit
+      // warm until silence. Reconnecting it resumes the ongoing room after
+      // the output look-ahead has filled. A first connection starts from
+      // the sounding strings with an empty receiver history.
+      stemHeard[m]=stemRadiation.computed[m]||(mics&&(mics[2*m]||mics[2*m+1]));
+      stemsStarted=stemsStarted||stemHeard[m];
+      if(mixRadiation.computed[m]&&!mixHeard[m])for(auto& c:mixRadiation.circuit[m])c.clear();
+      mixRadiation.computed[m]=mixHeard[m];stemRadiation.computed[m]=stemHeard[m];
+    }
     // `bridged` is `struck` with each key at its pull at the default mix: what
     // moves the bridge under the open strings (mixMics, standardVoicing).
-    alignas(32) float struck[points][chunk],bridged[points][chunk],answered[points][chunk],each[chunk];
+    alignas(32) float stemStruck[points][chunk]{},struck[points][chunk],bridged[points][chunk],answered[points][chunk],each[chunk];
     std::memset(struck,0,sizeof(struck));std::memset(bridged,0,sizeof(bridged));std::memset(answered,0,sizeof(answered));
-    for(auto& c:contacts)if(c.active)runContact(c,frames);
-    for(int p=0;p<points;++p){struck[p][0]=bridged[p][0]=knocks[p];knocks[p]=0;}
+    bool contactRemains[keyCount]{};
+    for(int i=0;i<contactSpan;++i){
+      auto& c=contacts[i];
+      if(c.active){runContact(c,frames);if(c.active)contactRemains[c.key]=true;}
+    }
+    while(contactSpan>0&&!contacts[contactSpan-1].active)--contactSpan;
+    for(int p=0;p<points;++p){stemStruck[p][0]=struck[p][0]=bridged[p][0]=knocks[p];knocks[p]=0;}
     alignas(32) float blow[chunk]{};
     // What reaches the board's edge at each of its places, and last at all
     // of them alike: the blows' lean on the capo bar and the caught hammers.
@@ -2322,20 +2451,39 @@ struct Piano::Impl {
       place=std::min(points-2,static_cast<int>(at));share=static_cast<float>(at-place);};
     for(int i=0;i<keyCount;++i){Voice& v=voices[i];
       if(!v.active)continue;
+      OwnMotion& own=ownMotion[i];
       if(v.forcing){const float near=static_cast<float>((1-table->keys[i].strike)*v.strings);
         if(!leaned){std::memset(leans,0,sizeof(leans));leaned=true;}
         int place;float share;placeOf(i,place,share);
         const float arm=static_cast<float>(knockArm*clamp((i-capoFrom+3)/6.,0,1));
         for(int s=0;s<frames;++s){const float lean=near*v.force[s];blow[s]+=lean;
+          own.nearEnd[s]=static_cast<float>(own.frame.run(frameGive*lean));
           leans[place][s]+=arm*(1-share)*lean;leans[place+1][s]+=arm*share*lean;}
         frameRings=true;}
-      play(v,each,frames);
+      else if(own.frame.z1!=0||own.frame.z2!=0){
+        for(int s=0;s<frames;++s)own.nearEnd[s]=static_cast<float>(own.frame.run(0));
+      }else std::fill_n(own.nearEnd,frames,0.f);
+      const auto playKey=[&](auto contact){
+        constexpr bool forced=decltype(contact)::value;
+        if(v.strings==3)play<forced,3>(v,each,frames);
+        else if(v.strings==2)play<forced,2>(v,each,frames);
+        else play<forced,1>(v,each,frames);
+      };
+      if(v.forcing)playKey(std::true_type{});else playKey(std::false_type{});
       const float pulled=pull[i]<0?voicing[i]:pull[i],b=v.pointMix*pulled,a=pulled-b;
       for(int s=0;s<frames;++s){struck[v.point][s]+=a*each[s];struck[v.point+1][s]+=b*each[s];}
+      if(stemsStarted){
+        const float fixed=pull[i]<0?stemVoicing[i]:pull[i],high=v.pointMix*fixed,low=fixed-high;
+        for(int s=0;s<frames;++s){stemStruck[v.point][s]+=low*each[s];stemStruck[v.point+1][s]+=high*each[s];}}
       const float standing=pull[i]<0?standardVoicing[i]:pull[i],bs=v.pointMix*standing,as=standing-bs;
-      for(int s=0;s<frames;++s){bridged[v.point][s]+=as*each[s];bridged[v.point+1][s]+=bs*each[s];}
-      if(v.forcing){bool still=false;for(const auto& c:contacts)still=still||(c.active&&c.key==i);
-        std::memset(v.force,0,sizeof(v.force));v.forcing=still;}
+      for(int s=0;s<frames;++s){
+        const float first=as*each[s],second=bs*each[s];
+        bridged[v.point][s]+=first;bridged[v.point+1][s]+=second;
+        own.travel[0]=own.travel[0]*travelLeak+mobility*first/sampleRate;
+        own.travel[1]=own.travel[1]*travelLeak+mobility*second/sampleRate;
+        own.bridge[s]=(1-v.pointMix)*static_cast<float>(own.travel[0])+v.pointMix*static_cast<float>(own.travel[1]);
+      }
+      if(v.forcing){std::memset(v.force,0,sizeof(v.force));v.forcing=contactRemains[i];}
     }
     if(frameRings){std::memset(rim,0,sizeof(rim));rimmed=true;
       if(!leaned)std::memset(leans,0,sizeof(leans));
@@ -2373,7 +2521,8 @@ struct Piano::Impl {
     for(int i=0;i<keyCount;++i){
       const int o=i*bankSlots;
       const bool open=bankDamper[i]<1;
-      if(!open&&!bankAwake[i])continue;
+      const bool hasDuplex=bankIn[o+bankPartials]!=0||bankIn[o+bankPartials+1]!=0;
+      if(!open&&!hasDuplex&&!bankAwake[i])continue;
       if(bankDamper[i]!=bankApplied[i]){const float d=bankDamper[i];
         for(int k=0;k<bankSlots;++k){const float g=k<bankPartials?bankOpen[o+k]+(bankDamped[o+k]-bankOpen[o+k])*d:bankOpen[o+k];
           bankTurnRe[o+k]=bankCos[o+k]*g;bankTurnIm[o+k]=bankSin[o+k]*g;}
@@ -2384,8 +2533,7 @@ struct Piano::Impl {
           follow+=bankOut[o+k]*bankEnd[o+k]*im/std::max(1e-30,re*re+im*im);}
         bankFollow[i]=static_cast<float>(follow);
         bankApplied[i]=d;}
-      // A sounding key's own strings are its voice's.
-      const bool own=voices[i].active;
+      const OwnMotion* own=voices[i].active?&ownMotion[i]:nullptr;
       const int p=bankPoint[i];const float b=bankMix[i],a=1-b;
       float energy=0;
       // The key's modes in three vectors for the chunk. The pull is dot()'s
@@ -2397,8 +2545,14 @@ struct Piano::Impl {
       for(int j=0;j<3;++j){re[j]=Four::at(bankRe+o+4*j);im[j]=Four::at(bankIm+o+4*j);}
       const float follow=bankFollow[i];
       for(int s=0;s<frames;++s){
-        const float x=own?0:a*moved[p][s]+b*moved[p+1][s],y=own?0:pushed[s];
+        const float bridge=a*moved[p][s]+b*moved[p+1][s];
+        const float x=open?bridge-(own?own->bridge[s]:0.f):0.f;
+        const float y=open?pushed[s]-(own?own->nearEnd[s]:0.f):0.f;
         const Four moving=Four::all(x),pushing=Four::all(y);
+        // The two upper lanes of the last vector are behind the bridge,
+        // beyond both the hammer and the damper.
+        Four duplexMoving=moving;
+        duplexMoving.set(2,bridge);duplexMoving.set(3,bridge);
         Four product[3];
         // The SDK's compiler keeps the vectors in registers only when told
         // the loop is three steps long.
@@ -2407,7 +2561,7 @@ struct Piano::Impl {
 #endif
         for(int j=0;j<3;++j){
           const Four turnRe=Four::at(tr+4*j),turnIm=Four::at(ti+4*j);
-          const Four r=turnRe*re[j]-turnIm*im[j]+Four::at(in+4*j)*moving+Four::at(end+4*j)*pushing;
+          const Four r=turnRe*re[j]-turnIm*im[j]+Four::at(in+4*j)*(j==2?duplexMoving:moving)+Four::at(end+4*j)*pushing;
           im[j]=turnIm*re[j]+turnRe*im[j];re[j]=r;
           product[j]=Four::at(out+4*j)*im[j];
         }
@@ -2422,16 +2576,37 @@ struct Piano::Impl {
       for(int j=0;j<3;++j){re[j].to(bankRe+o+4*j);im[j].to(bankIm+o+4*j);}
       bankEnergy[i]+=energy;
     }
-    // The board, and above its modes the bridge's own radiation.
-    const int mask=lineSize-1;
     for(int s=0;s<frames;++s){
+      float knock=cased[s];
+      for(int k=0;k<roomSpreads;++k){
+        float* held=spreadLine[k];
+        const float old=held[(roomAt-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
+        held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
+      const bool gliding=roomGliding>0;
+      if(gliding){
+        for(int k=0;k<roomLines;++k)roomGlideAt[k]+=roomGlideStep[k];
+        for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){
+          earlyDelay[c][w]+=earlyStep[c][w];earlyGain[c][w]+=earlyGainStep[c][w];}}
+      radiate(mixRadiation,struck,answered,rim,rimmed,knock,mixHeard,left,right,nullptr,s);
+      if(stemsStarted)radiate(stemRadiation,stemStruck,answered,rim,rimmed,knock,stemHeard,nullptr,nullptr,mics,s);
+      lineAt=(lineAt+1)&(lineSize-1);roomAt=(roomAt+1)&(roomRingLongest-1);earlyAt=(earlyAt+1)&(earlySize-1);
+      if(gliding&&--roomGliding==0)settleRoom();
+    }
+  }
+  // Render the board and microphones from one set of per-key bridge forces.
+  // The main bus keeps its calibrated mix-specific voicing; a direct bus
+  // hears the piano voiced at the fixed close-pair reference.
+  void radiate(Radiation& path,const float (&struck)[points][chunk],const float (&answered)[points][chunk],
+               const float (&rim)[points+1][chunk],bool rimmed,float knock,const bool (&heard)[micCount],
+               float* left,float* right,float* const* mics,int s) noexcept {
+      constexpr int mask=lineSize-1;
       // What pushes the board in this sample: each bridge point's force and
       // each place of the edge, those at rest left out.
       const float* pushing[2*points+1];float pushes[2*points+1];int pushCount=0;
       for(int p=0;p<points;++p){
         const float force=struck[p][s]+answered[p][s];
-        line[p][lineAt]=static_cast<float>(highpass[p][2].run(highpass[p][1].run(highpass[p][0].run(force))));
-        lineBeside[p][lineAt]=static_cast<float>(besideFilter[p][1].run(besideFilter[p][0].run(force)));
+        path.line[p][lineAt]=static_cast<float>(path.highpass[p][2].run(path.highpass[p][1].run(path.highpass[p][0].run(force))));
+        path.lineBeside[p][lineAt]=static_cast<float>(path.besideFilter[p][1].run(path.besideFilter[p][0].run(force)));
         if(force==0)continue;
         pushing[pushCount]=boardIn[p];pushes[pushCount++]=force;
       }
@@ -2444,43 +2619,34 @@ struct Piano::Impl {
       for(;k+4<=modes;k+=4){
         Four in=Four::all(0);
         for(int j=0;j<pushCount;++j)in+=Four::at(pushing[j]+k)*Four::all(pushes[j]);
-        const Four re=Four::at(boardRe+k),im=Four::at(boardIm+k),turnRe=Four::at(boardTurnRe+k),turnIm=Four::at(boardTurnIm+k);
-        (turnRe*re-turnIm*im+in).to(boardRe+k);(turnIm*re+turnRe*im).to(boardIm+k);
+        const Four re=Four::at(path.boardRe+k),im=Four::at(path.boardIm+k),turnRe=Four::at(boardTurnRe+k),turnIm=Four::at(boardTurnIm+k);
+        (turnRe*re-turnIm*im+in).to(path.boardRe+k);(turnIm*re+turnRe*im).to(path.boardIm+k);
       }
       for(;k<modes;++k){
         float in=0;
         for(int j=0;j<pushCount;++j)in+=pushing[j][k]*pushes[j];
-        const float re=boardTurnRe[k]*boardRe[k]-boardTurnIm[k]*boardIm[k]+in;
-        boardIm[k]=boardTurnIm[k]*boardRe[k]+boardTurnRe[k]*boardIm[k];boardRe[k]=re;
+        const float re=boardTurnRe[k]*path.boardRe[k]-boardTurnIm[k]*path.boardIm[k]+in;
+        path.boardIm[k]=boardTurnIm[k]*path.boardRe[k]+boardTurnRe[k]*path.boardIm[k];path.boardRe[k]=re;
       }
       const auto hear=[&](int out){const Tap* tap=taps[out];
-        float sum=dot(outNow[out][0],boardRe,modes)+dot(outNow[out][1],boardIm,modes);
-        for(int k=0;k<tapCount[out];++k)sum+=tap[k].gain*line[tap[k].point][(lineAt-tap[k].delay)&mask];
+        float sum=dot(outNow[out][0],path.boardRe,modes)+dot(outNow[out][1],path.boardIm,modes);
+        for(int k=0;k<tapCount[out];++k)sum+=tap[k].gain*path.line[tap[k].point][(lineAt-tap[k].delay)&mask];
         const Tap* beside=tapsBeside[out];
-        for(int k=0;k<tapBesideCount[out];++k)sum+=beside[k].gain*lineBeside[beside[k].point][(lineAt-beside[k].delay)&mask];
+        for(int k=0;k<tapBesideCount[out];++k)sum+=beside[k].gain*path.lineBeside[beside[k].point][(lineAt-beside[k].delay)&mask];
         return sum;};
       float o[outs]{};
       for(int m=0;m<micCount;++m)if(heard[m]){o[2*m]=hear(2*m);o[2*m+1]=m==micTube?o[2*m]:hear(2*m+1);}
       o[roomOut]=hear(roomOut);o[roomOut+1]=hear(roomOut+1);
-      lineAt=(lineAt+1)&mask;
-      // The room.
-      float knock=cased[s];
-      for(int k=0;k<roomSpreads;++k){
-        float* held=spreadLine[k];
-        const float old=held[(roomAt-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
-        held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
       // The lines, each read at its length, between samples while a size
       // glides.
       float back[roomLines];
       for(int k=0;k<roomLines;++k){
-        const float* ring=roomRing+roomStart[k];const int m=roomMask[k];
+        const float* ring=path.roomRing+roomStart[k];const int m=roomMask[k];
         float x;
-        if(roomGliding>0){const float at=roomGlideAt[k]+=roomGlideStep[k];const int whole=static_cast<int>(at);const float part=at-whole;
+        if(roomGliding>0){const float at=roomGlideAt[k];const int whole=static_cast<int>(at);const float part=at-whole;
           const float a=ring[(roomAt-whole)&m],b=ring[(roomAt-whole-1)&m];x=a+(b-a)*part;}
         else x=ring[(roomAt-roomDelay[k])&m];
-        const float y=roomB0[k]*x+roomB1[k]*roomIn[k]-roomA1*roomState[k];roomIn[k]=x;roomState[k]=y;back[k]=y;}
-      const bool gliding=roomGliding>0;
-      if(roomGliding>0&&--roomGliding==0)for(int k=0;k<roomLines;++k)roomGlideAt[k]=static_cast<float>(roomDelay[k]);
+        const float y=roomB0[k]*x+roomB1[k]*path.roomIn[k]-roomA1*path.roomState[k];path.roomIn[k]=x;path.roomState[k]=y;back[k]=y;}
       // What each microphone hears of the room (roomRow).
       float roomHeard[micCount][2]{};
       for(int m=0;m<micCount;++m)if(heard[m]&&roomShare[m]!=0)
@@ -2488,49 +2654,46 @@ struct Piano::Impl {
       for(int span=1;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;++j){
         const float a=back[j],b=back[j+span];back[j]=a+b;back[j+span]=a-b;}
       for(int k=0;k<roomLines;++k)
-        roomRing[roomStart[k]+(roomAt&roomMask[k])]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
-      roomAt=(roomAt+1)&(roomRingLongest-1);
+        path.roomRing[roomStart[k]+(roomAt&roomMask[k])]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
       for(auto& pair:roomHeard){pair[0]*=roomLevel;pair[1]*=roomLevel;}
       roomHeard[micTube][0]=(roomHeard[micTube][0]+roomHeard[micTube][1])*.70710678f;
-      // Each microphone's room as it stands (roomAlike, roomBond, roomTop).
+      // Each microphone's room as it stands (roomCross, roomBond, roomTop).
       for(int m=0;m<micCount;++m)if(heard[m]&&roomShare[m]!=0){
         float& l=roomHeard[m][0];float& r=roomHeard[m][1];
-        if(roomAlike[m]!=0){const float a=1/std::sqrt(1+roomAlike[m]*roomAlike[m]),b=a*roomAlike[m],x=l,y=r;l=a*x+b*y;r=b*x+a*y;}
-        if(roomBond[m]!=0){float* z=roomBondState[m];const float g=roomBond[m];
+        if(roomCross[m]!=0){const float a=roomOwn[m],b=roomCross[m],x=l,y=r;l=a*x+b*y;r=b*x+a*y;}
+        if(roomBond[m]!=0){float* z=path.roomBondState[m];const float g=roomBond[m];
           z[0]+=g*(l-z[0]);z[1]+=g*(r-z[1]);z[2]+=g*((l+r)*.70710678f-z[2]);l+=z[2]-z[0];r+=z[2]-z[1];}
-        if(roomTop[m]!=0){float* z=roomTopState[m];z[0]+=roomTop[m]*(l-z[0]);z[1]+=roomTop[m]*(r-z[1]);l=z[0];r=z[1];}}
+        if(roomTop[m]!=0){float* z=path.roomTopState[m];z[0]+=roomTop[m]*(l-z[0]);z[1]+=roomTop[m]*(r-z[1]);l=z[0];r=z[1];}}
       // What each microphone heard directly, for its reflections off the
       // walls, which glide with the room's size.
       const int earlyMask=earlySize-1;
-      for(int c=0;c<2*micCount;++c)earlyRing[c][earlyAt&earlyMask]=o[c];
-      // Every channel steps while a size glides, heard or not, so one heard
-      // again mid-glide stands where the others do.
-      if(gliding)for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){earlyDelay[c][w]+=earlyStep[c][w];earlyGain[c][w]+=earlyGainStep[c][w];}
+      for(int c=0;c<2*micCount;++c)path.earlyRing[c][earlyAt&earlyMask]=o[c];
       float early[2*micCount]{};
       if(controls.roomHeard)for(int m=0;m<micCount;++m)if(heard[m])for(int ch=0;ch<(m==micTube?1:2);++ch){const int c=2*m+ch;
         float sum=0;
         for(int w=0;w<earlyWalls;++w){
           const float at=earlyDelay[c][w];const int whole=static_cast<int>(at);const float part=at-whole;
-          const float a=earlyRing[c][(earlyAt-whole)&earlyMask],b=earlyRing[c][(earlyAt-whole-1)&earlyMask];
+          const float a=path.earlyRing[c][(earlyAt-whole)&earlyMask],b=path.earlyRing[c][(earlyAt-whole-1)&earlyMask];
           sum+=earlyGain[c][w]*(a+(b-a)*part);}
         early[c]=sum;}
-      earlyAt=(earlyAt+1)&earlyMask;
-      // A glide ends on its exact targets, not on the steps' rounding.
-      if(gliding&&roomGliding==0){std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));std::memcpy(earlyGain,earlyGainTarget,sizeof(earlyGain));}
       // Each microphone: what it hears and its room, through its circuit;
       // then the mix, each at its level and polarity.
       double l=0,r=0;
       for(int m=0;m<micCount;++m)if(heard[m]){
-        const double a=circuit[m][0].run(o[2*m]+early[2*m]+roomShare[m]*roomHeard[m][0],dcPole);
-        const double b=m==micTube?a:circuit[m][1].run(o[2*m+1]+early[2*m+1]+roomShare[m]*roomHeard[m][1],dcPole);
-        l+=levelNow[m]*a;r+=levelNow[m]*b;
-        if(mics){const float sign=polarity[m];
-          if(mics[2*m]){mics[2*m][s]=sign*static_cast<float>(a);loud=std::max(loud,std::abs(mics[2*m][s]));}
-          if(mics[2*m+1]){mics[2*m+1][s]=sign*static_cast<float>(b);loud=std::max(loud,std::abs(mics[2*m+1][s]));}}}
+        const double a=path.circuit[m][0].run(o[2*m]+early[2*m]+roomShare[m]*roomHeard[m][0],dcPole);
+        const double b=m==micTube?a:path.circuit[m][1].run(o[2*m+1]+early[2*m+1]+roomShare[m]*roomHeard[m][1],dcPole);
+        if(left){l+=levelNow[m]*a;r+=levelNow[m]*b;}
+        else{
+          // The direct receiver keeps ringing through disconnection. Its
+          // pressure counts toward sleep even while neither cable is read.
+          const float directL=static_cast<float>(a),directR=static_cast<float>(b);
+          loud=std::max(loud,std::max(std::abs(directL),std::abs(directR)));
+          if(mics){const float sign=polarity[m];
+            if(mics[2*m])mics[2*m][s]=sign*directL;
+            if(mics[2*m+1])mics[2*m+1][s]=sign*directR;}}}
       else if(mics){if(mics[2*m])mics[2*m][s]=0;if(mics[2*m+1])mics[2*m+1][s]=0;}
-      left[s]=static_cast<float>(l);right[s]=static_cast<float>(r);
-      loud=std::max(loud,std::max(std::abs(left[s]),std::abs(right[s])));
-    }
+      if(left){left[s]=static_cast<float>(l);right[s]=static_cast<float>(r);
+        loud=std::max(loud,std::max(std::abs(left[s]),std::abs(right[s])));}
   }
 };
 
@@ -2591,6 +2754,11 @@ void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexc
   if(key<0||key>=keyCount||!(velocity>0))return;
   auto& p=*impl;Voice& v=p.voices[key];
   p.wake();
+  // No previous blow of an idle voice is part of this key's own drive.
+  if(!v.active){
+    auto& own=p.ownMotion[key];own.travel[0]=own.travel[1]=0;
+    own.frame=p.frameTravel;own.frame.z1=own.frame.z2=0;
+  }
   // What still rings keeps ringing; the blow adds to it.
   p.build(v,key);
   v.sounding=v.partials;v.active=true;v.forcing=true;
@@ -2618,6 +2786,10 @@ void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexc
   p.startContact(key,clampf(velocity,0,1),clampf(soft,0,1),late,strength);
 }
 void Piano::holdDamper(int key,bool held) noexcept {if(key>=0&&key<keyCount)impl->held[key]=held;}
+int Piano::firstUndampedKey() const noexcept {return impl->table->design.undamped;}
+float Piano::damperWeight(int key) const noexcept {
+  return key>=0&&key<keyCount?impl->damperGoal(key,false):0.f;
+}
 void Piano::setPedal(float travel) noexcept {
   auto& p=*impl;travel=clampf(travel,0,1);
   // A pedal going down wakes a silent piano: its strings whisper.

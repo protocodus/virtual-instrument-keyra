@@ -51,6 +51,20 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.24.1 — 2026-11-19 — physical-model fixes, listening candidate
+
+A struck key carries its existing sympathetic motion into the next hammer
+contact and continues to hear other notes. Grand duplex segments respond to
+their own key with either pedal position. Same-frame chords retain one
+hammer per key across the whole keyboard. Pitch bends that take a partial
+past the band limit retire its state, and a stalled hammer can return to rest.
+
+Dedicated microphone outputs keep a fixed voicing when the main faders move.
+The grand XY pair's diffuse room tail now follows its capsule angle. Release
+mechanics use each body's damper boundary, continuous pedal travel and the
+last channel holding the physical key.
+
+
 ### 2.24.0 — 2026-11-16 — the keyboard's two ends against the recording (the owner's choice)
 
 The owner asked for Keyra to be set closer to Arturia's Piano V3 and gave
@@ -1375,7 +1389,11 @@ the Yamaha C3's pedal-down takes and the Salamander grand's top strings). A
 unison rings as one mode: in tune its strings load the bridge once each,
 and further apart than the bridge couples them, once in all (Weinreich
 1977). The top keys have no dampers (from F♯6 on the concert grand) and
-always answer. The upright has no duplex scales.
+always answer. On a grand the two duplex segments remain free when the
+speaking string's damper is down. At a strike, sympathetic motion already on
+the speaking string enters the hammer contact. Other strings keep driving it
+through the bridge and frame while the key sounds. The upright has no duplex
+scales.
 
 ### Five pianos
 
@@ -1429,8 +1447,10 @@ side, so that the board's bass reaches all five alike and a mix of them
 adds rather than cancels (on the upright, the pairs behind the board and
 those in front stood -0.3 to -0.4 alike in the bass before). Each
 microphone's own output is it after its circuit, at full level and in its
-polarity, with its share of the room; Width, Output, the output stage,
-Room's return and the action's noises are the mix's.
+polarity, with its share of the room. Its recording keeps the close-pair reference voicing
+as the main faders move. Width, Output and the action's noises apply to the
+main mix. Connecting a direct output during a phrase starts its microphone
+history at that point.
 
 At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
@@ -1445,8 +1465,8 @@ signs across the lines, so no two microphones' rooms correlate and none in
 the opposite polarity cancels another's; with its own first reflections off
 the room's four walls and ceiling, timed and weighed from its position and
 its pattern; its two channels as alike as their spacing makes them in a
-diffuse field (0.75 for the coincident cardioids, alike only in the bass for
-a spaced pair); and darker inside the case, for the close pair and the tube
+diffuse field (about 0.855 for grand XY and 0.75 for upright XY, alike only
+in the bass for a spaced pair); and darker inside the case, for the close pair and the tube
 (an estimate). Room is the room's size, the owner's choice
 (2.18.0): it scales the lines and the walls with the decay time, as rooms of
 one shape and one surface do (Sabine), from a small room ringing 0.29 s at
@@ -1519,8 +1539,10 @@ pedal's knocks are 1.0.0's, unchanged: knocks on measured body modes and
 bursts of band noise, fitted as numbers from the Salamander grand's
 recordings under the three grands and from the Helsinki upright's under the
 upright, in the room those were recorded in. No recorded waveform plays.
-They follow the velocity of the strike they belong to, and Mechanics sets
-their level. No two are alike: each knock draws its level (1 dB), each body
+They follow the velocity of the latest strike of the physical key. When its
+last owner releases it, the key returns, and damper contact sets the blend of
+the key-only return and ordinary release. For low keys with the damper lifted,
+MIDI 90 supplies the measured key-only return. Mechanics sets their level. No two are alike: each knock draws its level (1 dB), each body
 mode its level and phase (2 dB, a radian), and the click its rise and each
 band's level (3 dB), set against how far the Salamander's keys stand from
 their neighbours. They play beside the model and do not drive its strings.
@@ -1552,8 +1574,11 @@ controls from Hammer to Duplex, the four microphone levels, Room, Width and
 the practice felt;
 Output, Tuning, Mechanics, the mod wheel's mute and the pedals keep their
 values. Notes, pedals and pitch bend (two semitones each way) are dispatched
-at their sample positions; each MIDI channel owns its keys and pedals, CC1
-is the felt mute, and CC120, CC121 and CC123 are honoured per channel. Every
+at their sample positions. Each MIDI channel owns its keys and pedals. CC1
+controls the felt mute. CC120 silences the whole piano and preserves its
+current pitch bend. CC121 resets the sending channel’s controllers and
+recentres the strings if that channel last set their bend. CC123 releases the
+sending channel’s keys and switches. Every
 strike lands a little harder or softer than its velocity, as a player's do.
 The plug-in saves 24 parameters; the piano is not offered for automation. A
 1.x session loads as the Version history describes. The

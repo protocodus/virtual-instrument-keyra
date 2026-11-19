@@ -163,7 +163,7 @@ int main(){
   }
   {
     // No two strikes land alike, unless a measurement asks for steady ones.
-    // Under the pedal a key let go is silent, so only its landing sounds.
+    // Measure its landing before the key returns.
     const auto spread=[&](bool steady){
       e.setSteadyStrikesForMeasurement(steady);b.start(action());e.controlChange(64,127);b.run(1.5);
       double low=1e9,high=-1e9;
@@ -355,6 +355,28 @@ int main(){
     b.run(.6);check(b.take.db(.6,.8)<b.take.db(.05,.2)-30,"reset all controllers lets a pedalled note fall");
     b.start(strings());e.noteOn(60,.7f);e.noteOn(64,.7f);b.run(.3);e.controlChange(123,0);b.run(.5);
     check(b.take.db(.6,.8)<b.take.db(.1,.3)-30,"all notes off lets every key go");
+    // Pitch bend moves the shared strings. An unrelated channel's panic
+    // or controller reset must not undo the most recent pitch-wheel event.
+    const auto nextA=[&](bool bend,int cc,int channel){
+      b.start(strings());if(bend)e.pitchBend(2,1);
+      if(cc)e.controlChange(cc,0,channel);
+      e.noteOn(69,.6f,1);b.run(.15);return b.take.audio;};
+    const auto bentA=nextA(true,0,1),unbentA=nextA(false,0,1);
+    check(bentA!=unbentA&&nextA(true,120,2)==bentA,"All Sound Off preserves the shared bend");
+    check(nextA(true,121,2)==bentA&&nextA(true,121,1)==unbentA,
+          "only resetting the channel that set the bend recentres the strings");
+    // All Notes Off returns each last-owned physical key once, just like
+    // the corresponding note-offs. Other channels can still hold a key.
+    const auto chordRelease=[&](bool bulk,bool shared){
+      auto p=action();p.roomHeard=false;b.start(p);
+      e.noteOn(60,.5f,1);e.noteOn(64,.8f,1);if(shared)e.noteOn(60,.65f,2);
+      b.run(.2);b.take=Take{};
+      if(bulk)e.controlChange(123,0,1);
+      else{e.noteOff(60,1);e.noteOff(64,1);}
+      b.run(.13);if(shared)e.noteOff(60,2);b.run(.08);return b.take.audio;};
+    for(bool shared:{false,true})
+      check(chordRelease(true,shared)==chordRelease(false,shared),
+            "All Notes Off gives the same key returns as individual note-offs");
     // Against the key let go under the pedal, not the key kept down: the
     // pedal holds the dampers a little less clear of the strings than a key
     // does (pedalLift), which takes 1.0 dB by then on its own, the whole of
@@ -418,12 +440,51 @@ int main(){
      check(b.take.db(up,up+.3)>-110,"the pedal knocks as it comes back up");
      p.body=keyra::model::Body::upright;b.start(p);e.controlChange(64,127);b.run(.3);e.controlChange(64,0);b.run(.3);
      check(b.take.peak(0,.6)==0,"the upright has no pedal recording, and plays none");}
-    // Under the pedal a key let go does not sound; from F6 up it always does.
-    {auto p=action();p.gain=.07f;b.start(p);e.controlChange(64,127);b.run(1.5);
-     e.noteOn(60,.7f);b.run(.6);const double t=b.now();e.noteOff(60);b.run(.3);
-     const double under=b.take.db(t,t+.3);
-     e.noteOn(96,.7f);b.run(.6);const double u=b.now();e.noteOff(96);b.run(.3);
-     check(b.take.db(u,u+.3)>under+20,"only a key without a damper returns aloud under the pedal");}
+    // Only a fitted damper can fall. Compare the key-up impulse against an
+    // otherwise identical held take, with the mechanical action isolated.
+    {
+      const auto release=[&](keyra::model::Body body,int note,int sustain,int pedalChannel,bool releaseKey){
+        auto p=action();p.body=body;p.roomHeard=false;p.mechanics=0;p.sympathetic=0;b.start(p);
+        e.controlChange(64,sustain,pedalChannel);p.mechanics=1;e.setParameters(p);
+        e.noteOn(note,.7f,1);b.run(.1);
+        if(releaseKey)e.noteOff(note,1);
+        b.take=Take{};b.run(.1);return b.take.audio;
+      };
+      // First undamped MIDI key, from the five designs in PianoModel.cpp.
+      const int firstBare[]{90,90,89,87,90};
+      for(int i=0;i<keyra::model::bodyCount;++i){
+        const auto body=static_cast<keyra::model::Body>(i);
+        for(int note:{firstBare[i]-1,firstBare[i]}){
+          const auto dry=release(body,note,0,1,true),dryHeld=release(body,note,0,1,false);
+          const auto down=release(body,note,127,1,true),downHeld=release(body,note,127,1,false);
+          check(down==release(body,note,127,2,true),"both MIDI channels operate the same damper on release");
+          double difference=0,returns=0;
+          for(std::size_t n=0;n<down.size();++n){
+            const double keyUp=down[n]-downHeld[n],ordinary=dry[n]-dryHeld[n];
+            returns+=keyUp*keyUp;difference+=(keyUp-ordinary)*(keyUp-ordinary);}
+          check(returns>1e-7,"a physical key returns under sustain, including an undamped treble key");
+          if(note==firstBare[i])check(difference<returns*.003,"the first undamped key returns alike at both pedal depths");
+          else check(difference>returns*.005,"the last fitted damper adds a distinct release when lowered");
+        }
+      }
+    }
+    // Two channels playing the same physical key share its latest blow.
+    // It comes back only when the last owner lifts it, in either order.
+    {
+      const auto keyReturn=[&](int first,bool releaseFirst){
+        auto p=action();p.roomHeard=false;b.start(p);
+        e.noteOn(60,.3f,1);b.run(.12);e.noteOn(60,.9f,2);b.run(.09);
+        if(releaseFirst)e.noteOff(60,first);
+        b.take=Take{};b.run(.1);
+        if(releaseFirst)e.noteOff(60,3-first);
+        b.run(.12);return b.take;
+      };
+      const auto ab=keyReturn(1,true),ba=keyReturn(2,true),held=keyReturn(1,false);
+      check(ab.audio==ba.audio,"the final key return uses the latest blow on the physical key");
+      check(std::equal(ab.audio.begin(),ab.audio.begin()+2*ab.at(.1),held.audio.begin()),
+            "lifting one owner of a held key emits no mechanical return");
+      check(ab.audio!=held.audio,"the last owner releases the mechanical action");
+    }
     // The action sounds in its room, and Room sizes it as it does the
     // strings' (2.18.0): 20 dB down, where the output stage is linear.
     {const auto tail=[&](float room,bool heard){auto p=action();p.gain=.07f;p.room=room;p.roomHeard=heard;
@@ -553,6 +614,74 @@ int main(){
       const Take distant=heard(keyra::model::micDistant),close=heard(keyra::model::micClose);
       std::cout<<"own outputs' tails: distant "<<distant.db(.8,1.2)-distant.db(0,.6)<<" dB, close "<<close.db(.8,1.2)-close.db(0,.6)<<" dB\n";
       check(distant.db(.8,1.2)-distant.db(0,.6)>close.db(.8,1.2)-close.db(0,.6)+6,"the distant pair hears more of the room");}
+     // A cable receives the fixed piano, including its room, whichever
+     // pairs happen to be mixed on the main output. Two notes at once have
+     // different voicing corrections, so a gain after summing cannot pass.
+     {
+       constexpr int channels=2*keyra::model::micCount;
+       struct Render {Audio main;std::array<Audio,channels> direct;};
+       const auto record=[&](bool automate,bool connected,bool flip,bool reconnect){
+         auto p=strings();p.body=keyra::model::Body::parlorGrand;
+         if(automate){p.mic[0]=0;p.mic[1]=1;}
+         p.invert[keyra::model::micClose]=flip;b.start(p);
+         Render result;
+         for(int block=0;block<180;++block){
+           if(block==0){e.noteOn(60,.7f);e.noteOn(71,.8f);}
+           if(block==40){e.noteOn(85,.75f);e.noteOff(60);}
+           if(block==60&&automate){p.mic[1]=.2f;p.mic[2]=.7f;p.invert[2]=true;e.setParameters(p);}
+           if(block==90&&automate){for(auto& level:p.mic)level=0;e.setParameters(p);}
+           if(block==100){e.noteOff(71);e.noteOff(85);}
+           constexpr int frames=64;float l[frames],r[frames],data[channels][frames];float* at[channels];
+           for(int c=0;c<channels;++c)at[c]=data[c];
+           const bool attached=connected&&(!reconnect||block<45||block>=75);
+           e.process(l,r,attached?at:nullptr,frames);
+           for(int i=0;i<frames;++i){result.main.push_back(l[i]);result.main.push_back(r[i]);}
+           if(attached)for(int c=0;c<channels;++c)result.direct[c].insert(result.direct[c].end(),data[c],data[c]+frames);
+         }
+         return result;
+       };
+       for(bool reconnect:{false,true}){
+         const auto reference=record(false,true,false,reconnect),changed=record(true,true,false,reconnect);
+         for(int c=0;c<channels;++c)if(c/2!=keyra::model::micLive)
+           check(reference.direct[c]==changed.direct[c],"a mic stem nulls across fader and other polarity automation");
+         check(reference.main!=changed.main,"microphone automation is heard on the main mix");
+       }
+       const auto connected=record(true,true,false,false),unconnected=record(true,false,false,false);
+       check(connected.main==unconnected.main,"opening direct microphone outputs preserves the main mix");
+       const auto reconnected=record(true,true,false,true);
+       // The output look-ahead starts empty on reconnection, then it
+       // carries exactly the samples that a continuously connected mic saw.
+       const auto lag=e.outputLatencySamples();
+       for(int c=0;c<channels;++c){
+         const auto& stem=reconnected.direct[c];const auto& continuous=connected.direct[c];
+         check(std::equal(stem.begin()+45*64+lag,stem.end(),continuous.begin()+75*64+lag),
+               "reconnecting a mic resumes its ongoing board, circuit and room");}
+       // With the main faders down, a disconnected mic can be the only
+       // receiver still ringing after every struck string has settled.
+       const auto distantTail=[&](bool detach){
+         auto p=strings();p.room=1;p.roomHeard=true;
+         for(float& level:p.mic)level=0;
+         b.start(p);e.noteOn(77,1);
+         Audio tail;
+         constexpr int reconnect=1950; // 2.6 s at 48 kHz
+         for(int block=0;block<reconnect+150;++block){
+           float l[64],r[64],mic[64];float* output[channels]{};
+           output[2*keyra::model::micDistant]=mic;
+           if(block==25)e.noteOff(77);
+           e.process(l,r,detach&&block>=30&&block<reconnect?nullptr:output,64);
+           if(block>=reconnect)tail.insert(tail.end(),mic,mic+64);
+         }
+         return tail;};
+       const auto wet=distantTail(false),resumed=distantTail(true);
+       check(std::any_of(wet.begin()+lag,wet.end(),[](float x){return std::abs(x)>1.e-6f;})
+             &&std::equal(wet.begin()+lag,wet.end(),resumed.begin()+lag),
+             "reconnecting after two seconds of muted main preserves the distant tail");
+       const auto inverted=record(true,true,true,false);
+       for(int c=0;c<2;++c){
+         bool opposite=true;for(std::size_t i=0;i<inverted.direct[c].size();++i)
+           opposite=opposite&&inverted.direct[c][i]==-connected.direct[c][i];
+         check(opposite,"a direct output follows its own polarity");}
+     }
      // The room is heard in the microphones alone (the owner, 2026-11-16: "can
      // we get back to the previous room behaviour where we had room in all the
      // mics?"): with every pair down nothing sounds, whatever Room's size.

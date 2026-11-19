@@ -56,7 +56,7 @@ inverts it, in the mix and on its own output.
 | Control | Behavior |
 | --- | --- |
 | Close | A spaced pair of flat pressure omnis inside the piano over the strings by the hammers (behind an upright's soundboard): the direct, percussive pop sound |
-| XY | A coincident pair of small cardioids at the open lid, about a metre off: a focused, natural image |
+| XY | A coincident pair of small cardioids near a grand’s open lid or behind an upright. The grand’s capsules tilt down together and hear more of the same room sound |
 | Live | A spaced pair of valve omnis in the room beside a grand, or over the player's head at an upright, their top rising a little: the piano with some of its room |
 | Distant | A wide pair of omnis across the room, lifted for the diffuse field: mostly room |
 | Tube | One valve cardioid over the strings, toward the hammers, in mono: a broad presence and a rounded top |
@@ -139,8 +139,8 @@ apply; resetting MIDI controllers does not synthesize a new sostenuto press.
 | CC64 | Sustain / damper pedal, continuous 0–127 |
 | CC66 | Sostenuto, captured on the upward midpoint crossing |
 | CC67 | Soft pedal, continuous 0–127 |
-| CC120 | All Sound Off on that channel |
-| CC121 | Reset channel controllers |
+| CC120 | Silence the whole piano immediately and release the sending channel’s held keys and switches. The current pitch bend is preserved. |
+| CC121 | Reset the sending channel’s controllers. This centres the shared pitch bend if that channel last moved the wheel. |
 | CC123 | Release channel keys; active pedals still apply |
 
 A physical controller and its corresponding panel control combine by maximum
