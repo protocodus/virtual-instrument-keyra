@@ -68,7 +68,11 @@ struct Rng {
   double uniform() noexcept {s=s*1664525u+1013904223u;return (s>>8)*(1./16777216.);}
   double symmetric() noexcept {return 2*uniform()-1;}
   // Four uniforms summed: unit variance, within 3.5 deviations.
-  double normal() noexcept {return (uniform()+uniform()+uniform()+uniform()-2)*1.7320508;}
+  double normal() noexcept {
+    double total=0;
+    for(int i=0;i<4;++i)total+=uniform();
+    return (total-2)*1.7320508;
+  }
 };
 Rng seeded(int a,int b,int c=0) noexcept {
   Rng r{static_cast<std::uint32_t>(2166136261u^(a*16777619u)^(b*374761393u)^(c*668265263u))};
@@ -628,7 +632,10 @@ void designStrings(Tables& t,int body) noexcept {
     Rng r=seeded(body,i,1);
     for(int j=0;j<3;++j){
       k.detune[j]=static_cast<float>(r.normal());
-      k.polarisation[j]=static_cast<float>(.6+.8*r.uniform())*(r.uniform()<.5?-1.f:1.f);
+      // Draw magnitude before sign, so the same seed builds the same string
+      // with compilers that evaluate multiplication operands in either order.
+      const float polarisation=static_cast<float>(.6+.8*r.uniform());
+      k.polarisation[j]=polarisation*(r.uniform()<.5?-1.f:1.f);
       // A hammer's face is not level across its unison, so its strings take
       // unequal shares of the blow: up to a tenth either way. An estimate,
       // not a measurement (the owner asked for it built, 2026-11-14); it was
@@ -648,7 +655,8 @@ void designStrings(Tables& t,int body) noexcept {
       // (2.9.0: 4.1). The top octave does not: its fundamentals hold up 14 dB
       // more than theirs.
       k.across[j]=static_cast<float>(.25+.22*r.uniform());
-      k.acrossDrive[j]=static_cast<float>(.58*(.5+.5*r.uniform())*(r.uniform()<.5?-1:1));
+      const double acrossDrive=.58*(.5+.5*r.uniform());
+      k.acrossDrive[j]=static_cast<float>(acrossDrive*(r.uniform()<.5?-1:1));
     }
     // A unison's strings sit about its pitch.
     if(k.strings>1){float mean=0;for(int j=0;j<k.strings;++j)mean+=k.detune[j];

@@ -47,12 +47,14 @@ struct Take {
   // fourth-order Butterworth, two state-variable sections), dB.
   double above(double hz,double from,double to) const {
     const double g=std::tan(pi*hz/rate);double high=0,all=0;
+    const std::size_t a=at(from),b=at(to);
     for(const auto* channel:{&left,&right}){double state[2][2]{};
-      for(std::size_t i=at(from);i<at(to);++i){double x=(*channel)[i];all+=x*x;
+      // A late window inherits the filter's state from the whole note.
+      for(std::size_t i=0;i<b;++i){double x=(*channel)[i];if(i>=a)all+=x*x;
         for(int stage=0;stage<2;++stage){const double r=stage?.765367:1.847759;double* s=state[stage];
           const double hp=(x-(r+g)*s[0]-s[1])/(1+r*g+g*g),bp=g*hp+s[0],lp=g*bp+s[1];
           s[0]=g*hp+bp;s[1]=g*bp+lp;x=hp;}
-        high+=x*x;}}
+        if(i>=a)high+=x*x;}}
     return 10*std::log10((high+1e-30)/(all+1e-30));
   }
   bool finite() const {return std::all_of(left.begin(),left.end(),[](float x){return std::isfinite(x);})
@@ -71,7 +73,7 @@ struct Bench {
   double now() const {return take.left.size()/rate;}
 };
 // The strings alone: no room, no open strings or duplex scales to answer.
-Controls bare(){Controls c;c.room=0;c.sympathetic=0;c.duplex=0;return c;}
+Controls bare(){Controls c;c.roomHeard=false;c.room=0;c.sympathetic=0;c.duplex=0;return c;}
 int keyOf(int midi){return midi-21;}
 }
 
@@ -364,7 +366,9 @@ int main(){
     std::cout<<"C4 falls "<<early<<" dB/s at first, "<<late<<" dB/s after four seconds\n";
     check(early>1.4*late&&late>.5,"a unison decays twice: fast, then slowly");
     // Higher partials die sooner, so the sound darkens as it rings.
-    check(b.take.above(2000,3,4)<b.take.above(2000,.05,.5)-6,"the upper partials die first");
+    const double firstBand=b.take.above(2000,.05,.5),lateBand=b.take.above(2000,3,4);
+    std::cout<<"C4's power share above 2 kHz, early and late: "<<firstBand<<" and "<<lateBand<<" dB\n";
+    check(lateBand<firstBand-6,"the upper partials die first");
     // Strings out of tune with each other beat, and a microphone hears the
     // beat swell; tuned pure, what it hears only falls.
     c.detune=0;b.start(c);piano.holdDamper(keyOf(60),true);piano.strike(keyOf(60),.7f);b.run(8);
