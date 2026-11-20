@@ -53,7 +53,16 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ### 2.24.4 — 2026-11-20 — lower CPU with multiple microphones
 
-The strings reuse each partial’s motion when calculating the bridge force. The five microphone pickups and room reflections now process adjacent samples together.
+The strings reuse each partial’s motion when calculating the bridge force,
+and repeated notes reuse the current string coefficients. The microphone
+pickups and room reflections process adjacent samples together. A solo
+microphone and its matching direct output share the soundboard calculation
+while their input and history agree.
+
+Reset now returns the sympathetic strings to concert pitch even when the
+pitch wheel was centered immediately beforehand. The string design now
+draws each seeded variation in the same order on Windows and macOS.
+[Pitch-wheel reset listening test](Docs/validation/pitch-wheel-reset-2026-11-20.md)
 
 ### 2.24.3 — 2026-11-20 — held-note pickup calibration
 
