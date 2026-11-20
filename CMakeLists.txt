@@ -22,7 +22,7 @@ endif()
 
 # C is required in addition to C++: JUCE's macOS plug-in wrappers (AU and
 # Standalone) compile C/Objective-C sources with non-Xcode generators too.
-project(Keyra VERSION 2.24.3 LANGUAGES C CXX)
+project(Keyra VERSION 2.24.4 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -381,6 +381,11 @@ if(BUILD_TESTING)
                      COMMAND RenderKeyraPresetDemos --cpu --json "${CMAKE_BINARY_DIR}/cpu.json"
                              "${CMAKE_CURRENT_SOURCE_DIR}/Docs/audio/midi")
             set_tests_properties(Keyra.CpuBudget PROPERTIES LABELS perf RUN_SERIAL TRUE TIMEOUT 1800)
+            add_executable(KeyraCpuRouting Tests/cpu_routing.cpp)
+            target_link_libraries(KeyraCpuRouting PRIVATE KeyraDSP Threads::Threads)
+            add_test(NAME Keyra.CpuRouting
+                     COMMAND KeyraCpuRouting "${CMAKE_BINARY_DIR}/cpu-routing.json")
+            set_tests_properties(Keyra.CpuRouting PROPERTIES LABELS perf RUN_SERIAL TRUE TIMEOUT 600)
         endif()
     endif()
 

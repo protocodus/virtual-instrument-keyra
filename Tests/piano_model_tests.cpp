@@ -78,6 +78,39 @@ int keyOf(int midi){return midi-21;}
 int main(){
   auto bench=std::make_unique<Bench>();auto& b=*bench;auto& piano=b.piano;
   {
+    // A room glide crosses a board-history wrap and a cable is connected
+    // during the tail. Only the host's choice of buffer sizes changes.
+    const auto take=[&](bool irregular){
+      constexpr int sizes[]{1,7,31,32,33,65};
+      constexpr int boundaries[]{103,8007,8306,9000};
+      std::array<std::vector<float>,2+2*keyra::model::micCount> channels;
+      for(auto& channel:channels)channel.resize(boundaries[3]);
+      Controls controls;
+      b.start(controls);
+      piano.holdDamper(keyOf(48),true);piano.strike(keyOf(48),.8f);
+      piano.holdDamper(keyOf(78),true);piano.strike(keyOf(78),.7f);
+      int pos=0,block=0;
+      for(int phase=0;phase<4;++phase){
+        if(phase==1||phase==2){
+          controls.room=phase==1?.03f:.99f;controls.lid=phase==1?.4f:.8f;
+          controls.mic[keyra::model::micDistant]=phase==1?.6f:.2f;
+          piano.setControls(controls);
+        }
+        while(pos<boundaries[phase]){
+          const int frames=std::min(irregular?sizes[block++%6]:64,boundaries[phase]-pos);
+          float* stems[2*keyra::model::micCount]{};
+          for(int ch=0;ch<2*keyra::model::micCount;++ch)
+            if(phase==0||phase==3||ch%3==0)stems[ch]=channels[2+ch].data()+pos;
+          piano.process(channels[0].data()+pos,channels[1].data()+pos,stems,frames);
+          pos+=frames;
+        }
+      }
+      return channels;
+    };
+    const auto regular=take(false);
+    check(regular==take(true),"all microphone histories agree across host buffers during room automation and cable changes");
+  }
+  {
     // A dedicated recording uses its own pair's voicing before voices sum
     // and the room rings. A close-only correction formerly made the baby
     // grand's distant G4 over twenty dB louder than its neighbour.

@@ -51,6 +51,10 @@ committed; `Docs/decisions.md` records the verdicts. The
 
 ## Version history
 
+### 2.24.4 — 2026-11-20 — lower CPU with multiple microphones
+
+The strings reuse each partial’s motion when calculating the bridge force. The five microphone pickups and room reflections now process adjacent samples together.
+
 ### 2.24.3 — 2026-11-20 — held-note pickup calibration
 
 The calibration now measures how each microphone hears the soundboard and room after the initial strike. This restores the held level on keys such as F♯5 on the Concert Grand’s Distant microphone while retaining the measured hammer attack. [Keyboard and resonance measurements](Docs/validation/microphone-consistency-2026-11-20.md)
@@ -1459,7 +1463,7 @@ microphone's own output is it after its circuit, at full level and in its
 polarity, with its share of the room. Each dedicated output keeps its microphone's solo voicing
 as the main faders move. Width, Output and the action's noises apply to the
 main mix. Connecting a direct output during a phrase starts its microphone
-history at that point.
+history at that point. Direct microphone outputs bypass the main limiter and can exceed 0 dBFS on loud notes or sustained chords. Leave headroom on the receiving mixer channels before recording to a fixed-point format.
 
 At the same level every microphone plays the piano as loud as the close pair: a
 level is a balance, and the distance is in the sound already. The room is a
@@ -1934,7 +1938,12 @@ does not follow; `audio` is `Keyra.AudioDemos` and `Keyra.Levels`; and `perf`
 is `Keyra.CpuBudget`, the demos timed in a Release build, which fails above
 0.33 of real time, three times the slowest demo's median on the CI runner,
 and warns where a block of a demo or of its stress phrase takes more than a
-tenth of a core.
+tenth of a core. `Keyra.CpuRouting` times 64-frame callbacks at 48, 96 and
+192 kHz with stereo alone and with all five microphone pairs. Its JSON
+records mean, 99th-percentile and worst wall time, the callback deadline
+and missed blocks. Timing overruns generate warnings. Non-finite output,
+silent connected channels or a main peak above the limiter ceiling fail
+the test.
 `KeyraDSPCxx17` compiles the engine as C++17, the Rack Extension toolchain's
 standard. `-DKEYRA_ENABLE_SANITIZERS=ON` builds everything under ASan and
 UBSan, and `-DKEYRA_BUILD_FUZZER=ON` (Clang) makes `KeyraDspFuzz` a libFuzzer

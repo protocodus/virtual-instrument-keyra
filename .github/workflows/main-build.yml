@@ -39,7 +39,7 @@ jobs:
         run: |
           cmake -S . -B build-dsp -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DKEYRA_BUILD_PLUGIN=OFF -DBUILD_TESTING=ON
-          cmake --build build-dsp --parallel --target RenderKeyraPresetDemos KeyraLevels
+          cmake --build build-dsp --parallel --target RenderKeyraPresetDemos KeyraLevels KeyraCpuRouting
           ctest --test-dir build-dsp -L '^audio$' --no-tests=error --output-on-failure
 
       # The renderer writes its WAVs without metadata, so an unchanged engine
@@ -60,12 +60,15 @@ jobs:
       - name: Time the demos (perf tier)
         run: |
           ./build-dsp/RenderKeyraPresetDemos --cpu --json build-dsp/cpu.json --note "${GITHUB_SHA}" Docs/audio/midi
+          ./build-dsp/KeyraCpuRouting build-dsp/cpu-routing.json
 
       - name: Upload the CPU figures
         uses: actions/upload-artifact@v4
         with:
           name: cpu-keyra-main-build-${{ github.run_number }}
-          path: build-dsp/cpu.json
+          path: |
+            build-dsp/cpu.json
+            build-dsp/cpu-routing.json
           if-no-files-found: error
           retention-days: 30
 

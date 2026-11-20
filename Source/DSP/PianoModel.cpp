@@ -6,6 +6,7 @@
 #include <complex>
 #include <cstdint>
 #include <cstring>
+#include <iterator>
 #include <limits>
 #include <type_traits>
 
@@ -1425,7 +1426,9 @@ struct Piano::Impl {
   // Above the modes: each point's force, high-passed, delayed to each
   // microphone.
   struct Tap {int point,delay;float gain;};
-  static constexpr int lineSize=8192;
+  static constexpr int lineSize=8192; // physical tap delays remain 0..8191 samples
+  // Write one block ahead without overwriting the oldest tap it can still read.
+  static constexpr int lineSpan=lineSize+chunk;
   int lineAt=0;
   Tap taps[outs][points*hfTapsPerPoint]{};int tapCount[outs]{};
   // Beside the modes: each point's force through the board's filter, to
@@ -1480,7 +1483,8 @@ struct Piano::Impl {
   struct Radiation {
     float boardRe[maxModes]{},boardIm[maxModes]{};
     Biquad highpass[points][3],besideFilter[points][2];
-    float line[points][lineSize]{},lineBeside[points][lineSize]{};
+    float line[points][lineSpan]{},lineBeside[points][lineSpan]{};
+    float pressure[outs][chunk]{},roomPressure[2*micCount][chunk]{};
     std::unique_ptr<float[]> roomRing;
     float roomIn[roomLines]{},roomState[roomLines]{};
     float roomBondState[micCount][3]{},roomTopState[micCount][2]{};
@@ -1509,6 +1513,9 @@ struct Piano::Impl {
   // Only receivers that have been connected since silence need advancing.
   static constexpr int mainReceiver=micCount;
   Radiation radiation[micCount+1];
+  // A stem can follow the mix until the first different bridge input or
+  // first missed block. Only clearing both receivers restores that history.
+  bool sameBoard[micCount]{};
   float stemVoicing[micCount][keyCount]{};
   struct AttackCalibration {float change,unshapedPower;};
   AttackCalibration attackVoicing[micCount][keyCount]{};
@@ -1949,35 +1956,55 @@ struct Piano::Impl {
   // past a plane's length would wake a partial that was let go. The unison's
   // size and the hammer contact stay fixed for this chunk. Specialize them
   // here so a ringing plane never has to read a zero force or unused states.
+  template<class T> static T loadModes(const float* at) noexcept {
+    if constexpr(std::is_same<T,Four>::value)return Four::at(at);
+    else return *at;
+  }
+  static void storeModes(float* at,Four value) noexcept {value.to(at);}
+  static void storeModes(float* at,float value) noexcept {*at=value;}
+  // For each partial, read its bridge force and use that same motion for
+  // the next rotation. The vertical strings push the bridge together.
+  template<int strings,bool coupled,bool forcing,class T>
+  static T advanceModes(const Voice& v,StringMotion& motion,int firstPlane,int k,T force) noexcept {
+    T re[strings],im[strings];
+#if defined(__clang__)
+#pragma unroll
+#endif
+    for(int j=0;j<strings;++j){
+      const int at=planeStart[firstPlane+j]+k;
+      re[j]=loadModes<T>(motion.re+at);im[j]=loadModes<T>(motion.im+at);
+    }
+    T sumRe=re[0],sumIm=im[0];
+#if defined(__clang__)
+#pragma unroll
+#endif
+    for(int j=1;j<strings;++j){sumRe+=re[j];sumIm+=im[j];}
+    T bridgeRe{},bridgeIm{};
+    if constexpr(coupled){
+      const T cr=loadModes<T>(v.couplingRe+k),ci=loadModes<T>(v.couplingIm+k);
+      bridgeRe=cr*sumRe-ci*sumIm;bridgeIm=cr*sumIm+ci*sumRe;
+    }
+#if defined(__clang__)
+#pragma unroll
+#endif
+    for(int j=0;j<strings;++j){
+      const int at=planeStart[firstPlane+j]+k;
+      const T tr=loadModes<T>(v.turnRe+at),ti=loadModes<T>(v.turnIm+at);
+      T nr=tr*re[j]-ti*im[j],ni=ti*re[j]+tr*im[j];
+      if constexpr(coupled){nr=nr-bridgeRe;ni=ni-bridgeIm;}
+      if constexpr(forcing)nr+=loadModes<T>(v.drive+at)*force;
+      storeModes(motion.re+at,nr);storeModes(motion.im+at,ni);
+    }
+    return sumIm;
+  }
   template<bool forcing,int strings> void play(const Voice& v,StringMotion& motion,const float* forceIn,float* out,int frames) noexcept {
-    float sumRe[maxK],sumIm[maxK],stretch[maxKl],slope[maxKl];
-    const int n=v.sounding;
-    const int lengths[6]{planeLength(v,0),planeLength(v,1),planeLength(v,2),planeLength(v,3),planeLength(v,4),planeLength(v,5)};
+    const int n=v.sounding,apart=std::min(n,v.apart),across=std::min(n,v.across);
+    static_assert(maxKv%8==0,"the unison boundary must fall between dot-product groups");
+    const int longitudinal=std::min(n,v.longitudinal);
+    float stretch[maxKl],slope[maxKl];
     for(int s=0;s<frames;++s){
       const float force=forcing?forceIn[s]:0;
-      int k=0;
-      // Form a unison's sum once at each partial, in string order.
-      const auto together=[&](auto unisons,int end){
-        constexpr int count=decltype(unisons)::value;
-        for(;k+4<=end;k+=4){
-          Four re=Four::at(motion.re+k),im=Four::at(motion.im+k);
-          if constexpr(count>=2){re+=Four::at(motion.re+planeStart[1]+k);im+=Four::at(motion.im+planeStart[1]+k);}
-          if constexpr(count>=3){re+=Four::at(motion.re+planeStart[2]+k);im+=Four::at(motion.im+planeStart[2]+k);}
-          re.to(sumRe+k);im.to(sumIm+k);
-        }
-        for(;k<end;++k){
-          float re=motion.re[k],im=motion.im[k];
-          if constexpr(count>=2){re+=motion.re[planeStart[1]+k];im+=motion.im[planeStart[1]+k];}
-          if constexpr(count>=3){re+=motion.re[planeStart[2]+k];im+=motion.im[planeStart[2]+k];}
-          sumRe[k]=re;sumIm[k]=im;
-        }
-      };
-      if constexpr(strings==3)together(std::integral_constant<int,3>{},lengths[2]);
-      else if constexpr(strings==2)together(std::integral_constant<int,2>{},lengths[1]);
-      together(std::integral_constant<int,1>{},n);
-      float pull=dot(v.bridge,sumIm,n);
-      for(int plane=3;plane<3+strings;++plane)pull+=v.u[plane]*dot(v.bridge,motion.im+planeStart[plane],lengths[plane]);
-      const int longitudinal=std::min(n,v.longitudinal);
+      int k;
       for(k=0;k+4<=longitudinal;k+=4){const Four re=Four::at(motion.re+k),im=Four::at(motion.im+k);(re*re-im*im).to(stretch+k);}
       for(;k<longitudinal;++k)stretch[k]=motion.re[k]*motion.re[k]-motion.im[k]*motion.im[k];
       float along=dot(v.tension,stretch,longitudinal);
@@ -1994,38 +2021,48 @@ struct Piano::Impl {
           along+=v.longForce*((m&1)?y-a:a-y);
         }
       }
-      out[s]=pull+v.longScale*along;
-      // The bridge gives under the strings' sum and takes from each.
-      for(k=0;k+4<=n;k+=4){
-        const Four cRe=Four::at(v.couplingRe+k),cIm=Four::at(v.couplingIm+k),re=Four::at(sumRe+k),im=Four::at(sumIm+k);
-        (cRe*re-cIm*im).to(sumRe+k);(cRe*im+cIm*re).to(sumIm+k);
-      }
-      for(;k<n;++k){
-        const float cr=v.couplingRe[k]*sumRe[k]-v.couplingIm[k]*sumIm[k];
-        sumIm[k]=v.couplingRe[k]*sumIm[k]+v.couplingIm[k]*sumRe[k];sumRe[k]=cr;
-      }
       const Four forced=Four::all(force);
-      // Only vertical planes share the instantaneous coupling term.
-      const auto advance=[&](int plane,auto coupling){
-        constexpr bool coupled=decltype(coupling)::value;
-        const int len=lengths[plane],o=planeStart[plane];
-        float* re=motion.re+o;float* im=motion.im+o;const float* tr=v.turnRe+o;const float* ti=v.turnIm+o;const float* drive=v.drive+o;
-        for(k=0;k+4<=len;k+=4){
-          const Four r=Four::at(re+k),i=Four::at(im+k),turnRe=Four::at(tr+k),turnIm=Four::at(ti+k);
-          Four nr=turnRe*r-turnIm*i,ni=turnIm*r+turnRe*i;
-          if constexpr(coupled){nr=nr-Four::at(sumRe+k);ni=ni-Four::at(sumIm+k);}
-          if constexpr(forcing)nr+=Four::at(drive+k)*forced;
-          nr.to(re+k);ni.to(im+k);
+      Four low=Four::all(0),high=Four::all(0);
+      float tail[8];
+      int tailCount=0;
+      k=0;
+      // The force from the bridge is summed in dot()'s eight strands. The
+      // boundary between separated and combined upper partials is a full
+      // group unless it is the end of the voice.
+      const auto turn=[&](auto count,auto coupled,int firstPlane,int end){
+        constexpr int size=decltype(count)::value;
+        constexpr bool together=decltype(coupled)::value;
+        for(;k+8<=end;k+=8){
+          const Four a=advanceModes<size,together,forcing>(v,motion,firstPlane,k,forced);
+          const Four b=advanceModes<size,together,forcing>(v,motion,firstPlane,k+4,forced);
+          low+=Four::at(v.bridge+k)*a;high+=Four::at(v.bridge+k+4)*b;
         }
-        for(;k<len;++k){
-          float nr=tr[k]*re[k]-ti[k]*im[k],ni=ti[k]*re[k]+tr[k]*im[k];
-          if constexpr(coupled){nr-=sumRe[k];ni-=sumIm[k];}
-          if constexpr(forcing)nr+=drive[k]*force;
-          re[k]=nr;im[k]=ni;
+        if(k+4<=end){
+          const Four a=advanceModes<size,together,forcing>(v,motion,firstPlane,k,forced);
+          a.to(tail+tailCount);
+          tailCount+=4;k+=4;
+        }
+        for(;k<end;++k){
+          const float value=advanceModes<size,together,forcing>(v,motion,firstPlane,k,force);
+          tail[tailCount++]=value;
         }
       };
-      for(int plane=0;plane<strings;++plane)advance(plane,std::true_type{});
-      for(int plane=3;plane<3+strings;++plane)advance(plane,std::false_type{});
+      // Preserve dot()'s scalar multiply-accumulates on the remaining
+      // partials, including the four that have already rotated together.
+      const auto reduced=[&]{
+        float rest=0;
+        for(int j=0;j<tailCount;++j)rest+=v.bridge[k-tailCount+j]*tail[j];
+        return ((low[0]+low[1])+(low[2]+low[3]))+((high[0]+high[1])+(high[2]+high[3]))+rest;
+      };
+      if constexpr(strings>1)turn(std::integral_constant<int,strings>{},std::true_type{},0,apart);
+      turn(std::integral_constant<int,1>{},std::true_type{},0,n);
+      float pull=reduced();
+      for(int plane=3;plane<3+strings;++plane){
+        k=0;low=high=Four::all(0);tailCount=0;
+        turn(std::integral_constant<int,1>{},std::false_type{},plane,across);
+        pull+=v.u[plane]*reduced();
+      }
+      out[s]=pull+v.longScale*along;
     }
   }
   template<bool forced> void playUnison(const Voice& v,StringMotion& motion,const float* force,float* out,int frames) noexcept {
@@ -2397,6 +2434,7 @@ struct Piano::Impl {
     std::memcpy(earlyDelay,earlyTarget,sizeof(earlyDelay));std::memcpy(earlyGain,earlyGainTarget,sizeof(earlyGain));
   }
   void clearRadiation() noexcept {
+    std::fill_n(sameBoard,micCount,true);
     radiation[mainReceiver].clear(roomRingSize);
     std::memset(mixEarly,0,sizeof(mixEarly));
     for(int m=0;m<micCount;++m)if(radiation[m].computed[m]){
@@ -2719,40 +2757,92 @@ struct Piano::Impl {
       for(int j=0;j<3;++j){re[j].to(bankRe+o+4*j);im[j].to(bankIm+o+4*j);}
       bankEnergy[i]+=energy;
     }
+    boardPressure(mixRadiation,0,micCount,struck,answered,rim,rimmed,mixHeard,frames);
+    for(int m=0;m<micCount;++m){
+      sameBoard[m]=sameBoard[m]&&stemHeard[m]&&mixHeard[m]
+          &&std::memcmp(stemStruck[m],struck,sizeof(struck))==0;
+      if(stemHeard[m]&&!sameBoard[m])boardPressure(radiation[m],m,m+1,stemStruck[m],answered,rim,rimmed,stemHeard,frames);
+    }
+    float spreadKnock[chunk];
     for(int s=0;s<frames;++s){
+      const int pos=roomAt+s;
       float knock=cased[s];
       for(int k=0;k<roomSpreads;++k){
         float* held=spreadLine[k];
-        const float old=held[(roomAt-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
-        held[roomAt&(spreadSize-1)]=in;knock=old-.6f*in;}
+        const float old=held[(pos-spreadDelay[k])&(spreadSize-1)],in=knock+.6f*old;
+        held[pos&(spreadSize-1)]=in;knock=old-.6f*in;}
+      spreadKnock[s]=knock;
+    }
+    diffuseBlock(mixRadiation,0,micCount,mixHeard,spreadKnock,frames);
+    for(int j=0;j<stemCount;++j){
+      const int m=activeStems[j];
+      if(sameBoard[m])mirrorReceiver(radiation[m],mixRadiation,m,frames);
+      else diffuseBlock(radiation[m],m,m+1,stemHeard,spreadKnock,frames);
+    }
+    for(int s=0;s<frames;++s){
       const bool gliding=roomGliding>0;
       if(gliding){
         for(int k=0;k<roomLines;++k)roomGlideAt[k]+=roomGlideStep[k];
         for(int c=0;c<2*micCount;++c)for(int w=0;w<earlyWalls;++w){
           earlyDelay[c][w]+=earlyStep[c][w];earlyGain[c][w]+=earlyGainStep[c][w];}}
-      radiate(mixRadiation,mixEarly,0,micCount,struck,answered,rim,rimmed,knock,mixHeard,left,right,nullptr,s);
+      radiate(mixRadiation,mixEarly,0,micCount,mixHeard,left,right,nullptr,s);
       for(int j=0;j<stemCount;++j){
         const int m=activeStems[j];
-        radiate(radiation[m],stemEarly,m,m+1,stemStruck[m],answered,rim,rimmed,knock,stemHeard,nullptr,nullptr,mics,s);
+        radiate(radiation[m],stemEarly,m,m+1,stemHeard,nullptr,nullptr,mics,s);
       }
-      lineAt=(lineAt+1)&(lineSize-1);roomAt=(roomAt+1)&(roomRingLongest-1);earlyAt=(earlyAt+1)&(earlySize-1);
+      roomAt=(roomAt+1)&(roomRingLongest-1);earlyAt=(earlyAt+1)&(earlySize-1);
       if(gliding&&--roomGliding==0)settleRoom();
     }
+    lineAt+=frames;
+    if(lineAt>=lineSpan)lineAt-=lineSpan;
   }
-  // Render the board and microphones from one set of per-key bridge forces.
-  // The main bus keeps its calibrated mix-specific voicing; a direct bus
-  // hears the same key forces as that microphone soloed on the main bus.
-  void radiate(Radiation& path,EarlyHistory& earlyHistory,int firstMic,int endMic,const float (&struck)[points][chunk],const float (&answered)[points][chunk],
-               const float (&rim)[points+1][chunk],bool rimmed,float knock,const bool (&heard)[micCount],
-               float* left,float* right,float* const* mics,int s) noexcept {
-      constexpr int mask=lineSize-1;
+  // When a solo and its stem have received identical forces since silence,
+  // reuse the mix's board and room. Copy only this block's writes so a
+  // fader move or new strike can split the receivers on the very next sample.
+  // Their microphone circuits and early reflections continue independently.
+  void mirrorReceiver(Radiation& dst,const Radiation& src,int mic,int frames) const noexcept {
+    std::copy_n(src.boardRe,modes,dst.boardRe);
+    std::copy_n(src.boardIm,modes,dst.boardIm);
+    const auto copyRing=[&](float* to,const float* from,int at,int capacity){
+      const int first=std::min(frames,capacity-at);
+      std::copy_n(from+at,first,to+at);
+      if(first<frames)std::copy_n(from,frames-first,to);
+    };
+    const auto copyFilterStates=[](auto& to,const auto& from){
+      for(std::size_t k=0;k<std::size(to);++k){
+        to[k].z1=from[k].z1;to[k].z2=from[k].z2;
+      }
+    };
+    for(int p=0;p<points;++p){
+      copyFilterStates(dst.highpass[p],src.highpass[p]);
+      copyFilterStates(dst.besideFilter[p],src.besideFilter[p]);
+      copyRing(dst.line[p],src.line[p],lineAt,lineSpan);
+      copyRing(dst.lineBeside[p],src.lineBeside[p],lineAt,lineSpan);
+    }
+    for(int k=0;k<roomLines;++k)
+      copyRing(dst.roomRing.get()+roomStart[k],src.roomRing.get()+roomStart[k],roomAt&roomMask[k],roomMask[k]+1);
+    std::memcpy(dst.roomIn,src.roomIn,sizeof(dst.roomIn));
+    std::memcpy(dst.roomState,src.roomState,sizeof(dst.roomState));
+    for(int c=2*mic;c<2*mic+2;++c){
+      std::copy_n(src.pressure[c],frames,dst.pressure[c]);
+      std::copy_n(src.roomPressure[c],frames,dst.roomPressure[c]);
+    }
+  }
+  // Give each receiver its own calibrated bridge force while sharing the
+  // hammer, sympathetic strings and case. The projection samples are then
+  // contiguous for each delayed arrival and each room line.
+  void boardPressure(Radiation& path,int firstMic,int endMic,const float (&struck)[points][chunk],const float (&answered)[points][chunk],
+                     const float (&rim)[points+1][chunk],bool rimmed,const bool (&heard)[micCount],int frames) noexcept {
+    for(int s=0;s<frames;++s){
+      int write=lineAt+s;
+      if(write>=lineSpan)write-=lineSpan;
       // What pushes the board in this sample: each bridge point's force and
       // each place of the edge, those at rest left out.
       const float* pushing[2*points+1];float pushes[2*points+1];int pushCount=0;
       for(int p=0;p<points;++p){
         const float force=struck[p][s]+answered[p][s];
-        path.line[p][lineAt]=static_cast<float>(path.highpass[p][2].run(path.highpass[p][1].run(path.highpass[p][0].run(force))));
-        path.lineBeside[p][lineAt]=static_cast<float>(path.besideFilter[p][1].run(path.besideFilter[p][0].run(force)));
+        path.line[p][write]=static_cast<float>(path.highpass[p][2].run(path.highpass[p][1].run(path.highpass[p][0].run(force))));
+        path.lineBeside[p][write]=static_cast<float>(path.besideFilter[p][1].run(path.besideFilter[p][0].run(force)));
         if(force==0)continue;
         pushing[pushCount]=boardIn[p];pushes[pushCount++]=force;
       }
@@ -2790,42 +2880,127 @@ struct Piano::Impl {
         const float re=boardTurnRe[k]*path.boardRe[k]-boardTurnIm[k]*path.boardIm[k]+in;
         path.boardIm[k]=boardTurnIm[k]*path.boardRe[k]+boardTurnRe[k]*path.boardIm[k];path.boardRe[k]=re;
       }
-      const auto hear=[&](int out){const Tap* tap=taps[out];
-        float sum=dot(outNow[out][0],path.boardRe,modes)+dot(outNow[out][1],path.boardIm,modes);
-        for(int k=0;k<tapCount[out];++k)sum+=tap[k].gain*path.line[tap[k].point][(lineAt-tap[k].delay)&mask];
-        const Tap* beside=tapsBeside[out];
-        for(int k=0;k<tapBesideCount[out];++k)sum+=beside[k].gain*path.lineBeside[beside[k].point][(lineAt-beside[k].delay)&mask];
-        return sum;};
-      float o[outs]{};
-      for(int m=firstMic;m<endMic;++m)if(heard[m]){o[2*m]=hear(2*m);o[2*m+1]=m==micTube?o[2*m]:hear(2*m+1);}
-      o[roomOut]=hear(roomOut);o[roomOut+1]=hear(roomOut+1);
-      // The lines, each read at its length, between samples while a size
-      // glides.
-      float back[roomLines];
-      for(int k=0;k<roomLines;++k){
-        const float* ring=path.roomRing.get()+roomStart[k];const int m=roomMask[k];
-        float x;
-        if(roomGliding>0){const float at=roomGlideAt[k];const int whole=static_cast<int>(at);const float part=at-whole;
-          const float a=ring[(roomAt-whole)&m],b=ring[(roomAt-whole-1)&m];x=a+(b-a)*part;}
-        else x=ring[(roomAt-roomDelay[k])&m];
-        const float y=roomB0[k]*x+roomB1[k]*path.roomIn[k]-roomA1*path.roomState[k];path.roomIn[k]=x;path.roomState[k]=y;back[k]=y;}
-      // What each microphone hears of the room (roomRow).
+      // Both capsules see the same modal state. Keep each real and imaginary
+      // dot product's eight accumulation strands and its scalar remainder.
+      const auto projectPair=[&](int out,float& left,float& right){
+        Four low[4]{}, high[4]{};
+        int k=0;
+        for(;k+8<=modes;k+=8){
+          const Four re0=Four::at(path.boardRe+k),im0=Four::at(path.boardIm+k);
+          const Four re1=Four::at(path.boardRe+k+4),im1=Four::at(path.boardIm+k+4);
+          for(int ch=0;ch<2;++ch){
+            const auto& weights=outNow[out+ch];
+            low[2*ch]+=Four::at(weights[0]+k)*re0;high[2*ch]+=Four::at(weights[0]+k+4)*re1;
+            low[2*ch+1]+=Four::at(weights[1]+k)*im0;high[2*ch+1]+=Four::at(weights[1]+k+4)*im1;
+          }
+        }
+        float residual[4]{};
+        for(int i=0;i<4;++i)for(int j=k;j<modes;++j)
+          residual[i]+=outNow[out+i/2][i%2][j]*(i%2?path.boardIm[j]:path.boardRe[j]);
+        float pressure[4];
+        for(int i=0;i<4;++i){
+          const Four lo=low[i],hi=high[i];
+          pressure[i]=((lo[0]+lo[1])+(lo[2]+lo[3]))+((hi[0]+hi[1])+(hi[2]+hi[3]))+residual[i];
+        }
+        left=pressure[0]+pressure[1];right=pressure[2]+pressure[3];
+      };
+      for(int m=firstMic;m<endMic;++m)if(heard[m]){
+        const int out=2*m;
+        if(m==micTube)
+          path.pressure[out][s]=dot(outNow[out][0],path.boardRe,modes)+dot(outNow[out][1],path.boardIm,modes);
+        else projectPair(out,path.pressure[out][s],path.pressure[out+1][s]);
+      }
+      projectPair(roomOut,path.pressure[roomOut][s],path.pressure[roomOut+1][s]);
+    }
+    for(int m=firstMic;m<endMic;++m)if(heard[m]){
+      addArrivals<false>(path,2*m,frames);
+      if(m==micTube)std::copy_n(path.pressure[2*m],frames,path.pressure[2*m+1]);
+      else addArrivals<false>(path,2*m+1,frames);
+    }
+    addArrivals<true>(path,roomOut,frames);
+    addArrivals<true>(path,roomOut+1,frames);
+  }
+  template<bool roomPickup>
+  void addArrivals(Radiation& path,int out,int frames) const noexcept {
+    float* pressure=path.pressure[out];
+    const auto add=[&](const Tap* arrivals,int count,const float (&history)[points][lineSpan]){
+      for(int k=0;k<count;++k){
+        const Tap& tap=arrivals[k];
+        int read=lineAt-tap.delay;
+        if(read<0)read+=lineSpan;
+        const float* line=history[tap.point];
+        const int first=std::min(frames,lineSpan-read);
+        // Walk adjacent samples for each tap, preserving arrival order at
+        // each receiver. The room feed rounds each product before summing.
+        const auto accumulate=[&](float* dst,const float* src,int size){
+          for(int s=0;s<size;++s){
+            if constexpr(roomPickup){
+              const float arrival=tap.gain*src[s];
+              dst[s]+=arrival;
+            }else{
+              dst[s]+=tap.gain*src[s];
+            }
+          }
+        };
+        accumulate(pressure,line+read,first);
+        accumulate(pressure+first,line,frames-first);
+      }
+    };
+    add(taps[out],tapCount[out],path.line);
+    add(tapsBeside[out],tapBesideCount[out],path.lineBeside);
+  }
+  void diffuseBlock(Radiation& path,int firstMic,int endMic,const bool (&heard)[micCount],const float (&spreadKnock)[chunk],int frames) noexcept {
+    static_assert(roomLineLength(0,8000/roomScaleSpan)>=chunk,"room lines return after the chunk");
+    const int gliding=std::min(frames,roomGliding);
+    // Each delay exceeds one chunk at the minimum rate and room size.
+    // All returns can be read before the feedback writes of this block.
+    float back[roomLines][chunk];
+    for(int k=0;k<roomLines;++k){
+      const float* ring=path.roomRing.get()+roomStart[k];
+      const int read=roomAt-roomDelay[k],mask=roomMask[k];
+      float in=path.roomIn[k],state=path.roomState[k];
+      const auto filter=[&](int s,float x){
+        state=roomB0[k]*x+roomB1[k]*in-roomA1*state;
+        in=x;back[k][s]=state;
+      };
+      float delay=roomGlideAt[k];
+      for(int s=0;s<gliding;++s){
+        delay+=roomGlideStep[k];
+        const int whole=static_cast<int>(delay);const float part=delay-whole;
+        const int index=roomAt+s-whole;
+        const float a=ring[index&mask],b=ring[(index-1)&mask];
+        filter(s,a+(b-a)*part);
+      }
+      for(int s=gliding;s<frames;++s)filter(s,ring[(read+s)&mask]);
+      path.roomIn[k]=in;path.roomState[k]=state;
+    }
+    for(int m=firstMic;m<endMic;++m)if(heard[m]&&roomShare[m]!=0){
+      for(int c=0;c<2;++c){
+        float* sum=path.roomPressure[2*m+c];std::fill_n(sum,frames,0.f);
+        for(int k=c;k<roomLines;k+=2)
+          for(int s=0;s<frames;++s)sum[s]+=roomSigns.of[m][k]*back[k][s];
+      }
+    }
+    // The Hadamard butterflies stay in stage order, across adjacent frames.
+    for(int span=1;span<roomLines;span*=2)for(int i=0;i<roomLines;i+=2*span)
+      for(int k=i;k<i+span;++k)for(int s=0;s<frames;++s){
+        const float a=back[k][s],b=back[k+span][s];
+        back[k][s]=a+b;back[k+span][s]=a-b;
+      }
+    for(int k=0;k<roomLines;++k){
+      float* ring=path.roomRing.get()+roomStart[k];const int mask=roomMask[k];
+      const float* feed=path.pressure[roomOut+(k&1)];
+      for(int s=0;s<frames;++s)
+        ring[(roomAt+s)&mask]=roomMix*back[k][s]+feed[s]*((k&2)?-roomFeed:roomFeed)+spreadKnock[s]*(((k^(k>>1))&2)?-roomFeed:roomFeed);
+    }
+  }
+  void radiate(Radiation& path,EarlyHistory& earlyHistory,int firstMic,int endMic,const bool (&heard)[micCount],
+               float* left,float* right,float* const* mics,int s) noexcept {
+      const auto& o=path.pressure;
       float roomHeard[micCount][2]{};
-      for(int m=firstMic;m<endMic;++m)if(heard[m]&&roomShare[m]!=0)
-        for(int k=0;k<roomLines;++k)roomHeard[m][k&1]+=roomSigns.of[m][k]*back[k];
-      // The first two Hadamard stages work inside four lanes. In the
-      // remaining stages four adjacent butterflies are independent.
-      for(int i=0;i<roomLines;i+=4){
-        const float a=back[i]+back[i+1],b=back[i]-back[i+1];
-        const float c=back[i+2]+back[i+3],d=back[i+2]-back[i+3];
-        back[i]=a+c;back[i+1]=b+d;back[i+2]=a-c;back[i+3]=b-d;
+      for(int m=firstMic;m<endMic;++m)if(heard[m]&&roomShare[m]!=0){
+        roomHeard[m][0]=path.roomPressure[2*m][s];roomHeard[m][1]=path.roomPressure[2*m+1][s];
       }
-      for(int span=4;span<roomLines;span*=2)for(int k=0;k<roomLines;k+=2*span)for(int j=k;j<k+span;j+=4){
-        const Four a=Four::at(back+j),b=Four::at(back+j+span);
-        (a+b).to(back+j);(a-b).to(back+j+span);
-      }
-      for(int k=0;k<roomLines;++k)
-        path.roomRing[roomStart[k]+(roomAt&roomMask[k])]=roomMix*back[k]+((k&1)?o[roomOut+1]:o[roomOut])*((k&2)?-roomFeed:roomFeed)+knock*(((k^(k>>1))&2)?-roomFeed:roomFeed);
       for(auto& pair:roomHeard){pair[0]*=roomLevel;pair[1]*=roomLevel;}
       roomHeard[micTube][0]=(roomHeard[micTube][0]+roomHeard[micTube][1])*.70710678f;
       // Each microphone's room as it stands (roomCross, roomBond, roomTop).
@@ -2838,7 +3013,7 @@ struct Piano::Impl {
       // What each microphone heard directly, for its reflections off the
       // walls, which glide with the room's size.
       const int earlyMask=earlySize-1;
-      for(int c=2*firstMic;c<2*endMic;++c)earlyHistory[c][earlyAt&earlyMask]=o[c];
+      for(int c=2*firstMic;c<2*endMic;++c)earlyHistory[c][earlyAt&earlyMask]=heard[c/2]?o[c][s]:0.f;
       float early[2*micCount]{};
       if(controls.roomHeard)for(int m=firstMic;m<endMic;++m)if(heard[m])for(int ch=0;ch<(m==micTube?1:2);++ch){const int c=2*m+ch;
         float sum=0;
@@ -2851,8 +3026,8 @@ struct Piano::Impl {
       // then the mix, each at its level and polarity.
       double l=0,r=0;
       for(int m=firstMic;m<endMic;++m)if(heard[m]){
-        const double a=path.circuit[m][0].run(o[2*m]+early[2*m]+roomShare[m]*roomHeard[m][0],dcPole);
-        const double b=m==micTube?a:path.circuit[m][1].run(o[2*m+1]+early[2*m+1]+roomShare[m]*roomHeard[m][1],dcPole);
+        const double a=path.circuit[m][0].run(o[2*m][s]+early[2*m]+roomShare[m]*roomHeard[m][0],dcPole);
+        const double b=m==micTube?a:path.circuit[m][1].run(o[2*m+1][s]+early[2*m+1]+roomShare[m]*roomHeard[m][1],dcPole);
         if(left){l+=levelNow[m]*a;r+=levelNow[m]*b;}
         else{
           // The direct receiver keeps ringing through disconnection. Its
