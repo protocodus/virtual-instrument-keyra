@@ -532,6 +532,14 @@ int main(){
     };
     Piano fresh;
     check(openStrings(piano)==openStrings(fresh),"reset centres the sympathetic strings before their next note");
+    const auto restrike=[](Piano& p){
+      constexpr int frames=2048;
+      std::array<float,2*frames> pressure{};
+      p.holdDamper(keyOf(61),true);p.strike(keyOf(61),.8f);
+      p.process(pressure.data(),pressure.data()+frames,frames);
+      return pressure;
+    };
+    check(restrike(piano)==restrike(fresh),"a restruck key uses the centred scale after reset");
   }
   {
     // Every key at once, again and again: more than the voices there are.

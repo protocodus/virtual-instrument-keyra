@@ -1212,7 +1212,7 @@ struct StringMotion {
   float longY1[maxLong]{},longY2[maxLong]{};
 };
 struct Voice : StringMotion {
-  bool active=false,forcing=false;
+  bool active=false,forcing=false,strikeDesignReady=false;
   int strings=1,partials=0,sounding=0,apart=0,across=0,longitudinal=0;
   int point=0;float pointMix=0;
   float damper=0;            // 0 off the strings, 1 on them
@@ -1769,7 +1769,7 @@ struct Piano::Impl {
       v.longModes=m;}
     for(int k=0;k<maxKl;++k)v.slope[k]=static_cast<float>((k+1)*pi/key.length);
     v.floor2=static_cast<float>(3e-6*3e-6);
-    v.appliedDamper=-1;v.glide=0;
+    v.strikeDesignReady=true;
   }
   void setDrive(Voice& v,int index,float soft) noexcept {
     const KeyData& key=table->keys[index];
@@ -2122,6 +2122,7 @@ struct Piano::Impl {
   // under a bend (`pitchOnly`) their frequencies alone.
   void tuneBank(bool pitchOnly=false) noexcept {
     for(int i=0;i<keyCount;++i){const KeyData& key=table->keys[i];
+      voices[i].strikeDesignReady=false;
       const double f0=key.hertz*tuningRatio(key);
       bankApplied[i]=-1;
       if(pitchOnly){
@@ -3085,6 +3086,9 @@ void Piano::prepare(double sampleRate){
   p.prepareRoom();
   p.select();
   reset();
+  // Prepare the initial playable scale off the audio thread. Subsequent
+  // acoustic or pitch changes rebuild each affected key on its next strike.
+  for(int i=0;i<keyCount;++i)p.build(p.voices[i],i);
 }
 void Piano::reset() noexcept {
   auto& p=*impl;
@@ -3123,7 +3127,10 @@ void Piano::strike(int key,float velocity,float soft,std::uint32_t chance) noexc
     own.frame=p.frameTravel;own.frame.z1=own.frame.z2=0;
   }
   // What still rings keeps ringing; the blow adds to it.
-  p.build(v,key);
+  // The key's modes, losses and bridge pull are constant until its scale
+  // or pitch changes. The hammer and the current damper always start anew.
+  if(!v.strikeDesignReady)p.build(v,key);
+  v.appliedDamper=-1;v.glide=0;
   v.sounding=v.partials;v.active=true;v.forcing=true;
   // The key lifts its damper before the hammer arrives.
   v.damper=p.bankDamper[key]=p.muted();
@@ -3164,6 +3171,9 @@ void Piano::setBend(float semitones) noexcept {
   auto& p=*impl;const float bend=clampf(semitones,-48,48);
   if(bend==p.bend)return;
   p.bend=bend;
+  // A new strike can arrive before the next chunk retunes sounding strings.
+  // It must already use the new pitch.
+  for(auto& voice:p.voices)voice.strikeDesignReady=false;
   if(p.quiet)p.tuneBank(true);else p.retune=true;
 }
 void Piano::process(float* left,float* right,int frames) noexcept {process(left,right,nullptr,frames);}
