@@ -3087,9 +3087,12 @@ void Piano::prepare(double sampleRate){
   reset();
 }
 void Piano::reset() noexcept {
-  auto& p=*impl;p.pedal=0;p.pedalKnown=false;for(bool& h:p.held)h=false;p.silence();
-  // The sympathetic strings come back from a bend with it.
-  if(p.bend!=0){p.bend=0;p.tuneBank(true);}
+  auto& p=*impl;
+  // Returning the wheel to centre while playing schedules the bank's retune
+  // at the next chunk boundary. Silence clears that pending work.
+  const bool retuneBank=p.bend!=0||p.retune;
+  p.pedal=0;p.pedalKnown=false;for(bool& h:p.held)h=false;p.silence();
+  if(retuneBank){p.bend=0;p.tuneBank(true);}
 }
 void Piano::setControls(const Controls& input) noexcept {
   auto& p=*impl;const Controls old=p.controls;Controls c=input;

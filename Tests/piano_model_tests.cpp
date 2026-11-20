@@ -518,6 +518,22 @@ int main(){
     }
   }
   {
+    // Reset can arrive in the same host block as a wheel returning to centre.
+    // Compare the ensuing open-string response with an unplayed piano.
+    b.start(Controls{});
+    piano.setBend(5);piano.strike(keyOf(61),.8f);b.run(.01);
+    piano.setBend(0);piano.reset();
+    const auto openStrings=[](Piano& p){
+      constexpr int frames=4096;
+      std::array<float,2*frames> pressure{};
+      p.setPedal(1);p.knockBridge(keyOf(61),.004f);
+      p.process(pressure.data(),pressure.data()+frames,frames);
+      return pressure;
+    };
+    Piano fresh;
+    check(openStrings(piano)==openStrings(fresh),"reset centres the sympathetic strings before their next note");
+  }
+  {
     // Every key at once, again and again: more than the voices there are.
     Controls c;b.start(c);piano.setPedal(1);
     for(int round=0;round<3;++round){for(int key=0;key<keyra::model::keyCount;++key)piano.strike(key,1);b.run(.1);}
