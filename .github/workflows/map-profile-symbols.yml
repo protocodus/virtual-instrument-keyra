@@ -1,0 +1,78 @@
+name: Resolve Keyra wasm2js function symbols
+on:
+  push:
+    branches: [qa/web-callbacks-20261126]
+    paths: [.github/workflows/map-profile-symbols.yml]
+permissions:
+  contents: read
+jobs:
+  map:
+    runs-on: ubuntu-24.04
+    container: debian:13
+    timeout-minutes: 8
+    steps:
+      - name: Install matching WASI and Binaryen tools
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends ca-certificates git clang-19 lld-19 wasi-libc libc++-19-dev-wasm32 libclang-rt-19-dev-wasm32 binaryen binutils python3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4edf82344b1c53dea1eb50c19e5c332287779d0c
+          sparse-checkout: Source/DSP
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: voho/protocodus.github.io
+          ref: c065e6853daf80e4690700f79e801c26d2519939
+          sparse-checkout: scripts/keyra
+          path: website
+          persist-credentials: false
+      - name: Map identical generated function bodies to named translation
+        run: |
+          cd /tmp
+          src="$GITHUB_WORKSPACE/Source/DSP"
+          web="$GITHUB_WORKSPACE/website/scripts/keyra"
+          build() {
+            clang++-19 --target=wasm32-wasi --sysroot=/usr -mexec-model=reactor -std=c++17 -fno-exceptions -fno-rtti -ffp-contract=off \
+              -Wl,--initial-memory=67108864 -Wl,--max-memory=67108864 -Wl,-z,stack-size=2097152 -I"$src" \
+              -O2 -DKEYRA_FORCE_SCALAR -fno-unroll-loops -fno-vectorize -fno-slp-vectorize "$@" \
+              "$src/PianoModel.cpp" "$src/KeyraEngine.cpp" "$web/bridge.cpp" -o scalar.wasm
+          }
+          build
+          wasm2js scalar.wasm -O2 -o plain.js
+          python3 "$web/package-dsp.py" plain.js core.mjs
+          echo 'b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  core.mjs' | sha256sum -c -
+          build -g1
+          wasm2js scalar.wasm -O2 -g -o named.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          def funcs(path):
+              code=Path(path).read_text()
+              pattern=re.compile(r'^ function ([\w$]+)\(',re.M)
+              hits=list(pattern.finditer(code))
+              return [(m[1],code[m.start():(hits[i+1].start() if i+1<len(hits) else code.find('\n }',m.start())+3)]) for i,m in enumerate(hits)]
+          plain=funcs('plain.js')
+          named=funcs('named.js')
+          print('FUNCTION COUNTS',len(plain),len(named))
+          def shape(body):
+              return re.sub(r'\b(?:HEAP\w*|Math\w*)\b|[a-zA-Z_$][a-zA-Z0-9_$]*','_',re.sub(r'//[^\n]*','',body))
+          shapes={}
+          for nm,body in named:
+              shapes.setdefault(shape(body),[]).append(nm)
+          for i,(nm,body) in enumerate(plain):
+              match=shapes.get(shape(body),[])
+              if len(match)==1:
+                  print('MATCH',nm,match[0])
+              elif i<len(named):
+                  print('ORDER',nm,named[i][0],'lines',body.count('\n'),named[i][1].count('\n'))
+          PY
+          grep -E '^ function' named.js | head -30
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: generated-symbol-source
+          path: |
+            /tmp/plain.js
+            /tmp/named.js
+          retention-days: 7
