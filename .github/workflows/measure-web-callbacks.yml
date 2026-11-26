@@ -1,0 +1,37 @@
+name: One-off Keyra web callback measurement
+
+on:
+  push:
+    branches: [qa/web-callbacks-20261126]
+    paths: [.github/workflows/measure-web-callbacks.yml]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  callbacks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out the isolated benchmark
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: voho/protocodus.github.io
+          ref: b7914dd55d204c98a3530bfa414b6aa66a4f4032
+          sparse-checkout: tests/keyra
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - name: Download the native-parity-verified browser renderers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download 45873279181 --repo protocodus/virtual-instrument-keyra --name keyra-web-build --dir fun/keyra
+      - name: Check artifact digests and measure callbacks
+        run: |
+          sha256sum -c <<'HASHES'
+          b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  fun/keyra/dsp/core.mjs
+          0b680f1cac29fa021e16954fb3148cf3f006c453c29a658d1552b244c1b17b83  fun/keyra/dsp/keyra-simd.wasm
+          HASHES
+          node tests/keyra/benchmark.mjs
