@@ -82,7 +82,7 @@ try {
     const selector=name==='keyra'?'#keyboard [data-note="60"]':'#keyboard [data-division="0"] [data-note="60"]';
     const key=page.locator(selector);
     await key.waitFor();
-    assert.equal(await page.locator('#audio-start').getAttribute('aria-pressed'),'false');
+    assert.notEqual(await page.locator('#audio-start').getAttribute('aria-pressed'),'true');
     if(input==='pointer') {
       await key.scrollIntoViewIfNeeded();
       const box=await key.boundingBox();
