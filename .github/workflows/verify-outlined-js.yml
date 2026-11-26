@@ -1,0 +1,55 @@
+name: Validate piano bank candidates in Chromium and against native Keyra
+on:
+  push:
+    branches: [build/scalar-web-piano-20261126]
+    paths: [.github/workflows/verify-outlined-js.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          sparse-checkout: qa/web-bank
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          path: native
+          ref: 4edf82344b1c53dea1eb50c19e5c332287779d0c
+          sparse-checkout: Source/DSP
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: voho/protocodus.github.io
+          path: site
+          ref: 8130e15a0ec3932ad628dab4f032fb4dcea4c477
+          sparse-checkout: tests/keyra
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22.23.5'
+      - name: Fetch the hash-checked candidate artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run watch 45881072693 --repo protocodus/virtual-instrument-keyra --exit-status --interval 10
+          gh run download 45881072693 --repo protocodus/virtual-instrument-keyra --name verified-bank-candidates --dir candidates
+          for m in base outer both bothasm inner; do echo "BLOB $m $(git hash-object candidates/$m/dsp/core.mjs)"; done
+      - name: Match native samples across controls, rates and pedals
+        run: |
+          mkdir -p site/fun/keyra
+          for m in outer both bothasm inner; do
+            echo "Native suite for $m"
+            cp -a "candidates/$m/." site/fun/keyra/
+            node site/tests/keyra/parity.mjs "$GITHUB_WORKSPACE/native"
+          done
+      - name: Compare warm Chromium AudioWorklet renders
+        run: |
+          cd site
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          cp ../qa/web-bank/browser.mjs bank-browser.mjs
+          node bank-browser.mjs ../candidates base outer both bothasm inner
