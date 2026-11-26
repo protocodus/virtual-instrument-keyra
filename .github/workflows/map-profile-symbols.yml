@@ -68,8 +68,9 @@ jobs:
           body=re.sub(r'(?<!\w)\$([a-zA-Z0-9_$\.]+)',lambda x:'$'+m.get(x[1],x[1]),body)
           Path('native.wat').write_text(body)
           PY
+          head -c 1 native.wat > /dev/null
           wat2wasm native.wat --debug-names -o native.wasm
-          wasm-opt native.wasm -O2 -g -o optimized-named.wasm
+          wasm-opt native.wasm --enable-bulk-memory -O2 -g -o optimized-named.wasm
           wasm-objdump -d optimized-named.wasm | grep ' func\[' | c++filt -n | head -65 | cut -c 1-310
           wasm2wat optimized-named.wasm --generate-names -o linked.wat
           wasm2js scalar.wasm -O2 -o plain.js
