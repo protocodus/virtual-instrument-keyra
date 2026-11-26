@@ -39,3 +39,9 @@ jobs:
           JS
           node --print-bytecode --print-bytecode-filter='$59' --trace-opt-verbose --trace-opt --trace-deopt --allow-natives-syntax tier.mjs > tier.log 2>&1
           grep -E 'Bytecode length|STATUS|too big|too large|disabled optimization|JSFunction \$59 ' tier.log | tail -65
+
+          echo "Default bytecode limit"
+          grep -E '^MEAN|^STATUS' tier.log
+          echo "Increased bytecode limit"
+          node --max-optimized-bytecode-size=131072 --allow-natives-syntax --trace-opt tier.mjs > cap.log
+          grep -E '^MEAN|^STATUS|JSFunction \$59 ' cap.log | tail -15
