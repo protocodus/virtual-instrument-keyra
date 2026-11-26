@@ -1,0 +1,47 @@
+name: Compare outlined Keyra JavaScript banks
+on:
+  push:
+    branches: [build/scalar-web-piano-20261126]
+    paths: [.github/workflows/outline-js.yml, qa/web-bank/**]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  trial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          sparse-checkout: qa/web-bank
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22.23.5'
+      - name: Fetch verified public DSP and outline unchanged arithmetic
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p qa/engines/base
+          gh run download 45873279181 --repo protocodus/virtual-instrument-keyra --name keyra-web-build --dir qa/engines/base
+          echo 'b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  qa/engines/base/dsp/core.mjs' | sha256sum -c -
+          for mode in inner outer both bothasm; do
+            cp -r qa/engines/base "qa/engines/$mode"
+            python3 qa/web-bank/extract.py "$mode" qa/engines/base/dsp/core.mjs "qa/engines/$mode/dsp/core.mjs"
+          done
+      - name: Compare PCM, cold cost and warmed scalar callbacks
+        run: |
+          node --trace-warnings qa/web-bank/compare.mjs base outer both bothasm inner | tee /tmp/scores
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          scenarios={}
+          for mode,score,sha,ms in re.findall(r'BANKCHECK (\w+) ([^\n]*?) ([0-9a-f]{64}) ([\d,]+)',Path('/tmp/scores').read_text()):
+              if mode=='base': scenarios[score]=sha
+              else: assert sha==scenarios[score],(mode,score,sha)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: verified-bank-candidates
+          path: qa/engines
+          retention-days: 5
