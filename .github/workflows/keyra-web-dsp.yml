@@ -2,7 +2,7 @@ name: Build Keyra browser DSP
 on:
   push:
     branches: [build/browser-dsp-20261126]
-    paths: [.browser-build-request]
+    paths: [.browser-build-request, .github/workflows/keyra-web-dsp.yml]
 permissions:
   contents: read
 jobs:
@@ -21,7 +21,8 @@ jobs:
       - name: Compile the specified website bridge against the instrument
         run: |
           set -eu
-          checkout=$(cat .browser-build-request)
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          read -r checkout < .browser-build-request
           git clone --filter=blob:none --no-checkout --single-branch --branch build/keyra-dsp-20261126 https://github.com/voho/protocodus.github.io.git /tmp/site
           git -C /tmp/site sparse-checkout set scripts/keyra fun/keyra/dsp
           git -C /tmp/site checkout --detach "$checkout"
@@ -39,6 +40,21 @@ jobs:
           name: keyra-web-build
           path: /tmp/keyra-web-build
           retention-days: 7
+      - name: Record public release assets for verified transfer
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib
+          from pathlib import Path
+          root = Path('/tmp/keyra-web-build')
+          files = ['dsp/core.mjs', 'dsp/keyra-simd.wasm', 'metadata.js', 'dsp/LICENSE',
+                   'dsp/THIRD_PARTY_NOTICES.md', 'dsp/SALAMANDER-ATTRIBUTION.md', 'dsp/SALAMANDER-CC-BY-3.0.txt']
+          for name in files:
+              data = (root / name).read_bytes()
+              oid = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+              print('KEYRA_FILE', name, len(data), oid, hashlib.sha256(data).hexdigest())
+              for i in range(0, len(data), 6000):
+                  print('KEYRA_CHUNK', name, i, base64.b64encode(data[i:i+6000]).decode())
+          PY
       - name: Compare both renderers to the pinned native engine
         run: |
           cd /tmp/site
