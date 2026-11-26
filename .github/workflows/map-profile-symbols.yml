@@ -14,7 +14,7 @@ jobs:
       - name: Install matching WASI and Binaryen tools
         run: |
           apt-get update -qq
-          apt-get install -y --no-install-recommends ca-certificates git clang-19 lld-19 wasi-libc libc++-19-dev-wasm32 libclang-rt-19-dev-wasm32 binaryen binutils python3
+          apt-get install -y --no-install-recommends ca-certificates git clang-19 lld-19 wasi-libc libc++-19-dev-wasm32 libclang-rt-19-dev-wasm32 binaryen wabt binutils python3
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: 4edf82344b1c53dea1eb50c19e5c332287779d0c
@@ -42,8 +42,12 @@ jobs:
           wasm2js scalar.wasm -O2 -o plain.js
           python3 "$web/package-dsp.py" plain.js core.mjs
           echo 'b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  core.mjs' | sha256sum -c -
-          build -g1
-          wasm2js scalar.wasm -O2 -g -o named.js
+          wasm-objdump -x scalar.wasm > scalar.dump
+          grep -m 5 -E 'Piano|Engine' scalar.dump | cut -c 1-200 || true
+          wasm2wat scalar.wasm -o labels.wat
+          grep -m 4 -E '^  \\(func' labels.wat | cut -c 1-180 || true
+          wasm2js labels.wat -O2 --symbols-file wat.map -o named.js
+          head -20 wat.map | c++filt -n
           python3 - <<'PY'
           from pathlib import Path
           import re
@@ -67,7 +71,7 @@ jobs:
               elif i<len(named):
                   print('ORDER',nm,named[i][0],'lines',body.count('\n'),named[i][1].count('\n'))
           PY
-          grep -E '^ function' named.js | head -30
+          grep -E '^ function' named.js | head -30\n          cat wat.map | c++filt -n
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
