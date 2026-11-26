@@ -1,0 +1,49 @@
+name: Benchmark the bank with the published Keyra callback score
+on:
+  push:
+    branches: ['build/keyra-js-bank-bench-20261126']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  scores:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: voho/protocodus.github.io
+          ref: a54a72f871436982759bb87b641a4b1f63f6d773
+          path: site
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22
+      - name: Get generated files and reproduce ordinary JavaScript extraction
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 45881072693 --repo protocodus/virtual-instrument-keyra -n verified-bank-candidates -D candidates
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          source = Path('qa/web-bank/production.py').read_text().partition('source, destination = map(Path, sys.argv[1:])')[0]
+          exec(source)
+          base = Path('candidates/base/dsp/core.mjs').read_text()
+          expected = Path('candidates/outer/dsp/core.mjs').read_text()
+          assert outline_sympathetic_bank(base) == expected
+          print("Production packager matches warmed candidate", hashlib.sha256(expected.encode()).hexdigest())
+          PY
+      - name: Run repository benchmark with real-time callback distributions
+        working-directory: site
+        run: |
+          node --version
+          for mode in base outer bothasm; do
+            echo "REPOBENCH $mode"
+            cp ../candidates/$mode/dsp/core.mjs fun/keyra/dsp/core.mjs
+            git hash-object fun/keyra/dsp/core.mjs
+            node tests/keyra/benchmark.mjs
+          done
