@@ -31,6 +31,9 @@ jobs:
           for (const note of [48,55,60,64,71]) piano.noteOn(note, 87);
           piano.controlChange(64, 102);
           for (let i=0; i<256; ++i) play();
+          const start = performance.now();
+          for (let i=0; i<384; ++i) play();
+          console.log('MEAN warm callback', (performance.now()-start)/384);
           console.log('STATUS normal exported render', %GetOptimizationStatus(piano.core.render));
           console.log('STATUS normal wrapper render', %GetOptimizationStatus(piano.render));
           JS
