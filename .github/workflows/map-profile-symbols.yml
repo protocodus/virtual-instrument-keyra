@@ -38,20 +38,42 @@ jobs:
               -O2 -DKEYRA_FORCE_SCALAR -fno-unroll-loops -fno-vectorize -fno-slp-vectorize "$@" \
               "$src/PianoModel.cpp" "$src/KeyraEngine.cpp" "$web/bridge.cpp" -o scalar.wasm
           }
-          build -Wl,-Map=/tmp/link.map
+          mkdir -p /tmp/keepbin
+          cat > /tmp/keepbin/wasm-opt <<'SH'
+          #!/bin/sh
+          cp "$1" /tmp/raw-linked.wasm
+          exec /usr/bin/wasm-opt "$@"
+          SH
+          chmod +x /tmp/keepbin/wasm-opt
+          build -B/tmp/keepbin -Wl,-Map=/tmp/link.map
+          test -f /tmp/raw-linked.wasm
+          wasm2wat /tmp/raw-linked.wasm --generate-names -o raw.wat
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          body=Path('raw.wat').read_text()
+          decl=re.findall(r'^  \(func \$([^ ]+)',body,re.M)
+          print('RAW',len(decl),decl[:5])
+          records={}
+          for line in Path('/tmp/link.map').read_text().splitlines():
+              match=re.search(r'^\s*-\s+([a-f0-9]+)\s+[a-f0-9]+\s+.*:\(([^()]+)\)\s*$',line)
+              if match:
+                  records.setdefault(int(match[1],16),match[2])
+          order=[s for addr,s in sorted(records.items())]
+          first=order.index('__wasm_call_ctors')
+          order=order[first:first+len(decl)]
+          if len(decl)!=len(order): raise ValueError((len(decl),len(order)))
+          m=dict(zip(decl,order))
+          # Limit to function identifiers. Text copied from native symbol table is mangled ASCII.
+          body=re.sub(r'(?<!\w)\$([a-zA-Z0-9_$\.]+)',lambda x:'$'+m.get(x[1],x[1]),body)
+          Path('native.wat').write_text(body)
+          PY
+          wat2wasm native.wat --debug-names -o native.wasm
+          wasm-opt native.wasm -O2 -g -o optimized-named.wasm
+          wasm-objdump -d optimized-named.wasm | grep ' func\[' | c++filt -n | head -65 | cut -c 1-310
+          wasm2wat optimized-named.wasm --generate-names -o linked.wat
           wasm2js scalar.wasm -O2 -o plain.js
-          python3 "$web/package-dsp.py" plain.js core.mjs
-          echo 'b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  core.mjs' | sha256sum -c -
-          wasm-objdump -x scalar.wasm > scalar.dump
-          grep -m 5 -E 'Piano|Engine' scalar.dump | cut -c 1-200 || true
-          wasm-objdump -d scalar.wasm | grep ' func\[' > /tmp/function-offsets
-          head -30 /tmp/link.map | cut -c 1-240
-          grep -m 10 'Piano' /tmp/link.map | cut -c 1-255 || true
-          head -20 /tmp/function-offsets
-          wasm2wat --generate-names scalar.wasm -o labels.wat
-          grep -m 4 -F '  (func ' labels.wat | cut -c 1-180 || true
-          wasm2js labels.wat --enable-bulk-memory -O2 --symbols-file wat.map -o named.js
-          head -20 wat.map | c++filt -n
+          wasm2js linked.wat --enable-bulk-memory -O2 -o named.js
           python3 - <<'PY'
           from pathlib import Path
           import re
@@ -75,37 +97,5 @@ jobs:
               elif i<len(named):
                   print('ORDER',nm,named[i][0],'lines',body.count('\n'),named[i][1].count('\n'))
           PY
-          grep -E '^ function' named.js | head -30
-          cat wat.map | c++filt -n
-          cat /tmp/function-offsets
-          head -320 /tmp/link.map | cut -c 1-450
-          build -### 2>&1 | tail -8
-          build -g1 -Wl,-Map=/tmp/line.map
-          wasm-objdump -h scalar.wasm
-          wasm-objdump -d scalar.wasm | grep ' func\[' > /tmp/line-offsets
-          cat /tmp/line-offsets | head -60
-          BIN=$(command -v llvm-addr2line-19 || command -v llvm-symbolizer-19 || true)
-          echo "addr2line executable $BIN"
-          test -n "$BIN"
-          py=$(command -v python3)
-          "$py" - <<'PY'
-          from pathlib import Path
-          import re, subprocess
-          offsets=Path('/tmp/line-offsets').read_text().splitlines()
-          h=subprocess.check_output(['wasm-objdump','-h','scalar.wasm']).decode()
-          code=int(re.search(r'Code\s+start=0x([0-9a-f]+)',h).group(1),16)
-          for line in offsets:
-              m=re.search(r'^([a-f0-9]+) func\[(\d+)\]',line)
-              if m and int(m[2]) in (3,4,5,23,24,33,34,36,50,62):
-                  start=int(m[1],16)+8
-                  args=['llvm-addr2line-19','-f','-C','-e','scalar.wasm',hex(start-code),hex(start)]
-                  print('NATIVE',m[2],hex(start-code),subprocess.check_output(args).decode().strip().replace('\n',' | ')[:550])
-          PY
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: generated-symbol-source
-          path: |
-            /tmp/plain.js
-            /tmp/named.js
-          retention-days: 7
+          wasm-objdump -d optimized-named.wasm | grep ' func\[' > /tmp/linked-names
+          perl -ne 'if(/func\[(\d+)\] <(.*)>:/ && grep { $_ == $1 } qw(23 24 33 34 36 50 62)){print "$1 $2\n"}' /tmp/linked-names | c++filt -n
