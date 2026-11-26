@@ -29,8 +29,17 @@ jobs:
           test "$checkout" = "$shasum"
           bash /tmp/site/scripts/keyra/build-dsp.sh "$GITHUB_WORKSPACE"
           cp -r /tmp/site/fun/keyra /tmp/keyra-web-build
+      - name: Load independently staged native comparison
+        run: |
+          git -C /tmp/site fetch --depth=1 origin 8130e15a0ec3932ad628dab4f032fb4dcea4c477
+          git -C /tmp/site sparse-checkout add tests/keyra
+          git -C /tmp/site checkout FETCH_HEAD -- tests/keyra
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: keyra-web-build
           path: /tmp/keyra-web-build
           retention-days: 7
+      - name: Compare both renderers to the pinned native engine
+        run: |
+          cd /tmp/site
+          node tests/keyra/parity.mjs "$GITHUB_WORKSPACE"
