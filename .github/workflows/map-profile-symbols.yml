@@ -47,30 +47,7 @@ jobs:
           chmod +x /tmp/keepbin/wasm-opt
           build -B/tmp/keepbin -Wl,-Map=/tmp/link.map
           test -f /tmp/raw-linked.wasm
-          wasm2wat /tmp/raw-linked.wasm --generate-names -o raw.wat
-          python3 - <<'PY'
-          import re
-          from pathlib import Path
-          body=Path('raw.wat').read_text()
-          decl=re.findall(r'^  \(func \$([^ ]+)',body,re.M)
-          print('RAW',len(decl),decl[:5])
-          records={}
-          for line in Path('/tmp/link.map').read_text().splitlines():
-              match=re.search(r'^\s*-\s+([a-f0-9]+)\s+[a-f0-9]+\s+.*:\(([^()]+)\)\s*$',line)
-              if match:
-                  records.setdefault(int(match[1],16),match[2])
-          order=[s for addr,s in sorted(records.items())]
-          first=order.index('__wasm_call_ctors')
-          order=order[first:first+len(decl)]
-          if len(decl)!=len(order): raise ValueError((len(decl),len(order)))
-          m=dict(zip(decl,order))
-          # Limit to function identifiers. Text copied from native symbol table is mangled ASCII.
-          body=re.sub(r'(?<!\w)\$([a-zA-Z0-9_$\.]+)',lambda x:'$'+m.get(x[1],x[1]),body)
-          Path('native.wat').write_text(body)
-          PY
-          head -c 1 native.wat > /dev/null
-          wat2wasm native.wat --debug-names -o native.wasm
-          wasm-opt native.wasm --enable-bulk-memory -O2 -g -o optimized-named.wasm
+          wasm-opt /tmp/raw-linked.wasm -O2 -g -o optimized-named.wasm
           wasm-objdump -d optimized-named.wasm | grep ' func\[' | c++filt -n | head -65 | cut -c 1-310
           wasm2wat optimized-named.wasm --generate-names -o linked.wat
           wasm2js scalar.wasm -O2 -o plain.js
