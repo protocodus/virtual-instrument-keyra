@@ -79,6 +79,28 @@ jobs:
           cat wat.map | c++filt -n
           cat /tmp/function-offsets
           head -320 /tmp/link.map | cut -c 1-450
+          build -### 2>&1 | tail -8
+          build -g1 -Wl,-Map=/tmp/line.map
+          wasm-objdump -h scalar.wasm
+          wasm-objdump -d scalar.wasm | grep ' func\[' > /tmp/line-offsets
+          cat /tmp/line-offsets | head -60
+          BIN=$(command -v llvm-addr2line-19 || command -v llvm-symbolizer-19 || true)
+          echo "addr2line executable $BIN"
+          test -n "$BIN"
+          py=$(command -v python3)
+          "$py" - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          offsets=Path('/tmp/line-offsets').read_text().splitlines()
+          h=subprocess.check_output(['wasm-objdump','-h','scalar.wasm']).decode()
+          code=int(re.search(r'Code\s+start=0x([0-9a-f]+)',h).group(1),16)
+          for line in offsets:
+              m=re.search(r'^([a-f0-9]+) func\[(\d+)\]',line)
+              if m and int(m[2]) in (3,4,5,23,24,33,34,36,50,62):
+                  start=int(m[1],16)+8
+                  args=['llvm-addr2line-19','-f','-C','-e','scalar.wasm',hex(start-code),hex(start)]
+                  print('NATIVE',m[2],hex(start-code),subprocess.check_output(args).decode().strip().replace('\n',' | ')[:550])
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
