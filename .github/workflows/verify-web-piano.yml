@@ -28,14 +28,6 @@ jobs:
             product/keyra
             tests/keyra
           persist-credentials: false
-      - name: Check out the adapters paired with the verified build
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
-        with:
-          repository: voho/protocodus.github.io
-          ref: c065e6853daf80e4690700f79e801c26d2519939
-          sparse-checkout: fun/keyra
-          path: adapters
-          persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: '22'
@@ -43,8 +35,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp -a adapters/fun/keyra/. fun/keyra/
-          gh run download 45873279181 --repo protocodus/virtual-instrument-keyra --name keyra-web-build --dir fun/keyra
+          gh run download 45873279181 --repo protocodus/virtual-instrument-keyra --name keyra-web-build --dir "$RUNNER_TEMP/piano-build"
+          cp -a "$RUNNER_TEMP/piano-build/." fun/keyra/
           sha256sum -c <<'HASHES'
           b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  fun/keyra/dsp/core.mjs
           0b680f1cac29fa021e16954fb3148cf3f006c453c29a658d1552b244c1b17b83  fun/keyra/dsp/keyra-simd.wasm
