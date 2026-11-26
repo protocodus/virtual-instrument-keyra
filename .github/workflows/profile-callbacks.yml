@@ -1,0 +1,37 @@
+name: Profile verified Keyra JavaScript callbacks
+on:
+  push:
+    branches: [qa/web-callbacks-20261126]
+    paths: [.github/workflows/profile-callbacks.yml, qa/web-profile/profile.mjs]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  profile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          sparse-checkout: qa/web-profile
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22.23.5'
+      - name: Fetch the SHA-verified scalar JS DSP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 45873279181 --repo protocodus/virtual-instrument-keyra --name keyra-web-build --dir fun/keyra
+          echo 'b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  fun/keyra/dsp/core.mjs' | sha256sum -c -
+      - name: Run the warmed sampler and capture optimization diagnostics
+        run: |
+          node --trace-opt --trace-deopt qa/web-profile/profile.mjs > profile.log 2>&1 || { tail -80 profile.log; exit 1; }
+          grep -E '^(HOT |PROFILE |concert mean|hall mean)|too big|too large|disabled optimization' profile.log | tail -100
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: keyra-warmed-v8-profiles
+          path: |
+            *.cpuprofile
+            profile.log
+          retention-days: 7
