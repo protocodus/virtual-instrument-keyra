@@ -32,7 +32,7 @@ jobs:
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
           npx playwright install --with-deps chromium
-      - name: Compare public CDN assets and play both keyboards on the production host
+      - name: Verify production hashes and play both released keyboards
         working-directory: release
         run: |
           cp ../qa/web-profile/production-live.mjs .live-release.mjs
