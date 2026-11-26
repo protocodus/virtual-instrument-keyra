@@ -1,0 +1,90 @@
+name: Build and verify scalar Keyra WebAssembly
+on:
+  push:
+    branches: [build/scalar-web-piano-20261126]
+    paths: [.github/workflows/scalar-web-piano.yml]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    container: debian:13
+    timeout-minutes: 15
+    steps:
+      - name: Install pinned-generation toolchain
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends ca-certificates git clang-19 lld-19 wasi-libc libc++-19-dev-wasm32 libclang-rt-19-dev-wasm32 binaryen g++ python3 nodejs
+      - name: Check out the pinned native instrument
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4edf82344b1c53dea1eb50c19e5c332287779d0c
+          persist-credentials: false
+      - name: Check out the browser source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: voho/protocodus.github.io
+          ref: 21d0bd1fb74eb9c9b1828d7ac61d21da2fa890e5
+          path: website
+          sparse-checkout: |
+            scripts/keyra
+            fun/keyra
+          persist-credentials: false
+      - name: Check out the native comparison fixtures
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: voho/protocodus.github.io
+          ref: 8130e15a0ec3932ad628dab4f032fb4dcea4c477
+          path: oracle
+          sparse-checkout: tests/keyra
+          persist-credentials: false
+      - name: Regenerate all three renderers and compare fixed outputs
+        run: |
+          set -eu
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          bash website/scripts/keyra/build-dsp.sh "$GITHUB_WORKSPACE"
+          cd website
+          sha256sum -c <<'HASHES'
+          b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  fun/keyra/dsp/core.mjs
+          0b680f1cac29fa021e16954fb3148cf3f006c453c29a658d1552b244c1b17b83  fun/keyra/dsp/keyra-simd.wasm
+          HASHES
+          mkdir -p tests
+          cp -a ../oracle/tests/keyra tests/keyra
+          sed "s/keyra-simd.wasm/keyra-scalar.wasm/; s/test, 'SIMD'/test, 'Scalar WebAssembly'/" tests/keyra/parity.mjs >tests/keyra/parity-scalar.mjs
+          node tests/keyra/parity-scalar.mjs "$GITHUB_WORKSPACE"
+      - name: Measure the middle tier against plain JavaScript
+        run: |
+          cd website
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import { KeyraDSP } from './fun/keyra/dsp/piano.mjs';
+          import { SimdDSP as WasmPiano } from './fun/keyra/dsp/simd.mjs';
+          const module = await WebAssembly.compile(readFileSync('fun/keyra/dsp/keyra-scalar.wasm'));
+          for (const [name, piano] of [['JS', new KeyraDSP(48000)], ['Scalar Wasm', new WasmPiano(48000,module)]]) {
+            const l = new Float32Array(128), r = l.slice();
+            for(const n of [36,48,52,55,59,64]) piano.noteOn(n,90,1);
+            const times=[];
+            for(let t=0;t<4;t++){
+              const start=performance.now();
+              for(let b=0;b<375;b++) piano.render(l,r);
+              times.push(Math.round(performance.now()-start));
+            }
+            console.log(name, 'warmup then three trials, ms per audio second:', times.join(', '));
+          }
+          JS
+      - name: Record the verified public scalar module for transfer
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib
+          from pathlib import Path
+          data=Path('website/fun/keyra/dsp/keyra-scalar.wasm').read_bytes()
+          blob=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+          print('KEYRA_SCALAR_INFO',len(data),blob,hashlib.sha256(data).hexdigest())
+          for pos in range(0,len(data),4800):
+              print('KEYRA_SCALAR_PART',pos,base64.b64encode(data[pos:pos+4800]).decode())
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: keyra-scalar-wasm
+          path: website/fun/keyra/dsp/keyra-scalar.wasm
+          retention-days: 7
