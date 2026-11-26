@@ -1,0 +1,39 @@
+name: Verify released instruments on protocodus.cz
+on:
+  push:
+    branches: [qa/web-callbacks-20261126]
+    paths: [.github/workflows/check-production-release.yml]
+permissions:
+  contents: read
+jobs:
+  production:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          sparse-checkout: qa/web-profile
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: voho/protocodus.github.io
+          ref: a54a72f871436982759bb87b641a4b1f63f6d773
+          path: release
+          sparse-checkout: |
+            fun/keyra
+            fun/oregana
+            fun/shared
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - name: Install the release's pinned Chromium
+        working-directory: release
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Compare public CDN assets and play both keyboards on the production host
+        working-directory: release
+        run: |
+          cp ../qa/web-profile/production-live.mjs .live-release.mjs
+          node .live-release.mjs
