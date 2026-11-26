@@ -38,15 +38,19 @@ jobs:
               -O2 -DKEYRA_FORCE_SCALAR -fno-unroll-loops -fno-vectorize -fno-slp-vectorize "$@" \
               "$src/PianoModel.cpp" "$src/KeyraEngine.cpp" "$web/bridge.cpp" -o scalar.wasm
           }
-          build
+          build -Wl,-Map=/tmp/link.map
           wasm2js scalar.wasm -O2 -o plain.js
           python3 "$web/package-dsp.py" plain.js core.mjs
           echo 'b98ef68895943fa0532f3c647a31f938f73c151e73f8cd8bdbf3a8ddb13b92f2  core.mjs' | sha256sum -c -
           wasm-objdump -x scalar.wasm > scalar.dump
           grep -m 5 -E 'Piano|Engine' scalar.dump | cut -c 1-200 || true
-          wasm2wat scalar.wasm -o labels.wat
-          grep -m 4 -E '^  \\(func' labels.wat | cut -c 1-180 || true
-          wasm2js labels.wat -O2 --symbols-file wat.map -o named.js
+          wasm-objdump -d scalar.wasm | grep ' func\[' > /tmp/function-offsets
+          head -30 /tmp/link.map | cut -c 1-240
+          grep -m 10 'Piano' /tmp/link.map | cut -c 1-255 || true
+          head -20 /tmp/function-offsets
+          wasm2wat --generate-names scalar.wasm -o labels.wat
+          grep -m 4 -F '  (func ' labels.wat | cut -c 1-180 || true
+          wasm2js labels.wat --enable-bulk-memory -O2 --symbols-file wat.map -o named.js
           head -20 wat.map | c++filt -n
           python3 - <<'PY'
           from pathlib import Path
@@ -71,7 +75,10 @@ jobs:
               elif i<len(named):
                   print('ORDER',nm,named[i][0],'lines',body.count('\n'),named[i][1].count('\n'))
           PY
-          grep -E '^ function' named.js | head -30\n          cat wat.map | c++filt -n
+          grep -E '^ function' named.js | head -30
+          cat wat.map | c++filt -n
+          cat /tmp/function-offsets
+          head -320 /tmp/link.map | cut -c 1-450
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
